@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/solver/examples/lessonschedule/solver/lessonScheduleScoreRules.drl</scoreDrl>
+    <scoreCalculator>
+        <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+    </scoreCalculator>
+    <finish>
+        <maximumUnimprovedStepCount>10</maximumUnimprovedStepCount>
+    </finish>
+    <selector>
+        <moveFactoryClass>org.drools.solver.examples.lessonschedule.solver.LessonScheduleMoveFactory</moveFactoryClass>
+    </selector>
+    <accepter>
+        <completeUndoMoveTabuSize>10</completeUndoMoveTabuSize>
+    </accepter>
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+    </forager>
+</localSearchSolver>

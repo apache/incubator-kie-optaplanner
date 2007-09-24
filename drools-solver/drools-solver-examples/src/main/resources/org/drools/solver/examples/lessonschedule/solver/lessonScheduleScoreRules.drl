@@ -1,0 +1,48 @@
+package org.drools.solver.evaluation
+
+import org.drools.solver.core.evaluation.scorecalculator.HardAndSoftConstraintScoreCalculator;
+
+import org.drools.solver.examples.lessonschedule.domain.LessonSchedule;
+import org.drools.solver.examples.lessonschedule.domain.Timeslot;
+import org.drools.solver.examples.lessonschedule.domain.Teacher;
+import org.drools.solver.examples.lessonschedule.domain.Group;
+import org.drools.solver.examples.lessonschedule.domain.Lesson;
+import org.drools.solver.examples.common.solver.domain.WorkaroundMultiplePatternAccumulate;
+
+global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+//query "multipleLessonsPerTeacherPerTimeslot"
+//    $lesson : Lesson($id : id, $teacher : teacher, $timeslot : timeslot);
+//    exists Lesson(id > $id, teacher == $teacher, timeslot == $timeslot);
+//end
+//
+//query "multipleLessonsPerGroupPerTimeslot"
+//    $lesson : Lesson($id : id, $group : group, $timeslot : timeslot);
+//    exists Lesson(id > $id, group == $group, timeslot == $timeslot);
+//end
+
+rule "multipleLessonsPerTeacherPerTimeslot"
+  when
+    $lesson : Lesson($id : id, $teacher : teacher, $timeslot : timeslot);
+    exists Lesson(id > $id, teacher == $teacher, timeslot == $timeslot);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleLessonsPerTeacherPerTimeslot", $lesson));
+end
+
+rule "multipleLessonsPerGroupPerTimeslot"
+  when
+    $lesson : Lesson($id : id, $group : group, $timeslot : timeslot);
+    exists Lesson(id > $id, group == $group, timeslot == $timeslot);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleLessonsPerGroupPerTimeslot", $lesson));
+end
+
+rule "hardConstraintsBroken"
+  when
+    $hardCount : Long() from accumulate(
+       $w : WorkaroundMultiplePatternAccumulate(),
+       count($w)
+    );
+  then
+    scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
+end

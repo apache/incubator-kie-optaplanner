@@ -1,0 +1,86 @@
+package org.drools.solver.evaluation
+
+import org.drools.solver.core.evaluation.scorecalculator.SimpleScoreCalculator;
+
+import org.drools.solver.examples.nqueens.domain.Queen;
+import org.drools.solver.examples.common.solver.domain.WorkaroundMultiplePatternAccumulate;
+
+global SimpleScoreCalculator scoreCalculator;
+
+//query "multipleQueensHorizontal"
+//    Queen($id : id, $y : y);
+//    Queen(id > $id, y == $y);
+//end
+//
+//// multipleQueensVertical is obsolete because it is always 0
+//
+//query "multipleQueensAscendingDiagonal"
+//    Queen($id : id, $ascendingD : ascendingD);
+//    Queen(id > $id, ascendingD == $ascendingD);
+//end
+//
+//query "multipleQueensDescendingDiagonal"
+//    Queen($id : id, $descendingD : descendingD);
+//    Queen(id > $id, descendingD == $descendingD);
+//end
+
+rule "multipleQueensHorizontal"
+  when
+    $q1 : Queen($id : id, $y : y);
+    $q2 : Queen(id > $id, y == $y);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleQueensHorizontal", $q1, $q2));
+end
+
+// multipleQueensVertical is obsolete because it is always 0
+
+rule "multipleQueensAscendingDiagonal"
+  when
+    $q1 : Queen($id : id, $ascendingD : ascendingD);
+    $q2 : Queen(id > $id, ascendingD == $ascendingD);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleQueensAscendingDiagonal", $q1, $q2));
+end
+
+rule "multipleQueensDescendingDiagonal"
+  when
+    $q1 : Queen($id : id, $descendingD : descendingD);
+    $q2 : Queen(id > $id, descendingD == $descendingD);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleQueensDescendingDiagonal", $q1, $q2));
+end
+
+rule "constraintsBroken"
+  when
+    $hardConstraintCount : Long() from accumulate(
+       $w : WorkaroundMultiplePatternAccumulate(),
+       count($w)
+    );
+  then
+    scoreCalculator.setScore(- $hardConstraintCount.intValue());
+end
+
+// Warning: This currently triggers backwards chaining instead of forward chaining and seriously hurts performance and scalability.
+//rule "constraintsBroken"
+//  when
+//    $multipleQueensHorizontal : Long()
+//    from accumulate(
+//        $q1 : Queen($id : id, $y : y)
+//        and Queen(id > $id, y == $y),
+//       count($q1)
+//    );
+//    $multipleQueensAscendingDiagonal : Long()
+//    from accumulate(
+//        $q2 : Queen($id : id, $ascendingD : ascendingD)
+//        and Queen(id > $id, ascendingD == $ascendingD),
+//       count($q2)
+//    );
+//    $multipleQueensDescendingDiagonal : Long()
+//    from accumulate(
+//        $q3 : Queen($id : id, $descendingD : descendingD)
+//        and Queen(id > $id, descendingD == $descendingD),
+//       count($q3)
+//    );
+//  then
+//    scoreCalculator.setScore(- $multipleQueensHorizontal - $multipleQueensAscendingDiagonal - $multipleQueensDescendingDiagonal);
+//end

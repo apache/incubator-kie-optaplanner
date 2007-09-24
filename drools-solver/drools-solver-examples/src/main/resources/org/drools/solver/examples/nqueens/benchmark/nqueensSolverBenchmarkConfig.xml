@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solverBenchmarkSuite>
+    <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
+    <solvedSolutionFilesDirectory>local/data/nqueens/solved</solvedSolutionFilesDirectory>
+    <sortSolverBenchmarks>true</sortSolverBenchmarks>
+    <!-- solverBenchmarkResultComparator -->
+    
+    <inheritedUnsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens08.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens16.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inheritedUnsolvedSolutionFile>
+    <inheritedLocalSearchSolver>
+        <scoreDrl>/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+        <scoreCalculator>
+            <scoreCalculatorType>SIMPLE</scoreCalculatorType>
+        </scoreCalculator>
+        <finish>
+            <finishCompositionStyle>OR</finishCompositionStyle>
+            <maximumSecondsSpend>10</maximumSecondsSpend>
+            <feasableScore>0.0</feasableScore>
+        </finish>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.nqueens.solver.NQueensMoveFactory</moveFactoryClass>
+        </selector>
+    </inheritedLocalSearchSolver>
+
+    <solverBenchmark>
+        <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</unsolvedSolutionFile>
+        <localSearchSolver>
+            <accepter>
+                <completeMoveTabuSize>5</completeMoveTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <localSearchSolver>
+            <accepter>
+                <completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <localSearchSolver>
+            <accepter>
+                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+</solverBenchmarkSuite>

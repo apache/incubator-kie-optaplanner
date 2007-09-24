@@ -1,0 +1,48 @@
+<org.drools.solver.examples.lessonschedule.domain.LessonSchedule id="1">
+  <timeslotList id="2">
+    <org.drools.solver.examples.lessonschedule.domain.Timeslot id="3">
+      <index>0</index>
+      <id>0</id>
+    </org.drools.solver.examples.lessonschedule.domain.Timeslot>
+    <org.drools.solver.examples.lessonschedule.domain.Timeslot id="4">
+      <index>1</index>
+      <id>1</id>
+    </org.drools.solver.examples.lessonschedule.domain.Timeslot>
+  </timeslotList>
+  <teacherList id="5">
+    <org.drools.solver.examples.lessonschedule.domain.Teacher id="6">
+      <name>teacher0</name>
+      <id>0</id>
+    </org.drools.solver.examples.lessonschedule.domain.Teacher>
+  </teacherList>
+  <groupList id="7">
+    <org.drools.solver.examples.lessonschedule.domain.Group id="8">
+      <name>group0</name>
+      <id>0</id>
+    </org.drools.solver.examples.lessonschedule.domain.Group>
+    <org.drools.solver.examples.lessonschedule.domain.Group id="9">
+      <name>group1</name>
+      <id>1</id>
+    </org.drools.solver.examples.lessonschedule.domain.Group>
+  </groupList>
+  <lessonList id="10">
+    <org.drools.solver.examples.lessonschedule.domain.Lesson id="11">
+      <teacher reference="6"/>
+      <group reference="8"/>
+      <timeslot reference="4"/>
+      <id>0</id>
+    </org.drools.solver.examples.lessonschedule.domain.Lesson>
+    <org.drools.solver.examples.lessonschedule.domain.Lesson id="12">
+      <teacher reference="6"/>
+      <group reference="8"/>
+      <timeslot reference="3"/>
+      <id>1</id>
+    </org.drools.solver.examples.lessonschedule.domain.Lesson>
+    <org.drools.solver.examples.lessonschedule.domain.Lesson id="13">
+      <teacher reference="6"/>
+      <group reference="9"/>
+      <timeslot reference="3"/>
+      <id>2</id>
+    </org.drools.solver.examples.lessonschedule.domain.Lesson>
+  </lessonList>
+</org.drools.solver.examples.lessonschedule.domain.LessonSchedule>

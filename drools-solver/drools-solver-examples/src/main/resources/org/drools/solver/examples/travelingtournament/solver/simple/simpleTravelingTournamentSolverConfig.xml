@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/solver/examples/travelingtournament/solver/simple/simpleTravelingTournamentScoreRules.drl</scoreDrl>
+    <scoreCalculator>
+        <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+    </scoreCalculator>
+    <finish>
+        <maximumHouresSpend>2</maximumHouresSpend>
+    </finish>
+    <selector>
+        <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.simple.SimpleTravelingTournamentMoveFactory</moveFactoryClass>
+    </selector>
+    <accepter>
+        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+    </accepter>
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+    </forager>
+</localSearchSolver>
+        

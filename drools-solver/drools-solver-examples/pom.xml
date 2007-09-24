@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+      <groupId>org.drools.solver</groupId>
+      <artifactId>drools-solver</artifactId>
+      <version>4.0.2.SNAPSHOT</version>
+    </parent>
+
+    <artifactId>drools-solver-examples</artifactId>
+    <packaging>jar</packaging>
+    <name>Drools :: Solver examples</name>
+    <description>
+        Drools solver examples ... TODO
+    </description>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <configuration>
+                        <executable>${JAVA_HOME}/bin/java</executable>
+                        <arguments>
+                            <argument>-mx128m</argument>
+                            <argument>-server</argument>
+                            <argument>-classpath</argument>
+                            <classpath/>
+                            <argument>${exec.mainClass}</argument>
+                        </arguments>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencies>
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.drools.solver</groupId>
+            <artifactId>drools-solver-core</artifactId>
+        </dependency>
+
+        <!-- External dependencies -->
+        <!-- Commons -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+
+        <!-- Xstream -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+        </dependency>
+    </dependencies>
+
+
+</project>
