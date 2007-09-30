@@ -2,7 +2,7 @@
 <localSearchSolver>
     <scoreDrl>/org/drools/solver/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
     <scoreCalculator>
-        <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+        <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
     </scoreCalculator>
     <finish>
         <!--<maximumHouresSpend>2</maximumHouresSpend>-->
