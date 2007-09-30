@@ -42,7 +42,11 @@ public class XmlSolverBenchmarker {
     // ************************************************************************
 
     public XmlSolverBenchmarker configure(String resource) {
-        return configure(getClass().getResourceAsStream(resource));
+        InputStream in = getClass().getResourceAsStream(resource);
+        if (in == null) {
+            throw new IllegalArgumentException("Resource not found: " + resource);
+        }
+        return configure(in);
     }
 
     public XmlSolverBenchmarker configure(InputStream in) {

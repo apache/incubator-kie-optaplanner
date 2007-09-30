@@ -32,17 +32,23 @@
                     <configuration>
                         <executable>${JAVA_HOME}/bin/java</executable>
                         <arguments>
-                            <argument>-mx128m</argument>
+                            <argument>-Xmx128M</argument>
+                            <!--<argument>-Xbatch</argument>-->
                             <argument>-server</argument>
                             <argument>-classpath</argument>
                             <classpath/>
                             <argument>${exec.mainClass}</argument>
+                            <argument>${exec.programArgs}</argument><!-- Empty string by default -->
                         </arguments>
                     </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
+    <properties>
+        <!-- default is a workaround for http://jira.codehaus.org/browse/MEXEC-35 -->
+        <exec.programArgs>default</exec.programArgs>
+    </properties>
 
     <dependencies>
         <!-- Internal dependencies -->

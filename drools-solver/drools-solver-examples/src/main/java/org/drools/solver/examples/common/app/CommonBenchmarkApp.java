@@ -2,6 +2,7 @@ package org.drools.solver.examples.common.app;
 
 import java.io.File;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.drools.solver.benchmark.XmlSolverBenchmarker;
 
@@ -13,9 +14,15 @@ public abstract class CommonBenchmarkApp {
     private static final String LOGGING_CONFIG = "/org/drools/solver/examples/common/app/log4j-benchmark.xml";
 
     protected XmlSolverBenchmarker solverBenchmarker;
+    private String solverBenchmarkConfig;
+    private File resultFile;
 
-    public CommonBenchmarkApp() {
+    protected CommonBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
+        this.solverBenchmarkConfig = solverBenchmarkConfig;
+        this.resultFile = resultFile;
         DOMConfigurator.configure(getClass().getResource(LOGGING_CONFIG));
+         // Workaround to make sure logging reports uncaught exceptions
+        LogFactory.getLog(getClass()).debug("Logging configured.");
         solverBenchmarker = new XmlSolverBenchmarker().configure(getSolverBenchmarkConfig());
     }
 
@@ -24,8 +31,12 @@ public abstract class CommonBenchmarkApp {
         solverBenchmarker.writeResults(getResultFile());
     }
 
-    protected abstract String getSolverBenchmarkConfig();
+    protected String getSolverBenchmarkConfig() {
+        return solverBenchmarkConfig;
+    }
 
-    protected abstract File getResultFile();
+    protected File getResultFile() {
+        return resultFile;
+    }
 
 }

@@ -15,17 +15,11 @@ public class NQueensBenchmarkApp extends CommonBenchmarkApp {
             = new File("local/data/nqueens/nqueensSolverBenchmarkResult.xml");
 
     public static void main(String[] args) {
-        new NQueensBenchmarkApp().process();
+        new NQueensBenchmarkApp(SOLVER_BENCHMARK_CONFIG, SOLVER_BENCHMARK_RESULT_FILE).process();
     }
 
-    @Override
-    protected String getSolverBenchmarkConfig() {
-        return SOLVER_BENCHMARK_CONFIG;
-    }
-
-    @Override
-    protected File getResultFile() {
-        return SOLVER_BENCHMARK_RESULT_FILE;
+    public NQueensBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
+        super(solverBenchmarkConfig, resultFile);
     }
 
 }

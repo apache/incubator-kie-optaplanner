@@ -5,7 +5,8 @@
         <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
     </scoreCalculator>
     <finish>
-        <maximumHouresSpend>2</maximumHouresSpend>
+        <!--<maximumHouresSpend>2</maximumHouresSpend>-->
+        <maximumStepCount>100</maximumStepCount>
     </finish>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.SmartTravelingTournamentMoveFactory</moveFactoryClass>
