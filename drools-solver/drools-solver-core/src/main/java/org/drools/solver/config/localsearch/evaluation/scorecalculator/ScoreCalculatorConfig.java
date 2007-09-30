@@ -64,7 +64,7 @@ public class ScoreCalculatorConfig {
                 case HARD_AND_SOFT_CONSTRAINTS:
                     return new StaticHardAndSoftConstraintScoreCalculator();
                 case DYNAMIC_HARD_AND_SOFT_CONSTRAINTS:
-                    return new DynamicHardAndSoftConstraintScoreCalculator(10000.0, 1000000.0, 100.0, 1.2);
+                    return new DynamicHardAndSoftConstraintScoreCalculator(10000.0, 100.0, 1000000.0, 1.2);
                 default:
                     throw new IllegalStateException("scoreCalculatorType (" + scoreCalculatorType + ") not implemented");
             }

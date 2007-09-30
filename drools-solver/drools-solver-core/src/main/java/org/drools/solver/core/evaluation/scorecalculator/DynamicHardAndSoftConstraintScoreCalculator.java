@@ -25,6 +25,14 @@ public class DynamicHardAndSoftConstraintScoreCalculator extends AbstractHardAnd
     public DynamicHardAndSoftConstraintScoreCalculator(double startHardConstraintsWeight,
             double minHardConstraintsWeight, double maxHardConstraintsWeight,
             double hardConstraintsWeightStepAdjustment) {
+        if (minHardConstraintsWeight > startHardConstraintsWeight) {
+            throw new IllegalArgumentException("minHardConstraintsWeight (" + minHardConstraintsWeight
+                    + ") cannot be larger than startHardConstraintsWeight(" + startHardConstraintsWeight + ").");
+        }
+        if (startHardConstraintsWeight > maxHardConstraintsWeight) {
+            throw new IllegalArgumentException("startHardConstraintsWeight (" + startHardConstraintsWeight
+                    + ") cannot be larger than maxHardConstraintsWeight(" + maxHardConstraintsWeight + ").");
+        }
         this.decisionHardConstraintsWeight = startHardConstraintsWeight;
         this.minHardConstraintsWeight = minHardConstraintsWeight;
         this.maxHardConstraintsWeight = maxHardConstraintsWeight;
