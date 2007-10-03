@@ -1,3 +1,4 @@
+#!/bin/sh
 
 mainClass=org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentBenchmarkApp
 if [ $# -ge 1 ];
