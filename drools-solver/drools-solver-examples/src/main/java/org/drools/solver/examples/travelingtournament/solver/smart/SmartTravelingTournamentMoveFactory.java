@@ -50,13 +50,13 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
         TravelingTournament travelingTournament = (TravelingTournament) localSearchSolver.getCurrentSolution();
         moveList.addAll(cachedMoveList);
         RotationMovesFactory rotationMovesFactory = new RotationMovesFactory(travelingTournament);
-        log.debug("Reused " + moveList.size() + " moves for N1 neighborhood.");
+        logger.debug("Reused {} moves for N1 neighborhood.", moveList.size());
         int oldSize = moveList.size();
         rotationMovesFactory.addDayRotation(moveList);
-        log.debug("Created " + (moveList.size() - oldSize) + " moves for N3 U N5 neighborhood.");
+        logger.debug("Created {} moves for N3 U N5 neighborhood.", (moveList.size() - oldSize));
         oldSize = moveList.size();
         rotationMovesFactory.addTeamRotation(moveList);
-        log.debug("Created " + (moveList.size() - oldSize) + " moves for N2 U N4 neighborhood.");
+        logger.debug("Created {} moves for N2 U N4 neighborhood.", (moveList.size() - oldSize));
         rotationMovesFactory = null;
         return moveList.iterator();
     }

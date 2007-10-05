@@ -70,8 +70,8 @@ public class MaxScoreOfAllForager extends AbstractForager {
             }
         }
         if (pickedMove == null) {
-            log.warn("Underflow occured with acceptChanceMaxScoreTotal (" + acceptChanceMaxScoreTotal + ") " +
-                    "and random (" + random + ").");
+            logger.warn("Underflow occured with acceptChanceMaxScoreTotal ({}) " +
+                    "and random ({}).", acceptChanceMaxScoreTotal, random);
             // Deal with it anyway (no fail-fast here)
             pickedMove = acceptionList.get(acceptionList.size() - 1).getMove();
         }

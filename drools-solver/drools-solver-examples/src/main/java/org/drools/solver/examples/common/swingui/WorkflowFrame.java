@@ -18,16 +18,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.solver.examples.common.business.SolutionBusiness;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * @author Geoffrey De Smet
  */
 public class WorkflowFrame extends JFrame {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private SolutionBusiness solutionBusiness;
 

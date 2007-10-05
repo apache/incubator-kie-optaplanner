@@ -1,7 +1,5 @@
 package org.drools.solver.core.localsearch.decider;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
@@ -9,13 +7,15 @@ import org.drools.solver.core.localsearch.decider.accepter.Accepter;
 import org.drools.solver.core.localsearch.decider.forager.Forager;
 import org.drools.solver.core.localsearch.decider.selector.MoveFactory;
 import org.drools.solver.core.move.Move;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
  */
 public class DefaultDecider implements Decider {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected LocalSearchSolver localSearchSolver;
 
@@ -71,9 +71,7 @@ public class DefaultDecider implements Decider {
             if (move.isMoveDoable(workingMemory)) {
                 doMove(move);
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("    Move (" + move + ") ignored because not doable.");
-                }
+                logger.debug("    Move ({}) ignored because not doable.", move);
             }
             if (forager.isQuitEarly()) {
                 break;
@@ -101,10 +99,8 @@ public class DefaultDecider implements Decider {
         EvaluationHandler evaluationHandler = localSearchSolver.getEvaluationHandler();
         double score = evaluationHandler.fireAllRulesAndCalculateDecisionScore();
         double acceptChance = accepter.calculateAcceptChance(move, score);
-        if (log.isDebugEnabled()) {
-            // TODO the move's toString() is ussually wrong because doMove has already been called
-            log.debug("    Move (" + move + ") with score (" +  score + ") and acceptChance (" + acceptChance + ").");
-        }
+        // TODO the move's toString() is ussually wrong because doMove has already been called
+        logger.debug("    Move ({}) with score ({}) and acceptChance ({}).", new Object[] {move, score, acceptChance});
         forager.addMove(move, score, acceptChance);
     }
 
@@ -138,8 +134,8 @@ public class DefaultDecider implements Decider {
 
 //    private void processMove(Move move, double score) {
 //        if (decideOnMove(move, score)) {
-//            if (log.isDebugEnabled()) {
-//                log.debug("    Move (" + move + ") with score (" +  score + ") accepted. "
+//            if (logger.isDebugEnabled()) {
+//                logger.debug("    Move (" + move + ") with score (" +  score + ") accepted. "
 //                        + "Updating next move and score.");
 //            }
 //            nextMove = move;
@@ -153,8 +149,8 @@ public class DefaultDecider implements Decider {
 //                }
 //            }
 //        } else {
-//            if (log.isDebugEnabled()) {
-//                log.debug("    Move (" + move + ") with score (" +  score + ") is not accepted.");
+//            if (logger.isDebugEnabled()) {
+//                logger.debug("    Move (" + move + ") with score (" +  score + ") is not accepted.");
 //            }
 //        }
 //    }

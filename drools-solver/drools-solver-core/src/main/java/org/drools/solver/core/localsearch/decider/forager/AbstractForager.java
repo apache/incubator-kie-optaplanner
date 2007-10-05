@@ -1,16 +1,16 @@
 package org.drools.solver.core.localsearch.decider.forager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.move.Move;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
  */
 public abstract class AbstractForager implements Forager {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected LocalSearchSolver localSearchSolver;
 

@@ -2,16 +2,16 @@ package org.drools.solver.examples.common.swingui;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.solver.examples.common.business.SolutionBusiness;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * @author Geoffrey De Smet
  */
 public abstract class SolutionPanel extends JPanel {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected WorkflowFrame workflowFrame;
     protected SolutionBusiness solutionBusiness;

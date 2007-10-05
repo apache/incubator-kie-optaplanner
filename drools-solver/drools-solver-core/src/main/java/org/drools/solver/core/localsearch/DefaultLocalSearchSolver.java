@@ -2,21 +2,21 @@ package org.drools.solver.core.localsearch;
 
 import java.util.Random;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.localsearch.bestsolution.BestSolutionRecaller;
 import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.localsearch.finish.Finish;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.solution.Solution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
  */
 public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchSolverLifecycleListener {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected long randomSeed; // TODO refactor to AbstractSolver
 
@@ -109,12 +109,11 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
             beforeDeciding();
             Move nextStep = decider.decideNextStep();
             if (nextStep == null) {
-                log.warn("No move accepted for step (" + getStepIndex() + "). Finishing early.");
+                logger.warn("No move accepted for step ({}). Finishing early.", getStepIndex());
                 break;
             }
-            if (log.isInfoEnabled()) {
-                log.info("Step (" + getStepIndex() + "), time spend (" + getTimeMillisSpend() + ") doing next step (" + nextStep + ").");
-            }
+            logger.info("Step ({}), time spend ({}) doing next step ({}).",
+                    new Object[]{getStepIndex(), getTimeMillisSpend(), nextStep});
             stepDecided(nextStep);
             nextStep.doMove(evaluationHandler.getStatefulSession());
             stepScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
@@ -125,7 +124,7 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
     }
 
     public void solvingStarted() {
-        log.info("Solving with random seed (" + randomSeed + ").");
+        logger.info("Solving with random seed ({}).", randomSeed);
         startingSystemTimeMillis = System.currentTimeMillis();
         random = new Random(randomSeed);
         stepIndex = 0;
@@ -158,7 +157,7 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         finish.solvingEnded();
         decider.solvingEnded();
         evaluationHandler.setSolution(bestSolutionRecaller.getBestSolution());
-        log.info("Solved in " + stepIndex + " steps and " + getTimeMillisSpend() + " time millis spend.");
+        logger.info("Solved in {} steps and {} time millis spend.", stepIndex, getTimeMillisSpend());
     }
 
 }

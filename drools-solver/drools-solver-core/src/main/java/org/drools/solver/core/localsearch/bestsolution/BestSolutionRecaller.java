@@ -1,19 +1,19 @@
 package org.drools.solver.core.localsearch.bestsolution;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.solution.Solution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
  */
 public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected LocalSearchSolver localSearchSolver;
 
@@ -43,10 +43,7 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
 
     public void solvingStarted() {
         double initialScore = localSearchSolver.getStepScore();
-        if (log.isInfoEnabled()) {
-            log.info("Initial score (" + initialScore + ") is starting best score. "
-                    + "Updating best solution and best score.");
-        }
+        logger.info("Initial score ({}) is starting best score. Updating best solution and best score.", initialScore);
         bestSolutionStepIndex = localSearchSolver.getStepIndex();
         bestSolution = localSearchSolver.getCurrentSolution().cloneSolution();
         bestScore = initialScore;
@@ -61,18 +58,14 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
     public void stepTaken() {
         double newScore = localSearchSolver.getStepScore();
         if (newScore > bestScore) {
-            if (log.isInfoEnabled()) {
-                log.info("New score (" + newScore + ") is better then last best score (" + bestScore + "). "
-                        + "Updating best solution and best score.");
-            }
+            logger.info("New score ({}) is better then last best score ({}). Updating best solution and best score.",
+                    newScore, bestScore);
             bestSolutionStepIndex = localSearchSolver.getStepIndex();
             bestSolution = localSearchSolver.getCurrentSolution().cloneSolution();
             bestScore = newScore;
             // TODO BestSolutionChangedEvent
         } else {
-            if (log.isInfoEnabled()) {
-                log.info("New score (" + newScore + ") is not better then last best score (" + bestScore + ").");
-            }
+            logger.info("New score ({}) is not better then last best score ({}).", newScore, bestScore);
         }
     }
 

@@ -1,11 +1,11 @@
 package org.drools.solver.core.evaluation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.solver.core.evaluation.scorecalculator.ScoreCalculator;
 import org.drools.solver.core.solution.Solution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Holds a solution and its WorkingMemory.
@@ -16,7 +16,7 @@ public class EvaluationHandler {
 
     public static final String GLOBAL_SCORE_CALCULATOR_KEY = "scoreCalculator";
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected RuleBase ruleBase;
 
@@ -63,7 +63,7 @@ public class EvaluationHandler {
         }
         statefulSession = ruleBase.newStatefulSession();
         statefulSession.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, scoreCalculator);
-//        if (log.isTraceEnabled()) {
+//        if (logger.isTraceEnabled()) {
 //            statefulSession.addEventListener(new DebugWorkingMemoryEventListener());
 //        }
         for (Object fact : solution.getFacts()) {

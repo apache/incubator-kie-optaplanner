@@ -13,16 +13,16 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
 import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.solver.core.solution.Solution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
  */
 public class XstreamSolutionDaoImpl implements SolutionDao {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private XStream xStream;
 
@@ -38,7 +38,7 @@ public class XstreamSolutionDaoImpl implements SolutionDao {
             // xStream.fromXml(InputStream) does not use UTF-8
             reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
             Solution solution = (Solution) xStream.fromXML(reader);
-            log.info("Loaded: " + file);
+            logger.info("Loaded: {}", file);
             return solution;
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read: " + file, e);
@@ -47,7 +47,7 @@ public class XstreamSolutionDaoImpl implements SolutionDao {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    log.warn("Problem closing file (" + file + ")", e);
+                    logger.warn("Problem closing file (" + file + ")", e);
                 }
             }
         }
@@ -59,7 +59,7 @@ public class XstreamSolutionDaoImpl implements SolutionDao {
             // xStream.toXml(OutputStream) does not use UTF-8
             writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
             xStream.toXML(solution, writer);
-            log.info("Saved: " + file);
+            logger.info("Saved: {}", file);
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not write file (" + file + ")", e);
         } finally {
@@ -67,7 +67,7 @@ public class XstreamSolutionDaoImpl implements SolutionDao {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    log.warn("Problem closing file (" + file + ")", e);
+                    logger.warn("Problem closing file (" + file + ")", e);
                 }
             }
         }

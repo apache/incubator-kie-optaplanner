@@ -5,20 +5,20 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.solver.core.Solver;
 import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.SolutionDao;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * @author Geoffrey De Smet
  */
 public class SolutionBusiness {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private SolutionDao solutionDao;
 
@@ -78,7 +78,7 @@ public class SolutionBusiness {
     }
 
     public void doMove(Move move) {
-        log.info("Doing user move (" + move + ")");
+        logger.info("Doing user move ({})", move);
         move.doMove(evaluationHandler.getStatefulSession());
     }
 

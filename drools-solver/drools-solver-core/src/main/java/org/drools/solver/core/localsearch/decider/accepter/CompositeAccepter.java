@@ -2,17 +2,17 @@ package org.drools.solver.core.localsearch.decider.accepter;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.move.Move;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
  */
 public class CompositeAccepter extends AbstractAccepter {
 
-    protected final transient Log log = LogFactory.getLog(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected List<Accepter> accepterList;
 

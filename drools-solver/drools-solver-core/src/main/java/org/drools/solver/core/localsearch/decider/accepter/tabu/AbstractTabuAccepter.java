@@ -67,16 +67,11 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
         }
         int tabuStepCount = localSearchSolver.getStepIndex() - maximumTabuStepIndex - 1;
         if (tabuStepCount < completeTabuSize) {
-            if (log.isDebugEnabled()) {
-                log.debug("    Proposed move (" + move + ") is complete tabu.");
-            }
+            logger.debug("    Proposed move ({}) is complete tabu.", move);
             return 0.0;
         }
         double acceptChance = calculatePartialTabuAcceptChance(tabuStepCount - completeTabuSize);
-        if (log.isDebugEnabled()) {
-            log.debug("    Proposed move (" + move + ") is partially tabu with accept chance ("
-                    + acceptChance + ").");
-        }
+        logger.debug("    Proposed move ({}) is partially tabu with accept chance ({}).", move, acceptChance);
         return acceptChance;
     }
 
