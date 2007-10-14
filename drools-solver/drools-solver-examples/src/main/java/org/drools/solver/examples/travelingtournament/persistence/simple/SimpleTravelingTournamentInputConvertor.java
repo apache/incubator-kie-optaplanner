@@ -13,12 +13,11 @@ import org.drools.solver.examples.travelingtournament.persistence.TravelingTourn
  */
 public class SimpleTravelingTournamentInputConvertor extends TravelingTournamentInputConvertor {
 
-    private static final File outputDir = new File(
-            "data/travelingtournament/simple/unsolved/");
-
     public static void main(String[] args) {
         new SimpleTravelingTournamentInputConvertor().convert();
     }
+
+    private final File outputDir = new File("data/travelingtournament/simple/unsolved/");
 
     protected File getOutputDir() {
         return outputDir;

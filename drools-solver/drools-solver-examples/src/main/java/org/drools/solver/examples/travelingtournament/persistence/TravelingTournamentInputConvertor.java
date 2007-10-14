@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Match;
@@ -19,17 +20,23 @@ import org.drools.solver.examples.travelingtournament.domain.TravelingTournament
  * @author Geoffrey De Smet
  */
 public abstract class TravelingTournamentInputConvertor {
+    
+    private static final String INPUT_FILE_SUFFIX = ".txt";
 
-    private static final File inputDir = new File("data/travelingtournament/input/");
+    private final File inputDir = new File("data/travelingtournament/input/");
 
     public void convert() {
         XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
         File[] inputFiles = inputDir.listFiles();
+        if (inputFiles == null) {
+            throw new IllegalArgumentException(
+                    "Your working dir should be drools-solver-examples and contain: " + inputDir);
+        }
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(".txt")) {
+            if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
                 TravelingTournament travelingTournament = createTravelingTournament(inputFile);
-                String outputFileName = inputFileName.substring(0, inputFileName.length() - 4) + ".xml";
+                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length()) + ".xml";
                 File outputFile = new File(getOutputDir(), outputFileName);
                 solutionDao.writeSolution(travelingTournament, outputFile);
             }
@@ -44,13 +51,7 @@ public abstract class TravelingTournamentInputConvertor {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         } finally {
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    throw new IllegalArgumentException(e);
-                }
-            }
+            IOUtils.closeQuietly(bufferedReader);
         }
     }
 
@@ -70,7 +71,7 @@ public abstract class TravelingTournamentInputConvertor {
     }
 
     private int readN(BufferedReader bufferedReader) throws IOException {
-        return Integer.parseInt( bufferedReader.readLine());
+        return Integer.parseInt(bufferedReader.readLine());
     }
 
     private List<Team> readTeamList(int n, BufferedReader bufferedReader) throws IOException {
