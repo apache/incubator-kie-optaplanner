@@ -14,8 +14,4 @@ public class Student extends AbstractPersistable implements Comparable<Student> 
                 .toComparison();
     }
 
-//    public String toString() {
-//        return super.toString();
-//    }
-
 }

@@ -2,7 +2,9 @@ package org.drools.solver.examples.itc2007.examination.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
@@ -17,6 +19,10 @@ public class Examination extends AbstractPersistable implements Solution {
     private List<Room> roomList;
 
     private List<Exam> examList;
+
+    private List<PeriodHardConstraint> periodHardConstraintList;
+    private List<RoomHardConstraint> roomHardConstraintList;
+    private InstitutionalWeighting institutionalWeighting;
 
     public List<Student> getStudentList() {
         return studentList;
@@ -50,6 +56,30 @@ public class Examination extends AbstractPersistable implements Solution {
         this.examList = examList;
     }
 
+    public List<PeriodHardConstraint> getPeriodHardConstraintList() {
+        return periodHardConstraintList;
+    }
+
+    public void setPeriodHardConstraintList(List<PeriodHardConstraint> periodHardConstraintList) {
+        this.periodHardConstraintList = periodHardConstraintList;
+    }
+
+    public List<RoomHardConstraint> getRoomHardConstraintList() {
+        return roomHardConstraintList;
+    }
+
+    public void setRoomHardConstraintList(List<RoomHardConstraint> roomHardConstraintList) {
+        this.roomHardConstraintList = roomHardConstraintList;
+    }
+
+    public InstitutionalWeighting getInstitutionalWeighting() {
+        return institutionalWeighting;
+    }
+
+    public void setInstitutionalWeighting(InstitutionalWeighting institutionalWeighting) {
+        this.institutionalWeighting = institutionalWeighting;
+    }
+
 
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
@@ -57,6 +87,9 @@ public class Examination extends AbstractPersistable implements Solution {
         facts.addAll(periodList);
         facts.addAll(roomList);
         facts.addAll(examList);
+        facts.addAll(periodHardConstraintList);
+        facts.addAll(roomHardConstraintList);
+        facts.add(institutionalWeighting);
         return facts;
     }
 
@@ -69,10 +102,26 @@ public class Examination extends AbstractPersistable implements Solution {
         clone.periodList = periodList;
         clone.roomList = roomList;
         List<Exam> clonedExamList = new ArrayList<Exam>(examList.size());
+        Map<Long, Exam> idToClonedExamMap = new HashMap<Long, Exam>(examList.size());
         for (Exam exam : examList) {
-            clonedExamList.add(exam.clone());
+            Exam clonedExam = exam.clone();
+            clonedExamList.add(clonedExam);
+            idToClonedExamMap.put(clonedExam.getId(), clonedExam);
         }
         clone.examList = clonedExamList;
+        List<PeriodHardConstraint> clonedPeriodHardConstraintList = new ArrayList<PeriodHardConstraint>(
+                periodHardConstraintList.size());
+        for (PeriodHardConstraint periodHardConstraint : periodHardConstraintList) {
+            clonedPeriodHardConstraintList.add(periodHardConstraint.clone(idToClonedExamMap));
+        }
+        clone.periodHardConstraintList = clonedPeriodHardConstraintList;
+        List<RoomHardConstraint> clonedRoomHardConstraintList = new ArrayList<RoomHardConstraint>(
+                roomHardConstraintList.size());
+        for (RoomHardConstraint roomHardConstraint : roomHardConstraintList) {
+            clonedRoomHardConstraintList.add(roomHardConstraint.clone(idToClonedExamMap));
+        }
+        clone.roomHardConstraintList = clonedRoomHardConstraintList;
+        clone.institutionalWeighting = institutionalWeighting;
         return clone;
     }
 
