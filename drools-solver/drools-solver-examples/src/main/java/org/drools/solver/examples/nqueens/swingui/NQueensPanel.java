@@ -8,10 +8,12 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.drools.solver.core.move.Move;
 import org.drools.solver.examples.common.swingui.SolutionPanel;
@@ -24,9 +26,14 @@ import org.drools.solver.examples.nqueens.solver.YChangeMove;
  */
 public class NQueensPanel extends SolutionPanel {
 
+    private static final String QUEEN_IMAGE_PATH = "/org/drools/solver/examples/nqueens/swingui/queenImage.png";
+
+    private ImageIcon queenImageIcon;
+
     public NQueensPanel() {
         super();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        queenImageIcon = new ImageIcon(getClass().getResource(QUEEN_IMAGE_PATH));
     }
 
     private NQueens getNQueens() {
@@ -43,7 +50,10 @@ public class NQueensPanel extends SolutionPanel {
             for (int j = 0; j < n; j++) {
                 Queen queen = queenList.get(j);
                 if (queen.getY() == i) {
-                    add(new JButton(new QueenAction(queen)));
+                    JButton button = new JButton(new QueenAction(queen));
+                    button.setHorizontalTextPosition(SwingConstants.CENTER);
+                    button.setVerticalTextPosition(SwingConstants.BOTTOM);
+                    add(button);
                 } else {
                     JPanel panel = new JPanel();
                     panel.setBorder(BorderFactory.createCompoundBorder(
@@ -63,7 +73,7 @@ public class NQueensPanel extends SolutionPanel {
         private Queen queen;
 
         public QueenAction(Queen queen) {
-            super("[" + queen.getId() + "]");
+            super("[" + queen.getId() + "]", queenImageIcon);
             this.queen = queen;
         }
 
