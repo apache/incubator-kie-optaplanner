@@ -15,11 +15,14 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
-import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
+import org.drools.solver.examples.itc2007.examination.domain.InstitutionalWeighting;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
+import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
+import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraint;
 import org.drools.solver.examples.itc2007.examination.domain.Student;
+import org.drools.solver.examples.itc2007.examination.domain.Topic;
 
 /**
  * @author Geoffrey De Smet
@@ -70,8 +73,8 @@ public class ExaminationInputConvertor {
         examination.setId(0L);
 
         Map<Integer, Student> studentMap = new HashMap<Integer, Student>();
-        List<Exam> examList = readExamListAndFillStudentMap(studentMap, bufferedReader);
-        examination.setExamList(examList);
+        List<Topic> topicList = readExamListAndFillStudentMap(studentMap, bufferedReader);
+        examination.setTopicList(topicList);
         List<Student> studentList = new ArrayList<Student>(studentMap.size());
         for (Student student : studentMap.values()) {
             studentList.add(student);
@@ -81,32 +84,33 @@ public class ExaminationInputConvertor {
         examination.setPeriodList(periodList);
         List<Room> roomList = readRoomList(bufferedReader);
         examination.setRoomList(roomList);
-        
 
-//        List<Day> dayList = constructDayList(n);
-//        examination.setDayList(dayList);
-//        List<List<Integer>> outerDistanceList = readOuterDistanceList(bufferedReader);
-//        List<Match> matchList = constructMatchListAndSetDistancesInTeamList(teamList, outerDistanceList);
-//        examination.setMatchList(matchList);
-//        initializeMatchDays(examination);
+        List<PeriodHardConstraint> periodHardConstraintList = readPeriodHardConstraintList(bufferedReader);
+        examination.setPeriodHardConstraintList(periodHardConstraintList);
+        List<RoomHardConstraint> roomHardConstraintList = readRoomHardConstraintList(bufferedReader);
+        examination.setRoomHardConstraintList(roomHardConstraintList);
+        InstitutionalWeighting institutionalWeighting = readInstitutionalWeighting(bufferedReader);
+        examination.setInstitutionalWeighting(institutionalWeighting);
+        
+        initializeExamPeriodsAndRooms(examination);
         return examination;
     }
 
-    private List<Exam> readExamListAndFillStudentMap(Map<Integer, Student> studentMap, BufferedReader bufferedReader) throws IOException {
+    private List<Topic> readExamListAndFillStudentMap(Map<Integer, Student> studentMap, BufferedReader bufferedReader) throws IOException {
         int examSize = readHeaderWithNumber(bufferedReader, "Exams");
-        List<Exam> examList = new ArrayList<Exam>(examSize);
+        List<Topic> topicList = new ArrayList<Topic>(examSize);
         for (int i = 0; i < examSize; i++) {
-            Exam exam = new Exam();
-            exam.setId((long) i);
+            Topic topic = new Topic();
+            topic.setId((long) i);
             String line = bufferedReader.readLine();
             String[] lineTokens = line.split("\\,\\ ");
-            exam.setDuration(Integer.parseInt(lineTokens[0]));
+            topic.setDuration(Integer.parseInt(lineTokens[0]));
             for (int j = 1; j < lineTokens.length; j++) {
                 findOrCreateStudent(studentMap, Integer.parseInt(lineTokens[j]));
             }
-            examList.add(exam);
+            topicList.add(topic);
         }
-        return examList;
+        return topicList;
     }
 
     private Student findOrCreateStudent(Map<Integer, Student> studentMap, int id) {
@@ -179,6 +183,25 @@ public class ExaminationInputConvertor {
             roomList.add(room);
         }
         return roomList;
+    }
+
+    private List<PeriodHardConstraint> readPeriodHardConstraintList(BufferedReader bufferedReader) {
+        // TODO generated
+        return null;
+    }
+
+    private List<RoomHardConstraint> readRoomHardConstraintList(BufferedReader bufferedReader) {
+        // TODO generated
+        return null;
+    }
+
+    private InstitutionalWeighting readInstitutionalWeighting(BufferedReader bufferedReader) {
+        // TODO generated
+        return null;
+    }
+
+    private void initializeExamPeriodsAndRooms(Examination examination) {
+        // TODO generated
     }
 
     private void readHeader(BufferedReader bufferedReader, String header) throws IOException {

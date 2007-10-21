@@ -35,7 +35,7 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
 
     @Override
     public String toString() {
-        return super.toString() + " {" + capacity + "}";
+        return id + " {" + capacity + "}";
     }
 
 }

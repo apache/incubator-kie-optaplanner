@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
@@ -84,8 +85,8 @@ public class TravelingTournament extends AbstractPersistable implements Solution
             for (Iterator<Match> it = matchList.iterator(), otherIt = other.matchList.iterator(); it.hasNext();) {
                 Match match = it.next();
                 Match otherMatch = otherIt.next();
-                // Not delegated to a custom Match.equals(o) so Matches can be fetched from the WorkingMemory's HashSet
-                if (!match.getId().equals(otherMatch.getId()) || !match.getDay().equals(otherMatch.getDay())) {
+                // Notice: we don't use equals()
+                if (!match.solutionEquals(otherMatch)) {
                     return false;
                 }
             }
@@ -94,12 +95,12 @@ public class TravelingTournament extends AbstractPersistable implements Solution
     }
 
     public int hashCode() {
-        int hashCode = 0;
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
         for (Match match : matchList) {
-            // Not delegated to a custom Match.hashCode() so Matches can be fetched from the WorkingMemory's HashSet
-            hashCode = (hashCode * 31 + match.getId().hashCode()) * 31 + match.getDay().hashCode();
+            // Notice: we don't use hashCode()
+            hashCodeBuilder.append(match.solutionHashCode());
         }
-        return hashCode;
+        return hashCodeBuilder.toHashCode();
     }
 
 }

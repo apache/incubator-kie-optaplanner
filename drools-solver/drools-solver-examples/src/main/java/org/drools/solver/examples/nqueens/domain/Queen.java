@@ -52,6 +52,7 @@ public class Queen extends AbstractPersistable implements Comparable<Queen> {
         return clone;
     }
 
+    @Override
     public String toString() {
         return super.toString() + " " + x + " @ " + y;
     }

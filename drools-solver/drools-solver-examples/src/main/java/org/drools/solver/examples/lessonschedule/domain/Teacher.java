@@ -25,6 +25,7 @@ public class Teacher extends AbstractPersistable implements Comparable<Teacher> 
                 .toComparison();
     }
 
+    @Override
     public String toString() {
         return getName();
     }

@@ -55,6 +55,7 @@ public class Lesson extends AbstractPersistable implements Comparable<Lesson> {
         return clone;
     }
 
+    @Override
     public String toString() {
         return super.toString() + " " + teacher + " + " + group + " @ " + timeslot;
     }

@@ -25,6 +25,7 @@ public class Day extends AbstractPersistable implements Comparable<Day> {
                 .toComparison();
     }
 
+    @Override
     public String toString() {
         return Integer.toString(index);
     }

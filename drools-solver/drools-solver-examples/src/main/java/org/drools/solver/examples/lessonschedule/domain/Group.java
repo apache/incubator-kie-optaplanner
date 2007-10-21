@@ -25,6 +25,7 @@ public class Group extends AbstractPersistable implements Comparable<Group> {
                 .toComparison();
     }
 
+    @Override
     public String toString() {
         return getName();
     }

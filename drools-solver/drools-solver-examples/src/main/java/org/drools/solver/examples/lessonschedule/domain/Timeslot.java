@@ -25,6 +25,7 @@ public class Timeslot extends AbstractPersistable implements Comparable<Timeslot
                 .toComparison();
     }
 
+    @Override
     public String toString() {
         return Integer.toString(index);
     }

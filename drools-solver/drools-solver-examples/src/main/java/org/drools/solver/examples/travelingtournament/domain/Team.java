@@ -36,6 +36,7 @@ public class Team extends AbstractPersistable implements Comparable<Team> {
                 .toComparison();
     }
 
+    @Override
     public String toString() {
         return getName();
     }
