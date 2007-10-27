@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +16,15 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.InstitutionalWeighting;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
 import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint;
+import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
 import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraint;
+import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
 
@@ -30,6 +34,7 @@ import org.drools.solver.examples.itc2007.examination.domain.Topic;
 public class ExaminationInputConvertor {
 
     private static final String INPUT_FILE_SUFFIX = ".exam";
+    private static final String SPLIT_REGEX = "\\,\\ ?";
 
     public static void main(String[] args) {
         new ExaminationInputConvertor().convert();
@@ -72,45 +77,45 @@ public class ExaminationInputConvertor {
         Examination examination = new Examination();
         examination.setId(0L);
 
-        Map<Integer, Student> studentMap = new HashMap<Integer, Student>();
-        List<Topic> topicList = readExamListAndFillStudentMap(studentMap, bufferedReader);
-        examination.setTopicList(topicList);
-        List<Student> studentList = new ArrayList<Student>(studentMap.size());
-        for (Student student : studentMap.values()) {
-            studentList.add(student);
-        }
-        examination.setStudentList(studentList);
-        List<Period> periodList = readPeriodList(bufferedReader);
-        examination.setPeriodList(periodList);
-        List<Room> roomList = readRoomList(bufferedReader);
-        examination.setRoomList(roomList);
+        readTopicListAndStudentList( bufferedReader, examination);
+        readPeriodList(bufferedReader, examination);
+        readRoomList(bufferedReader, examination);
 
-        List<PeriodHardConstraint> periodHardConstraintList = readPeriodHardConstraintList(bufferedReader);
-        examination.setPeriodHardConstraintList(periodHardConstraintList);
-        List<RoomHardConstraint> roomHardConstraintList = readRoomHardConstraintList(bufferedReader);
-        examination.setRoomHardConstraintList(roomHardConstraintList);
-        InstitutionalWeighting institutionalWeighting = readInstitutionalWeighting(bufferedReader);
-        examination.setInstitutionalWeighting(institutionalWeighting);
+        String line = bufferedReader.readLine();
+        if (!line.equals("[PeriodHardConstraints]")) {
+            throw new IllegalStateException("Read line (" + line
+                    + " is not the expected header ([PeriodHardConstraints])");
+        }
+        readPeriodHardConstraintList(bufferedReader, examination);
+        readRoomHardConstraintList(bufferedReader, examination);
+        readInstitutionalWeighting(bufferedReader, examination);
         
-        initializeExamPeriodsAndRooms(examination);
+        createExamList(examination);
         return examination;
     }
 
-    private List<Topic> readExamListAndFillStudentMap(Map<Integer, Student> studentMap, BufferedReader bufferedReader) throws IOException {
+    private void readTopicListAndStudentList(BufferedReader bufferedReader, Examination examination) throws IOException {
+        Map<Integer, Student> studentMap = new HashMap<Integer, Student>();
         int examSize = readHeaderWithNumber(bufferedReader, "Exams");
         List<Topic> topicList = new ArrayList<Topic>(examSize);
         for (int i = 0; i < examSize; i++) {
             Topic topic = new Topic();
             topic.setId((long) i);
             String line = bufferedReader.readLine();
-            String[] lineTokens = line.split("\\,\\ ");
+            String[] lineTokens = line.split(SPLIT_REGEX);
             topic.setDuration(Integer.parseInt(lineTokens[0]));
+            List<Student> topicStudentList = new ArrayList<Student>(lineTokens.length - 1);
             for (int j = 1; j < lineTokens.length; j++) {
-                findOrCreateStudent(studentMap, Integer.parseInt(lineTokens[j]));
+                topicStudentList.add(findOrCreateStudent(studentMap, Integer.parseInt(lineTokens[j])));
             }
             topicList.add(topic);
         }
-        return topicList;
+        examination.setTopicList(topicList);
+        List<Student> studentList = new ArrayList<Student>(studentMap.size());
+        for (Student student : studentMap.values()) {
+            studentList.add(student);
+        }
+        examination.setStudentList(studentList);
     }
 
     private Student findOrCreateStudent(Map<Integer, Student> studentMap, int id) {
@@ -123,7 +128,7 @@ public class ExaminationInputConvertor {
         return student;
     }
 
-    private List<Period> readPeriodList(BufferedReader bufferedReader) throws IOException {
+    private void readPeriodList(BufferedReader bufferedReader, Examination examination) throws IOException {
         int periodSize = readHeaderWithNumber(bufferedReader, "Periods");
         List<Period> periodList = new ArrayList<Period>(periodSize);
         // the timezone needs to be specified or the timeDifference will change with a different -Duser.timezone=...
@@ -139,7 +144,7 @@ public class ExaminationInputConvertor {
             Period period = new Period();
             period.setId((long) i);
             String line = bufferedReader.readLine();
-            String[] lineTokens = line.split("\\,\\ ");
+            String[] lineTokens = line.split(SPLIT_REGEX);
             if (lineTokens.length != 4) {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 4 tokens.");
             }
@@ -164,17 +169,17 @@ public class ExaminationInputConvertor {
             period.setPenalty(Integer.parseInt(lineTokens[3]));
             periodList.add(period);
         }
-        return periodList;
+        examination.setPeriodList(periodList);
     }
 
-    private List<Room> readRoomList(BufferedReader bufferedReader) throws IOException {
+    private void readRoomList(BufferedReader bufferedReader, Examination examination) throws IOException {
         int roomSize = readHeaderWithNumber(bufferedReader, "Rooms");
         List<Room> roomList = new ArrayList<Room>(roomSize);
         for (int i = 0; i < roomSize; i++) {
             Room room = new Room();
             room.setId((long) i);
             String line = bufferedReader.readLine();
-            String[] lineTokens = line.split("\\,\\ ");
+            String[] lineTokens = line.split(SPLIT_REGEX);
             if (lineTokens.length != 2) {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 2 tokens.");
             }
@@ -182,41 +187,109 @@ public class ExaminationInputConvertor {
             room.setPenalty(Integer.parseInt(lineTokens[1]));
             roomList.add(room);
         }
-        return roomList;
+        examination.setRoomList(roomList);
     }
 
-    private List<PeriodHardConstraint> readPeriodHardConstraintList(BufferedReader bufferedReader) {
-        // TODO generated
-        return null;
-    }
-
-    private List<RoomHardConstraint> readRoomHardConstraintList(BufferedReader bufferedReader) {
-        // TODO generated
-        return null;
-    }
-
-    private InstitutionalWeighting readInstitutionalWeighting(BufferedReader bufferedReader) {
-        // TODO generated
-        return null;
-    }
-
-    private void initializeExamPeriodsAndRooms(Examination examination) {
-        // TODO generated
-    }
-
-    private void readHeader(BufferedReader bufferedReader, String header) throws IOException {
+    private void readPeriodHardConstraintList(BufferedReader bufferedReader, Examination examination)
+            throws IOException {
+        List<Topic> topicList = examination.getTopicList();
+        List<PeriodHardConstraint> periodHardConstraintList = new ArrayList<PeriodHardConstraint>();
         String line = bufferedReader.readLine();
-        if (!line.equals("[" + header + "]")) {
-            throw new IllegalStateException("Read line (" + line + " is not the expected header ([" + header + "])");
+        while (!line.equals("[RoomHardConstraints]")) {
+            String[] lineTokens = line.split(SPLIT_REGEX);
+            PeriodHardConstraint periodHardConstraint = new PeriodHardConstraint();
+            if (lineTokens.length != 3) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
+            }
+            periodHardConstraint.setLeftSideTopic(topicList.get(Integer.parseInt(lineTokens[0])));
+            periodHardConstraint.setPeriodHardConstraintType(PeriodHardConstraintType.valueOf(lineTokens[1]));
+            periodHardConstraint.setRightSideTopic(topicList.get(Integer.parseInt(lineTokens[2])));
+            periodHardConstraintList.add(periodHardConstraint);
+            line = bufferedReader.readLine();
         }
+        examination.setPeriodHardConstraintList(periodHardConstraintList);
+    }
+
+    private void readRoomHardConstraintList(BufferedReader bufferedReader, Examination examination)
+            throws IOException {
+        List<Topic> topicList = examination.getTopicList();
+        List<RoomHardConstraint> roomHardConstraintList = new ArrayList<RoomHardConstraint>();
+        String line = bufferedReader.readLine();
+        while (!line.equals("[InstitutionalWeightings]")) {
+            String[] lineTokens = line.split(SPLIT_REGEX);
+            RoomHardConstraint roomHardConstraint = new RoomHardConstraint();
+            if (lineTokens.length != 2) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
+            }
+            roomHardConstraint.setTopic(topicList.get(Integer.parseInt(lineTokens[0])));
+            roomHardConstraint.setRoomHardConstraintType(RoomHardConstraintType.valueOf(lineTokens[1]));
+            roomHardConstraintList.add(roomHardConstraint);
+            line = bufferedReader.readLine();
+        }
+        examination.setRoomHardConstraintList(roomHardConstraintList);
     }
 
     private int readHeaderWithNumber(BufferedReader bufferedReader, String header) throws IOException {
         String line = bufferedReader.readLine();
         if (!line.startsWith("[" + header + ":") || !line.endsWith("]")) {
-            throw new IllegalStateException("Read line (" + line + " is not the expected header ([" + header + ":number])");
+            throw new IllegalStateException("Read line (" + line + " is not the expected header (["
+                    + header + ":number])");
         }
         return Integer.parseInt(line.substring(header.length() + 2, line.length() - 1));
+    }
+
+    private void readInstitutionalWeighting(BufferedReader bufferedReader, Examination examination) throws IOException {
+        InstitutionalWeighting institutionalWeighting = new InstitutionalWeighting();
+        String[] lineTokens;
+        lineTokens = readInstitutionalWeightingProperty(bufferedReader, "TWOINAROW", 2);
+        institutionalWeighting.setTwoInARowPenality(Integer.parseInt(lineTokens[1]));
+        lineTokens = readInstitutionalWeightingProperty(bufferedReader, "TWOINADAY", 2);
+        institutionalWeighting.setTwoInADayPenality(Integer.parseInt(lineTokens[1]));
+        lineTokens = readInstitutionalWeightingProperty(bufferedReader, "PERIODSPREAD", 2);
+        institutionalWeighting.setPeriodSpreadPenality(Integer.parseInt(lineTokens[1]));
+        lineTokens = readInstitutionalWeightingProperty(bufferedReader, "NONMIXEDDURATIONS", 2);
+        institutionalWeighting.setMixedDurationPenality(Integer.parseInt(lineTokens[1]));
+        lineTokens = readInstitutionalWeightingProperty(bufferedReader, "FRONTLOAD", 4);
+        institutionalWeighting.setFrontLoadLargestExamSize(Integer.parseInt(lineTokens[1]));
+        institutionalWeighting.setFrontLoadLastPeriodSize(Integer.parseInt(lineTokens[2]));
+        institutionalWeighting.setFrontLoadPenality(Integer.parseInt(lineTokens[3]));
+        examination.setInstitutionalWeighting(institutionalWeighting);
+    }
+
+    private String[] readInstitutionalWeightingProperty(BufferedReader bufferedReader, String property,
+            int propertySize) throws IOException {
+        String[] lineTokens;
+        lineTokens = bufferedReader.readLine().split(SPLIT_REGEX);
+        if (!lineTokens[0].equals(property) || lineTokens.length != propertySize){
+            throw new IllegalArgumentException("Read line (" + Arrays.toString(lineTokens)
+                    + ") is expected to contain " + propertySize + " tokens and start with " + property + ".");
+        }
+        return lineTokens;
+    }
+
+    private void createExamList(Examination examination) {
+        List<Topic> topicList = examination.getTopicList();
+        List<Period> periodList = examination.getPeriodList();
+        List<Room> roomList = examination.getRoomList();
+        List<Exam> examList = new ArrayList<Exam>(topicList.size());
+        int periodIndex = 0;
+        int roomIndex = 0;
+        int roomAddition = 0;
+        for (Topic topic : topicList) {
+            Exam exam = new Exam();
+            exam.setId(topic.getId());
+            exam.setTopic(topic);
+            exam.setPeriod(periodList.get(periodIndex));
+            exam.setRoom(roomList.get(roomIndex));
+            periodIndex = (periodIndex + 1) % periodList.size();
+            roomIndex = (roomIndex + 1) % roomList.size();
+            if (roomIndex == 0) {
+                roomAddition = (roomAddition + 1) % roomList.size();
+                roomIndex = roomAddition;
+            }
+            examList.add(exam);
+        }
+        examination.setExamList(examList);
     }
 
 }

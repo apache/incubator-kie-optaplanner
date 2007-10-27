@@ -19,11 +19,11 @@ public class RoomHardConstraint extends AbstractPersistable implements Comparabl
         this.roomHardConstraintType = roomHardConstraintType;
     }
 
-    public Topic getExam() {
+    public Topic getTopic() {
         return topic;
     }
 
-    public void setExam(Topic topic) {
+    public void setTopic(Topic topic) {
         this.topic = topic;
     }
 

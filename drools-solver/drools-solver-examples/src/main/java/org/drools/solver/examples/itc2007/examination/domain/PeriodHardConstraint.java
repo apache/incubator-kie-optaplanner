@@ -20,21 +20,21 @@ public class PeriodHardConstraint extends AbstractPersistable implements Compara
         this.periodHardConstraintType = periodHardConstraintType;
     }
 
-
-    public Topic getLeftSideExam() {
+    public Topic getLeftSideTopic() {
         return leftSideTopic;
     }
 
-    public void setLeftSideExam(Topic leftSideTopic) {
+    public void setLeftSideTopic(Topic leftSideTopic) {
         this.leftSideTopic = leftSideTopic;
     }
-    public Topic getRightSideExam() {
+    public Topic getRightSideTopic() {
         return rightSideTopic;
     }
 
-    public void setRightSideExam(Topic rightSideTopic) {
+    public void setRightSideTopic(Topic rightSideTopic) {
         this.rightSideTopic = rightSideTopic;
     }
+    
 
     public int compareTo(PeriodHardConstraint other) {
         return new CompareToBuilder()
