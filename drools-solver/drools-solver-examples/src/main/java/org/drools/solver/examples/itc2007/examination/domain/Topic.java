@@ -36,7 +36,7 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
     }
 
     public String toString() {
-        return id + " {" + duration + "}";
+        return id + " {" + duration + ", " + studentList.size() + "}";
     }
 
 }

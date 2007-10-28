@@ -10,8 +10,8 @@ import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.SolutionDao;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
@@ -34,7 +34,15 @@ public class SolutionBusiness {
 
     public void setDataDir(File dataDir) {
         unsolvedDataDir = new File(dataDir, "unsolved");
+        if (!unsolvedDataDir.exists()) {
+            throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
+                    + ") does not exist. The working directory should be set to drools-solver-examples.");
+        }
         solvedDataDir = new File(dataDir, "solved");
+        if (!solvedDataDir.exists()) {
+            throw new IllegalStateException("The directory solvedDataDir (" + solvedDataDir.getAbsolutePath()
+                    + ") does not exist. The working directory should be set to drools-solver-examples.");
+        }
     }
 
     public File getUnsolvedDataDir() {

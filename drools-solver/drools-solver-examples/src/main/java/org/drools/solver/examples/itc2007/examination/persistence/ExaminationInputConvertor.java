@@ -108,6 +108,7 @@ public class ExaminationInputConvertor {
             for (int j = 1; j < lineTokens.length; j++) {
                 topicStudentList.add(findOrCreateStudent(studentMap, Integer.parseInt(lineTokens[j])));
             }
+            topic.setStudentList(topicStudentList);
             topicList.add(topic);
         }
         examination.setTopicList(topicList);

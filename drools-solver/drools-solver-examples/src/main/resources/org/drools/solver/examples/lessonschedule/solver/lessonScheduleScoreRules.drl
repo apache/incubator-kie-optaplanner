@@ -1,4 +1,4 @@
-package org.drools.solver.evaluation
+package rg.drools.solver.examples.lessonschedule.solver;
 
 import org.drools.solver.core.evaluation.scorecalculator.HardAndSoftConstraintScoreCalculator;
 

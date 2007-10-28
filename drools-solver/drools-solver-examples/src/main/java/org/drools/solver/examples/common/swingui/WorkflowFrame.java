@@ -19,8 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
 import org.drools.solver.examples.common.business.SolutionBusiness;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
@@ -55,7 +55,6 @@ public class WorkflowFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(createButtonPanel(), BorderLayout.NORTH);
         JScrollPane solutionScrollPane = new JScrollPane(solutionPanel);
-        solutionScrollPane.setPreferredSize(new Dimension(800, 500));
         panel.add(solutionScrollPane, BorderLayout.CENTER);
         resultLabel = new JLabel("No solution loaded yet");
         resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());

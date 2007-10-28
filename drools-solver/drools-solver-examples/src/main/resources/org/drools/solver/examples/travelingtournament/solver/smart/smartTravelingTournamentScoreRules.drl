@@ -1,4 +1,4 @@
-package org.drools.solver.evaluation
+package org.drools.solver.examples.travelingtournament.smart.solver;
 
 import org.drools.solver.core.evaluation.scorecalculator.HardAndSoftConstraintScoreCalculator;
 
