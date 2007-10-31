@@ -65,7 +65,6 @@ public class NQueensPanel extends SolutionPanel {
                 }
             }
         }
-        validate();
     }
 
     private class QueenAction extends AbstractAction {

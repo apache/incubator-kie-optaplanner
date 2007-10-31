@@ -49,7 +49,6 @@ public class LessonSchedulePanel extends SolutionPanel {
             TimeslotPanel timeslotPanel = timeslotPanelMap.get(lesson.getTimeslot());
             timeslotPanel.addLesson(lesson);
         }
-        validate();
     }
 
     private class TimeslotPanel extends JPanel {

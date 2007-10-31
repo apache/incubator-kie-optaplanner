@@ -49,7 +49,6 @@ public class TravelingTournamentPanel extends SolutionPanel {
             TravelingTournamentPanel.DayPanel dayPanel = dayPanelMap.get(match.getDay());
             dayPanel.addMatch(match);
         }
-        validate();
     }
 
     private class DayPanel extends JPanel {

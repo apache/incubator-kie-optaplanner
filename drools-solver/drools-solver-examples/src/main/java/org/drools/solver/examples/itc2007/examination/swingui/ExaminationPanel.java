@@ -77,7 +77,6 @@ public class ExaminationPanel extends SolutionPanel {
             PeriodRoomPanel periodRoomPanel = periodRoomPanelMap.get(exam.getPeriod()).get(exam.getRoom());
             periodRoomPanel.addExam(exam);
         }
-        validate();
     }
 
     private class PeriodRoomPanel extends JPanel {

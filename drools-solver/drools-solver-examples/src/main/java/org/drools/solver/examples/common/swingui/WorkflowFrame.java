@@ -104,6 +104,7 @@ public class WorkflowFrame extends JFrame {
 
     public void updateScreen() {
         solutionPanel.resetPanel();
+        validate();
         resultLabel.setText("Score = " + solutionBusiness.getScore());
     }
 
