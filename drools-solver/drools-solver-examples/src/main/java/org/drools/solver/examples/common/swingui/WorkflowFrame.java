@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -26,6 +27,8 @@ import org.slf4j.LoggerFactory;
  * @author Geoffrey De Smet
  */
 public class WorkflowFrame extends JFrame {
+    
+    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -105,7 +108,7 @@ public class WorkflowFrame extends JFrame {
     public void updateScreen() {
         solutionPanel.resetPanel();
         validate();
-        resultLabel.setText("Score = " + solutionBusiness.getScore());
+        resultLabel.setText("Score = " + NUMBER_FORMAT.format(solutionBusiness.getScore()));
     }
 
     private class LoadAction extends AbstractAction {
