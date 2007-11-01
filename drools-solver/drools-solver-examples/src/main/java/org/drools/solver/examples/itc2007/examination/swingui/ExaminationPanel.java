@@ -41,12 +41,13 @@ public class ExaminationPanel extends SolutionPanel {
         removeAll();
         Examination examination = getExamination();
         gridLayout.setColumns(examination.getRoomList().size() + 1);
-        JPanel headerCorner = new JPanel();
-        headerCorner.setBorder(BorderFactory.createCompoundBorder(
+        JLabel headerCornerLabel = new JLabel("Period         \\         Room");
+        headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        headerCorner.setBackground(HEADER_COLOR);
-        add(headerCorner);
+        headerCornerLabel.setBackground(HEADER_COLOR);
+        headerCornerLabel.setOpaque(true);
+        add(headerCornerLabel);
         for (Room room : examination.getRoomList()) {
             JLabel roomLabel = new JLabel(room.toString());
             roomLabel.setBorder(BorderFactory.createCompoundBorder(
