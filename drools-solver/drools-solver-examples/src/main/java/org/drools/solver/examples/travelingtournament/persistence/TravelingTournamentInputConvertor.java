@@ -22,6 +22,7 @@ import org.drools.solver.examples.travelingtournament.domain.TravelingTournament
 public abstract class TravelingTournamentInputConvertor {
     
     private static final String INPUT_FILE_SUFFIX = ".txt";
+    private static final String OUTPUT_FILE_SUFFIX = ".xml";
 
     private final File inputDir = new File("data/travelingtournament/input/");
 
@@ -36,7 +37,8 @@ public abstract class TravelingTournamentInputConvertor {
             String inputFileName = inputFile.getName();
             if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
                 TravelingTournament travelingTournament = createTravelingTournament(inputFile);
-                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length()) + ".xml";
+                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length())
+                        + OUTPUT_FILE_SUFFIX;
                 File outputFile = new File(getOutputDir(), outputFileName);
                 solutionDao.writeSolution(travelingTournament, outputFile);
             }

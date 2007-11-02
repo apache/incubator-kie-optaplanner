@@ -34,6 +34,7 @@ import org.drools.solver.examples.itc2007.examination.domain.Topic;
 public class ExaminationInputConvertor {
 
     private static final String INPUT_FILE_SUFFIX = ".exam";
+    private static final String OUTPUT_FILE_SUFFIX = ".xml";
     private static final String SPLIT_REGEX = "\\,\\ ?";
 
     public static void main(String[] args) {
@@ -53,15 +54,16 @@ public class ExaminationInputConvertor {
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();
             if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
-                Examination examination = createExamination(inputFile);
-                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length()) + ".xml";
+                Examination examination = readExamination(inputFile);
+                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length())
+                        + OUTPUT_FILE_SUFFIX;
                 File outputFile = new File(outputDir, outputFileName);
                 solutionDao.writeSolution(examination, outputFile);
             }
         }
     }
 
-    private Examination createExamination(File inputFile) {
+    private Examination readExamination(File inputFile) {
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(inputFile));
