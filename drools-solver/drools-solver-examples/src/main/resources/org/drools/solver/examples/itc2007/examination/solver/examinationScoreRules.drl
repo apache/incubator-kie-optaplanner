@@ -17,4 +17,47 @@ import org.drools.solver.examples.common.solver.domain.WorkaroundMultiplePattern
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
+//Conflicts: Two conflicting exams in the same period.
+rule "conflictingExamsInSamePeriod"
+  when
+    $student : Student();
+    $exam : Exam($id : id, topic.studentList contains $student, $period : period);
+    Exam(id > $id, topic.studentList contains $student, period == $period);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("conflictingExamsInSamePeriod", $exam));
+end
+
+//RoomOccupancy: More seating required in any individual period than that available.
+//
+//PeriodUtilisation: More time required in any individual period than that available.
+//
+//PeriodRelated: Ordering requirements not obeyed.
+//
+//RoomRelated: Room requirements not obeyed
+
+
+rule "hardConstraintsBroken"
+  salience -1 // Finish the other rules first (optional, for performance)
+  when
+    $hardCount : Number() from accumulate(
+       $w : WorkaroundMultiplePatternAccumulate(),
+       // countInteger($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+       count($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+    );
+  then
+    scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
+end
 // TODO implement me
+//Two Exams in a Row
+//
+//Two Exams in a Day
+//
+//Period Spread
+//
+//Mixed Durations
+//
+//Larger Exams Constraints
+//
+//Room Penalty
+//
+//Period Penalty 

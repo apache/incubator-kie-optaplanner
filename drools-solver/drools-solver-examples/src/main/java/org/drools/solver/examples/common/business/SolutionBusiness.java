@@ -86,7 +86,11 @@ public class SolutionBusiness {
     }
 
     public void doMove(Move move) {
-        logger.info("Doing user move ({})", move);
+        if (!move.isMoveDoable(evaluationHandler.getStatefulSession())) {
+            logger.info("Not doing user move ({}) because it is not doable.", move);
+            return;
+        }
+        logger.info("Doing user move ({}).", move);
         move.doMove(evaluationHandler.getStatefulSession());
     }
 

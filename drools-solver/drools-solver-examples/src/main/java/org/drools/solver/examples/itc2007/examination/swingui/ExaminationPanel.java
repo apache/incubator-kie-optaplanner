@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.solver.examples.common.swingui.SolutionPanel;
@@ -17,6 +20,8 @@ import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
+import org.drools.solver.examples.itc2007.examination.solver.PeriodChangeMove;
+import org.drools.solver.examples.itc2007.examination.solver.RoomChangeMove;
 
 /**
  * @author Geoffrey De Smet
@@ -106,18 +111,24 @@ public class ExaminationPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            // TODO
-//            List<Day> dayList = getExamination().getDayList();
-//            JComboBox dayListField = new JComboBox(dayList.toArray());
-//            dayListField.setSelectedItem(match.getDay());
-//            int result = JOptionPane.showConfirmDialog(ExaminationPanel.this, dayListField, "Select day",
-//                    JOptionPane.OK_CANCEL_OPTION);
-//            if (result == JOptionPane.OK_OPTION) {
-//                Day toDay = (Day) dayListField.getSelectedItem();
-//                Move move = new DayChangeMove(match, toDay);
-//                solutionBusiness.doMove(move);
-//                workflowFrame.updateScreen();
-//            }
+            JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
+            List<Period> periodList = getExamination().getPeriodList();
+            JComboBox periodListField = new JComboBox(periodList.toArray());
+            periodListField.setSelectedItem(exam.getPeriod());
+            listFieldsPanel.add(periodListField);
+            List<Room> roomList = getExamination().getRoomList();
+            JComboBox roomListField = new JComboBox(roomList.toArray());
+            roomListField.setSelectedItem(exam.getRoom());
+            listFieldsPanel.add(roomListField);
+            int result = JOptionPane.showConfirmDialog(ExaminationPanel.this, listFieldsPanel, "Select period and room",
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                Period toPeriod = (Period) periodListField.getSelectedItem();
+                solutionBusiness.doMove(new PeriodChangeMove(exam, toPeriod));
+                Room toRoom = (Room) roomListField.getSelectedItem();
+                solutionBusiness.doMove(new RoomChangeMove(exam, toRoom));
+                workflowFrame.updateScreen();
+            }
         }
 
     }
