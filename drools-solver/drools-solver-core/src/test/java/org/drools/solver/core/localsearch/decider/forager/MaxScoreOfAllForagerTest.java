@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.TestCase;
-import org.drools.WorkingMemory;
 import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
+import org.drools.solver.core.move.DummyMove;
 import org.drools.solver.core.move.Move;
 
 /**
  * @author Geoffrey De Smet
  */
-public class ForagerTest extends TestCase {
+public class MaxScoreOfAllForagerTest extends TestCase {
 
     public void testPicking() {
         Forager forager = new MaxScoreOfAllForager();
@@ -41,21 +41,6 @@ public class ForagerTest extends TestCase {
         assertFalse(topList.contains(d));
         assertTrue(topList.contains(e));
         forager.solvingEnded();
-    }
-
-    public static class DummyMove implements Move {
-
-        public boolean isMoveDoable(WorkingMemory workingMemory) {
-            return false;  // TODO generated
-        }
-
-        public Move createUndoMove(WorkingMemory workingMemory) {
-            return null;  // TODO generated
-        }
-
-        public void doMove(WorkingMemory workingMemory) {
-            // TODO generated
-        }
     }
 
 }

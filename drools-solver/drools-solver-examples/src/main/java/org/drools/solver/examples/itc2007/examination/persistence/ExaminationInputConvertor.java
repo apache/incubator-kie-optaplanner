@@ -263,7 +263,7 @@ public class ExaminationInputConvertor {
             int propertySize) throws IOException {
         String[] lineTokens;
         lineTokens = bufferedReader.readLine().split(SPLIT_REGEX);
-        if (!lineTokens[0].equals(property) || lineTokens.length != propertySize){
+        if (!lineTokens[0].equals(property) || lineTokens.length != propertySize) {
             throw new IllegalArgumentException("Read line (" + Arrays.toString(lineTokens)
                     + ") is expected to contain " + propertySize + " tokens and start with " + property + ".");
         }
