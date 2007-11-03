@@ -7,6 +7,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.solver.core.localsearch.decider.accepter.Accepter;
 import org.drools.solver.core.localsearch.decider.accepter.CompositeAccepter;
+import org.drools.solver.core.localsearch.decider.accepter.simulatedannealing.SimulatedAnnealingAccepter;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.MoveTabuAccepter;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.PropertyTabuAccepter;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.SolutionTabuAccepter;
@@ -186,6 +187,13 @@ public class AccepterConfig {
                 solutionTabuAccepter.setPartialTabuSize(partialSolutionTabuSize);
             }
             accepterList.add(solutionTabuAccepter);
+        }
+        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.SIMULATED_ANNEALING))) {
+            SimulatedAnnealingAccepter simulatedAnnealingAccepter = new SimulatedAnnealingAccepter();
+            accepterList.add(simulatedAnnealingAccepter);
+        }
+        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.GREAT_DELUGE))) {
+            throw new UnsupportedOperationException();
         }
         
         if (accepterList.size() == 1) {

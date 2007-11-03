@@ -1,6 +1,7 @@
 package org.drools.solver.config.localsearch.decider.forager;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.solver.core.localsearch.decider.forager.FirstRandomlyAcceptedForager;
 import org.drools.solver.core.localsearch.decider.forager.Forager;
 import org.drools.solver.core.localsearch.decider.forager.MaxScoreOfAllForager;
 
@@ -59,6 +60,8 @@ public class ForagerConfig {
             switch (foragerType) {
                 case MAX_SCORE_OF_ALL:
                     return new MaxScoreOfAllForager();
+                case FIRST_RANDOMLY_ACCEPTED:
+                    return new FirstRandomlyAcceptedForager();
                 default:
                     throw new IllegalStateException("foragerType (" + foragerType + ") not implemented");
             }
@@ -76,7 +79,8 @@ public class ForagerConfig {
     }
 
     public static enum ForagerType {
-        MAX_SCORE_OF_ALL
+        MAX_SCORE_OF_ALL,
+        FIRST_RANDOMLY_ACCEPTED
     }
 
 }

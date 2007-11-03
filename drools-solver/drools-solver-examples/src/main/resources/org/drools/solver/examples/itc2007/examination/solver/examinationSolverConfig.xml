@@ -9,13 +9,21 @@
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
     <selector>
-        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>
+        <moveFactory class="org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory">
+            <shuffleListEveryStep>true</shuffleListEveryStep>
+        </moveFactory>
     </selector>
+    <!--<accepter>-->
+        <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+    <!--</accepter>-->
+    <!--<forager>-->
+        <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+    <!--</forager>-->
     <accepter>
-        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+        <accepterType>SIMULATED_ANNEALING</accepterType>
     </accepter>
     <forager>
-        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
     </forager>
 </localSearchSolver>
         
