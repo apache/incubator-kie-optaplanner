@@ -80,7 +80,7 @@ public class NQueensPanel extends SolutionPanel {
             List<Integer> yList = getNQueens().createNList();
             JComboBox yListField = new JComboBox(yList.toArray());
             yListField.setSelectedItem(queen.getY());
-            int result = JOptionPane.showConfirmDialog(NQueensPanel.this, yListField, "Select y",
+            int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), yListField, "Select y",
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 int toY = (Integer) yListField.getSelectedItem();

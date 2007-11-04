@@ -120,8 +120,8 @@ public class ExaminationPanel extends SolutionPanel {
             JComboBox roomListField = new JComboBox(roomList.toArray());
             roomListField.setSelectedItem(exam.getRoom());
             listFieldsPanel.add(roomListField);
-            int result = JOptionPane.showConfirmDialog(ExaminationPanel.this, listFieldsPanel, "Select period and room",
-                    JOptionPane.OK_CANCEL_OPTION);
+            int result = JOptionPane.showConfirmDialog(ExaminationPanel.this.getRootPane(), listFieldsPanel,
+                    "Select period and room", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
                 solutionBusiness.doMove(new PeriodChangeMove(exam, toPeriod));

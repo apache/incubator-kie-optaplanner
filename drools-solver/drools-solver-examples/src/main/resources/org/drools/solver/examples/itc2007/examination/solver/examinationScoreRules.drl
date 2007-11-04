@@ -17,19 +17,39 @@ import org.drools.solver.examples.common.solver.domain.WorkaroundMultiplePattern
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
-//Conflicts: Two conflicting exams in the same period.
+// Two exams in the same period which share students.
 rule "conflictingExamsInSamePeriod"
   when
     $student : Student();
     $exam : Exam($id : id, topic.studentList contains $student, $period : period);
-    Exam(id > $id, topic.studentList contains $student, period == $period);
+    Exam(period == $period, id > $id, topic.studentList contains $student);
   then
     insertLogical(new WorkaroundMultiplePatternAccumulate("conflictingExamsInSamePeriod", $exam));
 end
 
-//RoomOccupancy: More seating required in any individual period than that available.
-//
-//PeriodUtilisation: More time required in any individual period than that available.
+// More time required during a period than available in that period.
+rule "periodDurationTooShort"
+  when
+    $exam : Exam($periodDuration : period.durationInMinutes, topic.duration > $periodDuration);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("periodDurationTooShort", $exam));
+end
+
+// More seating required during a period in a room than available in that room.
+rule "roomCapacityTooSmall"
+  when
+    $period : Period();
+    $room : Room($capacity : capacity);
+    $totalStudentListSize : Number() from accumulate(
+      Exam(period == $period, room == $room, $studentListSize : topic.studentListSize),
+      // sumInteger($studentListSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+      sum($studentListSize)
+    );
+    eval($totalStudentListSize.intValue() > $capacity);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("roomCapacityTooSmall", $room)); // TODO FIXME, use $period too
+end
+
 //
 //PeriodRelated: Ordering requirements not obeyed.
 //

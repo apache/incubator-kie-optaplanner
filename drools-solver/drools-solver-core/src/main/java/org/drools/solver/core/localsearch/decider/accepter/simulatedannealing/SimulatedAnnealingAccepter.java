@@ -35,11 +35,12 @@ public class SimulatedAnnealingAccepter extends TimeGradientBasedAccepter {
                 ? localSearchSolver.getBestScore()
                 : localSearchSolver.getStepScore();
         double scoreDelta = score - compareScore;
-        if (scoreDelta >= 0) {
+        if (scoreDelta > 0.0) { // TODO if scoreDelta 0 then it will end up 1.0 anyway?
             return 1.0;
         } else {
             double acceptChance = Math.exp(scoreDelta * cachedAcceptChancePart);
-            return Math.min(acceptChance, 1.0);
+            // Math.min(acceptChance, 1.0) is oboselete because scoreDelta <= 0.0
+            return acceptChance;
         }
     }
     

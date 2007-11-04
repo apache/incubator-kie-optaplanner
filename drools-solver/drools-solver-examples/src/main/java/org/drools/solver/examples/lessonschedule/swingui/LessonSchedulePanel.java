@@ -80,8 +80,8 @@ public class LessonSchedulePanel extends SolutionPanel {
             List<Timeslot> timeslotList = getLessonSchedule().getTimeslotList();
             JComboBox timeslotListField = new JComboBox(timeslotList.toArray());
             timeslotListField.setSelectedItem(lesson.getTimeslot());
-            int result = JOptionPane.showConfirmDialog(LessonSchedulePanel.this, timeslotListField, "Select timeslot",
-                    JOptionPane.OK_CANCEL_OPTION);
+            int result = JOptionPane.showConfirmDialog(LessonSchedulePanel.this.getRootPane(), timeslotListField,
+                    "Select timeslot", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Timeslot toTimeslot = (Timeslot) timeslotListField.getSelectedItem();
                 Move move = new TimeslotChangeMove(lesson, toTimeslot);

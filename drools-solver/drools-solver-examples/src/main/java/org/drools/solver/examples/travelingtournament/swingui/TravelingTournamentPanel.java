@@ -80,8 +80,8 @@ public class TravelingTournamentPanel extends SolutionPanel {
             List<Day> dayList = getTravelingTournament().getDayList();
             JComboBox dayListField = new JComboBox(dayList.toArray());
             dayListField.setSelectedItem(match.getDay());
-            int result = JOptionPane.showConfirmDialog(TravelingTournamentPanel.this, dayListField, "Select day",
-                    JOptionPane.OK_CANCEL_OPTION);
+            int result = JOptionPane.showConfirmDialog(TravelingTournamentPanel.this.getRootPane(), dayListField,
+                    "Select day", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Day toDay = (Day) dayListField.getSelectedItem();
                 Move move = new DayChangeMove(match, toDay);

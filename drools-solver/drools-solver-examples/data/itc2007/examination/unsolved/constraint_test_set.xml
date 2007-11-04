@@ -23,7 +23,7 @@
   <topicList id="4">
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="40">
       <id>0</id>
-      <duration>195</duration>
+      <duration>210</duration>
       <studentList id="7889">
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="30"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="31"/>
@@ -61,7 +61,7 @@
       <startDateTimeString>15:04:2005 14:00:00</startDateTimeString>
       <dateInDays>1931</dateInDays>
       <startTimeInMinutes>840</startTimeInMinutes>
-      <durationInMinutes>210</durationInMinutes>
+      <durationInMinutes>150</durationInMinutes>
       <penalty>0</penalty>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
     <org.drools.solver.examples.itc2007.examination.domain.Period id="52">
@@ -69,19 +69,19 @@
       <startDateTimeString>18:04:2005 09:30:00</startDateTimeString>
       <dateInDays>1933</dateInDays>
       <startTimeInMinutes>570</startTimeInMinutes>
-      <durationInMinutes>210</durationInMinutes>
+      <durationInMinutes>150</durationInMinutes>
       <penalty>0</penalty>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
   </periodList>
   <roomList id="6">
     <org.drools.solver.examples.itc2007.examination.domain.Room id="60">
       <id>0</id>
-      <capacity>260</capacity>
+      <capacity>10</capacity>
       <penalty>0</penalty>
     </org.drools.solver.examples.itc2007.examination.domain.Room>
     <org.drools.solver.examples.itc2007.examination.domain.Room id="61">
       <id>1</id>
-      <capacity>100</capacity>
+      <capacity>2</capacity>
       <penalty>0</penalty>
     </org.drools.solver.examples.itc2007.examination.domain.Room>
   </roomList>
@@ -98,19 +98,19 @@
       <id>0</id>
       <topic reference="40"/>
       <period reference="50"/>
-      <room reference="60"/>
+      <room reference="61"/>
     </org.drools.solver.examples.itc2007.examination.domain.Exam>
     <org.drools.solver.examples.itc2007.examination.domain.Exam id="71">
       <id>1</id>
       <topic reference="41"/>
-      <period reference="50"/>
-      <room reference="60"/>
+      <period reference="51"/>
+      <room reference="61"/>
     </org.drools.solver.examples.itc2007.examination.domain.Exam>
     <org.drools.solver.examples.itc2007.examination.domain.Exam id="72">
       <id>2</id>
       <topic reference="42"/>
-      <period reference="50"/>
-      <room reference="61"/>
+      <period reference="52"/>
+      <room reference="60"/>
     </org.drools.solver.examples.itc2007.examination.domain.Exam>
   </examList>
 </org.drools.solver.examples.itc2007.examination.domain.Examination>

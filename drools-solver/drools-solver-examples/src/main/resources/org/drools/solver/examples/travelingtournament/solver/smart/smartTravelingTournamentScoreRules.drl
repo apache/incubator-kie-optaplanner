@@ -112,9 +112,9 @@ rule "softConstraintsBroken"
   salience -1 // Finish the other rules first (optional, for performance)
   when
     $totalDistance : Number() from accumulate(
-       Hop($distance : distance),
-       // sumInteger($distance) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-       sum($distance) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+      Hop($distance : distance),
+      // sumInteger($distance) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+      sum($distance) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
     );
   then
     scoreCalculator.setSoftConstraintsBroken($totalDistance.intValue());
