@@ -1,4 +1,5 @@
 package org.drools.solver.examples.itc2007.examination.solver;
+    dialect "java"
 
 import org.drools.solver.core.evaluation.scorecalculator.HardAndSoftConstraintScoreCalculator;
 
@@ -19,7 +20,6 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // Two exams in the same period which share students.
 rule "conflictingExamsInSamePeriod"
-    dialect "java"
   when
     $student : Student();
     $exam : Exam($id : id, topic.studentList contains $student, $period : period);
@@ -30,7 +30,6 @@ end
 
 // More time required during a period than available in that period.
 rule "periodDurationTooShort"
-    dialect "java"
   when
     $exam : Exam($periodDuration : period.durationInMinutes, topic.duration > $periodDuration);
   then
@@ -39,7 +38,6 @@ end
 
 // More seating required during a period in a room than available in that room.
 rule "roomCapacityTooSmall"
-    dialect "java"
   when
     $period : Period();
     $room : Room($capacity : capacity);
@@ -61,7 +59,6 @@ end
 
 rule "hardConstraintsBroken"
     salience -1 // Finish the other rules first (optional, for performance)
-    dialect "java"
   when
     $hardCount : Number() from accumulate(
        $w : WorkaroundMultiplePatternAccumulate(),
