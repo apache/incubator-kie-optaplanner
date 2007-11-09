@@ -48,11 +48,50 @@ rule "roomCapacityTooSmall"
     );
     eval($totalStudentListSize.intValue() > $capacity);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("roomCapacityTooSmall", $room)); // TODO FIXME, use $period too
+    insertLogical(new WorkaroundMultiplePatternAccumulate("roomCapacityTooSmall", $period, $room));
 end
 
-//
-//PeriodRelated: Ordering requirements not obeyed.
+// Period hard constraints
+rule "periodHardConstraintExamCoincidence"
+  when
+    $periodHardConstraint : PeriodHardConstraint(
+      periodHardConstraintType == PeriodHardConstraintType.EXAM_COINCIDENCE,
+      $leftSideTopic : leftSideTopic,
+      $rightSideTopic : rightSideTopic
+    )
+    Exam(topic == $leftSideTopic, $leftSidePeriod : period);
+    Exam(topic == $rightSideTopic, period != $leftSidePeriod);
+    // TODO make sure that leftSide and rightSide don't share a student
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("periodHardConstraintExamCoincidence", $periodHardConstraint));
+end
+rule "periodHardConstraintExclusion"
+  when
+    $periodHardConstraint : PeriodHardConstraint(
+      periodHardConstraintType == PeriodHardConstraintType.EXCLUSION,
+      $leftSideTopic : leftSideTopic,
+      $rightSideTopic : rightSideTopic
+    )
+    Exam(topic == $leftSideTopic, $leftSidePeriod : period);
+    Exam(topic == $rightSideTopic, period == $leftSidePeriod);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("periodHardConstraintExclusion", $periodHardConstraint));
+end
+rule "periodHardConstraintAfter"
+  when
+    $periodHardConstraint : PeriodHardConstraint(
+      periodHardConstraintType == PeriodHardConstraintType.AFTER,
+      $leftSideTopic : leftSideTopic,
+      $rightSideTopic : rightSideTopic
+    )
+    Exam(topic == $leftSideTopic, $leftSidePeriod : period);
+    Exam(topic == $rightSideTopic, (period.dateInDays < $leftSidePeriod.dateInDays)
+        || (period.dateInDays == $leftSidePeriod.dateInDays
+        && period.startTimeInMinutes <= $leftSidePeriod.startTimeInMinutes));
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("periodHardConstraintAfter", $periodHardConstraint));
+end
+
 //
 //RoomRelated: Room requirements not obeyed
 
