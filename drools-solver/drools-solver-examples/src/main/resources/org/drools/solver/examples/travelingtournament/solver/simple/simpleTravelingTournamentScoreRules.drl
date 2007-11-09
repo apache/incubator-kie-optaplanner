@@ -39,6 +39,7 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 //end
 
 rule "multipleMatchesPerTeamPerDay"
+    dialect "java"
   when
     $team : Team();
     $m : Match( $id : id, homeTeam == $team, $day : day )
@@ -50,6 +51,7 @@ rule "multipleMatchesPerTeamPerDay"
 end
 
 rule "fourConsecutiveHomeMatches"
+    dialect "java"
   when
     $m : Match($homeTeam : homeTeam, $day1 : day);
     Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1));
@@ -60,6 +62,7 @@ rule "fourConsecutiveHomeMatches"
 end
 
 rule "fourConsecutiveAwayMatches"
+    dialect "java"
   when
     $m : Match($awayTeam : awayTeam, $day1 : day);
     Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 1));
@@ -70,6 +73,7 @@ rule "fourConsecutiveAwayMatches"
 end
 
 rule "matchRepeater"
+    dialect "java"
   when
     $m : Match($homeTeam : homeTeam, $awayTeam : awayTeam, $day1 : day);
     Match(homeTeam == $awayTeam, awayTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1));
@@ -78,7 +82,8 @@ rule "matchRepeater"
 end
 
 rule "hardConstraintsBroken"
-  salience -1 // Finish the other rules first (optional, for performance)
+    salience -1 // Finish the other rules first (optional, for performance)
+    dialect "java"
   when
     $hardCount : Long() from accumulate(
        $w : WorkaroundMultiplePatternAccumulate(),
@@ -90,6 +95,7 @@ end
 
 
 rule "startToAwayHop"
+    dialect "java"
   when
     Match($toTeam : homeTeam, $team : awayTeam, $day : day);
     not Day(eval(index == $day.getIndex() - 1));
@@ -97,6 +103,7 @@ rule "startToAwayHop"
     insertLogical(new Hop($team, $team, $toTeam));
 end
 rule "homeToAwayHop"
+    dialect "java"
   when
     Match($team : homeTeam, $day1 : day);
     Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
@@ -104,6 +111,7 @@ rule "homeToAwayHop"
     insertLogical(new Hop($team, $team, $toTeam));
 end
 rule "awayToAwayHop"
+    dialect "java"
   when
     Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day);
     Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
@@ -111,6 +119,7 @@ rule "awayToAwayHop"
     insertLogical(new Hop($team, $fromTeam, $toTeam));
 end
 rule "awayToHomeHop"
+    dialect "java"
   when
     Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day);
     Match(homeTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
@@ -118,6 +127,7 @@ rule "awayToHomeHop"
     insertLogical(new Hop($team, $fromTeam, $team));
 end
 rule "awayToEndHop"
+    dialect "java"
   when
     Match($fromTeam : homeTeam, $team : awayTeam, $day : day);
     not Day(eval(index == $day.getIndex() + 1));
@@ -126,7 +136,8 @@ rule "awayToEndHop"
 end
 
 rule "softConstraintsBroken"
-  salience -1 // Finish the other rules first (optional, for performance)
+    salience -1 // Finish the other rules first (optional, for performance)
+    dialect "java"
   when
     $totalDistance : Double() from accumulate(
        Hop($distance : distance),
