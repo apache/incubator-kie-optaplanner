@@ -1,4 +1,4 @@
-package org.drools.solver.core.evaluation.scorecalculator;
+package org.drools.solver.core.score.calculator;
 
 /**
  * @author Geoffrey De Smet

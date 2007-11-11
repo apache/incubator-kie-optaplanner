@@ -1,6 +1,6 @@
 package rg.drools.solver.examples.lessonschedule.solver;
 
-import org.drools.solver.core.evaluation.scorecalculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.solver.core.score.calculator.HardAndSoftConstraintScoreCalculator;
 
 import org.drools.solver.examples.lessonschedule.domain.LessonSchedule;
 import org.drools.solver.examples.lessonschedule.domain.Timeslot;

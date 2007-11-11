@@ -2,7 +2,7 @@ package org.drools.solver.core.evaluation;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.solver.core.evaluation.scorecalculator.ScoreCalculator;
+import org.drools.solver.core.score.calculator.ScoreCalculator;
 import org.drools.solver.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package org.drools.solver.core.evaluation.scorecalculator;
+package org.drools.solver.core.score.calculator;
 
 /**
  * Makes it easier to implement a ScoreCalculator.

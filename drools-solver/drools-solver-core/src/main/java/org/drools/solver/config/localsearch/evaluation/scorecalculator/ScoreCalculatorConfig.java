@@ -1,10 +1,10 @@
 package org.drools.solver.config.localsearch.evaluation.scorecalculator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.solver.core.evaluation.scorecalculator.DynamicHardAndSoftConstraintScoreCalculator;
-import org.drools.solver.core.evaluation.scorecalculator.ScoreCalculator;
-import org.drools.solver.core.evaluation.scorecalculator.SimpleScoreCalculator;
-import org.drools.solver.core.evaluation.scorecalculator.StaticHardAndSoftConstraintScoreCalculator;
+import org.drools.solver.core.score.calculator.DynamicHardAndSoftConstraintScoreCalculator;
+import org.drools.solver.core.score.calculator.ScoreCalculator;
+import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
+import org.drools.solver.core.score.calculator.StaticHardAndSoftConstraintScoreCalculator;
 
 /**
  * @author Geoffrey De Smet

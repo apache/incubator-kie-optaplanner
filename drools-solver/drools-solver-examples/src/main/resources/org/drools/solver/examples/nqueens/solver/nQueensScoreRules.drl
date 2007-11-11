@@ -1,6 +1,6 @@
 package org.drools.solver.examples.nqueens.solver;
 
-import org.drools.solver.core.evaluation.scorecalculator.SimpleScoreCalculator;
+import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
 
 import org.drools.solver.examples.nqueens.domain.Queen;
 import org.drools.solver.core.score.constraint.ConstraintOccurrence;

@@ -1,4 +1,4 @@
-package org.drools.solver.core.evaluation.scorecalculator;
+package org.drools.solver.core.score.calculator;
 
 /**
  * Evaluates a solution based on its WorkingMemory (which is part of the rule production system).
