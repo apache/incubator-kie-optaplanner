@@ -92,8 +92,19 @@ rule "periodHardConstraintAfter"
     insertLogical(new WorkaroundMultiplePatternAccumulate("periodHardConstraintAfter", $periodHardConstraint));
 end
 
-//
-//RoomRelated: Room requirements not obeyed
+
+// Room hard constraints
+rule "roomHardConstraintExclusive"
+  when
+    $roomHardConstraint : RoomHardConstraint(
+      roomHardConstraintType == RoomHardConstraintType.ROOM_EXCLUSIVE,
+      $topic : topic
+    )
+    Exam(topic == $topic, $room : room);
+    Exam(topic != $topic, room == $room);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("roomHardConstraintExclusive", $roomHardConstraint));
+end
 
 
 rule "hardConstraintsBroken"
