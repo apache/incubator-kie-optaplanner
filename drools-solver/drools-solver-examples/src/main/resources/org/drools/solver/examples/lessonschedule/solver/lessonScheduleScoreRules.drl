@@ -7,7 +7,7 @@ import org.drools.solver.examples.lessonschedule.domain.Timeslot;
 import org.drools.solver.examples.lessonschedule.domain.Teacher;
 import org.drools.solver.examples.lessonschedule.domain.Group;
 import org.drools.solver.examples.lessonschedule.domain.Lesson;
-import org.drools.solver.examples.common.solver.domain.WorkaroundMultiplePatternAccumulate;
+import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
@@ -26,7 +26,7 @@ rule "multipleLessonsPerTeacherPerTimeslot"
     $lesson : Lesson($id : id, $teacher : teacher, $timeslot : timeslot);
     exists Lesson(id > $id, teacher == $teacher, timeslot == $timeslot);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleLessonsPerTeacherPerTimeslot", $lesson));
+    insertLogical(new ConstraintOccurrence("multipleLessonsPerTeacherPerTimeslot", $lesson));
 end
 
 rule "multipleLessonsPerGroupPerTimeslot"
@@ -34,13 +34,13 @@ rule "multipleLessonsPerGroupPerTimeslot"
     $lesson : Lesson($id : id, $group : group, $timeslot : timeslot);
     exists Lesson(id > $id, group == $group, timeslot == $timeslot);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleLessonsPerGroupPerTimeslot", $lesson));
+    insertLogical(new ConstraintOccurrence("multipleLessonsPerGroupPerTimeslot", $lesson));
 end
 
 rule "hardConstraintsBroken"
   when
     $hardCount : Long() from accumulate(
-       $w : WorkaroundMultiplePatternAccumulate(),
+       $w : ConstraintOccurrence(),
        count($w)
     );
   then

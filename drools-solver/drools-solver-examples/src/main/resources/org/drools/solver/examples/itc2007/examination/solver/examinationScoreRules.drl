@@ -14,7 +14,7 @@ import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraint;
 import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
-import org.drools.solver.examples.common.solver.domain.WorkaroundMultiplePatternAccumulate;
+import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
@@ -25,7 +25,7 @@ rule "conflictingExamsInSamePeriod"
     $exam : Exam($id : id, topic.studentList contains $student, $period : period);
     Exam(period == $period, id > $id, topic.studentList contains $student);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("conflictingExamsInSamePeriod", $exam));
+    insertLogical(new ConstraintOccurrence("conflictingExamsInSamePeriod", $exam));
 end
 
 // More time required during a period than available in that period.
@@ -33,7 +33,7 @@ rule "periodDurationTooShort"
   when
     $exam : Exam($periodDuration : period.durationInMinutes, topic.duration > $periodDuration);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("periodDurationTooShort", $exam));
+    insertLogical(new ConstraintOccurrence("periodDurationTooShort", $exam));
 end
 
 // More seating required during a period in a room than available in that room.
@@ -48,7 +48,7 @@ rule "roomCapacityTooSmall"
     );
     eval($totalStudentListSize.intValue() > $capacity);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("roomCapacityTooSmall", $period, $room));
+    insertLogical(new ConstraintOccurrence("roomCapacityTooSmall", $period, $room));
 end
 
 // Period hard constraints
@@ -63,7 +63,7 @@ rule "periodHardConstraintExamCoincidence"
     Exam(topic == $rightSideTopic, period != $leftSidePeriod);
     // TODO make sure that leftSide and rightSide don't share a student
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("periodHardConstraintExamCoincidence", $periodHardConstraint));
+    insertLogical(new ConstraintOccurrence("periodHardConstraintExamCoincidence", $periodHardConstraint));
 end
 rule "periodHardConstraintExclusion"
   when
@@ -75,7 +75,7 @@ rule "periodHardConstraintExclusion"
     Exam(topic == $leftSideTopic, $leftSidePeriod : period);
     Exam(topic == $rightSideTopic, period == $leftSidePeriod);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("periodHardConstraintExclusion", $periodHardConstraint));
+    insertLogical(new ConstraintOccurrence("periodHardConstraintExclusion", $periodHardConstraint));
 end
 rule "periodHardConstraintAfter"
   when
@@ -89,7 +89,7 @@ rule "periodHardConstraintAfter"
         || (period.dateInDays == $leftSidePeriod.dateInDays
         && period.startTimeInMinutes <= $leftSidePeriod.startTimeInMinutes));
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("periodHardConstraintAfter", $periodHardConstraint));
+    insertLogical(new ConstraintOccurrence("periodHardConstraintAfter", $periodHardConstraint));
 end
 
 
@@ -103,7 +103,7 @@ rule "roomHardConstraintExclusive"
     Exam(topic == $topic, $room : room);
     Exam(topic != $topic, room == $room);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("roomHardConstraintExclusive", $roomHardConstraint));
+    insertLogical(new ConstraintOccurrence("roomHardConstraintExclusive", $roomHardConstraint));
 end
 
 
@@ -111,7 +111,7 @@ rule "hardConstraintsBroken"
     salience -1 // Finish the other rules first (optional, for performance)
   when
     $hardCount : Number() from accumulate(
-       $w : WorkaroundMultiplePatternAccumulate(),
+       $w : ConstraintOccurrence(),
        // countInteger($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
        count($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
     );

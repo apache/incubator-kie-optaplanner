@@ -39,6 +39,7 @@ public class SimulatedAnnealingAccepter extends TimeGradientBasedAccepter {
             return 1.0;
         } else {
             double acceptChance = Math.exp(scoreDelta * cachedAcceptChancePart);
+//            double acceptChance = Math.min(Math.exp(scoreDelta / scoreDeltaNormalizer), 1.0) * (1.0 - timeGradient);
             // Math.min(acceptChance, 1.0) is oboselete because scoreDelta <= 0.0
             return acceptChance;
         }

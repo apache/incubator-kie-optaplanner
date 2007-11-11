@@ -8,7 +8,7 @@ import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Team;
 import org.drools.solver.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.solver.examples.travelingtournament.solver.domain.Hop;
-import org.drools.solver.examples.common.solver.domain.WorkaroundMultiplePatternAccumulate;
+import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
@@ -40,7 +40,7 @@ rule "fourConsecutiveHomeMatches"
     Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 2));
     Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 3));
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("fourConsecutiveHomeMatches", $m));
+    insertLogical(new ConstraintOccurrence("fourConsecutiveHomeMatches", $m));
 end
 
 rule "fourConsecutiveAwayMatches"
@@ -50,7 +50,7 @@ rule "fourConsecutiveAwayMatches"
     Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 2));
     Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 3));
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("fourConsecutiveAwayMatches", $m));
+    insertLogical(new ConstraintOccurrence("fourConsecutiveAwayMatches", $m));
 end
 
 rule "matchRepeater"
@@ -58,14 +58,14 @@ rule "matchRepeater"
     $m : Match($homeTeam : homeTeam, $awayTeam : awayTeam, $day1 : day);
     Match(homeTeam == $awayTeam, awayTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1));
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("matchRepeater", $m));
+    insertLogical(new ConstraintOccurrence("matchRepeater", $m));
 end
 
 rule "hardConstraintsBroken"
     salience -1 // Finish the other rules first (optional, for performance)
   when
     $hardCount : Number() from accumulate(
-       $w : WorkaroundMultiplePatternAccumulate(),
+       $w : ConstraintOccurrence(),
        // countInteger($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
        count($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
     );

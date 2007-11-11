@@ -3,7 +3,7 @@ package org.drools.solver.examples.nqueens.solver;
 import org.drools.solver.core.evaluation.scorecalculator.SimpleScoreCalculator;
 
 import org.drools.solver.examples.nqueens.domain.Queen;
-import org.drools.solver.examples.common.solver.domain.WorkaroundMultiplePatternAccumulate;
+import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 
 global SimpleScoreCalculator scoreCalculator;
 
@@ -29,7 +29,7 @@ rule "multipleQueensHorizontal"
     $q1 : Queen($id : id, $y : y);
     $q2 : Queen(id > $id, y == $y);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleQueensHorizontal", $q1, $q2));
+    insertLogical(new ConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end
 
 // multipleQueensVertical is obsolete because it is always 0
@@ -39,7 +39,7 @@ rule "multipleQueensAscendingDiagonal"
     $q1 : Queen($id : id, $ascendingD : ascendingD);
     $q2 : Queen(id > $id, ascendingD == $ascendingD);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleQueensAscendingDiagonal", $q1, $q2));
+    insertLogical(new ConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
 end
 
 rule "multipleQueensDescendingDiagonal"
@@ -47,13 +47,13 @@ rule "multipleQueensDescendingDiagonal"
     $q1 : Queen($id : id, $descendingD : descendingD);
     $q2 : Queen(id > $id, descendingD == $descendingD);
   then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleQueensDescendingDiagonal", $q1, $q2));
+    insertLogical(new ConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
 end
 
 rule "constraintsBroken"
   when
     $hardConstraintCount : Long() from accumulate(
-       $w : WorkaroundMultiplePatternAccumulate(),
+       $w : ConstraintOccurrence(),
        count($w)
     );
   then

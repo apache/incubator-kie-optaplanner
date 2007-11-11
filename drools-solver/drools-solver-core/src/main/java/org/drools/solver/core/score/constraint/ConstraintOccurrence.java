@@ -1,4 +1,4 @@
-package org.drools.solver.examples.common.solver.domain;
+package org.drools.solver.core.score.constraint;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -6,12 +6,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * @author Geoffrey De Smet
  */
-public class WorkaroundMultiplePatternAccumulate {
+public class ConstraintOccurrence {
 
     private String ruleId;
     private Object[] objects;
 
-    public WorkaroundMultiplePatternAccumulate(String ruleId, Object ... objects) {
+    public ConstraintOccurrence(String ruleId, Object ... objects) {
         this.ruleId = ruleId;
         this.objects = objects;
     }
@@ -19,8 +19,8 @@ public class WorkaroundMultiplePatternAccumulate {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof WorkaroundMultiplePatternAccumulate) {
-            WorkaroundMultiplePatternAccumulate other = (WorkaroundMultiplePatternAccumulate) o;
+        } else if (o instanceof ConstraintOccurrence) {
+            ConstraintOccurrence other = (ConstraintOccurrence) o;
             return new EqualsBuilder()
                     .append(ruleId, other.ruleId)
                     .append(objects, other.objects)
