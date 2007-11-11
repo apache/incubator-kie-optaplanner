@@ -124,8 +124,8 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
     }
 
     public void solvingStarted() {
-        logger.info("Solving with random seed ({}).", randomSeed);
         startingSystemTimeMillis = System.currentTimeMillis();
+        logger.info("Solving with random seed ({}).", randomSeed);
         random = new Random(randomSeed);
         stepIndex = 0;
         stepScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
