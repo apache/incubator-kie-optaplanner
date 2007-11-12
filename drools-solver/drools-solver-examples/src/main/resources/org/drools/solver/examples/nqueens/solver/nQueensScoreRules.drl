@@ -48,6 +48,7 @@ rule "constraintsBroken"
         scoreCalculator.setScore(- $hardConstraintCount.intValue());
 end
 
+// Don't do this. It breaks performance and scalability!
 //rule "constraintsBroken"
 //    when
 //        $multipleQueensHorizontal : Number()
