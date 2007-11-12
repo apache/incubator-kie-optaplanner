@@ -1,48 +1,43 @@
 package rg.drools.solver.examples.lessonschedule.solver;
 
 import org.drools.solver.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.solver.core.score.constraint.ConstraintOccurrence;
+import org.drools.solver.core.score.constraint.ConstraintType;
 
 import org.drools.solver.examples.lessonschedule.domain.LessonSchedule;
 import org.drools.solver.examples.lessonschedule.domain.Timeslot;
 import org.drools.solver.examples.lessonschedule.domain.Teacher;
 import org.drools.solver.examples.lessonschedule.domain.Group;
 import org.drools.solver.examples.lessonschedule.domain.Lesson;
-import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
-//query "multipleLessonsPerTeacherPerTimeslot"
-//    $lesson : Lesson($id : id, $teacher : teacher, $timeslot : timeslot);
-//    exists Lesson(id > $id, teacher == $teacher, timeslot == $timeslot);
-//end
-//
-//query "multipleLessonsPerGroupPerTimeslot"
-//    $lesson : Lesson($id : id, $group : group, $timeslot : timeslot);
-//    exists Lesson(id > $id, group == $group, timeslot == $timeslot);
-//end
+// ############################################################################
+// Hard constraints
+// ############################################################################
 
 rule "multipleLessonsPerTeacherPerTimeslot"
-  when
-    $lesson : Lesson($id : id, $teacher : teacher, $timeslot : timeslot);
-    exists Lesson(id > $id, teacher == $teacher, timeslot == $timeslot);
-  then
-    insertLogical(new ConstraintOccurrence("multipleLessonsPerTeacherPerTimeslot", $lesson));
+    when
+        $lesson : Lesson($id : id, $teacher : teacher, $timeslot : timeslot);
+        exists Lesson(id > $id, teacher == $teacher, timeslot == $timeslot);
+    then
+        insertLogical(new ConstraintOccurrence("multipleLessonsPerTeacherPerTimeslot", $lesson));
 end
 
 rule "multipleLessonsPerGroupPerTimeslot"
-  when
-    $lesson : Lesson($id : id, $group : group, $timeslot : timeslot);
-    exists Lesson(id > $id, group == $group, timeslot == $timeslot);
-  then
-    insertLogical(new ConstraintOccurrence("multipleLessonsPerGroupPerTimeslot", $lesson));
+    when
+        $lesson : Lesson($id : id, $group : group, $timeslot : timeslot);
+        exists Lesson(id > $id, group == $group, timeslot == $timeslot);
+    then
+        insertLogical(new ConstraintOccurrence("multipleLessonsPerGroupPerTimeslot", $lesson));
 end
 
 rule "hardConstraintsBroken"
-  when
-    $hardCount : Long() from accumulate(
-       $w : ConstraintOccurrence(),
-       count($w)
-    );
-  then
-    scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
+    when
+        $hardCount : Number() from accumulate(
+            $constraintOccurrence : ConstraintOccurrence(),
+            count($constraintOccurrence)
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
 end

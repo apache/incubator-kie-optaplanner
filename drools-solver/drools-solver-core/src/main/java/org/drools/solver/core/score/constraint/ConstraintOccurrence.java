@@ -8,12 +8,30 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class ConstraintOccurrence {
 
-    private String ruleId;
-    private Object[] objects;
+    protected String ruleId;
+    protected ConstraintType constraintType;
+    protected Object[] causes;
 
-    public ConstraintOccurrence(String ruleId, Object ... objects) {
+    public ConstraintOccurrence(String ruleId, Object... causes) {
+        this(ruleId, ConstraintType.NEGATIVE_HARD, causes);
+    }
+
+    public ConstraintOccurrence(String ruleId, ConstraintType constraintType, Object... causes) {
         this.ruleId = ruleId;
-        this.objects = objects;
+        this.constraintType = constraintType;
+        this.causes = causes;
+    }
+
+    public String getRuleId() {
+        return ruleId;
+    }
+
+    public ConstraintType getConstraintType() {
+        return constraintType;
+    }
+
+    public Object[] getCauses() {
+        return causes;
     }
 
     public boolean equals(Object o) {
@@ -23,7 +41,8 @@ public class ConstraintOccurrence {
             ConstraintOccurrence other = (ConstraintOccurrence) o;
             return new EqualsBuilder()
                     .append(ruleId, other.ruleId)
-                    .append(objects, other.objects)
+                    .append(constraintType, other.constraintType)
+                    .append(causes, other.causes)
                     .isEquals();
         } else {
             return false;
@@ -33,7 +52,8 @@ public class ConstraintOccurrence {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(ruleId)
-                .append(objects)
+                .append(constraintType)
+                .append(causes)
                 .toHashCode();
     }
 

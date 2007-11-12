@@ -2,36 +2,22 @@ package org.drools.solver.examples.travelingtournament.smart.solver;
     dialect "java"
 
 import org.drools.solver.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.solver.core.score.constraint.ConstraintOccurrence;
+import org.drools.solver.core.score.constraint.ConstraintType;
 
 import org.drools.solver.examples.travelingtournament.domain.Match;
 import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Team;
 import org.drools.solver.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.solver.examples.travelingtournament.solver.domain.Hop;
-import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
-// multipleMatchesPerTeamPerDay is obsolete because it is always 0
+// ############################################################################
+// Hard constraints
+// ############################################################################
 
-//query "fourConsecutiveHomeMatches"
-//    Match($homeTeam : homeTeam, $day1 : day);
-//    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1));
-//    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 2));
-//    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 3));
-//end
-//
-//query "fourConsecutiveAwayMatches"
-//    Match($awayTeam : awayTeam, $day1 : day);
-//    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 1));
-//    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 2));
-//    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 3));
-//end
-//
-//query "matchRepeater"
-//    Match($homeTeam : homeTeam, $awayTeam : awayTeam, $day1 : day);
-//    Match(homeTeam == $awayTeam, awayTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1));
-//end
+// multipleMatchesPerTeamPerDay is obsolete because it is always 0
 
 rule "fourConsecutiveHomeMatches"
   when
@@ -62,61 +48,64 @@ rule "matchRepeater"
 end
 
 rule "hardConstraintsBroken"
-    salience -1 // Finish the other rules first (optional, for performance)
-  when
-    $hardCount : Number() from accumulate(
-       $w : ConstraintOccurrence(),
-       // countInteger($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-       count($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-    );
-  then
-    scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
+        salience -1 // Finish the other rules first (optional, for performance)
+    when
+        $hardCount : Number() from accumulate(
+            $constraintOccurrence : ConstraintOccurrence(),
+            count($constraintOccurrence)
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
 end
 
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
 rule "startToAwayHop"
-  when
-    Match($toTeam : homeTeam, $team : awayTeam, $day : day);
-    not Day(eval(index == $day.getIndex() - 1));
-  then
-    insertLogical(new Hop($team, $team, $toTeam));
+    when
+        Match($toTeam : homeTeam, $team : awayTeam, $day : day);
+        not Day(eval(index == $day.getIndex() - 1));
+    then
+        insertLogical(new Hop($team, $team, $toTeam));
 end
 rule "homeToAwayHop"
-  when
-    Match($team : homeTeam, $day1 : day);
-    Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
-  then
-    insertLogical(new Hop($team, $team, $toTeam));
+    when
+        Match($team : homeTeam, $day1 : day);
+        Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
+    then
+        insertLogical(new Hop($team, $team, $toTeam));
 end
 rule "awayToAwayHop"
-  when
-    Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day);
-    Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
-  then
-    insertLogical(new Hop($team, $fromTeam, $toTeam));
+    when
+        Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day);
+        Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
+    then
+        insertLogical(new Hop($team, $fromTeam, $toTeam));
 end
 rule "awayToHomeHop"
-  when
-    Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day);
-    Match(homeTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
-  then
-    insertLogical(new Hop($team, $fromTeam, $team));
+    when
+        Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day);
+        Match(homeTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
+    then
+        insertLogical(new Hop($team, $fromTeam, $team));
 end
 rule "awayToEndHop"
-  when
-    Match($fromTeam : homeTeam, $team : awayTeam, $day : day);
-    not Day(eval(index == $day.getIndex() + 1));
-  then
-    insertLogical(new Hop($team, $fromTeam, $team));
+    when
+        Match($fromTeam : homeTeam, $team : awayTeam, $day : day);
+        not Day(eval(index == $day.getIndex() + 1));
+    then
+        insertLogical(new Hop($team, $fromTeam, $team));
 end
 
 rule "softConstraintsBroken"
-    salience -1 // Finish the other rules first (optional, for performance)
-  when
-    $totalDistance : Number() from accumulate(
-      Hop($distance : distance),
-      // sumInteger($distance) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-      sum($distance) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-    );
-  then
-    scoreCalculator.setSoftConstraintsBroken($totalDistance.intValue());
+        salience -1 // Finish the other rules first (optional, for performance)
+    when
+        $totalDistance : Double() from accumulate(
+            Hop($distance : distance),
+            sum($distance)
+        );
+    then
+        scoreCalculator.setSoftConstraintsBroken($totalDistance.intValue());
 end
+

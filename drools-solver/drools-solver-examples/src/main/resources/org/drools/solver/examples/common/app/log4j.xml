@@ -11,7 +11,7 @@
     </appender>
 
     <category name="org.drools.solver">
-        <priority value="debug" />
+        <priority value="info" />
     </category>
 
     <root>

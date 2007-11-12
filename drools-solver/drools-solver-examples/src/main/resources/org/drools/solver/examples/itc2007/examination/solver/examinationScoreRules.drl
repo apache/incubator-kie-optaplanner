@@ -2,6 +2,8 @@ package org.drools.solver.examples.itc2007.examination.solver;
     dialect "java"
 
 import org.drools.solver.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.solver.core.score.constraint.IntConstraintOccurrence;
+import org.drools.solver.core.score.constraint.ConstraintType;
 
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
@@ -14,110 +16,122 @@ import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraint;
 import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
-import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
 // Two exams in the same period which share students.
 rule "conflictingExamsInSamePeriod"
-  when
-    $student : Student();
-    $exam : Exam($id : id, topic.studentList contains $student, $period : period);
-    Exam(period == $period, id > $id, topic.studentList contains $student);
-  then
-    insertLogical(new ConstraintOccurrence("conflictingExamsInSamePeriod", $exam));
+    when
+        $student : Student();
+        $exam : Exam($id : id, topic.studentList contains $student, $period : period);
+        Exam(period == $period, id > $id, topic.studentList contains $student);
+    then
+        insertLogical(new IntConstraintOccurrence("conflictingExamsInSamePeriod", ConstraintType.NEGATIVE_HARD,
+            $exam));
 end
 
 // More time required during a period than available in that period.
 rule "periodDurationTooShort"
-  when
-    $exam : Exam($periodDuration : period.durationInMinutes, topic.duration > $periodDuration);
-  then
-    insertLogical(new ConstraintOccurrence("periodDurationTooShort", $exam));
+    when
+        $exam : Exam($periodDuration : period.durationInMinutes, topic.duration > $periodDuration);
+    then
+        insertLogical(new IntConstraintOccurrence("periodDurationTooShort", ConstraintType.NEGATIVE_HARD,
+            $exam));
 end
 
 // More seating required during a period in a room than available in that room.
 rule "roomCapacityTooSmall"
-  when
-    $period : Period();
-    $room : Room($capacity : capacity);
-    $totalStudentListSize : Number() from accumulate(
-      Exam(period == $period, room == $room, $studentListSize : topic.studentListSize),
-      // sumInteger($studentListSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-      sum($studentListSize)
-    );
-    eval($totalStudentListSize.intValue() > $capacity);
-  then
-    insertLogical(new ConstraintOccurrence("roomCapacityTooSmall", $period, $room));
+    when
+        $period : Period();
+        $room : Room($capacity : capacity);
+        $totalStudentListSize : Number() from accumulate(
+            Exam(period == $period, room == $room, $studentListSize : topic.studentListSize),
+            // sumInteger($studentListSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+            sum($studentListSize)
+        );
+        eval($totalStudentListSize.intValue() > $capacity);
+    then
+        insertLogical(new IntConstraintOccurrence("roomCapacityTooSmall", ConstraintType.NEGATIVE_HARD,
+            $period, $room));
 end
 
 // Period hard constraints
 rule "periodHardConstraintExamCoincidence"
-  when
-    $periodHardConstraint : PeriodHardConstraint(
-      periodHardConstraintType == PeriodHardConstraintType.EXAM_COINCIDENCE,
-      $leftSideTopic : leftSideTopic,
-      $rightSideTopic : rightSideTopic
-    )
-    Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-    Exam(topic == $rightSideTopic, period != $leftSidePeriod);
-    // TODO make sure that leftSide and rightSide don't share a student
-  then
-    insertLogical(new ConstraintOccurrence("periodHardConstraintExamCoincidence", $periodHardConstraint));
+    when
+        $periodHardConstraint : PeriodHardConstraint(
+            periodHardConstraintType == PeriodHardConstraintType.EXAM_COINCIDENCE,
+            $leftSideTopic : leftSideTopic,
+            $rightSideTopic : rightSideTopic
+        )
+        Exam(topic == $leftSideTopic, $leftSidePeriod : period);
+        Exam(topic == $rightSideTopic, period != $leftSidePeriod);
+        // TODO make sure that leftSide and rightSide don't share a student
+    then
+        insertLogical(new IntConstraintOccurrence("periodHardConstraintExamCoincidence", ConstraintType.NEGATIVE_HARD,
+            $periodHardConstraint));
 end
 rule "periodHardConstraintExclusion"
-  when
-    $periodHardConstraint : PeriodHardConstraint(
-      periodHardConstraintType == PeriodHardConstraintType.EXCLUSION,
-      $leftSideTopic : leftSideTopic,
-      $rightSideTopic : rightSideTopic
-    )
-    Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-    Exam(topic == $rightSideTopic, period == $leftSidePeriod);
-  then
-    insertLogical(new ConstraintOccurrence("periodHardConstraintExclusion", $periodHardConstraint));
+    when
+        $periodHardConstraint : PeriodHardConstraint(
+            periodHardConstraintType == PeriodHardConstraintType.EXCLUSION,
+            $leftSideTopic : leftSideTopic,
+            $rightSideTopic : rightSideTopic
+        )
+        Exam(topic == $leftSideTopic, $leftSidePeriod : period);
+        Exam(topic == $rightSideTopic, period == $leftSidePeriod);
+    then
+        insertLogical(new IntConstraintOccurrence("periodHardConstraintExclusion", ConstraintType.NEGATIVE_HARD,
+            $periodHardConstraint));
 end
 rule "periodHardConstraintAfter"
-  when
-    $periodHardConstraint : PeriodHardConstraint(
-      periodHardConstraintType == PeriodHardConstraintType.AFTER,
-      $leftSideTopic : leftSideTopic,
-      $rightSideTopic : rightSideTopic
-    )
-    Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-    Exam(topic == $rightSideTopic, (period.dateInDays < $leftSidePeriod.dateInDays)
-        || (period.dateInDays == $leftSidePeriod.dateInDays
-        && period.startTimeInMinutes <= $leftSidePeriod.startTimeInMinutes));
-  then
-    insertLogical(new ConstraintOccurrence("periodHardConstraintAfter", $periodHardConstraint));
+    when
+        $periodHardConstraint : PeriodHardConstraint(
+            periodHardConstraintType == PeriodHardConstraintType.AFTER,
+            $leftSideTopic : leftSideTopic,
+            $rightSideTopic : rightSideTopic
+        )
+        Exam(topic == $leftSideTopic, $leftSidePeriod : period);
+        Exam(topic == $rightSideTopic, (period.dateInDays < $leftSidePeriod.dateInDays)
+                || (period.dateInDays == $leftSidePeriod.dateInDays
+                && period.startTimeInMinutes <= $leftSidePeriod.startTimeInMinutes));
+    then
+        insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
+            $periodHardConstraint));
 end
-
 
 // Room hard constraints
 rule "roomHardConstraintExclusive"
-  when
-    $roomHardConstraint : RoomHardConstraint(
-      roomHardConstraintType == RoomHardConstraintType.ROOM_EXCLUSIVE,
-      $topic : topic
-    )
-    Exam(topic == $topic, $room : room);
-    Exam(topic != $topic, room == $room);
-  then
-    insertLogical(new ConstraintOccurrence("roomHardConstraintExclusive", $roomHardConstraint));
+    when
+        $roomHardConstraint : RoomHardConstraint(
+            roomHardConstraintType == RoomHardConstraintType.ROOM_EXCLUSIVE,
+            $topic : topic
+        )
+        Exam(topic == $topic, $room : room);
+        Exam(topic != $topic, room == $room);
+    then
+        insertLogical(new IntConstraintOccurrence("roomHardConstraintExclusive", ConstraintType.NEGATIVE_HARD,
+            $roomHardConstraint));
 end
-
 
 rule "hardConstraintsBroken"
-    salience -1 // Finish the other rules first (optional, for performance)
-  when
-    $hardCount : Number() from accumulate(
-       $w : ConstraintOccurrence(),
-       // countInteger($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-       count($w) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-    );
-  then
-    scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
+        salience -1 // Finish the other rules first (optional, for performance)
+    when
+        $hardCount : Number() from accumulate(
+            $constraintOccurrence : IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD),
+            count($constraintOccurrence) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
 end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
 // TODO implement me
 //Two Exams in a Row
 //
