@@ -1,6 +1,7 @@
 package org.drools.solver.config.localsearch.decider.selector;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.solver.core.localsearch.decider.selector.CachedMoveListMoveFactory;
 import org.drools.solver.core.localsearch.decider.selector.MoveFactory;
 
 /**
@@ -11,6 +12,7 @@ public class SelectorConfig {
 
     private MoveFactory moveFactory = null;
     private Class<MoveFactory> moveFactoryClass = null;
+    private Boolean shuffleMovesEveryStep = null;
 
     public MoveFactory getMoveFactory() {
         return moveFactory;
@@ -28,7 +30,13 @@ public class SelectorConfig {
         this.moveFactoryClass = moveFactoryClass;
     }
 
-    // ************************************************************************
+    public Boolean getShuffleMovesEveryStep() {
+        return shuffleMovesEveryStep;
+    }
+
+    public void setShuffleMovesEveryStep(Boolean shuffleMovesEveryStep) {
+        this.shuffleMovesEveryStep = shuffleMovesEveryStep;
+    }// ************************************************************************
     // Builder methods
     // ************************************************************************
 
@@ -37,7 +45,13 @@ public class SelectorConfig {
             return moveFactory;
         } else if (moveFactoryClass != null) {
             try {
-                return moveFactoryClass.newInstance();
+                MoveFactory moveFactory = moveFactoryClass.newInstance();
+                if (shuffleMovesEveryStep != null)
+                {
+                    ((CachedMoveListMoveFactory) moveFactory).setShuffleListEveryStep(
+                            shuffleMovesEveryStep.booleanValue());
+                }
+                return moveFactory;
             } catch (InstantiationException e) {
                 throw new IllegalArgumentException("moveFactoryClass (" + moveFactoryClass.getName()
                         + ") does not have a public no-arg constructor", e);

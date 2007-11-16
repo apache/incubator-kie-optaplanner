@@ -9,9 +9,8 @@
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
     <selector>
-        <moveFactory class="org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory">
-            <shuffleListEveryStep>true</shuffleListEveryStep>
-        </moveFactory>
+        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>
+        <shuffleMovesEveryStep>true</shuffleMovesEveryStep>
     </selector>
     <!--<accepter>-->
         <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
