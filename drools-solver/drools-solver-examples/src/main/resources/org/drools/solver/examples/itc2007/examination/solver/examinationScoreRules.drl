@@ -17,6 +17,8 @@ import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraintT
 import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
 
+import java.util.HashSet;
+
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################
@@ -26,12 +28,15 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Two exams in the same period which share students.
 rule "conflictingExamsInSamePeriod"
     when
-        $student : Student();
-        $exam : Exam($id : id, topic.studentList contains $student, $period : period);
-        Exam(period == $period, id > $id, topic.studentList contains $student);
+        $leftExam : Exam($id : id, $period : period, $leftStudentList : topic.studentList);
+        $rightExam : Exam(period == $period, id > $id, $rightStudentList : topic.studentList);
+        $studentSet : HashSet( size > 0 )
+            from collect(
+                Student( this memberOf $leftStudentList, this memberOf $rightStudentList)
+            );
     then
         insertLogical(new IntConstraintOccurrence("conflictingExamsInSamePeriod", ConstraintType.NEGATIVE_HARD,
-            $exam));
+            $leftExam, $rightExam));
 end
 
 // More time required during a period than available in that period.
