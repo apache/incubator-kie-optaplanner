@@ -40,12 +40,12 @@ end
 
 rule "constraintsBroken"
     when
-        $hardConstraintCount : Number() from accumulate(
+        $constraintCount : Number() from accumulate(
             $constraintOccurrence : ConstraintOccurrence(),
             count($constraintOccurrence)
         );
     then
-        scoreCalculator.setScore(- $hardConstraintCount.intValue());
+        scoreCalculator.setScore(- $constraintCount.intValue());
 end
 
 // Don't do this. It breaks performance and scalability!
