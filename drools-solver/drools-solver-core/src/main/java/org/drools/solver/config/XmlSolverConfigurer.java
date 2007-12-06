@@ -31,6 +31,11 @@ public class XmlSolverConfigurer {
         Annotations.configureAliases(xStream, LocalSearchSolverConfig.class);
     }
 
+    public XmlSolverConfigurer(String resource) {
+        this();
+        configure(resource);
+    }
+
     public void addXstreamAlias(Class aliasClass) {
 		Annotations.configureAliases(xStream, aliasClass);
     }
