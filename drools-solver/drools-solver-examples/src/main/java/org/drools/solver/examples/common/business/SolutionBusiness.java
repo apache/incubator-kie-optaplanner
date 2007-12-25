@@ -1,10 +1,5 @@
 package org.drools.solver.examples.common.business;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.Arrays;
-import java.util.List;
-
 import org.drools.solver.core.Solver;
 import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.move.Move;
@@ -12,6 +7,12 @@ import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.SolutionDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Geoffrey De Smet
@@ -60,11 +61,15 @@ public class SolutionBusiness {
 
 
     public List<File> getUnsolvedFileList() {
-        return Arrays.asList(unsolvedDataDir.listFiles(new SolverExampleFileFilter()));
+        List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(new SolverExampleFileFilter()));
+        Collections.sort(unsolvedFileList);
+        return unsolvedFileList;
     }
 
     public List<File> getSolvedFileList() {
-        return Arrays.asList(solvedDataDir.listFiles(new SolverExampleFileFilter()));
+        List<File> solvedFileList = Arrays.asList(solvedDataDir.listFiles(new SolverExampleFileFilter()));
+        Collections.sort(solvedFileList);
+        return solvedFileList;
     }
 
     public Solution getSolution() {
