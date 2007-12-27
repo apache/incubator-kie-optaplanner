@@ -101,6 +101,24 @@ public class Examination extends AbstractPersistable implements Solution {
         facts.addAll(periodHardConstraintList);
         facts.addAll(roomHardConstraintList);
         facts.addAll(examList);
+        // A faster alternative to the insertLogicalTopicConflicts rule.
+        List<TopicConflict> topicConflictList = new ArrayList<TopicConflict>();
+        for (Topic leftTopic : topicList) {
+            for (Topic rightTopic : topicList) {
+                if (leftTopic.getId() < rightTopic.getId()) {
+                    int studentSize = 0;
+                    for (Student student : leftTopic.getStudentList()) {
+                        if (rightTopic.getStudentList().contains(student)) {
+                            studentSize++;
+                        }
+                    }
+                    if (studentSize > 0) {
+                        topicConflictList.add(new TopicConflict(leftTopic, rightTopic, studentSize));
+                    }
+                }
+            }
+        }
+        facts.addAll(topicConflictList);
         return facts;
     }
 
