@@ -156,6 +156,8 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         bestSolutionRecaller.solvingEnded();
         finish.solvingEnded();
         decider.solvingEnded();
+        // TODO remove this line because it takes to long and is not always usefull
+        // TODO seperate the GUI's evaluation handler from the solver's evaluation handler
         evaluationHandler.setSolution(bestSolutionRecaller.getBestSolution());
         logger.info("Solved in {} steps and {} time millis spend.", stepIndex, getTimeMillisSpend());
     }
