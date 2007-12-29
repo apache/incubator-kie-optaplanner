@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * @author Geoffrey De Smet
  */
-public class ConstraintOccurrence {
+public abstract class ConstraintOccurrence {
 
     protected String ruleId;
     protected ConstraintType constraintType;

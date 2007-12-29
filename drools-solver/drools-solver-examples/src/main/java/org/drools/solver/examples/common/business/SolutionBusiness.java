@@ -17,6 +17,7 @@ import org.drools.solver.core.move.Move;
 import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 import org.drools.solver.core.score.constraint.DoubleConstraintOccurrence;
 import org.drools.solver.core.score.constraint.IntConstraintOccurrence;
+import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.SolutionDao;
 import org.slf4j.Logger;
@@ -119,8 +120,9 @@ public class SolutionBusiness {
                 occurenceScore = ((IntConstraintOccurrence) occurrence).getWeight();
             } else if (occurrence instanceof DoubleConstraintOccurrence) {
                 occurenceScore = ((DoubleConstraintOccurrence) occurrence).getWeight();
+            } else if (occurrence instanceof UnweightedConstraintOccurrence) {
+                occurenceScore = 1.0;
             } else {
-                // TODO FIXME with unweightedConstraintOccurence
                 throw new IllegalStateException("Cannot determine constraintScore of ConstraintOccurence class: "
                         + occurrence.getClass());
             }

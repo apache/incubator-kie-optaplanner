@@ -1,7 +1,7 @@
 package org.drools.solver.examples.nqueens.solver;
 
 import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
-import org.drools.solver.core.score.constraint.ConstraintOccurrence;
+import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.solver.core.score.constraint.ConstraintType;
 
 import org.drools.solver.examples.nqueens.domain.Queen;
@@ -17,7 +17,7 @@ rule "multipleQueensHorizontal"
         $q1 : Queen($id : id, $y : y);
         $q2 : Queen(id > $id, y == $y);
     then
-        insertLogical(new ConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end
 
 // multipleQueensVertical is obsolete because it is always 0
@@ -27,7 +27,7 @@ rule "multipleQueensAscendingDiagonal"
         $q1 : Queen($id : id, $ascendingD : ascendingD);
         $q2 : Queen(id > $id, ascendingD == $ascendingD);
     then
-        insertLogical(new ConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
 end
 
 rule "multipleQueensDescendingDiagonal"
@@ -35,21 +35,21 @@ rule "multipleQueensDescendingDiagonal"
         $q1 : Queen($id : id, $descendingD : descendingD);
         $q2 : Queen(id > $id, descendingD == $descendingD);
     then
-        insertLogical(new ConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
 end
 
-rule "constraintsBroken"
+rule "hardConstraintsBroken"
     when
-        $constraintCount : Number() from accumulate(
-            $constraintOccurrence : ConstraintOccurrence(),
-            count($constraintOccurrence)
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
         );
     then
-        scoreCalculator.setScore(- $constraintCount.intValue());
+        scoreCalculator.setScore(- $occurrenceCount.intValue());
 end
 
 // Don't do this. It breaks performance and scalability!
-//rule "constraintsBroken"
+//rule "hardConstraintsBroken"
 //    when
 //        $multipleQueensHorizontal : Number()
 //        from accumulate(

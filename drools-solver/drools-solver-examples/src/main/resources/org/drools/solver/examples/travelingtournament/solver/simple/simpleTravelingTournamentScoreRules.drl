@@ -2,7 +2,7 @@ package org.drools.solver.examples.travelingtournament.simple.solver;
     dialect "java"
 
 import org.drools.solver.core.score.calculator.HardAndSoftConstraintScoreCalculator;
-import org.drools.solver.core.score.constraint.ConstraintOccurrence;
+import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.solver.core.score.constraint.ConstraintType;
 
 import org.drools.solver.examples.travelingtournament.domain.Match;
@@ -25,7 +25,7 @@ rule "multipleMatchesPerTeamPerDay"
         exists Match( id > $id, homeTeam == $team, day == $day )
                 || exists Match(id > $id, awayTeam == $team, day == $day );
     then
-        insertLogical(new ConstraintOccurrence("multipleMatchesPerTeamPerDay", $m));
+        insertLogical(new UnweightedConstraintOccurrence("multipleMatchesPerTeamPerDay", $m));
 end
 
 rule "fourConsecutiveHomeMatches"
@@ -35,7 +35,7 @@ rule "fourConsecutiveHomeMatches"
         Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 2));
         Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 3));
     then
-        insertLogical(new ConstraintOccurrence("fourConsecutiveHomeMatches", $m));
+        insertLogical(new UnweightedConstraintOccurrence("fourConsecutiveHomeMatches", $m));
 end
 
 rule "fourConsecutiveAwayMatches"
@@ -45,7 +45,7 @@ rule "fourConsecutiveAwayMatches"
         Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 2));
         Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 3));
     then
-        insertLogical(new ConstraintOccurrence("fourConsecutiveAwayMatches", $m));
+        insertLogical(new UnweightedConstraintOccurrence("fourConsecutiveAwayMatches", $m));
 end
 
 rule "matchRepeater"
@@ -53,18 +53,18 @@ rule "matchRepeater"
         $m : Match($homeTeam : homeTeam, $awayTeam : awayTeam, $day1 : day);
         Match(homeTeam == $awayTeam, awayTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1));
     then
-        insertLogical(new ConstraintOccurrence("matchRepeater", $m));
+        insertLogical(new UnweightedConstraintOccurrence("matchRepeater", $m));
 end
 
 rule "hardConstraintsBroken"
         salience -1 // Finish the other rules first (optional, for performance)
     when
-        $hardCount : Number() from accumulate(
-            $constraintOccurrence : ConstraintOccurrence(),
-            count($constraintOccurrence)
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
         );
     then
-        scoreCalculator.setHardConstraintsBroken($hardCount.intValue());
+        scoreCalculator.setHardConstraintsBroken($occurrenceCount.intValue());
 end
 
 // ############################################################################
