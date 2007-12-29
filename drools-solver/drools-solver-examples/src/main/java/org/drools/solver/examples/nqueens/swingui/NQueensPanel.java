@@ -31,7 +31,6 @@ public class NQueensPanel extends SolutionPanel {
     private ImageIcon queenImageIcon;
 
     public NQueensPanel() {
-        super();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         queenImageIcon = new ImageIcon(getClass().getResource(QUEEN_IMAGE_PATH));
     }

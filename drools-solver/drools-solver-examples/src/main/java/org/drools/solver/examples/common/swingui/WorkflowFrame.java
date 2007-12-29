@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WorkflowFrame extends JFrame {
     
-    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
+    public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -36,17 +36,20 @@ public class WorkflowFrame extends JFrame {
 
     private SolutionPanel solutionPanel;
     private JLabel resultLabel;
+    private ConstraintScoreMapDialog constraintScoreMapDialog;
 
     public WorkflowFrame(SolutionPanel solutionPanel, String exampleName) {
         super("Drools solver example " + exampleName);
         this.solutionPanel = solutionPanel;
         solutionPanel.setWorkflowFrame(this);
+        constraintScoreMapDialog = new ConstraintScoreMapDialog(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void setSolutionBusiness(SolutionBusiness solutionBusiness) {
         this.solutionBusiness = solutionBusiness;
         solutionPanel.setSolutionBusiness(solutionBusiness);
+        constraintScoreMapDialog.setSolutionBusiness(solutionBusiness);
     }
 
     public void init() {
@@ -59,9 +62,7 @@ public class WorkflowFrame extends JFrame {
         panel.add(createButtonPanel(), BorderLayout.NORTH);
         JScrollPane solutionScrollPane = new JScrollPane(solutionPanel);
         panel.add(solutionScrollPane, BorderLayout.CENTER);
-        resultLabel = new JLabel("No solution loaded yet");
-        resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-        panel.add(resultLabel, BorderLayout.SOUTH);
+        panel.add(createScorePanel(), BorderLayout.SOUTH);
         return panel;
     }
 
@@ -95,22 +96,6 @@ public class WorkflowFrame extends JFrame {
         return scrollPane;
     }
 
-    private JComponent createProcessingPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1));
-        Action solveAction = new SolveAction();
-        panel.add(new JButton(solveAction));
-        Action saveAction = new SaveAction();
-        panel.add(new JButton(saveAction));
-        return panel;
-    }
-
-
-    public void updateScreen() {
-        solutionPanel.resetPanel();
-        validate();
-        resultLabel.setText("Score = " + NUMBER_FORMAT.format(solutionBusiness.getScore()));
-    }
-
     private class LoadAction extends AbstractAction {
 
         private File file;
@@ -125,6 +110,15 @@ public class WorkflowFrame extends JFrame {
             updateScreen();
         }
 
+    }
+
+    private JComponent createProcessingPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        Action solveAction = new SolveAction();
+        panel.add(new JButton(solveAction));
+        Action saveAction = new SaveAction();
+        panel.add(new JButton(saveAction));
+        return panel;
     }
 
     private class SolveAction extends AbstractAction {
@@ -163,6 +157,36 @@ public class WorkflowFrame extends JFrame {
             }
         }
 
+    }
+
+    private JPanel createScorePanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        resultLabel = new JLabel("No solution loaded yet");
+        resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+        panel.add(resultLabel, BorderLayout.CENTER);
+        JButton constraintScoreMapButton = new JButton(new ShowConstraintScoreMapDialogAction());
+
+        panel.add(constraintScoreMapButton, BorderLayout.EAST);
+        return panel;
+    }
+
+    private class ShowConstraintScoreMapDialogAction extends AbstractAction {
+
+        public ShowConstraintScoreMapDialogAction() {
+            super("Constraint scores");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            constraintScoreMapDialog.resetContentPanel();
+            constraintScoreMapDialog.setVisible(true);
+        }
+
+    }
+
+    public void updateScreen() {
+        solutionPanel.resetPanel();
+        validate();
+        resultLabel.setText("Score = " + NUMBER_FORMAT.format(solutionBusiness.getScore()));
     }
 
 }

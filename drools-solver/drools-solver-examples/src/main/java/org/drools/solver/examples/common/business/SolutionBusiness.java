@@ -1,18 +1,26 @@
 package org.drools.solver.examples.common.business;
 
-import org.drools.solver.core.Solver;
-import org.drools.solver.core.evaluation.EvaluationHandler;
-import org.drools.solver.core.move.Move;
-import org.drools.solver.core.solution.Solution;
-import org.drools.solver.examples.common.persistence.SolutionDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.drools.StatefulSession;
+import org.drools.base.ClassObjectFilter;
+import org.drools.solver.core.Solver;
+import org.drools.solver.core.evaluation.EvaluationHandler;
+import org.drools.solver.core.move.Move;
+import org.drools.solver.core.score.constraint.ConstraintOccurrence;
+import org.drools.solver.core.score.constraint.DoubleConstraintOccurrence;
+import org.drools.solver.core.score.constraint.IntConstraintOccurrence;
+import org.drools.solver.core.solution.Solution;
+import org.drools.solver.examples.common.persistence.SolutionDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
@@ -78,6 +86,52 @@ public class SolutionBusiness {
 
     public double getScore() {
         return evaluationHandler.fireAllRulesAndCalculateStepScore();
+    }
+
+    public Map<String, Double> getConstraintScoreMap() {
+        Map<String, Double> constraintScoreMap = new TreeMap<String, Double>();
+        StatefulSession statefulSession = evaluationHandler.getStatefulSession();
+        if (statefulSession == null) {
+            return Collections.emptyMap();
+        }
+        Iterator<ConstraintOccurrence> it = statefulSession.iterateObjects(
+                new ClassObjectFilter(ConstraintOccurrence.class));
+        for (; it.hasNext();) {
+            ConstraintOccurrence occurrence = it.next();
+            String extendedConstraintId;
+            switch (occurrence.getConstraintType()) {
+                case NEGATIVE_HARD:
+                    extendedConstraintId = "HARD";
+                    break;
+                case NEGATIVE_SOFT:
+                    extendedConstraintId = "SOFT";
+                    break;
+                case POSITIVE:
+                    extendedConstraintId = "POSITIVE";
+                    break;
+                default:
+                    throw new IllegalStateException("Unknown ConstraintType: " + occurrence.getConstraintType());
+            }
+            extendedConstraintId += " " + occurrence.getRuleId();
+            Double constraintScore = constraintScoreMap.get(extendedConstraintId);
+            double occurenceScore;
+            if (occurrence instanceof IntConstraintOccurrence) {
+                occurenceScore = ((IntConstraintOccurrence) occurrence).getWeight();
+            } else if (occurrence instanceof DoubleConstraintOccurrence) {
+                occurenceScore = ((DoubleConstraintOccurrence) occurrence).getWeight();
+            } else {
+                // TODO FIXME with unweightedConstraintOccurence
+                throw new IllegalStateException("Cannot determine constraintScore of ConstraintOccurence class: "
+                        + occurrence.getClass());
+            }
+            if (constraintScore == null) {
+                constraintScore = occurenceScore;
+            } else {
+                constraintScore += occurenceScore;
+            }
+            constraintScoreMap.put(extendedConstraintId, constraintScore);
+        }
+        return constraintScoreMap;
     }
 
     public void load(File file) {

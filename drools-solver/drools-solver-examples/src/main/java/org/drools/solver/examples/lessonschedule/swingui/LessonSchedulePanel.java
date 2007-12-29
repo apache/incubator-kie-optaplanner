@@ -28,7 +28,6 @@ import org.drools.solver.examples.lessonschedule.solver.TimeslotChangeMove;
 public class LessonSchedulePanel extends SolutionPanel {
 
     public LessonSchedulePanel() {
-        super();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 

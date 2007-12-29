@@ -33,7 +33,6 @@ public class ExaminationPanel extends SolutionPanel {
     private GridLayout gridLayout;
 
     public ExaminationPanel() {
-        super();
         gridLayout = new GridLayout(0, 1);
         setLayout(gridLayout);
     }

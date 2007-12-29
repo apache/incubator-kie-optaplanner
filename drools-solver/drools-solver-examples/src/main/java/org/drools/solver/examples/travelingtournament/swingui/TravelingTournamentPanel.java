@@ -28,7 +28,6 @@ import org.drools.solver.examples.travelingtournament.solver.simple.DayChangeMov
 public class TravelingTournamentPanel extends SolutionPanel {
 
     public TravelingTournamentPanel() {
-        super();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
