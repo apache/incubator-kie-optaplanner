@@ -160,6 +160,7 @@ end
 // ############################################################################
 
 // Two exams in a row which share students.
+// TODO implement me
 //rule "twoExamsInARow"
 //    when
 //        $institutionalWeighting : InstitutionalWeighting();
@@ -178,7 +179,7 @@ rule "twoExamsInADay"
         $institutionalWeighting : InstitutionalWeighting();
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
         $leftExam : Exam(topic == $leftTopic, $period : period);
-        // This implementation is slower (package dialect is java, so it isn't MVEL's fault):
+        // This implementation is slower (turn into MVEL complilation):
         // $rightExam : Exam(topic == $rightTopic, period.dateInDays == $period.dateInDays);
         // This implementation is faster:
         $rightExam : Exam(topic == $rightTopic, eval(period.getDateInDays() == $period.getDateInDays()));
@@ -189,15 +190,44 @@ rule "twoExamsInADay"
 end
 
 //Period Spread
-//
-//Mixed Durations
-//
-//Larger Exams Constraints
-//
-//Room Penalty
-//
-//Period Penalty 
 // TODO implement me
+
+// Several exams in the same room and period have different durations
+rule "mixedDurations"
+    when
+        $institutionalWeighting : InstitutionalWeighting();
+        $leftExam : Exam($id : id, $period : period, $room : room, $leftTopic : topic);
+        Exam(period == $period, room == $room, id > $id, eval(topic.getDuration() != $leftTopic.getDuration()));
+    then
+        insertLogical(new IntConstraintOccurrence("mixedDurations", ConstraintType.NEGATIVE_SOFT,
+            $institutionalWeighting.getMixedDurationPenality(),
+            $leftExam)); // Hack so 4 mixed durations only yield 3 penalities instead of 6.
+end
+
+//Larger Exams Constraints
+// TODO implement me
+
+// Period Penalty
+rule "periodPenalty"
+    when
+        $period : Period(penalty > 0);
+        $exam: Exam(period == $period);
+    then
+        insertLogical(new IntConstraintOccurrence("periodPenalty", ConstraintType.NEGATIVE_SOFT,
+            $period.getPenalty(),
+            $exam));
+end
+
+// Room Penalty
+rule "roomPenalty"
+    when
+        $room : Room(penalty > 0);
+        $exam: Exam(room == $room);
+    then
+        insertLogical(new IntConstraintOccurrence("roomPenalty", ConstraintType.NEGATIVE_SOFT,
+            $room.getPenalty(),
+            $exam));
+end
 
 // Accumulate soft constraints
 rule "softConstraintsBroken"
