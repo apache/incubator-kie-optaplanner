@@ -183,6 +183,7 @@ rule "twoExamsInADay"
         // $rightExam : Exam(topic == $rightTopic, period.dateInDays == $period.dateInDays);
         // This implementation is faster:
         $rightExam : Exam(topic == $rightTopic, eval(period.getDateInDays() == $period.getDateInDays()));
+        // TODO twoExamsInARow should be excluded from twoExamsInADay
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInADay", ConstraintType.NEGATIVE_SOFT,
             $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInADayPenality(),
