@@ -159,11 +159,35 @@ end
 // Soft constraints
 // ############################################################################
 
-// TODO implement me
-//Two Exams in a Row
-//
-//Two Exams in a Day
-//
+// Two exams in a row which share students.
+//rule "twoExamsInARow"
+//    when
+//        $institutionalWeighting : InstitutionalWeighting();
+//        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
+//        $leftExam : Exam(topic == $leftTopic, $period : period);
+//        $rightExam : Exam(topic == $rightTopic, period == $period); // TODO FIXME
+//    then
+//        insertLogical(new IntConstraintOccurrence("twoExamsInARow", ConstraintType.NEGATIVE_SOFT,
+//            $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInARowPenality(),
+//            $leftExam, $rightExam));
+//end
+
+// Two exams in a day which share students.
+rule "twoExamsInADay"
+    when
+        $institutionalWeighting : InstitutionalWeighting();
+        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
+        $leftExam : Exam(topic == $leftTopic, $period : period);
+        // This implementation is slower (package dialect is java, so it isn't MVEL's fault):
+        // $rightExam : Exam(topic == $rightTopic, period.dateInDays == $period.dateInDays);
+        // This implementation is faster:
+        $rightExam : Exam(topic == $rightTopic, eval(period.getDateInDays() == $period.getDateInDays()));
+    then
+        insertLogical(new IntConstraintOccurrence("twoExamsInADay", ConstraintType.NEGATIVE_SOFT,
+            $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInADayPenality(),
+            $leftExam, $rightExam));
+end
+
 //Period Spread
 //
 //Mixed Durations
@@ -173,6 +197,7 @@ end
 //Room Penalty
 //
 //Period Penalty 
+// TODO implement me
 
 // Accumulate soft constraints
 rule "softConstraintsBroken"
