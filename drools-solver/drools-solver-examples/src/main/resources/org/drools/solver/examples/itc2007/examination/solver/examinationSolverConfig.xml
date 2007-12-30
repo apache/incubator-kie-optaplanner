@@ -8,16 +8,19 @@
         <maximumSecondsSpend>429</maximumSecondsSpend>
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
-    <selector>
-        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>
-        <shuffleMovesEveryStep>true</shuffleMovesEveryStep>
-    </selector>
+    <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.NeighbourExaminationMoveFactory</moveFactoryClass>-->
+    <!--</selector>-->
     <!--<accepter>-->
         <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
     <!--</accepter>-->
     <!--<forager>-->
         <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
     <!--</forager>-->
+    <selector>
+        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>
+        <shuffleMovesEveryStep>true</shuffleMovesEveryStep>
+    </selector>
     <accepter>
         <accepterType>SIMULATED_ANNEALING</accepterType>
     </accepter>
