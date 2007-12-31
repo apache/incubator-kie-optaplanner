@@ -110,6 +110,7 @@ public class Examination extends AbstractPersistable implements Solution {
                 if (leftTopic.getId() < rightTopic.getId()) {
                     int studentSize = 0;
                     for (Student student : leftTopic.getStudentList()) {
+                        // TODO performance can be improved hashing leftTopicStudentList? 
                         if (rightTopic.getStudentList().contains(student)) {
                             studentSize++;
                         }
