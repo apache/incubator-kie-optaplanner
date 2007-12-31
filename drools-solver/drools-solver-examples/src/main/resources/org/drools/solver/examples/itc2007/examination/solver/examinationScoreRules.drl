@@ -205,8 +205,18 @@ rule "mixedDurations"
             $leftExam)); // Hack so 4 mixed durations only yield 3 penalities instead of 6.
 end
 
-//Larger Exams Constraints
-// TODO implement me
+// Larger Exams towards the beginning of the examination session
+rule "frontLoad"
+    when
+        $institutionalWeighting : InstitutionalWeighting();
+        $topic : Topic(frontLoadLarge == true);
+        $period : Period(frontLoadLast == true);
+        $exam : Exam(topic == $topic, period == $period);
+    then
+        insertLogical(new IntConstraintOccurrence("frontLoad", ConstraintType.NEGATIVE_SOFT,
+            $institutionalWeighting.getFrontLoadPenality(),
+            $exam));
+end
 
 // Period Penalty
 rule "periodPenalty"
