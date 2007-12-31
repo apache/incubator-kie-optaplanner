@@ -16,29 +16,32 @@ import org.drools.solver.examples.itc2007.examination.domain.Room;
  */
 public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
 
+    private static final int PERIOD_JUMP = 2;
+    private static final int ROOM_JUMP = 2;
+
     public Iterator<Move> iterator() {
         List<Move> moveList = new ArrayList<Move>();
         Examination examination = (Examination) localSearchSolver.getCurrentSolution();
         List<Period> periodList = examination.getPeriodList();
         // periodList should not be empty
-        int firstPeriodDayIndex = periodList.get(0).getDayIndex();
-        int lastPeriodDayIndex = periodList.get(periodList.size() - 1).getDayIndex();
+        int firstPeriodIndex = periodList.get(0).getPeriodIndex();
+        int lastPeriodIndex = periodList.get(periodList.size() - PERIOD_JUMP).getPeriodIndex();
         List<Room> roomList = examination.getRoomList();
         long firstRoomId = roomList.get(0).getId();
-        long lastRoomId = roomList.get(roomList.size() - 1).getId();
+        long lastRoomId = roomList.get(roomList.size() - PERIOD_JUMP).getId();
         for (Exam exam : examination.getExamList()) {
             for (Period period : periodList) {
-                if ((Math.abs(period.getDayIndex() - exam.getPeriod().getDayIndex()) <= 1)
-                        || (period.getDayIndex() == firstPeriodDayIndex
-                            && exam.getPeriod().getDayIndex() == lastPeriodDayIndex)
-                        || (period.getDayIndex() == lastPeriodDayIndex
-                            && exam.getPeriod().getDayIndex() == firstPeriodDayIndex)
+                if ((Math.abs(period.getPeriodIndex() - exam.getPeriod().getPeriodIndex()) <= PERIOD_JUMP)
+                        || (period.getPeriodIndex() == firstPeriodIndex
+                            && exam.getPeriod().getPeriodIndex() == lastPeriodIndex)
+                        || (period.getPeriodIndex() == lastPeriodIndex
+                            && exam.getPeriod().getPeriodIndex() == firstPeriodIndex)
                         ) {
                     moveList.add(new PeriodChangeMove(exam, period));
                 }
             }
             for (Room room : roomList) {
-                if ((Math.abs(room.getId() - exam.getRoom().getId()) <= 1)
+                if ((Math.abs(room.getId() - exam.getRoom().getId()) <= ROOM_JUMP)
                         || (room.getId() == firstRoomId
                             && exam.getRoom().getId() == lastRoomId)
                         || (room.getId() == lastRoomId
