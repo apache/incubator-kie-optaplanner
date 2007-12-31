@@ -94,7 +94,9 @@ public class Examination extends AbstractPersistable implements Solution {
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(institutionalWeighting);
-        facts.addAll(studentList);
+        // Student isn't used in the DRL at the moment
+        // Notice that asserting them is not a noticable performance cost, only a memory cost.
+        // facts.addAll(studentList);
         facts.addAll(topicList);
         facts.addAll(periodList);
         facts.addAll(roomList);

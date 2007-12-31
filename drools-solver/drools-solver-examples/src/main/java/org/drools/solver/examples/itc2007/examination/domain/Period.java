@@ -9,8 +9,8 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
 public class Period extends AbstractPersistable implements Comparable<Period> {
 
     private String startDateTimeString;
-    private int dateInDays;
-    private int startTimeInMinutes;
+    private int periodIndex;
+    private int dayIndex;
     private int durationInMinutes;
     private int penalty;
 
@@ -22,20 +22,20 @@ public class Period extends AbstractPersistable implements Comparable<Period> {
         this.startDateTimeString = startDateTimeString;
     }
 
-    public int getDateInDays() {
-        return dateInDays;
+    public int getPeriodIndex() {
+        return periodIndex;
     }
 
-    public void setDateInDays(int dateInDays) {
-        this.dateInDays = dateInDays;
+    public void setPeriodIndex(int periodIndex) {
+        this.periodIndex = periodIndex;
     }
 
-    public int getStartTimeInMinutes() {
-        return startTimeInMinutes;
+    public int getDayIndex() {
+        return dayIndex;
     }
 
-    public void setStartTimeInMinutes(int startTimeInMinutes) {
-        this.startTimeInMinutes = startTimeInMinutes;
+    public void setDayIndex(int dayIndex) {
+        this.dayIndex = dayIndex;
     }
 
     public int getDurationInMinutes() {

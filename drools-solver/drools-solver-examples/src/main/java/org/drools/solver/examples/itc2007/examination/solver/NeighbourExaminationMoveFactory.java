@@ -21,18 +21,18 @@ public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
         Examination examination = (Examination) localSearchSolver.getCurrentSolution();
         List<Period> periodList = examination.getPeriodList();
         // periodList should not be empty
-        int firstPeriodDay = periodList.get(0).getDateInDays();
-        int lastPeriodDay = periodList.get(periodList.size() - 1).getDateInDays();
+        int firstPeriodDayIndex = periodList.get(0).getDayIndex();
+        int lastPeriodDayIndex = periodList.get(periodList.size() - 1).getDayIndex();
         List<Room> roomList = examination.getRoomList();
         long firstRoomId = roomList.get(0).getId();
         long lastRoomId = roomList.get(roomList.size() - 1).getId();
         for (Exam exam : examination.getExamList()) {
             for (Period period : periodList) {
-                if ((Math.abs(period.getDateInDays() - exam.getPeriod().getDateInDays()) <= 1)
-                        || (period.getDateInDays() == firstPeriodDay
-                            && exam.getPeriod().getDateInDays() == lastPeriodDay)
-                        || (period.getDateInDays() == lastPeriodDay
-                            && exam.getPeriod().getDateInDays() == firstPeriodDay)
+                if ((Math.abs(period.getDayIndex() - exam.getPeriod().getDayIndex()) <= 1)
+                        || (period.getDayIndex() == firstPeriodDayIndex
+                            && exam.getPeriod().getDayIndex() == lastPeriodDayIndex)
+                        || (period.getDayIndex() == lastPeriodDayIndex
+                            && exam.getPeriod().getDayIndex() == firstPeriodDayIndex)
                         ) {
                     moveList.add(new PeriodChangeMove(exam, period));
                 }

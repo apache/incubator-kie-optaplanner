@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,15 +134,11 @@ public class ExaminationInputConvertor {
     private void readPeriodList(BufferedReader bufferedReader, Examination examination) throws IOException {
         int periodSize = readHeaderWithNumber(bufferedReader, "Periods");
         List<Period> periodList = new ArrayList<Period>(periodSize);
-        // the timezone needs to be specified or the timeDifference will change with a different -Duser.timezone=...
-        final DateFormat DATE_FORMAT = new SimpleDateFormat("dd:MM:yyyy HH:mm:ssZ");
-        final Date referenceDate; // in the same locale, timezone, DST as the other parsed dates
-        try {
-            referenceDate = DATE_FORMAT.parse("01:01:2000 12:00:00+0000");
-        } catch (ParseException e) {
-            throw new IllegalStateException("Illegal referenceDateString.", e);
-        }
-        final long MILLISECONDS_PER_DAY = 1000L * 3600L * 24L;
+        // Everything is in the default timezone and the default locale.
+        Calendar calendar = Calendar.getInstance();
+        final DateFormat DATE_FORMAT = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
+        int referenceDayOfYear = -1;
+        int referenceYear = -1;
         for (int i = 0; i < periodSize; i++) {
             Period period = new Period();
             period.setId((long) i);
@@ -153,21 +149,30 @@ public class ExaminationInputConvertor {
             }
             String startDateTimeString = lineTokens[0] + " " + lineTokens[1];
             period.setStartDateTimeString(startDateTimeString);
-            Date startDateTime;
+            period.setPeriodIndex(i);
+            int dayOfYear;
+            int year;
             try {
-                startDateTime = DATE_FORMAT.parse(startDateTimeString + "+0000");
+                calendar.setTime(DATE_FORMAT.parse(startDateTimeString));
+                calendar.get(Calendar.DAY_OF_YEAR);
+                dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+                year = calendar.get(Calendar.YEAR);
             } catch (ParseException e) {
                 throw new IllegalArgumentException("Illegal startDateTimeString (" + startDateTimeString + ").", e);
             }
-            // startDateTime.getTime() alone does NOT suffice
-            // as it is locale and timezone dependend (we need GMT without DST)
-            long timeDifference = startDateTime.getTime() - referenceDate.getTime();
-            period.setDateInDays((int) (timeDifference / MILLISECONDS_PER_DAY));
-            period.setStartTimeInMinutes((int) (startDateTime.getTime() % MILLISECONDS_PER_DAY / 60000L));
-            if ((timeDifference % 60000L) != 0L) {
-                throw new IllegalArgumentException("The startDateTimeString (" + startDateTimeString
-                        + ") should not be specified below minutes.");
+            if (referenceDayOfYear < 0) {
+                referenceDayOfYear = dayOfYear;
+                referenceYear = year;
             }
+            if (year != referenceYear) {
+                // Because the Calendar API in JSE sucks... (java 7 will fix that FINALLY)
+                throw new IllegalStateException("Not yet implemented to handle periods spread over different years...");
+            }
+            int dayIndex = dayOfYear - referenceDayOfYear;
+            if (dayIndex < 0) {
+                throw new IllegalStateException("The periods should be in ascending order.");
+            }
+            period.setDayIndex(dayIndex);
             period.setDurationInMinutes(Integer.parseInt(lineTokens[2]));
             period.setPenalty(Integer.parseInt(lineTokens[3]));
             periodList.add(period);
