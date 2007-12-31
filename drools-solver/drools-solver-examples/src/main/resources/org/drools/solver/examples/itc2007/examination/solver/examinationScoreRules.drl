@@ -121,9 +121,7 @@ rule "periodHardConstraintAfter"
             $rightSideTopic : rightSideTopic
         )
         Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-        Exam(topic == $rightSideTopic, (period.dateInDays < $leftSidePeriod.dateInDays)
-                || (period.dateInDays == $leftSidePeriod.dateInDays
-                && period.startTimeInMinutes <= $leftSidePeriod.startTimeInMinutes));
+        Exam(topic == $rightSideTopic, eval(period.getPeriodIndex() <= $leftSidePeriod.getPeriodIndex()));
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
             $periodHardConstraint));
@@ -180,9 +178,9 @@ rule "twoExamsInADay"
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
         $leftExam : Exam(topic == $leftTopic, $period : period);
         // This implementation is slower (turn into MVEL complilation):
-        // $rightExam : Exam(topic == $rightTopic, period.dateInDays == $period.dateInDays);
+        // $rightExam : Exam(topic == $rightTopic, period.dayIndex == $period.dayIndex);
         // This implementation is faster:
-        $rightExam : Exam(topic == $rightTopic, eval(period.getDateInDays() == $period.getDateInDays()));
+        $rightExam : Exam(topic == $rightTopic, eval(period.getDayIndex() == $period.getDayIndex()));
         // TODO twoExamsInARow should be excluded from twoExamsInADay
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInADay", ConstraintType.NEGATIVE_SOFT,
