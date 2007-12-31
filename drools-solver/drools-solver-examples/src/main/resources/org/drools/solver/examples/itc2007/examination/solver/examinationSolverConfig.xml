@@ -5,27 +5,28 @@
         <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
     </scoreCalculator>
     <finish>
-        <maximumSecondsSpend>429</maximumSecondsSpend>
-        <!--<maximumStepCount>100</maximumStepCount>-->
+        <!--<feasableScore>-999999.0</feasableScore>-->
+        <!--<maximumSecondsSpend>429</maximumSecondsSpend>-->
+        <maximumStepCount>100</maximumStepCount>
     </finish>
-    <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.NeighbourExaminationMoveFactory</moveFactoryClass>-->
-    <!--</selector>-->
-    <!--<accepter>-->
-        <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-    <!--</accepter>-->
-    <!--<forager>-->
-        <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
-    <!--</forager>-->
     <selector>
-        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>
-        <shuffleMovesEveryStep>true</shuffleMovesEveryStep>
+        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.NeighbourExaminationMoveFactory</moveFactoryClass>
     </selector>
     <accepter>
-        <accepterType>SIMULATED_ANNEALING</accepterType>
+        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
     </accepter>
     <forager>
-        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
+    <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>-->
+        <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
+    <!--</selector>-->
+    <!--<accepter>-->
+        <!--<accepterType>SIMULATED_ANNEALING</accepterType>-->
+    <!--</accepter>-->
+    <!--<forager>-->
+        <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
+    <!--</forager>-->
 </localSearchSolver>
         

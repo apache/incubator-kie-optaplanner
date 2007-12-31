@@ -158,30 +158,32 @@ end
 // ############################################################################
 
 // Two exams in a row which share students.
-// TODO implement me
-//rule "twoExamsInARow"
-//    when
-//        $institutionalWeighting : InstitutionalWeighting();
-//        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
-//        $leftExam : Exam(topic == $leftTopic, $period : period);
-//        $rightExam : Exam(topic == $rightTopic, period == $period); // TODO FIXME
-//    then
-//        insertLogical(new IntConstraintOccurrence("twoExamsInARow", ConstraintType.NEGATIVE_SOFT,
-//            $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInARowPenality(),
-//            $leftExam, $rightExam));
-//end
+rule "twoExamsInARow"
+    when
+        $institutionalWeighting : InstitutionalWeighting();
+        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
+        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
+        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
+        eval($leftPeriod.getDayIndex() == $rightPeriod.getDayIndex());
+        eval((($leftPeriod.getPeriodIndex() + 1) == $rightPeriod.getPeriodIndex())
+            || ($leftPeriod.getPeriodIndex() == ($rightPeriod.getPeriodIndex() + 1)));
+    then
+        insertLogical(new IntConstraintOccurrence("twoExamsInARow", ConstraintType.NEGATIVE_SOFT,
+            $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInARowPenality(),
+            $leftExam, $rightExam));
+end
 
 // Two exams in a day which share students.
 rule "twoExamsInADay"
     when
         $institutionalWeighting : InstitutionalWeighting();
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
-        $leftExam : Exam(topic == $leftTopic, $period : period);
-        // This implementation is slower (turn into MVEL complilation):
-        // $rightExam : Exam(topic == $rightTopic, period.dayIndex == $period.dayIndex);
-        // This implementation is faster:
-        $rightExam : Exam(topic == $rightTopic, eval(period.getDayIndex() == $period.getDayIndex()));
-        // TODO twoExamsInARow should be excluded from twoExamsInADay
+        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
+        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
+        eval($rightPeriod.getDayIndex() == $leftPeriod.getDayIndex());
+        eval($leftPeriod != $rightPeriod);
+        eval(($leftPeriod.getPeriodIndex() + 1) != $rightPeriod.getPeriodIndex());
+        eval($leftPeriod.getPeriodIndex() != ($rightPeriod.getPeriodIndex() + 1));
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInADay", ConstraintType.NEGATIVE_SOFT,
             $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInADayPenality(),
