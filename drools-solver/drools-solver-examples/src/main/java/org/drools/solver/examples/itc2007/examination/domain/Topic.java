@@ -12,6 +12,7 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
 
     private int duration;
     private List<Student> studentList;
+    private boolean frontLoadLarge;
 
     public int getDuration() {
         return duration;
@@ -31,6 +32,14 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
 
     public int getStudentListSize() {
         return studentList.size();
+    }
+
+    public boolean isFrontLoadLarge() {
+        return frontLoadLarge;
+    }
+
+    public void setFrontLoadLarge(boolean frontLoadLarge) {
+        this.frontLoadLarge = frontLoadLarge;
     }
 
     public int compareTo(Topic other) {

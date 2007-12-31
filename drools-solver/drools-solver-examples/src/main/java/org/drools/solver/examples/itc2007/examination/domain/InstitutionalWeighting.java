@@ -12,7 +12,7 @@ public class InstitutionalWeighting extends AbstractPersistable implements Compa
     private int twoInADayPenality;
     private int periodSpreadPenality;
     private int mixedDurationPenality;
-    private int frontLoadLargestExamSize;
+    private int frontLoadLargeTopicSize;
     private int frontLoadLastPeriodSize;
     private int frontLoadPenality;
 
@@ -48,12 +48,12 @@ public class InstitutionalWeighting extends AbstractPersistable implements Compa
         this.mixedDurationPenality = mixedDurationPenality;
     }
 
-    public int getFrontLoadLargestExamSize() {
-        return frontLoadLargestExamSize;
+    public int getFrontLoadLargeTopicSize() {
+        return frontLoadLargeTopicSize;
     }
 
-    public void setFrontLoadLargestExamSize(int frontLoadLargestExamSize) {
-        this.frontLoadLargestExamSize = frontLoadLargestExamSize;
+    public void setFrontLoadLargeTopicSize(int frontLoadLargeTopicSize) {
+        this.frontLoadLargeTopicSize = frontLoadLargeTopicSize;
     }
 
     public int getFrontLoadLastPeriodSize() {

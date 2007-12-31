@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,9 +93,46 @@ public class ExaminationInputConvertor {
         readPeriodHardConstraintList(bufferedReader, examination);
         readRoomHardConstraintList(bufferedReader, examination);
         readInstitutionalWeighting(bufferedReader, examination);
-        
+        tagFrontLoadLargeTopics(examination);
+        tagFrontLoadLastPeriods(examination);
+
         createExamList(examination);
         return examination;
+    }
+
+    private void tagFrontLoadLargeTopics(Examination examination) {
+        List<Topic> sortedTopicList = new ArrayList<Topic>(examination.getTopicList());
+        Collections.sort(sortedTopicList, new Comparator<Topic>() {
+            public int compare(Topic a, Topic b) {
+                return (a.getStudentListSize() < b.getStudentListSize()) ? -1 :
+                        ((a.getStudentListSize() > b.getStudentListSize()) ? 1 : 0);
+            }
+        });
+        int frontLoadLargeTopicSize = examination.getInstitutionalWeighting().getFrontLoadLargeTopicSize();
+        if (frontLoadLargeTopicSize == 0) {
+            return;
+        }
+        int minimumStudentListSize = sortedTopicList.get(sortedTopicList.size() - frontLoadLargeTopicSize)
+                .getStudentListSize();
+        for (Topic topic : sortedTopicList) {
+            if (topic.getStudentListSize() >= minimumStudentListSize) {
+                topic.setFrontLoadLarge(true);
+            }
+        }
+    }
+
+    private void tagFrontLoadLastPeriods(Examination examination) {
+        List<Period> periodList = examination.getPeriodList();
+        int frontLoadLastPeriodSize = examination.getInstitutionalWeighting().getFrontLoadLastPeriodSize();
+        if (frontLoadLastPeriodSize == 0) {
+            return;
+        }
+        int minimumPeriodIndex = periodList.get(periodList.size() - frontLoadLastPeriodSize).getPeriodIndex();
+        for (Period period : periodList) {
+            if (period.getPeriodIndex() >= minimumPeriodIndex) {
+                period.setFrontLoadLast(true);
+            }
+        }
     }
 
     private void readTopicListAndStudentList(BufferedReader bufferedReader, Examination examination) throws IOException {
@@ -111,6 +150,7 @@ public class ExaminationInputConvertor {
                 topicStudentList.add(findOrCreateStudent(studentMap, Integer.parseInt(lineTokens[j])));
             }
             topic.setStudentList(topicStudentList);
+            topic.setFrontLoadLarge(false);
             topicList.add(topic);
         }
         examination.setTopicList(topicList);
@@ -258,7 +298,7 @@ public class ExaminationInputConvertor {
         lineTokens = readInstitutionalWeightingProperty(bufferedReader, "NONMIXEDDURATIONS", 2);
         institutionalWeighting.setMixedDurationPenality(Integer.parseInt(lineTokens[1]));
         lineTokens = readInstitutionalWeightingProperty(bufferedReader, "FRONTLOAD", 4);
-        institutionalWeighting.setFrontLoadLargestExamSize(Integer.parseInt(lineTokens[1]));
+        institutionalWeighting.setFrontLoadLargeTopicSize(Integer.parseInt(lineTokens[1]));
         institutionalWeighting.setFrontLoadLastPeriodSize(Integer.parseInt(lineTokens[2]));
         institutionalWeighting.setFrontLoadPenality(Integer.parseInt(lineTokens[3]));
         examination.setInstitutionalWeighting(institutionalWeighting);

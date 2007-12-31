@@ -13,6 +13,7 @@ public class Period extends AbstractPersistable implements Comparable<Period> {
     private int dayIndex;
     private int durationInMinutes;
     private int penalty;
+    private boolean frontLoadLast;
 
     public String getStartDateTimeString() {
         return startDateTimeString;
@@ -52,6 +53,14 @@ public class Period extends AbstractPersistable implements Comparable<Period> {
 
     public void setPenalty(int penalty) {
         this.penalty = penalty;
+    }
+
+    public boolean isFrontLoadLast() {
+        return frontLoadLast;
+    }
+
+    public void setFrontLoadLast(boolean frontLoadLast) {
+        this.frontLoadLast = frontLoadLast;
     }
 
     public int compareTo(Period other) {

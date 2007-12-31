@@ -5,8 +5,8 @@
     <twoInADayPenality>5</twoInADayPenality>
     <periodSpreadPenality>5</periodSpreadPenality>
     <mixedDurationPenality>10</mixedDurationPenality>
-    <frontLoadLargestExamSize>100</frontLoadLargestExamSize>
-    <frontLoadLastPeriodSize>30</frontLoadLastPeriodSize>
+    <frontLoadLargeTopicSize>1</frontLoadLargeTopicSize>
+    <frontLoadLastPeriodSize>1</frontLoadLastPeriodSize>
     <frontLoadPenality>5</frontLoadPenality>
   </institutionalWeighting>
   <studentList id="3">
@@ -28,6 +28,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="30"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="31"/>
       </studentList>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="41">
       <id>1</id>
@@ -36,6 +37,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="30"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="31"/>
       </studentList>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="42">
       <id>2</id>
@@ -45,32 +47,36 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="31"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="32"/>
       </studentList>
+      <frontLoadLarge>true</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
   </topicList>
   <periodList id="5">
     <org.drools.solver.examples.itc2007.examination.domain.Period id="50">
       <id>0</id>
       <startDateTimeString>15:04:2005 09:30:00</startDateTimeString>
-      <dateInDays>1930</dateInDays>
-      <startTimeInMinutes>570</startTimeInMinutes>
+      <periodIndex>0</periodIndex>
+      <dayIndex>0</dayIndex>
       <durationInMinutes>210</durationInMinutes>
       <penalty>0</penalty>
+      <frontLoadLast>false</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
     <org.drools.solver.examples.itc2007.examination.domain.Period id="51">
       <id>1</id>
       <startDateTimeString>15:04:2005 14:00:00</startDateTimeString>
-      <dateInDays>1931</dateInDays>
-      <startTimeInMinutes>840</startTimeInMinutes>
+      <periodIndex>1</periodIndex>
+      <dayIndex>0</dayIndex>
       <durationInMinutes>150</durationInMinutes>
       <penalty>0</penalty>
+      <frontLoadLast>false</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
     <org.drools.solver.examples.itc2007.examination.domain.Period id="52">
       <id>2</id>
       <startDateTimeString>18:04:2005 09:30:00</startDateTimeString>
-      <dateInDays>1933</dateInDays>
-      <startTimeInMinutes>570</startTimeInMinutes>
+      <periodIndex>1</periodIndex>
+      <dayIndex>3</dayIndex>
       <durationInMinutes>150</durationInMinutes>
       <penalty>0</penalty>
+      <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
   </periodList>
   <roomList id="6">
