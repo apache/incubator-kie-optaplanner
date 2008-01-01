@@ -197,7 +197,7 @@ rule "periodSpread"
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
 
         eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex())
-          < $institutionalWeighting.getPeriodSpreadLength());
+            < $institutionalWeighting.getPeriodSpreadLength());
     then
         insertLogical(new IntConstraintOccurrence("periodSpread", ConstraintType.NEGATIVE_SOFT,
             $topicConflict.getStudentSize() * $institutionalWeighting.getPeriodSpreadPenality(),
