@@ -157,6 +157,9 @@ end
 // Soft constraints
 // ############################################################################
 
+// TODO check if merging twoExamsInARow and twoExamsInADay can be a noticable performance boost
+// because it avoids OR nodes.
+
 // Two exams in a row which share students.
 rule "twoExamsInARow"
     when
@@ -180,7 +183,7 @@ rule "twoExamsInADay"
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
         $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
-        eval($rightPeriod.getDayIndex() == $leftPeriod.getDayIndex());
+        eval($leftPeriod.getDayIndex() == $rightPeriod.getDayIndex());
         eval($leftPeriod != $rightPeriod);
         eval(($leftPeriod.getPeriodIndex() + 1) != $rightPeriod.getPeriodIndex());
         eval($leftPeriod.getPeriodIndex() != ($rightPeriod.getPeriodIndex() + 1));
@@ -190,8 +193,21 @@ rule "twoExamsInADay"
             $leftExam, $rightExam));
 end
 
-//Period Spread
-// TODO implement me
+// Exams which share students have to few periods between them.
+rule "periodSpread"
+    when
+        $institutionalWeighting : InstitutionalWeighting();
+        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
+        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
+        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
+
+        eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex())
+          < $institutionalWeighting.getPeriodSpreadLength());
+    then
+        insertLogical(new IntConstraintOccurrence("periodSpread", ConstraintType.NEGATIVE_SOFT,
+            $topicConflict.getStudentSize() * $institutionalWeighting.getPeriodSpreadPenality(),
+            $leftExam, $rightExam));
+end
 
 // Several exams in the same room and period have different durations
 rule "mixedDurations"

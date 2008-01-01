@@ -294,7 +294,8 @@ public class ExaminationInputConvertor {
         lineTokens = readInstitutionalWeightingProperty(bufferedReader, "TWOINADAY", 2);
         institutionalWeighting.setTwoInADayPenality(Integer.parseInt(lineTokens[1]));
         lineTokens = readInstitutionalWeightingProperty(bufferedReader, "PERIODSPREAD", 2);
-        institutionalWeighting.setPeriodSpreadPenality(Integer.parseInt(lineTokens[1]));
+        institutionalWeighting.setPeriodSpreadLength(Integer.parseInt(lineTokens[1]));
+        institutionalWeighting.setPeriodSpreadPenality(1); // constant
         lineTokens = readInstitutionalWeightingProperty(bufferedReader, "NONMIXEDDURATIONS", 2);
         institutionalWeighting.setMixedDurationPenality(Integer.parseInt(lineTokens[1]));
         lineTokens = readInstitutionalWeightingProperty(bufferedReader, "FRONTLOAD", 4);

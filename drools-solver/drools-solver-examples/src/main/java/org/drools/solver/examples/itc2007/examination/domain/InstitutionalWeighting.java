@@ -10,6 +10,7 @@ public class InstitutionalWeighting extends AbstractPersistable implements Compa
 
     private int twoInARowPenality;
     private int twoInADayPenality;
+    private int periodSpreadLength;
     private int periodSpreadPenality;
     private int mixedDurationPenality;
     private int frontLoadLargeTopicSize;
@@ -30,6 +31,14 @@ public class InstitutionalWeighting extends AbstractPersistable implements Compa
 
     public void setTwoInADayPenality(int twoInADayPenality) {
         this.twoInADayPenality = twoInADayPenality;
+    }
+
+    public int getPeriodSpreadLength() {
+        return periodSpreadLength;
+    }
+
+    public void setPeriodSpreadLength(int periodSpreadLength) {
+        this.periodSpreadLength = periodSpreadLength;
     }
 
     public int getPeriodSpreadPenality() {
