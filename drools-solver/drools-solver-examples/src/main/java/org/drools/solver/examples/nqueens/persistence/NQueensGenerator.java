@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.solver.examples.nqueens.domain.NQueens;
 import org.drools.solver.examples.nqueens.domain.Queen;
@@ -13,11 +14,15 @@ import org.drools.solver.examples.nqueens.domain.Queen;
 /**
  * @author Geoffrey De Smet
  */
-public class NQueensGenerator {
+public class NQueensGenerator extends LoggingMain {
 
     private static final File outputDir = new File("data/nqueens/unsolved/");
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
+        new NQueensGenerator().generate();
+    }
+
+    public void generate() {
         String nString = JOptionPane.showInputDialog("For what n?");
         int n = Integer.parseInt(nString.trim());
         XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
@@ -27,7 +32,7 @@ public class NQueensGenerator {
         solutionDao.writeSolution(nQueens, outputFile);
     }
 
-    private static NQueens createNQueens(int n) {
+    private NQueens createNQueens(int n) {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
         List<Queen> queenList = new ArrayList<Queen>(n);

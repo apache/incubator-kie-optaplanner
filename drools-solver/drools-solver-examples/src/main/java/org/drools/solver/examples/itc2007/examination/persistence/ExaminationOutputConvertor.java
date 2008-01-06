@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
@@ -13,7 +14,7 @@ import org.drools.solver.examples.itc2007.examination.domain.Examination;
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationOutputConvertor {
+public class ExaminationOutputConvertor extends LoggingMain {
 
     private static final String INPUT_FILE_SUFFIX = ".xml";
     private static final String OUTPUT_FILE_SUFFIX = ".sln";

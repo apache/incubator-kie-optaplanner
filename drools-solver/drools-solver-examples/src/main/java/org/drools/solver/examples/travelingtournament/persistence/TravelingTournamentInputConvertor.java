@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Match;
@@ -19,7 +20,7 @@ import org.drools.solver.examples.travelingtournament.domain.TravelingTournament
 /**
  * @author Geoffrey De Smet
  */
-public abstract class TravelingTournamentInputConvertor {
+public abstract class TravelingTournamentInputConvertor extends LoggingMain {
     
     private static final String INPUT_FILE_SUFFIX = ".txt";
     private static final String OUTPUT_FILE_SUFFIX = ".xml";

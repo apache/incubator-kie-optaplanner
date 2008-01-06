@@ -259,7 +259,7 @@ rule "softConstraintsBroken"
     when
         $softTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
-            count($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         );
     then
         scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());

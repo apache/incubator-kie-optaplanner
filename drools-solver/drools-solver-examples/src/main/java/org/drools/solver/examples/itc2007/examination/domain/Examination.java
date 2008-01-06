@@ -104,13 +104,18 @@ public class Examination extends AbstractPersistable implements Solution {
         facts.addAll(roomHardConstraintList);
         facts.addAll(examList);
         // A faster alternative to the insertLogicalTopicConflicts rule.
+        facts.addAll(calculateTopicConflictList());
+        return facts;
+    }
+
+    private List<TopicConflict> calculateTopicConflictList() {
         List<TopicConflict> topicConflictList = new ArrayList<TopicConflict>();
         for (Topic leftTopic : topicList) {
             for (Topic rightTopic : topicList) {
                 if (leftTopic.getId() < rightTopic.getId()) {
                     int studentSize = 0;
                     for (Student student : leftTopic.getStudentList()) {
-                        // TODO performance can be improved hashing leftTopicStudentList? 
+                        // TODO performance can be improved hashing leftTopicStudentList?
                         if (rightTopic.getStudentList().contains(student)) {
                             studentSize++;
                         }
@@ -121,8 +126,7 @@ public class Examination extends AbstractPersistable implements Solution {
                 }
             }
         }
-        facts.addAll(topicConflictList);
-        return facts;
+        return topicConflictList;
     }
 
     /**

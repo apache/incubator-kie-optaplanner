@@ -17,7 +17,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.builder.CompareToBuilder;
+import org.drools.FactHandle;
+import org.drools.StatefulSession;
+import org.drools.solver.config.XmlSolverConfigurer;
+import org.drools.solver.core.evaluation.EvaluationHandler;
+import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.solver.examples.itc2007.examination.app.ExaminationApp;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.InstitutionalWeighting;
@@ -33,7 +40,7 @@ import org.drools.solver.examples.itc2007.examination.domain.Topic;
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationInputConvertor {
+public class ExaminationInputConvertor extends LoggingMain {
 
     private static final String INPUT_FILE_SUFFIX = ".exam";
     private static final String OUTPUT_FILE_SUFFIX = ".xml";
@@ -65,7 +72,7 @@ public class ExaminationInputConvertor {
         }
     }
 
-    private Examination readExamination(File inputFile) {
+    public Examination readExamination(File inputFile) {
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(inputFile));
@@ -81,7 +88,7 @@ public class ExaminationInputConvertor {
         Examination examination = new Examination();
         examination.setId(0L);
 
-        readTopicListAndStudentList( bufferedReader, examination);
+        readTopicListAndStudentList(bufferedReader, examination);
         readPeriodList(bufferedReader, examination);
         readRoomList(bufferedReader, examination);
 
@@ -285,8 +292,9 @@ public class ExaminationInputConvertor {
         List<Topic> sortedTopicList = new ArrayList<Topic>(examination.getTopicList());
         Collections.sort(sortedTopicList, new Comparator<Topic>() {
             public int compare(Topic a, Topic b) {
-                return (a.getStudentListSize() < b.getStudentListSize()) ? -1 :
-                        ((a.getStudentListSize() > b.getStudentListSize()) ? 1 : 0);
+                return new CompareToBuilder()
+                        .append(a.getStudentListSize(), b.getStudentListSize())
+                        .toComparison();
             }
         });
         int frontLoadLargeTopicSize = examination.getInstitutionalWeighting().getFrontLoadLargeTopicSize();
@@ -316,29 +324,147 @@ public class ExaminationInputConvertor {
         }
     }
 
+//    private void createExamList(Examination examination) {
+//        List<Topic> topicList = examination.getTopicList();
+//        List<Period> periodList = examination.getPeriodList();
+//        List<Room> roomList = examination.getRoomList();
+//        List<Exam> examList = new ArrayList<Exam>(topicList.size());
+//        int periodIndex = 0;
+//        int roomIndex = 0;
+//        int roomAddition = 0;
+//        for (Topic topic : topicList) {
+//            Exam exam = new Exam();
+//            exam.setId(topic.getId());
+//            exam.setTopic(topic);
+//            exam.setPeriod(periodList.get(periodIndex));
+//            exam.setRoom(roomList.get(roomIndex));
+//            periodIndex = (periodIndex + 1) % periodList.size();
+//            roomIndex = (roomIndex + 1) % roomList.size();
+//            if (roomIndex == 0) {
+//                roomAddition = (roomAddition + 1) % roomList.size();
+//                roomIndex = roomAddition;
+//            }
+//            examList.add(exam);
+//        }
+//        examination.setExamList(examList);
+//    }
+
     private void createExamList(Examination examination) {
+        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
+        configurer.configure(ExaminationApp.SOLVER_CONFIG);
+        EvaluationHandler evaluationHandler = configurer.buildSolver().getEvaluationHandler();
+        
         List<Topic> topicList = examination.getTopicList();
         List<Period> periodList = examination.getPeriodList();
         List<Room> roomList = examination.getRoomList();
         List<Exam> examList = new ArrayList<Exam>(topicList.size());
-        int periodIndex = 0;
-        int roomIndex = 0;
-        int roomAddition = 0;
+        examination.setExamList(examList);
+        evaluationHandler.setSolution(examination);
+        evaluationHandler.resetStatefullSession();
+        StatefulSession workingMemory = evaluationHandler.getStatefulSession();
+
+        // Sort the order in which we 'll assign the topics into periods and rooms
+        List<Topic> sortedTopicList = new ArrayList<Topic>(topicList);
+        Collections.sort(sortedTopicList, new Comparator<Topic>() {
+            public int compare(Topic a, Topic b) {
+                return new CompareToBuilder()
+                        .append(a.getStudentListSize(), b.getStudentListSize())
+                        .toComparison();
+            }
+        });
+
+        for (Topic topic : sortedTopicList) {
+            logger.info("Scheduling topic ({}).", topic);
+            double unscheduledScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
+
+            Exam exam = new Exam();
+            exam.setId(topic.getId());
+            exam.setTopic(topic);
+            examList.add(exam);
+
+            FactHandle examHandle = null;
+            boolean perfectMatch = false;
+            double bestScore = Double.NEGATIVE_INFINITY;
+            Period bestPeriod = null;
+            Room bestRoom = null;
+            for (Period period : periodList) {
+                exam.setPeriod(period);
+                for (Room room : roomList) {
+                    exam.setRoom(room);
+                    if (examHandle == null) {
+                        examHandle = workingMemory.insert(exam);
+                    }
+                    workingMemory.update(examHandle, exam);
+                    double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
+                    if (score < unscheduledScore) {
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestPeriod = period;
+                            bestRoom = room;
+                        }
+                    } else if (score == unscheduledScore) {
+                        perfectMatch = true;
+                        break;
+                    } else {
+                        throw new IllegalStateException("The score (" + score
+                                + ") cannot be higher than unscheduledScore (" + unscheduledScore + ").");
+                    }
+                }
+                if (perfectMatch) {
+                    break;
+                }
+            }
+            if (!perfectMatch) {
+                if (bestPeriod == null || bestRoom == null) {
+                    throw new IllegalStateException("The bestPeriod (" + bestPeriod + ") or the bestRoom ("
+                            + bestRoom + ") cannot be null.");
+                }
+                exam.setPeriod(bestPeriod);
+                exam.setRoom(bestRoom);
+                workingMemory.update(examHandle, exam);
+            }
+        }
+    }
+
+    private void createExamListNoRuleEngine(Examination examination) {
+        List<Topic> topicList = examination.getTopicList();
+        List<Period> periodList = examination.getPeriodList();
+        List<Room> roomList = examination.getRoomList();
+        List<Exam> examList = new ArrayList<Exam>(topicList.size());
         for (Topic topic : topicList) {
             Exam exam = new Exam();
             exam.setId(topic.getId());
             exam.setTopic(topic);
-            exam.setPeriod(periodList.get(periodIndex));
-            exam.setRoom(roomList.get(roomIndex));
-            periodIndex = (periodIndex + 1) % periodList.size();
-            roomIndex = (roomIndex + 1) % roomList.size();
-            if (roomIndex == 0) {
-                roomAddition = (roomAddition + 1) % roomList.size();
-                roomIndex = roomAddition;
-            }
+            // Period and room assigned later
             examList.add(exam);
         }
         examination.setExamList(examList);
+        // Sort the order in which we 'll assign them
+        List<Exam> sortedExamList = new ArrayList<Exam>(examList);
+        Collections.sort(sortedExamList, new Comparator<Exam>() {
+            public int compare(Exam a, Exam b) {
+                return new CompareToBuilder()
+                        .append(a.getTopic().getStudentListSize(), b.getTopic().getStudentListSize())
+                        .toComparison();
+            }
+        });
+
+        // Assign periods
+        for (Exam exam : sortedExamList) {
+            Period assignedPeriod = null;
+            int assignedPeriodWorth = 0;
+            for (Period period : periodList) {
+
+
+            }
+            if (assignedPeriod == null) {
+                // TODO randomize
+            }
+        }
+
+        // Assign rooms
+
+        // TODO
     }
 
 }
