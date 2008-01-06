@@ -63,7 +63,8 @@ end
 // More time required during a period than available in that period.
 rule "periodDurationTooShort"
     when
-        $exam : Exam($periodDuration : period.durationInMinutes, topic.duration > $periodDuration);
+        // TODO don't switch to MVEL with period.durationInMinutes
+        $exam : Exam($periodDuration : period.durationInMinutes, eval(topic.getDuration() > (Integer) $periodDuration));
     then
         insertLogical(new IntConstraintOccurrence("periodDurationTooShort", ConstraintType.NEGATIVE_HARD,
             $exam));
@@ -75,6 +76,7 @@ rule "roomCapacityTooSmall"
         $period : Period();
         $room : Room($capacity : capacity);
         $totalStudentListSize : Number() from accumulate(
+            // TODO don't switch to MVEL with topic.studentListSize
             Exam(period == $period, room == $room, $studentListSize : topic.studentListSize),
             // sumInteger($studentListSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
             sum($studentListSize)
