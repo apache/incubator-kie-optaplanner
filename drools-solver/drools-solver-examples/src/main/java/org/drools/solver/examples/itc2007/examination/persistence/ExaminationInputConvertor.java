@@ -23,6 +23,7 @@ import org.drools.StatefulSession;
 import org.drools.solver.config.XmlSolverConfigurer;
 import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.examples.common.app.LoggingMain;
+import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.solver.examples.itc2007.examination.app.ExaminationApp;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
@@ -424,6 +425,7 @@ public class ExaminationInputConvertor extends LoggingMain {
                 workingMemory.update(examHandle, exam);
             }
         }
+        Collections.sort(examList, new PersistableIdComparator());
     }
 
     private void createExamListNoRuleEngine(Examination examination) {

@@ -122,8 +122,8 @@ rule "periodHardConstraintAfter"
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         )
-        Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-        Exam(topic == $rightSideTopic, eval(period.getPeriodIndex() <= $leftSidePeriod.getPeriodIndex()));
+        Exam(topic == $leftSideTopic, $afterSidePeriod : period);
+        Exam(topic == $rightSideTopic, eval($afterSidePeriod.getPeriodIndex() <= period.getPeriodIndex()));
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
             $periodHardConstraint));

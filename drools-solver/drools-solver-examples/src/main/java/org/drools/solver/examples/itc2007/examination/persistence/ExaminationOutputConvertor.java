@@ -4,9 +4,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.app.LoggingMain;
+import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
@@ -58,6 +60,7 @@ public class ExaminationOutputConvertor extends LoggingMain {
     }
 
     private void writeExamination(Examination examination, BufferedWriter bufferedWriter) throws IOException {
+        Collections.sort(examination.getExamList(), new PersistableIdComparator()); // TODO remove me when obsolete
         for (Exam exam : examination.getExamList()) {
             bufferedWriter.write(exam.getPeriod().getId() + ", " + exam.getRoom().getId() + "\r\n");
         }
