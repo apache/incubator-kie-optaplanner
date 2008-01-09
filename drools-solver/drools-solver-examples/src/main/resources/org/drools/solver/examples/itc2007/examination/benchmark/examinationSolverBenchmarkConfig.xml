@@ -13,7 +13,7 @@
         </scoreCalculator>
         <finish>
             <!--<maximumSecondsSpend>429</maximumSecondsSpend>-->
-            <maximumStepCount>100</maximumStepCount>
+            <maximumStepCount>500</maximumStepCount>
         </finish>
     </inheritedLocalSearchSolver>
 

@@ -123,9 +123,11 @@ rule "periodHardConstraintAfter"
             $rightSideTopic : rightSideTopic
         )
         Exam(topic == $leftSideTopic, $afterSidePeriod : period);
-        Exam(topic == $rightSideTopic, eval($afterSidePeriod.getPeriodIndex() <= period.getPeriodIndex()));
+        Exam(topic == $rightSideTopic, eval($afterSidePeriod.getPeriodIndex() <= period.getPeriodIndex()),
+                $beforeSidePeriod : period);
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
+            ($beforeSidePeriod.getPeriodIndex() - $afterSidePeriod.getPeriodIndex() + 1),
             $periodHardConstraint));
 end
 
@@ -199,7 +201,7 @@ rule "periodSpread"
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
 
         eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex())
-            < $institutionalWeighting.getPeriodSpreadLength());
+            < ($institutionalWeighting.getPeriodSpreadLength() + 1));
     then
         insertLogical(new IntConstraintOccurrence("periodSpread", ConstraintType.NEGATIVE_SOFT,
             $topicConflict.getStudentSize() * $institutionalWeighting.getPeriodSpreadPenality(),

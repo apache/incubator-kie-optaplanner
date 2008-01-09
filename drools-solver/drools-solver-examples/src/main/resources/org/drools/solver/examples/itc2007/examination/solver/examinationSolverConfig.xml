@@ -5,9 +5,9 @@
         <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
     </scoreCalculator>
     <finish>
-        <!--<feasableScore>-999999.0</feasableScore>-->
+        <feasableScore>-999999.0</feasableScore>
         <!--<maximumSecondsSpend>429</maximumSecondsSpend>-->
-        <maximumStepCount>100</maximumStepCount>
+        <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.NeighbourExaminationMoveFactory</moveFactoryClass>

@@ -1,3 +1,8 @@
+Examination Validator - Competition 2007
+	Select Problem file:
+	Select Solution file:
+		Show Violations
+
 Reading Problem File
 ====================
 Reading 870 Exams...
@@ -11,1034 +16,237 @@ Conflict Density: 1.17 %
 
 Reading Solution File
 =====================
-Exam 1: Can't Schedule: Period 1, Room 1
-Exam 2: Can't Schedule: Period 2, Room 2
-Exam 4: Can't Schedule: Period 4, Room 4
-Exam 5: Can't Schedule: Period 5, Room 5
-Exam 6: Can't Schedule: Period 6, Room 6
-Exam 7: Can't Schedule: Period 7, Room 7
-Period 8 (120) too short for Exam 8 (180)
-Exam 8: Can't Schedule: Period 8, Room 8
-Period 9 (60) too short for Exam 9 (120)
-Exam 9: Can't Schedule: Period 9, Room 9
-Exam 10: Can't Schedule: Period 10, Room 10
-Exam 11: Can't Schedule: Period 11, Room 11
-Exam 14: Can't Schedule: Period 14, Room 14
-Exam 15: Can't Schedule: Period 15, Room 15
-Exam 16: Can't Schedule: Period 16, Room 16
-Period 17 (120) too short for Exam 17 (180)
-Exam 17: Can't Schedule: Period 17, Room 17
-Period 18 (90) too short for Exam 18 (180)
-Exam 18: Can't Schedule: Period 18, Room 18
-Exam 19: Can't Schedule: Period 19, Room 19
-Period 21 (90) too short for Exam 21 (180)
-Exam 21: Can't Schedule: Period 21, Room 21
-Period 24 (90) too short for Exam 24 (120)
-Exam 24: Can't Schedule: Period 24, Room 24
-Period 28 (120) too short for Exam 28 (180)
-Exam 28: Can't Schedule: Period 28, Room 28
-Period 29 (60) too short for Exam 29 (180)
-Exam 29: Can't Schedule: Period 29, Room 29
-Period 31 (120) too short for Exam 31 (180)
-Exam 31: Can't Schedule: Period 31, Room 31
-Period 35 (60) too short for Exam 35 (180)
-Exam 35: Can't Schedule: Period 35, Room 35
-Exam 36: Can't Schedule: Period 36, Room 36
-Exam 38: Can't Schedule: Period 38, Room 38
-Exam 39: Can't Schedule: Period 39, Room 39
-Exam 40: Can't Schedule: Period 0, Room 40
-Exam 41: Can't Schedule: Period 1, Room 41
-Exam 42: Can't Schedule: Period 2, Room 42
-Exam 43: Can't Schedule: Period 3, Room 43
-Exam 44: Can't Schedule: Period 4, Room 44
-Exam 45: Can't Schedule: Period 5, Room 45
-Exam 48: Can't Schedule: Period 8, Room 48
-Period 9 (60) too short for Exam 49 (90)
-Exam 49: Can't Schedule: Period 9, Room 1
-Exam 52: Can't Schedule: Period 12, Room 4
-Period 14 (120) too short for Exam 54 (180)
-Exam 54: Can't Schedule: Period 14, Room 6
-Period 15 (120) too short for Exam 55 (180)
-Exam 55: Can't Schedule: Period 15, Room 7
-Period 17 (120) too short for Exam 57 (180)
-Exam 57: Can't Schedule: Period 17, Room 9
-Period 18 (90) too short for Exam 58 (180)
-Exam 58: Can't Schedule: Period 18, Room 10
-Period 20 (120) too short for Exam 60 (180)
-Exam 60: Can't Schedule: Period 20, Room 12
-Exam 65: Can't Schedule: Period 25, Room 17
-Period 26 (120) too short for Exam 66 (180)
-Exam 66: Can't Schedule: Period 26, Room 18
-Exam 67: Can't Schedule: Period 27, Room 19
-Period 29 (60) too short for Exam 69 (150)
-Exam 69: Can't Schedule: Period 29, Room 21
-Exam 74: Can't Schedule: Period 34, Room 26
-Period 35 (60) too short for Exam 75 (90)
-Exam 75: Can't Schedule: Period 35, Room 27
-Period 39 (90) too short for Exam 79 (180)
-Exam 79: Can't Schedule: Period 39, Room 31
-Period 1 (120) too short for Exam 81 (180)
-Exam 81: Can't Schedule: Period 1, Room 33
-Exam 84: Can't Schedule: Period 4, Room 36
-Exam 85: Can't Schedule: Period 5, Room 37
-Exam 86: Can't Schedule: Period 6, Room 38
-Exam 87: Can't Schedule: Period 7, Room 39
-Exam 88: Can't Schedule: Period 8, Room 40
-Period 9 (60) too short for Exam 89 (90)
-Exam 89: Can't Schedule: Period 9, Room 41
-Exam 90: Can't Schedule: Period 10, Room 42
-Period 14 (120) too short for Exam 94 (180)
-Exam 94: Can't Schedule: Period 14, Room 46
-Period 15 (120) too short for Exam 95 (180)
-Exam 95: Can't Schedule: Period 15, Room 47
-Exam 98: Can't Schedule: Period 18, Room 3
-Period 20 (120) too short for Exam 100 (180)
-Exam 100: Can't Schedule: Period 20, Room 5
-Period 24 (90) too short for Exam 104 (180)
-Exam 104: Can't Schedule: Period 24, Room 9
-Period 26 (120) too short for Exam 106 (180)
-Exam 106: Can't Schedule: Period 26, Room 11
-Exam 107: Can't Schedule: Period 27, Room 12
-Period 29 (60) too short for Exam 109 (120)
-Exam 109: Can't Schedule: Period 29, Room 14
-Exam 110: Can't Schedule: Period 30, Room 15
-Period 31 (120) too short for Exam 111 (180)
-Exam 111: Can't Schedule: Period 31, Room 16
-Exam 112: Can't Schedule: Period 32, Room 17
-Exam 113: Can't Schedule: Period 33, Room 18
-Exam 114: Can't Schedule: Period 34, Room 19
-Period 35 (60) too short for Exam 115 (90)
-Exam 115: Can't Schedule: Period 35, Room 20
-Period 39 (90) too short for Exam 119 (180)
-Exam 119: Can't Schedule: Period 39, Room 24
-Conflict at that time with 0
-Exam 120: Can't Schedule: Period 0, Room 25
-Period 9 (60) too short for Exam 129 (120)
-Exam 129: Can't Schedule: Period 9, Room 34
-Exam 131: Can't Schedule: Period 11, Room 36
-Exam 132: Can't Schedule: Period 12, Room 37
-Exam 136: Can't Schedule: Period 16, Room 41
-Exam 137: Can't Schedule: Period 17, Room 42
-Period 18 (90) too short for Exam 138 (120)
-Exam 138: Can't Schedule: Period 18, Room 43
-Period 21 (90) too short for Exam 141 (120)
-Exam 141: Can't Schedule: Period 21, Room 46
-Period 23 (120) too short for Exam 143 (180)
-Exam 143: Can't Schedule: Period 23, Room 48
-Period 24 (90) too short for Exam 144 (180)
-Exam 144: Can't Schedule: Period 24, Room 3
-Exam 145: Can't Schedule: Period 25, Room 4
-Exam 146: Can't Schedule: Period 26, Room 5
-Period 28 (120) too short for Exam 148 (180)
-Exam 148: Can't Schedule: Period 28, Room 7
-Period 29 (60) too short for Exam 149 (180)
-Exam 149: Can't Schedule: Period 29, Room 8
-Exam 150: Can't Schedule: Period 30, Room 9
-Period 31 (120) too short for Exam 151 (180)
-Exam 151: Can't Schedule: Period 31, Room 10
-Period 35 (60) too short for Exam 155 (120)
-Exam 155: Can't Schedule: Period 35, Room 14
-Period 36 (120) too short for Exam 156 (180)
-Exam 156: Can't Schedule: Period 36, Room 15
-Exam 157: Can't Schedule: Period 37, Room 16
-Period 39 (90) too short for Exam 159 (180)
-Exam 159: Can't Schedule: Period 39, Room 18
-Period 1 (120) too short for Exam 161 (180)
-Exam 161: Can't Schedule: Period 1, Room 20
-Period 4 (120) too short for Exam 164 (180)
-Exam 164: Can't Schedule: Period 4, Room 23
-Period 6 (120) too short for Exam 166 (180)
-Exam 166: Can't Schedule: Period 6, Room 25
-Period 8 (120) too short for Exam 168 (180)
-Exam 168: Can't Schedule: Period 8, Room 27
-Period 9 (60) too short for Exam 169 (180)
-Exam 169: Can't Schedule: Period 9, Room 28
-Period 14 (120) too short for Exam 174 (180)
-Exam 174: Can't Schedule: Period 14, Room 33
-Period 15 (120) too short for Exam 175 (180)
-Exam 175: Can't Schedule: Period 15, Room 34
-Period 17 (120) too short for Exam 177 (180)
-Exam 177: Can't Schedule: Period 17, Room 36
-Period 18 (90) too short for Exam 178 (180)
-Exam 178: Can't Schedule: Period 18, Room 37
-Period 20 (120) too short for Exam 180 (180)
-Exam 180: Can't Schedule: Period 20, Room 39
-Period 21 (90) too short for Exam 181 (120)
-Exam 181: Can't Schedule: Period 21, Room 40
-Exam 183: Can't Schedule: Period 23, Room 42
-Period 24 (90) too short for Exam 184 (180)
-Exam 184: Can't Schedule: Period 24, Room 43
-Exam 186: Can't Schedule: Period 26, Room 45
-Period 28 (120) too short for Exam 188 (180)
-Exam 188: Can't Schedule: Period 28, Room 47
-Period 29 (60) too short for Exam 189 (180)
-Exam 189: Can't Schedule: Period 29, Room 48
-Period 34 (120) too short for Exam 194 (180)
-Exam 194: Can't Schedule: Period 34, Room 8
-Period 35 (60) too short for Exam 195 (180)
-Exam 195: Can't Schedule: Period 35, Room 9
-Conflict at that time with 77
-Exam 197: Can't Schedule: Period 37, Room 11
-Period 39 (90) too short for Exam 199 (180)
-Exam 199: Can't Schedule: Period 39, Room 13
-Period 9 (60) too short for Exam 209 (120)
-Exam 209: Can't Schedule: Period 9, Room 23
-Period 15 (120) too short for Exam 215 (150)
-Exam 215: Can't Schedule: Period 15, Room 29
-Period 18 (90) too short for Exam 218 (120)
-Exam 218: Can't Schedule: Period 18, Room 32
-Period 21 (90) too short for Exam 221 (120)
-Exam 221: Can't Schedule: Period 21, Room 35
-Exam 223: Can't Schedule: Period 23, Room 37
-Period 24 (90) too short for Exam 224 (120)
-Exam 224: Can't Schedule: Period 24, Room 38
-Period 29 (60) too short for Exam 229 (120)
-Exam 229: Can't Schedule: Period 29, Room 43
-Period 35 (60) too short for Exam 235 (180)
-Exam 235: Can't Schedule: Period 35, Room 5
-Period 39 (90) too short for Exam 239 (120)
-Exam 239: Can't Schedule: Period 39, Room 9
-Exam 240: Can't Schedule: Period 0, Room 10
-Exam 241: Can't Schedule: Period 1, Room 11
-Period 9 (60) too short for Exam 249 (120)
-Exam 249: Can't Schedule: Period 9, Room 19
-Exam 252: Can't Schedule: Period 12, Room 22
-Period 18 (90) too short for Exam 258 (120)
-Exam 258: Can't Schedule: Period 18, Room 28
-Period 21 (90) too short for Exam 261 (120)
-Exam 261: Can't Schedule: Period 21, Room 31
-Period 24 (90) too short for Exam 264 (120)
-Exam 264: Can't Schedule: Period 24, Room 34
-Exam 265: Can't Schedule: Period 25, Room 35
-Period 29 (60) too short for Exam 269 (120)
-Exam 269: Can't Schedule: Period 29, Room 39
-Exam 271: Can't Schedule: Period 31, Room 41
-Conflict at that time with 232
-Exam 272: Can't Schedule: Period 32, Room 42
-Period 35 (60) too short for Exam 275 (120)
-Exam 275: Can't Schedule: Period 35, Room 45
-Exam 280: Can't Schedule: Period 0, Room 7
-Exam 282: Can't Schedule: Period 2, Room 9
-Conflict at that time with 244
-Exam 284: Can't Schedule: Period 4, Room 11
-Period 6 (120) too short for Exam 286 (180)
-Exam 286: Can't Schedule: Period 6, Room 13
-Period 8 (120) too short for Exam 288 (195)
-Exam 288: Can't Schedule: Period 8, Room 15
-Period 9 (60) too short for Exam 289 (180)
-Exam 289: Can't Schedule: Period 9, Room 16
-Exam 290: Can't Schedule: Period 10, Room 17
-Conflict at that time with 135
-Exam 295: Can't Schedule: Period 15, Room 22
-Period 18 (90) too short for Exam 298 (120)
-Exam 298: Can't Schedule: Period 18, Room 25
-Period 21 (90) too short for Exam 301 (130)
-Exam 301: Can't Schedule: Period 21, Room 28
-Period 24 (90) too short for Exam 304 (120)
-Exam 304: Can't Schedule: Period 24, Room 31
-Cooincidence with another exam in a different period
-Exam 307: Can't Schedule: Period 27, Room 34
-Exam 308: Can't Schedule: Period 28, Room 35
-Period 29 (60) too short for Exam 309 (120)
-Exam 309: Can't Schedule: Period 29, Room 36
-Exam 310: Can't Schedule: Period 30, Room 37
-Period 31 (120) too short for Exam 311 (180)
-Exam 311: Can't Schedule: Period 31, Room 38
-Exam 314: Can't Schedule: Period 34, Room 41
-Period 35 (60) too short for Exam 315 (120)
-Exam 315: Can't Schedule: Period 35, Room 42
-Exam 317: Can't Schedule: Period 37, Room 44
-Exam 318: Can't Schedule: Period 38, Room 45
-Period 39 (90) too short for Exam 319 (120)
-Exam 319: Can't Schedule: Period 39, Room 46
-Exam 321: Can't Schedule: Period 1, Room 48
-Exam 322: Can't Schedule: Period 2, Room 7
-Exam 323: Can't Schedule: Period 3, Room 8
-Exam 324: Can't Schedule: Period 4, Room 9
-Exam 325: Can't Schedule: Period 5, Room 10
-Exam 326: Can't Schedule: Period 6, Room 11
-Exam 328: Can't Schedule: Period 8, Room 13
-Period 9 (60) too short for Exam 329 (120)
-Exam 329: Can't Schedule: Period 9, Room 14
-Exam 330: Can't Schedule: Period 10, Room 15
-Exam 331: Can't Schedule: Period 11, Room 16
-Period 18 (90) too short for Exam 338 (180)
-Exam 338: Can't Schedule: Period 18, Room 23
-Period 21 (90) too short for Exam 341 (120)
-Exam 341: Can't Schedule: Period 21, Room 26
-Period 24 (90) too short for Exam 344 (120)
-Exam 344: Can't Schedule: Period 24, Room 29
-Period 29 (60) too short for Exam 349 (120)
-Exam 349: Can't Schedule: Period 29, Room 34
-Exam 351: Can't Schedule: Period 31, Room 36
-Exam 352: Can't Schedule: Period 32, Room 37
-Period 35 (60) too short for Exam 355 (180)
-Exam 355: Can't Schedule: Period 35, Room 40
-Period 36 (120) too short for Exam 356 (180)
-Exam 356: Can't Schedule: Period 36, Room 41
-Period 39 (90) too short for Exam 359 (180)
-Exam 359: Can't Schedule: Period 39, Room 44
-Exam 360: Can't Schedule: Period 0, Room 45
-Exam 363: Can't Schedule: Period 3, Room 48
-Period 4 (120) too short for Exam 364 (180)
-Exam 364: Can't Schedule: Period 4, Room 8
-Period 6 (120) too short for Exam 366 (180)
-Exam 366: Can't Schedule: Period 6, Room 10
-Period 8 (120) too short for Exam 368 (180)
-Exam 368: Can't Schedule: Period 8, Room 12
-Period 9 (60) too short for Exam 369 (180)
-Exam 369: Can't Schedule: Period 9, Room 13
-Exam 370: Can't Schedule: Period 10, Room 14
-Period 15 (120) too short for Exam 375 (180)
-Exam 375: Can't Schedule: Period 15, Room 19
-Period 18 (90) too short for Exam 378 (180)
-Exam 378: Can't Schedule: Period 18, Room 22
-Period 20 (120) too short for Exam 380 (180)
-Exam 380: Can't Schedule: Period 20, Room 24
-Period 21 (90) too short for Exam 381 (180)
-Exam 381: Can't Schedule: Period 21, Room 25
-Period 24 (90) too short for Exam 384 (180)
-Exam 384: Can't Schedule: Period 24, Room 28
-Period 28 (120) too short for Exam 388 (180)
-Exam 388: Can't Schedule: Period 28, Room 32
-Period 29 (60) too short for Exam 389 (120)
-Exam 389: Can't Schedule: Period 29, Room 33
-Conflict at that time with 350
-Exam 390: Can't Schedule: Period 30, Room 34
-Period 31 (120) too short for Exam 391 (180)
-Exam 391: Can't Schedule: Period 31, Room 35
-Period 35 (60) too short for Exam 395 (180)
-Exam 395: Can't Schedule: Period 35, Room 39
-Period 36 (120) too short for Exam 396 (180)
-Exam 396: Can't Schedule: Period 36, Room 40
-Period 39 (90) too short for Exam 399 (180)
-Exam 399: Can't Schedule: Period 39, Room 43
-Period 1 (120) too short for Exam 401 (180)
-Exam 401: Can't Schedule: Period 1, Room 45
-Exam 405: Can't Schedule: Period 5, Room 9
-Exam 406: Can't Schedule: Period 6, Room 10
-Conflict at that time with 367
-Exam 407: Can't Schedule: Period 7, Room 11
-Period 9 (60) too short for Exam 409 (120)
-Exam 409: Can't Schedule: Period 9, Room 13
-Exam 413: Can't Schedule: Period 13, Room 17
-Exam 415: Can't Schedule: Period 15, Room 19
-Period 18 (90) too short for Exam 418 (120)
-Exam 418: Can't Schedule: Period 18, Room 22
-Cooincidence with another exam in a different period
-Exam 419: Can't Schedule: Period 19, Room 23
-Period 21 (90) too short for Exam 421 (180)
-Exam 421: Can't Schedule: Period 21, Room 25
-Period 23 (120) too short for Exam 423 (180)
-Exam 423: Can't Schedule: Period 23, Room 27
-Period 24 (90) too short for Exam 424 (180)
-Exam 424: Can't Schedule: Period 24, Room 28
-Period 26 (120) too short for Exam 426 (180)
-Exam 426: Can't Schedule: Period 26, Room 30
-Period 29 (60) too short for Exam 429 (120)
-Exam 429: Can't Schedule: Period 29, Room 33
-Exam 431: Can't Schedule: Period 31, Room 35
-Exam 432: Can't Schedule: Period 32, Room 36
-Exam 433: Can't Schedule: Period 33, Room 37
-Period 35 (60) too short for Exam 435 (120)
-Exam 435: Can't Schedule: Period 35, Room 39
-Exam 437: Can't Schedule: Period 37, Room 41
-Exam 438: Can't Schedule: Period 38, Room 42
-Period 39 (90) too short for Exam 439 (120)
-Exam 439: Can't Schedule: Period 39, Room 43
-Period 1 (120) too short for Exam 441 (180)
-Exam 441: Can't Schedule: Period 1, Room 45
-Exam 443: Can't Schedule: Period 3, Room 47
-Exam 446: Can't Schedule: Period 6, Room 11
-Exam 447: Can't Schedule: Period 7, Room 12
-Period 9 (60) too short for Exam 449 (180)
-Exam 449: Can't Schedule: Period 9, Room 14
-Exam 450: Can't Schedule: Period 10, Room 15
-Exam 451: Can't Schedule: Period 11, Room 16
-Exam 452: Can't Schedule: Period 12, Room 17
-Exam 453: Can't Schedule: Period 13, Room 18
-Exam 454: Can't Schedule: Period 14, Room 19
-Exam 459: Can't Schedule: Period 19, Room 24
-Exam 460: Can't Schedule: Period 20, Room 25
-Period 21 (90) too short for Exam 461 (120)
-Exam 461: Can't Schedule: Period 21, Room 26
-Exam 463: Can't Schedule: Period 23, Room 28
-Period 24 (90) too short for Exam 464 (120)
-Exam 464: Can't Schedule: Period 24, Room 29
-Period 29 (60) too short for Exam 469 (120)
-Exam 469: Can't Schedule: Period 29, Room 34
-Exam 470: Can't Schedule: Period 30, Room 35
-Exam 471: Can't Schedule: Period 31, Room 36
-Exam 472: Can't Schedule: Period 32, Room 37
-Exam 473: Can't Schedule: Period 33, Room 38
-Period 34 (120) too short for Exam 474 (180)
-Exam 474: Can't Schedule: Period 34, Room 39
-Period 35 (60) too short for Exam 475 (90)
-Exam 475: Can't Schedule: Period 35, Room 40
-Exam 476: Can't Schedule: Period 36, Room 41
-Exam 477: Can't Schedule: Period 37, Room 42
-Exam 478: Can't Schedule: Period 38, Room 43
-Exam 480: Can't Schedule: Period 0, Room 45
-Exam 482: Can't Schedule: Period 2, Room 47
-Period 18 (90) too short for Exam 498 (180)
-Exam 498: Can't Schedule: Period 18, Room 25
-Period 20 (120) too short for Exam 500 (180)
-Exam 500: Can't Schedule: Period 20, Room 27
-Period 21 (90) too short for Exam 501 (120)
-Exam 501: Can't Schedule: Period 21, Room 28
-Period 23 (120) too short for Exam 503 (180)
-Exam 503: Can't Schedule: Period 23, Room 30
-Period 24 (90) too short for Exam 504 (120)
-Exam 504: Can't Schedule: Period 24, Room 31
-Period 29 (60) too short for Exam 509 (105)
-Exam 509: Can't Schedule: Period 29, Room 36
-Period 35 (60) too short for Exam 515 (90)
-Exam 515: Can't Schedule: Period 35, Room 42
-Exam 518: Can't Schedule: Period 38, Room 45
-Period 4 (120) too short for Exam 524 (180)
-Exam 524: Can't Schedule: Period 4, Room 14
-Period 6 (120) too short for Exam 526 (180)
-Exam 526: Can't Schedule: Period 6, Room 16
-Period 8 (120) too short for Exam 528 (180)
-Exam 528: Can't Schedule: Period 8, Room 18
-Period 9 (60) too short for Exam 529 (120)
-Exam 529: Can't Schedule: Period 9, Room 19
-Period 17 (120) too short for Exam 537 (150)
-Exam 537: Can't Schedule: Period 17, Room 27
-Period 18 (90) too short for Exam 538 (180)
-Exam 538: Can't Schedule: Period 18, Room 28
-Period 24 (90) too short for Exam 544 (180)
-Exam 544: Can't Schedule: Period 24, Room 34
-Period 26 (120) too short for Exam 546 (180)
-Exam 546: Can't Schedule: Period 26, Room 36
-Period 28 (120) too short for Exam 548 (140)
-Exam 548: Can't Schedule: Period 28, Room 38
-Period 31 (120) too short for Exam 551 (180)
-Exam 551: Can't Schedule: Period 31, Room 41
-Period 39 (90) too short for Exam 559 (120)
-Exam 559: Can't Schedule: Period 39, Room 13
-Conflict at that time with 440
-Exam 560: Can't Schedule: Period 0, Room 14
-Exam 561: Can't Schedule: Period 1, Room 15
-Period 8 (120) too short for Exam 568 (180)
-Exam 568: Can't Schedule: Period 8, Room 22
-Period 9 (60) too short for Exam 569 (180)
-Exam 569: Can't Schedule: Period 9, Room 23
-Exam 572: Can't Schedule: Period 12, Room 26
-Exam 573: Can't Schedule: Period 13, Room 27
-Period 15 (120) too short for Exam 575 (180)
-Exam 575: Can't Schedule: Period 15, Room 29
-Period 18 (90) too short for Exam 578 (120)
-Exam 578: Can't Schedule: Period 18, Room 32
-Period 20 (120) too short for Exam 580 (180)
-Exam 580: Can't Schedule: Period 20, Room 34
-Period 21 (90) too short for Exam 581 (180)
-Exam 581: Can't Schedule: Period 21, Room 35
-Period 24 (90) too short for Exam 584 (120)
-Exam 584: Can't Schedule: Period 24, Room 38
-Conflict at that time with 25
-Exam 585: Can't Schedule: Period 25, Room 39
-Exam 586: Can't Schedule: Period 26, Room 40
-Exam 587: Can't Schedule: Period 27, Room 41
-Period 28 (120) too short for Exam 588 (180)
-Exam 588: Can't Schedule: Period 28, Room 42
-Exam 590: Can't Schedule: Period 30, Room 44
-Period 31 (120) too short for Exam 591 (180)
-Exam 591: Can't Schedule: Period 31, Room 45
-Exam 592: Can't Schedule: Period 32, Room 46
-Exam 595: Can't Schedule: Period 35, Room 14
-Exam 597: Can't Schedule: Period 37, Room 16
-Exam 598: Can't Schedule: Period 38, Room 17
-Exam 599: Can't Schedule: Period 39, Room 18
-Exam 600: Can't Schedule: Period 0, Room 19
-Exam 602: Can't Schedule: Period 2, Room 21
-Exam 607: Can't Schedule: Period 7, Room 26
-Period 9 (60) too short for Exam 609 (120)
-Exam 609: Can't Schedule: Period 9, Room 28
-Exam 610: Can't Schedule: Period 10, Room 29
-Exam 616: Can't Schedule: Period 16, Room 35
-Exam 617: Can't Schedule: Period 17, Room 36
-Period 18 (90) too short for Exam 618 (120)
-Exam 618: Can't Schedule: Period 18, Room 37
-Exam 619: Can't Schedule: Period 19, Room 38
-Exam 620: Can't Schedule: Period 20, Room 39
-Exam 621: Can't Schedule: Period 21, Room 40
-Conflict at that time with 542
-Exam 622: Can't Schedule: Period 22, Room 41
-Conflict at that time with 583
-Exam 623: Can't Schedule: Period 23, Room 42
-Period 24 (90) too short for Exam 624 (120)
-Exam 624: Can't Schedule: Period 24, Room 43
-Exam 625: Can't Schedule: Period 25, Room 44
-Exam 626: Can't Schedule: Period 26, Room 45
-Exam 627: Can't Schedule: Period 27, Room 46
-Period 29 (60) too short for Exam 629 (120)
-Exam 629: Can't Schedule: Period 29, Room 48
-Exam 630: Can't Schedule: Period 30, Room 15
-Exam 632: Can't Schedule: Period 32, Room 17
-Exam 634: Can't Schedule: Period 34, Room 19
-Period 35 (60) too short for Exam 635 (120)
-Exam 635: Can't Schedule: Period 35, Room 20
-Exam 636: Can't Schedule: Period 36, Room 21
-Exam 638: Can't Schedule: Period 38, Room 23
-Period 39 (90) too short for Exam 639 (120)
-Exam 639: Can't Schedule: Period 39, Room 24
-Exam 641: Can't Schedule: Period 1, Room 26
-Exam 642: Can't Schedule: Period 2, Room 27
-Period 4 (120) too short for Exam 644 (180)
-Exam 644: Can't Schedule: Period 4, Room 29
-Room 33 has an Exam 128 at this time which requires exclusive access - can't put exam 648 there
-Exam 648: Can't Schedule: Period 8, Room 33
-Period 9 (60) too short for Exam 649 (180)
-Exam 649: Can't Schedule: Period 9, Room 34
-Before with another exam in a later period
-Exam 650: Can't Schedule: Period 10, Room 35
-Exam 653: Can't Schedule: Period 13, Room 38
-Period 14 (120) too short for Exam 654 (180)
-Exam 654: Can't Schedule: Period 14, Room 39
-Period 15 (120) too short for Exam 655 (150)
-Exam 655: Can't Schedule: Period 15, Room 40
-Period 17 (120) too short for Exam 657 (180)
-Exam 657: Can't Schedule: Period 17, Room 42
-Period 18 (90) too short for Exam 658 (180)
-Exam 658: Can't Schedule: Period 18, Room 43
-Exam 659: Can't Schedule: Period 19, Room 44
-Period 20 (120) too short for Exam 660 (180)
-Exam 660: Can't Schedule: Period 20, Room 45
-Exam 664: Can't Schedule: Period 24, Room 16
-Period 26 (120) too short for Exam 666 (180)
-Exam 666: Can't Schedule: Period 26, Room 18
-Period 29 (60) too short for Exam 669 (90)
-Exam 669: Can't Schedule: Period 29, Room 21
-Period 31 (120) too short for Exam 671 (180)
-Exam 671: Can't Schedule: Period 31, Room 23
-Exam 672: Can't Schedule: Period 32, Room 24
-Period 34 (120) too short for Exam 674 (180)
-Exam 674: Can't Schedule: Period 34, Room 26
-Period 35 (60) too short for Exam 675 (180)
-Exam 675: Can't Schedule: Period 35, Room 27
-Period 36 (120) too short for Exam 676 (180)
-Exam 676: Can't Schedule: Period 36, Room 28
-Room 30 has an Exam 78 at this time which requires exclusive access - can't put exam 678 there
-Exam 678: Can't Schedule: Period 38, Room 30
-Conflict at that time with 520
-Exam 680: Can't Schedule: Period 0, Room 32
-Conflict at that time with 521
-Exam 681: Can't Schedule: Period 1, Room 33
-Exam 689: Can't Schedule: Period 9, Room 41
-Exam 690: Can't Schedule: Period 10, Room 42
-Exam 692: Can't Schedule: Period 12, Room 44
-Exam 693: Can't Schedule: Period 13, Room 45
-Exam 696: Can't Schedule: Period 16, Room 48
-Exam 697: Can't Schedule: Period 17, Room 17
-Period 18 (90) too short for Exam 698 (180)
-Exam 698: Can't Schedule: Period 18, Room 18
-Period 20 (120) too short for Exam 700 (180)
-Exam 700: Can't Schedule: Period 20, Room 20
-Period 21 (90) too short for Exam 701 (180)
-Exam 701: Can't Schedule: Period 21, Room 21
-Period 23 (120) too short for Exam 703 (180)
-Exam 703: Can't Schedule: Period 23, Room 23
-Period 24 (90) too short for Exam 704 (180)
-Exam 704: Can't Schedule: Period 24, Room 24
-Exam 706: Can't Schedule: Period 26, Room 26
-Exam 707: Can't Schedule: Period 27, Room 27
-Period 28 (120) too short for Exam 708 (180)
-Exam 708: Can't Schedule: Period 28, Room 28
-Period 29 (60) too short for Exam 709 (180)
-Exam 709: Can't Schedule: Period 29, Room 29
-Period 31 (120) too short for Exam 711 (180)
-Exam 711: Can't Schedule: Period 31, Room 31
-Exam 712: Can't Schedule: Period 32, Room 32
-Period 34 (120) too short for Exam 714 (180)
-Exam 714: Can't Schedule: Period 34, Room 34
-Period 35 (60) too short for Exam 715 (120)
-Exam 715: Can't Schedule: Period 35, Room 35
-Period 36 (120) too short for Exam 716 (180)
-Exam 716: Can't Schedule: Period 36, Room 36
-Exam 717: Can't Schedule: Period 37, Room 37
-Exam 718: Can't Schedule: Period 38, Room 38
-Period 39 (90) too short for Exam 719 (180)
-Exam 719: Can't Schedule: Period 39, Room 39
-Conflict at that time with 522
-Exam 722: Can't Schedule: Period 2, Room 42
-Period 4 (120) too short for Exam 724 (180)
-Exam 724: Can't Schedule: Period 4, Room 44
-Exam 727: Can't Schedule: Period 7, Room 47
-Period 9 (60) too short for Exam 729 (120)
-Exam 729: Can't Schedule: Period 9, Room 18
-Exam 731: Can't Schedule: Period 11, Room 20
-Exam 732: Can't Schedule: Period 12, Room 21
-Period 17 (120) too short for Exam 737 (180)
-Exam 737: Can't Schedule: Period 17, Room 26
-Period 18 (90) too short for Exam 738 (120)
-Exam 738: Can't Schedule: Period 18, Room 27
-Exam 740: Can't Schedule: Period 20, Room 29
-Period 21 (90) too short for Exam 741 (120)
-Exam 741: Can't Schedule: Period 21, Room 30
-Period 24 (90) too short for Exam 744 (120)
-Exam 744: Can't Schedule: Period 24, Room 33
-Period 26 (120) too short for Exam 746 (180)
-Exam 746: Can't Schedule: Period 26, Room 35
-Period 29 (60) too short for Exam 749 (150)
-Exam 749: Can't Schedule: Period 29, Room 38
-Exam 750: Can't Schedule: Period 30, Room 39
-Exam 751: Can't Schedule: Period 31, Room 40
-Exam 754: Can't Schedule: Period 34, Room 43
-Period 35 (60) too short for Exam 755 (180)
-Exam 755: Can't Schedule: Period 35, Room 44
-Period 36 (120) too short for Exam 756 (180)
-Exam 756: Can't Schedule: Period 36, Room 45
-Period 39 (90) too short for Exam 759 (180)
-Exam 759: Can't Schedule: Period 39, Room 48
-Exam 760: Can't Schedule: Period 0, Room 19
-Exam 761: Can't Schedule: Period 1, Room 20
-Exam 762: Can't Schedule: Period 2, Room 21
-Conflict at that time with 563
-Exam 763: Can't Schedule: Period 3, Room 22
-Exam 764: Can't Schedule: Period 4, Room 23
-Exam 765: Can't Schedule: Period 5, Room 24
-Conflict at that time with 47
-Exam 767: Can't Schedule: Period 7, Room 26
-Exam 768: Can't Schedule: Period 8, Room 27
-Period 9 (60) too short for Exam 769 (120)
-Exam 769: Can't Schedule: Period 9, Room 28
-Exam 770: Can't Schedule: Period 10, Room 29
-Exam 771: Can't Schedule: Period 11, Room 30
-Exam 773: Can't Schedule: Period 13, Room 32
-Exam 776: Can't Schedule: Period 16, Room 35
-Exam 777: Can't Schedule: Period 17, Room 36
-Period 18 (90) too short for Exam 778 (120)
-Exam 778: Can't Schedule: Period 18, Room 37
-Period 21 (90) too short for Exam 781 (120)
-Exam 781: Can't Schedule: Period 21, Room 40
-Exam 782: Can't Schedule: Period 22, Room 41
-Period 24 (90) too short for Exam 784 (120)
-Exam 784: Can't Schedule: Period 24, Room 43
-Exam 785: Can't Schedule: Period 25, Room 44
-Exam 786: Can't Schedule: Period 26, Room 45
-Period 29 (60) too short for Exam 789 (120)
-Exam 789: Can't Schedule: Period 29, Room 48
-Period 35 (60) too short for Exam 795 (120)
-Exam 795: Can't Schedule: Period 35, Room 25
-Period 39 (90) too short for Exam 799 (120)
-Exam 799: Can't Schedule: Period 39, Room 29
-Exam 802: Can't Schedule: Period 2, Room 32
-Exam 803: Can't Schedule: Period 3, Room 33
-Exam 805: Can't Schedule: Period 5, Room 35
-Exam 806: Can't Schedule: Period 6, Room 36
-Period 9 (60) too short for Exam 809 (120)
-Exam 809: Can't Schedule: Period 9, Room 39
-Exam 810: Can't Schedule: Period 10, Room 40
-Exam 811: Can't Schedule: Period 11, Room 41
-Exam 813: Can't Schedule: Period 13, Room 43
-Exam 815: Can't Schedule: Period 15, Room 45
-Period 18 (90) too short for Exam 818 (180)
-Exam 818: Can't Schedule: Period 18, Room 48
-Period 23 (120) too short for Exam 823 (180)
-Exam 823: Can't Schedule: Period 23, Room 25
-Period 24 (90) too short for Exam 824 (180)
-Exam 824: Can't Schedule: Period 24, Room 26
-Exam 827: Can't Schedule: Period 27, Room 29
-Period 29 (60) too short for Exam 829 (180)
-Exam 829: Can't Schedule: Period 29, Room 31
-Period 31 (120) too short for Exam 831 (180)
-Exam 831: Can't Schedule: Period 31, Room 33
-Period 34 (120) too short for Exam 834 (180)
-Exam 834: Can't Schedule: Period 34, Room 36
-Period 35 (60) too short for Exam 835 (180)
-Exam 835: Can't Schedule: Period 35, Room 37
-Period 36 (120) too short for Exam 836 (180)
-Exam 836: Can't Schedule: Period 36, Room 38
-Exam 837: Can't Schedule: Period 37, Room 39
-Exam 838: Can't Schedule: Period 38, Room 40
-Period 39 (90) too short for Exam 839 (180)
-Exam 839: Can't Schedule: Period 39, Room 41
-Period 1 (120) too short for Exam 841 (180)
-Exam 841: Can't Schedule: Period 1, Room 43
-Exam 842: Can't Schedule: Period 2, Room 44
-Exam 843: Can't Schedule: Period 3, Room 45
-Exam 846: Can't Schedule: Period 6, Room 48
-Period 8 (120) too short for Exam 848 (180)
-Exam 848: Can't Schedule: Period 8, Room 23
-Period 9 (60) too short for Exam 849 (180)
-Exam 849: Can't Schedule: Period 9, Room 24
-Period 14 (120) too short for Exam 854 (180)
-Exam 854: Can't Schedule: Period 14, Room 29
-Period 18 (90) too short for Exam 858 (120)
-Exam 858: Can't Schedule: Period 18, Room 33
-Conflict at that time with 819
-Exam 859: Can't Schedule: Period 19, Room 34
-Conflict at that time with 820
-Exam 860: Can't Schedule: Period 20, Room 35
-Period 21 (90) too short for Exam 861 (120)
-Exam 861: Can't Schedule: Period 21, Room 36
-Exam 866: Can't Schedule: Period 26, Room 41
-Exam 867: Can't Schedule: Period 27, Room 42
-Exam 868: Can't Schedule: Period 28, Room 43
-Period 29 (60) too short for Exam 869 (120)
-Exam 869: Can't Schedule: Period 29, Room 44
 
 Soft Constraint Violations
 ==========================
-Exam 3: TwoInARow Violation with 5 students - Penalty 75
-Exam 3: Wider Spread Violation with 5 students - Penalty 5
-Exam 3: Period penalty Violation - Penalty 50
-Exam 25: TwoInARow Violation with 2 students - Penalty 30
-Exam 25: Wider Spread Violation with 2 students - Penalty 2
-Exam 26: Room penalty Violation - Penalty 20
-Exam 32: Wider Spread Violation with 9 students - Penalty 9
-Exam 33: TwoInARow Violation with 5 students - Penalty 75
-Exam 33: Wider Spread Violation with 5 students - Penalty 5
-Exam 50: TwoInARow Violation with 16 students - Penalty 240
-Exam 50: Wider Spread Violation with 16 students - Penalty 16
-Exam 53: Room penalty Violation - Penalty 10
-Exam 62: TwoInARow Violation with 1 students - Penalty 15
-Exam 62: Wider Spread Violation with 1 students - Penalty 1
-Exam 62: Room penalty Violation - Penalty 20
-Exam 63: TwoInARow Violation with 13 students - Penalty 195
-Exam 63: Wider Spread Violation with 13 students - Penalty 13
-Exam 71: TwoInARow Violation with 2 students - Penalty 30
-Exam 71: Wider Spread Violation with 2 students - Penalty 2
-Exam 72: Wider Spread Violation with 7 students - Penalty 7
-Exam 73: TwoInADay Violation with 17 students - Penalty 85
-Exam 80: TwoInADay Violation with 5 students - Penalty 25
-Exam 82: Wider Spread Violation with 8 students - Penalty 8
-Exam 83: Period penalty Violation - Penalty 50
-Exam 83: Room penalty Violation - Penalty 20
-Exam 97: Period penalty Violation - Penalty 50
-Exam 99: Room penalty Violation - Penalty 10
-Exam 101: Wider Spread Violation with 1 students - Penalty 1
-Exam 102: TwoInARow Violation with 11 students - Penalty 165
-Exam 102: Wider Spread Violation with 11 students - Penalty 11
-Exam 117: TwoInARow Violation with 10 students - Penalty 150
-Exam 117: Wider Spread Violation with 10 students - Penalty 10
-Exam 121: Room penalty Violation - Penalty 20
-Exam 122: Wider Spread Violation with 42 students - Penalty 42
-Exam 123: TwoInARow Violation with 13 students - Penalty 195
-Exam 123: Wider Spread Violation with 13 students - Penalty 13
-Exam 123: Period penalty Violation - Penalty 50
-Exam 126: Wider Spread Violation with 1 students - Penalty 1
-Exam 127: TwoInARow Violation with 1 students - Penalty 15
-Exam 127: Wider Spread Violation with 1 students - Penalty 1
-Exam 128: Period penalty Violation - Penalty 50
-Exam 130: Room penalty Violation - Penalty 20
-Exam 134: TwoInARow Violation with 10 students - Penalty 150
-Exam 134: Wider Spread Violation with 10 students - Penalty 10
-Exam 153: TwoInARow Violation with 13 students - Penalty 195
-Exam 153: Wider Spread Violation with 13 students - Penalty 13
-Exam 158: Room penalty Violation - Penalty 10
-Exam 160: TwoInADay Violation with 10 students - Penalty 50
-Exam 162: Wider Spread Violation with 10 students - Penalty 10
-Exam 163: TwoInADay Violation with 10 students - Penalty 50
-Exam 163: Period penalty Violation - Penalty 50
-Exam 167: Room penalty Violation - Penalty 20
-Exam 170: TwoInARow Violation with 14 students - Penalty 210
-Exam 170: Wider Spread Violation with 14 students - Penalty 14
-Exam 171: Wider Spread Violation with 33 students - Penalty 33
-Exam 172: TwoInADay Violation with 3 students - Penalty 15
-Exam 176: Room penalty Violation - Penalty 20
-Exam 190: Room penalty Violation - Penalty 10
-Exam 191: Room penalty Violation - Penalty 10
-Exam 192: Wider Spread Violation with 7 students - Penalty 7
-Exam 193: TwoInADay Violation with 7 students - Penalty 35
-Exam 200: Room penalty Violation - Penalty 20
-Exam 201: TwoInARow Violation with 12 students - Penalty 180
-Exam 201: Wider Spread Violation with 12 students - Penalty 12
-Exam 203: TwoInADay Violation with 3 students - Penalty 15
-Exam 203: Period penalty Violation - Penalty 50
-Exam 203: Room penalty Violation - Penalty 10
-Exam 204: TwoInARow Violation with 3 students - Penalty 45
-Exam 204: Wider Spread Violation with 3 students - Penalty 3
-Exam 208: Period penalty Violation - Penalty 50
-Exam 212: TwoInADay Violation with 1 students - Penalty 5
-Exam 212: Room penalty Violation - Penalty 20
-Exam 216: TwoInARow Violation with 2 students - Penalty 30
-Exam 216: Wider Spread Violation with 2 students - Penalty 2
-Exam 217: Period penalty Violation - Penalty 50
-Exam 219: TwoInARow Violation with 5 students - Penalty 75
-Exam 219: Wider Spread Violation with 5 students - Penalty 5
-Exam 225: TwoInARow Violation with 7 students - Penalty 105
-Exam 225: Wider Spread Violation with 7 students - Penalty 7
-Exam 230: TwoInADay Violation with 2 students - Penalty 10
-Exam 242: Wider Spread Violation with 9 students - Penalty 9
-Exam 243: TwoInARow Violation with 7 students - Penalty 105
-Exam 243: TwoInADay Violation with 3 students - Penalty 15
-Exam 243: Wider Spread Violation with 7 students - Penalty 7
-Exam 243: Period penalty Violation - Penalty 50
-Exam 244: Room penalty Violation - Penalty 20
-Exam 247: Room penalty Violation - Penalty 10
-Exam 248: Period penalty Violation - Penalty 50
-Exam 253: TwoInADay Violation with 60 students - Penalty 300
-Exam 256: Room penalty Violation - Penalty 20
-Exam 257: Period penalty Violation - Penalty 50
-Exam 259: TwoInARow Violation with 3 students - Penalty 45
-Exam 259: Wider Spread Violation with 3 students - Penalty 3
-Exam 270: TwoInARow Violation with 1 students - Penalty 15
-Exam 270: TwoInADay Violation with 3 students - Penalty 15
-Exam 270: Wider Spread Violation with 1 students - Penalty 1
-Exam 277: TwoInARow Violation with 1 students - Penalty 15
-Exam 277: Wider Spread Violation with 1 students - Penalty 1
-Exam 283: Period penalty Violation - Penalty 50
-Exam 287: Room penalty Violation - Penalty 20
-Exam 291: Wider Spread Violation with 4 students - Penalty 4
-Exam 292: TwoInARow Violation with 1 students - Penalty 15
-Exam 292: TwoInADay Violation with 1 students - Penalty 5
-Exam 292: Wider Spread Violation with 1 students - Penalty 1
-Exam 293: TwoInARow Violation with 2 students - Penalty 30
-Exam 293: TwoInADay Violation with 4 students - Penalty 20
-Exam 293: Wider Spread Violation with 2 students - Penalty 2
-Exam 297: Period penalty Violation - Penalty 50
-Exam 299: Room penalty Violation - Penalty 20
-Exam 332: Room penalty Violation - Penalty 10
-Exam 334: TwoInARow Violation with 27 students - Penalty 405
-Exam 334: Wider Spread Violation with 27 students - Penalty 27
-Exam 335: Wider Spread Violation with 1 students - Penalty 1
-Exam 337: Period penalty Violation - Penalty 50
-Exam 346: Wider Spread Violation with 29 students - Penalty 29
-Exam 347: TwoInARow Violation with 4 students - Penalty 60
-Exam 347: Wider Spread Violation with 4 students - Penalty 4
-Exam 350: Room penalty Violation - Penalty 20
-Exam 353: TwoInARow Violation with 25 students - Penalty 375
-Exam 353: Wider Spread Violation with 25 students - Penalty 25
-Exam 357: TwoInARow Violation with 6 students - Penalty 90
-Exam 357: Wider Spread Violation with 6 students - Penalty 6
-Exam 371: Wider Spread Violation with 1 students - Penalty 1
-Exam 372: TwoInARow Violation with 14 students - Penalty 210
-Exam 372: TwoInADay Violation with 3 students - Penalty 15
-Exam 372: Wider Spread Violation with 14 students - Penalty 14
-Exam 373: TwoInARow Violation with 11 students - Penalty 165
-Exam 373: Wider Spread Violation with 11 students - Penalty 11
-Exam 373: Room penalty Violation - Penalty 10
-Exam 377: Period penalty Violation - Penalty 50
-Exam 382: Room penalty Violation - Penalty 20
-Exam 385: TwoInARow Violation with 1 students - Penalty 15
-Exam 385: Wider Spread Violation with 1 students - Penalty 1
-Exam 386: Wider Spread Violation with 1 students - Penalty 1
-Exam 393: TwoInARow Violation with 6 students - Penalty 90
-Exam 393: Wider Spread Violation with 6 students - Penalty 6
-Exam 397: TwoInARow Violation with 6 students - Penalty 90
-Exam 397: Wider Spread Violation with 6 students - Penalty 6
-Exam 402: Wider Spread Violation with 8 students - Penalty 8
-Exam 403: Period penalty Violation - Penalty 50
-Exam 408: Period penalty Violation - Penalty 50
-Exam 410: TwoInARow Violation with 9 students - Penalty 135
-Exam 410: Wider Spread Violation with 9 students - Penalty 9
-Exam 410: Room penalty Violation - Penalty 20
-Exam 411: Wider Spread Violation with 3 students - Penalty 3
-Exam 412: TwoInADay Violation with 8 students - Penalty 40
-Exam 416: TwoInARow Violation with 18 students - Penalty 270
-Exam 416: Wider Spread Violation with 18 students - Penalty 18
-Exam 417: Period penalty Violation - Penalty 50
-Exam 422: Room penalty Violation - Penalty 20
-Exam 427: TwoInARow Violation with 6 students - Penalty 90
-Exam 427: Wider Spread Violation with 6 students - Penalty 6
-Exam 444: TwoInARow Violation with 1 students - Penalty 15
-Exam 444: Wider Spread Violation with 1 students - Penalty 1
-Exam 445: TwoInARow Violation with 1 students - Penalty 15
-Exam 445: Wider Spread Violation with 1 students - Penalty 1
-Exam 448: Period penalty Violation - Penalty 50
-Exam 455: Wider Spread Violation with 19 students - Penalty 19
-Exam 456: TwoInARow Violation with 22 students - Penalty 330
-Exam 456: Wider Spread Violation with 22 students - Penalty 22
-Exam 457: Period penalty Violation - Penalty 50
-Exam 458: Period penalty Violation - Penalty 50
-Exam 466: Wider Spread Violation with 7 students - Penalty 7
-Exam 467: TwoInARow Violation with 30 students - Penalty 450
-Exam 467: Wider Spread Violation with 30 students - Penalty 30
-Exam 483: Period penalty Violation - Penalty 50
-Exam 486: Wider Spread Violation with 1 students - Penalty 1
-Exam 487: Room penalty Violation - Penalty 20
-Exam 488: Period penalty Violation - Penalty 50
-Exam 490: Room penalty Violation - Penalty 10
-Exam 491: Wider Spread Violation with 1 students - Penalty 1
-Exam 493: TwoInARow Violation with 10 students - Penalty 150
-Exam 493: Wider Spread Violation with 10 students - Penalty 10
-Exam 495: Wider Spread Violation with 4 students - Penalty 4
-Exam 497: Period penalty Violation - Penalty 50
-Exam 499: Room penalty Violation - Penalty 20
-Exam 505: TwoInARow Violation with 5 students - Penalty 75
-Exam 505: Wider Spread Violation with 5 students - Penalty 5
-Exam 506: Wider Spread Violation with 12 students - Penalty 12
-Exam 507: TwoInARow Violation with 14 students - Penalty 210
-Exam 507: Wider Spread Violation with 14 students - Penalty 14
-Exam 508: Room penalty Violation - Penalty 20
-Exam 512: Wider Spread Violation with 27 students - Penalty 27
-Exam 513: TwoInARow Violation with 1 students - Penalty 15
-Exam 513: TwoInADay Violation with 5 students - Penalty 25
-Exam 513: Wider Spread Violation with 1 students - Penalty 1
-Exam 523: TwoInADay Violation with 10 students - Penalty 50
-Exam 523: Period penalty Violation - Penalty 50
-Exam 527: Room penalty Violation - Penalty 10
-Exam 534: TwoInARow Violation with 1 students - Penalty 15
-Exam 534: Wider Spread Violation with 1 students - Penalty 1
-Exam 536: Room penalty Violation - Penalty 20
-Exam 540: TwoInARow Violation with 2 students - Penalty 30
-Exam 540: Wider Spread Violation with 2 students - Penalty 2
-Exam 541: Wider Spread Violation with 1 students - Penalty 1
-Exam 545: Room penalty Violation - Penalty 20
-Exam 547: TwoInADay Violation with 3 students - Penalty 15
-Exam 552: Wider Spread Violation with 8 students - Penalty 8
-Exam 556: Wider Spread Violation with 5 students - Penalty 5
-Exam 563: Period penalty Violation - Penalty 50
-Exam 563: Room penalty Violation - Penalty 10
-Exam 564: TwoInADay Violation with 1 students - Penalty 5
-Exam 567: TwoInARow Violation with 1 students - Penalty 15
-Exam 567: Wider Spread Violation with 1 students - Penalty 1
-Exam 577: Period penalty Violation - Penalty 50
-Exam 579: TwoInARow Violation with 13 students - Penalty 195
-Exam 579: TwoInADay Violation with 2 students - Penalty 10
-Exam 579: Wider Spread Violation with 13 students - Penalty 13
-Exam 603: TwoInARow Violation with 8 students - Penalty 120
-Exam 603: Wider Spread Violation with 8 students - Penalty 8
-Exam 603: Period penalty Violation - Penalty 50
-Exam 608: Period penalty Violation - Penalty 50
-Exam 613: TwoInADay Violation with 1 students - Penalty 5
-Exam 643: Period penalty Violation - Penalty 50
-Exam 662: TwoInARow Violation with 1 students - Penalty 15
-Exam 662: Wider Spread Violation with 1 students - Penalty 1
-Exam 665: Room penalty Violation - Penalty 10
-Exam 677: TwoInADay Violation with 22 students - Penalty 110
-Exam 683: TwoInARow Violation with 4 students - Penalty 60
-Exam 683: TwoInADay Violation with 15 students - Penalty 75
-Exam 683: Wider Spread Violation with 4 students - Penalty 4
-Exam 683: Period penalty Violation - Penalty 50
-Exam 683: Room penalty Violation - Penalty 20
-Exam 684: TwoInARow Violation with 3 students - Penalty 45
-Exam 684: TwoInADay Violation with 9 students - Penalty 45
-Exam 684: Wider Spread Violation with 3 students - Penalty 3
-Exam 685: TwoInARow Violation with 9 students - Penalty 135
-Exam 685: Wider Spread Violation with 9 students - Penalty 9
-Exam 687: TwoInARow Violation with 15 students - Penalty 225
-Exam 687: Wider Spread Violation with 15 students - Penalty 15
-Exam 688: Period penalty Violation - Penalty 50
-Exam 694: TwoInARow Violation with 5 students - Penalty 75
-Exam 694: Wider Spread Violation with 5 students - Penalty 5
-Exam 695: Wider Spread Violation with 1 students - Penalty 1
-Exam 720: TwoInARow Violation with 1 students - Penalty 15
-Exam 720: Wider Spread Violation with 1 students - Penalty 1
-Exam 723: Period penalty Violation - Penalty 50
-Exam 728: Period penalty Violation - Penalty 50
-Exam 734: TwoInARow Violation with 3 students - Penalty 45
-Exam 734: Wider Spread Violation with 3 students - Penalty 3
-Exam 752: Wider Spread Violation with 9 students - Penalty 9
-Exam 757: TwoInARow Violation with 51 students - Penalty 765
-Exam 757: Wider Spread Violation with 51 students - Penalty 51
-Exam 772: TwoInADay Violation with 1 students - Penalty 5
-Exam 779: TwoInARow Violation with 3 students - Penalty 45
-Exam 779: Wider Spread Violation with 3 students - Penalty 3
-Exam 790: TwoInARow Violation with 17 students - Penalty 255
-Exam 790: TwoInADay Violation with 17 students - Penalty 85
-Exam 790: Wider Spread Violation with 17 students - Penalty 17
-Exam 791: TwoInARow Violation with 21 students - Penalty 315
-Exam 791: Wider Spread Violation with 21 students - Penalty 21
-Exam 796: Room penalty Violation - Penalty 20
-Exam 797: TwoInARow Violation with 34 students - Penalty 510
-Exam 797: Wider Spread Violation with 34 students - Penalty 34
-Exam 800: TwoInARow Violation with 144 students - Penalty 2160
-Exam 800: Wider Spread Violation with 144 students - Penalty 144
-Exam 808: Period penalty Violation - Penalty 50
-Exam 816: TwoInARow Violation with 31 students - Penalty 465
-Exam 816: Wider Spread Violation with 31 students - Penalty 31
-Exam 817: Period penalty Violation - Penalty 50
-Exam 819: TwoInARow Violation with 28 students - Penalty 420
-Exam 819: Wider Spread Violation with 28 students - Penalty 28
-Exam 821: Wider Spread Violation with 1 students - Penalty 1
-Exam 822: TwoInARow Violation with 1 students - Penalty 15
-Exam 822: Wider Spread Violation with 1 students - Penalty 1
-Exam 825: TwoInARow Violation with 5 students - Penalty 75
-Exam 825: Wider Spread Violation with 5 students - Penalty 5
-Exam 830: TwoInADay Violation with 12 students - Penalty 60
-Exam 833: Room penalty Violation - Penalty 20
-Exam 844: TwoInARow Violation with 30 students - Penalty 450
-Exam 844: Wider Spread Violation with 30 students - Penalty 30
-Exam 851: Room penalty Violation - Penalty 20
-Exam 852: TwoInARow Violation with 1 students - Penalty 15
-Exam 852: TwoInADay Violation with 1 students - Penalty 5
-Exam 852: Wider Spread Violation with 1 students - Penalty 1
-Exam 853: TwoInADay Violation with 20 students - Penalty 100
-Exam 856: TwoInARow Violation with 1 students - Penalty 15
-Exam 856: Wider Spread Violation with 1 students - Penalty 1
-Exam 857: Period penalty Violation - Penalty 50
-Exam 862: TwoInADay Violation with 7 students - Penalty 35
-Exam 864: Wider Spread Violation with 16 students - Penalty 16
-Room 12 at Period 2: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 12 at Period 5: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 140 )
-Room 13 at Period 3: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 14 at Period 7: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 180 )
-Room 15 at Period 5: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 150 )
-Room 15 at Period 11: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 16 at Period 2: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 180 )
-Room 17 at Period 3: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 17 at Period 7: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 18 at Period 11: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 19 at Period 5: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 19 at Period 12: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 150 )
-Room 20 at Period 6: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 20 at Period 16: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 150 180 )
-Room 21 at Period 7: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 21 at Period 11: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 21 at Period 17: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 22 at Period 3: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 180 )
-Room 22 at Period 30: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 90 )
-Room 22 at Period 37: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 23 at Period 13: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 23 at Period 16: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 24 at Period 5: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 180 )
-Room 24 at Period 10: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 24 at Period 14: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 25 at Period 11: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 25 at Period 15: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 25 at Period 25: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 26 at Period 16: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 26 at Period 22: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 28 at Period 3: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 29 at Period 19: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 29 at Period 37: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 90 )
-Room 30 at Period 11: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 180 )
-Room 30 at Period 16: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 30 at Period 20: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 30 at Period 30: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 31 at Period 12: Mix Durations penalty Violation - Penalty 50 ( of 3 exams: 90 120 180 )
-Room 31 at Period 26: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 32 at Period 7: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 32 at Period 13: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 32 at Period 22: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 33 at Period 23: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 33 at Period 28: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 34 at Period 2: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 34 at Period 15: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 36 at Period 22: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 37 at Period 27: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 38 at Period 19: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 43 at Period 11: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 43 at Period 33: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 43 at Period 36: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 90 )
-Room 44 at Period 0: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 180 )
-Room 44 at Period 34: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 46 at Period 2: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 46 at Period 6: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 90 )
-Room 46 at Period 27: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 46 at Period 36: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 105 )
-Room 47 at Period 0: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
-Room 47 at Period 22: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 47 at Period 33: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 180 )
-Room 48 at Period 34: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 60 120 )
-Room 48 at Period 38: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 90 120 )
+Exam 0: Front Load Violation at period 11 of 40 (Size 220) - Penalty 5
+Exam 1: TwoInARow Violation with 1 students - Penalty 15
+Exam 1: Wider Spread Violation with 1 students - Penalty 1
+Exam 1: Front Load Violation at period 20 of 40 (Size 224) - Penalty 5
+Exam 2: Wider Spread Violation with 1 students - Penalty 1
+Exam 2: Front Load Violation at period 26 of 40 (Size 226) - Penalty 5
+Exam 4: Front Load Violation at period 12 of 40 (Size 67) - Penalty 5
+Exam 5: Front Load Violation at period 10 of 40 (Size 70) - Penalty 5
+Exam 6: Front Load Violation at period 22 of 40 (Size 94) - Penalty 5
+Exam 7: Front Load Violation at period 16 of 40 (Size 65) - Penalty 5
+Exam 14: TwoInADay Violation with 1 students - Penalty 5
+Exam 14: Front Load Violation at period 19 of 40 (Size 110) - Penalty 5
+Exam 16: Wider Spread Violation with 132 students - Penalty 132
+Exam 16: Front Load Violation at period 21 of 40 (Size 370) - Penalty 5
+Exam 18: Front Load Violation at period 12 of 40 (Size 70) - Penalty 5
+Exam 19: TwoInADay Violation with 1 students - Penalty 5
+Exam 21: Front Load Violation at period 12 of 40 (Size 54) - Penalty 5
+Exam 22: Front Load Violation at period 10 of 40 (Size 53) - Penalty 5
+Exam 23: Front Load Violation at period 12 of 40 (Size 71) - Penalty 5
+Exam 28: Front Load Violation at period 16 of 40 (Size 51) - Penalty 5
+Exam 29: TwoInARow Violation with 11 students - Penalty 165
+Exam 29: Wider Spread Violation with 11 students - Penalty 11
+Exam 33: TwoInARow Violation with 2 students - Penalty 30
+Exam 33: Wider Spread Violation with 2 students - Penalty 2
+Exam 38: Front Load Violation at period 19 of 40 (Size 129) - Penalty 5
+Exam 39: Front Load Violation at period 12 of 40 (Size 78) - Penalty 5
+Exam 40: TwoInARow Violation with 1 students - Penalty 15
+Exam 40: Wider Spread Violation with 1 students - Penalty 1
+Exam 40: Front Load Violation at period 37 of 40 (Size 191) - Penalty 5
+Exam 41: Front Load Violation at period 25 of 40 (Size 115) - Penalty 5
+Exam 43: Wider Spread Violation with 11 students - Penalty 11
+Exam 44: Front Load Violation at period 16 of 40 (Size 91) - Penalty 5
+Exam 45: Front Load Violation at period 10 of 40 (Size 75) - Penalty 5
+Exam 47: Front Load Violation at period 22 of 40 (Size 64) - Penalty 5
+Exam 57: Front Load Violation at period 25 of 40 (Size 56) - Penalty 5
+Exam 58: Front Load Violation at period 27 of 40 (Size 78) - Penalty 5
+Exam 61: TwoInADay Violation with 1 students - Penalty 5
+Exam 71: Front Load Violation at period 19 of 40 (Size 50) - Penalty 5
+Exam 73: Front Load Violation at period 16 of 40 (Size 48) - Penalty 5
+Exam 74: Front Load Violation at period 22 of 40 (Size 51) - Penalty 5
+Exam 84: Front Load Violation at period 10 of 40 (Size 51) - Penalty 5
+Exam 85: Front Load Violation at period 16 of 40 (Size 136) - Penalty 5
+Exam 86: Front Load Violation at period 23 of 40 (Size 219) - Penalty 5
+Exam 87: Front Load Violation at period 10 of 40 (Size 124) - Penalty 5
+Exam 88: Front Load Violation at period 25 of 40 (Size 85) - Penalty 5
+Exam 89: Front Load Violation at period 33 of 40 (Size 163) - Penalty 5
+Exam 90: Front Load Violation at period 19 of 40 (Size 76) - Penalty 5
+Exam 98: Front Load Violation at period 30 of 40 (Size 102) - Penalty 5
+Exam 100: Front Load Violation at period 16 of 40 (Size 62) - Penalty 5
+Exam 113: Front Load Violation at period 13 of 40 (Size 177) - Penalty 5
+Exam 120: Front Load Violation at period 39 of 40 (Size 424) - Penalty 5
+Exam 125: TwoInARow Violation with 1 students - Penalty 15
+Exam 125: Wider Spread Violation with 1 students - Penalty 1
+Exam 129: TwoInADay Violation with 1 students - Penalty 5
+Exam 131: Front Load Violation at period 12 of 40 (Size 54) - Penalty 5
+Exam 136: Front Load Violation at period 16 of 40 (Size 417) - Penalty 5
+Exam 137: Wider Spread Violation with 51 students - Penalty 51
+Exam 141: Front Load Violation at period 23 of 40 (Size 202) - Penalty 5
+Exam 142: Front Load Violation at period 11 of 40 (Size 102) - Penalty 5
+Exam 144: Front Load Violation at period 27 of 40 (Size 192) - Penalty 5
+Exam 145: Front Load Violation at period 12 of 40 (Size 90) - Penalty 5
+Exam 146: Front Load Violation at period 19 of 40 (Size 137) - Penalty 5
+Exam 150: Front Load Violation at period 10 of 40 (Size 50) - Penalty 5
+Exam 183: Front Load Violation at period 11 of 40 (Size 86) - Penalty 5
+Exam 184: Front Load Violation at period 11 of 40 (Size 85) - Penalty 5
+Exam 210: TwoInADay Violation with 1 students - Penalty 5
+Exam 222: TwoInADay Violation with 1 students - Penalty 5
+Exam 232: Front Load Violation at period 19 of 40 (Size 69) - Penalty 5
+Exam 236: TwoInARow Violation with 2 students - Penalty 30
+Exam 236: Wider Spread Violation with 2 students - Penalty 2
+Exam 248: Front Load Violation at period 16 of 40 (Size 51) - Penalty 5
+Exam 252: Front Load Violation at period 23 of 40 (Size 171) - Penalty 5
+Exam 255: Front Load Violation at period 12 of 40 (Size 63) - Penalty 5
+Exam 265: Front Load Violation at period 19 of 40 (Size 112) - Penalty 5
+Exam 272: Front Load Violation at period 25 of 40 (Size 177) - Penalty 5
+Exam 282: Front Load Violation at period 16 of 40 (Size 92) - Penalty 5
+Exam 307: Room penalty Violation - Penalty 10
+Exam 308: Front Load Violation at period 10 of 40 (Size 57) - Penalty 5
+Exam 319: Front Load Violation at period 10 of 40 (Size 51) - Penalty 5
+Exam 322: Front Load Violation at period 22 of 40 (Size 126) - Penalty 5
+Exam 324: Front Load Violation at period 16 of 40 (Size 55) - Penalty 5
+Exam 325: Front Load Violation at period 19 of 40 (Size 65) - Penalty 5
+Exam 327: Front Load Violation at period 10 of 40 (Size 69) - Penalty 5
+Exam 331: Front Load Violation at period 10 of 40 (Size 49) - Penalty 5
+Exam 347: Wider Spread Violation with 16 students - Penalty 16
+Exam 350: TwoInADay Violation with 1 students - Penalty 5
+Exam 351: Front Load Violation at period 19 of 40 (Size 54) - Penalty 5
+Exam 370: Front Load Violation at period 22 of 40 (Size 58) - Penalty 5
+Exam 429: Front Load Violation at period 25 of 40 (Size 73) - Penalty 5
+Exam 430: Front Load Violation at period 22 of 40 (Size 78) - Penalty 5
+Exam 433: Front Load Violation at period 22 of 40 (Size 66) - Penalty 5
+Exam 437: Front Load Violation at period 14 of 40 (Size 91) - Penalty 5
+Exam 438: Front Load Violation at period 37 of 40 (Size 65) - Penalty 5
+Exam 441: Front Load Violation at period 16 of 40 (Size 66) - Penalty 5
+Exam 442: Front Load Violation at period 10 of 40 (Size 72) - Penalty 5
+Exam 443: Front Load Violation at period 12 of 40 (Size 139) - Penalty 5
+Exam 444: TwoInADay Violation with 1 students - Penalty 5
+Exam 445: TwoInADay Violation with 1 students - Penalty 5
+Exam 446: TwoInADay Violation with 4 students - Penalty 20
+Exam 447: TwoInADay Violation with 2 students - Penalty 10
+Exam 450: TwoInADay Violation with 3 students - Penalty 15
+Exam 450: Front Load Violation at period 33 of 40 (Size 64) - Penalty 5
+Exam 453: Front Load Violation at period 11 of 40 (Size 130) - Penalty 5
+Exam 454: TwoInADay Violation with 1 students - Penalty 5
+Exam 455: TwoInADay Violation with 2 students - Penalty 10
+Exam 459: Front Load Violation at period 20 of 40 (Size 243) - Penalty 5
+Exam 460: TwoInARow Violation with 2 students - Penalty 30
+Exam 460: Wider Spread Violation with 2 students - Penalty 2
+Exam 460: Front Load Violation at period 31 of 40 (Size 212) - Penalty 5
+Exam 461: Front Load Violation at period 22 of 40 (Size 133) - Penalty 5
+Exam 463: Wider Spread Violation with 54 students - Penalty 54
+Exam 463: Front Load Violation at period 36 of 40 (Size 265) - Penalty 5
+Exam 464: Front Load Violation at period 28 of 40 (Size 209) - Penalty 5
+Exam 465: Wider Spread Violation with 8 students - Penalty 8
+Exam 466: Wider Spread Violation with 9 students - Penalty 9
+Exam 466: Front Load Violation at period 21 of 40 (Size 90) - Penalty 5
+Exam 471: Front Load Violation at period 30 of 40 (Size 53) - Penalty 5
+Exam 475: Front Load Violation at period 13 of 40 (Size 291) - Penalty 5
+Exam 476: Wider Spread Violation with 5 students - Penalty 5
+Exam 477: Front Load Violation at period 31 of 40 (Size 382) - Penalty 5
+Exam 478: Front Load Violation at period 37 of 40 (Size 300) - Penalty 5
+Exam 481: TwoInADay Violation with 6 students - Penalty 30
+Exam 519: TwoInADay Violation with 1 students - Penalty 5
+Exam 531: TwoInADay Violation with 1 students - Penalty 5
+Exam 534: TwoInADay Violation with 1 students - Penalty 5
+Exam 550: TwoInARow Violation with 2 students - Penalty 30
+Exam 550: Wider Spread Violation with 2 students - Penalty 2
+Exam 563: TwoInADay Violation with 1 students - Penalty 5
+Exam 564: Front Load Violation at period 12 of 40 (Size 49) - Penalty 5
+Exam 579: Front Load Violation at period 30 of 40 (Size 75) - Penalty 5
+Exam 590: Front Load Violation at period 10 of 40 (Size 176) - Penalty 5
+Exam 599: Front Load Violation at period 10 of 40 (Size 68) - Penalty 5
+Exam 600: Front Load Violation at period 22 of 40 (Size 127) - Penalty 5
+Exam 602: Front Load Violation at period 12 of 40 (Size 121) - Penalty 5
+Exam 620: TwoInADay Violation with 1 students - Penalty 5
+Exam 620: Front Load Violation at period 19 of 40 (Size 51) - Penalty 5
+Exam 621: Wider Spread Violation with 1 students - Penalty 1
+Exam 622: Period penalty Violation - Penalty 50
+Exam 623: Wider Spread Violation with 88 students - Penalty 88
+Exam 623: Front Load Violation at period 32 of 40 (Size 310) - Penalty 5
+Exam 624: Front Load Violation at period 22 of 40 (Size 141) - Penalty 5
+Exam 626: Front Load Violation at period 28 of 40 (Size 221) - Penalty 5
+Exam 627: Front Load Violation at period 25 of 40 (Size 183) - Penalty 5
+Exam 629: TwoInADay Violation with 4 students - Penalty 20
+Exam 629: Front Load Violation at period 30 of 40 (Size 210) - Penalty 5
+Exam 630: Front Load Violation at period 19 of 40 (Size 49) - Penalty 5
+Exam 632: TwoInADay Violation with 1 students - Penalty 5
+Exam 632: Front Load Violation at period 37 of 40 (Size 281) - Penalty 5
+Exam 636: Front Load Violation at period 33 of 40 (Size 148) - Penalty 5
+Exam 639: Front Load Violation at period 27 of 40 (Size 94) - Penalty 5
+Exam 646: Front Load Violation at period 10 of 40 (Size 74) - Penalty 5
+Exam 660: Front Load Violation at period 22 of 40 (Size 91) - Penalty 5
+Exam 669: Front Load Violation at period 16 of 40 (Size 62) - Penalty 5
+Exam 697: Front Load Violation at period 16 of 40 (Size 61) - Penalty 5
+Exam 706: Front Load Violation at period 20 of 40 (Size 212) - Penalty 5
+Exam 708: Front Load Violation at period 30 of 40 (Size 213) - Penalty 5
+Exam 709: Front Load Violation at period 12 of 40 (Size 51) - Penalty 5
+Exam 710: Front Load Violation at period 12 of 40 (Size 127) - Penalty 5
+Exam 712: Front Load Violation at period 27 of 40 (Size 130) - Penalty 5
+Exam 714: Front Load Violation at period 33 of 40 (Size 219) - Penalty 5
+Exam 718: Front Load Violation at period 16 of 40 (Size 127) - Penalty 5
+Exam 722: Front Load Violation at period 19 of 40 (Size 125) - Penalty 5
+Exam 723: TwoInADay Violation with 1 students - Penalty 5
+Exam 727: Front Load Violation at period 19 of 40 (Size 127) - Penalty 5
+Exam 729: Front Load Violation at period 22 of 40 (Size 127) - Penalty 5
+Exam 731: Front Load Violation at period 16 of 40 (Size 124) - Penalty 5
+Exam 732: Front Load Violation at period 11 of 40 (Size 121) - Penalty 5
+Exam 737: Front Load Violation at period 11 of 40 (Size 116) - Penalty 5
+Exam 740: Front Load Violation at period 23 of 40 (Size 216) - Penalty 5
+Exam 742: Front Load Violation at period 25 of 40 (Size 128) - Penalty 5
+Exam 746: Front Load Violation at period 22 of 40 (Size 125) - Penalty 5
+Exam 761: Front Load Violation at period 10 of 40 (Size 78) - Penalty 5
+Exam 762: Front Load Violation at period 34 of 40 (Size 280) - Penalty 5
+Exam 764: TwoInADay Violation with 1 students - Penalty 5
+Exam 765: Wider Spread Violation with 1 students - Penalty 1
+Exam 765: Front Load Violation at period 26 of 40 (Size 263) - Penalty 5
+Exam 767: Wider Spread Violation with 11 students - Penalty 11
+Exam 767: Front Load Violation at period 21 of 40 (Size 200) - Penalty 5
+Exam 768: Front Load Violation at period 30 of 40 (Size 201) - Penalty 5
+Exam 770: Front Load Violation at period 27 of 40 (Size 196) - Penalty 5
+Exam 771: Front Load Violation at period 38 of 40 (Size 223) - Penalty 5
+Exam 773: Front Load Violation at period 23 of 40 (Size 175) - Penalty 5
+Exam 775: TwoInADay Violation with 1 students - Penalty 5
+Exam 776: Wider Spread Violation with 10 students - Penalty 10
+Exam 777: Front Load Violation at period 22 of 40 (Size 79) - Penalty 5
+Exam 778: Front Load Violation at period 27 of 40 (Size 93) - Penalty 5
+Exam 781: Front Load Violation at period 33 of 40 (Size 130) - Penalty 5
+Exam 783: TwoInADay Violation with 1 students - Penalty 5
+Exam 784: Front Load Violation at period 30 of 40 (Size 106) - Penalty 5
+Exam 785: TwoInADay Violation with 1 students - Penalty 5
+Exam 785: Front Load Violation at period 19 of 40 (Size 62) - Penalty 5
+Exam 800: Front Load Violation at period 13 of 40 (Size 166) - Penalty 5
+Exam 803: Front Load Violation at period 19 of 40 (Size 125) - Penalty 5
+Exam 804: Front Load Violation at period 10 of 40 (Size 82) - Penalty 5
+Exam 806: Front Load Violation at period 19 of 40 (Size 71) - Penalty 5
+Exam 811: Front Load Violation at period 16 of 40 (Size 58) - Penalty 5
+Exam 813: Front Load Violation at period 12 of 40 (Size 51) - Penalty 5
+Exam 816: Front Load Violation at period 16 of 40 (Size 115) - Penalty 5
+Exam 817: Wider Spread Violation with 41 students - Penalty 41
+Exam 817: Front Load Violation at period 11 of 40 (Size 85) - Penalty 5
+Exam 818: Front Load Violation at period 12 of 40 (Size 62) - Penalty 5
+Exam 820: Front Load Violation at period 10 of 40 (Size 49) - Penalty 5
+Exam 834: Front Load Violation at period 27 of 40 (Size 122) - Penalty 5
+Exam 836: Front Load Violation at period 22 of 40 (Size 64) - Penalty 5
+Exam 837: Front Load Violation at period 27 of 40 (Size 75) - Penalty 5
+Exam 838: Front Load Violation at period 25 of 40 (Size 69) - Penalty 5
+Exam 839: Front Load Violation at period 12 of 40 (Size 52) - Penalty 5
+Exam 842: Front Load Violation at period 10 of 40 (Size 66) - Penalty 5
+Exam 845: Front Load Violation at period 16 of 40 (Size 60) - Penalty 5
+Exam 846: Front Load Violation at period 19 of 40 (Size 77) - Penalty 5
+Exam 858: Front Load Violation at period 12 of 40 (Size 127) - Penalty 5
+Exam 859: TwoInADay Violation with 1 students - Penalty 5
+Exam 859: Front Load Violation at period 19 of 40 (Size 60) - Penalty 5
+Exam 867: Front Load Violation at period 16 of 40 (Size 72) - Penalty 5
+Exam 868: Front Load Violation at period 25 of 40 (Size 69) - Penalty 5
+Room 0 at Period 16: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 195 )
 
 Summary Evaluation
 ==================
 
-Unscheduled: 428 (of 870), pen=2140000
+Unscheduled: 0 (of 870), pen=0
 
-TwoInARow: 73, pen=12150
-TwoInADay: 34, pen=1330
-WiderSpreads: 104, pen=1096
-PeriodPenalties: 38, pen=1900
-RoomPenalties: 39, pen=650
-MixDurationPenalties: 63, pen=1600
-FrontLoadPenalties: 0, pen=0
+TwoInARow: 8, pen=330
+TwoInADay: 28, pen=215
+WiderSpreads: 31, pen=461
+PeriodPenalties: 1, pen=50
+RoomPenalties: 1, pen=10
+MixDurationPenalties: 1, pen=25
+FrontLoadPenalties: 154, pen=770
 
-Overall penalty = 2158726
-
-Infeasible Solution
+Overall penalty = 1861
