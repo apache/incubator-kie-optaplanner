@@ -96,4 +96,12 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
         return topic + " @ " + period + " in " + room;
     }
 
+    public int getTopicStudentListSize() {
+        return getTopic().getStudentListSize();
+    }
+
+    public int getPeriodDurationInMinutes() {
+        return getPeriod().getDurationInMinutes();
+    }
+
 }
