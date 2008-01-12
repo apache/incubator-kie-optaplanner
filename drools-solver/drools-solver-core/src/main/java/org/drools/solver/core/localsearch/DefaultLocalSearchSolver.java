@@ -8,6 +8,7 @@ import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.localsearch.finish.Finish;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.solution.initializer.StartingSolutionInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
     protected long randomSeed; // TODO refactor to AbstractSolver
 
     protected EvaluationHandler evaluationHandler; // TODO refactor to AbstractSolver
+    protected StartingSolutionInitializer startingSolutionInitializer = null; // TODO refactor to AbstractSolver
     protected BestSolutionRecaller bestSolutionRecaller;
     protected Finish finish;
     protected Decider decider;
@@ -42,19 +44,30 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         this.evaluationHandler = evaluationHandler;
     }
 
+    public StartingSolutionInitializer getStartingSolutionInitializer() {
+        return startingSolutionInitializer;
+    }
+
+    public void setStartingSolutionInitializer(StartingSolutionInitializer startingSolutionInitializer) {
+        this.startingSolutionInitializer = startingSolutionInitializer;
+        if (startingSolutionInitializer != null) {
+            this.startingSolutionInitializer.setSolver(this);
+        }
+    }
+
     public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
         this.bestSolutionRecaller = bestSolutionRecaller;
-        bestSolutionRecaller.setLocalSearchSolver(this);
+        this.bestSolutionRecaller.setLocalSearchSolver(this);
     }
 
     public void setDecider(Decider decider) {
         this.decider = decider;
-        decider.setLocalSearchSolver(this);
+        this.decider.setLocalSearchSolver(this);
     }
 
     public void setFinish(Finish finish) {
         this.finish = finish;
-        finish.setLocalSearchSolver(this);
+        this.finish.setLocalSearchSolver(this);
     }
 
 
@@ -127,6 +140,9 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         startingSystemTimeMillis = System.currentTimeMillis();
         logger.info("Solving with random seed ({}).", randomSeed);
         random = new Random(randomSeed);
+        if (startingSolutionInitializer != null) {
+            startingSolutionInitializer.intializeSolution();
+        }
         stepIndex = 0;
         stepScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
         bestSolutionRecaller.solvingStarted();

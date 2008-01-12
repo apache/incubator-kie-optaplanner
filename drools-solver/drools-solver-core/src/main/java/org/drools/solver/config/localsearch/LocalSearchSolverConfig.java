@@ -23,6 +23,7 @@ import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.bestsolution.BestSolutionRecaller;
 import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.localsearch.decider.DefaultDecider;
+import org.drools.solver.core.solution.initializer.StartingSolutionInitializer;
 
 /**
  * @author Geoffrey De Smet
@@ -36,6 +37,9 @@ public class LocalSearchSolverConfig {
     private List<String> scoreDrlList = null;
     @XStreamAlias("scoreCalculator")
     private ScoreCalculatorConfig scoreCalculatorConfig = new ScoreCalculatorConfig();
+
+    private StartingSolutionInitializer startingSolutionInitializer = null;
+    private Class<StartingSolutionInitializer> startingSolutionInitializerClass = null;
 
     @XStreamAlias("finish")
     private FinishConfig finishConfig = new FinishConfig(); // TODO this new is pointless due to xstream
@@ -115,6 +119,7 @@ public class LocalSearchSolverConfig {
             localSearchSolver.setRandomSeed(0L);
         }
         localSearchSolver.setEvaluationHandler(buildEvaluationHandler());
+        localSearchSolver.setStartingSolutionInitializer(buildStartingSolutionInitializer());
         localSearchSolver.setBestSolutionRecaller(new BestSolutionRecaller());
         localSearchSolver.setFinish(finishConfig.buildFinish());
         localSearchSolver.setDecider(buildDecider());
@@ -153,6 +158,26 @@ public class LocalSearchSolverConfig {
             throw new IllegalArgumentException("scoreDrlList (" + scoreDrlList + ") could not be loaded.", e);
         }
         return ruleBase;
+    }
+
+    public StartingSolutionInitializer buildStartingSolutionInitializer() {
+        if (startingSolutionInitializer != null) {
+            return startingSolutionInitializer;
+        } else if (startingSolutionInitializerClass != null) {
+            try {
+                return startingSolutionInitializerClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("startingSolutionInitializerClass ("
+                        + startingSolutionInitializerClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("startingSolutionInitializerClass ("
+                        + startingSolutionInitializerClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+        } else {
+            return null;
+        }
     }
 
     private Decider buildDecider() {

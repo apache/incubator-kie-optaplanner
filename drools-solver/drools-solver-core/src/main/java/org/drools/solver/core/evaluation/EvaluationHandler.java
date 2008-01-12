@@ -57,7 +57,7 @@ public class EvaluationHandler {
     /**
      * Resets the WorkingMemory by creating a new one and asserting the solution into it.
      */
-    public void resetStatefullSession() {
+    private void resetStatefullSession() {
         if (statefulSession != null) {
             statefulSession.dispose();
         }

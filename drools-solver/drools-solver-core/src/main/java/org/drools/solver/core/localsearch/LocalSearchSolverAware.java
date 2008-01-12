@@ -5,9 +5,6 @@ package org.drools.solver.core.localsearch;
  */
 public interface LocalSearchSolverAware {
 
-    /**
-     * Called during configuration to set
-     */
     void setLocalSearchSolver(LocalSearchSolver localSearchSolver);
 
 }
