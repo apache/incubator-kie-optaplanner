@@ -141,6 +141,7 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         logger.info("Solving with random seed ({}).", randomSeed);
         random = new Random(randomSeed);
         if (startingSolutionInitializer != null) {
+            logger.info("Initializing solution if needed.");
             startingSolutionInitializer.intializeSolution();
         }
         stepIndex = 0;
@@ -172,9 +173,6 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         bestSolutionRecaller.solvingEnded();
         finish.solvingEnded();
         decider.solvingEnded();
-        // TODO remove this line because it takes to long and is not always usefull
-        // TODO seperate the GUI's evaluation handler from the solver's evaluation handler
-        evaluationHandler.setSolution(bestSolutionRecaller.getBestSolution());
         logger.info("Solved in {} steps and {} time millis spend.", stepIndex, getTimeMillisSpend());
     }
 

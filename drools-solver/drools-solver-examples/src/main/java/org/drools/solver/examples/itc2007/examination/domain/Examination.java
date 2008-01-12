@@ -90,7 +90,11 @@ public class Examination extends AbstractPersistable implements Solution {
         this.examList = examList;
     }
 
-    
+
+    public boolean isInitialized() {
+        return (examList != null);
+    }
+
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(institutionalWeighting);
@@ -102,7 +106,9 @@ public class Examination extends AbstractPersistable implements Solution {
         facts.addAll(roomList);
         facts.addAll(periodHardConstraintList);
         facts.addAll(roomHardConstraintList);
-        facts.addAll(examList);
+        if (isInitialized()) {
+            facts.addAll(examList);
+        }
         // A faster alternative to the insertLogicalTopicConflicts rule.
         facts.addAll(calculateTopicConflictList());
         return facts;

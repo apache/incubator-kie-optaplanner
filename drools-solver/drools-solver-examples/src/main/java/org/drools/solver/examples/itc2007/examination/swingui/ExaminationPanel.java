@@ -78,9 +78,11 @@ public class ExaminationPanel extends SolutionPanel {
                 roomPanelMap.put(room, periodRoomPanel);
             }
         }
-        for (Exam exam : examination.getExamList()) {
-            PeriodRoomPanel periodRoomPanel = periodRoomPanelMap.get(exam.getPeriod()).get(exam.getRoom());
-            periodRoomPanel.addExam(exam);
+        if (examination.isInitialized()) {
+            for (Exam exam : examination.getExamList()) {
+                PeriodRoomPanel periodRoomPanel = periodRoomPanelMap.get(exam.getPeriod()).get(exam.getRoom());
+                periodRoomPanel.addExam(exam);
+            }
         }
     }
 

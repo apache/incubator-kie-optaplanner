@@ -6,8 +6,9 @@
     </scoreCalculator>
     <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
     <finish>
-        <feasableScore>-999999.0</feasableScore>
-        <!--<maximumSecondsSpend>429</maximumSecondsSpend>-->
+        <!--<feasableScore>-999999.0</feasableScore>-->
+        <maximumSecondsSpend>429</maximumSecondsSpend>
+        <!--<maximumSecondsSpend>5</maximumSecondsSpend>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
     <selector>

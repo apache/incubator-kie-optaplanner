@@ -138,7 +138,7 @@ public class SolutionBusiness {
 
     public void load(File file) {
         Solution solution = solutionDao.readSolution(file);
-        evaluationHandler.setSolution(solution);
+        solver.setStartingSolution(solution);
     }
 
     public void save(File file) {
@@ -157,6 +157,8 @@ public class SolutionBusiness {
 
     public void solve() {
         solver.solve();
+        Solution solution = solver.getBestSolution();
+        solver.setStartingSolution(solution);
     }
 
     public class SolverExampleFileFilter implements FileFilter {
