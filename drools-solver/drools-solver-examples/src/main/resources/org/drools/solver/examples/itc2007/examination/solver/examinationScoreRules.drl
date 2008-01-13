@@ -123,9 +123,15 @@ rule "periodHardConstraintAfter"
         Exam(topic == $leftSideTopic, $afterSidePeriod : period);
         Exam(topic == $rightSideTopic, eval($afterSidePeriod.getPeriodIndex() <= period.getPeriodIndex()),
                 $beforeSidePeriod : period);
+        // HACK to fix wierd truth maintance behavior in drools
+        // because making weight part of the equals/hashcode doesn't cut it
+        not(IntConstraintOccurrence(
+            ruleId == "periodHardConstraintAfter",
+            constraintType == ConstraintType.NEGATIVE_HARD,
+            causes contains $periodHardConstraint,
+            eval(weight != ($beforeSidePeriod.getPeriodIndex() - $afterSidePeriod.getPeriodIndex() + 1))));
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
-            // TODO this gets corrupted as long as the rule fires because a wierd feature (=bug?) in drools
             ($beforeSidePeriod.getPeriodIndex() - $afterSidePeriod.getPeriodIndex() + 1),
             $periodHardConstraint));
 end

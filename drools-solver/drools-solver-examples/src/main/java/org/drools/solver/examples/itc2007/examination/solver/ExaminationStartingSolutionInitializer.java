@@ -14,6 +14,8 @@ import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
+import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint;
+import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
 
@@ -39,17 +41,9 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         evaluationHandler.setSolution(examination);
         StatefulSession statefulSession = evaluationHandler.getStatefulSession();
 
-        // Sort the order in which we 'll assign the topics into periods and rooms
-        List<Topic> sortedTopicList = new ArrayList<Topic>(topicList);
-        Collections.sort(sortedTopicList, new Comparator<Topic>() {
-            public int compare(Topic a, Topic b) {
-                return new CompareToBuilder()
-                        .append(a.getStudentListSize(), b.getStudentListSize())
-                        .toComparison();
-            }
-        });
+        List<Topic> assigningTopicList = createAssigningTopicList(examination);
 
-        for (Topic topic : sortedTopicList) {
+        for (Topic topic : assigningTopicList) {
             double unscheduledScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
 
             Exam exam = new Exam();
@@ -117,6 +111,35 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             logger.debug("    Exam ({}) initialized for starting solution.", exam);
         }
         Collections.sort(examList, new PersistableIdComparator());
+    }
+
+    /**
+     * Order the topics in the order which we 'll assign them into periods and rooms.
+     * @param examination not null
+     * @return not null
+     */
+    private List<Topic> createAssigningTopicList(Examination examination) {
+        List<Topic> assigningTopicList = new ArrayList<Topic>(examination.getTopicList());
+        Collections.sort(assigningTopicList, new Comparator<Topic>() {
+            public int compare(Topic a, Topic b) {
+                // Descending
+                return new CompareToBuilder()
+                        .append(b.getStudentListSize(), a.getStudentListSize())
+                        .toComparison();
+            }
+        });
+        for (PeriodHardConstraint periodHardConstraint : examination.getPeriodHardConstraintList()) {
+            if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
+                int afterSideIndex = assigningTopicList.indexOf(periodHardConstraint.getLeftSideTopic());
+                int beforeSideIndex = assigningTopicList.indexOf(periodHardConstraint.getRightSideTopic());
+                if (afterSideIndex < beforeSideIndex) {
+                    Topic beforeTopic = assigningTopicList.remove(beforeSideIndex);
+                    assigningTopicList.add(afterSideIndex, beforeTopic);
+                }
+            }
+        }
+
+        return assigningTopicList;
     }
 
     private class PeriodScoring implements Comparable<PeriodScoring> {
