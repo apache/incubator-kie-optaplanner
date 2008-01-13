@@ -75,6 +75,22 @@ public class LocalSearchSolverConfig {
         this.scoreCalculatorConfig = scoreCalculatorConfig;
     }
 
+    public StartingSolutionInitializer getStartingSolutionInitializer() {
+        return startingSolutionInitializer;
+    }
+
+    public void setStartingSolutionInitializer(StartingSolutionInitializer startingSolutionInitializer) {
+        this.startingSolutionInitializer = startingSolutionInitializer;
+    }
+
+    public Class<StartingSolutionInitializer> getStartingSolutionInitializerClass() {
+        return startingSolutionInitializerClass;
+    }
+
+    public void setStartingSolutionInitializerClass(Class<StartingSolutionInitializer> startingSolutionInitializerClass) {
+        this.startingSolutionInitializerClass = startingSolutionInitializerClass;
+    }
+
     public FinishConfig getFinishConfig() {
         return finishConfig;
     }
@@ -208,6 +224,10 @@ public class LocalSearchSolverConfig {
             scoreCalculatorConfig = inheritedConfig.getScoreCalculatorConfig();
         } else if (inheritedConfig.getScoreCalculatorConfig() != null) {
             scoreCalculatorConfig.inherit(inheritedConfig.getScoreCalculatorConfig());
+        }
+        if (startingSolutionInitializer == null && startingSolutionInitializerClass == null) {
+            startingSolutionInitializer = inheritedConfig.getStartingSolutionInitializer();
+            startingSolutionInitializerClass = inheritedConfig.getStartingSolutionInitializerClass();
         }
         if (finishConfig == null) {
             finishConfig = inheritedConfig.getFinishConfig();
