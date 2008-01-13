@@ -15,6 +15,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.config.localsearch.LocalSearchSolverConfig;
 import org.drools.solver.core.Solver;
@@ -147,9 +148,9 @@ public class SolverBenchmarkSuite {
         File solvedSolutionFile = null;
         Writer writer = null;
         try {
-            solvedSolutionFile = File.createTempFile(
-                    "score" + result.getScore() + "_time" + result.getTimeMillesSpend() + "ms_", ".xml",
-                    solvedSolutionFilesDirectory);
+            String baseName = FilenameUtils.getBaseName(result.getUnsolvedSolutionFile().getName());
+            solvedSolutionFile = new File(solvedSolutionFilesDirectory,
+                    baseName + "_score" + result.getScore() + "_time" + result.getTimeMillesSpend() + ".xml");
             writer = new OutputStreamWriter(new FileOutputStream(solvedSolutionFile), "utf-8");
             xStream.toXML(solvedSolution, writer);
         } catch (IOException e) {
@@ -168,7 +169,6 @@ public class SolverBenchmarkSuite {
         }
     }
     
-
     public static enum SolvedSolutionVerbosity {
         ALL
     }
