@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,6 +27,8 @@ import org.drools.solver.core.solution.Solution;
  */
 @XStreamAlias("solverBenchmarkSuite")
 public class SolverBenchmarkSuite {
+
+    public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
 
     private SolvedSolutionVerbosity solvedSolutionVerbosity = null;
     private File solvedSolutionFilesDirectory = null;
@@ -149,8 +152,9 @@ public class SolverBenchmarkSuite {
         Writer writer = null;
         try {
             String baseName = FilenameUtils.getBaseName(result.getUnsolvedSolutionFile().getName());
-            solvedSolutionFile = new File(solvedSolutionFilesDirectory,
-                    baseName + "_score" + result.getScore() + "_time" + result.getTimeMillesSpend() + ".xml");
+            solvedSolutionFile = new File(solvedSolutionFilesDirectory, baseName
+                    + "_score" + NUMBER_FORMAT.format(result.getScore())
+                    + "_time" + NUMBER_FORMAT.format(result.getTimeMillesSpend()) + ".xml");
             writer = new OutputStreamWriter(new FileOutputStream(solvedSolutionFile), "utf-8");
             xStream.toXML(solvedSolution, writer);
         } catch (IOException e) {
