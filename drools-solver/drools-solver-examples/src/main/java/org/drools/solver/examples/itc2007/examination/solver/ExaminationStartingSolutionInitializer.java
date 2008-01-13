@@ -63,7 +63,8 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             for (Period period : periodList) {
                 exam.setPeriod(period);
                 if (examHandle == null) {
-                    examHandle = statefulSession.insert(exam); // TODO move up
+                    // Score rules don't support a nullable exam.getPeriod()
+                    examHandle = statefulSession.insert(exam);
                 } else {
                     statefulSession.update(examHandle, exam);
                 }

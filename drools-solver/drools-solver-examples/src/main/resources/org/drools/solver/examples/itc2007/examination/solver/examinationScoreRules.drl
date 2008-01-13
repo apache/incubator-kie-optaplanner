@@ -125,6 +125,7 @@ rule "periodHardConstraintAfter"
                 $beforeSidePeriod : period);
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
+            // TODO this gets corrupted as long as the rule fires because a wierd feature (=bug?) in drools
             ($beforeSidePeriod.getPeriodIndex() - $afterSidePeriod.getPeriodIndex() + 1),
             $periodHardConstraint));
 end

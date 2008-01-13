@@ -12,6 +12,8 @@ public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String SOLVER_BENCHMARK_CONFIG
             = "/org/drools/solver/examples/itc2007/examination/benchmark/examinationSolverBenchmarkConfig.xml";
+//    public static final String SOLVER_BENCHMARK_CONFIG
+//            = "/org/drools/solver/examples/itc2007/examination/benchmark/examinationShortSolverBenchmarkConfig.xml";
     public static final File SOLVER_BENCHMARK_RESULT_FILE
             = new File("local/data/itc2007/examination/examinationSolverBenchmarkResult.xml");
 

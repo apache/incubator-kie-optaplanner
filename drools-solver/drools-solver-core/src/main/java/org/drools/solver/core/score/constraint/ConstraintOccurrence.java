@@ -1,5 +1,7 @@
 package org.drools.solver.core.score.constraint;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -55,6 +57,10 @@ public abstract class ConstraintOccurrence {
                 .append(constraintType)
                 .append(causes)
                 .toHashCode();
+    }
+
+    public String toString() {
+        return ruleId + "/" + constraintType + ":" + Arrays.toString(causes);
     }
 
 }

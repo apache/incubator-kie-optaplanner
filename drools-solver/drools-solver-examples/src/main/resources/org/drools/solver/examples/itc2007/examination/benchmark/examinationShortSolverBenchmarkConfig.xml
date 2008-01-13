@@ -5,12 +5,13 @@
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
     <!-- solverBenchmarkResultComparator -->
     
-    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set1.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set1_initialized.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/itc2007/examination/solver/examinationScoreRules.drl</scoreDrl>
         <scoreCalculator>
             <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
         </scoreCalculator>
+        <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
             <maximumStepCount>500</maximumStepCount>
         </finish>
