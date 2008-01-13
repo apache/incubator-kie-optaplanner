@@ -47,4 +47,20 @@
         <module>drools-solver-examples</module>
     </modules>
 
+    <!-- Uncomment to depend on a stable release of drools-core and drools-compiler -->
+    <!--<dependencyManagement>-->
+        <!--<dependencies>-->
+            <!--<dependency>-->
+                <!--<groupId>org.drools</groupId>-->
+                <!--<artifactId>drools-core</artifactId>-->
+                <!--<version>4.0.3</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.drools</groupId>-->
+                <!--<artifactId>drools-compiler</artifactId>-->
+                <!--<version>4.0.3</version>-->
+            <!--</dependency>-->
+        <!--</dependencies>-->
+    <!--</dependencyManagement>-->
+
 </project>
