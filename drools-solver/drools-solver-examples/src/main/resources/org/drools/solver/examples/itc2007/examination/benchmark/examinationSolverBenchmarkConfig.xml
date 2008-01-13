@@ -19,25 +19,26 @@
         <scoreCalculator>
             <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
         </scoreCalculator>
+        <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
-            <maximumSecondsSpend>429</maximumSecondsSpend>
+            <maximumSecondsSpend>3</maximumSecondsSpend>
         </finish>
     </inheritedLocalSearchSolver>
 
-    <solverBenchmark>
-        <localSearchSolver>
-            <selector>
-                <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>
-                <shuffleMovesEveryStep>true</shuffleMovesEveryStep>
-            </selector>
-            <accepter>
-                <accepterType>SIMULATED_ANNEALING</accepterType>
-            </accepter>
-            <forager>
-                <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
+    <!--<solverBenchmark>-->
+        <!--<localSearchSolver>-->
+            <!--<selector>-->
+                <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>-->
+                <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
+            <!--</selector>-->
+            <!--<accepter>-->
+                <!--<accepterType>SIMULATED_ANNEALING</accepterType>-->
+            <!--</accepter>-->
+            <!--<forager>-->
+                <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
     <solverBenchmark>
         <localSearchSolver>
             <selector>
