@@ -209,9 +209,11 @@ public class ExaminationInputConvertor extends LoggingMain {
         List<Topic> topicList = examination.getTopicList();
         List<PeriodHardConstraint> periodHardConstraintList = new ArrayList<PeriodHardConstraint>();
         String line = bufferedReader.readLine();
+        int id = 0;
         while (!line.equals("[RoomHardConstraints]")) {
             String[] lineTokens = line.split(SPLIT_REGEX);
             PeriodHardConstraint periodHardConstraint = new PeriodHardConstraint();
+            periodHardConstraint.setId((long) id);
             if (lineTokens.length != 3) {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
             }
@@ -220,6 +222,7 @@ public class ExaminationInputConvertor extends LoggingMain {
             periodHardConstraint.setRightSideTopic(topicList.get(Integer.parseInt(lineTokens[2])));
             periodHardConstraintList.add(periodHardConstraint);
             line = bufferedReader.readLine();
+            id++;
         }
         examination.setPeriodHardConstraintList(periodHardConstraintList);
     }
@@ -229,9 +232,11 @@ public class ExaminationInputConvertor extends LoggingMain {
         List<Topic> topicList = examination.getTopicList();
         List<RoomHardConstraint> roomHardConstraintList = new ArrayList<RoomHardConstraint>();
         String line = bufferedReader.readLine();
+        int id = 0;
         while (!line.equals("[InstitutionalWeightings]")) {
             String[] lineTokens = line.split(SPLIT_REGEX);
             RoomHardConstraint roomHardConstraint = new RoomHardConstraint();
+            roomHardConstraint.setId((long) id);
             if (lineTokens.length != 2) {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
             }
@@ -239,6 +244,7 @@ public class ExaminationInputConvertor extends LoggingMain {
             roomHardConstraint.setRoomHardConstraintType(RoomHardConstraintType.valueOf(lineTokens[1]));
             roomHardConstraintList.add(roomHardConstraint);
             line = bufferedReader.readLine();
+            id++;
         }
         examination.setRoomHardConstraintList(roomHardConstraintList);
     }
@@ -254,6 +260,7 @@ public class ExaminationInputConvertor extends LoggingMain {
 
     private void readInstitutionalWeighting(BufferedReader bufferedReader, Examination examination) throws IOException {
         InstitutionalWeighting institutionalWeighting = new InstitutionalWeighting();
+        institutionalWeighting.setId(0L);
         String[] lineTokens;
         lineTokens = readInstitutionalWeightingProperty(bufferedReader, "TWOINAROW", 2);
         institutionalWeighting.setTwoInARowPenality(Integer.parseInt(lineTokens[1]));

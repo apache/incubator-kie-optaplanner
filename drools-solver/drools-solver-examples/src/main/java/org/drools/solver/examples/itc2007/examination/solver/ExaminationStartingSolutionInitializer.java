@@ -122,14 +122,24 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         List<Topic> assigningTopicList = new ArrayList<Topic>(examination.getTopicList());
         Collections.sort(assigningTopicList, new Comparator<Topic>() {
             public int compare(Topic a, Topic b) {
-                // Descending
                 return new CompareToBuilder()
-                        .append(b.getStudentListSize(), a.getStudentListSize())
+                        .append(b.getStudentListSize(), a.getStudentListSize()) // Descending
+                        .append(b.getDuration(), a.getDuration()) // Descending
+                        .append(a.getId(), b.getId()) // Ascending
                         .toComparison();
             }
         });
         for (PeriodHardConstraint periodHardConstraint : examination.getPeriodHardConstraintList()) {
-            if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
+            if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.EXAM_COINCIDENCE) {
+                int leftSideIndex = assigningTopicList.indexOf(periodHardConstraint.getLeftSideTopic());
+                int rightSideIndex = assigningTopicList.indexOf(periodHardConstraint.getRightSideTopic());
+                int firstIndex = Math.min(leftSideIndex, rightSideIndex);
+                int lastIndex = Math.max(leftSideIndex, rightSideIndex);
+                if ((lastIndex - firstIndex) > 1) {
+                    Topic lastTopic = assigningTopicList.remove(lastIndex);
+                    assigningTopicList.add(firstIndex + 1, lastTopic);
+                }
+            } else if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
                 int afterSideIndex = assigningTopicList.indexOf(periodHardConstraint.getLeftSideTopic());
                 int beforeSideIndex = assigningTopicList.indexOf(periodHardConstraint.getRightSideTopic());
                 if (afterSideIndex < beforeSideIndex) {

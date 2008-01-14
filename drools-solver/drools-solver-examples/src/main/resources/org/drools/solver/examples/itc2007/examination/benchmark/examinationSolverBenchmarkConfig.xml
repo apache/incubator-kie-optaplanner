@@ -21,7 +21,12 @@
         </scoreCalculator>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
-            <maximumSecondsSpend>3</maximumSecondsSpend>
+            <!--
+                Official benchmark maximumSecondsSpend allowed on:
+                ge0ffrey's main pc: 429
+                ge0ffrey's old pc: 1152
+            -->
+            <maximumSecondsSpend>1152</maximumSecondsSpend>
         </finish>
     </inheritedLocalSearchSolver>
 
