@@ -136,6 +136,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 int firstIndex = Math.min(leftSideIndex, rightSideIndex);
                 int lastIndex = Math.max(leftSideIndex, rightSideIndex);
                 if ((lastIndex - firstIndex) > 1) {
+                    // TODO lastIndex - firstIndex can be 2 with another COINCIDENCE in the middle of it
                     Topic lastTopic = assigningTopicList.remove(lastIndex);
                     assigningTopicList.add(firstIndex + 1, lastTopic);
                 }
