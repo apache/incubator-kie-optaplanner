@@ -25,10 +25,10 @@ public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
         List<Period> periodList = examination.getPeriodList();
         // periodList should not be empty
         int firstPeriodIndex = periodList.get(0).getPeriodIndex();
-        int lastPeriodIndex = periodList.get(periodList.size() - PERIOD_JUMP).getPeriodIndex();
+        int lastPeriodIndex = periodList.get(Math.max(periodList.size() - PERIOD_JUMP, 0)).getPeriodIndex();
         List<Room> roomList = examination.getRoomList();
         long firstRoomId = roomList.get(0).getId();
-        long lastRoomId = roomList.get(roomList.size() - PERIOD_JUMP).getId();
+        long lastRoomId = roomList.get(Math.max(roomList.size() - PERIOD_JUMP, 0)).getId();
         for (Exam exam : examination.getExamList()) {
             for (Period period : periodList) {
                 if ((Math.abs(period.getPeriodIndex() - exam.getPeriod().getPeriodIndex()) <= PERIOD_JUMP)
