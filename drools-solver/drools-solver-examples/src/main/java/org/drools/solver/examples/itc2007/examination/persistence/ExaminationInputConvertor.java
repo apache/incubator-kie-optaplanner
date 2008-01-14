@@ -294,8 +294,8 @@ public class ExaminationInputConvertor extends LoggingMain {
         Collections.sort(sortedTopicList, new Comparator<Topic>() {
             public int compare(Topic a, Topic b) {
                 return new CompareToBuilder()
-                        .append(a.getStudentListSize(), b.getStudentListSize())
-                        .append(a.getId(), b.getId())
+                        .append(a.getStudentListSize(), b.getStudentListSize()) // Ascending
+                        .append(b.getId(), a.getId()) // Descending (according to spec)
                         .toComparison();
             }
         });
@@ -303,12 +303,16 @@ public class ExaminationInputConvertor extends LoggingMain {
         if (frontLoadLargeTopicSize == 0) {
             return;
         }
+        int minimumTopicId = sortedTopicList.size() - frontLoadLargeTopicSize;
+        if (minimumTopicId < 0) {
+            logger.warn("The frontLoadLargeTopicSize (" + frontLoadLargeTopicSize + ") is bigger than topicListSize ("
+                    + sortedTopicList.size() + "). Tagging all topic as frontLoadLarge...");
+            minimumTopicId = 0;
+        }
         int minimumStudentListSize = sortedTopicList.get(sortedTopicList.size() - frontLoadLargeTopicSize)
                 .getStudentListSize();
-        for (Topic topic : sortedTopicList) {
-            if (topic.getStudentListSize() >= minimumStudentListSize) {
-                topic.setFrontLoadLarge(true);
-            }
+        for (Topic topic : sortedTopicList.subList(minimumStudentListSize, sortedTopicList.size())) {
+            topic.setFrontLoadLarge(true);
         }
     }
 
@@ -321,7 +325,7 @@ public class ExaminationInputConvertor extends LoggingMain {
         int minimumPeriodId = periodList.size() - frontLoadLastPeriodSize;
         if (minimumPeriodId < 0) {
             logger.warn("The frontLoadLastPeriodSize (" + frontLoadLastPeriodSize + ") is bigger than periodListSize ("
-                    + periodList.size() + "). Tagging all periods as large...");
+                    + periodList.size() + "). Tagging all periods as frontLoadLast...");
             minimumPeriodId = 0;
         }
         for (Period period : periodList.subList(minimumPeriodId, periodList.size())) {
