@@ -309,9 +309,7 @@ public class ExaminationInputConvertor extends LoggingMain {
                     + sortedTopicList.size() + "). Tagging all topic as frontLoadLarge...");
             minimumTopicId = 0;
         }
-        int minimumStudentListSize = sortedTopicList.get(sortedTopicList.size() - frontLoadLargeTopicSize)
-                .getStudentListSize();
-        for (Topic topic : sortedTopicList.subList(minimumStudentListSize, sortedTopicList.size())) {
+        for (Topic topic : sortedTopicList.subList(minimumTopicId, sortedTopicList.size())) {
             topic.setFrontLoadLarge(true);
         }
     }
