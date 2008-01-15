@@ -13467,7 +13467,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1942"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1956"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4432">
       <id>3</id>
@@ -13538,7 +13538,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1890"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1930"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4434">
       <id>4</id>
@@ -13576,7 +13576,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2041"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2078"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4436">
       <id>5</id>
@@ -13639,7 +13639,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="977"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2002"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4440">
       <id>7</id>
@@ -13682,7 +13682,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1016"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="952"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4442">
       <id>8</id>
@@ -13729,7 +13729,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1942"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1956"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4444">
       <id>9</id>
@@ -13772,7 +13772,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1016"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="952"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4446">
       <id>10</id>
@@ -13809,7 +13809,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2005"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2041"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4448">
       <id>11</id>
@@ -13849,7 +13849,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="872"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="977"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4450">
       <id>12</id>
@@ -13909,7 +13909,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3144"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="4352"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4454">
       <id>14</id>
@@ -13954,7 +13954,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3160"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3144"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4456">
       <id>15</id>
@@ -14644,7 +14644,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2075"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1905"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4460">
       <id>17</id>
@@ -15009,7 +15009,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2002"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1930"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4464">
       <id>19</id>
@@ -15051,7 +15051,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1905"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1955"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4466">
       <id>20</id>
@@ -15103,7 +15103,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1011"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="956"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4470">
       <id>22</id>
@@ -15140,7 +15140,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1011"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1024"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4474">
       <id>24</id>
@@ -15563,7 +15563,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3187"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3176"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4480">
       <id>27</id>
@@ -15623,7 +15623,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1979"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3149"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4482">
       <id>28</id>
@@ -15978,7 +15978,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1611"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1882"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4486">
       <id>30</id>
@@ -16506,7 +16506,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1954"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1951"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4494">
       <id>34</id>
@@ -16548,7 +16548,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1981"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1976"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4496">
       <id>35</id>
@@ -16797,7 +16797,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="985"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="951"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4502">
       <id>38</id>
@@ -16823,7 +16823,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="800"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="947"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4504">
       <id>39</id>
@@ -16848,7 +16848,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="869"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="951"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4506">
       <id>40</id>
@@ -16875,7 +16875,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="758"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1002"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4508">
       <id>41</id>
@@ -17255,7 +17255,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3128"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3121"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4514">
       <id>44</id>
@@ -17280,7 +17280,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1919"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1933"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4516">
       <id>45</id>
@@ -17354,7 +17354,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1919"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1933"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4518">
       <id>46</id>
@@ -17390,7 +17390,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="993"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1019"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4520">
       <id>47</id>
@@ -17425,7 +17425,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="993"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="999"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4522">
       <id>48</id>
@@ -17477,7 +17477,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1009"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1819"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4526">
       <id>50</id>
@@ -17508,7 +17508,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1007"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1015"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4528">
       <id>51</id>
@@ -17570,7 +17570,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="999"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1019"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4532">
       <id>53</id>
@@ -17599,7 +17599,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1007"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1015"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4534">
       <id>54</id>
@@ -18143,7 +18143,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1640"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2037"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4546">
       <id>60</id>
@@ -18432,7 +18432,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1000"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2037"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4550">
       <id>62</id>
@@ -18490,7 +18490,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1640"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2096"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4552">
       <id>63</id>
@@ -18530,7 +18530,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="841"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1009"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4554">
       <id>64</id>
@@ -18686,7 +18686,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="978"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1026"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4558">
       <id>66</id>
@@ -18805,7 +18805,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3135"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3078"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4566">
       <id>70</id>
@@ -18831,7 +18831,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2082"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1958"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4568">
       <id>71</id>
@@ -18884,7 +18884,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3081"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3527"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4570">
       <id>72</id>
@@ -19229,7 +19229,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3143"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3087"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4578">
       <id>76</id>
@@ -19305,7 +19305,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1959"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1972"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4580">
       <id>77</id>
@@ -19358,7 +19358,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2047"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1948"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4582">
       <id>78</id>
@@ -19506,7 +19506,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2048"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1980"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4586">
       <id>80</id>
@@ -19552,7 +19552,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1935"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1960"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4588">
       <id>81</id>
@@ -19630,7 +19630,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2442"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2415"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4594">
       <id>84</id>
@@ -19798,7 +19798,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1926"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2903"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4598">
       <id>86</id>
@@ -19931,7 +19931,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1712"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1980"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4604">
       <id>89</id>
@@ -20002,7 +20002,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1833"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1978"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4606">
       <id>90</id>
@@ -20120,7 +20120,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3119"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3083"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4614">
       <id>94</id>
@@ -20243,7 +20243,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3255"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3235"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4618">
       <id>96</id>
@@ -20319,7 +20319,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3137"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3077"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4624">
       <id>99</id>
@@ -20364,7 +20364,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2711"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2856"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4626">
       <id>100</id>
@@ -20396,7 +20396,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3239"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3209"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4628">
       <id>101</id>
@@ -20474,7 +20474,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3277"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3155"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4634">
       <id>104</id>
@@ -20518,7 +20518,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3232"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3084"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4636">
       <id>105</id>
@@ -20551,7 +20551,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2139"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3081"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4638">
       <id>106</id>
@@ -21208,7 +21208,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="4160"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="4185"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4644">
       <id>109</id>
@@ -21496,7 +21496,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3123"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3135"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4650">
       <id>112</id>
@@ -21524,7 +21524,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2835"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3271"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4652">
       <id>113</id>
@@ -21599,7 +21599,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1894"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1927"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4656">
       <id>115</id>
@@ -21632,7 +21632,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2054"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2403"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4658">
       <id>116</id>
@@ -21678,7 +21678,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2012"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1952"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4660">
       <id>117</id>
@@ -21710,7 +21710,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1976"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2856"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4662">
       <id>118</id>
@@ -21827,7 +21827,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1976"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1970"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4666">
       <id>120</id>
@@ -21863,7 +21863,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2015"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2678"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4668">
       <id>121</id>
@@ -21923,7 +21923,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2423"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2608"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4670">
       <id>122</id>
@@ -21988,7 +21988,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1931"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1953"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4672">
       <id>123</id>
@@ -22045,7 +22045,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1921"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1959"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4674">
       <id>124</id>
@@ -22102,7 +22102,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2092"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1970"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4676">
       <id>125</id>
@@ -22134,7 +22134,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2074"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1963"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4678">
       <id>126</id>
@@ -22191,7 +22191,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1910"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1916"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4680">
       <id>127</id>
@@ -22308,7 +22308,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1837"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1947"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4688">
       <id>131</id>
@@ -22340,7 +22340,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1962"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1971"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4690">
       <id>132</id>
@@ -22403,7 +22403,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3189"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3138"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4696">
       <id>135</id>
@@ -22871,7 +22871,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3116"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3105"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4708">
       <id>141</id>
@@ -22918,7 +22918,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1916"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2282"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4710">
       <id>142</id>
@@ -22945,7 +22945,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1679"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1910"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4712">
       <id>143</id>
@@ -23047,7 +23047,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3105"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3083"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4720">
       <id>147</id>
@@ -23074,7 +23074,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2828"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3280"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4722">
       <id>148</id>
@@ -23102,7 +23102,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1748"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1744"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4724">
       <id>149</id>
@@ -23132,7 +23132,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3281"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3105"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4726">
       <id>150</id>
@@ -23163,7 +23163,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1932"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2847"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4728">
       <id>151</id>
@@ -23191,7 +23191,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2137"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2123"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4730">
       <id>152</id>
@@ -23217,7 +23217,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2223"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2870"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4732">
       <id>153</id>
@@ -23246,7 +23246,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3254"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3138"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4734">
       <id>154</id>
@@ -23301,7 +23301,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2056"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1943"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4738">
       <id>156</id>
@@ -23367,7 +23367,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3255"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3239"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4740">
       <id>157</id>
@@ -24953,7 +24953,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2944"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3207"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4750">
       <id>162</id>
@@ -24979,7 +24979,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2100"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1982"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4752">
       <id>163</id>
@@ -25031,7 +25031,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1982"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2229"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4754">
       <id>164</id>
@@ -25086,7 +25086,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2100"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2531"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4756">
       <id>165</id>
@@ -25117,7 +25117,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1661"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2088"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4758">
       <id>166</id>
@@ -25170,7 +25170,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2095"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1982"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4760">
       <id>167</id>
@@ -25199,7 +25199,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1591"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1733"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4762">
       <id>168</id>
@@ -25229,7 +25229,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1908"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1982"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4764">
       <id>169</id>
@@ -25259,7 +25259,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1921"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2637"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4766">
       <id>170</id>
@@ -25313,7 +25313,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2996"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2978"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4768">
       <id>171</id>
@@ -25388,7 +25388,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1961"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3124"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4770">
       <id>172</id>
@@ -25439,7 +25439,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1790"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1928"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4774">
       <id>174</id>
@@ -25503,7 +25503,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1901"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3209"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4778">
       <id>176</id>
@@ -25539,7 +25539,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="992"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1003"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4780">
       <id>177</id>
@@ -25607,7 +25607,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1975"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1978"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4782">
       <id>178</id>
@@ -25642,7 +25642,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="992"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1003"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4784">
       <id>179</id>
@@ -27398,7 +27398,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1949"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1969"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4790">
       <id>182</id>
@@ -27441,7 +27441,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1952"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1970"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4792">
       <id>183</id>
@@ -27483,7 +27483,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1963"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3263"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4796">
       <id>185</id>
@@ -29267,7 +29267,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1969"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2290"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4808">
       <id>191</id>
@@ -30438,7 +30438,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3272"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3172"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4826">
       <id>200</id>
@@ -31645,7 +31645,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3808"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="4120"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4832">
       <id>203</id>
@@ -31704,7 +31704,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3144"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3107"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4834">
       <id>204</id>
@@ -31742,7 +31742,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2182"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2341"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4836">
       <id>205</id>
@@ -31778,7 +31778,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1924"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1981"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4838">
       <id>206</id>
@@ -31814,7 +31814,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2061"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1924"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4840">
       <id>207</id>
@@ -31886,7 +31886,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="873"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="954"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4848">
       <id>211</id>
@@ -31967,7 +31967,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3208"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3099"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4852">
       <id>213</id>
@@ -32001,7 +32001,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3162"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3122"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4854">
       <id>214</id>
@@ -32183,7 +32183,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1909"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2760"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4860">
       <id>217</id>
@@ -32220,7 +32220,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1909"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2760"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4862">
       <id>218</id>
@@ -32247,7 +32247,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="931"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="981"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4864">
       <id>219</id>
@@ -32289,7 +32289,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="986"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2033"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4866">
       <id>220</id>
@@ -32330,7 +32330,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="981"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="986"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4868">
       <id>221</id>
@@ -32381,7 +32381,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3143"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3087"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4870">
       <id>222</id>
@@ -32423,7 +32423,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="4163"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="4173"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4872">
       <id>223</id>
@@ -33334,7 +33334,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="4127"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="4129"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4880">
       <id>227</id>
@@ -34794,7 +34794,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3079"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3081"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4898">
       <id>236</id>
@@ -34973,7 +34973,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3160"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3144"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4904">
       <id>239</id>
@@ -35159,7 +35159,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2091"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1892"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4914">
       <id>244</id>
@@ -35191,7 +35191,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1975"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2362"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4916">
       <id>245</id>
@@ -35262,7 +35262,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2449"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2420"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4922">
       <id>248</id>
@@ -35309,7 +35309,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3249"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3174"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4924">
       <id>249</id>
@@ -35352,7 +35352,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1900"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1903"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4926">
       <id>250</id>
@@ -35385,7 +35385,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1900"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1903"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4928">
       <id>251</id>
@@ -36638,7 +36638,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3177"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3172"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4952">
       <id>263</id>
@@ -36672,7 +36672,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2911"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3228"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4954">
       <id>264</id>
@@ -36717,7 +36717,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3108"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3117"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4956">
       <id>265</id>
@@ -36745,7 +36745,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2553"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3147"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4958">
       <id>266</id>
@@ -36781,7 +36781,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2555"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2553"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4960">
       <id>267</id>
@@ -36817,7 +36817,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2555"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2553"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4962">
       <id>268</id>
@@ -36849,7 +36849,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="2553"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="3147"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4964">
       <id>269</id>
@@ -36877,7 +36877,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1664"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1735"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4966">
       <id>270</id>
@@ -36904,7 +36904,7 @@
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1025"/>
         <org.drools.solver.examples.itc2007.examination.domain.Student reference="1568"/>
       </studentList>
-      <frontLoadLarge>true</frontLoadLarge>
+      <frontLoadLarge>false</frontLoadLarge>
     </org.drools.solver.examples.itc2007.examination.domain.Topic>
     <org.drools.solver.examples.itc2007.examination.domain.Topic id="4968">
       <id>271</id>
