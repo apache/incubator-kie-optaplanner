@@ -57,4 +57,17 @@
             </forager>
         </localSearchSolver>
     </solverBenchmark>
+    <solverBenchmark>
+        <localSearchSolver>
+            <selector>
+                <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.JumpingNeighbourExaminationMoveFactory</moveFactoryClass>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
 </solverBenchmarkSuite>

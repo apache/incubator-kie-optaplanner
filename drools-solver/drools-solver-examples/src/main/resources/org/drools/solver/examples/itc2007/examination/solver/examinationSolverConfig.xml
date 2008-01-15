@@ -16,7 +16,8 @@
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
     <selector>
-        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.NeighbourExaminationMoveFactory</moveFactoryClass>
+        <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.NeighbourExaminationMoveFactory</moveFactoryClass>-->
+        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.JumpingNeighbourExaminationMoveFactory</moveFactoryClass>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1500</completeSolutionTabuSize>
