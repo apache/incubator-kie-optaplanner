@@ -217,12 +217,21 @@ end
 rule "mixedDurations"
     when
         $institutionalWeighting : InstitutionalWeighting();
-        $leftExam : Exam($id : id, $period : period, $room : room, $leftTopic : topic);
-        Exam(period == $period, room == $room, id > $id, eval(topic.getDuration() != $leftTopic.getDuration()));
+        $leftExam : Exam($leftId : id, $period : period, $room : room, $leftTopic : topic);
+        // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalty's (for 100&150 and 100&200)
+        // leftExam has lowest id of the period+room combo
+        not Exam(period == $period, room == $room, id < $leftId);
+        // rightExam has a different duration
+        $rightExam : Exam(period == $period, room == $room, id > $leftId,
+            eval(topic.getDuration() != $leftTopic.getDuration()),
+            $rightId : id, $rightTopic : topic);
+        // rightExam has the lowest id of the period+room+rightDuration combo
+        not Exam(period == $period, room == $room, id < $rightId,
+            eval(topic.getDuration() == $rightTopic.getDuration()));
     then
         insertLogical(new IntConstraintOccurrence("mixedDurations", ConstraintType.NEGATIVE_SOFT,
             $institutionalWeighting.getMixedDurationPenality(),
-            $leftExam)); // Hack so 4 mixed durations only yield 3 penalities instead of 6.
+            $leftExam, $rightExam));
 end
 
 // Larger Exams towards the beginning of the examination session

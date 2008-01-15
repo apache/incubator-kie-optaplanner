@@ -6,9 +6,13 @@
     </scoreCalculator>
     <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
     <finish>
-        <!--<feasableScore>-999999.0</feasableScore>-->
+        <!--
+            Official benchmark maximumSecondsSpend allowed on:
+            ge0ffrey's main pc: 429
+            ge0ffrey's old pc: 1152
+        -->
         <maximumSecondsSpend>429</maximumSecondsSpend>
-        <!--<maximumSecondsSpend>5</maximumSecondsSpend>-->
+        <!--<feasableScore>-999999.0</feasableScore>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
     <selector>
