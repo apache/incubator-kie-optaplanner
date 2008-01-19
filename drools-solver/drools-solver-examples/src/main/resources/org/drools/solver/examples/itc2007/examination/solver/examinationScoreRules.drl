@@ -95,7 +95,7 @@ rule "periodHardConstraintExamCoincidence"
         )
         Exam(topic == $leftSideTopic, $leftSidePeriod : period);
         Exam(topic == $rightSideTopic, period != $leftSidePeriod);
-        // TODO make sure that leftSide and rightSide don't share a student
+        // LeftSide and rightSide don't share a student because those are filtered out in the InputConvertor
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintExamCoincidence", ConstraintType.NEGATIVE_HARD,
             $periodHardConstraint));

@@ -19,234 +19,140 @@ Reading Solution File
 
 Soft Constraint Violations
 ==========================
-Exam 0: Front Load Violation at period 11 of 40 (Size 220) - Penalty 5
-Exam 1: TwoInARow Violation with 1 students - Penalty 15
-Exam 1: Wider Spread Violation with 1 students - Penalty 1
-Exam 1: Front Load Violation at period 20 of 40 (Size 224) - Penalty 5
-Exam 2: Wider Spread Violation with 1 students - Penalty 1
-Exam 2: Front Load Violation at period 26 of 40 (Size 226) - Penalty 5
-Exam 4: Front Load Violation at period 12 of 40 (Size 67) - Penalty 5
-Exam 5: Front Load Violation at period 10 of 40 (Size 70) - Penalty 5
-Exam 6: Front Load Violation at period 22 of 40 (Size 94) - Penalty 5
-Exam 7: Front Load Violation at period 16 of 40 (Size 65) - Penalty 5
-Exam 14: TwoInADay Violation with 1 students - Penalty 5
-Exam 14: Front Load Violation at period 19 of 40 (Size 110) - Penalty 5
-Exam 16: Wider Spread Violation with 132 students - Penalty 132
-Exam 16: Front Load Violation at period 21 of 40 (Size 370) - Penalty 5
-Exam 18: Front Load Violation at period 12 of 40 (Size 70) - Penalty 5
-Exam 19: TwoInADay Violation with 1 students - Penalty 5
-Exam 21: Front Load Violation at period 12 of 40 (Size 54) - Penalty 5
-Exam 22: Front Load Violation at period 10 of 40 (Size 53) - Penalty 5
-Exam 23: Front Load Violation at period 12 of 40 (Size 71) - Penalty 5
-Exam 28: Front Load Violation at period 16 of 40 (Size 51) - Penalty 5
-Exam 29: TwoInARow Violation with 11 students - Penalty 165
-Exam 29: Wider Spread Violation with 11 students - Penalty 11
-Exam 33: TwoInARow Violation with 2 students - Penalty 30
-Exam 33: Wider Spread Violation with 2 students - Penalty 2
-Exam 38: Front Load Violation at period 19 of 40 (Size 129) - Penalty 5
-Exam 39: Front Load Violation at period 12 of 40 (Size 78) - Penalty 5
-Exam 40: TwoInARow Violation with 1 students - Penalty 15
-Exam 40: Wider Spread Violation with 1 students - Penalty 1
-Exam 40: Front Load Violation at period 37 of 40 (Size 191) - Penalty 5
-Exam 41: Front Load Violation at period 25 of 40 (Size 115) - Penalty 5
-Exam 43: Wider Spread Violation with 11 students - Penalty 11
-Exam 44: Front Load Violation at period 16 of 40 (Size 91) - Penalty 5
-Exam 45: Front Load Violation at period 10 of 40 (Size 75) - Penalty 5
-Exam 47: Front Load Violation at period 22 of 40 (Size 64) - Penalty 5
-Exam 57: Front Load Violation at period 25 of 40 (Size 56) - Penalty 5
-Exam 58: Front Load Violation at period 27 of 40 (Size 78) - Penalty 5
-Exam 61: TwoInADay Violation with 1 students - Penalty 5
-Exam 71: Front Load Violation at period 19 of 40 (Size 50) - Penalty 5
-Exam 73: Front Load Violation at period 16 of 40 (Size 48) - Penalty 5
-Exam 74: Front Load Violation at period 22 of 40 (Size 51) - Penalty 5
-Exam 84: Front Load Violation at period 10 of 40 (Size 51) - Penalty 5
-Exam 85: Front Load Violation at period 16 of 40 (Size 136) - Penalty 5
-Exam 86: Front Load Violation at period 23 of 40 (Size 219) - Penalty 5
-Exam 87: Front Load Violation at period 10 of 40 (Size 124) - Penalty 5
-Exam 88: Front Load Violation at period 25 of 40 (Size 85) - Penalty 5
-Exam 89: Front Load Violation at period 33 of 40 (Size 163) - Penalty 5
-Exam 90: Front Load Violation at period 19 of 40 (Size 76) - Penalty 5
-Exam 98: Front Load Violation at period 30 of 40 (Size 102) - Penalty 5
-Exam 100: Front Load Violation at period 16 of 40 (Size 62) - Penalty 5
-Exam 113: Front Load Violation at period 13 of 40 (Size 177) - Penalty 5
-Exam 120: Front Load Violation at period 39 of 40 (Size 424) - Penalty 5
-Exam 125: TwoInARow Violation with 1 students - Penalty 15
-Exam 125: Wider Spread Violation with 1 students - Penalty 1
-Exam 129: TwoInADay Violation with 1 students - Penalty 5
-Exam 131: Front Load Violation at period 12 of 40 (Size 54) - Penalty 5
-Exam 136: Front Load Violation at period 16 of 40 (Size 417) - Penalty 5
-Exam 137: Wider Spread Violation with 51 students - Penalty 51
-Exam 141: Front Load Violation at period 23 of 40 (Size 202) - Penalty 5
-Exam 142: Front Load Violation at period 11 of 40 (Size 102) - Penalty 5
-Exam 144: Front Load Violation at period 27 of 40 (Size 192) - Penalty 5
-Exam 145: Front Load Violation at period 12 of 40 (Size 90) - Penalty 5
-Exam 146: Front Load Violation at period 19 of 40 (Size 137) - Penalty 5
-Exam 150: Front Load Violation at period 10 of 40 (Size 50) - Penalty 5
-Exam 183: Front Load Violation at period 11 of 40 (Size 86) - Penalty 5
-Exam 184: Front Load Violation at period 11 of 40 (Size 85) - Penalty 5
-Exam 210: TwoInADay Violation with 1 students - Penalty 5
-Exam 222: TwoInADay Violation with 1 students - Penalty 5
-Exam 232: Front Load Violation at period 19 of 40 (Size 69) - Penalty 5
-Exam 236: TwoInARow Violation with 2 students - Penalty 30
-Exam 236: Wider Spread Violation with 2 students - Penalty 2
-Exam 248: Front Load Violation at period 16 of 40 (Size 51) - Penalty 5
-Exam 252: Front Load Violation at period 23 of 40 (Size 171) - Penalty 5
-Exam 255: Front Load Violation at period 12 of 40 (Size 63) - Penalty 5
-Exam 265: Front Load Violation at period 19 of 40 (Size 112) - Penalty 5
-Exam 272: Front Load Violation at period 25 of 40 (Size 177) - Penalty 5
-Exam 282: Front Load Violation at period 16 of 40 (Size 92) - Penalty 5
-Exam 307: Room penalty Violation - Penalty 10
-Exam 308: Front Load Violation at period 10 of 40 (Size 57) - Penalty 5
+Exam 0: Front Load Violation at period 12 of 40 (Size 220) - Penalty 5
+Exam 1: Front Load Violation at period 16 of 40 (Size 224) - Penalty 5
+Exam 4: Front Load Violation at period 16 of 40 (Size 67) - Penalty 5
+Exam 5: Front Load Violation at period 12 of 40 (Size 70) - Penalty 5
+Exam 7: Front Load Violation at period 10 of 40 (Size 65) - Penalty 5
+Exam 8: Front Load Violation at period 10 of 40 (Size 53) - Penalty 5
+Exam 15: Front Load Violation at period 10 of 40 (Size 82) - Penalty 5
+Exam 16: Front Load Violation at period 39 of 40 (Size 370) - Penalty 5
+Exam 17: Front Load Violation at period 16 of 40 (Size 68) - Penalty 5
+Exam 18: Front Load Violation at period 10 of 40 (Size 70) - Penalty 5
+Exam 19: Front Load Violation at period 16 of 40 (Size 52) - Penalty 5
+Exam 22: Front Load Violation at period 12 of 40 (Size 53) - Penalty 5
+Exam 23: Front Load Violation at period 10 of 40 (Size 71) - Penalty 5
+Exam 38: Front Load Violation at period 16 of 40 (Size 129) - Penalty 5
+Exam 41: Front Load Violation at period 22 of 40 (Size 115) - Penalty 5
+Exam 42: Front Load Violation at period 19 of 40 (Size 71) - Penalty 5
+Exam 44: Front Load Violation at period 10 of 40 (Size 91) - Penalty 5
+Exam 45: Front Load Violation at period 12 of 40 (Size 75) - Penalty 5
+Exam 47: Front Load Violation at period 25 of 40 (Size 64) - Penalty 5
+Exam 48: Front Load Violation at period 19 of 40 (Size 57) - Penalty 5
+Exam 52: Front Load Violation at period 19 of 40 (Size 53) - Penalty 5
+Exam 57: Front Load Violation at period 16 of 40 (Size 56) - Penalty 5
+Exam 73: Front Load Violation at period 10 of 40 (Size 48) - Penalty 5
+Exam 78: Room penalty Violation - Penalty 10
+Exam 84: Front Load Violation at period 12 of 40 (Size 51) - Penalty 5
+Exam 85: Front Load Violation at period 12 of 40 (Size 136) - Penalty 5
+Exam 86: Front Load Violation at period 10 of 40 (Size 219) - Penalty 5
+Exam 87: Front Load Violation at period 19 of 40 (Size 124) - Penalty 5
+Exam 90: Front Load Violation at period 16 of 40 (Size 76) - Penalty 5
+Exam 98: Front Load Violation at period 22 of 40 (Size 102) - Penalty 5
+Exam 100: Front Load Violation at period 11 of 40 (Size 62) - Penalty 5
+Exam 104: Front Load Violation at period 13 of 40 (Size 51) - Penalty 5
+Exam 107: Front Load Violation at period 25 of 40 (Size 82) - Penalty 5
+Exam 110: Front Load Violation at period 12 of 40 (Size 48) - Penalty 5
+Exam 120: TwoInADay Violation with 1 students - Penalty 5
+Exam 138: Front Load Violation at period 19 of 40 (Size 67) - Penalty 5
+Exam 145: Front Load Violation at period 10 of 40 (Size 90) - Penalty 5
+Exam 181: Front Load Violation at period 10 of 40 (Size 91) - Penalty 5
+Exam 183: Front Load Violation at period 12 of 40 (Size 86) - Penalty 5
+Exam 216: Front Load Violation at period 12 of 40 (Size 55) - Penalty 5
+Exam 223: Front Load Violation at period 10 of 40 (Size 59) - Penalty 5
+Exam 240: Front Load Violation at period 10 of 40 (Size 88) - Penalty 5
+Exam 248: Front Load Violation at period 13 of 40 (Size 51) - Penalty 5
+Exam 252: Front Load Violation at period 11 of 40 (Size 171) - Penalty 5
+Exam 253: Front Load Violation at period 13 of 40 (Size 61) - Penalty 5
+Exam 317: Front Load Violation at period 10 of 40 (Size 54) - Penalty 5
 Exam 319: Front Load Violation at period 10 of 40 (Size 51) - Penalty 5
-Exam 322: Front Load Violation at period 22 of 40 (Size 126) - Penalty 5
-Exam 324: Front Load Violation at period 16 of 40 (Size 55) - Penalty 5
-Exam 325: Front Load Violation at period 19 of 40 (Size 65) - Penalty 5
-Exam 327: Front Load Violation at period 10 of 40 (Size 69) - Penalty 5
-Exam 331: Front Load Violation at period 10 of 40 (Size 49) - Penalty 5
-Exam 347: Wider Spread Violation with 16 students - Penalty 16
-Exam 350: TwoInADay Violation with 1 students - Penalty 5
-Exam 351: Front Load Violation at period 19 of 40 (Size 54) - Penalty 5
-Exam 370: Front Load Violation at period 22 of 40 (Size 58) - Penalty 5
-Exam 429: Front Load Violation at period 25 of 40 (Size 73) - Penalty 5
-Exam 430: Front Load Violation at period 22 of 40 (Size 78) - Penalty 5
-Exam 433: Front Load Violation at period 22 of 40 (Size 66) - Penalty 5
-Exam 437: Front Load Violation at period 14 of 40 (Size 91) - Penalty 5
-Exam 438: Front Load Violation at period 37 of 40 (Size 65) - Penalty 5
-Exam 441: Front Load Violation at period 16 of 40 (Size 66) - Penalty 5
-Exam 442: Front Load Violation at period 10 of 40 (Size 72) - Penalty 5
-Exam 443: Front Load Violation at period 12 of 40 (Size 139) - Penalty 5
-Exam 444: TwoInADay Violation with 1 students - Penalty 5
+Exam 321: Front Load Violation at period 11 of 40 (Size 64) - Penalty 5
+Exam 325: Front Load Violation at period 11 of 40 (Size 65) - Penalty 5
+Exam 326: Front Load Violation at period 10 of 40 (Size 56) - Penalty 5
+Exam 327: TwoInADay Violation with 1 students - Penalty 5
+Exam 437: TwoInADay Violation with 1 students - Penalty 5
+Exam 438: Front Load Violation at period 19 of 40 (Size 65) - Penalty 5
+Exam 441: Front Load Violation at period 22 of 40 (Size 66) - Penalty 5
+Exam 442: Front Load Violation at period 27 of 40 (Size 72) - Penalty 5
+Exam 443: Front Load Violation at period 19 of 40 (Size 139) - Penalty 5
+Exam 444: Wider Spread Violation with 2 students - Penalty 2
 Exam 445: TwoInADay Violation with 1 students - Penalty 5
-Exam 446: TwoInADay Violation with 4 students - Penalty 20
-Exam 447: TwoInADay Violation with 2 students - Penalty 10
-Exam 450: TwoInADay Violation with 3 students - Penalty 15
-Exam 450: Front Load Violation at period 33 of 40 (Size 64) - Penalty 5
-Exam 453: Front Load Violation at period 11 of 40 (Size 130) - Penalty 5
-Exam 454: TwoInADay Violation with 1 students - Penalty 5
-Exam 455: TwoInADay Violation with 2 students - Penalty 10
-Exam 459: Front Load Violation at period 20 of 40 (Size 243) - Penalty 5
-Exam 460: TwoInARow Violation with 2 students - Penalty 30
-Exam 460: Wider Spread Violation with 2 students - Penalty 2
-Exam 460: Front Load Violation at period 31 of 40 (Size 212) - Penalty 5
+Exam 450: Front Load Violation at period 25 of 40 (Size 64) - Penalty 5
+Exam 451: Front Load Violation at period 10 of 40 (Size 73) - Penalty 5
+Exam 453: Front Load Violation at period 22 of 40 (Size 130) - Penalty 5
+Exam 459: Front Load Violation at period 10 of 40 (Size 243) - Penalty 5
 Exam 461: Front Load Violation at period 22 of 40 (Size 133) - Penalty 5
-Exam 463: Wider Spread Violation with 54 students - Penalty 54
-Exam 463: Front Load Violation at period 36 of 40 (Size 265) - Penalty 5
-Exam 464: Front Load Violation at period 28 of 40 (Size 209) - Penalty 5
-Exam 465: Wider Spread Violation with 8 students - Penalty 8
-Exam 466: Wider Spread Violation with 9 students - Penalty 9
-Exam 466: Front Load Violation at period 21 of 40 (Size 90) - Penalty 5
-Exam 471: Front Load Violation at period 30 of 40 (Size 53) - Penalty 5
-Exam 475: Front Load Violation at period 13 of 40 (Size 291) - Penalty 5
-Exam 476: Wider Spread Violation with 5 students - Penalty 5
-Exam 477: Front Load Violation at period 31 of 40 (Size 382) - Penalty 5
-Exam 478: Front Load Violation at period 37 of 40 (Size 300) - Penalty 5
-Exam 481: TwoInADay Violation with 6 students - Penalty 30
-Exam 519: TwoInADay Violation with 1 students - Penalty 5
-Exam 531: TwoInADay Violation with 1 students - Penalty 5
-Exam 534: TwoInADay Violation with 1 students - Penalty 5
-Exam 550: TwoInARow Violation with 2 students - Penalty 30
-Exam 550: Wider Spread Violation with 2 students - Penalty 2
-Exam 563: TwoInADay Violation with 1 students - Penalty 5
-Exam 564: Front Load Violation at period 12 of 40 (Size 49) - Penalty 5
-Exam 579: Front Load Violation at period 30 of 40 (Size 75) - Penalty 5
-Exam 590: Front Load Violation at period 10 of 40 (Size 176) - Penalty 5
-Exam 599: Front Load Violation at period 10 of 40 (Size 68) - Penalty 5
-Exam 600: Front Load Violation at period 22 of 40 (Size 127) - Penalty 5
-Exam 602: Front Load Violation at period 12 of 40 (Size 121) - Penalty 5
-Exam 620: TwoInADay Violation with 1 students - Penalty 5
-Exam 620: Front Load Violation at period 19 of 40 (Size 51) - Penalty 5
-Exam 621: Wider Spread Violation with 1 students - Penalty 1
-Exam 622: Period penalty Violation - Penalty 50
-Exam 623: Wider Spread Violation with 88 students - Penalty 88
-Exam 623: Front Load Violation at period 32 of 40 (Size 310) - Penalty 5
-Exam 624: Front Load Violation at period 22 of 40 (Size 141) - Penalty 5
-Exam 626: Front Load Violation at period 28 of 40 (Size 221) - Penalty 5
-Exam 627: Front Load Violation at period 25 of 40 (Size 183) - Penalty 5
-Exam 629: TwoInADay Violation with 4 students - Penalty 20
-Exam 629: Front Load Violation at period 30 of 40 (Size 210) - Penalty 5
-Exam 630: Front Load Violation at period 19 of 40 (Size 49) - Penalty 5
-Exam 632: TwoInADay Violation with 1 students - Penalty 5
-Exam 632: Front Load Violation at period 37 of 40 (Size 281) - Penalty 5
-Exam 636: Front Load Violation at period 33 of 40 (Size 148) - Penalty 5
-Exam 639: Front Load Violation at period 27 of 40 (Size 94) - Penalty 5
-Exam 646: Front Load Violation at period 10 of 40 (Size 74) - Penalty 5
-Exam 660: Front Load Violation at period 22 of 40 (Size 91) - Penalty 5
-Exam 669: Front Load Violation at period 16 of 40 (Size 62) - Penalty 5
-Exam 697: Front Load Violation at period 16 of 40 (Size 61) - Penalty 5
-Exam 706: Front Load Violation at period 20 of 40 (Size 212) - Penalty 5
-Exam 708: Front Load Violation at period 30 of 40 (Size 213) - Penalty 5
-Exam 709: Front Load Violation at period 12 of 40 (Size 51) - Penalty 5
-Exam 710: Front Load Violation at period 12 of 40 (Size 127) - Penalty 5
-Exam 712: Front Load Violation at period 27 of 40 (Size 130) - Penalty 5
-Exam 714: Front Load Violation at period 33 of 40 (Size 219) - Penalty 5
-Exam 718: Front Load Violation at period 16 of 40 (Size 127) - Penalty 5
-Exam 722: Front Load Violation at period 19 of 40 (Size 125) - Penalty 5
-Exam 723: TwoInADay Violation with 1 students - Penalty 5
-Exam 727: Front Load Violation at period 19 of 40 (Size 127) - Penalty 5
-Exam 729: Front Load Violation at period 22 of 40 (Size 127) - Penalty 5
-Exam 731: Front Load Violation at period 16 of 40 (Size 124) - Penalty 5
-Exam 732: Front Load Violation at period 11 of 40 (Size 121) - Penalty 5
-Exam 737: Front Load Violation at period 11 of 40 (Size 116) - Penalty 5
-Exam 740: Front Load Violation at period 23 of 40 (Size 216) - Penalty 5
-Exam 742: Front Load Violation at period 25 of 40 (Size 128) - Penalty 5
-Exam 746: Front Load Violation at period 22 of 40 (Size 125) - Penalty 5
-Exam 761: Front Load Violation at period 10 of 40 (Size 78) - Penalty 5
-Exam 762: Front Load Violation at period 34 of 40 (Size 280) - Penalty 5
-Exam 764: TwoInADay Violation with 1 students - Penalty 5
-Exam 765: Wider Spread Violation with 1 students - Penalty 1
-Exam 765: Front Load Violation at period 26 of 40 (Size 263) - Penalty 5
-Exam 767: Wider Spread Violation with 11 students - Penalty 11
-Exam 767: Front Load Violation at period 21 of 40 (Size 200) - Penalty 5
-Exam 768: Front Load Violation at period 30 of 40 (Size 201) - Penalty 5
-Exam 770: Front Load Violation at period 27 of 40 (Size 196) - Penalty 5
-Exam 771: Front Load Violation at period 38 of 40 (Size 223) - Penalty 5
-Exam 773: Front Load Violation at period 23 of 40 (Size 175) - Penalty 5
-Exam 775: TwoInADay Violation with 1 students - Penalty 5
-Exam 776: Wider Spread Violation with 10 students - Penalty 10
-Exam 777: Front Load Violation at period 22 of 40 (Size 79) - Penalty 5
-Exam 778: Front Load Violation at period 27 of 40 (Size 93) - Penalty 5
-Exam 781: Front Load Violation at period 33 of 40 (Size 130) - Penalty 5
-Exam 783: TwoInADay Violation with 1 students - Penalty 5
-Exam 784: Front Load Violation at period 30 of 40 (Size 106) - Penalty 5
-Exam 785: TwoInADay Violation with 1 students - Penalty 5
-Exam 785: Front Load Violation at period 19 of 40 (Size 62) - Penalty 5
-Exam 800: Front Load Violation at period 13 of 40 (Size 166) - Penalty 5
-Exam 803: Front Load Violation at period 19 of 40 (Size 125) - Penalty 5
+Exam 463: Front Load Violation at period 16 of 40 (Size 265) - Penalty 5
+Exam 464: Front Load Violation at period 12 of 40 (Size 209) - Penalty 5
+Exam 465: Front Load Violation at period 30 of 40 (Size 51) - Penalty 5
+Exam 471: Front Load Violation at period 11 of 40 (Size 53) - Penalty 5
+Exam 472: TwoInADay Violation with 1 students - Penalty 5
+Exam 481: Wider Spread Violation with 3 students - Penalty 3
+Exam 564: Front Load Violation at period 16 of 40 (Size 49) - Penalty 5
+Exam 599: Front Load Violation at period 24 of 40 (Size 68) - Penalty 5
+Exam 613: Front Load Violation at period 12 of 40 (Size 50) - Penalty 5
+Exam 614: Front Load Violation at period 10 of 40 (Size 47) - Penalty 5
+Exam 621: Front Load Violation at period 10 of 40 (Size 215) - Penalty 5
+Exam 623: Front Load Violation at period 12 of 40 (Size 310) - Penalty 5
+Exam 624: Front Load Violation at period 27 of 40 (Size 141) - Penalty 5
+Exam 626: Front Load Violation at period 19 of 40 (Size 221) - Penalty 5
+Exam 627: Front Load Violation at period 22 of 40 (Size 183) - Penalty 5
+Exam 629: Front Load Violation at period 16 of 40 (Size 210) - Penalty 5
+Exam 630: Front Load Violation at period 33 of 40 (Size 49) - Penalty 5
+Exam 636: Front Load Violation at period 25 of 40 (Size 148) - Penalty 5
+Exam 638: Front Load Violation at period 30 of 40 (Size 70) - Penalty 5
+Exam 639: Front Load Violation at period 19 of 40 (Size 94) - Penalty 5
+Exam 645: Front Load Violation at period 11 of 40 (Size 51) - Penalty 5
+Exam 646: Front Load Violation at period 27 of 40 (Size 74) - Penalty 5
+Exam 660: TwoInADay Violation with 1 students - Penalty 5
+Exam 692: Front Load Violation at period 13 of 40 (Size 83) - Penalty 5
+Exam 697: Front Load Violation at period 11 of 40 (Size 61) - Penalty 5
+Exam 706: Front Load Violation at period 11 of 40 (Size 212) - Penalty 5
+Exam 724: Front Load Violation at period 13 of 40 (Size 143) - Penalty 5
+Exam 727: Front Load Violation at period 10 of 40 (Size 127) - Penalty 5
+Exam 729: Front Load Violation at period 16 of 40 (Size 127) - Penalty 5
+Exam 731: Front Load Violation at period 12 of 40 (Size 124) - Penalty 5
+Exam 732: Front Load Violation at period 16 of 40 (Size 121) - Penalty 5
+Exam 746: Front Load Violation at period 10 of 40 (Size 125) - Penalty 5
+Exam 763: Front Load Violation at period 22 of 40 (Size 146) - Penalty 5
+Exam 767: Front Load Violation at period 16 of 40 (Size 200) - Penalty 5
+Exam 768: Front Load Violation at period 12 of 40 (Size 201) - Penalty 5
+Exam 770: Front Load Violation at period 19 of 40 (Size 196) - Penalty 5
+Exam 773: Front Load Violation at period 10 of 40 (Size 175) - Penalty 5
+Exam 776: Front Load Violation at period 25 of 40 (Size 48) - Penalty 5
+Exam 777: Front Load Violation at period 10 of 40 (Size 79) - Penalty 5
+Exam 778: Front Load Violation at period 12 of 40 (Size 93) - Penalty 5
+Exam 781: Front Load Violation at period 22 of 40 (Size 130) - Penalty 5
+Exam 785: Front Load Violation at period 27 of 40 (Size 62) - Penalty 5
+Exam 799: Front Load Violation at period 16 of 40 (Size 112) - Penalty 5
+Exam 801: Front Load Violation at period 13 of 40 (Size 148) - Penalty 5
+Exam 802: Front Load Violation at period 11 of 40 (Size 159) - Penalty 5
 Exam 804: Front Load Violation at period 10 of 40 (Size 82) - Penalty 5
-Exam 806: Front Load Violation at period 19 of 40 (Size 71) - Penalty 5
-Exam 811: Front Load Violation at period 16 of 40 (Size 58) - Penalty 5
-Exam 813: Front Load Violation at period 12 of 40 (Size 51) - Penalty 5
-Exam 816: Front Load Violation at period 16 of 40 (Size 115) - Penalty 5
-Exam 817: Wider Spread Violation with 41 students - Penalty 41
-Exam 817: Front Load Violation at period 11 of 40 (Size 85) - Penalty 5
-Exam 818: Front Load Violation at period 12 of 40 (Size 62) - Penalty 5
-Exam 820: Front Load Violation at period 10 of 40 (Size 49) - Penalty 5
-Exam 834: Front Load Violation at period 27 of 40 (Size 122) - Penalty 5
-Exam 836: Front Load Violation at period 22 of 40 (Size 64) - Penalty 5
-Exam 837: Front Load Violation at period 27 of 40 (Size 75) - Penalty 5
-Exam 838: Front Load Violation at period 25 of 40 (Size 69) - Penalty 5
-Exam 839: Front Load Violation at period 12 of 40 (Size 52) - Penalty 5
+Exam 810: Front Load Violation at period 16 of 40 (Size 57) - Penalty 5
+Exam 811: Front Load Violation at period 12 of 40 (Size 58) - Penalty 5
+Exam 815: Front Load Violation at period 12 of 40 (Size 114) - Penalty 5
+Exam 816: Front Load Violation at period 10 of 40 (Size 115) - Penalty 5
+Exam 817: Front Load Violation at period 16 of 40 (Size 85) - Penalty 5
+Exam 818: Front Load Violation at period 22 of 40 (Size 62) - Penalty 5
+Exam 821: Front Load Violation at period 12 of 40 (Size 59) - Penalty 5
+Exam 836: Front Load Violation at period 12 of 40 (Size 64) - Penalty 5
+Exam 839: Front Load Violation at period 16 of 40 (Size 52) - Penalty 5
 Exam 842: Front Load Violation at period 10 of 40 (Size 66) - Penalty 5
-Exam 845: Front Load Violation at period 16 of 40 (Size 60) - Penalty 5
 Exam 846: Front Load Violation at period 19 of 40 (Size 77) - Penalty 5
-Exam 858: Front Load Violation at period 12 of 40 (Size 127) - Penalty 5
-Exam 859: TwoInADay Violation with 1 students - Penalty 5
-Exam 859: Front Load Violation at period 19 of 40 (Size 60) - Penalty 5
-Exam 867: Front Load Violation at period 16 of 40 (Size 72) - Penalty 5
-Exam 868: Front Load Violation at period 25 of 40 (Size 69) - Penalty 5
-Room 0 at Period 16: Mix Durations penalty Violation - Penalty 25 ( of 2 exams: 120 195 )
+Exam 859: Front Load Violation at period 25 of 40 (Size 60) - Penalty 5
+Exam 860: Front Load Violation at period 27 of 40 (Size 53) - Penalty 5
 
 Summary Evaluation
 ==================
 
 Unscheduled: 0 (of 870), pen=0
 
-TwoInARow: 8, pen=330
-TwoInADay: 28, pen=215
-WiderSpreads: 31, pen=461
-PeriodPenalties: 1, pen=50
+TwoInARow: 0, pen=0
+TwoInADay: 6, pen=30
+WiderSpreads: 2, pen=5
+PeriodPenalties: 0, pen=0
 RoomPenalties: 1, pen=10
-MixDurationPenalties: 1, pen=25
-FrontLoadPenalties: 154, pen=770
+MixDurationPenalties: 0, pen=0
+FrontLoadPenalties: 113, pen=565
 
-Overall penalty = 1861
+Overall penalty = 610

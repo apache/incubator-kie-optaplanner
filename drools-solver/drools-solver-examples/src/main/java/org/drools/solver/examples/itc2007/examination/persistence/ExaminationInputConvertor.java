@@ -220,7 +220,14 @@ public class ExaminationInputConvertor extends LoggingMain {
             periodHardConstraint.setLeftSideTopic(topicList.get(Integer.parseInt(lineTokens[0])));
             periodHardConstraint.setPeriodHardConstraintType(PeriodHardConstraintType.valueOf(lineTokens[1]));
             periodHardConstraint.setRightSideTopic(topicList.get(Integer.parseInt(lineTokens[2])));
-            periodHardConstraintList.add(periodHardConstraint);
+            if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.EXAM_COINCIDENCE
+                    && !Collections.disjoint(periodHardConstraint.getLeftSideTopic().getStudentList(),
+                            periodHardConstraint.getRightSideTopic().getStudentList())) {
+                logger.warn("Filtering out periodHardConstraint (" + periodHardConstraint
+                        + ") because the left and right topic share students.");
+            } else {
+                periodHardConstraintList.add(periodHardConstraint);
+            }
             line = bufferedReader.readLine();
             id++;
         }

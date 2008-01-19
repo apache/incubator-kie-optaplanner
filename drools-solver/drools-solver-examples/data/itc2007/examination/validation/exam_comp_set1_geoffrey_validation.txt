@@ -1,3 +1,8 @@
+Examination Validator - Competition 2007
+	Select Problem file:
+	Select Solution file:
+		Show Violations
+
 Reading Problem File
 ====================
 Reading 607 Exams...
@@ -11,889 +16,696 @@ Conflict Density: 5.05 %
 
 Reading Solution File
 =====================
-Exam 2: Can't Schedule: Period 2, Room 2
-Exam 3: Can't Schedule: Period 3, Room 3
-Exam 4: Can't Schedule: Period 4, Room 4
-Exam 5: Can't Schedule: Period 5, Room 5
-Exam 7: Can't Schedule: Period 7, Room 1
-Exam 8: Can't Schedule: Period 8, Room 2
-Exam 9: Can't Schedule: Period 9, Room 3
-Exam 10: Can't Schedule: Period 10, Room 4
-Exam 11: Can't Schedule: Period 11, Room 5
-Exam 14: Can't Schedule: Period 14, Room 3
-Exam 15: Can't Schedule: Period 15, Room 4
-Exam 16: Can't Schedule: Period 16, Room 5
-Exam 19: Can't Schedule: Period 19, Room 4
-Exam 20: Can't Schedule: Period 20, Room 5
-Exam 31: Can't Schedule: Period 31, Room 3
-Exam 46: Can't Schedule: Period 46, Room 3
-Exam 48: Can't Schedule: Period 48, Room 5
-Exam 51: Can't Schedule: Period 51, Room 5
-Exam 53: Can't Schedule: Period 53, Room 5
-Exam 60: Can't Schedule: Period 6, Room 4
-Exam 61: Can't Schedule: Period 7, Room 5
-Exam 85: Can't Schedule: Period 31, Room 1
-Exam 86: Can't Schedule: Period 32, Room 2
-Exam 87: Can't Schedule: Period 33, Room 3
-Exam 102: Can't Schedule: Period 48, Room 3
-Exam 103: Can't Schedule: Period 49, Room 4
-Exam 107: Can't Schedule: Period 53, Room 5
-Exam 128: Can't Schedule: Period 20, Room 5
-Exam 129: Can't Schedule: Period 21, Room 6
-Exam 130: Can't Schedule: Period 22, Room 3
-Exam 155: Can't Schedule: Period 47, Room 4
-Conflict at that time with 109
-Exam 163: Can't Schedule: Period 1, Room 5
-Exam 166: Can't Schedule: Period 4, Room 6
-Exam 169: Can't Schedule: Period 7, Room 1
-Exam 171: Can't Schedule: Period 9, Room 3
-Exam 172: Can't Schedule: Period 10, Room 4
-Exam 173: Can't Schedule: Period 11, Room 5
-Exam 174: Can't Schedule: Period 12, Room 6
-Exam 182: Can't Schedule: Period 20, Room 3
-Exam 183: Can't Schedule: Period 21, Room 4
-Exam 184: Can't Schedule: Period 22, Room 5
-Exam 192: Can't Schedule: Period 30, Room 6
-Conflict at that time with 143
-Exam 197: Can't Schedule: Period 35, Room 1
-Exam 198: Can't Schedule: Period 36, Room 2
-Conflict at that time with 145
-Exam 199: Can't Schedule: Period 37, Room 3
-Exam 200: Can't Schedule: Period 38, Room 4
-Exam 201: Can't Schedule: Period 39, Room 5
-Conflict at that time with 96
-Exam 204: Can't Schedule: Period 42, Room 2
-Conflict at that time with 101
-Exam 209: Can't Schedule: Period 47, Room 2
-Exam 212: Can't Schedule: Period 50, Room 5
-Exam 217: Can't Schedule: Period 1, Room 6
-Exam 229: Can't Schedule: Period 13, Room 5
-Exam 240: Can't Schedule: Period 24, Room 5
-Conflict at that time with 26
-Exam 242: Can't Schedule: Period 26, Room 3
-Exam 243: Can't Schedule: Period 27, Room 4
-Conflict at that time with 136
-Exam 244: Can't Schedule: Period 28, Room 5
-Conflict at that time with 139
-Exam 247: Can't Schedule: Period 31, Room 5
-Conflict at that time with 140
-Exam 248: Can't Schedule: Period 32, Room 6
-Conflict at that time with 146
-Exam 254: Can't Schedule: Period 38, Room 2
-Exam 258: Can't Schedule: Period 42, Room 6
-Conflict at that time with 151
-Exam 259: Can't Schedule: Period 43, Room 1
-Exam 262: Can't Schedule: Period 46, Room 4
-Exam 263: Can't Schedule: Period 47, Room 5
-Conflict at that time with 211
-Exam 265: Can't Schedule: Period 49, Room 2
-Exam 266: Can't Schedule: Period 50, Room 3
-Conflict at that time with 222
-Exam 276: Can't Schedule: Period 6, Room 6
-Conflict at that time with 224
-Exam 278: Can't Schedule: Period 8, Room 6
-Exam 281: Can't Schedule: Period 11, Room 1
-Exam 283: Can't Schedule: Period 13, Room 3
-Exam 284: Can't Schedule: Period 14, Room 4
-Exam 285: Can't Schedule: Period 15, Room 5
-Exam 290: Can't Schedule: Period 20, Room 4
-Exam 297: Can't Schedule: Period 27, Room 6
-Conflict at that time with 136
-Exam 298: Can't Schedule: Period 28, Room 3
-Conflict at that time with 137
-Exam 299: Can't Schedule: Period 29, Room 4
-Exam 302: Can't Schedule: Period 32, Room 4
-Exam 303: Can't Schedule: Period 33, Room 5
-Exam 304: Can't Schedule: Period 34, Room 6
-Exam 305: Can't Schedule: Period 35, Room 5
-Exam 313: Can't Schedule: Period 43, Room 5
-Exam 322: Can't Schedule: Period 52, Room 3
-Exam 325: Can't Schedule: Period 1, Room 6
-Exam 333: Can't Schedule: Period 9, Room 5
-Conflict at that time with 227
-Exam 335: Can't Schedule: Period 11, Room 6
-Conflict at that time with 230
-Exam 338: Can't Schedule: Period 14, Room 2
-Conflict at that time with 231
-Exam 339: Can't Schedule: Period 15, Room 3
-Conflict at that time with 232
-Exam 340: Can't Schedule: Period 16, Room 4
-Conflict at that time with 236
-Exam 344: Can't Schedule: Period 20, Room 2
-Conflict at that time with 76
-Exam 346: Can't Schedule: Period 22, Room 4
-Exam 347: Can't Schedule: Period 23, Room 5
-Exam 348: Can't Schedule: Period 24, Room 6
-Exam 350: Can't Schedule: Period 26, Room 3
-Exam 352: Can't Schedule: Period 28, Room 5
-Exam 353: Can't Schedule: Period 29, Room 6
-Exam 354: Can't Schedule: Period 30, Room 3
-Exam 355: Can't Schedule: Period 31, Room 4
-Exam 359: Can't Schedule: Period 35, Room 5
-Conflict at that time with 36
-Exam 360: Can't Schedule: Period 36, Room 6
-Exam 362: Can't Schedule: Period 38, Room 6
-Exam 365: Can't Schedule: Period 41, Room 1
-Exam 369: Can't Schedule: Period 45, Room 5
-Exam 373: Can't Schedule: Period 49, Room 3
-Exam 374: Can't Schedule: Period 50, Room 4
-Conflict at that time with 267
-Exam 375: Can't Schedule: Period 51, Room 5
-Exam 376: Can't Schedule: Period 52, Room 6
-Exam 379: Can't Schedule: Period 1, Room 4
-Conflict at that time with 218
-Exam 380: Can't Schedule: Period 2, Room 5
-Exam 381: Can't Schedule: Period 3, Room 6
-Conflict at that time with 220
-Exam 382: Can't Schedule: Period 4, Room 3
-Conflict at that time with 167
-Exam 383: Can't Schedule: Period 5, Room 4
-Conflict at that time with 277
-Exam 385: Can't Schedule: Period 7, Room 6
-Exam 387: Can't Schedule: Period 9, Room 5
-Conflict at that time with 226
-Exam 388: Can't Schedule: Period 10, Room 6
-Exam 389: Can't Schedule: Period 11, Room 5
-Conflict at that time with 282
-Exam 390: Can't Schedule: Period 12, Room 6
-Exam 391: Can't Schedule: Period 13, Room 6
-Exam 397: Can't Schedule: Period 19, Room 5
-Exam 401: Can't Schedule: Period 23, Room 3
-Conflict at that time with 132
-Exam 402: Can't Schedule: Period 24, Room 4
-Exam 409: Can't Schedule: Period 31, Room 6
-Conflict at that time with 141
-Exam 411: Can't Schedule: Period 33, Room 4
-Exam 415: Can't Schedule: Period 37, Room 5
-Exam 418: Can't Schedule: Period 40, Room 6
-Exam 422: Can't Schedule: Period 44, Room 2
-Exam 423: Can't Schedule: Period 45, Room 3
-Conflict at that time with 154
-Exam 424: Can't Schedule: Period 46, Room 4
-Exam 425: Can't Schedule: Period 47, Room 5
-Exam 426: Can't Schedule: Period 48, Room 6
-Exam 429: Can't Schedule: Period 51, Room 3
-Exam 430: Can't Schedule: Period 52, Room 4
-Exam 432: Can't Schedule: Period 0, Room 6
-Exam 434: Can't Schedule: Period 2, Room 3
-Conflict at that time with 273
-Exam 435: Can't Schedule: Period 3, Room 4
-Conflict at that time with 274
-Exam 436: Can't Schedule: Period 4, Room 5
-Exam 437: Can't Schedule: Period 5, Room 6
-Conflict at that time with 6
-Exam 438: Can't Schedule: Period 6, Room 3
-Exam 440: Can't Schedule: Period 8, Room 5
-Exam 441: Can't Schedule: Period 9, Room 6
-Exam 442: Can't Schedule: Period 10, Room 4
-Conflict at that time with 12
-Exam 444: Can't Schedule: Period 12, Room 6
-Conflict at that time with 13
-Exam 445: Can't Schedule: Period 13, Room 5
-Exam 446: Can't Schedule: Period 14, Room 6
-Exam 449: Can't Schedule: Period 17, Room 1
-Conflict at that time with 18
-Exam 450: Can't Schedule: Period 18, Room 2
-Exam 451: Can't Schedule: Period 19, Room 3
-Exam 453: Can't Schedule: Period 21, Room 5
-Exam 454: Can't Schedule: Period 22, Room 6
-Conflict at that time with 26
-Exam 458: Can't Schedule: Period 26, Room 4
-Exam 459: Can't Schedule: Period 27, Room 5
-Exam 460: Can't Schedule: Period 28, Room 6
-Exam 466: Can't Schedule: Period 34, Room 3
-Exam 467: Can't Schedule: Period 35, Room 4
-Exam 468: Can't Schedule: Period 36, Room 5
-Exam 470: Can't Schedule: Period 38, Room 4
-Exam 471: Can't Schedule: Period 39, Room 5
-Exam 472: Can't Schedule: Period 40, Room 6
-Exam 473: Can't Schedule: Period 41, Room 5
-Conflict at that time with 150
-Exam 474: Can't Schedule: Period 42, Room 6
-Conflict at that time with 151
-Exam 475: Can't Schedule: Period 43, Room 6
-Conflict at that time with 152
-Exam 476: Can't Schedule: Period 44, Room 0
-Exam 479: Can't Schedule: Period 47, Room 3
-Exam 486: Can't Schedule: Period 0, Room 4
-Exam 487: Can't Schedule: Period 1, Room 5
-Conflict at that time with 113
-Exam 491: Can't Schedule: Period 5, Room 4
-Exam 496: Can't Schedule: Period 10, Room 5
-Conflict at that time with 392
-Exam 500: Can't Schedule: Period 14, Room 6
-Exam 502: Can't Schedule: Period 16, Room 6
-Conflict at that time with 72
-Exam 504: Can't Schedule: Period 18, Room 0
-Conflict at that time with 127
-Exam 505: Can't Schedule: Period 19, Room 1
-Conflict at that time with 75
-Exam 507: Can't Schedule: Period 21, Room 3
-Exam 509: Can't Schedule: Period 23, Room 5
-Conflict at that time with 132
-Exam 510: Can't Schedule: Period 24, Room 6
-Conflict at that time with 295
-Exam 511: Can't Schedule: Period 25, Room 1
-Conflict at that time with 134
-Exam 512: Can't Schedule: Period 26, Room 2
-Conflict at that time with 136
-Exam 514: Can't Schedule: Period 28, Room 4
-Exam 515: Can't Schedule: Period 29, Room 5
-Conflict at that time with 301
-Exam 517: Can't Schedule: Period 31, Room 2
-Exam 518: Can't Schedule: Period 32, Room 3
-Exam 520: Can't Schedule: Period 34, Room 5
-Exam 521: Can't Schedule: Period 35, Room 6
-Conflict at that time with 144
-Exam 522: Can't Schedule: Period 36, Room 3
-Conflict at that time with 363
-Exam 525: Can't Schedule: Period 39, Room 6
-Conflict at that time with 148
-Exam 526: Can't Schedule: Period 40, Room 4
-Exam 528: Can't Schedule: Period 42, Room 6
-Exam 529: Can't Schedule: Period 43, Room 5
-Exam 530: Can't Schedule: Period 44, Room 6
-Exam 531: Can't Schedule: Period 45, Room 6
-Exam 533: Can't Schedule: Period 47, Room 1
-Conflict at that time with 156
-Exam 534: Can't Schedule: Period 48, Room 2
-Exam 535: Can't Schedule: Period 49, Room 3
-Exam 541: Can't Schedule: Period 1, Room 3
-Exam 543: Can't Schedule: Period 3, Room 5
-Conflict at that time with 274
-Exam 544: Can't Schedule: Period 4, Room 6
-Exam 547: Can't Schedule: Period 7, Room 4
-Exam 553: Can't Schedule: Period 13, Room 6
-Exam 555: Can't Schedule: Period 15, Room 5
-Conflict at that time with 286
-Exam 556: Can't Schedule: Period 16, Room 6
-Conflict at that time with 295
-Exam 565: Can't Schedule: Period 25, Room 5
-Exam 568: Can't Schedule: Period 28, Room 2
-Exam 569: Can't Schedule: Period 29, Room 3
-Exam 570: Can't Schedule: Period 30, Room 4
-Exam 572: Can't Schedule: Period 32, Room 6
-Conflict at that time with 35
-Exam 575: Can't Schedule: Period 35, Room 4
-Conflict at that time with 36
-Exam 576: Can't Schedule: Period 36, Room 5
-Conflict at that time with 145
-Exam 577: Can't Schedule: Period 37, Room 6
-Exam 583: Can't Schedule: Period 43, Room 5
-Exam 586: Can't Schedule: Period 46, Room 6
-Exam 590: Can't Schedule: Period 50, Room 2
-Conflict at that time with 321
-Exam 591: Can't Schedule: Period 51, Room 3
-Exam 594: Can't Schedule: Period 0, Room 6
-Exam 595: Can't Schedule: Period 1, Room 1
-Conflict at that time with 221
-Exam 599: Can't Schedule: Period 5, Room 5
-Exam 602: Can't Schedule: Period 8, Room 3
 
 Soft Constraint Violations
 ==========================
-Exam 6: TwoInARow Violation with 1 students - Penalty 7
-Exam 6: Wider Spread Violation with 1 students - Penalty 1
-Exam 12: TwoInARow Violation with 47 students - Penalty 329
-Exam 12: Wider Spread Violation with 67 students - Penalty 67
-Exam 13: Wider Spread Violation with 42 students - Penalty 42
-Exam 13: Room penalty Violation - Penalty 50
-Exam 17: Wider Spread Violation with 35 students - Penalty 35
-Exam 18: Wider Spread Violation with 4 students - Penalty 4
-Exam 18: Room penalty Violation - Penalty 50
-Exam 21: Wider Spread Violation with 15 students - Penalty 15
-Exam 22: Wider Spread Violation with 6 students - Penalty 6
-Exam 23: Wider Spread Violation with 1 students - Penalty 1
-Exam 25: TwoInARow Violation with 25 students - Penalty 175
-Exam 25: Wider Spread Violation with 25 students - Penalty 25
-Exam 27: Wider Spread Violation with 3 students - Penalty 3
-Exam 28: Wider Spread Violation with 2 students - Penalty 2
-Exam 29: Wider Spread Violation with 2 students - Penalty 2
+Exam 2: Wider Spread Violation with 38 students - Penalty 38
+Exam 2: Front Load Violation at period 48 of 54 (Size 139) - Penalty 5
+Exam 3: TwoInARow Violation with 6 students - Penalty 42
+Exam 3: Wider Spread Violation with 47 students - Penalty 47
+Exam 3: Front Load Violation at period 39 of 54 (Size 176) - Penalty 5
+Exam 4: Wider Spread Violation with 12 students - Penalty 12
+Exam 4: Front Load Violation at period 33 of 54 (Size 182) - Penalty 5
+Exam 5: Wider Spread Violation with 36 students - Penalty 36
+Exam 6: Wider Spread Violation with 25 students - Penalty 25
+Exam 7: Wider Spread Violation with 21 students - Penalty 21
+Exam 7: Room penalty Violation - Penalty 50
+Exam 7: Front Load Violation at period 33 of 54 (Size 125) - Penalty 5
+Exam 8: Wider Spread Violation with 26 students - Penalty 26
+Exam 8: Period penalty Violation - Penalty 50
+Exam 9: Wider Spread Violation with 32 students - Penalty 32
+Exam 10: Wider Spread Violation with 9 students - Penalty 9
+Exam 11: Wider Spread Violation with 37 students - Penalty 37
+Exam 12: Wider Spread Violation with 39 students - Penalty 39
+Exam 13: Wider Spread Violation with 18 students - Penalty 18
+Exam 14: Wider Spread Violation with 8 students - Penalty 8
+Exam 15: Wider Spread Violation with 34 students - Penalty 34
+Exam 16: TwoInARow Violation with 3 students - Penalty 21
+Exam 16: Wider Spread Violation with 38 students - Penalty 38
+Exam 17: Wider Spread Violation with 4 students - Penalty 4
+Exam 18: Wider Spread Violation with 18 students - Penalty 18
+Exam 19: Wider Spread Violation with 32 students - Penalty 32
+Exam 19: Front Load Violation at period 49 of 54 (Size 128) - Penalty 5
+Exam 20: Wider Spread Violation with 6 students - Penalty 6
+Exam 20: Front Load Violation at period 42 of 54 (Size 130) - Penalty 5
+Exam 21: Wider Spread Violation with 3 students - Penalty 3
+Exam 22: Wider Spread Violation with 2 students - Penalty 2
+Exam 23: Wider Spread Violation with 5 students - Penalty 5
+Exam 24: Wider Spread Violation with 3 students - Penalty 3
+Exam 25: Wider Spread Violation with 2 students - Penalty 2
+Exam 26: Wider Spread Violation with 3 students - Penalty 3
+Exam 28: Wider Spread Violation with 1 students - Penalty 1
+Exam 28: Room penalty Violation - Penalty 50
 Exam 30: Room penalty Violation - Penalty 50
-Exam 32: Wider Spread Violation with 32 students - Penalty 32
-Exam 33: TwoInARow Violation with 4 students - Penalty 28
-Exam 33: Wider Spread Violation with 4 students - Penalty 4
-Exam 35: TwoInARow Violation with 80 students - Penalty 560
-Exam 35: Wider Spread Violation with 153 students - Penalty 153
-Exam 36: Wider Spread Violation with 134 students - Penalty 134
-Exam 36: Room penalty Violation - Penalty 50
-Exam 37: Wider Spread Violation with 2 students - Penalty 2
-Exam 37: Room penalty Violation - Penalty 50
-Exam 38: Wider Spread Violation with 18 students - Penalty 18
-Exam 39: TwoInARow Violation with 7 students - Penalty 49
-Exam 39: Wider Spread Violation with 19 students - Penalty 19
-Exam 40: Wider Spread Violation with 53 students - Penalty 53
-Exam 41: Wider Spread Violation with 19 students - Penalty 19
-Exam 41: Room penalty Violation - Penalty 50
-Exam 42: Room penalty Violation - Penalty 50
-Exam 43: Wider Spread Violation with 42 students - Penalty 42
-Exam 44: TwoInARow Violation with 21 students - Penalty 147
-Exam 44: Wider Spread Violation with 21 students - Penalty 21
-Exam 47: Wider Spread Violation with 55 students - Penalty 55
-Exam 47: Period penalty Violation - Penalty 50
-Exam 49: Wider Spread Violation with 15 students - Penalty 15
-Exam 50: Wider Spread Violation with 15 students - Penalty 15
-Exam 54: TwoInARow Violation with 90 students - Penalty 630
-Exam 54: Wider Spread Violation with 96 students - Penalty 96
-Exam 55: Wider Spread Violation with 7 students - Penalty 7
-Exam 56: TwoInARow Violation with 53 students - Penalty 371
-Exam 56: Wider Spread Violation with 56 students - Penalty 56
-Exam 57: Wider Spread Violation with 40 students - Penalty 40
-Exam 57: Period penalty Violation - Penalty 70
-Exam 58: TwoInARow Violation with 33 students - Penalty 231
-Exam 58: Wider Spread Violation with 87 students - Penalty 87
-Exam 58: Period penalty Violation - Penalty 50
-Exam 58: Room penalty Violation - Penalty 50
-Exam 59: Wider Spread Violation with 67 students - Penalty 67
-Exam 59: Room penalty Violation - Penalty 50
-Exam 62: TwoInARow Violation with 23 students - Penalty 161
-Exam 62: Wider Spread Violation with 23 students - Penalty 23
-Exam 64: TwoInARow Violation with 3 students - Penalty 21
-Exam 64: Wider Spread Violation with 58 students - Penalty 58
-Exam 64: Room penalty Violation - Penalty 50
-Exam 65: Wider Spread Violation with 35 students - Penalty 35
-Exam 65: Room penalty Violation - Penalty 50
-Exam 66: Wider Spread Violation with 24 students - Penalty 24
-Exam 67: Wider Spread Violation with 38 students - Penalty 38
-Exam 68: TwoInARow Violation with 10 students - Penalty 70
-Exam 68: Wider Spread Violation with 23 students - Penalty 23
-Exam 69: Wider Spread Violation with 87 students - Penalty 87
-Exam 69: Room penalty Violation - Penalty 50
-Exam 70: TwoInARow Violation with 4 students - Penalty 28
-Exam 70: Wider Spread Violation with 18 students - Penalty 18
-Exam 70: Room penalty Violation - Penalty 50
-Exam 71: Wider Spread Violation with 38 students - Penalty 38
-Exam 72: TwoInARow Violation with 7 students - Penalty 49
-Exam 72: Wider Spread Violation with 11 students - Penalty 11
-Exam 73: Wider Spread Violation with 30 students - Penalty 30
-Exam 73: Period penalty Violation - Penalty 50
-Exam 74: Room penalty Violation - Penalty 50
-Exam 75: Wider Spread Violation with 54 students - Penalty 54
-Exam 76: Wider Spread Violation with 2 students - Penalty 2
-Exam 77: Wider Spread Violation with 8 students - Penalty 8
-Exam 81: TwoInARow Violation with 1 students - Penalty 7
-Exam 81: Wider Spread Violation with 2 students - Penalty 2
-Exam 82: Wider Spread Violation with 1 students - Penalty 1
-Exam 84: Wider Spread Violation with 29 students - Penalty 29
-Exam 88: Wider Spread Violation with 79 students - Penalty 79
-Exam 89: TwoInARow Violation with 20 students - Penalty 140
-Exam 89: Wider Spread Violation with 60 students - Penalty 60
-Exam 90: Wider Spread Violation with 30 students - Penalty 30
-Exam 91: TwoInARow Violation with 20 students - Penalty 140
-Exam 91: Wider Spread Violation with 20 students - Penalty 20
-Exam 92: Room penalty Violation - Penalty 50
-Exam 93: Wider Spread Violation with 1 students - Penalty 1
-Exam 93: Room penalty Violation - Penalty 50
-Exam 94: Wider Spread Violation with 2 students - Penalty 2
-Exam 96: TwoInARow Violation with 1 students - Penalty 7
-Exam 96: Wider Spread Violation with 7 students - Penalty 7
-Exam 97: Wider Spread Violation with 14 students - Penalty 14
-Exam 97: Room penalty Violation - Penalty 50
+Exam 31: Wider Spread Violation with 5 students - Penalty 5
+Exam 34: TwoInARow Violation with 1 students - Penalty 7
+Exam 34: Wider Spread Violation with 1 students - Penalty 1
+Exam 35: Wider Spread Violation with 4 students - Penalty 4
+Exam 36: Wider Spread Violation with 1 students - Penalty 1
+Exam 38: Room penalty Violation - Penalty 50
+Exam 39: Room penalty Violation - Penalty 50
+Exam 40: Wider Spread Violation with 1 students - Penalty 1
+Exam 42: Wider Spread Violation with 1 students - Penalty 1
+Exam 48: Wider Spread Violation with 2 students - Penalty 2
+Exam 49: Wider Spread Violation with 2 students - Penalty 2
+Exam 50: Wider Spread Violation with 3 students - Penalty 3
+Exam 51: Wider Spread Violation with 3 students - Penalty 3
+Exam 52: Wider Spread Violation with 7 students - Penalty 7
+Exam 53: Wider Spread Violation with 12 students - Penalty 12
+Exam 54: Wider Spread Violation with 4 students - Penalty 4
+Exam 55: Wider Spread Violation with 2 students - Penalty 2
+Exam 56: Wider Spread Violation with 1 students - Penalty 1
+Exam 57: Wider Spread Violation with 2 students - Penalty 2
+Exam 60: Wider Spread Violation with 3 students - Penalty 3
+Exam 61: Wider Spread Violation with 2 students - Penalty 2
+Exam 62: Wider Spread Violation with 3 students - Penalty 3
+Exam 63: Wider Spread Violation with 1 students - Penalty 1
+Exam 65: Wider Spread Violation with 2 students - Penalty 2
+Exam 66: Wider Spread Violation with 1 students - Penalty 1
+Exam 67: Wider Spread Violation with 1 students - Penalty 1
+Exam 69: Wider Spread Violation with 3 students - Penalty 3
+Exam 70: Wider Spread Violation with 7 students - Penalty 7
+Exam 72: Wider Spread Violation with 2 students - Penalty 2
+Exam 73: Wider Spread Violation with 2 students - Penalty 2
+Exam 75: Wider Spread Violation with 2 students - Penalty 2
+Exam 76: Wider Spread Violation with 3 students - Penalty 3
+Exam 77: Wider Spread Violation with 4 students - Penalty 4
+Exam 78: Wider Spread Violation with 1 students - Penalty 1
+Exam 80: Wider Spread Violation with 2 students - Penalty 2
+Exam 80: Room penalty Violation - Penalty 50
+Exam 85: Wider Spread Violation with 2 students - Penalty 2
+Exam 86: Wider Spread Violation with 7 students - Penalty 7
+Exam 90: Wider Spread Violation with 9 students - Penalty 9
+Exam 95: Wider Spread Violation with 3 students - Penalty 3
+Exam 96: Wider Spread Violation with 3 students - Penalty 3
+Exam 97: Wider Spread Violation with 13 students - Penalty 13
 Exam 98: Wider Spread Violation with 1 students - Penalty 1
-Exam 98: Room penalty Violation - Penalty 50
-Exam 99: Wider Spread Violation with 2 students - Penalty 2
-Exam 100: TwoInARow Violation with 12 students - Penalty 84
-Exam 100: Wider Spread Violation with 15 students - Penalty 15
-Exam 101: Wider Spread Violation with 4 students - Penalty 4
-Exam 101: Period penalty Violation - Penalty 50
-Exam 104: Wider Spread Violation with 2 students - Penalty 2
+Exam 99: Wider Spread Violation with 1 students - Penalty 1
+Exam 100: Wider Spread Violation with 2 students - Penalty 2
+Exam 101: Room penalty Violation - Penalty 50
+Exam 102: Wider Spread Violation with 15 students - Penalty 15
+Exam 103: Wider Spread Violation with 15 students - Penalty 15
 Exam 105: Wider Spread Violation with 7 students - Penalty 7
-Exam 108: TwoInARow Violation with 6 students - Penalty 42
-Exam 108: Wider Spread Violation with 6 students - Penalty 6
-Exam 109: Wider Spread Violation with 5 students - Penalty 5
-Exam 110: TwoInARow Violation with 8 students - Penalty 56
-Exam 110: Wider Spread Violation with 27 students - Penalty 27
-Exam 111: Wider Spread Violation with 90 students - Penalty 90
-Exam 111: Period penalty Violation - Penalty 70
-Exam 112: TwoInARow Violation with 51 students - Penalty 357
-Exam 112: Wider Spread Violation with 205 students - Penalty 205
-Exam 112: Period penalty Violation - Penalty 50
-Exam 113: Wider Spread Violation with 158 students - Penalty 158
-Exam 114: TwoInARow Violation with 38 students - Penalty 266
-Exam 114: Wider Spread Violation with 106 students - Penalty 106
-Exam 114: Room penalty Violation - Penalty 50
-Exam 115: Wider Spread Violation with 70 students - Penalty 70
-Exam 115: Room penalty Violation - Penalty 50
-Exam 116: TwoInARow Violation with 30 students - Penalty 210
-Exam 116: Wider Spread Violation with 30 students - Penalty 30
-Exam 118: TwoInARow Violation with 3 students - Penalty 21
-Exam 118: Wider Spread Violation with 13 students - Penalty 13
-Exam 119: Wider Spread Violation with 24 students - Penalty 24
-Exam 120: TwoInARow Violation with 3 students - Penalty 21
-Exam 120: Wider Spread Violation with 13 students - Penalty 13
-Exam 120: Room penalty Violation - Penalty 50
-Exam 121: Wider Spread Violation with 99 students - Penalty 99
-Exam 121: Room penalty Violation - Penalty 50
-Exam 122: TwoInARow Violation with 11 students - Penalty 77
-Exam 122: Wider Spread Violation with 73 students - Penalty 73
-Exam 123: Wider Spread Violation with 21 students - Penalty 21
-Exam 124: TwoInARow Violation with 19 students - Penalty 133
-Exam 124: Wider Spread Violation with 29 students - Penalty 29
-Exam 125: Room penalty Violation - Penalty 50
-Exam 126: Room penalty Violation - Penalty 50
-Exam 127: Wider Spread Violation with 47 students - Penalty 47
-Exam 127: Period penalty Violation - Penalty 50
-Exam 132: Wider Spread Violation with 144 students - Penalty 144
-Exam 133: TwoInARow Violation with 37 students - Penalty 259
-Exam 133: Wider Spread Violation with 88 students - Penalty 88
-Exam 134: Wider Spread Violation with 46 students - Penalty 46
-Exam 135: TwoInARow Violation with 24 students - Penalty 168
-Exam 135: Wider Spread Violation with 138 students - Penalty 138
-Exam 136: Wider Spread Violation with 65 students - Penalty 65
-Exam 137: Wider Spread Violation with 1 students - Penalty 1
-Exam 138: Wider Spread Violation with 112 students - Penalty 112
-Exam 139: TwoInARow Violation with 28 students - Penalty 196
-Exam 139: Wider Spread Violation with 31 students - Penalty 31
-Exam 140: Wider Spread Violation with 7 students - Penalty 7
-Exam 141: TwoInARow Violation with 17 students - Penalty 119
-Exam 141: Wider Spread Violation with 64 students - Penalty 64
-Exam 142: Wider Spread Violation with 21 students - Penalty 21
-Exam 142: Room penalty Violation - Penalty 50
-Exam 143: TwoInARow Violation with 21 students - Penalty 147
-Exam 143: Wider Spread Violation with 67 students - Penalty 67
-Exam 143: Room penalty Violation - Penalty 50
-Exam 144: Wider Spread Violation with 65 students - Penalty 65
-Exam 145: TwoInARow Violation with 24 students - Penalty 168
-Exam 145: Wider Spread Violation with 99 students - Penalty 99
-Exam 146: Wider Spread Violation with 89 students - Penalty 89
-Exam 147: TwoInARow Violation with 4 students - Penalty 28
-Exam 147: Wider Spread Violation with 33 students - Penalty 33
-Exam 148: Wider Spread Violation with 85 students - Penalty 85
-Exam 148: Room penalty Violation - Penalty 50
-Exam 149: Wider Spread Violation with 66 students - Penalty 66
-Exam 149: Room penalty Violation - Penalty 50
-Exam 150: TwoInARow Violation with 37 students - Penalty 259
-Exam 150: Wider Spread Violation with 68 students - Penalty 68
-Exam 151: Wider Spread Violation with 55 students - Penalty 55
-Exam 152: TwoInARow Violation with 21 students - Penalty 147
-Exam 152: Wider Spread Violation with 48 students - Penalty 48
-Exam 153: Wider Spread Violation with 32 students - Penalty 32
-Exam 153: Room penalty Violation - Penalty 50
-Exam 154: Wider Spread Violation with 7 students - Penalty 7
-Exam 154: Room penalty Violation - Penalty 50
-Exam 156: TwoInARow Violation with 5 students - Penalty 35
-Exam 156: Wider Spread Violation with 37 students - Penalty 37
-Exam 157: Wider Spread Violation with 15 students - Penalty 15
-Exam 158: TwoInARow Violation with 2 students - Penalty 14
-Exam 158: Wider Spread Violation with 7 students - Penalty 7
-Exam 158: Room penalty Violation - Penalty 50
-Exam 159: Wider Spread Violation with 6 students - Penalty 6
-Exam 160: Wider Spread Violation with 2 students - Penalty 2
-Exam 164: TwoInARow Violation with 48 students - Penalty 336
-Exam 164: Wider Spread Violation with 48 students - Penalty 48
-Exam 165: Period penalty Violation - Penalty 70
-Exam 167: Wider Spread Violation with 69 students - Penalty 69
-Exam 168: Wider Spread Violation with 87 students - Penalty 87
-Exam 170: Room penalty Violation - Penalty 50
-Exam 176: Room penalty Violation - Penalty 50
-Exam 177: Wider Spread Violation with 1 students - Penalty 1
-Exam 177: Room penalty Violation - Penalty 50
-Exam 179: Wider Spread Violation with 40 students - Penalty 40
-Exam 180: TwoInARow Violation with 47 students - Penalty 329
-Exam 180: Wider Spread Violation with 47 students - Penalty 47
-Exam 181: Period penalty Violation - Penalty 50
-Exam 181: Room penalty Violation - Penalty 50
-Exam 185: TwoInARow Violation with 11 students - Penalty 77
-Exam 185: Wider Spread Violation with 58 students - Penalty 58
-Exam 186: Wider Spread Violation with 31 students - Penalty 31
-Exam 186: Room penalty Violation - Penalty 50
-Exam 187: Wider Spread Violation with 14 students - Penalty 14
-Exam 188: Wider Spread Violation with 15 students - Penalty 15
-Exam 191: Wider Spread Violation with 31 students - Penalty 31
-Exam 193: TwoInARow Violation with 21 students - Penalty 147
-Exam 193: Wider Spread Violation with 56 students - Penalty 56
-Exam 194: Wider Spread Violation with 36 students - Penalty 36
-Exam 195: TwoInARow Violation with 15 students - Penalty 105
-Exam 195: Wider Spread Violation with 15 students - Penalty 15
-Exam 202: Wider Spread Violation with 15 students - Penalty 15
-Exam 203: Wider Spread Violation with 6 students - Penalty 6
-Exam 205: Wider Spread Violation with 1 students - Penalty 1
-Exam 205: Room penalty Violation - Penalty 50
-Exam 206: TwoInARow Violation with 1 students - Penalty 7
-Exam 206: Wider Spread Violation with 4 students - Penalty 4
-Exam 207: Wider Spread Violation with 85 students - Penalty 85
-Exam 208: Wider Spread Violation with 38 students - Penalty 38
-Exam 210: TwoInARow Violation with 45 students - Penalty 315
-Exam 210: Wider Spread Violation with 149 students - Penalty 149
-Exam 210: Room penalty Violation - Penalty 50
-Exam 211: Wider Spread Violation with 98 students - Penalty 98
-Exam 213: Wider Spread Violation with 51 students - Penalty 51
-Exam 214: Wider Spread Violation with 18 students - Penalty 18
-Exam 214: Room penalty Violation - Penalty 50
-Exam 218: TwoInARow Violation with 4 students - Penalty 28
-Exam 218: Wider Spread Violation with 20 students - Penalty 20
-Exam 219: Wider Spread Violation with 22 students - Penalty 22
-Exam 219: Period penalty Violation - Penalty 70
-Exam 220: TwoInARow Violation with 9 students - Penalty 63
-Exam 220: Wider Spread Violation with 17 students - Penalty 17
-Exam 220: Period penalty Violation - Penalty 50
-Exam 221: Wider Spread Violation with 16 students - Penalty 16
-Exam 222: TwoInARow Violation with 5 students - Penalty 35
-Exam 222: Wider Spread Violation with 8 students - Penalty 8
-Exam 223: Wider Spread Violation with 6 students - Penalty 6
-Exam 224: Wider Spread Violation with 9 students - Penalty 9
-Exam 226: TwoInARow Violation with 4 students - Penalty 28
-Exam 226: Wider Spread Violation with 4 students - Penalty 4
-Exam 226: Room penalty Violation - Penalty 50
-Exam 227: Room penalty Violation - Penalty 50
-Exam 230: TwoInARow Violation with 6 students - Penalty 42
-Exam 230: Wider Spread Violation with 23 students - Penalty 23
-Exam 231: Wider Spread Violation with 13 students - Penalty 13
-Exam 232: TwoInARow Violation with 1 students - Penalty 7
-Exam 232: Wider Spread Violation with 6 students - Penalty 6
+Exam 106: Wider Spread Violation with 4 students - Penalty 4
+Exam 108: Room penalty Violation - Penalty 50
+Exam 109: TwoInARow Violation with 1 students - Penalty 7
+Exam 109: Wider Spread Violation with 1 students - Penalty 1
+Exam 110: Wider Spread Violation with 8 students - Penalty 8
+Exam 112: Wider Spread Violation with 1 students - Penalty 1
+Exam 114: Wider Spread Violation with 2 students - Penalty 2
+Exam 118: Wider Spread Violation with 2 students - Penalty 2
+Exam 119: Wider Spread Violation with 10 students - Penalty 10
+Exam 121: Wider Spread Violation with 3 students - Penalty 3
+Exam 123: Wider Spread Violation with 1 students - Penalty 1
+Exam 124: Wider Spread Violation with 1 students - Penalty 1
+Exam 127: Wider Spread Violation with 3 students - Penalty 3
+Exam 128: Wider Spread Violation with 10 students - Penalty 10
+Exam 129: Wider Spread Violation with 4 students - Penalty 4
+Exam 129: Front Load Violation at period 52 of 54 (Size 163) - Penalty 5
+Exam 130: Wider Spread Violation with 2 students - Penalty 2
+Exam 131: Wider Spread Violation with 4 students - Penalty 4
+Exam 132: Wider Spread Violation with 8 students - Penalty 8
+Exam 133: Wider Spread Violation with 6 students - Penalty 6
+Exam 134: Wider Spread Violation with 5 students - Penalty 5
+Exam 135: Wider Spread Violation with 15 students - Penalty 15
+Exam 136: Wider Spread Violation with 27 students - Penalty 27
+Exam 137: Wider Spread Violation with 19 students - Penalty 19
+Exam 139: Wider Spread Violation with 18 students - Penalty 18
+Exam 140: Wider Spread Violation with 4 students - Penalty 4
+Exam 141: Wider Spread Violation with 23 students - Penalty 23
+Exam 142: Wider Spread Violation with 6 students - Penalty 6
+Exam 143: Wider Spread Violation with 8 students - Penalty 8
+Exam 144: Wider Spread Violation with 11 students - Penalty 11
+Exam 145: Wider Spread Violation with 29 students - Penalty 29
+Exam 146: Wider Spread Violation with 18 students - Penalty 18
+Exam 147: Wider Spread Violation with 7 students - Penalty 7
+Exam 148: Wider Spread Violation with 13 students - Penalty 13
+Exam 149: Wider Spread Violation with 3 students - Penalty 3
+Exam 150: Wider Spread Violation with 27 students - Penalty 27
+Exam 152: Wider Spread Violation with 22 students - Penalty 22
+Exam 153: Wider Spread Violation with 16 students - Penalty 16
+Exam 154: Wider Spread Violation with 41 students - Penalty 41
+Exam 155: Wider Spread Violation with 18 students - Penalty 18
+Exam 155: Room penalty Violation - Penalty 50
+Exam 155: Front Load Violation at period 46 of 54 (Size 123) - Penalty 5
+Exam 156: Wider Spread Violation with 1 students - Penalty 1
+Exam 157: Wider Spread Violation with 2 students - Penalty 2
+Exam 158: Wider Spread Violation with 5 students - Penalty 5
+Exam 159: Wider Spread Violation with 1 students - Penalty 1
+Exam 160: Wider Spread Violation with 3 students - Penalty 3
+Exam 161: Wider Spread Violation with 3 students - Penalty 3
+Exam 161: Room penalty Violation - Penalty 50
+Exam 162: Wider Spread Violation with 5 students - Penalty 5
+Exam 163: Wider Spread Violation with 5 students - Penalty 5
+Exam 165: Wider Spread Violation with 2 students - Penalty 2
+Exam 166: Wider Spread Violation with 18 students - Penalty 18
+Exam 168: Wider Spread Violation with 1 students - Penalty 1
+Exam 169: Wider Spread Violation with 7 students - Penalty 7
+Exam 169: Front Load Violation at period 31 of 54 (Size 133) - Penalty 5
+Exam 170: TwoInARow Violation with 1 students - Penalty 7
+Exam 170: Wider Spread Violation with 2 students - Penalty 2
+Exam 170: Front Load Violation at period 42 of 54 (Size 128) - Penalty 5
+Exam 171: Wider Spread Violation with 8 students - Penalty 8
+Exam 171: Front Load Violation at period 30 of 54 (Size 120) - Penalty 5
+Exam 172: Wider Spread Violation with 4 students - Penalty 4
+Exam 172: Front Load Violation at period 50 of 54 (Size 126) - Penalty 5
+Exam 173: Wider Spread Violation with 2 students - Penalty 2
+Exam 174: Wider Spread Violation with 7 students - Penalty 7
+Exam 174: Front Load Violation at period 43 of 54 (Size 129) - Penalty 5
+Exam 175: Wider Spread Violation with 1 students - Penalty 1
+Exam 185: Wider Spread Violation with 25 students - Penalty 25
+Exam 190: Room penalty Violation - Penalty 50
+Exam 192: Wider Spread Violation with 1 students - Penalty 1
+Exam 197: Wider Spread Violation with 70 students - Penalty 70
+Exam 198: Wider Spread Violation with 30 students - Penalty 30
+Exam 198: Front Load Violation at period 40 of 54 (Size 120) - Penalty 5
+Exam 199: Wider Spread Violation with 14 students - Penalty 14
+Exam 200: Wider Spread Violation with 6 students - Penalty 6
+Exam 200: Front Load Violation at period 36 of 54 (Size 143) - Penalty 5
+Exam 202: Wider Spread Violation with 2 students - Penalty 2
+Exam 204: Wider Spread Violation with 4 students - Penalty 4
+Exam 205: Wider Spread Violation with 5 students - Penalty 5
+Exam 208: Wider Spread Violation with 11 students - Penalty 11
+Exam 210: Wider Spread Violation with 1 students - Penalty 1
+Exam 214: Wider Spread Violation with 6 students - Penalty 6
+Exam 215: Wider Spread Violation with 5 students - Penalty 5
+Exam 216: Wider Spread Violation with 3 students - Penalty 3
+Exam 217: Wider Spread Violation with 10 students - Penalty 10
+Exam 218: Wider Spread Violation with 1 students - Penalty 1
+Exam 219: Room penalty Violation - Penalty 50
+Exam 220: Wider Spread Violation with 4 students - Penalty 4
+Exam 221: Wider Spread Violation with 10 students - Penalty 10
+Exam 222: Wider Spread Violation with 10 students - Penalty 10
+Exam 223: Wider Spread Violation with 2 students - Penalty 2
+Exam 223: Room penalty Violation - Penalty 50
+Exam 224: Wider Spread Violation with 2 students - Penalty 2
+Exam 225: Wider Spread Violation with 3 students - Penalty 3
+Exam 226: Wider Spread Violation with 7 students - Penalty 7
+Exam 227: Wider Spread Violation with 4 students - Penalty 4
+Exam 228: Wider Spread Violation with 3 students - Penalty 3
+Exam 230: Wider Spread Violation with 1 students - Penalty 1
+Exam 230: Room penalty Violation - Penalty 50
+Exam 231: Wider Spread Violation with 5 students - Penalty 5
+Exam 232: Wider Spread Violation with 2 students - Penalty 2
 Exam 232: Room penalty Violation - Penalty 50
-Exam 233: Wider Spread Violation with 9 students - Penalty 9
-Exam 233: Room penalty Violation - Penalty 50
-Exam 235: Period penalty Violation - Penalty 50
-Exam 236: TwoInARow Violation with 13 students - Penalty 91
-Exam 236: Wider Spread Violation with 68 students - Penalty 68
-Exam 237: Wider Spread Violation with 21 students - Penalty 21
+Exam 233: TwoInARow Violation with 3 students - Penalty 21
+Exam 233: Wider Spread Violation with 3 students - Penalty 3
+Exam 234: Wider Spread Violation with 3 students - Penalty 3
+Exam 235: TwoInARow Violation with 1 students - Penalty 7
+Exam 235: Wider Spread Violation with 12 students - Penalty 12
+Exam 236: Wider Spread Violation with 13 students - Penalty 13
 Exam 237: Room penalty Violation - Penalty 50
-Exam 238: Wider Spread Violation with 21 students - Penalty 21
-Exam 238: Room penalty Violation - Penalty 50
-Exam 239: Wider Spread Violation with 5 students - Penalty 5
-Exam 245: TwoInARow Violation with 40 students - Penalty 280
-Exam 245: Wider Spread Violation with 41 students - Penalty 41
-Exam 246: Wider Spread Violation with 2 students - Penalty 2
-Exam 250: Wider Spread Violation with 105 students - Penalty 105
-Exam 251: TwoInARow Violation with 40 students - Penalty 280
-Exam 251: Wider Spread Violation with 71 students - Penalty 71
-Exam 252: Wider Spread Violation with 16 students - Penalty 16
-Exam 253: Wider Spread Violation with 18 students - Penalty 18
-Exam 255: TwoInARow Violation with 9 students - Penalty 63
-Exam 255: Wider Spread Violation with 22 students - Penalty 22
-Exam 255: Room penalty Violation - Penalty 50
-Exam 256: Wider Spread Violation with 34 students - Penalty 34
-Exam 257: Wider Spread Violation with 24 students - Penalty 24
-Exam 260: TwoInARow Violation with 3 students - Penalty 21
-Exam 260: Wider Spread Violation with 26 students - Penalty 26
-Exam 260: Room penalty Violation - Penalty 50
-Exam 261: Wider Spread Violation with 22 students - Penalty 22
-Exam 261: Room penalty Violation - Penalty 50
-Exam 264: TwoInARow Violation with 1 students - Penalty 7
-Exam 264: Wider Spread Violation with 1 students - Penalty 1
-Exam 267: Wider Spread Violation with 3 students - Penalty 3
-Exam 270: TwoInARow Violation with 9 students - Penalty 63
-Exam 270: Wider Spread Violation with 20 students - Penalty 20
-Exam 270: Room penalty Violation - Penalty 50
-Exam 271: Wider Spread Violation with 16 students - Penalty 16
-Exam 272: TwoInARow Violation with 1 students - Penalty 7
-Exam 272: Wider Spread Violation with 7 students - Penalty 7
-Exam 273: Period penalty Violation - Penalty 70
-Exam 274: TwoInARow Violation with 10 students - Penalty 70
-Exam 274: Wider Spread Violation with 28 students - Penalty 28
-Exam 274: Period penalty Violation - Penalty 50
-Exam 275: Wider Spread Violation with 12 students - Penalty 12
-Exam 277: Wider Spread Violation with 5 students - Penalty 5
-Exam 279: Wider Spread Violation with 3 students - Penalty 3
-Exam 280: Wider Spread Violation with 10 students - Penalty 10
-Exam 282: Room penalty Violation - Penalty 50
-Exam 286: TwoInARow Violation with 12 students - Penalty 84
-Exam 286: Wider Spread Violation with 14 students - Penalty 14
+Exam 238: TwoInARow Violation with 4 students - Penalty 28
+Exam 238: Wider Spread Violation with 5 students - Penalty 5
+Exam 239: TwoInARow Violation with 1 students - Penalty 7
+Exam 239: Wider Spread Violation with 8 students - Penalty 8
+Exam 240: TwoInARow Violation with 1 students - Penalty 7
+Exam 240: Wider Spread Violation with 7 students - Penalty 7
+Exam 241: Wider Spread Violation with 2 students - Penalty 2
+Exam 241: Room penalty Violation - Penalty 50
+Exam 242: Wider Spread Violation with 8 students - Penalty 8
+Exam 243: Wider Spread Violation with 7 students - Penalty 7
+Exam 243: Front Load Violation at period 28 of 54 (Size 151) - Penalty 5
+Exam 244: Wider Spread Violation with 6 students - Penalty 6
+Exam 244: Front Load Violation at period 49 of 54 (Size 129) - Penalty 5
+Exam 246: Wider Spread Violation with 1 students - Penalty 1
+Exam 247: Wider Spread Violation with 3 students - Penalty 3
+Exam 248: Wider Spread Violation with 2 students - Penalty 2
+Exam 249: Wider Spread Violation with 1 students - Penalty 1
+Exam 249: Room penalty Violation - Penalty 50
+Exam 250: Wider Spread Violation with 18 students - Penalty 18
+Exam 251: Wider Spread Violation with 10 students - Penalty 10
+Exam 253: Wider Spread Violation with 12 students - Penalty 12
+Exam 254: Wider Spread Violation with 26 students - Penalty 26
+Exam 255: Wider Spread Violation with 1 students - Penalty 1
+Exam 256: Wider Spread Violation with 11 students - Penalty 11
+Exam 257: Wider Spread Violation with 5 students - Penalty 5
+Exam 258: Wider Spread Violation with 29 students - Penalty 29
+Exam 259: Wider Spread Violation with 29 students - Penalty 29
+Exam 260: Wider Spread Violation with 3 students - Penalty 3
+Exam 261: Wider Spread Violation with 28 students - Penalty 28
+Exam 262: Wider Spread Violation with 1 students - Penalty 1
+Exam 263: Wider Spread Violation with 16 students - Penalty 16
+Exam 264: Wider Spread Violation with 17 students - Penalty 17
+Exam 265: Wider Spread Violation with 21 students - Penalty 21
+Exam 267: Wider Spread Violation with 8 students - Penalty 8
+Exam 268: Wider Spread Violation with 4 students - Penalty 4
+Exam 269: Wider Spread Violation with 2 students - Penalty 2
+Exam 269: Room penalty Violation - Penalty 50
+Exam 270: Wider Spread Violation with 2 students - Penalty 2
+Exam 271: Wider Spread Violation with 4 students - Penalty 4
+Exam 272: Room penalty Violation - Penalty 50
+Exam 273: Wider Spread Violation with 4 students - Penalty 4
+Exam 274: Wider Spread Violation with 14 students - Penalty 14
+Exam 276: Room penalty Violation - Penalty 50
+Exam 277: Wider Spread Violation with 1 students - Penalty 1
+Exam 277: Room penalty Violation - Penalty 50
+Exam 278: TwoInARow Violation with 2 students - Penalty 14
+Exam 278: Wider Spread Violation with 8 students - Penalty 8
+Exam 279: Wider Spread Violation with 2 students - Penalty 2
+Exam 280: Wider Spread Violation with 3 students - Penalty 3
+Exam 281: Wider Spread Violation with 15 students - Penalty 15
+Exam 282: Wider Spread Violation with 8 students - Penalty 8
+Exam 283: Front Load Violation at period 53 of 54 (Size 157) - Penalty 5
+Exam 284: Wider Spread Violation with 3 students - Penalty 3
+Exam 285: Wider Spread Violation with 4 students - Penalty 4
+Exam 286: Wider Spread Violation with 5 students - Penalty 5
 Exam 287: Wider Spread Violation with 8 students - Penalty 8
 Exam 288: TwoInARow Violation with 2 students - Penalty 14
-Exam 288: Wider Spread Violation with 5 students - Penalty 5
-Exam 288: Room penalty Violation - Penalty 50
-Exam 289: Wider Spread Violation with 1 students - Penalty 1
-Exam 289: Period penalty Violation - Penalty 50
-Exam 289: Room penalty Violation - Penalty 50
-Exam 291: Wider Spread Violation with 1 students - Penalty 1
-Exam 292: Wider Spread Violation with 12 students - Penalty 12
-Exam 293: Wider Spread Violation with 2 students - Penalty 2
-Exam 293: Room penalty Violation - Penalty 50
-Exam 294: Wider Spread Violation with 4 students - Penalty 4
-Exam 294: Room penalty Violation - Penalty 50
-Exam 295: TwoInARow Violation with 4 students - Penalty 28
-Exam 295: Wider Spread Violation with 5 students - Penalty 5
-Exam 296: Wider Spread Violation with 1 students - Penalty 1
-Exam 306: Wider Spread Violation with 8 students - Penalty 8
-Exam 308: Wider Spread Violation with 9 students - Penalty 9
-Exam 310: Wider Spread Violation with 10 students - Penalty 10
-Exam 310: Room penalty Violation - Penalty 50
-Exam 311: Room penalty Violation - Penalty 50
-Exam 315: Wider Spread Violation with 9 students - Penalty 9
-Exam 316: Room penalty Violation - Penalty 50
-Exam 317: Wider Spread Violation with 11 students - Penalty 11
-Exam 317: Period penalty Violation - Penalty 50
-Exam 317: Room penalty Violation - Penalty 50
-Exam 319: Wider Spread Violation with 10 students - Penalty 10
-Exam 321: Room penalty Violation - Penalty 50
+Exam 288: Wider Spread Violation with 11 students - Penalty 11
+Exam 289: Wider Spread Violation with 5 students - Penalty 5
+Exam 290: Wider Spread Violation with 10 students - Penalty 10
+Exam 292: Wider Spread Violation with 2 students - Penalty 2
+Exam 293: Wider Spread Violation with 3 students - Penalty 3
+Exam 294: Wider Spread Violation with 7 students - Penalty 7
+Exam 295: Wider Spread Violation with 4 students - Penalty 4
+Exam 296: Wider Spread Violation with 2 students - Penalty 2
+Exam 298: Wider Spread Violation with 16 students - Penalty 16
+Exam 298: Room penalty Violation - Penalty 50
+Exam 299: Wider Spread Violation with 5 students - Penalty 5
+Exam 300: Wider Spread Violation with 2 students - Penalty 2
+Exam 301: Wider Spread Violation with 3 students - Penalty 3
+Exam 302: Wider Spread Violation with 9 students - Penalty 9
+Exam 302: Front Load Violation at period 37 of 54 (Size 142) - Penalty 5
+Exam 303: Wider Spread Violation with 4 students - Penalty 4
+Exam 304: TwoInARow Violation with 1 students - Penalty 7
+Exam 304: Wider Spread Violation with 14 students - Penalty 14
+Exam 305: Wider Spread Violation with 11 students - Penalty 11
+Exam 306: Wider Spread Violation with 2 students - Penalty 2
+Exam 308: Wider Spread Violation with 2 students - Penalty 2
+Exam 310: Wider Spread Violation with 1 students - Penalty 1
+Exam 312: Wider Spread Violation with 1 students - Penalty 1
+Exam 313: Wider Spread Violation with 1 students - Penalty 1
+Exam 314: Wider Spread Violation with 1 students - Penalty 1
+Exam 315: Wider Spread Violation with 1 students - Penalty 1
+Exam 318: Wider Spread Violation with 2 students - Penalty 2
+Exam 319: Wider Spread Violation with 1 students - Penalty 1
+Exam 321: Wider Spread Violation with 2 students - Penalty 2
+Exam 322: Wider Spread Violation with 2 students - Penalty 2
+Exam 324: Wider Spread Violation with 3 students - Penalty 3
+Exam 325: Room penalty Violation - Penalty 50
+Exam 326: Wider Spread Violation with 1 students - Penalty 1
 Exam 326: Room penalty Violation - Penalty 50
-Exam 327: Wider Spread Violation with 16 students - Penalty 16
-Exam 327: Period penalty Violation - Penalty 70
-Exam 328: Period penalty Violation - Penalty 50
-Exam 329: Wider Spread Violation with 15 students - Penalty 15
-Exam 331: Wider Spread Violation with 22 students - Penalty 22
-Exam 332: Wider Spread Violation with 9 students - Penalty 9
-Exam 336: TwoInARow Violation with 2 students - Penalty 14
-Exam 336: Wider Spread Violation with 4 students - Penalty 4
-Exam 337: Wider Spread Violation with 2 students - Penalty 2
-Exam 341: Wider Spread Violation with 1 students - Penalty 1
-Exam 342: TwoInARow Violation with 7 students - Penalty 49
-Exam 342: Wider Spread Violation with 15 students - Penalty 15
-Exam 343: Wider Spread Violation with 5 students - Penalty 5
-Exam 343: Period penalty Violation - Penalty 50
-Exam 345: Room penalty Violation - Penalty 50
-Exam 349: Wider Spread Violation with 6 students - Penalty 6
+Exam 328: TwoInARow Violation with 1 students - Penalty 7
+Exam 328: Wider Spread Violation with 1 students - Penalty 1
+Exam 330: Wider Spread Violation with 2 students - Penalty 2
+Exam 331: Room penalty Violation - Penalty 50
+Exam 332: Wider Spread Violation with 1 students - Penalty 1
+Exam 332: Room penalty Violation - Penalty 50
+Exam 333: Wider Spread Violation with 9 students - Penalty 9
+Exam 334: Wider Spread Violation with 1 students - Penalty 1
+Exam 335: Wider Spread Violation with 2 students - Penalty 2
+Exam 336: Wider Spread Violation with 1 students - Penalty 1
+Exam 336: Room penalty Violation - Penalty 50
+Exam 338: Wider Spread Violation with 1 students - Penalty 1
+Exam 338: Room penalty Violation - Penalty 50
+Exam 339: Room penalty Violation - Penalty 50
+Exam 340: TwoInARow Violation with 1 students - Penalty 7
+Exam 340: Wider Spread Violation with 1 students - Penalty 1
+Exam 342: Wider Spread Violation with 3 students - Penalty 3
+Exam 343: Room penalty Violation - Penalty 50
+Exam 344: Room penalty Violation - Penalty 50
+Exam 345: Wider Spread Violation with 2 students - Penalty 2
+Exam 346: Wider Spread Violation with 8 students - Penalty 8
+Exam 346: Front Load Violation at period 26 of 54 (Size 219) - Penalty 5
+Exam 347: Wider Spread Violation with 12 students - Penalty 12
+Exam 347: Front Load Violation at period 34 of 54 (Size 145) - Penalty 5
+Exam 348: Wider Spread Violation with 2 students - Penalty 2
+Exam 348: Room penalty Violation - Penalty 50
+Exam 349: Wider Spread Violation with 1 students - Penalty 1
 Exam 349: Room penalty Violation - Penalty 50
-Exam 356: Wider Spread Violation with 1 students - Penalty 1
-Exam 357: TwoInARow Violation with 1 students - Penalty 7
-Exam 357: Wider Spread Violation with 10 students - Penalty 10
-Exam 361: Wider Spread Violation with 5 students - Penalty 5
-Exam 363: TwoInARow Violation with 6 students - Penalty 42
-Exam 363: Wider Spread Violation with 25 students - Penalty 25
-Exam 364: Wider Spread Violation with 25 students - Penalty 25
-Exam 366: TwoInARow Violation with 14 students - Penalty 98
-Exam 366: Wider Spread Violation with 49 students - Penalty 49
-Exam 366: Room penalty Violation - Penalty 50
-Exam 367: Wider Spread Violation with 23 students - Penalty 23
-Exam 367: Room penalty Violation - Penalty 50
-Exam 368: Wider Spread Violation with 8 students - Penalty 8
-Exam 370: TwoInARow Violation with 9 students - Penalty 63
-Exam 370: Wider Spread Violation with 12 students - Penalty 12
-Exam 371: Wider Spread Violation with 8 students - Penalty 8
-Exam 371: Period penalty Violation - Penalty 50
-Exam 372: Room penalty Violation - Penalty 50
-Exam 377: Room penalty Violation - Penalty 50
-Exam 378: Room penalty Violation - Penalty 50
-Exam 384: Wider Spread Violation with 1 students - Penalty 1
-Exam 392: TwoInARow Violation with 63 students - Penalty 441
-Exam 392: Wider Spread Violation with 63 students - Penalty 63
-Exam 394: Wider Spread Violation with 3 students - Penalty 3
-Exam 394: Room penalty Violation - Penalty 50
-Exam 395: Wider Spread Violation with 170 students - Penalty 170
-Exam 395: Room penalty Violation - Penalty 50
-Exam 396: Wider Spread Violation with 124 students - Penalty 124
-Exam 398: TwoInARow Violation with 48 students - Penalty 336
-Exam 398: Wider Spread Violation with 96 students - Penalty 96
-Exam 399: Wider Spread Violation with 60 students - Penalty 60
-Exam 400: Wider Spread Violation with 6 students - Penalty 6
-Exam 400: Room penalty Violation - Penalty 50
-Exam 403: TwoInARow Violation with 4 students - Penalty 28
-Exam 403: Wider Spread Violation with 25 students - Penalty 25
-Exam 404: Wider Spread Violation with 54 students - Penalty 54
-Exam 405: TwoInARow Violation with 9 students - Penalty 63
-Exam 405: Wider Spread Violation with 47 students - Penalty 47
-Exam 405: Room penalty Violation - Penalty 50
-Exam 406: Wider Spread Violation with 34 students - Penalty 34
-Exam 406: Room penalty Violation - Penalty 50
-Exam 407: TwoInARow Violation with 26 students - Penalty 182
-Exam 407: Wider Spread Violation with 64 students - Penalty 64
-Exam 408: Wider Spread Violation with 32 students - Penalty 32
-Exam 410: Wider Spread Violation with 36 students - Penalty 36
-Exam 410: Room penalty Violation - Penalty 50
-Exam 412: Wider Spread Violation with 32 students - Penalty 32
-Exam 413: TwoInARow Violation with 8 students - Penalty 56
-Exam 413: Wider Spread Violation with 16 students - Penalty 16
-Exam 414: Wider Spread Violation with 12 students - Penalty 12
-Exam 417: Wider Spread Violation with 10 students - Penalty 10
-Exam 419: Wider Spread Violation with 6 students - Penalty 6
-Exam 427: Wider Spread Violation with 66 students - Penalty 66
-Exam 428: Wider Spread Violation with 12 students - Penalty 12
+Exam 350: Wider Spread Violation with 1 students - Penalty 1
+Exam 350: Front Load Violation at period 30 of 54 (Size 139) - Penalty 5
+Exam 351: Wider Spread Violation with 5 students - Penalty 5
+Exam 352: Wider Spread Violation with 9 students - Penalty 9
+Exam 354: Wider Spread Violation with 1 students - Penalty 1
+Exam 354: Front Load Violation at period 40 of 54 (Size 139) - Penalty 5
+Exam 355: Wider Spread Violation with 1 students - Penalty 1
+Exam 355: Room penalty Violation - Penalty 50
+Exam 357: Wider Spread Violation with 13 students - Penalty 13
+Exam 358: Wider Spread Violation with 2 students - Penalty 2
+Exam 360: Wider Spread Violation with 7 students - Penalty 7
+Exam 360: Front Load Violation at period 24 of 54 (Size 98) - Penalty 5
+Exam 361: Wider Spread Violation with 2 students - Penalty 2
+Exam 362: Front Load Violation at period 30 of 54 (Size 93) - Penalty 5
+Exam 363: Wider Spread Violation with 12 students - Penalty 12
+Exam 364: Wider Spread Violation with 22 students - Penalty 22
+Exam 365: Wider Spread Violation with 16 students - Penalty 16
+Exam 365: Front Load Violation at period 48 of 54 (Size 97) - Penalty 5
+Exam 367: Wider Spread Violation with 22 students - Penalty 22
+Exam 368: Wider Spread Violation with 4 students - Penalty 4
+Exam 369: Wider Spread Violation with 16 students - Penalty 16
+Exam 370: Wider Spread Violation with 4 students - Penalty 4
+Exam 371: Wider Spread Violation with 18 students - Penalty 18
+Exam 372: Wider Spread Violation with 10 students - Penalty 10
+Exam 373: Wider Spread Violation with 3 students - Penalty 3
+Exam 374: Wider Spread Violation with 4 students - Penalty 4
+Exam 375: Wider Spread Violation with 3 students - Penalty 3
+Exam 376: Wider Spread Violation with 9 students - Penalty 9
+Exam 377: TwoInARow Violation with 1 students - Penalty 7
+Exam 377: Wider Spread Violation with 15 students - Penalty 15
+Exam 379: Wider Spread Violation with 4 students - Penalty 4
+Exam 380: Wider Spread Violation with 4 students - Penalty 4
+Exam 381: Wider Spread Violation with 5 students - Penalty 5
+Exam 382: TwoInARow Violation with 1 students - Penalty 7
+Exam 382: Wider Spread Violation with 13 students - Penalty 13
+Exam 383: Wider Spread Violation with 2 students - Penalty 2
+Exam 384: Wider Spread Violation with 8 students - Penalty 8
+Exam 385: Wider Spread Violation with 5 students - Penalty 5
+Exam 387: Wider Spread Violation with 5 students - Penalty 5
+Exam 388: Wider Spread Violation with 7 students - Penalty 7
+Exam 389: Wider Spread Violation with 8 students - Penalty 8
+Exam 389: Room penalty Violation - Penalty 50
+Exam 390: Wider Spread Violation with 8 students - Penalty 8
+Exam 390: Front Load Violation at period 31 of 54 (Size 127) - Penalty 5
+Exam 391: Wider Spread Violation with 14 students - Penalty 14
+Exam 391: Front Load Violation at period 48 of 54 (Size 119) - Penalty 5
+Exam 392: Wider Spread Violation with 9 students - Penalty 9
+Exam 393: Wider Spread Violation with 7 students - Penalty 7
+Exam 394: Wider Spread Violation with 4 students - Penalty 4
+Exam 397: Wider Spread Violation with 2 students - Penalty 2
+Exam 398: Wider Spread Violation with 2 students - Penalty 2
+Exam 399: TwoInARow Violation with 1 students - Penalty 7
+Exam 399: Wider Spread Violation with 4 students - Penalty 4
+Exam 400: Wider Spread Violation with 4 students - Penalty 4
+Exam 401: Wider Spread Violation with 38 students - Penalty 38
+Exam 402: Wider Spread Violation with 54 students - Penalty 54
+Exam 403: Room penalty Violation - Penalty 50
+Exam 404: Wider Spread Violation with 1 students - Penalty 1
+Exam 406: Wider Spread Violation with 23 students - Penalty 23
+Exam 407: Wider Spread Violation with 18 students - Penalty 18
+Exam 408: Wider Spread Violation with 24 students - Penalty 24
+Exam 409: Wider Spread Violation with 1 students - Penalty 1
+Exam 410: Wider Spread Violation with 19 students - Penalty 19
+Exam 411: Wider Spread Violation with 11 students - Penalty 11
+Exam 412: TwoInARow Violation with 1 students - Penalty 7
+Exam 412: Wider Spread Violation with 33 students - Penalty 33
+Exam 413: Room penalty Violation - Penalty 50
+Exam 414: Room penalty Violation - Penalty 50
+Exam 415: Wider Spread Violation with 9 students - Penalty 9
+Exam 416: Wider Spread Violation with 6 students - Penalty 6
+Exam 418: Wider Spread Violation with 2 students - Penalty 2
+Exam 418: Room penalty Violation - Penalty 50
+Exam 422: Wider Spread Violation with 5 students - Penalty 5
+Exam 422: Front Load Violation at period 44 of 54 (Size 203) - Penalty 5
+Exam 423: Wider Spread Violation with 7 students - Penalty 7
+Exam 424: Wider Spread Violation with 29 students - Penalty 29
+Exam 424: Front Load Violation at period 27 of 54 (Size 196) - Penalty 5
+Exam 425: Wider Spread Violation with 57 students - Penalty 57
+Exam 425: Front Load Violation at period 46 of 54 (Size 174) - Penalty 5
+Exam 426: Wider Spread Violation with 17 students - Penalty 17
+Exam 426: Front Load Violation at period 46 of 54 (Size 99) - Penalty 5
+Exam 427: Wider Spread Violation with 14 students - Penalty 14
+Exam 428: Wider Spread Violation with 9 students - Penalty 9
 Exam 428: Room penalty Violation - Penalty 50
-Exam 433: Wider Spread Violation with 15 students - Penalty 15
-Exam 433: Room penalty Violation - Penalty 50
-Exam 439: Wider Spread Violation with 4 students - Penalty 4
-Exam 443: Wider Spread Violation with 7 students - Penalty 7
-Exam 447: Wider Spread Violation with 26 students - Penalty 26
-Exam 448: Wider Spread Violation with 9 students - Penalty 9
-Exam 452: TwoInARow Violation with 1 students - Penalty 7
-Exam 452: Wider Spread Violation with 6 students - Penalty 6
-Exam 455: TwoInARow Violation with 20 students - Penalty 140
-Exam 455: Wider Spread Violation with 23 students - Penalty 23
-Exam 456: Wider Spread Violation with 11 students - Penalty 11
-Exam 456: Room penalty Violation - Penalty 50
-Exam 457: Wider Spread Violation with 1 students - Penalty 1
-Exam 457: Room penalty Violation - Penalty 50
-Exam 461: Room penalty Violation - Penalty 50
-Exam 462: Wider Spread Violation with 21 students - Penalty 21
-Exam 462: Room penalty Violation - Penalty 50
-Exam 463: TwoInARow Violation with 8 students - Penalty 56
-Exam 463: Wider Spread Violation with 17 students - Penalty 17
+Exam 429: TwoInARow Violation with 1 students - Penalty 7
+Exam 429: Wider Spread Violation with 4 students - Penalty 4
+Exam 430: Wider Spread Violation with 10 students - Penalty 10
+Exam 430: Front Load Violation at period 43 of 54 (Size 127) - Penalty 5
+Exam 431: Wider Spread Violation with 6 students - Penalty 6
+Exam 432: Wider Spread Violation with 2 students - Penalty 2
+Exam 433: Wider Spread Violation with 7 students - Penalty 7
+Exam 433: Front Load Violation at period 27 of 54 (Size 94) - Penalty 5
+Exam 434: Wider Spread Violation with 13 students - Penalty 13
+Exam 435: Wider Spread Violation with 7 students - Penalty 7
+Exam 436: Wider Spread Violation with 56 students - Penalty 56
+Exam 437: Wider Spread Violation with 19 students - Penalty 19
+Exam 437: Room penalty Violation - Penalty 50
+Exam 437: Front Load Violation at period 52 of 54 (Size 119) - Penalty 5
+Exam 438: Wider Spread Violation with 44 students - Penalty 44
+Exam 439: Wider Spread Violation with 21 students - Penalty 21
+Exam 440: Wider Spread Violation with 2 students - Penalty 2
+Exam 440: Front Load Violation at period 25 of 54 (Size 156) - Penalty 5
+Exam 441: Front Load Violation at period 24 of 54 (Size 226) - Penalty 5
+Exam 442: Wider Spread Violation with 1 students - Penalty 1
+Exam 444: TwoInARow Violation with 1 students - Penalty 7
+Exam 444: Wider Spread Violation with 51 students - Penalty 51
+Exam 444: Front Load Violation at period 50 of 54 (Size 133) - Penalty 5
+Exam 445: Wider Spread Violation with 6 students - Penalty 6
+Exam 446: Wider Spread Violation with 43 students - Penalty 43
+Exam 447: Wider Spread Violation with 31 students - Penalty 31
+Exam 449: Wider Spread Violation with 4 students - Penalty 4
+Exam 450: Wider Spread Violation with 18 students - Penalty 18
+Exam 451: Wider Spread Violation with 15 students - Penalty 15
+Exam 452: Wider Spread Violation with 9 students - Penalty 9
+Exam 453: Wider Spread Violation with 23 students - Penalty 23
+Exam 454: Wider Spread Violation with 25 students - Penalty 25
+Exam 455: TwoInARow Violation with 3 students - Penalty 21
+Exam 455: Wider Spread Violation with 6 students - Penalty 6
+Exam 456: Wider Spread Violation with 13 students - Penalty 13
+Exam 457: Wider Spread Violation with 10 students - Penalty 10
+Exam 458: Wider Spread Violation with 4 students - Penalty 4
+Exam 459: Wider Spread Violation with 2 students - Penalty 2
+Exam 463: Room penalty Violation - Penalty 50
 Exam 464: Wider Spread Violation with 8 students - Penalty 8
+Exam 466: Wider Spread Violation with 8 students - Penalty 8
+Exam 466: Front Load Violation at period 51 of 54 (Size 105) - Penalty 5
+Exam 467: Wider Spread Violation with 16 students - Penalty 16
+Exam 467: Front Load Violation at period 35 of 54 (Size 114) - Penalty 5
+Exam 468: Wider Spread Violation with 15 students - Penalty 15
+Exam 469: Wider Spread Violation with 6 students - Penalty 6
+Exam 470: Wider Spread Violation with 13 students - Penalty 13
+Exam 470: Front Load Violation at period 26 of 54 (Size 106) - Penalty 5
+Exam 471: TwoInARow Violation with 2 students - Penalty 14
+Exam 471: Wider Spread Violation with 12 students - Penalty 12
+Exam 473: Wider Spread Violation with 4 students - Penalty 4
+Exam 474: Wider Spread Violation with 3 students - Penalty 3
+Exam 475: Wider Spread Violation with 7 students - Penalty 7
 Exam 477: Wider Spread Violation with 4 students - Penalty 4
-Exam 478: Room penalty Violation - Penalty 50
-Exam 481: Wider Spread Violation with 28 students - Penalty 28
-Exam 482: TwoInARow Violation with 30 students - Penalty 210
-Exam 482: Wider Spread Violation with 73 students - Penalty 73
-Exam 483: Wider Spread Violation with 53 students - Penalty 53
-Exam 484: Wider Spread Violation with 15 students - Penalty 15
-Exam 484: Room penalty Violation - Penalty 50
-Exam 485: Room penalty Violation - Penalty 50
-Exam 488: TwoInARow Violation with 46 students - Penalty 322
-Exam 488: Wider Spread Violation with 97 students - Penalty 97
-Exam 489: Wider Spread Violation with 52 students - Penalty 52
-Exam 489: Period penalty Violation - Penalty 70
-Exam 489: Room penalty Violation - Penalty 50
-Exam 490: TwoInARow Violation with 1 students - Penalty 7
-Exam 490: Wider Spread Violation with 21 students - Penalty 21
-Exam 490: Period penalty Violation - Penalty 50
-Exam 490: Room penalty Violation - Penalty 50
-Exam 492: Wider Spread Violation with 2 students - Penalty 2
-Exam 494: TwoInARow Violation with 53 students - Penalty 371
-Exam 494: Wider Spread Violation with 117 students - Penalty 117
+Exam 478: Wider Spread Violation with 8 students - Penalty 8
+Exam 479: Wider Spread Violation with 11 students - Penalty 11
+Exam 479: Front Load Violation at period 45 of 54 (Size 202) - Penalty 5
+Exam 480: Wider Spread Violation with 2 students - Penalty 2
+Exam 481: Wider Spread Violation with 9 students - Penalty 9
+Exam 483: Wider Spread Violation with 4 students - Penalty 4
+Exam 484: Wider Spread Violation with 3 students - Penalty 3
+Exam 485: Wider Spread Violation with 2 students - Penalty 2
+Exam 486: Wider Spread Violation with 1 students - Penalty 1
+Exam 487: Wider Spread Violation with 1 students - Penalty 1
+Exam 489: Wider Spread Violation with 1 students - Penalty 1
+Exam 490: Wider Spread Violation with 1 students - Penalty 1
+Exam 491: Wider Spread Violation with 5 students - Penalty 5
+Exam 492: Wider Spread Violation with 3 students - Penalty 3
+Exam 493: Wider Spread Violation with 2 students - Penalty 2
+Exam 494: Wider Spread Violation with 53 students - Penalty 53
 Exam 494: Room penalty Violation - Penalty 50
-Exam 495: Wider Spread Violation with 63 students - Penalty 63
-Exam 497: Wider Spread Violation with 32 students - Penalty 32
-Exam 506: Wider Spread Violation with 3 students - Penalty 3
-Exam 506: Room penalty Violation - Penalty 50
-Exam 508: Wider Spread Violation with 9 students - Penalty 9
-Exam 513: Room penalty Violation - Penalty 50
-Exam 519: Wider Spread Violation with 3 students - Penalty 3
-Exam 523: TwoInARow Violation with 3 students - Penalty 21
-Exam 523: Wider Spread Violation with 19 students - Penalty 19
-Exam 524: Wider Spread Violation with 5 students - Penalty 5
-Exam 527: Wider Spread Violation with 8 students - Penalty 8
-Exam 532: Wider Spread Violation with 57 students - Penalty 57
-Exam 537: Wider Spread Violation with 1 students - Penalty 1
-Exam 540: Wider Spread Violation with 1 students - Penalty 1
-Exam 540: Room penalty Violation - Penalty 50
-Exam 542: Wider Spread Violation with 31 students - Penalty 31
-Exam 545: Wider Spread Violation with 15 students - Penalty 15
-Exam 545: Room penalty Violation - Penalty 50
-Exam 546: Wider Spread Violation with 2 students - Penalty 2
-Exam 546: Room penalty Violation - Penalty 50
-Exam 548: TwoInARow Violation with 13 students - Penalty 91
-Exam 548: Wider Spread Violation with 13 students - Penalty 13
-Exam 549: Wider Spread Violation with 33 students - Penalty 33
-Exam 550: Wider Spread Violation with 1 students - Penalty 1
-Exam 550: Room penalty Violation - Penalty 50
-Exam 554: Wider Spread Violation with 12 students - Penalty 12
-Exam 557: Wider Spread Violation with 24 students - Penalty 24
-Exam 558: Wider Spread Violation with 3 students - Penalty 3
-Exam 559: Wider Spread Violation with 16 students - Penalty 16
-Exam 559: Period penalty Violation - Penalty 50
-Exam 560: TwoInARow Violation with 1 students - Penalty 7
-Exam 560: Wider Spread Violation with 30 students - Penalty 30
-Exam 561: Wider Spread Violation with 5 students - Penalty 5
-Exam 562: Wider Spread Violation with 28 students - Penalty 28
-Exam 562: Room penalty Violation - Penalty 50
-Exam 563: TwoInARow Violation with 5 students - Penalty 35
-Exam 563: Wider Spread Violation with 12 students - Penalty 12
-Exam 563: Room penalty Violation - Penalty 50
-Exam 564: Wider Spread Violation with 10 students - Penalty 10
-Exam 566: Wider Spread Violation with 4 students - Penalty 4
-Exam 567: Wider Spread Violation with 1 students - Penalty 1
-Exam 571: TwoInARow Violation with 1 students - Penalty 7
-Exam 571: Wider Spread Violation with 6 students - Penalty 6
-Exam 573: TwoInARow Violation with 13 students - Penalty 91
-Exam 573: Wider Spread Violation with 19 students - Penalty 19
-Exam 573: Room penalty Violation - Penalty 50
+Exam 495: Wider Spread Violation with 54 students - Penalty 54
+Exam 495: Period penalty Violation - Penalty 50
+Exam 496: Wider Spread Violation with 2 students - Penalty 2
+Exam 499: Wider Spread Violation with 1 students - Penalty 1
+Exam 500: Wider Spread Violation with 1 students - Penalty 1
+Exam 504: Wider Spread Violation with 2 students - Penalty 2
+Exam 505: Wider Spread Violation with 4 students - Penalty 4
+Exam 505: Room penalty Violation - Penalty 50
+Exam 506: Wider Spread Violation with 4 students - Penalty 4
+Exam 507: Wider Spread Violation with 23 students - Penalty 23
+Exam 507: Front Load Violation at period 32 of 54 (Size 214) - Penalty 5
+Exam 508: Wider Spread Violation with 6 students - Penalty 6
+Exam 509: Wider Spread Violation with 5 students - Penalty 5
+Exam 509: Front Load Violation at period 46 of 54 (Size 102) - Penalty 5
+Exam 510: Wider Spread Violation with 8 students - Penalty 8
+Exam 511: Wider Spread Violation with 12 students - Penalty 12
+Exam 512: Wider Spread Violation with 1 students - Penalty 1
+Exam 513: Wider Spread Violation with 3 students - Penalty 3
+Exam 514: Wider Spread Violation with 11 students - Penalty 11
+Exam 514: Front Load Violation at period 34 of 54 (Size 115) - Penalty 5
+Exam 517: Wider Spread Violation with 12 students - Penalty 12
+Exam 518: Wider Spread Violation with 5 students - Penalty 5
+Exam 519: Room penalty Violation - Penalty 50
+Exam 520: Wider Spread Violation with 11 students - Penalty 11
+Exam 521: Wider Spread Violation with 12 students - Penalty 12
+Exam 522: TwoInARow Violation with 1 students - Penalty 7
+Exam 522: Wider Spread Violation with 1 students - Penalty 1
+Exam 523: Wider Spread Violation with 4 students - Penalty 4
+Exam 524: Wider Spread Violation with 7 students - Penalty 7
+Exam 525: Wider Spread Violation with 19 students - Penalty 19
+Exam 526: TwoInARow Violation with 1 students - Penalty 7
+Exam 526: Wider Spread Violation with 7 students - Penalty 7
+Exam 527: Wider Spread Violation with 2 students - Penalty 2
+Exam 528: Wider Spread Violation with 11 students - Penalty 11
+Exam 528: Front Load Violation at period 38 of 54 (Size 211) - Penalty 5
+Exam 529: Wider Spread Violation with 5 students - Penalty 5
+Exam 529: Front Load Violation at period 38 of 54 (Size 97) - Penalty 5
+Exam 530: Wider Spread Violation with 9 students - Penalty 9
+Exam 531: Wider Spread Violation with 25 students - Penalty 25
+Exam 531: Front Load Violation at period 29 of 54 (Size 145) - Penalty 5
+Exam 532: Wider Spread Violation with 6 students - Penalty 6
+Exam 533: Wider Spread Violation with 1 students - Penalty 1
+Exam 533: Front Load Violation at period 35 of 54 (Size 144) - Penalty 5
+Exam 534: Wider Spread Violation with 24 students - Penalty 24
+Exam 535: Wider Spread Violation with 50 students - Penalty 50
+Exam 535: Front Load Violation at period 41 of 54 (Size 144) - Penalty 5
+Exam 536: Wider Spread Violation with 24 students - Penalty 24
+Exam 537: Wider Spread Violation with 23 students - Penalty 23
+Exam 541: Wider Spread Violation with 1 students - Penalty 1
+Exam 543: Wider Spread Violation with 2 students - Penalty 2
+Exam 544: Wider Spread Violation with 4 students - Penalty 4
+Exam 545: Wider Spread Violation with 1 students - Penalty 1
+Exam 549: Wider Spread Violation with 2 students - Penalty 2
+Exam 550: TwoInARow Violation with 1 students - Penalty 7
+Exam 550: Wider Spread Violation with 2 students - Penalty 2
+Exam 551: Room penalty Violation - Penalty 50
+Exam 552: Wider Spread Violation with 1 students - Penalty 1
+Exam 553: Wider Spread Violation with 8 students - Penalty 8
+Exam 553: Front Load Violation at period 51 of 54 (Size 169) - Penalty 5
+Exam 554: Wider Spread Violation with 4 students - Penalty 4
+Exam 555: Wider Spread Violation with 1 students - Penalty 1
+Exam 556: Wider Spread Violation with 3 students - Penalty 3
+Exam 557: Wider Spread Violation with 2 students - Penalty 2
+Exam 558: Wider Spread Violation with 2 students - Penalty 2
+Exam 559: Room penalty Violation - Penalty 50
+Exam 560: Wider Spread Violation with 10 students - Penalty 10
+Exam 561: Wider Spread Violation with 2 students - Penalty 2
+Exam 561: Room penalty Violation - Penalty 50
+Exam 562: Wider Spread Violation with 8 students - Penalty 8
+Exam 563: Wider Spread Violation with 7 students - Penalty 7
+Exam 564: Wider Spread Violation with 6 students - Penalty 6
+Exam 566: Wider Spread Violation with 3 students - Penalty 3
+Exam 567: Wider Spread Violation with 2 students - Penalty 2
+Exam 568: Wider Spread Violation with 13 students - Penalty 13
+Exam 569: TwoInARow Violation with 1 students - Penalty 7
+Exam 569: Wider Spread Violation with 7 students - Penalty 7
+Exam 570: Wider Spread Violation with 2 students - Penalty 2
+Exam 571: Wider Spread Violation with 4 students - Penalty 4
+Exam 572: Wider Spread Violation with 32 students - Penalty 32
+Exam 573: Wider Spread Violation with 11 students - Penalty 11
 Exam 574: Wider Spread Violation with 5 students - Penalty 5
-Exam 574: Room penalty Violation - Penalty 50
-Exam 578: Wider Spread Violation with 15 students - Penalty 15
-Exam 578: Room penalty Violation - Penalty 50
-Exam 579: TwoInARow Violation with 1 students - Penalty 7
-Exam 579: Wider Spread Violation with 3 students - Penalty 3
-Exam 580: Wider Spread Violation with 22 students - Penalty 22
-Exam 581: Wider Spread Violation with 2 students - Penalty 2
-Exam 584: TwoInARow Violation with 2 students - Penalty 14
-Exam 584: Wider Spread Violation with 2 students - Penalty 2
+Exam 575: Room penalty Violation - Penalty 50
+Exam 576: Wider Spread Violation with 1 students - Penalty 1
+Exam 577: Wider Spread Violation with 3 students - Penalty 3
+Exam 578: Wider Spread Violation with 6 students - Penalty 6
+Exam 579: Room penalty Violation - Penalty 50
+Exam 580: Wider Spread Violation with 2 students - Penalty 2
+Exam 581: Wider Spread Violation with 3 students - Penalty 3
+Exam 582: Wider Spread Violation with 3 students - Penalty 3
+Exam 583: Wider Spread Violation with 9 students - Penalty 9
+Exam 584: Wider Spread Violation with 6 students - Penalty 6
+Exam 585: Room penalty Violation - Penalty 50
+Exam 586: Wider Spread Violation with 5 students - Penalty 5
 Exam 587: Wider Spread Violation with 3 students - Penalty 3
-Exam 587: Period penalty Violation - Penalty 50
-Exam 588: TwoInARow Violation with 12 students - Penalty 84
-Exam 588: Wider Spread Violation with 25 students - Penalty 25
-Exam 589: Wider Spread Violation with 5 students - Penalty 5
-Exam 592: Wider Spread Violation with 13 students - Penalty 13
-Exam 596: TwoInARow Violation with 17 students - Penalty 119
-Exam 596: Wider Spread Violation with 36 students - Penalty 36
-Exam 596: Room penalty Violation - Penalty 50
-Exam 597: Wider Spread Violation with 12 students - Penalty 12
-Exam 597: Period penalty Violation - Penalty 70
-Exam 597: Room penalty Violation - Penalty 50
-Exam 598: TwoInARow Violation with 1 students - Penalty 7
-Exam 598: Wider Spread Violation with 6 students - Penalty 6
-Exam 598: Period penalty Violation - Penalty 50
-Exam 600: TwoInARow Violation with 7 students - Penalty 49
-Exam 600: Wider Spread Violation with 7 students - Penalty 7
-Exam 601: Room penalty Violation - Penalty 50
-Exam 603: Wider Spread Violation with 9 students - Penalty 9
-Exam 604: TwoInARow Violation with 2 students - Penalty 14
-Exam 604: Wider Spread Violation with 4 students - Penalty 4
-Exam 606: Wider Spread Violation with 1 students - Penalty 1
-Exam 606: Room penalty Violation - Penalty 50
-Room 1 at Period 9: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 1 at Period 13: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 120 )
-Room 1 at Period 39: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 2 at Period 10: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 2 at Period 16: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 2 at Period 22: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 2 at Period 40: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 3 at Period 0: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 3 at Period 11: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 3 at Period 18: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 135 )
-Room 3 at Period 24: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
-Room 3 at Period 41: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 3 at Period 43: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 190 )
-Room 4 at Period 8: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
-Room 4 at Period 12: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 180 )
-Room 4 at Period 23: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 4 at Period 24: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 150 )
-Room 4 at Period 25: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
-Room 4 at Period 34: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 130 )
-Room 4 at Period 36: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 120 )
-Room 4 at Period 40: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 4 at Period 42: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 180 180 )
-Room 4 at Period 44: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 130 )
+Exam 588: Wider Spread Violation with 13 students - Penalty 13
+Exam 589: Wider Spread Violation with 2 students - Penalty 2
+Exam 589: Room penalty Violation - Penalty 50
+Exam 590: Wider Spread Violation with 3 students - Penalty 3
+Exam 591: Wider Spread Violation with 6 students - Penalty 6
+Exam 593: Wider Spread Violation with 1 students - Penalty 1
+Exam 594: Wider Spread Violation with 1 students - Penalty 1
+Exam 594: Room penalty Violation - Penalty 50
+Exam 597: Wider Spread Violation with 1 students - Penalty 1
+Exam 599: Wider Spread Violation with 6 students - Penalty 6
+Exam 600: TwoInARow Violation with 1 students - Penalty 7
+Exam 600: Wider Spread Violation with 1 students - Penalty 1
+Exam 602: Wider Spread Violation with 8 students - Penalty 8
+Exam 603: Wider Spread Violation with 1 students - Penalty 1
+Exam 603: Room penalty Violation - Penalty 50
+Exam 604: Wider Spread Violation with 1 students - Penalty 1
+Exam 605: Room penalty Violation - Penalty 50
+Room 0 at Period 2: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 180 195 )
+Room 0 at Period 5: Mix Durations penalty Violation - Penalty 20 ( of 4 exams: 60 150 180 180 )
+Room 0 at Period 7: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 130 )
+Room 0 at Period 11: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 180 180 )
+Room 0 at Period 12: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 135 )
+Room 0 at Period 16: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 180 180 )
+Room 0 at Period 21: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 135 )
+Room 0 at Period 25: Mix Durations penalty Violation - Penalty 10 ( of 4 exams: 45 120 120 120 )
+Room 0 at Period 26: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 190 )
+Room 0 at Period 29: Mix Durations penalty Violation - Penalty 20 ( of 4 exams: 120 120 135 180 )
+Room 0 at Period 30: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 180 190 )
+Room 0 at Period 31: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 150 )
+Room 0 at Period 33: Mix Durations penalty Violation - Penalty 20 ( of 4 exams: 90 90 135 180 )
+Room 0 at Period 35: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 150 )
+Room 0 at Period 36: Mix Durations penalty Violation - Penalty 30 ( of 6 exams: 120 120 120 175 180 190 )
+Room 0 at Period 39: Mix Durations penalty Violation - Penalty 10 ( of 4 exams: 120 120 120 135 )
+Room 0 at Period 40: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 130 )
+Room 0 at Period 42: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 150 180 )
+Room 0 at Period 49: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 0 at Period 50: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 1 at Period 5: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 120 )
+Room 1 at Period 6: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 135 180 )
+Room 1 at Period 10: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 130 )
+Room 1 at Period 13: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 130 180 )
+Room 1 at Period 14: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 135 )
+Room 1 at Period 21: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 1 at Period 22: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 1 at Period 26: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 135 180 )
+Room 1 at Period 27: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 130 )
+Room 1 at Period 30: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 130 )
+Room 1 at Period 31: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 90 180 180 )
+Room 1 at Period 37: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 180 180 190 )
+Room 1 at Period 42: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 1 at Period 50: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 90 90 120 )
+Room 1 at Period 51: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 135 )
+Room 1 at Period 52: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 130 135 )
+Room 1 at Period 53: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 4 at Period 0: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 150 180 180 )
+Room 4 at Period 7: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
+Room 4 at Period 10: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 140 180 )
+Room 4 at Period 11: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 130 )
+Room 4 at Period 12: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 135 )
+Room 4 at Period 13: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 35 120 )
+Room 4 at Period 22: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 4 at Period 25: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 4 at Period 27: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 60 120 )
+Room 4 at Period 29: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 135 180 )
+Room 4 at Period 33: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 60 120 )
+Room 4 at Period 35: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 135 180 )
+Room 4 at Period 37: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 195 )
+Room 4 at Period 42: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 135 )
+Room 4 at Period 44: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 4 at Period 45: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 4 at Period 46: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 130 180 )
+Room 4 at Period 48: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 4 at Period 50: Mix Durations penalty Violation - Penalty 10 ( of 5 exams: 120 120 180 180 180 )
 Room 4 at Period 51: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 4 at Period 52: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 4 at Period 53: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
-Room 5 at Period 3: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 5 at Period 6: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 35 135 )
-Room 5 at Period 7: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 5 at Period 17: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 180 180 )
-Room 5 at Period 25: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 150 )
-Room 5 at Period 26: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
-Room 5 at Period 27: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 135 180 )
-Room 5 at Period 30: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 5 at Period 31: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
-Room 5 at Period 32: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
+Room 4 at Period 53: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 190 )
+Room 5 at Period 8: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 5 at Period 11: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 5 at Period 13: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 5 at Period 14: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 130 180 )
+Room 5 at Period 21: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 5 at Period 22: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 5 at Period 24: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 5 at Period 25: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
+Room 5 at Period 28: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 5 at Period 31: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
 Room 5 at Period 33: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 5 at Period 37: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 130 )
-Room 5 at Period 39: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 5 at Period 41: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 180 )
-Room 5 at Period 45: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 5 at Period 52: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 0: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 5: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 150 180 )
-Room 6 at Period 6: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 135 )
-Room 6 at Period 7: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 9: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 10: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 11: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 14: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 17: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 135 150 )
-Room 6 at Period 19: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 20: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 23: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 150 )
-Room 6 at Period 26: Mix Durations penalty Violation - Penalty 20 ( of 4 exams: 100 120 120 180 )
-Room 6 at Period 27: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 180 )
-Room 6 at Period 28: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 150 180 )
-Room 6 at Period 29: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 30: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 31: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 33: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 180 180 190 )
-Room 6 at Period 35: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 120 )
-Room 6 at Period 36: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 40: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 140 )
-Room 6 at Period 44: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 180 180 )
-Room 6 at Period 46: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 130 180 )
-Room 6 at Period 49: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
-Room 6 at Period 51: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 180 195 )
+Room 5 at Period 36: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 120 )
+Room 5 at Period 38: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 150 )
+Room 5 at Period 40: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 5 at Period 44: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 180 180 )
+Room 5 at Period 45: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 130 )
+Room 5 at Period 46: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 100 120 )
+Room 6 at Period 11: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 180 )
+Room 6 at Period 12: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 180 180 )
+Room 6 at Period 13: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 90 180 180 )
+Room 6 at Period 16: Mix Durations penalty Violation - Penalty 20 ( of 4 exams: 90 120 150 150 )
+Room 6 at Period 18: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 190 )
+Room 6 at Period 22: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 180 180 )
+Room 6 at Period 25: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 90 90 130 )
+Room 6 at Period 27: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 180 )
+Room 6 at Period 29: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 90 210 )
+Room 6 at Period 31: Mix Durations penalty Violation - Penalty 10 ( of 4 exams: 120 120 120 135 )
+Room 6 at Period 32: Mix Durations penalty Violation - Penalty 10 ( of 4 exams: 90 90 120 120 )
+Room 6 at Period 34: Mix Durations penalty Violation - Penalty 10 ( of 4 exams: 120 120 120 180 )
+Room 6 at Period 35: Mix Durations penalty Violation - Penalty 10 ( of 4 exams: 120 120 120 180 )
+Room 6 at Period 38: Mix Durations penalty Violation - Penalty 10 ( of 2 exams: 120 135 )
+Room 6 at Period 39: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 180 )
+Room 6 at Period 40: Mix Durations penalty Violation - Penalty 20 ( of 4 exams: 120 130 180 180 )
+Room 6 at Period 41: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 150 )
+Room 6 at Period 49: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 90 180 180 )
+Room 6 at Period 50: Mix Durations penalty Violation - Penalty 10 ( of 3 exams: 120 120 180 )
 
 Summary Evaluation
 ==================
 
-Unscheduled: 213 (of 607), pen=1065000
+Unscheduled: 0 (of 607), pen=0
 
-TwoInARow: 105, pen=11522
+TwoInARow: 30, pen=315
 TwoInADay: 0, pen=0
-WiderSpreads: 873, pen=8730
-PeriodPenalties: 27, pen=1510
-RoomPenalties: 100, pen=5000
-MixDurationPenalties: 68, pen=690
-FrontLoadPenalties: 0, pen=0
+WiderSpreads: 1265, pen=3939
+PeriodPenalties: 2, pen=100
+RoomPenalties: 56, pen=2800
+MixDurationPenalties: 94, pen=1010
+FrontLoadPenalties: 51, pen=255
 
-Overall penalty = 1092452
-
-Infeasible Solution
+Overall penalty = 8419
