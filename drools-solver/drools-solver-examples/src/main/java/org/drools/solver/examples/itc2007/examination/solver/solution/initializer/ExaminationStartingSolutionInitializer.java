@@ -15,14 +15,14 @@ import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
-import org.drools.solver.examples.itc2007.examination.domain.ExamBefore;
-import org.drools.solver.examples.itc2007.examination.domain.ExamCoincidence;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
 import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint;
 import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
+import org.drools.solver.examples.itc2007.examination.domain.solver.ExamBefore;
+import org.drools.solver.examples.itc2007.examination.domain.solver.ExamCoincidence;
 
 /**
  * @author Geoffrey De Smet
