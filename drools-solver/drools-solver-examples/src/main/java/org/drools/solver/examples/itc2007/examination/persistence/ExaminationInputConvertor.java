@@ -217,14 +217,22 @@ public class ExaminationInputConvertor extends LoggingMain {
             if (lineTokens.length != 3) {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
             }
-            periodHardConstraint.setLeftSideTopic(topicList.get(Integer.parseInt(lineTokens[0])));
-            periodHardConstraint.setPeriodHardConstraintType(PeriodHardConstraintType.valueOf(lineTokens[1]));
-            periodHardConstraint.setRightSideTopic(topicList.get(Integer.parseInt(lineTokens[2])));
-            if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.EXAM_COINCIDENCE
-                    && !Collections.disjoint(periodHardConstraint.getLeftSideTopic().getStudentList(),
-                            periodHardConstraint.getRightSideTopic().getStudentList())) {
-                logger.warn("Filtering out periodHardConstraint (" + periodHardConstraint
-                        + ") because the left and right topic share students.");
+            Topic leftTopic = topicList.get(Integer.parseInt(lineTokens[0]));
+            periodHardConstraint.setLeftSideTopic(leftTopic);
+            PeriodHardConstraintType periodHardConstraintType = PeriodHardConstraintType.valueOf(lineTokens[1]);
+            periodHardConstraint.setPeriodHardConstraintType(periodHardConstraintType);
+            Topic rightTopic = topicList.get(Integer.parseInt(lineTokens[2]));
+            periodHardConstraint.setRightSideTopic(rightTopic);
+            if (periodHardConstraintType == PeriodHardConstraintType.EXAM_COINCIDENCE) {
+                // It's not specified what happens
+                // when A coincidences with B and B coincidences with C
+                // and when A and C share students (but don't directly coincidence)
+                if (!Collections.disjoint(leftTopic.getStudentList(), rightTopic.getStudentList())) {
+                    logger.warn("Filtering out periodHardConstraint (" + periodHardConstraint
+                            + ") because the left and right topic share students.");
+                } else {
+                    periodHardConstraintList.add(periodHardConstraint);
+                }
             } else {
                 periodHardConstraintList.add(periodHardConstraint);
             }

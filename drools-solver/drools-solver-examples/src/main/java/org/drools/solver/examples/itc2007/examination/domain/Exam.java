@@ -12,6 +12,9 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
 
     private Topic topic;
 
+    private ExamCoincidence examCoincidence = null;
+
+    // Changed by moves, between score calculations.
     private Period period;
     private Room room;
 
@@ -21,6 +24,14 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
 
     public void setTopic(Topic topic) {
         this.topic = topic;
+    }
+
+    public ExamCoincidence getExamCoincidence() {
+        return examCoincidence;
+    }
+
+    public void setExamCoincidence(ExamCoincidence examCoincidence) {
+        this.examCoincidence = examCoincidence;
     }
 
     public Period getPeriod() {
@@ -38,6 +49,12 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
     public void setRoom(Room room) {
         this.room = room;
     }
+
+    public boolean isCoincidenceLeader() {
+        return examCoincidence == null
+                || examCoincidence.getFirstExam() == this;
+    }
+
 
     public int compareTo(Exam other) {
         return new CompareToBuilder()
@@ -57,8 +74,8 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
     }
 
     /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used
-     * because the rule engine already requires them (for performance in their original state).
+     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
+     * requires them (for performance in their original state).
      * @see #solutionHashCode()
      */
     public boolean solutionEquals(Object o) {
@@ -78,8 +95,8 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
     }
 
     /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used
-     * because the rule engine already requires them (for performance in their original state).
+     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
+     * requires them (for performance in their original state).
      * @see #solutionEquals(Object)
      */
     public int solutionHashCode() {

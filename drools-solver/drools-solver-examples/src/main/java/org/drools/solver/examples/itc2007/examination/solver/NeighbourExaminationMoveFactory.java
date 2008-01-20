@@ -10,6 +10,7 @@ import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
+import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeBulkMove;
 import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeMove;
 import org.drools.solver.examples.itc2007.examination.solver.move.RoomChangeMove;
 
@@ -22,16 +23,29 @@ public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
     private static final int ROOM_JUMP = 2;
 
     public Iterator<Move> iterator() {
-        List<Move> moveList = new ArrayList<Move>();
         Examination examination = (Examination) localSearchSolver.getCurrentSolution();
         List<Period> periodList = examination.getPeriodList();
         List<Room> roomList = examination.getRoomList();
+        List<Move> moveList = new ArrayList<Move>();
         for (Exam exam : examination.getExamList()) {
-            for (Period period : periodList) {
-                int distance = calculateShortestDistance(
-                        period.getPeriodIndex(), exam.getPeriod().getPeriodIndex(), periodList.size());
-                if (distance <= PERIOD_JUMP) {
-                    moveList.add(new PeriodChangeMove(exam, period));
+            if (exam.getExamCoincidence() != null) {
+                if (exam.isCoincidenceLeader()) {
+                    for (Period period : periodList) {
+                        int distance = calculateShortestDistance(
+                                period.getPeriodIndex(), exam.getPeriod().getPeriodIndex(), periodList.size());
+                        if (distance <= PERIOD_JUMP) {
+                            moveList.add(new PeriodChangeBulkMove(
+                                    exam.getExamCoincidence().getCoincidenceExamSet(), period));
+                        }
+                    }
+                }
+            } else {
+                for (Period period : periodList) {
+                    int distance = calculateShortestDistance(
+                            period.getPeriodIndex(), exam.getPeriod().getPeriodIndex(), periodList.size());
+                    if (distance <= PERIOD_JUMP) {
+                        moveList.add(new PeriodChangeMove(exam, period));
+                    }
                 }
             }
             for (Room room : roomList) {

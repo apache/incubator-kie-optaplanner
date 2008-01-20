@@ -1,6 +1,7 @@
 package org.drools.solver.examples.itc2007.examination.domain;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
@@ -12,7 +13,10 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
 
     private int duration;
     private List<Student> studentList;
+
+    // Calculated during initialization, not modified during score calculation.
     private boolean frontLoadLarge;
+    private Set<Topic> coincidenceTopicSet = null;
 
     public int getDuration() {
         return duration;
@@ -40,6 +44,19 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
 
     public void setFrontLoadLarge(boolean frontLoadLarge) {
         this.frontLoadLarge = frontLoadLarge;
+    }
+
+    public Set<Topic> getCoincidenceTopicSet() {
+        return coincidenceTopicSet;
+    }
+
+    public void setCoincidenceTopicSet(Set<Topic> coincidenceTopicSet) {
+        this.coincidenceTopicSet = coincidenceTopicSet;
+    }
+
+
+    public boolean hasCoincidenceTopic() {
+        return coincidenceTopicSet != null;
     }
 
     public int compareTo(Topic other) {

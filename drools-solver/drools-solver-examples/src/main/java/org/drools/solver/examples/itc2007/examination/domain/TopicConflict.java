@@ -7,6 +7,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
+ * Calculated during initialization, not modified during score calculation.
  * @author Geoffrey De Smet
  */
 public class TopicConflict implements Serializable {

@@ -10,6 +10,7 @@ import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
+import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeBulkMove;
 import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeMove;
 import org.drools.solver.examples.itc2007.examination.solver.move.RoomChangeMove;
 
@@ -20,12 +21,23 @@ public class ExaminationMoveFactory extends CachedMoveListMoveFactory {
 
     public List<Move> createMoveList(Solution solution) {
         Examination examination = (Examination) solution;
+        List<Period> periodList = examination.getPeriodList();
+        List<Room> roomList = examination.getRoomList();
         List<Move> moveList = new ArrayList<Move>();
         for (Exam exam : examination.getExamList()) {
-            for (Period period : examination.getPeriodList()) {
-                moveList.add(new PeriodChangeMove(exam, period));
+            if (exam.getExamCoincidence() != null) {
+                if (exam.isCoincidenceLeader()) {
+                    for (Period period : periodList) {
+                        moveList.add(new PeriodChangeBulkMove(
+                                exam.getExamCoincidence().getCoincidenceExamSet(), period));
+                    }
+                }
+            } else {
+                for (Period period : periodList) {
+                    moveList.add(new PeriodChangeMove(exam, period));
+                }
             }
-            for (Room room : examination.getRoomList()) {
+            for (Room room : roomList) {
                 moveList.add(new RoomChangeMove(exam, room));
             }
         }
