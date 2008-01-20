@@ -26,7 +26,7 @@
                 ge0ffrey's main pc: 429
                 ge0ffrey's old pc: 1152
             -->
-            <maximumSecondsSpend>1</maximumSecondsSpend>
+            <maximumSecondsSpend>1152</maximumSecondsSpend>
         </finish>
     </inheritedLocalSearchSolver>
 
