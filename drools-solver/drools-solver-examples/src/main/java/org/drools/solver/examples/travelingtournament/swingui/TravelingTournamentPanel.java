@@ -20,7 +20,7 @@ import org.drools.solver.examples.common.swingui.SolutionPanel;
 import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Match;
 import org.drools.solver.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.solver.examples.travelingtournament.solver.simple.DayChangeMove;
+import org.drools.solver.examples.travelingtournament.solver.simple.move.DayChangeMove;
 
 /**
  * @author Geoffrey De Smet

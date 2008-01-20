@@ -19,7 +19,7 @@
         <scoreCalculator>
             <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
         </scoreCalculator>
-        <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+        <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
             <!--
                 Official benchmark maximumSecondsSpend allowed on:

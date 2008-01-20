@@ -9,6 +9,7 @@ import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Match;
 import org.drools.solver.examples.travelingtournament.domain.TravelingTournament;
+import org.drools.solver.examples.travelingtournament.solver.simple.move.DayChangeMove;
 
 /**
  * @author Geoffrey De Smet

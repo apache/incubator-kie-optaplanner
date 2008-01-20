@@ -20,7 +20,7 @@ import org.drools.solver.examples.common.swingui.SolutionPanel;
 import org.drools.solver.examples.lessonschedule.domain.Lesson;
 import org.drools.solver.examples.lessonschedule.domain.LessonSchedule;
 import org.drools.solver.examples.lessonschedule.domain.Timeslot;
-import org.drools.solver.examples.lessonschedule.solver.TimeslotChangeMove;
+import org.drools.solver.examples.lessonschedule.solver.move.TimeslotChangeMove;
 
 /**
  * @author Geoffrey De Smet

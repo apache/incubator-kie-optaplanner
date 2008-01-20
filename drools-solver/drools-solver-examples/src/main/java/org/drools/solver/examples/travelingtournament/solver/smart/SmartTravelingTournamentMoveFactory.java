@@ -15,6 +15,8 @@ import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Match;
 import org.drools.solver.examples.travelingtournament.domain.Team;
 import org.drools.solver.examples.travelingtournament.domain.TravelingTournament;
+import org.drools.solver.examples.travelingtournament.solver.smart.move.MatchSwapMove;
+import org.drools.solver.examples.travelingtournament.solver.smart.move.MultipleMatchListRotateMove;
 
 /**
  * @author Geoffrey De Smet

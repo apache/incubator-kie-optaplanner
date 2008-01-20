@@ -19,7 +19,7 @@ import org.drools.solver.core.move.Move;
 import org.drools.solver.examples.common.swingui.SolutionPanel;
 import org.drools.solver.examples.nqueens.domain.NQueens;
 import org.drools.solver.examples.nqueens.domain.Queen;
-import org.drools.solver.examples.nqueens.solver.YChangeMove;
+import org.drools.solver.examples.nqueens.solver.move.YChangeMove;
 
 /**
  * @author Geoffrey De Smet

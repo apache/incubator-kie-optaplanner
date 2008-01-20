@@ -9,6 +9,7 @@ import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.lessonschedule.domain.Lesson;
 import org.drools.solver.examples.lessonschedule.domain.LessonSchedule;
 import org.drools.solver.examples.lessonschedule.domain.Timeslot;
+import org.drools.solver.examples.lessonschedule.solver.move.TimeslotChangeMove;
 
 /**
  * @author Geoffrey De Smet

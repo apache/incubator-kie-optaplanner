@@ -1,4 +1,4 @@
-package org.drools.solver.examples.travelingtournament.solver.smart;
+package org.drools.solver.examples.travelingtournament.solver.smart.move;
 
 import java.util.Arrays;
 import java.util.List;

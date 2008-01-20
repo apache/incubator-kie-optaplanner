@@ -1,4 +1,4 @@
-package org.drools.solver.examples.lessonschedule.solver;
+package org.drools.solver.examples.lessonschedule.solver.move;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.drools.solver.examples.itc2007.examination.solver;
+package org.drools.solver.examples.itc2007.examination.solver.solution.initializer;
 
 import java.util.ArrayList;
 import java.util.Collections;

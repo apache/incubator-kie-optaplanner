@@ -1,4 +1,4 @@
-package org.drools.solver.examples.nqueens.solver;
+package org.drools.solver.examples.nqueens.solver.move;
 
 import java.util.Collections;
 import java.util.List;

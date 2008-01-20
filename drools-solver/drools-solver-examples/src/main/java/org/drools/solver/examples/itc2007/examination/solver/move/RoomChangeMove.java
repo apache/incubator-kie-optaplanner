@@ -1,4 +1,4 @@
-package org.drools.solver.examples.itc2007.examination.solver;
+package org.drools.solver.examples.itc2007.examination.solver.move;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,36 +10,36 @@ import org.drools.WorkingMemory;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.TabuPropertyEnabled;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
-import org.drools.solver.examples.itc2007.examination.domain.Period;
+import org.drools.solver.examples.itc2007.examination.domain.Room;
 
 /**
  * @author Geoffrey De Smet
  */
-public class PeriodChangeMove implements Move, TabuPropertyEnabled {
+public class RoomChangeMove implements Move, TabuPropertyEnabled {
 
     private Exam exam;
-    private Period toPeriod;
+    private Room toRoom;
 
-    public PeriodChangeMove(Exam exam, Period toPeriod) {
+    public RoomChangeMove(Exam exam, Room toRoom) {
         this.exam = exam;
-        this.toPeriod = toPeriod;
+        this.toRoom = toRoom;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        Period fromPeriod = exam.getPeriod();
-        if (fromPeriod == null) {
-            return (toPeriod != null);
+        Room fromRoom = exam.getRoom();
+        if (fromRoom == null) {
+            return (toRoom != null);
         }
-        return !fromPeriod.equals(toPeriod);
+        return !fromRoom.equals(toRoom);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new PeriodChangeMove(exam, exam.getPeriod());
+        return new RoomChangeMove(exam, exam.getRoom());
     }
 
     public void doMove(WorkingMemory workingMemory) {
         FactHandle lessonHandle = workingMemory.getFactHandle(exam);
-        exam.setPeriod(toPeriod);
+        exam.setRoom(toRoom);
         workingMemory.update(lessonHandle, exam);
     }
 
@@ -51,10 +51,10 @@ public class PeriodChangeMove implements Move, TabuPropertyEnabled {
         if (this == o) {
             return true;
         } else if (o instanceof PeriodChangeMove) {
-            PeriodChangeMove other = (PeriodChangeMove) o;
+            RoomChangeMove other = (RoomChangeMove) o;
             return new EqualsBuilder()
                     .append(exam, other.exam)
-                    .append(toPeriod, other.toPeriod)
+                    .append(toRoom, other.toRoom)
                     .isEquals();
         } else {
             return false;
@@ -64,12 +64,12 @@ public class PeriodChangeMove implements Move, TabuPropertyEnabled {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(exam)
-                .append(toPeriod)
+                .append(toRoom)
                 .toHashCode();
     }
 
     public String toString() {
-        return exam + " => " + toPeriod;
+        return exam + " => " + toRoom;
     }
 
 }
