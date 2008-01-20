@@ -1,5 +1,6 @@
 package org.drools.solver.core.localsearch.decider.accepter.tabu;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -54,9 +55,9 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
     }
 
     public double calculateAcceptChance(Move move, double score) {
-        List<? extends Object> tabuList = findTabu(move);
+        Collection<? extends Object> tabus = findTabu(move);
         int maximumTabuStepIndex = -1;
-        for (Object tabu : tabuList) {
+        for (Object tabu : tabus) {
             Integer tabuStepIndexInteger = tabuToStepIndexMap.get(tabu);
             if (tabuStepIndexInteger != null) {
                 maximumTabuStepIndex = Math.max(tabuStepIndexInteger, maximumTabuStepIndex);
@@ -84,8 +85,8 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
     @Override
     public void stepDecided(Move step) {
         if (step != null) { // TODO fixme by better use of lifecycle method
-            List<? extends Object> tabuList = findNewTabu(step);
-            for (Object tabu : tabuList) {
+            Collection<? extends Object> tabus = findNewTabu(step);
+            for (Object tabu : tabus) {
                 // required to push tabu to the end of the line
                 if (tabuToStepIndexMap.containsKey(tabu)) {
                     tabuToStepIndexMap.remove(tabu);
@@ -104,9 +105,9 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
         }
     }
 
-    protected abstract List<? extends Object> findTabu(Move move);
+    protected abstract Collection<? extends Object> findTabu(Move move);
 
-    protected List<? extends Object> findNewTabu(Move step) {
+    protected Collection<? extends Object> findNewTabu(Move step) {
         return findTabu(step);
     }
 

@@ -1,7 +1,7 @@
 package org.drools.solver.examples.travelingtournament.solver.simple.move;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -43,7 +43,7 @@ public class DayChangeMove implements Move, TabuPropertyEnabled {
         workingMemory.update(matchHandle, match);
     }
 
-    public List<? extends Object> getTabuPropertyList() {
+    public Collection<? extends Object> getTabuProperties() {
         return Collections.singletonList(match);
     }
 

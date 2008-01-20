@@ -1,7 +1,7 @@
 package org.drools.solver.examples.nqueens.solver.move;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -39,7 +39,7 @@ public class YChangeMove implements Move, TabuPropertyEnabled {
         workingMemory.update(queenHandle, queen);
     }
 
-    public List<? extends Object> getTabuPropertyList() {
+    public Collection<? extends Object> getTabuProperties() {
         return Collections.singletonList(queen);
     }
 

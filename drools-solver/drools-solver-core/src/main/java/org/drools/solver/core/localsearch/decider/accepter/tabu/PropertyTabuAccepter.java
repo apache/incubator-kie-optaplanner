@@ -1,6 +1,6 @@
 package org.drools.solver.core.localsearch.decider.accepter.tabu;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.drools.solver.core.move.Move;
 
@@ -14,9 +14,9 @@ public class PropertyTabuAccepter extends AbstractTabuAccepter {
     // ************************************************************************
 
     @Override
-    protected List<? extends Object> findTabu(Move move) {
+    protected Collection<? extends Object> findTabu(Move move) {
         TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) move;
-        return tabuPropertyEnabled.getTabuPropertyList();
+        return tabuPropertyEnabled.getTabuProperties();
     }
 
 }

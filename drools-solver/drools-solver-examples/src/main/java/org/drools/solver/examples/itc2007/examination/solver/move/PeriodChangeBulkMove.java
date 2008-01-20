@@ -1,7 +1,6 @@
 package org.drools.solver.examples.itc2007.examination.solver.move;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -15,45 +14,54 @@ import org.drools.solver.examples.itc2007.examination.domain.Period;
 /**
  * @author Geoffrey De Smet
  */
-public class PeriodChangeMove implements Move, TabuPropertyEnabled {
+public class PeriodChangeBulkMove implements Move, TabuPropertyEnabled {
 
-    private Exam exam;
+    private Collection<Exam> exams;
     private Period toPeriod;
 
-    public PeriodChangeMove(Exam exam, Period toPeriod) {
-        this.exam = exam;
+    public PeriodChangeBulkMove(Collection<Exam> exams, Period toPeriod) {
+        this.exams = exams;
+        if (exams.isEmpty()) {
+            throw new IllegalArgumentException("The exams is empty.");
+        }
         this.toPeriod = toPeriod;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        Period fromPeriod = exam.getPeriod();
+        Period fromPeriod = extractFromPeriod();
         if (fromPeriod == null) {
             return (toPeriod != null);
         }
         return !fromPeriod.equals(toPeriod);
     }
 
+    private Period extractFromPeriod() {
+        return exams.iterator().next().getPeriod();
+    }
+
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new PeriodChangeMove(exam, exam.getPeriod());
+        return new PeriodChangeBulkMove(exams, extractFromPeriod());
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        FactHandle lessonHandle = workingMemory.getFactHandle(exam);
-        exam.setPeriod(toPeriod);
-        workingMemory.update(lessonHandle, exam);
+        for (Exam exam : exams) {
+            FactHandle lessonHandle = workingMemory.getFactHandle(exam);
+            exam.setPeriod(toPeriod);
+            workingMemory.update(lessonHandle, exam);
+        }
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        return Collections.singletonList(exam);
+        return exams;
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof PeriodChangeMove) {
-            PeriodChangeMove other = (PeriodChangeMove) o;
+        } else if (o instanceof PeriodChangeBulkMove) {
+            PeriodChangeBulkMove other = (PeriodChangeBulkMove) o;
             return new EqualsBuilder()
-                    .append(exam, other.exam)
+                    .append(exams, other.exams)
                     .append(toPeriod, other.toPeriod)
                     .isEquals();
         } else {
@@ -63,13 +71,13 @@ public class PeriodChangeMove implements Move, TabuPropertyEnabled {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(exam)
+                .append(exams)
                 .append(toPeriod)
                 .toHashCode();
     }
 
     public String toString() {
-        return exam + " => " + toPeriod;
+        return exams + " => " + toPeriod;
     }
 
 }

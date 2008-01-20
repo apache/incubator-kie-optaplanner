@@ -1,6 +1,7 @@
 package org.drools.solver.examples.travelingtournament.solver.smart.move;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -63,7 +64,7 @@ public class MultipleMatchListRotateMove implements Move, TabuPropertyEnabled {
         workingMemory.update(secondMatchHandle, secondMatch);
     }
 
-    public List<? extends Object> getTabuPropertyList() {
+    public Collection<? extends Object> getTabuProperties() {
         List<Match> tabuPropertyList = new ArrayList<Match>(firstMatchList.size() + secondMatchList.size());
         tabuPropertyList.addAll(firstMatchList);
         tabuPropertyList.addAll(secondMatchList);
