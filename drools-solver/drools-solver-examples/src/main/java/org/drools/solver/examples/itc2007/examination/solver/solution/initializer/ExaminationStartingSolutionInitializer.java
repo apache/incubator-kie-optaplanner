@@ -3,7 +3,7 @@ package org.drools.solver.examples.itc2007.examination.solver.solution.initializ
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +15,7 @@ import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
+import org.drools.solver.examples.itc2007.examination.domain.ExamBefore;
 import org.drools.solver.examples.itc2007.examination.domain.ExamCoincidence;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
@@ -222,26 +223,6 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             }
         }
         Collections.sort(examInitialWeightList);
-        for (PeriodHardConstraint periodHardConstraint : examination.getPeriodHardConstraintList()) {
-            if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
-                int afterSideIndex = -1;
-                int beforeSideIndex = -1;
-                for (int i = 0; i < examInitialWeightList.size(); i++) {
-                    Topic topic = examInitialWeightList.get(i).getExam().getTopic();
-                    if (topic.equals(periodHardConstraint.getLeftSideTopic())) { // TODO FIXME topic could be in coinc.
-                        afterSideIndex = i;
-                    }
-                    if (topic.equals(periodHardConstraint.getRightSideTopic())) { // TODO FIXME topic could be in coinc.
-                        beforeSideIndex = i;
-                    }
-                }
-                if (afterSideIndex < beforeSideIndex) {
-                    ExamInitialWeight beforeExamInitialWeight = examInitialWeightList.remove(beforeSideIndex);
-                    examInitialWeightList.add(afterSideIndex, beforeExamInitialWeight);
-                }
-            }
-        }
-
         return examInitialWeightList;
     }
 
@@ -261,7 +242,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 Exam leftExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
                 Exam rightExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
 
-                Set<Exam> newCoincidenceExamSet = new HashSet<Exam>();
+                Set<Exam> newCoincidenceExamSet = new LinkedHashSet<Exam>(4);
                 ExamCoincidence leftExamCoincidence = leftExam.getExamCoincidence();
                 if (leftExamCoincidence != null) {
                     newCoincidenceExamSet.addAll(leftExamCoincidence.getCoincidenceExamSet());
@@ -277,6 +258,15 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 ExamCoincidence newExamCoincidence = new ExamCoincidence(newCoincidenceExamSet);
                 leftExam.setExamCoincidence(newExamCoincidence);
                 rightExam.setExamCoincidence(newExamCoincidence);
+            } else if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
+                Exam afterExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
+                Exam beforeExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
+                ExamBefore examBefore = beforeExam.getExamBefore();
+                if (examBefore == null) {
+                    examBefore = new ExamBefore(new LinkedHashSet<Exam>(2));
+                    beforeExam.setExamBefore(examBefore);
+                }
+                examBefore.getAfterExamSet().add(afterExam);
             }
         }
         return examList;
@@ -286,18 +276,44 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
 
         private Exam exam;
         private int totalStudentSize;
+        private int maximumDuration;
 
         private ExamInitialWeight(Exam exam) {
             this.exam = exam;
-            if (exam.getExamCoincidence() == null) {
-                totalStudentSize = exam.getTopicStudentListSize();
+            totalStudentSize = calculateTotalStudentSize(exam);
+            maximumDuration = calculateMaximumDuration(exam);
+        }
+
+        private int calculateTotalStudentSize(Exam innerExam) {
+            int innerTotalStudentSize = 0;
+            if (innerExam.getExamCoincidence() == null) {
+                innerTotalStudentSize = innerExam.getTopicStudentListSize();
             } else {
-                totalStudentSize = 0;
-                for (Exam coincidenceExam : exam.getExamCoincidence().getCoincidenceExamSet()) {
-                    totalStudentSize += coincidenceExam.getTopicStudentListSize();
+                for (Exam coincidenceExam : innerExam.getExamCoincidence().getCoincidenceExamSet()) {
+                    innerTotalStudentSize += coincidenceExam.getTopicStudentListSize();
                 }
             }
+            if (innerExam.getExamBefore() != null) {
+                for (Exam afterExam : innerExam.getExamBefore().getAfterExamSet()) {
+                    innerTotalStudentSize += calculateTotalStudentSize(afterExam); // recursive
+                }
+            }
+            return innerTotalStudentSize;
+        }
 
+        private int calculateMaximumDuration(Exam innerExam) {
+            int innerMaximumDuration = innerExam.getTopic().getDuration();
+            if (innerExam.getExamCoincidence() != null) {
+                for (Exam coincidenceExam : innerExam.getExamCoincidence().getCoincidenceExamSet()) {
+                    innerMaximumDuration = Math.max(innerMaximumDuration, coincidenceExam.getTopicStudentListSize());
+                }
+            }
+            if (innerExam.getExamBefore() != null) {
+                for (Exam afterExam : innerExam.getExamBefore().getAfterExamSet()) {
+                    innerMaximumDuration = Math.max(innerMaximumDuration, calculateMaximumDuration(afterExam)); // recursive
+                }
+            }
+            return innerMaximumDuration;
         }
 
         public Exam getExam() {
@@ -308,7 +324,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             // TODO calculate a assigningScore based on the properties of a topic and sort on that assigningScore
             return new CompareToBuilder()
                     .append(other.totalStudentSize, totalStudentSize) // Descending
-                    .append(other.exam.getTopic().getDuration(), exam.getTopic().getDuration()) // Descending
+                    .append(other.maximumDuration, maximumDuration) // Descending
                     .append(exam.getId(), other.exam.getId()) // Ascending
                     .toComparison();
         }

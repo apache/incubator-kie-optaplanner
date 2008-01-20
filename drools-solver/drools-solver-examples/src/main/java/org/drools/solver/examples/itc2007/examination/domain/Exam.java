@@ -12,7 +12,9 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
 
     private Topic topic;
 
+    // Calculated during initialization, not used for score calculation, used for move creation.
     private ExamCoincidence examCoincidence = null;
+    private ExamBefore examBefore = null;
 
     // Changed by moves, between score calculations.
     private Period period;
@@ -32,6 +34,14 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
 
     public void setExamCoincidence(ExamCoincidence examCoincidence) {
         this.examCoincidence = examCoincidence;
+    }
+
+    public ExamBefore getExamBefore() {
+        return examBefore;
+    }
+
+    public void setExamBefore(ExamBefore examBefore) {
+        this.examBefore = examBefore;
     }
 
     public Period getPeriod() {
