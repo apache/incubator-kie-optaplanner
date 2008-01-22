@@ -3,6 +3,7 @@ package org.drools.solver.examples.lessonschedule.solver.move;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
@@ -26,11 +27,7 @@ public class TimeslotChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        Timeslot fromTimeslot = lesson.getTimeslot();
-        if (fromTimeslot == null) {
-            return (toTimeslot != null);
-        }
-        return !fromTimeslot.equals(toTimeslot);
+        return !ObjectUtils.equals(lesson.getTimeslot(), toTimeslot);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {

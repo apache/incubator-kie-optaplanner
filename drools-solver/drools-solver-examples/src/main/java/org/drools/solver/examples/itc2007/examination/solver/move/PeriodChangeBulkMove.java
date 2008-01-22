@@ -2,6 +2,7 @@ package org.drools.solver.examples.itc2007.examination.solver.move;
 
 import java.util.Collection;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
@@ -28,11 +29,7 @@ public class PeriodChangeBulkMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        Period fromPeriod = extractFromPeriod();
-        if (fromPeriod == null) {
-            return (toPeriod != null);
-        }
-        return !fromPeriod.equals(toPeriod);
+        return !ObjectUtils.equals(extractFromPeriod(), toPeriod);
     }
 
     private Period extractFromPeriod() {
@@ -45,9 +42,9 @@ public class PeriodChangeBulkMove implements Move, TabuPropertyEnabled {
 
     public void doMove(WorkingMemory workingMemory) {
         for (Exam exam : exams) {
-            FactHandle lessonHandle = workingMemory.getFactHandle(exam);
+            FactHandle examHandle = workingMemory.getFactHandle(exam);
             exam.setPeriod(toPeriod);
-            workingMemory.update(lessonHandle, exam);
+            workingMemory.update(examHandle, exam);
         }
     }
 

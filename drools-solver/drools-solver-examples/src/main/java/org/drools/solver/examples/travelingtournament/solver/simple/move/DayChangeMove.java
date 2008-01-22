@@ -3,6 +3,7 @@ package org.drools.solver.examples.travelingtournament.solver.simple.move;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
@@ -26,11 +27,7 @@ public class DayChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        Day fromDay = match.getDay();
-        if (fromDay == null) {
-            return (toDay != null);
-        }
-        return !fromDay.equals(toDay);
+        return !ObjectUtils.equals(match.getDay(), toDay);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {

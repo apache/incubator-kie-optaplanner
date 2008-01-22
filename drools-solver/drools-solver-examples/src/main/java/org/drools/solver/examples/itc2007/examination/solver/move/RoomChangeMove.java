@@ -3,6 +3,7 @@ package org.drools.solver.examples.itc2007.examination.solver.move;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
@@ -26,11 +27,7 @@ public class RoomChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        Room fromRoom = exam.getRoom();
-        if (fromRoom == null) {
-            return (toRoom != null);
-        }
-        return !fromRoom.equals(toRoom);
+        return !ObjectUtils.equals(exam.getRoom(), toRoom);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
@@ -38,9 +35,9 @@ public class RoomChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        FactHandle lessonHandle = workingMemory.getFactHandle(exam);
+        FactHandle examHandle = workingMemory.getFactHandle(exam);
         exam.setRoom(toRoom);
-        workingMemory.update(lessonHandle, exam);
+        workingMemory.update(examHandle, exam);
     }
 
     public Collection<? extends Object> getTabuProperties() {

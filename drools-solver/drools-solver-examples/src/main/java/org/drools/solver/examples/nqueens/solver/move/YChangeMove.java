@@ -25,8 +25,7 @@ public class YChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        int fromY = queen.getY();
-        return fromY != toY;
+        return queen.getY() != toY;
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
