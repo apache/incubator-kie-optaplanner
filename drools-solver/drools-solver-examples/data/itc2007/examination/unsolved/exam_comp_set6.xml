@@ -43908,7 +43908,7 @@
       <startDateTimeString>12:01:2005 09:30:00</startDateTimeString>
       <periodIndex>0</periodIndex>
       <dayIndex>0</dayIndex>
-      <durationInMinutes>120</durationInMinutes>
+      <duration>120</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43917,7 +43917,7 @@
       <startDateTimeString>12:01:2005 14:30:00</startDateTimeString>
       <periodIndex>1</periodIndex>
       <dayIndex>0</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43926,7 +43926,7 @@
       <startDateTimeString>13:01:2005 09:30:00</startDateTimeString>
       <periodIndex>2</periodIndex>
       <dayIndex>1</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43935,7 +43935,7 @@
       <startDateTimeString>13:01:2005 14:30:00</startDateTimeString>
       <periodIndex>3</periodIndex>
       <dayIndex>1</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43944,7 +43944,7 @@
       <startDateTimeString>14:01:2005 09:30:00</startDateTimeString>
       <periodIndex>4</periodIndex>
       <dayIndex>2</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43953,7 +43953,7 @@
       <startDateTimeString>14:01:2005 14:30:00</startDateTimeString>
       <periodIndex>5</periodIndex>
       <dayIndex>2</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43962,7 +43962,7 @@
       <startDateTimeString>15:01:2005 09:30:00</startDateTimeString>
       <periodIndex>6</periodIndex>
       <dayIndex>3</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43971,7 +43971,7 @@
       <startDateTimeString>15:01:2005 14:30:00</startDateTimeString>
       <periodIndex>7</periodIndex>
       <dayIndex>3</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43980,7 +43980,7 @@
       <startDateTimeString>17:01:2005 09:30:00</startDateTimeString>
       <periodIndex>8</periodIndex>
       <dayIndex>5</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43989,7 +43989,7 @@
       <startDateTimeString>17:01:2005 14:30:00</startDateTimeString>
       <periodIndex>9</periodIndex>
       <dayIndex>5</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>0</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -43998,7 +43998,7 @@
       <startDateTimeString>18:01:2005 09:30:00</startDateTimeString>
       <periodIndex>10</periodIndex>
       <dayIndex>6</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>5</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -44007,7 +44007,7 @@
       <startDateTimeString>18:01:2005 14:30:00</startDateTimeString>
       <periodIndex>11</periodIndex>
       <dayIndex>6</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>5</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -44016,7 +44016,7 @@
       <startDateTimeString>19:01:2005 09:30:00</startDateTimeString>
       <periodIndex>12</periodIndex>
       <dayIndex>7</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>10</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -44025,7 +44025,7 @@
       <startDateTimeString>19:01:2005 14:30:00</startDateTimeString>
       <periodIndex>13</periodIndex>
       <dayIndex>7</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>10</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -44034,7 +44034,7 @@
       <startDateTimeString>20:01:2005 09:30:00</startDateTimeString>
       <periodIndex>14</periodIndex>
       <dayIndex>8</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>15</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
@@ -44043,7 +44043,7 @@
       <startDateTimeString>20:01:2005 14:30:00</startDateTimeString>
       <periodIndex>15</periodIndex>
       <dayIndex>8</dayIndex>
-      <durationInMinutes>180</durationInMinutes>
+      <duration>180</duration>
       <penalty>15</penalty>
       <frontLoadLast>true</frontLoadLast>
     </org.drools.solver.examples.itc2007.examination.domain.Period>
