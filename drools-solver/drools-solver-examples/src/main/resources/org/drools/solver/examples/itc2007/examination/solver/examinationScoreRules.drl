@@ -63,7 +63,7 @@ end
 // More time required during a period than available in that period.
 rule "periodDurationTooShort"
     when
-        $exam : Exam($periodDuration : periodDurationInMinutes, eval(topic.getDuration() > (Integer) $periodDuration));
+        $exam : Exam(eval(topicDuration > periodDuration));
     then
         insertLogical(new IntConstraintOccurrence("periodDurationTooShort", ConstraintType.NEGATIVE_HARD,
             $exam));

@@ -11,7 +11,7 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
  */
 public class Topic extends AbstractPersistable implements Comparable<Topic> {
 
-    private int duration;
+    private int duration; // in minutes
     private List<Student> studentList;
 
     // Calculated during initialization, not modified during score calculation.

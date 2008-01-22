@@ -179,7 +179,7 @@ public class ExaminationInputConvertor extends LoggingMain {
                 throw new IllegalStateException("The periods should be in ascending order.");
             }
             period.setDayIndex(dayIndex);
-            period.setDurationInMinutes(Integer.parseInt(lineTokens[2]));
+            period.setDuration(Integer.parseInt(lineTokens[2]));
             period.setPenalty(Integer.parseInt(lineTokens[3]));
             periodList.add(period);
         }
