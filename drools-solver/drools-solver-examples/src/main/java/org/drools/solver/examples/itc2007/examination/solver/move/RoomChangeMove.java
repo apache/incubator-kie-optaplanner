@@ -50,7 +50,7 @@ public class RoomChangeMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof PeriodChangeMove) {
+        } else if (o instanceof RoomChangeMove) {
             RoomChangeMove other = (RoomChangeMove) o;
             return new EqualsBuilder()
                     .append(exam, other.exam)
