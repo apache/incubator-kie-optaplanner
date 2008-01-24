@@ -3,7 +3,7 @@ package org.drools.solver.core.move;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.Solver;
-import org.drools.solver.core.localsearch.decider.selector.MoveFactory;
+import org.drools.solver.core.move.factory.MoveFactory;
 import org.drools.solver.core.score.calculator.ScoreCalculator;
 import org.drools.solver.core.solution.Solution;
 

@@ -3,8 +3,8 @@ package org.drools.solver.examples.travelingtournament.solver.simple;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.solver.core.localsearch.decider.selector.CachedMoveListMoveFactory;
 import org.drools.solver.core.move.Move;
+import org.drools.solver.core.move.factory.CachedMoveFactory;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Match;
@@ -14,9 +14,9 @@ import org.drools.solver.examples.travelingtournament.solver.simple.move.DayChan
 /**
  * @author Geoffrey De Smet
  */
-public class SimpleTravelingTournamentMoveFactory extends CachedMoveListMoveFactory {
+public class SimpleTravelingTournamentMoveFactory extends CachedMoveFactory {
 
-    public List<Move> createMoveList(Solution solution) {
+    public List<Move> createCachedMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
         TravelingTournament travelingTournament = (TravelingTournament) solution;
         for (Match match : travelingTournament.getMatchList()) {

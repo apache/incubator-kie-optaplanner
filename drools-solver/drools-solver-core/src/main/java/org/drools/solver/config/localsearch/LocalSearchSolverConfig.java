@@ -198,7 +198,7 @@ public class LocalSearchSolverConfig {
 
     private Decider buildDecider() {
         DefaultDecider decider = new DefaultDecider();
-        decider.setMoveFactory(selectorConfig.buildMoveFactory());
+        decider.setSelector(selectorConfig.buildSelector());
         decider.setAccepter(accepterConfig.buildAccepter());
         decider.setForager(foragerConfig.buildForager());
         return decider;

@@ -16,8 +16,18 @@
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
     <selector>
-        <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.NeighbourExaminationMoveFactory</moveFactoryClass>-->
-        <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.JumpingNeighbourExaminationMoveFactory</moveFactoryClass>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>
+            <relativeSelection>0.1</relativeSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.RoomChangeExaminationMoveFactory</moveFactoryClass>
+            <relativeSelection>0.1</relativeSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExamSwitchExaminationMoveFactory</moveFactoryClass>
+            <relativeSelection>0.1</relativeSelection>
+        </selector>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1500</completeSolutionTabuSize>
@@ -26,7 +36,7 @@
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
     <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>-->
+        <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
         <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
     <!--</selector>-->
     <!--<accepter>-->

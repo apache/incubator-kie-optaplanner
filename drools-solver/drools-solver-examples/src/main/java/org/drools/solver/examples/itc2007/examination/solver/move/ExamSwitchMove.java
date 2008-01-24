@@ -37,6 +37,7 @@ public class ExamSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public void doMove(WorkingMemory workingMemory) {
+        // TODO also move coincidence
         FactHandle leftExamHandle = workingMemory.getFactHandle(leftExam);
         FactHandle rightExamHandle = workingMemory.getFactHandle(rightExam);
         Period oldLeftPeriod = leftExam.getPeriod();

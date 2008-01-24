@@ -1,11 +1,11 @@
 package org.drools.solver.examples.itc2007.examination.solver;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.drools.solver.core.localsearch.decider.selector.AbstractMoveFactory;
 import org.drools.solver.core.move.Move;
+import org.drools.solver.core.move.factory.AbstractMoveFactory;
+import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
@@ -22,8 +22,8 @@ public class JumpingNeighbourExaminationMoveFactory extends AbstractMoveFactory 
     private int periodJump = 1;
     private int roomJump = 1;
 
-    public Iterator<Move> iterator() {
-        Examination examination = (Examination) localSearchSolver.getCurrentSolution();
+    public List<Move> createMoveList(Solution solution) {
+        Examination examination = (Examination) solution;
         List<Period> periodList = examination.getPeriodList();
         List<Room> roomList = examination.getRoomList();
         List<Move> moveList = new ArrayList<Move>();
@@ -64,7 +64,7 @@ public class JumpingNeighbourExaminationMoveFactory extends AbstractMoveFactory 
         if (roomJump >= (roomList.size() / 2)) {
             roomJump = 1;
         }
-        return moveList.iterator();
+        return moveList;
         // TODO re-enable this stuff as it's a lot faster
 //        int maximumMoveSize = 100;
 //        // TODO not fair for first and last moves in move list

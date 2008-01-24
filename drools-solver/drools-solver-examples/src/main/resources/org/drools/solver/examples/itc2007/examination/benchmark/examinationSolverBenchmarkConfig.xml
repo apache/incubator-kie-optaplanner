@@ -33,7 +33,7 @@
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
             <!--<selector>-->
-                <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExaminationMoveFactory</moveFactoryClass>-->
+                <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
                 <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
             <!--</selector>-->
             <!--<accepter>-->
@@ -47,7 +47,18 @@
     <solverBenchmark>
         <localSearchSolver>
             <selector>
-                <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.NeighbourExaminationMoveFactory</moveFactoryClass>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.05</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.RoomChangeExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.05</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExamSwitchExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.05</relativeSelection>
+                </selector>
             </selector>
             <accepter>
                 <completeSolutionTabuSize>1500</completeSolutionTabuSize>
@@ -60,7 +71,18 @@
     <solverBenchmark>
         <localSearchSolver>
             <selector>
-                <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.JumpingNeighbourExaminationMoveFactory</moveFactoryClass>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.01</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.RoomChangeExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.01</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExamSwitchExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.01</relativeSelection>
+                </selector>
             </selector>
             <accepter>
                 <completeSolutionTabuSize>1500</completeSolutionTabuSize>

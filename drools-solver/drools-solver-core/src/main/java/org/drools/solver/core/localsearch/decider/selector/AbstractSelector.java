@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AbstractMoveFactory implements MoveFactory {
+public abstract class AbstractSelector implements Selector {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

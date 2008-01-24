@@ -3,14 +3,14 @@ package org.drools.solver.examples.travelingtournament.solver.smart;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.drools.solver.core.localsearch.decider.selector.AbstractMoveFactory;
 import org.drools.solver.core.move.Move;
+import org.drools.solver.core.move.factory.AbstractMoveFactory;
+import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Match;
 import org.drools.solver.examples.travelingtournament.domain.Team;
@@ -47,9 +47,10 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
         }
     }
 
-    public Iterator<Move> iterator() {
+
+    public List<Move> createMoveList(Solution solution) {
+        TravelingTournament travelingTournament = (TravelingTournament) solution;
         List<Move> moveList = new ArrayList<Move>();
-        TravelingTournament travelingTournament = (TravelingTournament) localSearchSolver.getCurrentSolution();
         moveList.addAll(cachedMoveList);
         RotationMovesFactory rotationMovesFactory = new RotationMovesFactory(travelingTournament);
         logger.debug("Reused {} moves for N1 neighborhood.", moveList.size());
@@ -60,7 +61,7 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
         rotationMovesFactory.addTeamRotation(moveList);
         logger.debug("Created {} moves for N2 U N4 neighborhood.", (moveList.size() - oldSize));
         rotationMovesFactory = null;
-        return moveList.iterator();
+        return moveList;
     }
 
     private static class RotationMovesFactory {

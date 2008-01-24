@@ -3,8 +3,8 @@ package org.drools.solver.examples.nqueens.solver;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.solver.core.localsearch.decider.selector.CachedMoveListMoveFactory;
 import org.drools.solver.core.move.Move;
+import org.drools.solver.core.move.factory.CachedMoveFactory;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.nqueens.domain.NQueens;
 import org.drools.solver.examples.nqueens.domain.Queen;
@@ -13,9 +13,9 @@ import org.drools.solver.examples.nqueens.solver.move.YChangeMove;
 /**
  * @author Geoffrey De Smet
  */
-public class NQueensMoveFactory extends CachedMoveListMoveFactory {
+public class NQueensMoveFactory extends CachedMoveFactory {
 
-    public List<Move> createMoveList(Solution solution) {
+    public List<Move> createCachedMoveList(Solution solution) {
         NQueens nQueens = (NQueens) solution;
         List<Move> moveList = new ArrayList<Move>();
         for (Queen queen : nQueens.getQueenList()) {
