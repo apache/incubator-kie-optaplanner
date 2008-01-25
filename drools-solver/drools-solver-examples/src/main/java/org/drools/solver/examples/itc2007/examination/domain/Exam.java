@@ -122,7 +122,7 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
 
     @Override
     public String toString() {
-        return topic + " @ " + period + " in " + room;
+        return topic + " @ " + period + " + " + room;
     }
 
     public int getTopicDuration() {

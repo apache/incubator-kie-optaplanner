@@ -63,7 +63,7 @@ public class ExaminationPanel extends SolutionPanel {
         }
         Map<Period, Map<Room, PeriodRoomPanel>> periodRoomPanelMap = new HashMap<Period, Map<Room, PeriodRoomPanel>>();
         for (Period period : examination.getPeriodList()) {
-            JLabel periodLabel = new JLabel(period.toString() + " (" + period.getStartDateTimeString() + ")");
+            JLabel periodLabel = new JLabel(period.toString() + " " + period.getStartDateTimeString());
             periodLabel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
