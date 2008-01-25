@@ -26,7 +26,7 @@
                 ge0ffrey's main pc: 429
                 ge0ffrey's old pc: 1152
             -->
-            <maximumSecondsSpend>1152</maximumSecondsSpend>
+            <maximumSecondsSpend>429</maximumSecondsSpend>
         </finish>
     </inheritedLocalSearchSolver>
 
@@ -46,6 +46,9 @@
     <!--</solverBenchmark>-->
     <solverBenchmark>
         <localSearchSolver>
+            <scoreCalculator>
+                <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+            </scoreCalculator>
             <selector>
                 <selector>
                     <topSize>10</topSize>
@@ -64,35 +67,12 @@
                 </selector>
             </selector>
             <accepter>
-                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+                <completeSolutionTabuSize>500</completeSolutionTabuSize>
+                <completePropertyTabuSize>10</completePropertyTabuSize>
             </accepter>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
         </localSearchSolver>
     </solverBenchmark>
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
-                    <!--<relativeSelection>0.01</relativeSelection>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>-->
-                    <!--<relativeSelection>0.01</relativeSelection>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>-->
-                    <!--<relativeSelection>0.01</relativeSelection>-->
-                <!--</selector>-->
-            <!--</selector>-->
-            <!--<accepter>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-            <!--</accepter>-->
-            <!--<forager>-->
-                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
-            <!--</forager>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
 </solverBenchmarkSuite>

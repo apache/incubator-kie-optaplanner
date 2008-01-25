@@ -256,8 +256,9 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                     newCoincidenceExamSet.add(rightExam);
                 }
                 ExamCoincidence newExamCoincidence = new ExamCoincidence(newCoincidenceExamSet);
-                leftExam.setExamCoincidence(newExamCoincidence);
-                rightExam.setExamCoincidence(newExamCoincidence);
+                for (Exam exam : newCoincidenceExamSet) {
+                    exam.setExamCoincidence(newExamCoincidence);
+                }
             } else if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
                 Exam afterExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
                 Exam beforeExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
