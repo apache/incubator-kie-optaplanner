@@ -18,15 +18,15 @@
     <selector>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>
-            <relativeSelection>0.01</relativeSelection>
+            <relativeSelection>0.002</relativeSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.RoomChangeExaminationMoveFactory</moveFactoryClass>
-            <relativeSelection>0.01</relativeSelection>
+            <relativeSelection>0.002</relativeSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExamSwitchExaminationMoveFactory</moveFactoryClass>
-            <relativeSelection>0.01</relativeSelection>
+            <relativeSelection>0.002</relativeSelection>
         </selector>
     </selector>
     <accepter>

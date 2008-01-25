@@ -79,9 +79,16 @@ rule "roomCapacityTooSmall" // TODO improve performance, as it takes 50% of the 
             // sumInteger($studentListSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
             sum($studentListSize)
         );
-//        eval($totalStudentListSize.intValue() > $capacity);
+        // HACK to fix wierd truth maintance behavior in drools
+        // because making weight part of the equals/hashcode doesn't cut it
+        not(IntConstraintOccurrence(
+            ruleId == "roomCapacityTooSmall",
+            constraintType == ConstraintType.NEGATIVE_HARD,
+            causes contains $period, causes contains $room,
+            eval(weight != ($totalStudentListSize.intValue() - $capacity))));
     then
         insertLogical(new IntConstraintOccurrence("roomCapacityTooSmall", ConstraintType.NEGATIVE_HARD,
+            ($totalStudentListSize.intValue() - $capacity),
             $period, $room));
 end
 
