@@ -9,7 +9,7 @@
         <maximumStepCount>100</maximumStepCount>
     </finish>
     <selector>
-        <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1500</completeSolutionTabuSize>

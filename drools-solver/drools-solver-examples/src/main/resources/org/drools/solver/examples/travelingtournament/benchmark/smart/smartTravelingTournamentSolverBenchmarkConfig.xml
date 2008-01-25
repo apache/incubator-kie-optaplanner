@@ -14,7 +14,7 @@
             <maximumHouresSpend>2</maximumHouresSpend>
         </finish>
         <selector>
-            <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
         <forager>
             <foragerType>MAX_SCORE_OF_ALL</foragerType>

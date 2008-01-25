@@ -33,7 +33,7 @@
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
             <!--<selector>-->
-                <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
+                <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
                 <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
             <!--</selector>-->
             <!--<accepter>-->
@@ -48,15 +48,15 @@
         <localSearchSolver>
             <selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>
                     <relativeSelection>0.05</relativeSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.RoomChangeExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>
                     <relativeSelection>0.05</relativeSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExamSwitchExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>
                     <relativeSelection>0.05</relativeSelection>
                 </selector>
             </selector>
@@ -72,15 +72,15 @@
         <localSearchSolver>
             <selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>
                     <relativeSelection>0.01</relativeSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.RoomChangeExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>
                     <relativeSelection>0.01</relativeSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.ExamSwitchExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>
                     <relativeSelection>0.01</relativeSelection>
                 </selector>
             </selector>

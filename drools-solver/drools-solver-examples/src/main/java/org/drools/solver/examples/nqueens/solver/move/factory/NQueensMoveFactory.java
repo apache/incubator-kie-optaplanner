@@ -1,4 +1,4 @@
-package org.drools.solver.examples.nqueens.solver;
+package org.drools.solver.examples.nqueens.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.List;

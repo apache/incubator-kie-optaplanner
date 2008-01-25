@@ -10,7 +10,7 @@
         <feasableScore>0.0</feasableScore>
     </finish>
     <selector>
-        <moveFactoryClass>org.drools.solver.examples.nqueens.solver.NQueensMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1000</completeSolutionTabuSize>

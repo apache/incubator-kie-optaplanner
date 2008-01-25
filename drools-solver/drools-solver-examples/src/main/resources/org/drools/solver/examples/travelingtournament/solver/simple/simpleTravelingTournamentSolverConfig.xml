@@ -8,7 +8,7 @@
         <maximumHouresSpend>2</maximumHouresSpend>
     </finish>
     <selector>
-        <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.simple.SimpleTravelingTournamentMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveFactoryClass>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1500</completeSolutionTabuSize>

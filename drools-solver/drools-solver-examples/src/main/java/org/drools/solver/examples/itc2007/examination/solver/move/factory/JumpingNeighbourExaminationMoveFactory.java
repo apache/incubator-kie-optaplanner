@@ -1,4 +1,4 @@
-package org.drools.solver.examples.itc2007.examination.solver;
+package org.drools.solver.examples.itc2007.examination.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,10 @@ import org.drools.solver.examples.itc2007.examination.solver.move.RoomChangeMove
 /**
  * @author Geoffrey De Smet
  */
-public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
+public class JumpingNeighbourExaminationMoveFactory extends AbstractMoveFactory {
 
-    private static final int PERIOD_JUMP = 2;
-    private static final int ROOM_JUMP = 2;
+    private int periodJump = 1;
+    private int roomJump = 1;
 
     public List<Move> createMoveList(Solution solution) {
         Examination examination = (Examination) solution;
@@ -31,7 +31,7 @@ public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
                 for (Period period : periodList) {
                     int distance = calculateShortestDistance(
                             period.getPeriodIndex(), exam.getPeriod().getPeriodIndex(), periodList.size());
-                    if (distance <= PERIOD_JUMP) {
+                    if (distance == periodJump) {
                         moveList.add(new PeriodChangeMove(exam, period));
                     }
                 }
@@ -39,10 +39,18 @@ public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
             for (Room room : roomList) {
                 long distance = calculateShortestDistance(
                         room.getId(), exam.getRoom().getId(), roomList.size());
-                if (distance <= ROOM_JUMP) {
+                if (distance == roomJump) {
                     moveList.add(new RoomChangeMove(exam, room));
                 }
             }
+        }
+        periodJump++;
+        if (periodJump >= (periodList.size() / 2)) {
+            periodJump = 1;
+        }
+        roomJump++;
+        if (roomJump >= (roomList.size() / 2)) {
+            roomJump = 1;
         }
         return moveList;
         // TODO re-enable this stuff as it's a lot faster

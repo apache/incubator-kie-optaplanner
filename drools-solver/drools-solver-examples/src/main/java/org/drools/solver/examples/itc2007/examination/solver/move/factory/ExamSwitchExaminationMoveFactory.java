@@ -1,4 +1,4 @@
-package org.drools.solver.examples.itc2007.examination.solver;
+package org.drools.solver.examples.itc2007.examination.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.List;

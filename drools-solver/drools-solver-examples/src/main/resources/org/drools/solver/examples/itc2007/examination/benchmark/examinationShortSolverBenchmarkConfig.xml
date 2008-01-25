@@ -20,7 +20,7 @@
     <solverBenchmark>
         <localSearchSolver>
             <selector>
-                <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.PeriodChangeExaminationMoveFactory</moveFactoryClass>
+                <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>
                 <shuffleMovesEveryStep>true</shuffleMovesEveryStep>
             </selector>
             <accepter>

@@ -8,7 +8,7 @@
         <maximumUnimprovedStepCount>10</maximumUnimprovedStepCount>
     </finish>
     <selector>
-        <moveFactoryClass>org.drools.solver.examples.lessonschedule.solver.LessonScheduleMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.solver.examples.lessonschedule.solver.move.factory.LessonScheduleMoveFactory</moveFactoryClass>
     </selector>
     <accepter>
         <completeUndoMoveTabuSize>10</completeUndoMoveTabuSize>

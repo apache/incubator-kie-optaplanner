@@ -11,7 +11,7 @@
             <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
         </scoreCalculator>
         <selector>
-            <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
         <accepter>
             <completeSolutionTabuSize>3000</completeSolutionTabuSize>
