@@ -42,6 +42,10 @@ public class DefaultDecider implements Decider {
         this.accepter = accepter;
     }
 
+    public Forager getForager() {
+        return forager;
+    }
+
     public void setForager(Forager forager) {
         this.forager = forager;
     }
@@ -103,7 +107,7 @@ public class DefaultDecider implements Decider {
         double score = evaluationHandler.fireAllRulesAndCalculateDecisionScore();
         double acceptChance = accepter.calculateAcceptChance(move, score);
         // TODO the move's toString() is ussually wrong because doMove has already been called
-        logger.debug("    Move ({}) with score ({}) and acceptChance ({}).", new Object[] {move, score, acceptChance});
+        logger.debug("    Move ({}) with score ({}) and acceptChance ({}).", new Object[]{move, score, acceptChance});
         forager.addMove(move, score, acceptChance);
     }
 

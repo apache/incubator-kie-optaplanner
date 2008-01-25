@@ -48,16 +48,19 @@
         <localSearchSolver>
             <selector>
                 <selector>
+                    <topSize>10</topSize>
+                </selector>
+                <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.05</relativeSelection>
+                    <relativeSelection>0.002</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.05</relativeSelection>
+                    <relativeSelection>0.002</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.05</relativeSelection>
+                    <relativeSelection>0.002</relativeSelection>
                 </selector>
             </selector>
             <accepter>
@@ -68,28 +71,28 @@
             </forager>
         </localSearchSolver>
     </solverBenchmark>
-    <solverBenchmark>
-        <localSearchSolver>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.01</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.01</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.01</relativeSelection>
-                </selector>
-            </selector>
-            <accepter>
-                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-            </accepter>
-            <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
+    <!--<solverBenchmark>-->
+        <!--<localSearchSolver>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.01</relativeSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.01</relativeSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.01</relativeSelection>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<accepter>-->
+                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+            <!--</accepter>-->
+            <!--<forager>-->
+                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
 </solverBenchmarkSuite>

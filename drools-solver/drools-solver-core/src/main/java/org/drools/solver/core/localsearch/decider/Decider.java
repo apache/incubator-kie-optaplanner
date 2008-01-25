@@ -2,6 +2,7 @@ package org.drools.solver.core.localsearch.decider;
 
 import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
+import org.drools.solver.core.localsearch.decider.forager.Forager;
 import org.drools.solver.core.move.Move;
 
 /**
@@ -11,6 +12,6 @@ public interface Decider extends LocalSearchSolverAware, LocalSearchSolverLifecy
 
     Move decideNextStep();
 
-    int getAcceptedMovesSize();
+    Forager getForager();
 
 }

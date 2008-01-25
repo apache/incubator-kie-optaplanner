@@ -60,6 +60,10 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         this.bestSolutionRecaller.setLocalSearchSolver(this);
     }
 
+    public Decider getDecider() {
+        return decider;
+    }
+
     public void setDecider(Decider decider) {
         this.decider = decider;
         this.decider.setLocalSearchSolver(this);
@@ -123,11 +127,12 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
             Move nextStep = decider.decideNextStep();
             if (nextStep == null) {
                 logger.warn("No move accepted for step ({}) out of {} accepted moves. Finishing early.",
-                        getStepIndex(), decider.getAcceptedMovesSize());
+                        getStepIndex(), decider.getForager().getAcceptedMovesSize());
                 break;
             }
             logger.info("Step index ({}), time spend ({}) taking step ({}) out of {} accepted moves.",
-                    new Object[]{getStepIndex(), getTimeMillisSpend(), nextStep, decider.getAcceptedMovesSize()});
+                    new Object[]{getStepIndex(), getTimeMillisSpend(), nextStep,
+                            decider.getForager().getAcceptedMovesSize()});
             stepDecided(nextStep);
             nextStep.doMove(evaluationHandler.getStatefulSession());
             stepScore = evaluationHandler.fireAllRulesAndCalculateStepScore();

@@ -1,6 +1,7 @@
 package org.drools.solver.core.localsearch;
 
 import org.drools.solver.core.Solver;
+import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.solution.Solution;
 
 /**
@@ -27,5 +28,7 @@ public interface LocalSearchSolver extends Solver {
     int getBestSolutionStepIndex();
 
     double calculateTimeGradient();
+
+    Decider getDecider();
 
 }

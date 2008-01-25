@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.solver.core.localsearch.decider.selector.CompositeSelector;
 import org.drools.solver.core.localsearch.decider.selector.MoveFactorySelector;
 import org.drools.solver.core.localsearch.decider.selector.Selector;
+import org.drools.solver.core.localsearch.decider.selector.TopListSelector;
 import org.drools.solver.core.move.factory.MoveFactory;
 
 /**
@@ -23,6 +24,8 @@ public class SelectorConfig {
     private Class<MoveFactory> moveFactoryClass = null;
     protected Boolean shuffle = null;
     protected Double relativeSelection = null;
+
+    private Integer topSize = null;
 
     public List<SelectorConfig> getSelectorConfigList() {
         return selectorConfigList;
@@ -64,6 +67,10 @@ public class SelectorConfig {
         this.relativeSelection = relativeSelection;
     }
 
+    public void setTopSize(Integer topSize) {
+        this.topSize = topSize;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -102,6 +109,10 @@ public class SelectorConfig {
             if (relativeSelection != null) {
                 selector.setRelativeSelection(relativeSelection);
             }
+            return selector;
+        } else if (topSize != null) {
+            TopListSelector selector = new TopListSelector();
+            selector.setTopSize(topSize);
             return selector;
         } else {
             throw new IllegalArgumentException("A selector with a moveFactory or moveFactory class is required.");
