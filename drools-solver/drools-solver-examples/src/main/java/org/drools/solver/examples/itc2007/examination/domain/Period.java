@@ -71,7 +71,7 @@ public class Period extends AbstractPersistable implements Comparable<Period> {
 
     @Override
     public String toString() {
-        return startDateTimeString + " {" + duration + "}";
+        return id + "_d" + duration;
     }
 
 }
