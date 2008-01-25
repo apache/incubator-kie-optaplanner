@@ -24,7 +24,7 @@ public abstract class AcceptionListBasedForager extends AbstractForager {
 
     @Override
     public void beforeDeciding() {
-        acceptionList = new ArrayList<Acception>();
+        acceptionList = new ArrayList<Acception>(); // TODO use size of moveList in decider
         listSorted = false;
         maxScore = Double.NEGATIVE_INFINITY;
         acceptChanceMaxScoreTotal = 0.0;
@@ -65,6 +65,10 @@ public abstract class AcceptionListBasedForager extends AbstractForager {
             pickedMove = acceptionList.get(acceptionList.size() - 1).getMove();
         }
         return pickedMove;
+    }
+
+    public int getAcceptedMovesSize() {
+        return acceptionList.size();
     }
 
     public List<Move> getTopList(int topSize) {

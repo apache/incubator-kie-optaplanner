@@ -1,5 +1,7 @@
 package org.drools.solver.core.localsearch.decider;
 
+import java.util.List;
+
 import org.drools.WorkingMemory;
 import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
@@ -66,7 +68,8 @@ public class DefaultDecider implements Decider {
 
     public Move decideNextStep() {
         WorkingMemory workingMemory = localSearchSolver.getEvaluationHandler().getStatefulSession();
-        for (Move move : selector.selectMoveList()) {
+        List<Move> moveList = selector.selectMoveList();
+        for (Move move : moveList) {
             // Filter out not doable moves
             if (move.isMoveDoable(workingMemory)) {
                 doMove(move);
@@ -102,6 +105,10 @@ public class DefaultDecider implements Decider {
         // TODO the move's toString() is ussually wrong because doMove has already been called
         logger.debug("    Move ({}) with score ({}) and acceptChance ({}).", new Object[] {move, score, acceptChance});
         forager.addMove(move, score, acceptChance);
+    }
+
+    public int getAcceptedMovesSize() {
+        return forager.getAcceptedMovesSize();
     }
 
     public void stepDecided(Move step) {

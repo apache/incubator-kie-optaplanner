@@ -17,6 +17,8 @@ public interface Forager extends LocalSearchSolverAware, LocalSearchSolverLifecy
 
     Move pickMove();
 
+    int getAcceptedMovesSize();
+
     List<Move> getTopList(int topSize);
     
 }

@@ -34,7 +34,7 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
         this.studentList = studentList;
     }
 
-    public int getStudentListSize() {
+    public int getStudentSize() {
         return studentList.size();
     }
 
@@ -66,7 +66,7 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
     }
 
     public String toString() {
-        return id + " {" + duration + ", " + getStudentListSize() + "}";
+        return id + " {" + duration + ", " + getStudentSize() + "}";
     }
 
 }

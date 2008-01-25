@@ -122,11 +122,12 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
             beforeDeciding();
             Move nextStep = decider.decideNextStep();
             if (nextStep == null) {
-                logger.warn("No move accepted for step ({}). Finishing early.", getStepIndex());
+                logger.warn("No move accepted for step ({}) out of {} accepted moves. Finishing early.",
+                        getStepIndex(), decider.getAcceptedMovesSize());
                 break;
             }
-            logger.info("Step ({}), time spend ({}) doing next step ({}).",
-                    new Object[]{getStepIndex(), getTimeMillisSpend(), nextStep});
+            logger.info("Step index ({}), time spend ({}) taking step ({}) out of {} accepted moves.",
+                    new Object[]{getStepIndex(), getTimeMillisSpend(), nextStep, decider.getAcceptedMovesSize()});
             stepDecided(nextStep);
             nextStep.doMove(evaluationHandler.getStatefulSession());
             stepScore = evaluationHandler.fireAllRulesAndCalculateStepScore();

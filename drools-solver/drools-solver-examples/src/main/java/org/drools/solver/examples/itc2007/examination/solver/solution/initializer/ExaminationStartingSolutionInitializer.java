@@ -287,10 +287,10 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         private int calculateTotalStudentSize(Exam innerExam) {
             int innerTotalStudentSize = 0;
             if (innerExam.getExamCoincidence() == null) {
-                innerTotalStudentSize = innerExam.getTopicStudentListSize();
+                innerTotalStudentSize = innerExam.getTopicStudentSize();
             } else {
                 for (Exam coincidenceExam : innerExam.getExamCoincidence().getCoincidenceExamSet()) {
-                    innerTotalStudentSize += coincidenceExam.getTopicStudentListSize();
+                    innerTotalStudentSize += coincidenceExam.getTopicStudentSize();
                 }
             }
             if (innerExam.getExamBefore() != null) {
@@ -305,7 +305,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             int innerMaximumDuration = innerExam.getTopic().getDuration();
             if (innerExam.getExamCoincidence() != null) {
                 for (Exam coincidenceExam : innerExam.getExamCoincidence().getCoincidenceExamSet()) {
-                    innerMaximumDuration = Math.max(innerMaximumDuration, coincidenceExam.getTopicStudentListSize());
+                    innerMaximumDuration = Math.max(innerMaximumDuration, coincidenceExam.getTopicStudentSize());
                 }
             }
             if (innerExam.getExamBefore() != null) {

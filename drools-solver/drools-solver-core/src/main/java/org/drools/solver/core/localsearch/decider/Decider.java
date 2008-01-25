@@ -11,4 +11,6 @@ public interface Decider extends LocalSearchSolverAware, LocalSearchSolverLifecy
 
     Move decideNextStep();
 
+    int getAcceptedMovesSize();
+
 }

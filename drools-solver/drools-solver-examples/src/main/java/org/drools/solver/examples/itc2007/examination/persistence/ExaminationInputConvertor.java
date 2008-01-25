@@ -309,7 +309,7 @@ public class ExaminationInputConvertor extends LoggingMain {
         Collections.sort(sortedTopicList, new Comparator<Topic>() {
             public int compare(Topic a, Topic b) {
                 return new CompareToBuilder()
-                        .append(a.getStudentListSize(), b.getStudentListSize()) // Ascending
+                        .append(a.getStudentSize(), b.getStudentSize()) // Ascending
                         .append(b.getId(), a.getId()) // Descending (according to spec)
                         .toComparison();
             }

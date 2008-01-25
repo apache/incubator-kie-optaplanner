@@ -57,6 +57,7 @@ rule "conflictingExamsInSamePeriod"
         $rightExam : Exam(topic == $rightTopic, period == $period);
     then
         insertLogical(new IntConstraintOccurrence("conflictingExamsInSamePeriod", ConstraintType.NEGATIVE_HARD,
+            $topicConflict.getStudentSize(),
             $leftExam, $rightExam));
 end
 
@@ -66,6 +67,7 @@ rule "periodDurationTooShort"
         $exam : Exam(eval(topicDuration > periodDuration));
     then
         insertLogical(new IntConstraintOccurrence("periodDurationTooShort", ConstraintType.NEGATIVE_HARD,
+            $exam.getTopicStudentSize(),
             $exam));
 end
 
@@ -74,10 +76,10 @@ rule "roomCapacityTooSmall" // TODO improve performance, as it takes 50% of the 
     when
         $period : Period();
         $room : Room($capacity : capacity);
-        $totalStudentListSize : Number(intValue > $capacity) from accumulate(
-            Exam(period == $period, room == $room, $studentListSize : topicStudentListSize),
-            // sumInteger($studentListSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-            sum($studentListSize)
+        $totalStudentSize : Number(intValue > $capacity) from accumulate(
+            Exam(period == $period, room == $room, $studentSize : topicStudentSize),
+            // sumInteger($studentSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+            sum($studentSize)
         );
         // HACK to fix wierd truth maintance behavior in drools
         // because making weight part of the equals/hashcode doesn't cut it
@@ -85,10 +87,10 @@ rule "roomCapacityTooSmall" // TODO improve performance, as it takes 50% of the 
             ruleId == "roomCapacityTooSmall",
             constraintType == ConstraintType.NEGATIVE_HARD,
             causes contains $period, causes contains $room,
-            eval(weight != ($totalStudentListSize.intValue() - $capacity))));
+            eval(weight != ($totalStudentSize.intValue() - $capacity))));
     then
         insertLogical(new IntConstraintOccurrence("roomCapacityTooSmall", ConstraintType.NEGATIVE_HARD,
-            ($totalStudentListSize.intValue() - $capacity),
+            ($totalStudentSize.intValue() - $capacity),
             $period, $room));
 end
 
@@ -105,6 +107,7 @@ rule "periodHardConstraintExamCoincidence"
         // LeftSide and rightSide don't share a student because those are filtered out in the InputConvertor
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintExamCoincidence", ConstraintType.NEGATIVE_HARD,
+            ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
             $periodHardConstraint));
 end
 rule "periodHardConstraintExclusion"
@@ -118,6 +121,7 @@ rule "periodHardConstraintExclusion"
         Exam(topic == $rightSideTopic, period == $leftSidePeriod);
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintExclusion", ConstraintType.NEGATIVE_HARD,
+            ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
             $periodHardConstraint));
 end
 rule "periodHardConstraintAfter"
@@ -132,14 +136,15 @@ rule "periodHardConstraintAfter"
                 $beforeSidePeriod : period);
         // HACK to fix wierd truth maintance behavior in drools
         // because making weight part of the equals/hashcode doesn't cut it
-        not(IntConstraintOccurrence(
-            ruleId == "periodHardConstraintAfter",
-            constraintType == ConstraintType.NEGATIVE_HARD,
-            causes contains $periodHardConstraint,
-            eval(weight != ($beforeSidePeriod.getPeriodIndex() - $afterSidePeriod.getPeriodIndex() + 1))));
+//        not(IntConstraintOccurrence(
+//            ruleId == "periodHardConstraintAfter",
+//            constraintType == ConstraintType.NEGATIVE_HARD,
+//            causes contains $periodHardConstraint,
+//            eval(weight != ($beforeSidePeriod.getPeriodIndex() - $afterSidePeriod.getPeriodIndex() + 1))));
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
-            ($beforeSidePeriod.getPeriodIndex() - $afterSidePeriod.getPeriodIndex() + 1),
+//            ($beforeSidePeriod.getPeriodIndex() - $afterSidePeriod.getPeriodIndex() + 1),
+            ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
             $periodHardConstraint));
 end
 
@@ -151,9 +156,10 @@ rule "roomHardConstraintExclusive"
             $topic : topic
         )
         Exam(topic == $topic, $room : room);
-        Exam(topic != $topic, room == $room);
+        Exam(room == $room, topic != $topic, $otherTopic : topic);
     then
         insertLogical(new IntConstraintOccurrence("roomHardConstraintExclusive", ConstraintType.NEGATIVE_HARD,
+            ($topic.getStudentSize() + $otherTopic.getStudentSize()),
             $roomHardConstraint));
 end
 
