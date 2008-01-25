@@ -9,7 +9,6 @@ import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
-import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeBulkMove;
 import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeMove;
 
 /**
@@ -22,14 +21,7 @@ public class PeriodChangeExaminationMoveFactory extends CachedMoveFactory {
         List<Period> periodList = examination.getPeriodList();
         List<Move> moveList = new ArrayList<Move>();
         for (Exam exam : examination.getExamList()) {
-            if (exam.getExamCoincidence() != null) {
-                if (exam.isCoincidenceLeader()) {
-                    for (Period period : periodList) {
-                        moveList.add(new PeriodChangeBulkMove(
-                                exam.getExamCoincidence().getCoincidenceExamSet(), period));
-                    }
-                }
-            } else {
+            if (exam.isCoincidenceLeader()) {
                 for (Period period : periodList) {
                     moveList.add(new PeriodChangeMove(exam, period));
                 }

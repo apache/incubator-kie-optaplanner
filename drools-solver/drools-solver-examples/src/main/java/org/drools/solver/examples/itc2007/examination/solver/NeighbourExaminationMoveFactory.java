@@ -10,7 +10,6 @@ import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
-import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeBulkMove;
 import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeMove;
 import org.drools.solver.examples.itc2007.examination.solver.move.RoomChangeMove;
 
@@ -28,18 +27,7 @@ public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
         List<Room> roomList = examination.getRoomList();
         List<Move> moveList = new ArrayList<Move>();
         for (Exam exam : examination.getExamList()) {
-            if (exam.getExamCoincidence() != null) {
-                if (exam.isCoincidenceLeader()) {
-                    for (Period period : periodList) {
-                        int distance = calculateShortestDistance(
-                                period.getPeriodIndex(), exam.getPeriod().getPeriodIndex(), periodList.size());
-                        if (distance <= PERIOD_JUMP) {
-                            moveList.add(new PeriodChangeBulkMove(
-                                    exam.getExamCoincidence().getCoincidenceExamSet(), period));
-                        }
-                    }
-                }
-            } else {
+            if (exam.isCoincidenceLeader()) {
                 for (Period period : periodList) {
                     int distance = calculateShortestDistance(
                             period.getPeriodIndex(), exam.getPeriod().getPeriodIndex(), periodList.size());

@@ -6,7 +6,6 @@ import java.util.Collection;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.TabuPropertyEnabled;
 import org.drools.solver.core.move.Move;
@@ -37,17 +36,20 @@ public class ExamSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        // TODO also move coincidence
-        FactHandle leftExamHandle = workingMemory.getFactHandle(leftExam);
-        FactHandle rightExamHandle = workingMemory.getFactHandle(rightExam);
         Period oldLeftPeriod = leftExam.getPeriod();
+        Period oldRightPeriod = rightExam.getPeriod();
         Room oldLeftRoom = leftExam.getRoom();
-        leftExam.setPeriod(rightExam.getPeriod());
-        leftExam.setRoom(rightExam.getRoom());
-        rightExam.setPeriod(oldLeftPeriod);
-        rightExam.setRoom(oldLeftRoom);
-        workingMemory.update(leftExamHandle, leftExam);
-        workingMemory.update(rightExamHandle, rightExam);
+        Room oldRightRoom = rightExam.getRoom();
+        if (oldLeftPeriod.equals(oldRightPeriod)) {
+            ExaminationMoveHelper.moveRoom(workingMemory, leftExam, oldRightRoom);
+            ExaminationMoveHelper.moveRoom(workingMemory, rightExam, oldLeftRoom);
+        } else if (oldLeftRoom.equals(oldRightRoom)) {
+            ExaminationMoveHelper.movePeriod(workingMemory, leftExam, oldRightPeriod);
+            ExaminationMoveHelper.movePeriod(workingMemory, rightExam, oldLeftPeriod);
+        } else {
+            ExaminationMoveHelper.moveExam(workingMemory, leftExam, oldRightPeriod, oldRightRoom);
+            ExaminationMoveHelper.moveExam(workingMemory, rightExam, oldLeftPeriod, oldLeftRoom);
+        }
     }
 
     public Collection<? extends Object> getTabuProperties() {
