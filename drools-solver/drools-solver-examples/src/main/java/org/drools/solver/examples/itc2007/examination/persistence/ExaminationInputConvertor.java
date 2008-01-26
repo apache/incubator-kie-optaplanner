@@ -97,6 +97,13 @@ public class ExaminationInputConvertor extends LoggingMain {
         tagFrontLoadLargeTopics(examination);
         tagFrontLoadLastPeriods(examination);
 
+        logger.info("Examination with {} students, {} topics/exams, {} periods, {} rooms, {} period constraints" +
+                " and {} room constraints.",
+                new Object[]{examination.getStudentList().size(), examination.getTopicList().size(),
+                        examination.getPeriodList().size(), examination.getRoomList().size(),
+                        examination.getPeriodHardConstraintList().size(),
+                        examination.getRoomHardConstraintList().size()});
+
         // Note: examList stays null, that's work for the StartingSolutionInitializer
         return examination;
     }
