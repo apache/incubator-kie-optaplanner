@@ -79,13 +79,13 @@ rule "periodHardConstraintExamCoincidence"
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         );
-        Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-        Exam(topic == $rightSideTopic, period != $leftSidePeriod);
+        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period);
+        $rightExam : Exam(topic == $rightSideTopic, period != $leftSidePeriod);
         // LeftSide and rightSide don't share a student because those are filtered out in the InputConvertor
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintExamCoincidence", ConstraintType.NEGATIVE_HARD,
                 ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
-                $periodHardConstraint));
+                $leftExam, $rightExam));
 end
 rule "periodHardConstraintExclusion"
     when
@@ -94,12 +94,12 @@ rule "periodHardConstraintExclusion"
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         );
-        Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-        Exam(topic == $rightSideTopic, period == $leftSidePeriod);
+        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period);
+        $rightExam : Exam(topic == $rightSideTopic, period == $leftSidePeriod);
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintExclusion", ConstraintType.NEGATIVE_HARD,
                 ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
-                $periodHardConstraint));
+                $leftExam, $rightExam));
 end
 rule "periodHardConstraintAfter"
     when
@@ -108,14 +108,14 @@ rule "periodHardConstraintAfter"
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         );
-        Exam(topic == $leftSideTopic, $afterSidePeriod : period);
-        Exam(topic == $rightSideTopic, eval($afterSidePeriod.getPeriodIndex() <= period.getPeriodIndex()),
+        $leftExam : Exam(topic == $leftSideTopic, $afterSidePeriod : period);
+        $rightExam : Exam(topic == $rightSideTopic, eval($afterSidePeriod.getPeriodIndex() <= period.getPeriodIndex()),
             $beforeSidePeriod : period
         );
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
                 ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
-                $periodHardConstraint));
+                $leftExam, $rightExam));
 end
 
 // Room hard constraints
@@ -125,12 +125,12 @@ rule "roomHardConstraintExclusive"
             roomHardConstraintType == RoomHardConstraintType.ROOM_EXCLUSIVE,
             $topic : topic
         );
-        Exam(topic == $topic, $room : room);
-        Exam(room == $room, topic != $topic, $otherTopic : topic);
+        $leftExam : Exam(topic == $topic, $room : room);
+        $rightExam : Exam(room == $room, topic != $topic, $otherTopic : topic);
     then
         insertLogical(new IntConstraintOccurrence("roomHardConstraintExclusive", ConstraintType.NEGATIVE_HARD,
                 ($topic.getStudentSize() + $otherTopic.getStudentSize()),
-                $roomHardConstraint));
+                $leftExam, $rightExam));
 end
 
 // Accumulate hard constraints
