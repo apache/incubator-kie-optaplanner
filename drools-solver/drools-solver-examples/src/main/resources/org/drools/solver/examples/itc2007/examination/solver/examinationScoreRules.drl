@@ -152,7 +152,7 @@ end
 // Two exams in a row which share students
 rule "twoExamsInARow"
     when
-        $institutionalWeighting : InstitutionalWeighting();
+        $institutionalWeighting : InstitutionalWeighting(twoInARowPenality != 0);
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
         $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
@@ -168,7 +168,7 @@ end
 // Two exams in a day which share students
 rule "twoExamsInADay"
     when
-        $institutionalWeighting : InstitutionalWeighting();
+        $institutionalWeighting : InstitutionalWeighting(twoInADayPenality != 0);
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
         $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
@@ -183,7 +183,7 @@ end
 // Exams which share students have to few periods between them
 rule "periodSpread"
     when
-        $institutionalWeighting : InstitutionalWeighting();
+        $institutionalWeighting : InstitutionalWeighting(periodSpreadPenality != 0);
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
         $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
         $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
@@ -198,7 +198,7 @@ end
 // Several exams in the same room and period have different durations
 rule "mixedDurations"
     when
-        $institutionalWeighting : InstitutionalWeighting();
+        $institutionalWeighting : InstitutionalWeighting(mixedDurationPenality != 0);
         $leftExam : Exam($leftId : id, $period : period, room != null, $room : room, $leftTopic : topic);
         // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalty's (for 100&150 and 100&200)
         // leftExam has lowest id of the period+room combo
@@ -221,7 +221,7 @@ end
 // Larger Exams towards the beginning of the examination session
 rule "frontLoad"
     when
-        $institutionalWeighting : InstitutionalWeighting();
+        $institutionalWeighting : InstitutionalWeighting(frontLoadPenality != 0);
         $topic : Topic(frontLoadLarge == true);
         $period : Period(frontLoadLast == true);
         $exam : Exam(topic == $topic, period == $period);
@@ -234,7 +234,7 @@ end
 // Period Penalty
 rule "periodPenalty"
     when
-        $period : Period(penalty > 0);
+        $period : Period(penalty != 0);
         $exam: Exam(period == $period);
     then
         insertLogical(new IntConstraintOccurrence("periodPenalty", ConstraintType.NEGATIVE_SOFT,
@@ -245,7 +245,7 @@ end
 // Room Penalty
 rule "roomPenalty"
     when
-        $room : Room(penalty > 0);
+        $room : Room(penalty != 0);
         $exam: Exam(room == $room);
     then
         insertLogical(new IntConstraintOccurrence("roomPenalty", ConstraintType.NEGATIVE_SOFT,
