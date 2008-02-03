@@ -35,7 +35,19 @@ public class ConstraintScoreMapDialog extends JDialog {
 
     public void resetContentPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 4));
-        List<ScoreDetail> scoreDetailList = solutionBusiness.getConstraintScoreMap();
+        List<ScoreDetail> scoreDetailList = solutionBusiness.getScoreDetailList();
+        JLabel ruleIdHeader = new JLabel("Rule id");
+        ruleIdHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(ruleIdHeader);
+        JLabel constraintTypeHeader = new JLabel("Constraint type");
+        constraintTypeHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(constraintTypeHeader);
+        JLabel occurenceSizeHeader = new JLabel("# occurences");
+        occurenceSizeHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(occurenceSizeHeader);
+        JLabel scoreTotalHeader = new JLabel("Score total");
+        scoreTotalHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(scoreTotalHeader);
         for (ScoreDetail scoreDetail : scoreDetailList) {
             JLabel ruleIdLabel = new JLabel(scoreDetail.getRuleId());
             ruleIdLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));

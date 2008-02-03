@@ -90,7 +90,7 @@ public class SolutionBusiness {
         return evaluationHandler.fireAllRulesAndCalculateStepScore();
     }
 
-    public List<ScoreDetail> getConstraintScoreMap() {
+    public List<ScoreDetail> getScoreDetailList() {
         Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
         StatefulSession statefulSession = evaluationHandler.getStatefulSession();
         if (statefulSession == null) {
