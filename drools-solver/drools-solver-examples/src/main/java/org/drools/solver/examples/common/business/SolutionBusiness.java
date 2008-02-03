@@ -2,12 +2,13 @@ package org.drools.solver.examples.common.business;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.drools.StatefulSession;
 import org.drools.base.ClassObjectFilter;
@@ -89,32 +90,21 @@ public class SolutionBusiness {
         return evaluationHandler.fireAllRulesAndCalculateStepScore();
     }
 
-    public Map<String, Double> getConstraintScoreMap() {
-        Map<String, Double> constraintScoreMap = new TreeMap<String, Double>();
+    public List<ScoreDetail> getConstraintScoreMap() {
+        Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
         StatefulSession statefulSession = evaluationHandler.getStatefulSession();
         if (statefulSession == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
         Iterator<ConstraintOccurrence> it = statefulSession.iterateObjects(
                 new ClassObjectFilter(ConstraintOccurrence.class));
-        for (; it.hasNext();) {
+        while (it.hasNext()) {
             ConstraintOccurrence occurrence = it.next();
-            String extendedConstraintId;
-            switch (occurrence.getConstraintType()) {
-                case NEGATIVE_HARD:
-                    extendedConstraintId = "HARD";
-                    break;
-                case NEGATIVE_SOFT:
-                    extendedConstraintId = "SOFT";
-                    break;
-                case POSITIVE:
-                    extendedConstraintId = "POSITIVE";
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown ConstraintType: " + occurrence.getConstraintType());
+            ScoreDetail scoreDetail = scoreDetailMap.get(occurrence.getRuleId());
+            if (scoreDetail == null) {
+                scoreDetail = new ScoreDetail(occurrence.getRuleId(), occurrence.getConstraintType());
+                scoreDetailMap.put(occurrence.getRuleId(), scoreDetail);
             }
-            extendedConstraintId += " " + occurrence.getRuleId();
-            Double constraintScore = constraintScoreMap.get(extendedConstraintId);
             double occurenceScore;
             if (occurrence instanceof IntConstraintOccurrence) {
                 occurenceScore = ((IntConstraintOccurrence) occurrence).getWeight();
@@ -123,17 +113,14 @@ public class SolutionBusiness {
             } else if (occurrence instanceof UnweightedConstraintOccurrence) {
                 occurenceScore = 1.0;
             } else {
-                throw new IllegalStateException("Cannot determine constraintScore of ConstraintOccurence class: "
+                throw new IllegalStateException("Cannot determine occurenceScore of ConstraintOccurence class: "
                         + occurrence.getClass());
             }
-            if (constraintScore == null) {
-                constraintScore = occurenceScore;
-            } else {
-                constraintScore += occurenceScore;
-            }
-            constraintScoreMap.put(extendedConstraintId, constraintScore);
+            scoreDetail.addOccurenceScore(occurenceScore);
         }
-        return constraintScoreMap;
+        List<ScoreDetail> scoreDetailList = new ArrayList<ScoreDetail>(scoreDetailMap.values());
+        Collections.sort(scoreDetailList);
+        return scoreDetailList;
     }
 
     public void load(File file) {
