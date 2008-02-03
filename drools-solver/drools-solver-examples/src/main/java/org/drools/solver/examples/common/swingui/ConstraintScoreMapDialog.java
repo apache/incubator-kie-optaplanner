@@ -7,6 +7,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.drools.solver.examples.common.business.ScoreDetail;
 import org.drools.solver.examples.common.business.SolutionBusiness;
@@ -33,17 +34,22 @@ public class ConstraintScoreMapDialog extends JDialog {
     }
 
     public void resetContentPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 2));
+        JPanel panel = new JPanel(new GridLayout(0, 4));
         List<ScoreDetail> scoreDetailList = solutionBusiness.getConstraintScoreMap();
         for (ScoreDetail scoreDetail : scoreDetailList) {
-            JLabel constraintIdLabel = new JLabel(
-                    scoreDetail.getRuleId() + " (" + scoreDetail.getConstraintType() + ")");
-            constraintIdLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-            panel.add(constraintIdLabel);
-            JLabel constraintScoreLabel = new JLabel(
-                    WorkflowFrame.NUMBER_FORMAT.format(scoreDetail.getScoreTotal())
-                    + " (" + WorkflowFrame.NUMBER_FORMAT.format(scoreDetail.getOccurenceSize()) + ")");
-            panel.add(constraintScoreLabel);
+            JLabel ruleIdLabel = new JLabel(scoreDetail.getRuleId());
+            ruleIdLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+            panel.add(ruleIdLabel);
+            JLabel constraintTypeLabel = new JLabel(scoreDetail.getConstraintType().toString());
+            constraintTypeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+            panel.add(constraintTypeLabel);
+            JLabel occurenceSizeLabel = new JLabel(WorkflowFrame.NUMBER_FORMAT.format(scoreDetail.getOccurenceSize()));
+            occurenceSizeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+            occurenceSizeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+            panel.add(occurenceSizeLabel);
+            JLabel scoreTotalLabel = new JLabel(WorkflowFrame.NUMBER_FORMAT.format(scoreDetail.getScoreTotal()));
+            scoreTotalLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+            panel.add(scoreTotalLabel);
         }
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setContentPane(panel);
