@@ -1,13 +1,12 @@
 package org.drools.solver.examples.common.swingui;
 
-import java.awt.GridLayout;
+import java.awt.Dimension;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 
 import org.drools.solver.examples.common.business.ScoreDetail;
 import org.drools.solver.examples.common.business.SolutionBusiness;
@@ -34,39 +33,76 @@ public class ConstraintScoreMapDialog extends JDialog {
     }
 
     public void resetContentPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 4));
         List<ScoreDetail> scoreDetailList = solutionBusiness.getScoreDetailList();
-        JLabel ruleIdHeader = new JLabel("Rule id");
-        ruleIdHeader.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(ruleIdHeader);
-        JLabel constraintTypeHeader = new JLabel("Constraint type");
-        constraintTypeHeader.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(constraintTypeHeader);
-        JLabel occurenceSizeHeader = new JLabel("# occurences");
-        occurenceSizeHeader.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(occurenceSizeHeader);
-        JLabel scoreTotalHeader = new JLabel("Score total");
-        scoreTotalHeader.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(scoreTotalHeader);
-        for (ScoreDetail scoreDetail : scoreDetailList) {
-            JLabel ruleIdLabel = new JLabel(scoreDetail.getRuleId());
-            ruleIdLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-            panel.add(ruleIdLabel);
-            JLabel constraintTypeLabel = new JLabel(scoreDetail.getConstraintType().toString());
-            constraintTypeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-            panel.add(constraintTypeLabel);
-            JLabel occurenceSizeLabel = new JLabel(WorkflowFrame.NUMBER_FORMAT.format(scoreDetail.getOccurenceSize()));
-            occurenceSizeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-            occurenceSizeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-            panel.add(occurenceSizeLabel);
-            JLabel scoreTotalLabel = new JLabel(WorkflowFrame.NUMBER_FORMAT.format(scoreDetail.getScoreTotal()));
-            scoreTotalLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-            panel.add(scoreTotalLabel);
-        }
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        setContentPane(panel);
+        JTable table = new JTable(new ScoreDetailTableModel(scoreDetailList));
+        JScrollPane scrollpane = new JScrollPane(table);
+        scrollpane.setPreferredSize(new Dimension(700, 300));
+        setContentPane(scrollpane);
         pack();
         setLocationRelativeTo(getParent());
+    }
+
+    public static class ScoreDetailTableModel extends AbstractTableModel {
+
+        private List<ScoreDetail> scoreDetailList;
+
+        public ScoreDetailTableModel(List<ScoreDetail> scoreDetailList) {
+            this.scoreDetailList = scoreDetailList;
+        }
+
+        public int getRowCount() {
+            return scoreDetailList.size();
+        }
+
+        public int getColumnCount() {
+            return 4;
+        }
+
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return "Rule id";
+                case 1:
+                    return "Constraint type";
+                case 2:
+                    return "# occurences";
+                case 3:
+                    return "Score total";
+                default:
+                    throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
+            }
+        }
+
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return Enum.class;
+                case 2:
+                    return Integer.class;
+                case 3:
+                    return Double.class;
+                default:
+                    throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
+            }
+        }
+
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            ScoreDetail scoreDetail = scoreDetailList.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return scoreDetail.getRuleId();
+                case 1:
+                    return scoreDetail.getConstraintType();
+                case 2:
+                    return scoreDetail.getOccurenceSize();
+                case 3:
+                    return scoreDetail.getScoreTotal();
+                default:
+                    throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
+            }
+        }
     }
 
 }
