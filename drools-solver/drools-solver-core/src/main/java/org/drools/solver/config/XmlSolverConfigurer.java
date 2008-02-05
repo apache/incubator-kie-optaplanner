@@ -40,6 +40,10 @@ public class XmlSolverConfigurer {
 		Annotations.configureAliases(xStream, aliasClass);
     }
 
+    public LocalSearchSolverConfig getConfig() {
+        return config;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

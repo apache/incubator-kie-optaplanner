@@ -47,7 +47,7 @@ public class ExaminationOutputConvertor extends LoggingMain {
         }
     }
 
-    private void writeExamination(Examination examination, File outputFile) {
+    public void writeExamination(Examination examination, File outputFile) {
         BufferedWriter bufferedWriter = null;
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
@@ -59,7 +59,7 @@ public class ExaminationOutputConvertor extends LoggingMain {
         }
     }
 
-    private void writeExamination(Examination examination, BufferedWriter bufferedWriter) throws IOException {
+    public void writeExamination(Examination examination, BufferedWriter bufferedWriter) throws IOException {
         Collections.sort(examination.getExamList(), new PersistableIdComparator()); // TODO remove me when obsolete
         for (Exam exam : examination.getExamList()) {
             bufferedWriter.write(exam.getPeriod().getId() + ", " + exam.getRoom().getId() + "\r\n");

@@ -78,7 +78,7 @@ public class ExaminationInputConvertor extends LoggingMain {
         }
     }
 
-    private Examination readExamination(BufferedReader bufferedReader) throws IOException {
+    public Examination readExamination(BufferedReader bufferedReader) throws IOException {
         Examination examination = new Examination();
         examination.setId(0L);
 

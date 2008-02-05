@@ -1,7 +1,7 @@
 #!/bin/sh
 
 mainJar=lib/drools-solver-examples-4.1.0.SNAPSHOT.jar
-mainClass=org.drools.solver.examples.itc2007.examination.app.ExaminationCmdApp
+mainClass=org.drools.solver.examples.itc2007.examination.app.ExaminationShellApp
 
 echo "Usage: ./runExamination.sh [maximumSecondsSpendPerSolution]"
 echo "For example: ./runExamination.sh 429"

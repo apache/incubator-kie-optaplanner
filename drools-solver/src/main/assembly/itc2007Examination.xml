@@ -21,6 +21,14 @@
             <directory>src/main/assembly/scripts</directory>
             <outputDirectory/>
         </fileSet>
+        <fileSet>
+            <directory>src/main/assembly/emptydir</directory>
+            <outputDirectory>data/itc2007/examination/output</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/assembly/emptydir</directory>
+            <outputDirectory>data/itc2007/examination/solved</outputDirectory>
+        </fileSet>
     </fileSets>
 
     <moduleSets>
