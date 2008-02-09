@@ -10,15 +10,21 @@ import org.drools.solver.examples.nqueens.app.NQueensBenchmarkApp;
  */
 public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String SOLVER_BENCHMARK_CONFIG
+    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG
             = "/org/drools/solver/examples/itc2007/examination/benchmark/examinationSolverBenchmarkConfig.xml";
-//    public static final String SOLVER_BENCHMARK_CONFIG
-//            = "/org/drools/solver/examples/itc2007/examination/benchmark/examinationShortSolverBenchmarkConfig.xml";
+    public static final String SHORT_SOLVER_BENCHMARK_CONFIG
+            = "/org/drools/solver/examples/itc2007/examination/benchmark/examinationShortSolverBenchmarkConfig.xml";
     public static final File SOLVER_BENCHMARK_RESULT_FILE
             = new File("local/data/itc2007/examination/examinationSolverBenchmarkResult.xml");
 
     public static void main(String[] args) {
-        new NQueensBenchmarkApp(SOLVER_BENCHMARK_CONFIG, SOLVER_BENCHMARK_RESULT_FILE).process();
+        String solverConfig;
+        if (args.length > 0 && args[0].equals("short")) {
+            solverConfig = SHORT_SOLVER_BENCHMARK_CONFIG;
+        } else {
+            solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
+        }
+        new NQueensBenchmarkApp(solverConfig, SOLVER_BENCHMARK_RESULT_FILE).process();
     }
 
     public ExaminationBenchmarkApp(String solverBenchmarkConfig, File resultFile) {

@@ -30,20 +30,6 @@
         </finish>
     </inheritedLocalSearchSolver>
 
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<selector>-->
-                <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
-                <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
-            <!--</selector>-->
-            <!--<accepter>-->
-                <!--<accepterType>SIMULATED_ANNEALING</accepterType>-->
-            <!--</accepter>-->
-            <!--<forager>-->
-                <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
-            <!--</forager>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
     <solverBenchmark>
         <localSearchSolver>
             <scoreCalculator>

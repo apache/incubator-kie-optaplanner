@@ -4,30 +4,44 @@
     <solvedSolutionFilesDirectory>local/data/itc2007/examination/solved</solvedSolutionFilesDirectory>
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
     <!-- solverBenchmarkResultComparator -->
-    
+
     <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set1_initialized.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/itc2007/examination/solver/examinationScoreRules.drl</scoreDrl>
         <scoreCalculator>
-            <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+            <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
         </scoreCalculator>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
-            <maximumStepCount>500</maximumStepCount>
+            <maximumStepCount>100</maximumStepCount>
         </finish>
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
         <localSearchSolver>
             <selector>
-                <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>
-                <shuffleMovesEveryStep>true</shuffleMovesEveryStep>
+                <selector>
+                    <topSize>10</topSize>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
             </selector>
             <accepter>
-                <accepterType>SIMULATED_ANNEALING</accepterType>
+                <completeSolutionTabuSize>500</completeSolutionTabuSize>
+                <completePropertyTabuSize>10</completePropertyTabuSize>
             </accepter>
             <forager>
-                <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
         </localSearchSolver>
     </solverBenchmark>
