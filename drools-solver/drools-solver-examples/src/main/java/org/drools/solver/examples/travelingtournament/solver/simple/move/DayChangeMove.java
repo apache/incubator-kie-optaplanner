@@ -36,8 +36,9 @@ public class DayChangeMove implements Move, TabuPropertyEnabled {
 
     public void doMove(WorkingMemory workingMemory) {
         FactHandle matchHandle = workingMemory.getFactHandle(match);
+        workingMemory.modifyRetract(matchHandle);
         match.setDay(toDay);
-        workingMemory.update(matchHandle, match);
+        workingMemory.modifyInsert(matchHandle, match);
     }
 
     public Collection<? extends Object> getTabuProperties() {

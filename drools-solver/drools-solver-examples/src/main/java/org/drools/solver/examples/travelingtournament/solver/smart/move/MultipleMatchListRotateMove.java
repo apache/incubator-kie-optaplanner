@@ -55,13 +55,15 @@ public class MultipleMatchListRotateMove implements Move, TabuPropertyEnabled {
         while (it.hasNext()) {
             secondMatch = it.next();
             FactHandle firstMatchHandle = workingMemory.getFactHandle(firstMatch);
+            workingMemory.modifyRetract(firstMatchHandle);
             firstMatch.setDay(secondMatch.getDay());
-            workingMemory.update(firstMatchHandle, firstMatch);
+            workingMemory.modifyInsert(firstMatchHandle, firstMatch);
             firstMatch = secondMatch;
         }
         FactHandle secondMatchHandle = workingMemory.getFactHandle(firstMatch);
+        workingMemory.modifyRetract(secondMatchHandle);
         secondMatch.setDay(startDay);
-        workingMemory.update(secondMatchHandle, secondMatch);
+        workingMemory.modifyInsert(secondMatchHandle, secondMatch);
     }
 
     public Collection<? extends Object> getTabuProperties() {

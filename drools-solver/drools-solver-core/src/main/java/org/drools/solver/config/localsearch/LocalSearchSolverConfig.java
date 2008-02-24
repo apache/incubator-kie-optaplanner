@@ -9,6 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.IOUtils;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -167,7 +168,9 @@ public class LocalSearchSolverConfig {
                 IOUtils.closeQuietly(scoreDrlIn);
             }
         }
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
+        ruleBaseConfiguration.setShadowProxy(false); // TODO remove me when shadow facts are removed in drools 5
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
         try {
             ruleBase.addPackage(packageBuilder.getPackage());
         } catch (Exception e) { // TODO remove me if removed in drools 4.0.1

@@ -34,8 +34,9 @@ public class YChangeMove implements Move, TabuPropertyEnabled {
 
     public void doMove(WorkingMemory workingMemory) {
         FactHandle queenHandle = workingMemory.getFactHandle(queen);
+        workingMemory.modifyRetract(queenHandle); // before changes are made
         queen.setY(toY);
-        workingMemory.update(queenHandle, queen);
+        workingMemory.modifyInsert(queenHandle, queen); // after changes are made
     }
 
     public Collection<? extends Object> getTabuProperties() {

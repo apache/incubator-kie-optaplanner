@@ -34,13 +34,15 @@ public class MatchSwapMove implements Move, TabuPropertyEnabled {
     }
 
     public void doMove(WorkingMemory workingMemory) {
+        Day oldFirstMatchDay = firstMatch.getDay();
         FactHandle firstMatchHandle = workingMemory.getFactHandle(firstMatch);
         FactHandle secondMatchHandle = workingMemory.getFactHandle(secondMatch);
-        Day oldFirstMatchDay = firstMatch.getDay();
+        workingMemory.modifyRetract(firstMatchHandle);
+        workingMemory.modifyRetract(secondMatchHandle);
         firstMatch.setDay(secondMatch.getDay());
         secondMatch.setDay(oldFirstMatchDay);
-        workingMemory.update(firstMatchHandle, firstMatch);
-        workingMemory.update(secondMatchHandle, secondMatch);
+        workingMemory.modifyInsert(firstMatchHandle, firstMatch);
+        workingMemory.modifyInsert(secondMatchHandle, secondMatch);
     }
 
     public Collection<? extends Object> getTabuProperties() {

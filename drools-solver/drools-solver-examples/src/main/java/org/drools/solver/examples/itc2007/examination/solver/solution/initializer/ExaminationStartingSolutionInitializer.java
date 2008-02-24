@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
-import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
@@ -43,7 +43,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         List<Exam> examList = new ArrayList<Exam>(examination.getTopicList().size());
         examination.setExamList(examList);
         evaluationHandler.setSolution(examination);
-        StatefulSession statefulSession = evaluationHandler.getStatefulSession();
+        WorkingMemory workingMemory = evaluationHandler.getStatefulSession();
 
         List<ExamInitialWeight> examInitialWeightList = createExamAssigningScoreList(examination);
 
@@ -64,14 +64,16 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
             for (Period period : periodList) {
                 for (ExamToHandle examToHandle : examToHandleList) {
-                    examToHandle.getExam().setPeriod(period);
                     if (examToHandle.getExamHandle() == null) {
-                        examToHandle.setExamHandle(statefulSession.insert(examToHandle.getExam()));
+                        examToHandle.getExam().setPeriod(period);
+                        examToHandle.setExamHandle(workingMemory.insert(examToHandle.getExam()));
                         if (examToHandle.getExam().isCoincidenceLeader()) {
                             leaderHandle = examToHandle.getExamHandle();
                         }
                     } else {
-                        statefulSession.update(examToHandle.getExamHandle(), examToHandle.getExam());
+                        workingMemory.modifyRetract(examToHandle.getExamHandle());
+                        examToHandle.getExam().setPeriod(period);
+                        workingMemory.modifyInsert(examToHandle.getExamHandle(), examToHandle.getExam());
                     }
                 }
                 double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
@@ -79,7 +81,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             }
             Collections.sort(periodScoringList);
 
-            scheduleLeader(periodScoringList, roomList, evaluationHandler, statefulSession, unscheduledScore,
+            scheduleLeader(periodScoringList, roomList, evaluationHandler, workingMemory, unscheduledScore,
                     examToHandleList, leader, leaderHandle);
             examList.add(leader);
 
@@ -88,7 +90,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 Exam exam = examToHandle.getExam();
                 // Leader already has a room
                 if (!exam.isCoincidenceLeader()) {
-                    scheduleNonLeader(roomList, evaluationHandler, statefulSession, exam, examToHandle.getExamHandle());
+                    scheduleNonLeader(roomList, evaluationHandler, workingMemory, exam, examToHandle.getExamHandle());
                     examList.add(exam);
                 }
             }
@@ -98,7 +100,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
     }
 
     private void scheduleLeader(List<PeriodScoring> periodScoringList, List<Room> roomList,
-            EvaluationHandler evaluationHandler, StatefulSession statefulSession, double unscheduledScore,
+            EvaluationHandler evaluationHandler, WorkingMemory workingMemory, double unscheduledScore,
             List<ExamToHandle> examToHandleList, Exam leader, FactHandle leaderHandle) {
         boolean perfectMatch = false;
         double bestScore = Double.NEGATIVE_INFINITY;
@@ -110,12 +112,14 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 break;
             }
             for (ExamToHandle examToHandle : examToHandleList) {
+                workingMemory.modifyRetract(examToHandle.getExamHandle());
                 examToHandle.getExam().setPeriod(periodScoring.getPeriod());
-                statefulSession.update(examToHandle.getExamHandle(), examToHandle.getExam());
+                workingMemory.modifyInsert(examToHandle.getExamHandle(), examToHandle.getExam());
             }
             for (Room room : roomList) {
+                workingMemory.modifyRetract(leaderHandle);
                 leader.setRoom(room);
-                statefulSession.update(leaderHandle, leader);
+                workingMemory.modifyInsert(leaderHandle, leader);
                 double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
                 if (score < unscheduledScore) {
                     if (score > bestScore) {
@@ -140,17 +144,20 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 throw new IllegalStateException("The bestPeriod (" + bestPeriod + ") or the bestRoom ("
                         + bestRoom + ") cannot be null.");
             }
+            workingMemory.modifyRetract(leaderHandle);
             leader.setRoom(bestRoom);
+            workingMemory.modifyInsert(leaderHandle, leader);
             for (ExamToHandle examToHandle : examToHandleList) {
+                workingMemory.modifyRetract(examToHandle.getExamHandle());
                 examToHandle.getExam().setPeriod(bestPeriod);
-                statefulSession.update(examToHandle.getExamHandle(), examToHandle.getExam());
+                workingMemory.modifyInsert(examToHandle.getExamHandle(), examToHandle.getExam());
             }
         }
         logger.debug("    Exam ({}) initialized for starting solution.", leader);
     }
 
     private void scheduleNonLeader(List<Room> roomList,
-            EvaluationHandler evaluationHandler, StatefulSession statefulSession,
+            EvaluationHandler evaluationHandler, WorkingMemory workingMemory,
             Exam exam, FactHandle examHandle) {
         if (exam.getRoom() != null) {
             throw new IllegalStateException("Exam (" + exam + ") already has a room.");
@@ -160,8 +167,9 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         double bestScore = Double.NEGATIVE_INFINITY;
         Room bestRoom = null;
         for (Room room : roomList) {
+            workingMemory.modifyRetract(examHandle);
             exam.setRoom(room);
-            statefulSession.update(examHandle, exam);
+            workingMemory.modifyInsert(examHandle, exam);
             double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
             if (score < unscheduledScore) {
                 if (score > bestScore) {
@@ -181,8 +189,9 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 throw new IllegalStateException("The bestRoom ("
                         + bestRoom + ") cannot be null.");
             }
+            workingMemory.modifyRetract(examHandle);
             exam.setRoom(bestRoom);
-            statefulSession.update(examHandle, exam);
+            workingMemory.modifyInsert(examHandle, exam);
         }
         logger.debug("    Exam ({}) initialized for starting solution. *", exam);
     }
