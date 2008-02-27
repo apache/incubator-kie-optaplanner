@@ -1,6 +1,7 @@
 package org.drools.solver.core.solution.initializer;
 
 import org.drools.solver.core.Solver;
+import org.drools.solver.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,5 +21,9 @@ public abstract class AbstractStartingSolutionInitializer implements StartingSol
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public boolean isSolutionInitialized(Solution solution) {
+        return false;
+    }
 
 }

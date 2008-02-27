@@ -147,8 +147,13 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         logger.info("Solving with random seed ({}).", randomSeed);
         random = new Random(randomSeed);
         if (startingSolutionInitializer != null) {
-            logger.info("Initializing solution if needed.");
-            startingSolutionInitializer.intializeSolution();
+            Solution solution = evaluationHandler.getSolution();
+            if (!startingSolutionInitializer.isSolutionInitialized(solution)) {
+                logger.info("Initializing solution.");
+                startingSolutionInitializer.initializeSolution(solution);
+            } else {
+                logger.debug("Solution is already initialized.");
+            }
         }
         stepIndex = 0;
         stepScore = evaluationHandler.fireAllRulesAndCalculateStepScore();

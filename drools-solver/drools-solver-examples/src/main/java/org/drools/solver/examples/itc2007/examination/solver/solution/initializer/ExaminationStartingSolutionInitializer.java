@@ -12,6 +12,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.evaluation.EvaluationHandler;
+import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
@@ -29,11 +30,15 @@ import org.drools.solver.examples.itc2007.examination.domain.solver.ExamCoincide
  */
 public class ExaminationStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    public void intializeSolution() {
-        Examination examination = (Examination) solver.getEvaluationHandler().getSolution();
-        if (!examination.isInitialized()) {
-            initializeExamList(examination);
-        }
+    @Override
+    public boolean isSolutionInitialized(Solution solution) {
+        Examination examination = (Examination) solution;
+        return examination.isInitialized();
+    }
+
+    public void initializeSolution(Solution solution) {
+        Examination examination = (Examination) solution;
+        initializeExamList(examination);
     }
 
     private void initializeExamList(Examination examination) {
