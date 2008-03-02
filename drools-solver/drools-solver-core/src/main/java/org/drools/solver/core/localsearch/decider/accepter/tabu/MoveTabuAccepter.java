@@ -27,12 +27,14 @@ public class MoveTabuAccepter extends AbstractTabuAccepter {
 
     @Override
     protected Collection<? extends Object> findNewTabu(Move step) {
+        Move tabuMove;
         if (useUndoMoveAsTabuMove) {
-            return Collections.singletonList(step.createUndoMove(
-                    localSearchSolver.getEvaluationHandler().getStatefulSession()));
+            tabuMove = step.createUndoMove(
+                    localSearchSolver.getEvaluationHandler().getStatefulSession());
         } else {
-            return Collections.singletonList(step);
+            tabuMove = step;
         }
+        return Collections.singletonList(tabuMove);
     }
 
 }
