@@ -24,15 +24,15 @@
                     <topSize>10</topSize>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
                     <relativeSelection>0.002</relativeSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
                     <relativeSelection>0.002</relativeSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
                     <relativeSelection>0.002</relativeSelection>
                 </selector>
             </selector>

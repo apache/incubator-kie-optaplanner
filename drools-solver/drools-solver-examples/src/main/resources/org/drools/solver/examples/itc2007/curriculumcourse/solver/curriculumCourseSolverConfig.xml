@@ -11,7 +11,7 @@
             ge0ffrey's main pc: 429
             ge0ffrey's old pc: 1152
         -->
-        <maximumSecondsSpend>1</maximumSecondsSpend>
+        <maximumSecondsSpend>30</maximumSecondsSpend>
         <!--<feasableScore>-999999.0</feasableScore>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
@@ -19,18 +19,18 @@
         <selector>
             <topSize>10</topSize>
         </selector>
-        <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
-            <!--<relativeSelection>0.002</relativeSelection>-->
-        <!--</selector>-->
-        <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeExaminationMoveFactory</moveFactoryClass>-->
-            <!--<relativeSelection>0.002</relativeSelection>-->
-        <!--</selector>-->
-        <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchExaminationMoveFactory</moveFactoryClass>-->
-            <!--<relativeSelection>0.002</relativeSelection>-->
-        <!--</selector>-->
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1500</completeSolutionTabuSize>

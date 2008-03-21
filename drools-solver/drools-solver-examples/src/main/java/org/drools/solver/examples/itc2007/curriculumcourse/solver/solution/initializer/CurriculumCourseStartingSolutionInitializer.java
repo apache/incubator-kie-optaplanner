@@ -44,6 +44,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
         for (Lecture lecture : lectureList) {
             lecture.setPeriod(periodList.get(tmp % periodList.size()));
             lecture.setRoom(roomList.get(tmp % roomList.size()));
+            workingMemory.insert(lecture);
             tmp++;
         }
 
