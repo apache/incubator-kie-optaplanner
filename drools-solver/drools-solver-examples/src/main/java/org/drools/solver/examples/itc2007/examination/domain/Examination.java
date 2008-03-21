@@ -140,6 +140,7 @@ public class Examination extends AbstractPersistable implements Solution {
      */
     public Examination cloneSolution() {
         Examination clone = new Examination();
+        clone.id = id;
         clone.institutionalWeighting = institutionalWeighting;
         clone.studentList = studentList;
         clone.topicList = topicList;

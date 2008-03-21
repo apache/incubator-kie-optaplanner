@@ -48,6 +48,7 @@ public class NQueens extends AbstractPersistable implements Solution {
      */
     public NQueens cloneSolution() {
         NQueens clone = new NQueens();
+        clone.id = id;
         List<Queen> clonedQueenList = new ArrayList<Queen>(queenList.size());
         for (Queen queen : queenList) {
             clonedQueenList.add(queen.clone());

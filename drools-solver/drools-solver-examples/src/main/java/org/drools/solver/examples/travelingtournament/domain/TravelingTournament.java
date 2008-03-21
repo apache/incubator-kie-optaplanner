@@ -61,6 +61,7 @@ public class TravelingTournament extends AbstractPersistable implements Solution
      */
     public TravelingTournament cloneSolution() {
         TravelingTournament clone = new TravelingTournament();
+        clone.id = id;
         clone.dayList = dayList;
         clone.teamList = teamList;
         List<Match> clonedMatchList = new ArrayList<Match>(matchList.size());
