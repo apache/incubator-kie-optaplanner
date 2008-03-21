@@ -22,6 +22,33 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Hard constraints
 // ############################################################################
 
+// Lectures: A missing or extra lecture of a course.
+// This hard constraint is implemented a requirement by the initializer
+
+// Conflicts: Two conflicting lectures in the same period.
+// Three conflicting lectures count as 3 violations: one for each pair.
+
+// RoomOccupancy: Two lectures in the same room at the same period.
+// Any extra lecture in the same period and room counts as one more violation.
+rule "roomOccupancy"
+    when
+        $leftLecture : Lecture($leftId : id, $period : period, room != null, $room : room);
+        // $leftLecture has lowest id of the period+room combo
+        not Lecture(period == $period, room == $room, id < $leftId);
+        // rightLecture has the same period
+        $rightLecture : Lecture(period == $period, room == $room, id > $leftId, $rightId : id);
+    then
+        insertLogical(new IntConstraintOccurrence("roomOccupancy", ConstraintType.NEGATIVE_HARD,
+                1,
+                $leftLecture, $rightLecture));
+end
+
+// Availabilities: Each lecture in a period unavailable for that course.
+
+
+
+
+
 // Accumulate hard constraints
 rule "hardConstraintsBroken"
         salience -1 // Finish the other rules first (optional, for performance)
@@ -37,6 +64,23 @@ end
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+
+// RoomCapacity: For each lecture, the number of students that attend the course must be less or equal
+// than the number of seats of all the rooms that host its lectures.
+// Each student above the capacity counts as 1 point of penalty.
+
+// MinimumWorkingDays: The lectures of each course must be spread into a minimum number of days.
+// Each day below the minimum counts as 5 points of penalty.
+
+// CurriculumCompactness: Lectures belonging to a curriculum should be adjacent
+// to each other (i.e., in consecutive periods).
+// For a given curriculum we account for a violation every time there is one lecture not adjacent
+// to any other lecture within the same day.
+// Each isolated lecture in a curriculum counts as 2 points of penalty.
+
+// RoomStability: All lectures of a course should be given in the same room.
+// Each distinct room used for the lectures of a course, but the first, counts as 1 point of penalty.
 
 // Accumulate soft constraints
 rule "softConstraintsBroken"
