@@ -1,12 +1,15 @@
 package org.drools.solver.examples.itc2007.curriculumcourse.domain;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
 /**
  * @author Geoffrey De Smet
  */
-public class UnavailablePeriodConstraint extends AbstractPersistable implements Comparable<UnavailablePeriodConstraint> {
+@XStreamAlias("UnavailablePeriodConstraint")
+public class UnavailablePeriodConstraint extends AbstractPersistable
+        implements Comparable<UnavailablePeriodConstraint> {
 
     private Course course;
     private Period period;

@@ -18,8 +18,6 @@ import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
 import org.drools.solver.examples.itc2007.examination.domain.TopicConflict;
 
-import java.util.HashSet;
-
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

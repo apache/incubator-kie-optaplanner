@@ -1,0 +1,51 @@
+package org.drools.solver.examples.itc2007.curriculumcourse.solver;
+    dialect "java"
+
+import org.drools.solver.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.solver.core.score.constraint.IntConstraintOccurrence;
+import org.drools.solver.core.score.constraint.ConstraintType;
+
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.Course;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.Day;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.Period;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.Room;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot;
+import org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint;
+
+global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+// Accumulate hard constraints
+rule "hardConstraintsBroken"
+        salience -1 // Finish the other rules first (optional, for performance)
+    when
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+// Accumulate soft constraints
+rule "softConstraintsBroken"
+        salience -1 // Finish the other rules first (optional, for performance)
+    when
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        );
+    then
+        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
+end
