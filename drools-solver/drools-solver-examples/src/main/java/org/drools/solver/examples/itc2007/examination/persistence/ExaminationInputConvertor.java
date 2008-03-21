@@ -127,10 +127,7 @@ public class ExaminationInputConvertor extends LoggingMain {
             topicList.add(topic);
         }
         examination.setTopicList(topicList);
-        List<Student> studentList = new ArrayList<Student>(studentMap.size());
-        for (Student student : studentMap.values()) {
-            studentList.add(student);
-        }
+        List<Student> studentList = new ArrayList<Student>(studentMap.values());
         examination.setStudentList(studentList);
     }
 
