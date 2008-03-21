@@ -27,6 +27,24 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // Conflicts: Two conflicting lectures in the same period.
 // Three conflicting lectures count as 3 violations: one for each pair.
+rule "curriculumConflictingLecturesInSamePeriod"
+    when
+        $leftLecture : Lecture($curriculum : curriculum, $period : period);
+        $rightLecture : Lecture(curriculum == $curriculum, period == $period);
+    then
+        insertLogical(new IntConstraintOccurrence("curriculumConflictingLecturesInSamePeriod",
+                ConstraintType.NEGATIVE_HARD, 1,
+                $leftLecture, $rightLecture));
+end
+rule "teacherConflictingLecturesInSamePeriod"
+    when
+        $leftLecture : Lecture($teacher : teacher, $period : period);
+        $rightLecture : Lecture(teacher == $teacher, period == $period);
+    then
+        insertLogical(new IntConstraintOccurrence("teacherConflictingLecturesInSamePeriod", ConstraintType.NEGATIVE_HARD,
+                1,
+                $leftLecture, $rightLecture));
+end
 
 // RoomOccupancy: Two lectures in the same room at the same period.
 // Any extra lecture in the same period and room counts as one more violation.
@@ -44,10 +62,15 @@ rule "roomOccupancy"
 end
 
 // Availabilities: Each lecture in a period unavailable for that course.
-
-
-
-
+rule "unavailablePeriodConstraint"
+    when
+        $unavailablePeriodConstraint : UnavailablePeriodConstraint($course : course, $period : period);
+        $lecture : Lecture(course == $course, period == $period);
+    then
+        insertLogical(new IntConstraintOccurrence("unavailablePeriodConstraint", ConstraintType.NEGATIVE_HARD,
+                1,
+                $lecture));
+end
 
 // Accumulate hard constraints
 rule "hardConstraintsBroken"
