@@ -1,4 +1,4 @@
-package org.drools.solver.lectureples.itc2007.curriculumcourse.solver.move;
+package org.drools.solver.examples.itc2007.curriculumcourse.solver.move;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +11,6 @@ import org.drools.solver.core.localsearch.decider.accepter.tabu.TabuPropertyEnab
 import org.drools.solver.core.move.Move;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Period;
-import org.drools.solver.examples.itc2007.curriculumcourse.solver.move.CurriculumCourseMoveHelper;
 
 /**
  * @author Geoffrey De Smet
