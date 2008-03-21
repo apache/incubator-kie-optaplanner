@@ -46,7 +46,6 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         List<Period> periodList = examination.getPeriodList();
         List<Room> roomList = examination.getRoomList();
         List<Exam> examList = new ArrayList<Exam>(examination.getTopicList().size());
-        examination.setExamList(examList);
         evaluationHandler.setSolution(examination);
         WorkingMemory workingMemory = evaluationHandler.getStatefulSession();
 

@@ -181,6 +181,7 @@ public class CurriculumCourseScheduleInputConvertor extends LoggingMain {
         for (int i = 0; i < dayListSize; i++) {
             Day day = new Day();
             day.setId((long) i);
+            day.setDayIndex(i);
             dayList.add(day);
         }
         schedule.setDayList(dayList);
@@ -188,6 +189,7 @@ public class CurriculumCourseScheduleInputConvertor extends LoggingMain {
         for (int i = 0; i < timeslotListSize; i++) {
             Timeslot timeslot = new Timeslot();
             timeslot.setId((long) i);
+            timeslot.setTimeslotIndex(i);
             timeslotList.add(timeslot);
         }
         schedule.setTimeslotList(timeslotList);

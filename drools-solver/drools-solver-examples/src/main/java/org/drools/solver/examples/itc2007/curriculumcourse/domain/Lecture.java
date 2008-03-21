@@ -1,6 +1,5 @@
 package org.drools.solver.examples.itc2007.curriculumcourse.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -9,7 +8,6 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
 /**
  * @author Geoffrey De Smet
  */
-@XStreamAlias("Lecture")
 public class Lecture extends AbstractPersistable implements Comparable<Lecture> {
 
     private Course course;
