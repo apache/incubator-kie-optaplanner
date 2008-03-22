@@ -59,9 +59,10 @@ public class CurriculumCourseOutputConvertor extends LoggingMain {
 
     public void writeExamination(CurriculumCourseSchedule schedule, BufferedWriter bufferedWriter) throws IOException {
         for (Lecture lecture : schedule.getLectureList()) {
-            bufferedWriter.write(lecture.getCourse().getCode() + " " + lecture.getRoom().getCode()
+            bufferedWriter.write(lecture.getCourse().getCode()
+                    + " r" + lecture.getRoom().getCode()
                     + " " + lecture.getPeriod().getDay().getDayIndex()
-                    + " " + lecture.getPeriod().getTimeslot().getTimeslotIndex() + "\n");
+                    + " " + lecture.getPeriod().getTimeslot().getTimeslotIndex() + "\r\n");
         }
     }
 

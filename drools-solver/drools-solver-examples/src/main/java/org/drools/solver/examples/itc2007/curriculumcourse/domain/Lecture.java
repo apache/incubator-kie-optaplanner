@@ -70,6 +70,7 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         Lecture clone = new Lecture();
         clone.id = id;
         clone.course = course;
+        clone.lectureIndexInCourse = lectureIndexInCourse;
         clone.period = period;
         clone.room = room;
         return clone;
@@ -112,7 +113,7 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
 
     @Override
     public String toString() {
-        return course + " @ " + period + " + " + room;
+        return course + "-" + lectureIndexInCourse + " @ " + period + " + " + room;
     }
 
 }
