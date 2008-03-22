@@ -25,14 +25,14 @@ import org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePer
 /**
  * @author Geoffrey De Smet
  */
-public class CurriculumCourseScheduleInputConvertor extends LoggingMain {
+public class CurriculumCourseInputConvertor extends LoggingMain {
 
     private static final String INPUT_FILE_SUFFIX = ".ctt";
     private static final String OUTPUT_FILE_SUFFIX = ".xml";
     private static final String SPLIT_REGEX = "[\\ \\t]+";
 
     public static void main(String[] args) {
-        new CurriculumCourseScheduleInputConvertor().convert();
+        new CurriculumCourseInputConvertor().convert();
     }
 
     private final File inputDir = new File("data/itc2007/curriculumcourse/input/");
@@ -48,11 +48,11 @@ public class CurriculumCourseScheduleInputConvertor extends LoggingMain {
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();
             if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
-                CurriculumCourseSchedule curriculumCourseSchedule = readCurriculumCourseSchedule(inputFile);
+                CurriculumCourseSchedule schedule = readCurriculumCourseSchedule(inputFile);
                 String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length())
                         + OUTPUT_FILE_SUFFIX;
                 File outputFile = new File(outputDir, outputFileName);
-                solutionDao.writeSolution(curriculumCourseSchedule, outputFile);
+                solutionDao.writeSolution(schedule, outputFile);
             }
         }
     }
