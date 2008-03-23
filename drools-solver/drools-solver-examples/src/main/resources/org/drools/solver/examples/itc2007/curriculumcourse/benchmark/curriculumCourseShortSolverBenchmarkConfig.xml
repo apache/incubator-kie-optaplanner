@@ -9,9 +9,6 @@
 
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/itc2007/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-        <scoreCalculator>
-            <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-        </scoreCalculator>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
             <maximumStepCount>500</maximumStepCount>
@@ -21,7 +18,7 @@
     <solverBenchmark>
         <localSearchSolver>
             <scoreCalculator>
-                <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+                <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
             </scoreCalculator>
             <selector>
                 <selector>

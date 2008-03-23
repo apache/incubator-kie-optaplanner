@@ -128,6 +128,35 @@ end
 // For a given curriculum we account for a violation every time there is one lecture not adjacent
 // to any other lecture within the same day.
 // Each isolated lecture in a curriculum counts as 2 points of penalty.
+rule "curriculumCompactness"
+    when
+        $curriculum : Curriculum();
+
+        $lecture : Lecture(curriculumList contains $curriculum,
+            $day : day, $timeslotIndex : timeslotIndex
+        );
+        not Lecture(curriculumList contains $curriculum,
+            day == $day, timeslotIndex == ($timeslotIndex - 1)
+        );
+        not Lecture(curriculumList contains $curriculum,
+            day == $day, timeslotIndex == ($timeslotIndex + 1)
+        );
+        
+
+//        $leftLecture : Lecture(curriculumList contains $curriculum,
+//            $day : day, $leftTimeslotIndex : timeslotIndex
+//        );
+//        $rightLecture : Lecture(curriculumList contains $curriculum,
+//            day == $day, timeslotIndex >= ($leftTimeslotIndex + 2), $rightTimeslotIndex : timeslotIndex
+//        );
+//        not Lecture(curriculumList contains $curriculum,
+//            day == $day, timeslotIndex > $leftTimeslotIndex, timeslotIndex < $rightTimeslotIndex
+//        );
+    then
+        insertLogical(new IntConstraintOccurrence("curriculumCompactness", ConstraintType.NEGATIVE_SOFT,
+                2,
+                $lecture, $curriculum));
+end
 
 // RoomStability: All lectures of a course should be given in the same room.
 // Each distinct room used for the lectures of a course, but the first, counts as 1 point of penalty.

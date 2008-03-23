@@ -16,9 +16,6 @@
 
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/itc2007/examination/solver/examinationScoreRules.drl</scoreDrl>
-        <scoreCalculator>
-            <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-        </scoreCalculator>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
             <!--

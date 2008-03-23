@@ -8,9 +8,6 @@
     <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set1_initialized.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/itc2007/examination/solver/examinationScoreRules.drl</scoreDrl>
-        <scoreCalculator>
-            <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-        </scoreCalculator>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
             <maximumStepCount>100</maximumStepCount>
@@ -19,6 +16,9 @@
 
     <solverBenchmark>
         <localSearchSolver>
+        <scoreCalculator>
+            <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+        </scoreCalculator>
             <selector>
                 <selector>
                     <topSize>10</topSize>

@@ -38,15 +38,5 @@
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
-    <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
-        <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
-    <!--</selector>-->
-    <!--<accepter>-->
-        <!--<accepterType>SIMULATED_ANNEALING</accepterType>-->
-    <!--</accepter>-->
-    <!--<forager>-->
-        <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
-    <!--</forager>-->
 </localSearchSolver>
         

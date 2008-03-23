@@ -1,5 +1,7 @@
 package org.drools.solver.examples.itc2007.curriculumcourse.domain;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -54,8 +56,16 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         return course.getStudentSize();
     }
 
+    public List<Curriculum> getCurriculumList() {
+        return course.getCurriculumList();
+    }
+
     public Day getDay() {
         return period.getDay();
+    }
+
+    public int getTimeslotIndex() {
+        return period.getTimeslot().getTimeslotIndex();
     }
 
     public int compareTo(Lecture other) {
