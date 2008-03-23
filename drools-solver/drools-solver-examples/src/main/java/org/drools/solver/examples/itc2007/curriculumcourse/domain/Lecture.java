@@ -50,6 +50,10 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
     }
 
 
+    public int getStudentSize() {
+        return course.getStudentSize();
+    }
+
     public int compareTo(Lecture other) {
         return new CompareToBuilder()
                 .append(period, other.period)

@@ -89,6 +89,15 @@ end
 // RoomCapacity: For each lecture, the number of students that attend the course must be less or equal
 // than the number of seats of all the rooms that host its lectures.
 // Each student above the capacity counts as 1 point of penalty.
+rule "roomCapacity"
+    when
+        $room : Room($capacity : capacity);
+        $lecture : Lecture(room == $room, studentSize > $capacity, $studentSize : studentSize)
+    then
+        insertLogical(new IntConstraintOccurrence("roomCapacity", ConstraintType.NEGATIVE_SOFT,
+                ($studentSize - $capacity),
+                $room, $lecture));
+end
 
 // MinimumWorkingDays: The lectures of each course must be spread into a minimum number of days.
 // Each day below the minimum counts as 5 points of penalty.
