@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class CurriculumCourseInputConvertor extends LoggingMain {
                 schedule, courseListSize);
         readRoomList(bufferedReader,
                 schedule, roomListSize);
-        Map<Integer[], Period> periodMap = createPeriodListAndDayListAndTimeslotList(
+        Map<List<Integer>, Period> periodMap = createPeriodListAndDayListAndTimeslotList(
                 schedule, dayListSize, timeslotListSize);
         readCurriculumList(bufferedReader,
                 schedule, courseMap, curriculumListSize);
@@ -174,10 +175,10 @@ public class CurriculumCourseInputConvertor extends LoggingMain {
         schedule.setRoomList(roomList);
     }
 
-    private Map<Integer[], Period> createPeriodListAndDayListAndTimeslotList(
+    private Map<List<Integer>, Period> createPeriodListAndDayListAndTimeslotList(
             CurriculumCourseSchedule schedule, int dayListSize, int timeslotListSize) throws IOException {
         int periodListSize = dayListSize * timeslotListSize;
-        Map<Integer[], Period> periodMap = new HashMap<Integer[], Period>(periodListSize);
+        Map<List<Integer>, Period> periodMap = new HashMap<List<Integer>, Period>(periodListSize);
         List<Day> dayList = new ArrayList<Day>(dayListSize);
         for (int i = 0; i < dayListSize; i++) {
             Day day = new Day();
@@ -202,7 +203,7 @@ public class CurriculumCourseInputConvertor extends LoggingMain {
                 period.setDay(dayList.get(i));
                 period.setTimeslot(timeslotList.get(j));
                 periodList.add(period);
-                periodMap.put(new Integer[]{i, j}, period);
+                periodMap.put(Arrays.asList(i, j), period);
             }
         }
         schedule.setPeriodList(periodList);
@@ -231,6 +232,10 @@ public class CurriculumCourseInputConvertor extends LoggingMain {
             }
             for (int j = 2; j < lineTokens.length; j++) {
                 Course course = courseMap.get(lineTokens[j]);
+                if (course == null) {
+                    throw new IllegalArgumentException("Read line (" + line + ") uses an unexisting course("
+                            + lineTokens[j] + ").");
+                }
                 course.getCurriculumList().add(curriculum);
             }
             curriculumList.add(curriculum);
@@ -239,7 +244,7 @@ public class CurriculumCourseInputConvertor extends LoggingMain {
     }
 
     private void readUnavailablePeriodConstraintList(BufferedReader bufferedReader, CurriculumCourseSchedule schedule,
-            Map<String, Course> courseMap, Map<Integer[], Period> periodMap, int unavailablePeriodConstraintListSize)
+            Map<String, Course> courseMap, Map<List<Integer>, Period> periodMap, int unavailablePeriodConstraintListSize)
             throws IOException {
         readHeader(bufferedReader, "UNAVAILABILITY_CONSTRAINTS:");
         List<UnavailablePeriodConstraint> constraintList = new ArrayList<UnavailablePeriodConstraint>(
@@ -254,8 +259,14 @@ public class CurriculumCourseInputConvertor extends LoggingMain {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
             }
             constraint.setCourse(courseMap.get(lineTokens[0]));
-            constraint.setPeriod(periodMap.get(new Integer[]{
-                    Integer.parseInt(lineTokens[1]), Integer.parseInt(lineTokens[2])}));
+            int dayIndex = Integer.parseInt(lineTokens[1]);
+            int timeslotIndex = Integer.parseInt(lineTokens[2]);
+            Period period = periodMap.get(Arrays.asList(dayIndex, timeslotIndex));
+            if (period == null) {
+                throw new IllegalArgumentException("Read line (" + line + ") uses an unexisting period("
+                        + dayIndex + " " + timeslotIndex + ").");
+            }
+            constraint.setPeriod(period);
             constraintList.add(constraint);
         }
         schedule.setUnavailablePeriodConstraintList(constraintList);
