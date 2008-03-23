@@ -29,13 +29,14 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Three conflicting lectures count as 3 violations: one for each pair.
 rule "conflictingLecturesInSamePeriod"
     when
-        $leftCourse : Course($id : id, $leftTeacher : teacher, $leftCurriculumList : curriculumList);
-        $rightCourse : Course(id > $id, $rightTeacher : teacher, $rightCurriculumList : curriculumList);
+        $leftCourse : Course($leftCourseId : id, $leftTeacher : teacher, $leftCurriculumList : curriculumList);
+        // Lectures of the same course can also be conflicting
+        $rightCourse : Course(id >= $leftCourseId, $rightTeacher : teacher, $rightCurriculumList : curriculumList);
         eval($leftTeacher == $rightTeacher)
             or exists Curriculum(this memberOf $leftCurriculumList, this memberOf $rightCurriculumList);
 
         $leftLecture : Lecture(course == $leftCourse, $period : period);
-        $rightLecture : Lecture(course == $rightCourse, period == $period);
+        $rightLecture : Lecture(course == $rightCourse, period == $period, this != $leftLecture);
     then
         insertLogical(new IntConstraintOccurrence("conflictingLecturesInSamePeriod",
                 ConstraintType.NEGATIVE_HARD, 1,
