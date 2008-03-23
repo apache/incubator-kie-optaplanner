@@ -1,5 +1,7 @@
 package org.drools.solver.examples.itc2007.curriculumcourse.domain;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
@@ -10,11 +12,12 @@ public class Course extends AbstractPersistable implements Comparable<Course> {
 
     private String code;
 
-    private Curriculum curriculum;
     private Teacher teacher;
     private int lectureSize;
-    private int studentSize;
     private int minWorkingDaySize;
+
+    private List<Curriculum> curriculumList;
+    private int studentSize;
 
     public String getCode() {
         return code;
@@ -22,14 +25,6 @@ public class Course extends AbstractPersistable implements Comparable<Course> {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Curriculum getCurriculum() {
-        return curriculum;
-    }
-
-    public void setCurriculum(Curriculum curriculum) {
-        this.curriculum = curriculum;
     }
 
     public Teacher getTeacher() {
@@ -48,20 +43,28 @@ public class Course extends AbstractPersistable implements Comparable<Course> {
         this.lectureSize = lectureSize;
     }
 
-    public int getStudentSize() {
-        return studentSize;
-    }
-
-    public void setStudentSize(int studentSize) {
-        this.studentSize = studentSize;
-    }
-
     public int getMinWorkingDaySize() {
         return minWorkingDaySize;
     }
 
     public void setMinWorkingDaySize(int minWorkingDaySize) {
         this.minWorkingDaySize = minWorkingDaySize;
+    }
+
+    public List<Curriculum> getCurriculumList() {
+        return curriculumList;
+    }
+
+    public void setCurriculumList(List<Curriculum> curriculumList) {
+        this.curriculumList = curriculumList;
+    }
+
+    public int getStudentSize() {
+        return studentSize;
+    }
+
+    public void setStudentSize(int studentSize) {
+        this.studentSize = studentSize;
     }
 
     public int compareTo(Course other) {
@@ -72,7 +75,7 @@ public class Course extends AbstractPersistable implements Comparable<Course> {
 
     @Override
     public String toString() {
-        return code + "{" + curriculum + "," + teacher +"}";
+        return code + "{" + teacher +"}";
     }
 
 }

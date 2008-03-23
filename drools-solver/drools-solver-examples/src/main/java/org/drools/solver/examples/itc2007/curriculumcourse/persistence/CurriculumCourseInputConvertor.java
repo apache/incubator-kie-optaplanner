@@ -131,6 +131,7 @@ public class CurriculumCourseInputConvertor extends LoggingMain {
             course.setTeacher(findOrCreateTeacher(teacherMap, lineTokens[1]));
             course.setLectureSize(Integer.parseInt(lineTokens[2]));
             course.setMinWorkingDaySize(Integer.parseInt(lineTokens[3]));
+            course.setCurriculumList(new ArrayList<Curriculum>());
             course.setStudentSize(Integer.parseInt(lineTokens[4]));
             courseList.add(course);
             courseMap.put(course.getCode(), course);
@@ -230,7 +231,7 @@ public class CurriculumCourseInputConvertor extends LoggingMain {
             }
             for (int j = 2; j < lineTokens.length; j++) {
                 Course course = courseMap.get(lineTokens[j]);
-                course.setCurriculum(curriculum);
+                course.getCurriculumList().add(curriculum);
             }
             curriculumList.add(curriculum);
         }
