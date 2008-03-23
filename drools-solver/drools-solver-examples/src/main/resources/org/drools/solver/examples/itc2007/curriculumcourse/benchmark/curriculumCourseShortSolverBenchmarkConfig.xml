@@ -14,7 +14,7 @@
         </scoreCalculator>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
-            <maximumStepCount>100</maximumStepCount>
+            <maximumStepCount>500</maximumStepCount>
         </finish>
     </inheritedLocalSearchSolver>
 

@@ -101,6 +101,26 @@ end
 
 // MinimumWorkingDays: The lectures of each course must be spread into a minimum number of days.
 // Each day below the minimum counts as 5 points of penalty.
+rule "minimumWorkingDays"
+    when
+        $course : Course($minWorkingDaySize : minWorkingDaySize);
+        $dayCount : Number(intValue < $minWorkingDaySize) from accumulate(
+            Lecture(course == $course, $day : day),
+            count($day)
+        );
+        // HACK to fix wierd truth maintance behavior in drools
+        // because making weight part of the equals/hashcode doesn't cut it
+        not IntConstraintOccurrence(
+            ruleId == "minimumWorkingDays",
+            constraintType == ConstraintType.NEGATIVE_SOFT,
+            causes contains $course,
+            eval(weight != (($minWorkingDaySize - $dayCount.intValue()) * 5))
+        );
+    then
+        insertLogical(new IntConstraintOccurrence("minimumWorkingDays", ConstraintType.NEGATIVE_SOFT,
+                (($minWorkingDaySize - $dayCount.intValue()) * 5),
+                $course));
+end
 
 // CurriculumCompactness: Lectures belonging to a curriculum should be adjacent
 // to each other (i.e., in consecutive periods).

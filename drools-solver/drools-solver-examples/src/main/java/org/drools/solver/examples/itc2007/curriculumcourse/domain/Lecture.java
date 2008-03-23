@@ -54,6 +54,10 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         return course.getStudentSize();
     }
 
+    public Day getDay() {
+        return period.getDay();
+    }
+
     public int compareTo(Lecture other) {
         return new CompareToBuilder()
                 .append(period, other.period)
