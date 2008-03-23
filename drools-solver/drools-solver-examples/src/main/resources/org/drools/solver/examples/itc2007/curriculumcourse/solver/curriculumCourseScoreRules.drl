@@ -117,6 +117,8 @@ rule "minimumWorkingDays"
             causes contains $course,
             eval(weight != (($minWorkingDaySize - $dayCount.intValue()) * 5))
         );
+        // An uninitialized schedule should have no constraints broken
+        exists Lecture(course == $course);
     then
         insertLogical(new IntConstraintOccurrence("minimumWorkingDays", ConstraintType.NEGATIVE_SOFT,
                 (($minWorkingDaySize - $dayCount.intValue()) * 5),

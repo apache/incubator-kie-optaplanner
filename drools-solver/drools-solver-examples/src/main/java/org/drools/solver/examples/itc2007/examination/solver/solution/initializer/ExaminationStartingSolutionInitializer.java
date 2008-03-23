@@ -45,13 +45,13 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         EvaluationHandler evaluationHandler = solver.getEvaluationHandler();
         List<Period> periodList = examination.getPeriodList();
         List<Room> roomList = examination.getRoomList();
-        List<Exam> examList = new ArrayList<Exam>(examination.getTopicList().size());
+        List<Exam> examList = new ArrayList<Exam>(examination.getTopicList().size()); // TODO this can be returned from createExamAssigningScoreList
         evaluationHandler.setSolution(examination);
         WorkingMemory workingMemory = evaluationHandler.getStatefulSession();
 
-        List<ExamInitialWeight> examInitialWeightList = createExamAssigningScoreList(examination);
+        List<ExamInitializationWeight> examInitialWeightList = createExamAssigningScoreList(examination);
 
-        for (ExamInitialWeight examInitialWeight : examInitialWeightList) {
+        for (ExamInitializationWeight examInitialWeight : examInitialWeightList) {
             double unscheduledScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
             Exam leader = examInitialWeight.getExam();
             FactHandle leaderHandle = null;
@@ -227,12 +227,12 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
      * @param examination not null
      * @return not null
      */
-    private List<ExamInitialWeight> createExamAssigningScoreList(Examination examination) {
+    private List<ExamInitializationWeight> createExamAssigningScoreList(Examination examination) {
         List<Exam> examList = createExamList(examination);
-        List<ExamInitialWeight> examInitialWeightList = new ArrayList<ExamInitialWeight>(examList.size());
+        List<ExamInitializationWeight> examInitialWeightList = new ArrayList<ExamInitializationWeight>(examList.size());
         for (Exam exam : examList) {
             if (exam.isCoincidenceLeader()) {
-                examInitialWeightList.add(new ExamInitialWeight(exam));
+                examInitialWeightList.add(new ExamInitializationWeight(exam));
             }
         }
         Collections.sort(examInitialWeightList);
@@ -286,13 +286,13 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         return examList;
     }
 
-    private class ExamInitialWeight implements Comparable<ExamInitialWeight> {
+    private class ExamInitializationWeight implements Comparable<ExamInitializationWeight> {
 
         private Exam exam;
         private int totalStudentSize;
         private int maximumDuration;
 
-        private ExamInitialWeight(Exam exam) {
+        private ExamInitializationWeight(Exam exam) {
             this.exam = exam;
             totalStudentSize = calculateTotalStudentSize(exam);
             maximumDuration = calculateMaximumDuration(exam);
@@ -334,7 +334,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             return exam;
         }
 
-        public int compareTo(ExamInitialWeight other) {
+        public int compareTo(ExamInitializationWeight other) {
             // TODO calculate a assigningScore based on the properties of a topic and sort on that assigningScore
             return new CompareToBuilder()
                     .append(other.totalStudentSize, totalStudentSize) // Descending
