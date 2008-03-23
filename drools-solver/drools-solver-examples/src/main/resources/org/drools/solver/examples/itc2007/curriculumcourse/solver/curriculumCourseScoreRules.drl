@@ -105,7 +105,8 @@ rule "minimumWorkingDays"
     when
         $course : Course($minWorkingDaySize : minWorkingDaySize);
         $dayCount : Number(intValue < $minWorkingDaySize) from accumulate(
-            Lecture(course == $course, $day : day),
+            $day : Day()
+            and exists Lecture(course == $course, day == $day),
             count($day)
         );
         // HACK to fix wierd truth maintance behavior in drools
