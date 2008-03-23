@@ -141,17 +141,6 @@ rule "curriculumCompactness"
         not Lecture(curriculumList contains $curriculum,
             day == $day, timeslotIndex == ($timeslotIndex + 1)
         );
-        
-
-//        $leftLecture : Lecture(curriculumList contains $curriculum,
-//            $day : day, $leftTimeslotIndex : timeslotIndex
-//        );
-//        $rightLecture : Lecture(curriculumList contains $curriculum,
-//            day == $day, timeslotIndex >= ($leftTimeslotIndex + 2), $rightTimeslotIndex : timeslotIndex
-//        );
-//        not Lecture(curriculumList contains $curriculum,
-//            day == $day, timeslotIndex > $leftTimeslotIndex, timeslotIndex < $rightTimeslotIndex
-//        );
     then
         insertLogical(new IntConstraintOccurrence("curriculumCompactness", ConstraintType.NEGATIVE_SOFT,
                 2,
@@ -160,6 +149,27 @@ end
 
 // RoomStability: All lectures of a course should be given in the same room.
 // Each distinct room used for the lectures of a course, but the first, counts as 1 point of penalty.
+rule "roomStability"
+    when
+        $course : Course();
+        $roomCount : Number(intValue > 1) from accumulate(
+            $room : Room()
+            and exists Lecture(course == $course, room == $room),
+            count($room)
+        );
+        // HACK to fix wierd truth maintance behavior in drools
+        // because making weight part of the equals/hashcode doesn't cut it
+        not IntConstraintOccurrence(
+            ruleId == "roomStability",
+            constraintType == ConstraintType.NEGATIVE_SOFT,
+            causes contains $course,
+            eval(weight != ($roomCount.intValue() - 1))
+        );
+    then
+        insertLogical(new IntConstraintOccurrence("roomStability", ConstraintType.NEGATIVE_SOFT,
+                ($roomCount.intValue() - 1),
+                $course));
+end
 
 // Accumulate soft constraints
 rule "softConstraintsBroken"
