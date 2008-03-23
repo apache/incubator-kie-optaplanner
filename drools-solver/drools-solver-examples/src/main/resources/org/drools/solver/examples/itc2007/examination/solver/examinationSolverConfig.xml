@@ -33,7 +33,9 @@
         </selector>
     </selector>
     <accepter>
-        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+        <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+        <completeSolutionTabuSize>500</completeSolutionTabuSize>
+        <completePropertyTabuSize>10</completePropertyTabuSize>
     </accepter>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>

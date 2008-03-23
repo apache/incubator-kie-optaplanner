@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solverBenchmarkSuite>
+    <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
+    <solvedSolutionFilesDirectory>local/data/itc2007/curriculumcourse/solved</solvedSolutionFilesDirectory>
+    <sortSolverBenchmarks>true</sortSolverBenchmarks>
+    <!-- solverBenchmarkResultComparator -->
+    
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp01.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp02.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp03.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp04.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp05.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp06.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp07.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp08.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp09.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp10.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp11.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp12.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp13.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp14.xml</inheritedUnsolvedSolutionFile>
+
+    <inheritedLocalSearchSolver>
+        <scoreDrl>/org/drools/solver/examples/itc2007/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+        <scoreCalculator>
+            <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+        </scoreCalculator>
+        <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
+        <finish>
+            <!--
+                Official benchmark maximumSecondsSpend allowed on:
+                ge0ffrey's main pc: 429
+                ge0ffrey's old pc: 1152
+            -->
+            <maximumSecondsSpend>30</maximumSecondsSpend>
+        </finish>
+    </inheritedLocalSearchSolver>
+
+    <solverBenchmark>
+        <localSearchSolver>
+            <scoreCalculator>
+                <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+            </scoreCalculator>
+            <selector>
+                <selector>
+                    <topSize>10</topSize>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.002</relativeSelection>
+                </selector>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+                <!--<completeSolutionTabuSize>500</completeSolutionTabuSize>-->
+                <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+</solverBenchmarkSuite>
