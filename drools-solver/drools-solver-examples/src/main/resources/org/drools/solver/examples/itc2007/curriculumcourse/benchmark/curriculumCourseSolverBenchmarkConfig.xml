@@ -5,13 +5,13 @@
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
     <!-- solverBenchmarkResultComparator -->
     
-    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp01.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp02.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp03.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp04.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp05.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp06.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp07.xml</inheritedUnsolvedSolutionFile>
+    <!--<inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp01.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp02.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp03.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp04.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp05.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp06.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp07.xml</inheritedUnsolvedSolutionFile>-->
     <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp08.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp09.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/itc2007/curriculumcourse/unsolved/comp10.xml</inheritedUnsolvedSolutionFile>
@@ -29,15 +29,14 @@
                 ge0ffrey's main pc: 429
                 ge0ffrey's old pc: 1152
             -->
-            <maximumSecondsSpend>30</maximumSecondsSpend>
+            <maximumSecondsSpend>429</maximumSecondsSpend>
         </finish>
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
         <localSearchSolver>
             <scoreCalculator>
-                <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-                <!--<scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>-->
+                <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
             </scoreCalculator>
             <selector>
                 <selector>
@@ -57,9 +56,8 @@
                 </selector>
             </selector>
             <accepter>
+                <completePropertyTabuSize>10</completePropertyTabuSize>
                 <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-                <!--<completeSolutionTabuSize>500</completeSolutionTabuSize>-->
-                <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
             </accepter>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>

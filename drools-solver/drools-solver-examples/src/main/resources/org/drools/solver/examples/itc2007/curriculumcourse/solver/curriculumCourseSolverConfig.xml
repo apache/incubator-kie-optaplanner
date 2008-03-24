@@ -2,7 +2,7 @@
 <localSearchSolver>
     <scoreDrl>/org/drools/solver/examples/itc2007/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
     <scoreCalculator>
-        <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+        <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
     </scoreCalculator>
     <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
     <finish>
@@ -11,7 +11,7 @@
             ge0ffrey's main pc: 429
             ge0ffrey's old pc: 1152
         -->
-        <maximumSecondsSpend>1</maximumSecondsSpend>
+        <maximumSecondsSpend>429</maximumSecondsSpend>
         <!--<feasableScore>-999999.0</feasableScore>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
@@ -33,6 +33,7 @@
         </selector>
     </selector>
     <accepter>
+        <completePropertyTabuSize>10</completePropertyTabuSize>
         <completeSolutionTabuSize>1500</completeSolutionTabuSize>
     </accepter>
     <forager>
