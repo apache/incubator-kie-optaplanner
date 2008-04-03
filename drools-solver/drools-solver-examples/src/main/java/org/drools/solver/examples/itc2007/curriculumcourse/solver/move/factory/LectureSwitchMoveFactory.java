@@ -24,7 +24,9 @@ public class LectureSwitchMoveFactory extends CachedMoveFactory {
             Lecture leftLecture = leftIt.next();
             for (ListIterator<Lecture> rightIt = lectureList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
                 Lecture rightLecture = rightIt.next();
-                moveList.add(new LectureSwitchMove(leftLecture, rightLecture));
+                if (!leftLecture.getCourse().equals(rightLecture.getCourse())) {
+                    moveList.add(new LectureSwitchMove(leftLecture, rightLecture));
+                }
             }
         }
         return moveList;
