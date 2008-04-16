@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.solver.core.localsearch.LocalSearchSolver;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.move.Move;
 
 /**
@@ -17,6 +19,7 @@ public class CompositeSelector extends AbstractSelector {
         this.selectorList = selectorList;
     }
 
+    @Override
     public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
         super.setLocalSearchSolver(localSearchSolver);
         for (Selector selector : selectorList) {
@@ -28,23 +31,26 @@ public class CompositeSelector extends AbstractSelector {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted() {
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         for (Selector selector : selectorList) {
-            selector.solvingStarted();
+            selector.solvingStarted(localSearchSolverScope);
         }
     }
 
-    public void beforeDeciding() {
+    @Override
+    public void beforeDeciding(StepScope stepScope) {
         for (Selector selector : selectorList) {
-            selector.beforeDeciding();
+            selector.beforeDeciding(stepScope);
         }
     }
 
-    public List<Move> selectMoveList() {
+    @Override
+    public List<Move> selectMoveList(StepScope stepScope) {
         int totalSize = 0;
         List<List<Move>> subMoveLists = new ArrayList<List<Move>>(selectorList.size());
         for (Selector selector : selectorList) {
-            List<Move> subMoveList = selector.selectMoveList();
+            List<Move> subMoveList = selector.selectMoveList(stepScope);
             totalSize += subMoveList.size();
             subMoveLists.add(subMoveList);
         }
@@ -52,24 +58,28 @@ public class CompositeSelector extends AbstractSelector {
         for (List<Move> subMoveList : subMoveLists) {
             moveList.addAll(subMoveList);
         }
+        // TODO support overal shuffling
         return moveList;
     }
 
-    public void stepDecided(Move step) {
+    @Override
+    public void stepDecided(StepScope stepScope) {
         for (Selector selector : selectorList) {
-            selector.stepDecided(step);
+            selector.stepDecided(stepScope);
         }
     }
 
-    public void stepTaken() {
+    @Override
+    public void stepTaken(StepScope stepScope) {
         for (Selector selector : selectorList) {
-            selector.stepTaken();
+            selector.stepTaken(stepScope);
         }
     }
 
-    public void solvingEnded() {
+    @Override
+    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
         for (Selector selector : selectorList) {
-            selector.solvingEnded();
+            selector.solvingEnded(localSearchSolverScope);
         }
     }
 

@@ -1,8 +1,5 @@
 package org.drools.solver.core;
 
-import java.util.Random;
-
-import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.solution.Solution;
 
 /**
@@ -10,11 +7,7 @@ import org.drools.solver.core.solution.Solution;
  */
 public interface Solver {
 
-    void setStartingSolution(Solution solution);
-
-    Random getRandom();
-    @Deprecated
-    EvaluationHandler getEvaluationHandler();
+    void setStartingSolution(Solution startingSolution);
 
     double getBestScore();
     Solution getBestSolution();

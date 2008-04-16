@@ -3,8 +3,8 @@ package org.drools.solver.core.localsearch.bestsolution;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
-import org.drools.solver.core.move.Move;
-import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,59 +17,49 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
 
     protected LocalSearchSolver localSearchSolver;
 
-    private int bestSolutionStepIndex;
-    private Solution bestSolution;
-    private double bestScore;
-
     public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
         this.localSearchSolver = localSearchSolver;
-    }
-
-    public int getBestSolutionStepIndex() {
-        return bestSolutionStepIndex;
-    }
-
-    public Solution getBestSolution() {
-        return bestSolution;
-    }
-
-    public double getBestScore() {
-        return bestScore;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted() {
-        double initialScore = localSearchSolver.getStepScore();
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+        double initialScore = localSearchSolverScope.getStartingScore();
         logger.info("Initial score ({}) is starting best score. Updating best solution and best score.", initialScore);
-        bestSolutionStepIndex = localSearchSolver.getStepIndex();
-        bestSolution = localSearchSolver.getCurrentSolution().cloneSolution();
-        bestScore = initialScore;
+        localSearchSolverScope.setBestSolutionStepIndex(-1);
+        localSearchSolverScope.setBestSolution(localSearchSolverScope.getWorkingSolution().cloneSolution());
+        localSearchSolverScope.setBestScore(initialScore);
     }
 
-    public void beforeDeciding() {
+    @Override
+    public void beforeDeciding(StepScope stepScope) {
     }
 
-    public void stepDecided(Move step) {
+    @Override
+    public void stepDecided(StepScope stepScope) {
     }
 
-    public void stepTaken() {
-        double newScore = localSearchSolver.getStepScore();
+    @Override
+    public void stepTaken(StepScope stepScope) {
+        LocalSearchSolverScope localSearchSolverScope = stepScope.getLocalSearchSolverScope();
+        double newScore = stepScope.getScore();
+        double bestScore = localSearchSolverScope.getBestScore();
         if (newScore > bestScore) {
             logger.info("New score ({}) is better then last best score ({}). Updating best solution and best score.",
                     newScore, bestScore);
-            bestSolutionStepIndex = localSearchSolver.getStepIndex();
-            bestSolution = localSearchSolver.getCurrentSolution().cloneSolution();
-            bestScore = newScore;
-            // TODO BestSolutionChangedEvent
+            localSearchSolverScope.setBestSolutionStepIndex(stepScope.getStepIndex());
+            localSearchSolverScope.setBestSolution(stepScope.createOrGetClonedSolution());
+            localSearchSolverScope.setBestScore(stepScope.getScore());
         } else {
             logger.info("New score ({}) is not better then last best score ({}).", newScore, bestScore);
         }
     }
 
-    public void solvingEnded() {
+    @Override
+    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
     }
 
 }

@@ -17,7 +17,7 @@ import org.drools.solver.examples.itc2007.examination.solver.move.ExamSwitchMove
 public class ExamSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
-        Examination examination = (Examination) localSearchSolver.getCurrentSolution();
+        Examination examination = (Examination) solution;
         List<Exam> examList = examination.getExamList();
         List<Move> moveList = new ArrayList<Move>();
         for (ListIterator<Exam> leftIt = examList.listIterator(); leftIt.hasNext();) {

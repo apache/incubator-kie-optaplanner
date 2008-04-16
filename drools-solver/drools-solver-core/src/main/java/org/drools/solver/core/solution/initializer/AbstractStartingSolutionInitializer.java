@@ -1,7 +1,6 @@
 package org.drools.solver.core.solution.initializer;
 
-import org.drools.solver.core.Solver;
-import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,17 +11,12 @@ public abstract class AbstractStartingSolutionInitializer implements StartingSol
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected Solver solver;
-
-    public void setSolver(Solver solver) {
-        this.solver = solver;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public boolean isSolutionInitialized(Solution solution) {
+    @Override
+    public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
         return false;
     }
 

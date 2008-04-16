@@ -3,6 +3,9 @@ package org.drools.solver.core.localsearch.decider.selector;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.move.Move;
 
 /**
@@ -22,16 +25,20 @@ public class TopListSelector extends AbstractSelector {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted() {
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         topList = Collections.emptyList();
     }
 
-    public final List<Move> selectMoveList() {
+    @Override
+    public final List<Move> selectMoveList(StepScope stepScope) {
         return topList;
     }
 
-    public void stepTaken() {
-        topList = localSearchSolver.getDecider().getForager().getTopList(topSize);
+    @Override
+    public void stepTaken(StepScope stepScope) {
+        // TODO fixme
+        topList = ((DefaultLocalSearchSolver) localSearchSolver).getDecider().getForager().getTopList(topSize);
     }
 
 }

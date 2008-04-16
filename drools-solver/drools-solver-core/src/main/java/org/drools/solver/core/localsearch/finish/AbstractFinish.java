@@ -1,7 +1,8 @@
 package org.drools.solver.core.localsearch.finish;
 
 import org.drools.solver.core.localsearch.LocalSearchSolver;
-import org.drools.solver.core.move.Move;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,23 +23,28 @@ public abstract class AbstractFinish implements Finish {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted() {
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void beforeDeciding() {
+    @Override
+    public void beforeDeciding(StepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepDecided(Move step) {
+    @Override
+    public void stepDecided(StepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepTaken() {
+    @Override
+    public void stepTaken(StepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void solvingEnded() {
+    @Override
+    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 

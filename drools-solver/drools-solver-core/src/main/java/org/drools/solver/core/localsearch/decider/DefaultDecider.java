@@ -3,8 +3,9 @@ package org.drools.solver.core.localsearch.decider;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.accepter.Accepter;
 import org.drools.solver.core.localsearch.decider.forager.Forager;
 import org.drools.solver.core.localsearch.decider.selector.Selector;
@@ -58,79 +59,90 @@ public class DefaultDecider implements Decider {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted() {
-        selector.solvingStarted();
-        accepter.solvingStarted();
-        forager.solvingStarted();
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+        selector.solvingStarted(localSearchSolverScope);
+        accepter.solvingStarted(localSearchSolverScope);
+        forager.solvingStarted(localSearchSolverScope);
     }
 
-    public void beforeDeciding() {
-        selector.beforeDeciding();
-        accepter.beforeDeciding();
-        forager.beforeDeciding();
+    @Override
+    public void beforeDeciding(StepScope stepScope) {
+        selector.beforeDeciding(stepScope);
+        accepter.beforeDeciding(stepScope);
+        forager.beforeDeciding(stepScope);
     }
 
-    public Move decideNextStep() {
-        WorkingMemory workingMemory = localSearchSolver.getEvaluationHandler().getStatefulSession();
-        List<Move> moveList = selector.selectMoveList();
+    public void decideNextStep(StepScope stepScope) {
+        WorkingMemory workingMemory = stepScope.getWorkingMemory();
+        List<Move> moveList = selector.selectMoveList(stepScope);
         for (Move move : moveList) {
+            MoveScope moveScope = new MoveScope(stepScope);
+            moveScope.setMove(move);
             // Filter out not doable moves
             if (move.isMoveDoable(workingMemory)) {
-                doMove(move);
+                doMove(moveScope);
+                if (forager.isQuitEarly()) {
+                    break;
+                }
             } else {
-                logger.debug("    Move ({}) ignored because not doable.", move);
-            }
-            if (forager.isQuitEarly()) {
-                break;
+                logger.debug("    Move ({}) ignored because it is not doable.", move);
             }
         }
-        return forager.pickMove();
+        MoveScope pickedMoveScope = forager.pickMove(stepScope);
+        if (pickedMoveScope != null) {
+            stepScope.setStep(pickedMoveScope.getMove());
+            stepScope.setScore(pickedMoveScope.getScore());
+        }
     }
 
-    private void doMove(Move move) {
-        WorkingMemory workingMemory = localSearchSolver.getEvaluationHandler().getStatefulSession();
+    private void doMove(MoveScope moveScope) {
+        WorkingMemory workingMemory = moveScope.getWorkingMemory();
+        Move move = moveScope.getMove();
         Move undoMove = move.createUndoMove(workingMemory);
+        moveScope.setUndoMove(undoMove);
         move.doMove(workingMemory);
-        processMove(move);
+        processMove(moveScope);
         undoMove.doMove(workingMemory);
         if (verifyUndoMoveIsUncorrupted) {
-            double undoScore = localSearchSolver.getEvaluationHandler().fireAllRulesAndCalculateDecisionScore();
-            if (undoScore != localSearchSolver.getStepScore()) {
+            double undoScore = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
+            if (undoScore != moveScope.getStepScope().getLocalSearchSolverScope()
+                    .getLastCompletedStepScope().getScore()) {
                 throw new IllegalStateException(
                         "Corrupted undo move (" + undoMove + ") received from move (" + move + ").");
             }
         }
+        logger.debug("    Move ({}) with score ({}) and acceptChance ({}).",
+                new Object[]{moveScope.getMove(), moveScope.getScore(), moveScope.getAcceptChance()});
     }
 
-    private void processMove(Move move) {
-        EvaluationHandler evaluationHandler = localSearchSolver.getEvaluationHandler();
-        double score = evaluationHandler.fireAllRulesAndCalculateDecisionScore();
-        double acceptChance = accepter.calculateAcceptChance(move, score);
-        // TODO the move's toString() is ussually wrong because doMove has already been called
-        logger.debug("    Move ({}) with score ({}) and acceptChance ({}).", new Object[]{move, score, acceptChance});
-        forager.addMove(move, score, acceptChance);
+    private void processMove(MoveScope moveScope) {
+        double score = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
+        moveScope.setScore(score);
+        double acceptChance = accepter.calculateAcceptChance(moveScope);
+        moveScope.setAcceptChance(acceptChance);
+        forager.addMove(moveScope);
     }
 
-    public int getAcceptedMovesSize() {
-        return forager.getAcceptedMovesSize();
+    @Override
+    public void stepDecided(StepScope stepScope) {
+        selector.stepDecided(stepScope);
+        accepter.stepDecided(stepScope);
+        forager.stepDecided(stepScope);
     }
 
-    public void stepDecided(Move step) {
-        selector.stepDecided(step);
-        accepter.stepDecided(step);
-        forager.stepDecided(step);
+    @Override
+    public void stepTaken(StepScope stepScope) {
+        selector.stepTaken(stepScope);
+        accepter.stepTaken(stepScope);
+        forager.stepTaken(stepScope);
     }
 
-    public void stepTaken() {
-        selector.stepTaken();
-        accepter.stepTaken();
-        forager.stepTaken();
-    }
-
-    public void solvingEnded() {
-        selector.solvingEnded();
-        accepter.solvingEnded();
-        forager.solvingEnded();
+    @Override
+    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+        selector.solvingEnded(localSearchSolverScope);
+        accepter.solvingEnded(localSearchSolverScope);
+        forager.solvingEnded(localSearchSolverScope);
     }
 
 }

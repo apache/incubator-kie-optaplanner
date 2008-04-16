@@ -7,8 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.solver.core.evaluation.EvaluationHandler;
-import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Course;
@@ -24,26 +23,25 @@ import org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePer
 public class CurriculumCourseStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override
-    public boolean isSolutionInitialized(Solution solution) {
-        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
+    public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
+        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) localSearchSolverScope.getWorkingSolution();
         return schedule.isInitialized();
     }
 
-    public void initializeSolution(Solution solution) {
-        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
-        initializeLectureList(schedule);
+    public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
+        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) localSearchSolverScope.getWorkingSolution();
+        initializeLectureList(localSearchSolverScope, schedule);
     }
 
-    private void initializeLectureList(CurriculumCourseSchedule schedule) {
-        EvaluationHandler evaluationHandler = solver.getEvaluationHandler();
+    private void initializeLectureList(LocalSearchSolverScope localSearchSolverScope,
+            CurriculumCourseSchedule schedule) {
         List<Period> periodList = schedule.getPeriodList();
         List<Room> roomList = schedule.getRoomList();
-        evaluationHandler.setSolution(schedule);
-        WorkingMemory workingMemory = evaluationHandler.getStatefulSession();
+        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
 
         List<Lecture> lectureList = createLectureList(schedule);
         for (Lecture lecture : lectureList) {
-            double unscheduledScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
+            double unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
             FactHandle lectureHandle = null;
 
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
@@ -56,7 +54,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                     lecture.setPeriod(period);
                     workingMemory.modifyInsert(lectureHandle, lecture);
                 }
-                double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
+                double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 periodScoringList.add(new PeriodScoring(period, score));
             }
             Collections.sort(periodScoringList);
@@ -78,7 +76,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                     workingMemory.modifyRetract(lectureHandle);
                     lecture.setRoom(room);
                     workingMemory.modifyInsert(lectureHandle, lecture);
-                    double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
+                    double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                     if (score < unscheduledScore) {
                         if (score > bestScore) {
                             bestScore = score;

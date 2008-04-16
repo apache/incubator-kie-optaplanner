@@ -2,6 +2,7 @@ package org.drools.solver.core.localsearch.finish;
 
 import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
+import org.drools.solver.core.localsearch.StepScope;
 
 /**
  * Determines when the LocalSearchSolver should stop.
@@ -11,9 +12,10 @@ public interface Finish extends LocalSearchSolverAware, LocalSearchSolverLifecyc
 
     /**
      * Called by the LocalSearchSolver after every step to determine if the search should stop.
+     * @param stepScope never null
      * @return true if the search should finish.
      */
-    boolean isFinished();
+    boolean isFinished(StepScope stepScope);
 
     /**
      * A timeGradient is a relative estimate of how long the search will continue.
@@ -26,9 +28,10 @@ public interface Finish extends LocalSearchSolverAware, LocalSearchSolverLifecyc
      * <p/>
      * A Finish's timeGradient can be requested after they are finished, so implementations
      * should be carefull not to return a tempature above 1.0.
+     * @param stepScope never null
      * @return timeGradient t for which 0.0 &lt;= t &lt;= 1.0 or -1.0 when it is not supported.
      * At the start of a search t is 0.0 and at the end of a search t would be 1.0.
      */
-    double calculateTimeGradient();
+    double calculateTimeGradient(StepScope stepScope);
 
 }

@@ -7,8 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.localsearch.decider.accepter.AbstractAccepter;
-import org.drools.solver.core.move.Move;
 
 /**
  * @author Geoffrey De Smet
@@ -38,7 +40,7 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
     // ************************************************************************
 
     @Override
-    public void solvingStarted() {
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         if (completeTabuSize < 0) {
             throw new IllegalArgumentException("Property completeTabuSize (" + completeTabuSize
                     + ") is negative.");
@@ -54,8 +56,11 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
         tabuSequenceList = new LinkedList<Object>();
     }
 
-    public double calculateAcceptChance(Move move, double score) {
-        Collection<? extends Object> tabus = findTabu(move);
+    @Override
+    public double calculateAcceptChance(MoveScope moveScope) {
+        // TODO aspiration
+
+        Collection<? extends Object> tabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;
         for (Object tabu : tabus) {
             Integer tabuStepIndexInteger = tabuToStepIndexMap.get(tabu);
@@ -64,15 +69,17 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
             }
         }
         if (maximumTabuStepIndex < 0) {
+            // The move isn't tabu at all
             return 1.0;
         }
-        int tabuStepCount = localSearchSolver.getStepIndex() - maximumTabuStepIndex - 1;
+        int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex - 1;
         if (tabuStepCount < completeTabuSize) {
-            logger.debug("    Proposed move ({}) is complete tabu.", move);
+            logger.debug("    Proposed move ({}) is complete tabu.", moveScope.getMove());
             return 0.0;
         }
         double acceptChance = calculatePartialTabuAcceptChance(tabuStepCount - completeTabuSize);
-        logger.debug("    Proposed move ({}) is partially tabu with accept chance ({}).", move, acceptChance);
+        logger.debug("    Proposed move ({}) is partially tabu with accept chance ({}).",
+                moveScope.getMove(), acceptChance);
         return acceptChance;
     }
 
@@ -83,9 +90,9 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
     }
 
     @Override
-    public void stepDecided(Move step) {
-        if (step != null) { // TODO fixme by better use of lifecycle method
-            Collection<? extends Object> tabus = findNewTabu(step);
+    public void stepDecided(StepScope stepScope) {
+        if (stepScope.getStep() != null) { // TODO fixme by better use of lifecycle method
+            Collection<? extends Object> tabus = findNewTabu(stepScope);
             for (Object tabu : tabus) {
                 // required to push tabu to the end of the line
                 if (tabuToStepIndexMap.containsKey(tabu)) {
@@ -99,16 +106,14 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
                     it.remove();
                     tabuToStepIndexMap.remove(removeTabu);
                 }
-                tabuToStepIndexMap.put(tabu, localSearchSolver.getStepIndex());
+                tabuToStepIndexMap.put(tabu, stepScope.getStepIndex());
                 tabuSequenceList.add(tabu);
             }
         }
     }
 
-    protected abstract Collection<? extends Object> findTabu(Move move);
+    protected abstract Collection<? extends Object> findTabu(MoveScope moveScope);
 
-    protected Collection<? extends Object> findNewTabu(Move step) {
-        return findTabu(step);
-    }
+    protected abstract Collection<? extends Object> findNewTabu(StepScope stepScope);
 
 }

@@ -18,7 +18,6 @@ import org.drools.solver.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.solver.config.localsearch.decider.selector.SelectorConfig;
 import org.drools.solver.config.localsearch.evaluation.scorecalculator.ScoreCalculatorConfig;
 import org.drools.solver.config.localsearch.finish.FinishConfig;
-import org.drools.solver.core.evaluation.EvaluationHandler;
 import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.bestsolution.BestSolutionRecaller;
@@ -135,20 +134,13 @@ public class LocalSearchSolverConfig {
         } else {
             localSearchSolver.setRandomSeed(0L);
         }
-        localSearchSolver.setEvaluationHandler(buildEvaluationHandler());
+        localSearchSolver.setRuleBase(buildRuleBase());
+        localSearchSolver.setScoreCalculator(scoreCalculatorConfig.buildScoreCalculator());
         localSearchSolver.setStartingSolutionInitializer(buildStartingSolutionInitializer());
         localSearchSolver.setBestSolutionRecaller(new BestSolutionRecaller());
         localSearchSolver.setFinish(finishConfig.buildFinish());
         localSearchSolver.setDecider(buildDecider());
         return localSearchSolver;
-    }
-
-    protected EvaluationHandler buildEvaluationHandler() {
-        EvaluationHandler evaluationHandler = new EvaluationHandler();
-        RuleBase ruleBase = buildRuleBase();
-        evaluationHandler.setRuleBase(ruleBase);
-        evaluationHandler.setScoreCalculator(scoreCalculatorConfig.buildScoreCalculator());
-        return evaluationHandler;
     }
 
     private RuleBase buildRuleBase() {

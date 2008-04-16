@@ -17,7 +17,7 @@ import org.drools.solver.examples.itc2007.curriculumcourse.solver.move.LectureSw
 public class LectureSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
-        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) localSearchSolver.getCurrentSolution();
+        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
         List<Lecture> lectureList = schedule.getLectureList();
         List<Move> moveList = new ArrayList<Move>();
         for (ListIterator<Lecture> leftIt = lectureList.listIterator(); leftIt.hasNext();) {

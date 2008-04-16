@@ -2,11 +2,12 @@ package org.drools.solver.core.localsearch;
 
 import java.util.Random;
 
-import org.drools.solver.core.evaluation.EvaluationHandler;
+import org.drools.RuleBase;
 import org.drools.solver.core.localsearch.bestsolution.BestSolutionRecaller;
 import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.localsearch.finish.Finish;
 import org.drools.solver.core.move.Move;
+import org.drools.solver.core.score.calculator.ScoreCalculator;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.solution.initializer.StartingSolutionInitializer;
 import org.slf4j.Logger;
@@ -21,27 +22,23 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
 
     protected long randomSeed; // TODO refactor to AbstractSolver
 
-    protected EvaluationHandler evaluationHandler; // TODO refactor to AbstractSolver
     protected StartingSolutionInitializer startingSolutionInitializer = null; // TODO refactor to AbstractSolver
     protected BestSolutionRecaller bestSolutionRecaller;
     protected Finish finish;
     protected Decider decider;
 
-    protected long startingSystemTimeMillis;
-    protected Random random;
-    protected int stepIndex;
-    protected double stepScore;
+    protected LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope(); // TODO remove me
 
     public void setRandomSeed(long randomSeed) {
         this.randomSeed = randomSeed;
     }
 
-    public EvaluationHandler getEvaluationHandler() {
-        return evaluationHandler;
+    public void setRuleBase(RuleBase ruleBase) {
+        localSearchSolverScope.setRuleBase(ruleBase);
     }
 
-    public void setEvaluationHandler(EvaluationHandler evaluationHandler) {
-        this.evaluationHandler = evaluationHandler;
+    public void setScoreCalculator(ScoreCalculator scoreCalculator) {
+        localSearchSolverScope.setWorkingScoreCalculator(scoreCalculator);
     }
 
     public StartingSolutionInitializer getStartingSolutionInitializer() {
@@ -50,9 +47,6 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
 
     public void setStartingSolutionInitializer(StartingSolutionInitializer startingSolutionInitializer) {
         this.startingSolutionInitializer = startingSolutionInitializer;
-        if (startingSolutionInitializer != null) {
-            this.startingSolutionInitializer.setSolver(this);
-        }
     }
 
     public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
@@ -74,46 +68,28 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         this.finish.setLocalSearchSolver(this);
     }
 
-
-    public long getTimeMillisSpend() {
-        long now = System.currentTimeMillis();
-        return now - startingSystemTimeMillis;
+    public void setStartingSolution(Solution startingSolution) {
+        localSearchSolverScope.setWorkingSolution(startingSolution);
     }
 
-    public Random getRandom() {
-        return random;
-    }
-
-    public int getStepIndex() {
-        return stepIndex;
-    }
-
-    public double getStepScore() {
-        return stepScore;
-    }
-
-    public void setStartingSolution(Solution solution) {
-        evaluationHandler.setSolution(solution);
-    }
-
-    public Solution getCurrentSolution() {
-        return evaluationHandler.getSolution();
-    }
-
-    public int getBestSolutionStepIndex() {
-        return bestSolutionRecaller.getBestSolutionStepIndex();
-    }
-
-    public Solution getBestSolution() {
-        return bestSolutionRecaller.getBestSolution();
-    }
-
+    // TODO define a better API
     public double getBestScore() {
-        return bestSolutionRecaller.getBestScore();
+        return this.localSearchSolverScope.getBestScore();
     }
 
-    public double calculateTimeGradient() {
-        return finish.calculateTimeGradient();
+    // TODO define a better API
+    public Solution getBestSolution() {
+        return this.localSearchSolverScope.getBestSolution();
+    }
+
+    // TODO define a better API
+    public long getTimeMillisSpend() {
+        return this.localSearchSolverScope.calculateTimeMillisSpend();
+    }
+
+    // TODO define a better API
+    public LocalSearchSolverScope getLocalSearchSolverScope() {
+        return localSearchSolverScope;
     }
 
     // ************************************************************************
@@ -121,70 +97,93 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
     // ************************************************************************
 
     public void solve() {
-        solvingStarted();
-        while (!finish.isFinished()) {
-            beforeDeciding();
-            Move nextStep = decider.decideNextStep();
+        LocalSearchSolverScope localSearchSolverScope = this.localSearchSolverScope;
+        solvingStarted(localSearchSolverScope);
+
+        StepScope stepScope = createNextStepScope(localSearchSolverScope, null);
+        while (!finish.isFinished(stepScope)) {
+            stepScope.setTimeGradient(finish.calculateTimeGradient(stepScope));
+            beforeDeciding(stepScope);
+            decider.decideNextStep(stepScope);
+            Move nextStep = stepScope.getStep();
             if (nextStep == null) {
-                logger.warn("No move accepted for step ({}) out of {} accepted moves. Finishing early.",
-                        getStepIndex(), decider.getForager().getAcceptedMovesSize());
+                logger.warn("No move accepted for step index ({}) out of {} accepted moves. Finishing early.",
+                        stepScope.getStepIndex(), decider.getForager().getAcceptedMovesSize());
                 break;
             }
             logger.info("Step index ({}), time spend ({}) taking step ({}) out of {} accepted moves.",
-                    new Object[]{getStepIndex(), getTimeMillisSpend(), nextStep,
-                            decider.getForager().getAcceptedMovesSize()});
-            stepDecided(nextStep);
-            nextStep.doMove(evaluationHandler.getStatefulSession());
-            stepScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
-            stepIndex++;
-            stepTaken();
+                    new Object[]{stepScope.getStepIndex(), localSearchSolverScope.calculateTimeMillisSpend(),
+                            nextStep, decider.getForager().getAcceptedMovesSize()});
+            stepDecided(stepScope);
+            nextStep.doMove(stepScope.getWorkingMemory());
+//            stepIndex++; // TODO influences
+            stepTaken(stepScope);
+            stepScope = createNextStepScope(localSearchSolverScope, stepScope);
         }
-        solvingEnded();
+        solvingEnded(localSearchSolverScope);
     }
 
-    public void solvingStarted() {
-        startingSystemTimeMillis = System.currentTimeMillis();
+    private StepScope createNextStepScope(LocalSearchSolverScope localSearchSolverScope, StepScope completedStepScope) {
+        if (completedStepScope == null) {
+            completedStepScope = new StepScope(localSearchSolverScope);
+            completedStepScope.setScore(localSearchSolverScope.getStartingScore());
+            completedStepScope.setStepIndex(-1);
+            completedStepScope.setTimeGradient(0.0);
+        }
+        localSearchSolverScope.setLastCompletedStepScope(completedStepScope);
+        StepScope stepScope = new StepScope(localSearchSolverScope);
+        stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
+        return stepScope;
+    }
+
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+        localSearchSolverScope.resetTimeMillisSpend();
         logger.info("Solving with random seed ({}).", randomSeed);
-        random = new Random(randomSeed);
+        localSearchSolverScope.setWorkingRandom(new Random(randomSeed));
         if (startingSolutionInitializer != null) {
-            Solution solution = evaluationHandler.getSolution();
-            if (!startingSolutionInitializer.isSolutionInitialized(solution)) {
+            if (!startingSolutionInitializer.isSolutionInitialized(localSearchSolverScope)) {
                 logger.info("Initializing solution.");
-                startingSolutionInitializer.initializeSolution(solution);
+                startingSolutionInitializer.initializeSolution(localSearchSolverScope);
             } else {
                 logger.debug("Solution is already initialized.");
             }
         }
-        stepIndex = 0;
-        stepScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
-        bestSolutionRecaller.solvingStarted();
-        finish.solvingStarted();
-        decider.solvingStarted();
+        localSearchSolverScope.setStartingScore(localSearchSolverScope.calculateScoreFromWorkingMemory());
+        bestSolutionRecaller.solvingStarted(localSearchSolverScope);
+        finish.solvingStarted(localSearchSolverScope);
+        decider.solvingStarted(localSearchSolverScope);
     }
 
-    public void beforeDeciding() {
-        bestSolutionRecaller.beforeDeciding();
-        finish.beforeDeciding();
-        decider.beforeDeciding();
+    @Override
+    public void beforeDeciding(StepScope stepScope) {
+        bestSolutionRecaller.beforeDeciding(stepScope);
+        finish.beforeDeciding(stepScope);
+        decider.beforeDeciding(stepScope);
     }
 
-    public void stepDecided(Move step) {
-        bestSolutionRecaller.stepDecided(step);
-        finish.stepDecided(step);
-        decider.stepDecided(step);
+    @Override
+    public void stepDecided(StepScope stepScope) {
+        bestSolutionRecaller.stepDecided(stepScope);
+        finish.stepDecided(stepScope);
+        decider.stepDecided(stepScope);
     }
 
-    public void stepTaken() {
-        bestSolutionRecaller.stepTaken();
-        finish.stepTaken();
-        decider.stepTaken();
+    @Override
+    public void stepTaken(StepScope stepScope) {
+        bestSolutionRecaller.stepTaken(stepScope);
+        finish.stepTaken(stepScope);
+        decider.stepTaken(stepScope);
     }
 
-    public void solvingEnded() {
-        bestSolutionRecaller.solvingEnded();
-        finish.solvingEnded();
-        decider.solvingEnded();
-        logger.info("Solved in {} steps and {} time millis spend.", stepIndex, getTimeMillisSpend());
+    @Override
+    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+        bestSolutionRecaller.solvingEnded(localSearchSolverScope);
+        finish.solvingEnded(localSearchSolverScope);
+        decider.solvingEnded(localSearchSolverScope);
+        logger.info("Solved in {} steps and {} time millis spend.",
+                localSearchSolverScope.getLastCompletedStepScope().getStepIndex(),
+                localSearchSolverScope.calculateTimeMillisSpend());
     }
 
 }

@@ -1,17 +1,18 @@
 package org.drools.solver.core.localsearch;
 
-import org.drools.solver.core.SolverLifecycleListener;
-import org.drools.solver.core.move.Move;
-
 /**
  * @author Geoffrey De Smet
  */
-public interface LocalSearchSolverLifecycleListener extends SolverLifecycleListener {
+public interface LocalSearchSolverLifecycleListener {
 
-    void beforeDeciding();
+    void solvingStarted(LocalSearchSolverScope localSearchSolverScope);
 
-    void stepDecided(Move step);
+    void beforeDeciding(StepScope stepScope);
 
-    void stepTaken();
+    void stepDecided(StepScope stepScope);
+
+    void stepTaken(StepScope stepScope);
+
+    void solvingEnded(LocalSearchSolverScope localSearchSolverScope);
 
 }

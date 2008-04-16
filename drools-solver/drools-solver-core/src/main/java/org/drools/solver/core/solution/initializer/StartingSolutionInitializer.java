@@ -1,15 +1,14 @@
 package org.drools.solver.core.solution.initializer;
 
-import org.drools.solver.core.SolverAware;
-import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 
 /**
  * @author Geoffrey De Smet
  */
-public interface StartingSolutionInitializer extends SolverAware {
+public interface StartingSolutionInitializer {
 
-    boolean isSolutionInitialized(Solution solution);
+    boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope);
 
-    void initializeSolution(Solution solution);
+    void initializeSolution(LocalSearchSolverScope localSearchSolverScope);
 
 }

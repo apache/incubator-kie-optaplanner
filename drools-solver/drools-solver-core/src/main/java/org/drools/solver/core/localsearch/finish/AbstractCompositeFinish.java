@@ -3,7 +3,8 @@ package org.drools.solver.core.localsearch.finish;
 import java.util.List;
 
 import org.drools.solver.core.localsearch.LocalSearchSolver;
-import org.drools.solver.core.move.Move;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
 
 /**
  * Superclass for CompositeFinish classes that combine multiple Finishes.
@@ -30,37 +31,37 @@ public abstract class AbstractCompositeFinish extends AbstractFinish implements 
     // ************************************************************************
 
     @Override
-    public void solvingStarted() {
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         for (Finish finish : finishList) {
-            finish.solvingStarted();
+            finish.solvingStarted(localSearchSolverScope);
         }
     }
 
     @Override
-    public void beforeDeciding() {
+    public void beforeDeciding(StepScope stepScope) {
         for (Finish finish : finishList) {
-            finish.beforeDeciding();
+            finish.beforeDeciding(stepScope);
         }
     }
 
     @Override
-    public void stepDecided(Move step) {
+    public void stepDecided(StepScope stepScope) {
         for (Finish finish : finishList) {
-            finish.stepDecided(step);
+            finish.stepDecided(stepScope);
         }
     }
 
     @Override
-    public void stepTaken() {
+    public void stepTaken(StepScope stepScope) {
         for (Finish finish : finishList) {
-            finish.stepTaken();
+            finish.stepTaken(stepScope);
         }
     }
 
     @Override
-    public void solvingEnded() {
+    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
         for (Finish finish : finishList) {
-            finish.solvingEnded();
+            finish.solvingEnded(localSearchSolverScope);
         }
     }
 

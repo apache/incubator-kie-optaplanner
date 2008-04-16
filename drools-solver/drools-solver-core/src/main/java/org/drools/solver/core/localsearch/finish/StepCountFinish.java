@@ -1,5 +1,7 @@
 package org.drools.solver.core.localsearch.finish;
 
+import org.drools.solver.core.localsearch.StepScope;
+
 /**
  * @author Geoffrey De Smet
  */
@@ -15,13 +17,13 @@ public class StepCountFinish extends AbstractFinish {
     // Worker methods
     // ************************************************************************
 
-    public boolean isFinished() {
-        int stepIndex = localSearchSolver.getStepIndex();
+    public boolean isFinished(StepScope stepScope) {
+        int stepIndex = stepScope.getStepIndex();
         return stepIndex >= maximumStepCount;
     }
 
-    public double calculateTimeGradient() {
-        int stepIndex = localSearchSolver.getStepIndex();
+    public double calculateTimeGradient(StepScope stepScope) {
+        int stepIndex = stepScope.getStepIndex();
         double timeGradient = ((double) stepIndex) / ((double) maximumStepCount);
         return Math.min(timeGradient, 1.0);
     }

@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.solver.core.localsearch.LocalSearchSolver;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.move.factory.MoveFactory;
 
@@ -38,18 +40,21 @@ public class MoveFactorySelector extends AbstractSelector {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted() {
-        moveFactory.solvingStarted();
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+        moveFactory.solvingStarted(localSearchSolverScope);
     }
 
-    public void beforeDeciding() {
-        moveFactory.beforeDeciding();
+    @Override
+    public void beforeDeciding(StepScope stepScope) {
+        moveFactory.beforeDeciding(stepScope);
     }
 
-    public final List<Move> selectMoveList() {
-        List<Move> moveList = moveFactory.createMoveList(localSearchSolver.getCurrentSolution());
+    @Override
+    public final List<Move> selectMoveList(StepScope stepScope) {
+        List<Move> moveList = moveFactory.createMoveList(stepScope.getWorkingSolution());
         if (shuffle) {
-            Collections.shuffle(moveList, localSearchSolver.getRandom());
+            Collections.shuffle(moveList, stepScope.getWorkingRandom());
         }
         if (relativeSelection != null) {
             int selectionSize = (int) Math.ceil(relativeSelection * moveList.size());
@@ -61,16 +66,19 @@ public class MoveFactorySelector extends AbstractSelector {
         return moveList;
     }
 
-    public void stepDecided(Move step) {
-        moveFactory.stepDecided(step);
+    @Override
+    public void stepDecided(StepScope stepScope) {
+        moveFactory.stepDecided(stepScope);
     }
 
-    public void stepTaken() {
-        moveFactory.stepTaken();
+    @Override
+    public void stepTaken(StepScope stepScope) {
+        moveFactory.stepTaken(stepScope);
     }
 
-    public void solvingEnded() {
-        moveFactory.solvingEnded();
+    @Override
+    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+        moveFactory.solvingEnded(localSearchSolverScope);
     }
 
 }

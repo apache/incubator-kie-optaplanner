@@ -11,8 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.solver.core.evaluation.EvaluationHandler;
-import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
@@ -31,28 +30,26 @@ import org.drools.solver.examples.itc2007.examination.domain.solver.ExamCoincide
 public class ExaminationStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override
-    public boolean isSolutionInitialized(Solution solution) {
-        Examination examination = (Examination) solution;
+    public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
+        Examination examination = (Examination) localSearchSolverScope.getWorkingSolution();
         return examination.isInitialized();
     }
 
-    public void initializeSolution(Solution solution) {
-        Examination examination = (Examination) solution;
-        initializeExamList(examination);
+    public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
+        Examination examination = (Examination) localSearchSolverScope.getWorkingSolution();
+        initializeExamList(localSearchSolverScope, examination);
     }
 
-    private void initializeExamList(Examination examination) {
-        EvaluationHandler evaluationHandler = solver.getEvaluationHandler();
+    private void initializeExamList(LocalSearchSolverScope localSearchSolverScope, Examination examination) {
         List<Period> periodList = examination.getPeriodList();
         List<Room> roomList = examination.getRoomList();
         List<Exam> examList = new ArrayList<Exam>(examination.getTopicList().size()); // TODO this can be returned from createExamAssigningScoreList
-        evaluationHandler.setSolution(examination);
-        WorkingMemory workingMemory = evaluationHandler.getStatefulSession();
+        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
 
         List<ExamInitializationWeight> examInitialWeightList = createExamAssigningScoreList(examination);
 
         for (ExamInitializationWeight examInitialWeight : examInitialWeightList) {
-            double unscheduledScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
+            double unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
             Exam leader = examInitialWeight.getExam();
             FactHandle leaderHandle = null;
 
@@ -80,12 +77,12 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                         workingMemory.modifyInsert(examToHandle.getExamHandle(), examToHandle.getExam());
                     }
                 }
-                double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
+                double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 periodScoringList.add(new PeriodScoring(period, score));
             }
             Collections.sort(periodScoringList);
 
-            scheduleLeader(periodScoringList, roomList, evaluationHandler, workingMemory, unscheduledScore,
+            scheduleLeader(periodScoringList, roomList, localSearchSolverScope, workingMemory, unscheduledScore,
                     examToHandleList, leader, leaderHandle);
             examList.add(leader);
 
@@ -94,7 +91,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 Exam exam = examToHandle.getExam();
                 // Leader already has a room
                 if (!exam.isCoincidenceLeader()) {
-                    scheduleNonLeader(roomList, evaluationHandler, workingMemory, exam, examToHandle.getExamHandle());
+                    scheduleNonLeader(roomList, localSearchSolverScope, workingMemory, exam, examToHandle.getExamHandle());
                     examList.add(exam);
                 }
             }
@@ -104,7 +101,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
     }
 
     private void scheduleLeader(List<PeriodScoring> periodScoringList, List<Room> roomList,
-            EvaluationHandler evaluationHandler, WorkingMemory workingMemory, double unscheduledScore,
+            LocalSearchSolverScope localSearchSolverScope, WorkingMemory workingMemory, double unscheduledScore,
             List<ExamToHandle> examToHandleList, Exam leader, FactHandle leaderHandle) {
         boolean perfectMatch = false;
         double bestScore = Double.NEGATIVE_INFINITY;
@@ -124,7 +121,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 workingMemory.modifyRetract(leaderHandle);
                 leader.setRoom(room);
                 workingMemory.modifyInsert(leaderHandle, leader);
-                double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
+                double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 if (score < unscheduledScore) {
                     if (score > bestScore) {
                         bestScore = score;
@@ -161,12 +158,12 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
     }
 
     private void scheduleNonLeader(List<Room> roomList,
-            EvaluationHandler evaluationHandler, WorkingMemory workingMemory,
+            LocalSearchSolverScope localSearchSolverScope, WorkingMemory workingMemory,
             Exam exam, FactHandle examHandle) {
         if (exam.getRoom() != null) {
             throw new IllegalStateException("Exam (" + exam + ") already has a room.");
         }
-        double unscheduledScore = evaluationHandler.fireAllRulesAndCalculateStepScore();
+        double unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
         boolean perfectMatch = false;
         double bestScore = Double.NEGATIVE_INFINITY;
         Room bestRoom = null;
@@ -174,7 +171,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             workingMemory.modifyRetract(examHandle);
             exam.setRoom(room);
             workingMemory.modifyInsert(examHandle, exam);
-            double score = evaluationHandler.fireAllRulesAndCalculateStepScore();
+            double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
             if (score < unscheduledScore) {
                 if (score > bestScore) {
                     bestScore = score;

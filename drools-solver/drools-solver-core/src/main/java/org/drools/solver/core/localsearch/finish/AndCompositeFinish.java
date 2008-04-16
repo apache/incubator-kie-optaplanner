@@ -1,5 +1,7 @@
 package org.drools.solver.core.localsearch.finish;
 
+import org.drools.solver.core.localsearch.StepScope;
+
 /**
  * @author Geoffrey De Smet
  */
@@ -11,10 +13,11 @@ public class AndCompositeFinish extends AbstractCompositeFinish {
 
     /**
      * @return true if all the Finishes are finished.
+     * @param stepScope
      */
-    public boolean isFinished() {
+    public boolean isFinished(StepScope stepScope) {
         for (Finish finish : finishList) {
-            if (!finish.isFinished()) {
+            if (!finish.isFinished(stepScope)) {
                 return false;
             }
         }
@@ -25,11 +28,12 @@ public class AndCompositeFinish extends AbstractCompositeFinish {
      * Calculates the minimum timeGradient of all finishes.
      * Not supported timeGradients (-1.0) are ignored. 
      * @return the minimum timeGradient of the finishes.
+     * @param stepScope
      */
-    public double calculateTimeGradient() {
+    public double calculateTimeGradient(StepScope stepScope) {
         double timeGradient = 1.0;
         for (Finish finish : finishList) {
-            double nextTimeGradient = finish.calculateTimeGradient();
+            double nextTimeGradient = finish.calculateTimeGradient(stepScope);
             if (nextTimeGradient >= 0.0) {
                 timeGradient = Math.min(timeGradient, nextTimeGradient);
             }

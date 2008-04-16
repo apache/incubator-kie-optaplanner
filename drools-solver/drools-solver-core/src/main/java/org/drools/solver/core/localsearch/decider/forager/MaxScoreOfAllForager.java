@@ -1,28 +1,27 @@
 package org.drools.solver.core.localsearch.decider.forager;
 
-import org.drools.solver.core.move.Move;
+import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.MoveScope;
 
 /**
  * @author Geoffrey De Smet
  */
-public class MaxScoreOfAllForager extends AcceptionListBasedForager {
+public class MaxScoreOfAllForager extends AcceptedListBasedForager {
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public void addMove(Move move, double score, double acceptChance) {
-        if (acceptChance > 0.0) {
-            addMoveToAcceptionList(move, score, acceptChance);
+    @Override
+    public void addMove(MoveScope moveScope) {
+        if (moveScope.getAcceptChance() > 0.0) {
+            addMoveScopeToAcceptedList(moveScope);
         }
     }
 
-    public boolean isQuitEarly() {
-        return false;
-    }
-
-    public Move pickMove() {
-        return pickMaxScoreMove();
+    @Override
+    public MoveScope pickMove(StepScope stepScope) {
+        return pickMaxScoreMoveScopeFromAcceptedList(stepScope);
     }
 
 }

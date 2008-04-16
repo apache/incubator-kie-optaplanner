@@ -3,6 +3,8 @@ package org.drools.solver.core.localsearch.decider.accepter.tabu;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.move.Move;
 
 /**
@@ -21,16 +23,17 @@ public class MoveTabuAccepter extends AbstractTabuAccepter {
     // ************************************************************************
 
     @Override
-    protected Collection<? extends Object> findTabu(Move move) {
-        return Collections.singletonList(move);
+    protected Collection<? extends Object> findTabu(MoveScope moveScope) {
+        return Collections.singletonList(moveScope.getMove());
     }
 
     @Override
-    protected Collection<? extends Object> findNewTabu(Move step) {
+    protected Collection<? extends Object> findNewTabu(StepScope stepScope) {
         Move tabuMove;
+        Move step = stepScope.getStep();
         if (useUndoMoveAsTabuMove) {
-            tabuMove = step.createUndoMove(
-                    localSearchSolver.getEvaluationHandler().getStatefulSession());
+            // In stepTaken this the undoMove would be corrupted
+            tabuMove = step.createUndoMove(stepScope.getWorkingMemory());
         } else {
             tabuMove = step;
         }

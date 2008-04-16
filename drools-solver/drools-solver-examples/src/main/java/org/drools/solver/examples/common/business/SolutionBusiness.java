@@ -10,10 +10,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectFilter;
 import org.drools.solver.core.Solver;
-import org.drools.solver.core.evaluation.EvaluationHandler;
+import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 import org.drools.solver.core.score.constraint.DoubleConstraintOccurrence;
@@ -37,7 +38,7 @@ public class SolutionBusiness {
     private File solvedDataDir;
 
     private Solver solver;
-    private EvaluationHandler evaluationHandler;
+    private LocalSearchSolverScope localSearchSolverScope;
 
     public void setSolutionDao(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;
@@ -66,7 +67,7 @@ public class SolutionBusiness {
 
     public void setSolver(Solver solver) {
         this.solver = solver;
-        this.evaluationHandler = solver.getEvaluationHandler();
+        this.localSearchSolverScope = ((DefaultLocalSearchSolver) solver).getLocalSearchSolverScope();
     }
 
 
@@ -83,20 +84,20 @@ public class SolutionBusiness {
     }
 
     public Solution getSolution() {
-        return evaluationHandler.getSolution();
+        return localSearchSolverScope.getWorkingSolution();
     }
 
     public double getScore() {
-        return evaluationHandler.fireAllRulesAndCalculateStepScore();
+        return localSearchSolverScope.calculateScoreFromWorkingMemory();
     }
 
     public List<ScoreDetail> getScoreDetailList() {
         Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
-        StatefulSession statefulSession = evaluationHandler.getStatefulSession();
-        if (statefulSession == null) {
+        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
+        if (workingMemory == null) {
             return Collections.emptyList();
         }
-        Iterator<ConstraintOccurrence> it = statefulSession.iterateObjects(
+        Iterator<ConstraintOccurrence> it = workingMemory.iterateObjects(
                 new ClassObjectFilter(ConstraintOccurrence.class));
         while (it.hasNext()) {
             ConstraintOccurrence occurrence = it.next();
@@ -129,17 +130,17 @@ public class SolutionBusiness {
     }
 
     public void save(File file) {
-        Solution solution = evaluationHandler.getSolution();
+        Solution solution = localSearchSolverScope.getWorkingSolution();
         solutionDao.writeSolution(solution, file);
     }
 
     public void doMove(Move move) {
-        if (!move.isMoveDoable(evaluationHandler.getStatefulSession())) {
+        if (!move.isMoveDoable(localSearchSolverScope.getWorkingMemory())) {
             logger.info("Not doing user move ({}) because it is not doable.", move);
             return;
         }
         logger.info("Doing user move ({}).", move);
-        move.doMove(evaluationHandler.getStatefulSession());
+        move.doMove(localSearchSolverScope.getWorkingMemory());
     }
 
     public void solve() {

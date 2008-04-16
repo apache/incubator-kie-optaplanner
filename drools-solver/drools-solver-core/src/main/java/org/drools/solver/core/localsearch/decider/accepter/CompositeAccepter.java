@@ -3,9 +3,14 @@ package org.drools.solver.core.localsearch.decider.accepter;
 import java.util.List;
 
 import org.drools.solver.core.localsearch.LocalSearchSolver;
-import org.drools.solver.core.move.Move;
+import org.drools.solver.core.localsearch.LocalSearchSolverScope;
+import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.MoveScope;
 
 /**
+ * Combines several accepters into one.
+ * Multiplies the accept chance of its accepters.
+ * For example: combine solution and property tabu to do tabu on both.
  * @author Geoffrey De Smet
  */
 public class CompositeAccepter extends AbstractAccepter {
@@ -16,6 +21,7 @@ public class CompositeAccepter extends AbstractAccepter {
         this.accepterList = accepterList;
     }
 
+    @Override
     public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
         super.setLocalSearchSolver(localSearchSolver);
         for (Accepter accepter : accepterList) {
@@ -27,41 +33,47 @@ public class CompositeAccepter extends AbstractAccepter {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted() {
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         for (Accepter accepter : accepterList) {
-            accepter.solvingStarted();
+            accepter.solvingStarted(localSearchSolverScope);
         }
     }
 
-    public void beforeDeciding() {
+    @Override
+    public void beforeDeciding(StepScope stepScope) {
         for (Accepter accepter : accepterList) {
-            accepter.beforeDeciding();
+            accepter.beforeDeciding(stepScope);
         }
     }
 
-    public double calculateAcceptChance(Move move, double score) {
+    @Override
+    public double calculateAcceptChance(MoveScope moveScope) {
         double acceptChance = 1.0;
         for (Accepter accepter : accepterList) {
-            acceptChance *= accepter.calculateAcceptChance(move, score);
+            acceptChance *= accepter.calculateAcceptChance(moveScope);
         }
         return acceptChance;
     }
 
-    public void stepDecided(Move step) {
+    @Override
+    public void stepDecided(StepScope stepScope) {
         for (Accepter accepter : accepterList) {
-            accepter.stepDecided(step);
+            accepter.stepDecided(stepScope);
         }
     }
 
-    public void stepTaken() {
+    @Override
+    public void stepTaken(StepScope stepScope) {
         for (Accepter accepter : accepterList) {
-            accepter.stepTaken();
+            accepter.stepTaken(stepScope);
         }
     }
 
-    public void solvingEnded() {
+    @Override
+    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
         for (Accepter accepter : accepterList) {
-            accepter.solvingEnded();
+            accepter.solvingEnded(localSearchSolverScope);
         }
     }
 

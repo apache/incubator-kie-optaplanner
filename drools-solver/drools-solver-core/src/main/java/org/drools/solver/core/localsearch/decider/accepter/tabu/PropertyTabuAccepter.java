@@ -2,7 +2,8 @@ package org.drools.solver.core.localsearch.decider.accepter.tabu;
 
 import java.util.Collection;
 
-import org.drools.solver.core.move.Move;
+import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.MoveScope;
 
 /**
  * @author Geoffrey De Smet
@@ -14,8 +15,14 @@ public class PropertyTabuAccepter extends AbstractTabuAccepter {
     // ************************************************************************
 
     @Override
-    protected Collection<? extends Object> findTabu(Move move) {
-        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) move;
+    protected Collection<? extends Object> findTabu(MoveScope moveScope) {
+        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) moveScope.getMove();
+        return tabuPropertyEnabled.getTabuProperties();
+    }
+
+    @Override
+    protected Collection<? extends Object> findNewTabu(StepScope stepScope) {
+        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) stepScope.getStep();
         return tabuPropertyEnabled.getTabuProperties();
     }
 

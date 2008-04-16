@@ -1,42 +1,47 @@
 package org.drools.solver.core.localsearch.decider.forager;
 
-import org.drools.solver.core.move.Move;
+import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.MoveScope;
 
 /**
  * @author Geoffrey De Smet
  */
-public class FirstRandomlyAcceptedForager extends AcceptionListBasedForager {
+public class FirstRandomlyAcceptedForager extends AcceptedListBasedForager {
 
-    protected Move earlyPickedMove = null;
+    protected MoveScope earlyPickedMoveScope = null;
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
-    public void beforeDeciding() {
-        super.beforeDeciding();
-        earlyPickedMove = null;
+    public void beforeDeciding(StepScope stepScope) {
+        super.beforeDeciding(stepScope);
+        earlyPickedMoveScope = null;
     }
 
-    public void addMove(Move move, double score, double acceptChance) {
-        if (acceptChance > 0.0) {
-            if (localSearchSolver.getRandom().nextDouble() <= acceptChance) {
-                earlyPickedMove = move;
+    @Override
+    public void addMove(MoveScope moveScope) {
+        if (moveScope.getAcceptChance() > 0.0) {
+            double randomChance = moveScope.getWorkingRandom().nextDouble();
+            if (randomChance <= moveScope.getAcceptChance()) {
+                earlyPickedMoveScope = moveScope;
             }
-            addMoveToAcceptionList(move, score, acceptChance);
+            addMoveScopeToAcceptedList(moveScope);
         }
     }
 
+    @Override
     public boolean isQuitEarly() {
-        return earlyPickedMove != null;
+        return earlyPickedMoveScope != null;
     }
 
-    public Move pickMove() {
-        if (earlyPickedMove != null) {
-            return earlyPickedMove;
+    @Override
+    public MoveScope pickMove(StepScope stepScope) {
+        if (earlyPickedMoveScope != null) {
+            return earlyPickedMoveScope;
         } else {
-            return pickMaxScoreMove();
+            return pickMaxScoreMoveScopeFromAcceptedList(stepScope);
         }
     }
 

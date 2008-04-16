@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
+import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.move.Move;
 
 /**
@@ -11,6 +12,6 @@ import org.drools.solver.core.move.Move;
  */
 public interface Selector extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
 
-    List<Move> selectMoveList();
+    List<Move> selectMoveList(StepScope stepScope);
 
 }
