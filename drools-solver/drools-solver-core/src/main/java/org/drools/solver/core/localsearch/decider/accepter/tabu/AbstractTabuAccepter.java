@@ -19,6 +19,7 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
 
     protected int completeTabuSize = -1;
     protected int partialTabuSize = 0;
+    protected boolean aspirationEnabled = true;
 
     protected Map<Object, Integer> tabuToStepIndexMap;
     protected List<Object> tabuSequenceList;
@@ -33,6 +34,10 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
 
     public void setPartialTabuSize(int partialTabuSize) {
         this.partialTabuSize = partialTabuSize;
+    }
+
+    public void setAspirationEnabled(boolean aspirationEnabled) {
+        this.aspirationEnabled = aspirationEnabled;
     }
 
     // ************************************************************************
@@ -58,8 +63,10 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
 
     @Override
     public double calculateAcceptChance(MoveScope moveScope) {
-        // TODO aspiration
-
+        if (aspirationEnabled
+                && moveScope.getScore() > moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) {
+            return 1.0;
+        }
         Collection<? extends Object> tabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;
         for (Object tabu : tabus) {
