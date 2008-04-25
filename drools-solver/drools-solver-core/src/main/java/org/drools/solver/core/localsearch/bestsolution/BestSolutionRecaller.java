@@ -28,7 +28,8 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
     @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         double initialScore = localSearchSolverScope.getStartingScore();
-        logger.info("Initial score ({}) is starting best score. Updating best solution and best score.", initialScore);
+        logger.info("Initialization time spend ({}) for score ({}). Updating best solution and best score.",
+                localSearchSolverScope.calculateTimeMillisSpend(), initialScore);
         localSearchSolverScope.setBestSolutionStepIndex(-1);
         localSearchSolverScope.setBestSolution(localSearchSolverScope.getWorkingSolution().cloneSolution());
         localSearchSolverScope.setBestScore(initialScore);
