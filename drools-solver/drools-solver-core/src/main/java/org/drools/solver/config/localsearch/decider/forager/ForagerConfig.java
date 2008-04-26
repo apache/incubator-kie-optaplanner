@@ -1,9 +1,9 @@
 package org.drools.solver.config.localsearch.decider.forager;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.solver.core.localsearch.decider.forager.FirstRandomlyAcceptedForager;
+import org.drools.solver.core.localsearch.decider.forager.AcceptedForager;
 import org.drools.solver.core.localsearch.decider.forager.Forager;
-import org.drools.solver.core.localsearch.decider.forager.MaxScoreOfAllForager;
+import org.drools.solver.core.localsearch.decider.forager.PickEarlyByScore;
 
 /**
  * @author Geoffrey De Smet
@@ -59,14 +59,18 @@ public class ForagerConfig {
         } else if (foragerType != null) {
             switch (foragerType) {
                 case MAX_SCORE_OF_ALL:
-                    return new MaxScoreOfAllForager();
+                    return new AcceptedForager(PickEarlyByScore.NONE, false);
+                case FIRST_BEST_SCORE_IMPROVING:
+                    return new AcceptedForager(PickEarlyByScore.FIRST_BEST_SCORE_IMPROVING, false);
+                case FIRST_LAST_STEP_SCORE_IMPROVING:
+                    return new AcceptedForager(PickEarlyByScore.FIRST_LAST_STEP_SCORE_IMPROVING, false);
                 case FIRST_RANDOMLY_ACCEPTED:
-                    return new FirstRandomlyAcceptedForager();
+                    return new AcceptedForager(PickEarlyByScore.NONE, true);
                 default:
                     throw new IllegalStateException("foragerType (" + foragerType + ") not implemented");
             }
         } else {
-            return new MaxScoreOfAllForager();
+            return new AcceptedForager(PickEarlyByScore.NONE, false);
         }
     }
 
@@ -80,6 +84,8 @@ public class ForagerConfig {
 
     public static enum ForagerType {
         MAX_SCORE_OF_ALL,
+        FIRST_BEST_SCORE_IMPROVING,
+        FIRST_LAST_STEP_SCORE_IMPROVING,
         FIRST_RANDOMLY_ACCEPTED
     }
 

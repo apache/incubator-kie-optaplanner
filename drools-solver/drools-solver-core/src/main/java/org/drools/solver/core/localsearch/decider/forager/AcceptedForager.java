@@ -12,17 +12,38 @@ import org.drools.solver.core.move.Move;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AcceptedListBasedForager extends AbstractForager {
+public class AcceptedForager extends AbstractForager {
 
-    protected AcceptedMoveScopeComparator acceptionComparator = new AcceptedMoveScopeComparator();
+    // final to allow better hotspot optimization. TODO prove that it indeed makes a difference
+    protected final PickEarlyByScore pickEarlyByScore;
+    protected final boolean pickEarlyRandomly;
+    protected final AcceptedMoveScopeComparator acceptionComparator;
+
     protected List<MoveScope> acceptedList;
     protected boolean listSorted;
     protected double maxScore;
     protected double acceptChanceMaxScoreTotal;
 
-    public void setAcceptionComparator(AcceptedMoveScopeComparator acceptionComparator) {
+    protected MoveScope earlyPickedMoveScope = null;
+
+    public AcceptedForager() {
+        this(PickEarlyByScore.NONE, false);
+    }
+
+    public AcceptedForager(PickEarlyByScore pickEarlyByScore, boolean pickEarlyRandomly) {
+        this(pickEarlyByScore, pickEarlyRandomly, new AcceptedMoveScopeComparator());
+    }
+
+    public AcceptedForager(PickEarlyByScore pickEarlyByScore, boolean pickEarlyRandomly,
+            AcceptedMoveScopeComparator acceptionComparator) {
+        this.pickEarlyByScore = pickEarlyByScore;
+        this.pickEarlyRandomly = pickEarlyRandomly;
         this.acceptionComparator = acceptionComparator;
     }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
     @Override
     public void beforeDeciding(StepScope stepScope) {
@@ -30,6 +51,41 @@ public abstract class AcceptedListBasedForager extends AbstractForager {
         listSorted = false;
         maxScore = Double.NEGATIVE_INFINITY;
         acceptChanceMaxScoreTotal = 0.0;
+        earlyPickedMoveScope = null;
+    }
+
+    @Override
+    public void addMove(MoveScope moveScope) {
+        if (moveScope.getAcceptChance() > 0.0) {
+            checkPickEarly(moveScope);
+            addMoveScopeToAcceptedList(moveScope);
+        }
+    }
+
+    protected void checkPickEarly(MoveScope moveScope) {
+        switch (pickEarlyByScore) {
+            case NONE:
+                break;
+            case FIRST_BEST_SCORE_IMPROVING:
+                if (moveScope.getScore() > moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) {
+                    earlyPickedMoveScope = moveScope;
+                }
+                break;
+            case FIRST_LAST_STEP_SCORE_IMPROVING:
+                if (moveScope.getScore() > moveScope.getStepScope().getLocalSearchSolverScope()
+                        .getLastCompletedStepScope().getScore()) {
+                    earlyPickedMoveScope = moveScope;
+                }
+                break;
+            default:
+                throw new IllegalStateException("pickEarlyByScore (" + pickEarlyByScore + ") not implemented");
+        }
+        if (pickEarlyRandomly) {
+            double randomChance = moveScope.getWorkingRandom().nextDouble();
+            if (randomChance <= moveScope.getAcceptChance()) {
+                earlyPickedMoveScope = moveScope;
+            }
+        }
     }
 
     protected void addMoveScopeToAcceptedList(MoveScope moveScope) {
@@ -45,12 +101,20 @@ public abstract class AcceptedListBasedForager extends AbstractForager {
 
     @Override
     public boolean isQuitEarly() {
-        return false;
+        return earlyPickedMoveScope != null;
+    }
+
+    @Override
+    public MoveScope pickMove(StepScope stepScope) {
+        if (earlyPickedMoveScope != null) {
+            return earlyPickedMoveScope;
+        } else {
+            return pickMaxScoreMoveScopeFromAcceptedList(stepScope);
+        }
     }
 
     protected MoveScope pickMaxScoreMoveScopeFromAcceptedList(StepScope stepScope) {
-        if (acceptedList.isEmpty())
-        {
+        if (acceptedList.isEmpty()) {
             return null;
         }
         sortAcceptedList();
@@ -61,7 +125,7 @@ public abstract class AcceptedListBasedForager extends AbstractForager {
             MoveScope moveScope = it.previous();
             acceptMark -= moveScope.getAcceptChance();
             // TODO That underflow warn is nonsence. randomChance can be 0.0 and the last acceptMark can end up 0.0
-            // TODO so < is nonsence
+            // TODO so < is nonsence (do a testcase though)
             if (acceptMark < 0.0) {
                 pickedMoveScope = moveScope;
                 break;
