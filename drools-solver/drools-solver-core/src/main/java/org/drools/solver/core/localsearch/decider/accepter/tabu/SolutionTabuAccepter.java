@@ -11,6 +11,11 @@ import org.drools.solver.core.localsearch.decider.MoveScope;
  */
 public class SolutionTabuAccepter extends AbstractTabuAccepter {
 
+    public SolutionTabuAccepter() {
+        // Disable aspiration by default because it's useless on solution tabu
+        aspirationEnabled = false;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

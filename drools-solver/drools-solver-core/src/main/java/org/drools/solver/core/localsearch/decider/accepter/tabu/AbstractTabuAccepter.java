@@ -63,10 +63,6 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
 
     @Override
     public double calculateAcceptChance(MoveScope moveScope) {
-        if (aspirationEnabled
-                && moveScope.getScore() > moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) {
-            return 1.0;
-        }
         Collection<? extends Object> tabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;
         for (Object tabu : tabus) {
@@ -77,6 +73,11 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
         }
         if (maximumTabuStepIndex < 0) {
             // The move isn't tabu at all
+            return 1.0;
+        }
+        if (aspirationEnabled
+                && moveScope.getScore() > moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) {
+            logger.debug("    Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
             return 1.0;
         }
         int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex - 1;
