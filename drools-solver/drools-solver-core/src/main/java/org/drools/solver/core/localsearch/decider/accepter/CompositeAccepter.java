@@ -2,7 +2,6 @@ package org.drools.solver.core.localsearch.decider.accepter;
 
 import java.util.List;
 
-import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.MoveScope;
@@ -19,14 +18,6 @@ public class CompositeAccepter extends AbstractAccepter {
 
     public void setAccepterList(List<Accepter> accepterList) {
         this.accepterList = accepterList;
-    }
-
-    @Override
-    public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
-        super.setLocalSearchSolver(localSearchSolver);
-        for (Accepter accepter : accepterList) {
-            accepter.setLocalSearchSolver(localSearchSolver);
-        }
     }
 
     // ************************************************************************

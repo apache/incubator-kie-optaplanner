@@ -2,7 +2,6 @@ package org.drools.solver.core.localsearch.decider.forager;
 
 import java.util.List;
 
-import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.MoveScope;
@@ -12,7 +11,7 @@ import org.drools.solver.core.move.Move;
  * Do not implement directly, but instead extend {@link AbstractForager}.
  * @author Geoffrey De Smet
  */
-public interface Forager extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
+public interface Forager extends LocalSearchSolverLifecycleListener {
 
     void addMove(MoveScope moveScope);
 

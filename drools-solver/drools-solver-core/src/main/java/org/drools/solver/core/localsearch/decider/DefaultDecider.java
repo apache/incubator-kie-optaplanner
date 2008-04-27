@@ -31,8 +31,6 @@ public class DefaultDecider implements Decider {
     public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
         this.localSearchSolver = localSearchSolver;
         selector.setLocalSearchSolver(localSearchSolver);
-        accepter.setLocalSearchSolver(localSearchSolver);
-        forager.setLocalSearchSolver(localSearchSolver);
     }
 
     public void setSelector(Selector selector) {

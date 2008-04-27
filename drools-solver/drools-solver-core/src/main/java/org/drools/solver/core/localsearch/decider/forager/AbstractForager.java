@@ -1,6 +1,5 @@
 package org.drools.solver.core.localsearch.decider.forager;
 
-import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
 import org.slf4j.Logger;
@@ -12,12 +11,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractForager implements Forager {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
-    protected LocalSearchSolver localSearchSolver;
-
-    public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
-        this.localSearchSolver = localSearchSolver;
-    }
 
     // ************************************************************************
     // Worker methods

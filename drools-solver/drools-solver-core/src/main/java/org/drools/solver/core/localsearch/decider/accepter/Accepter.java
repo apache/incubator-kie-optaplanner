@@ -1,6 +1,5 @@
 package org.drools.solver.core.localsearch.decider.accepter;
 
-import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.decider.MoveScope;
 
@@ -10,7 +9,7 @@ import org.drools.solver.core.localsearch.decider.MoveScope;
  * Always extend {@link AbstractAccepter} to avoid future backwards imcompatiblity issues.
  * @author Geoffrey De Smet
  */
-public interface Accepter extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
+public interface Accepter extends LocalSearchSolverLifecycleListener {
 
     /**
      * @param moveScope not null
