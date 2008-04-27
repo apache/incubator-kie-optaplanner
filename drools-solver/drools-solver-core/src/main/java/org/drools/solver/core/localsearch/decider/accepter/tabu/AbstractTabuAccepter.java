@@ -47,12 +47,12 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
     @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         if (completeTabuSize < 0) {
-            throw new IllegalArgumentException("Property completeTabuSize (" + completeTabuSize
-                    + ") is negative.");
+            throw new IllegalArgumentException("The completeTabuSize (" + completeTabuSize
+                    + ") cannot be negative.");
         }
         if (partialTabuSize < 0) {
-            throw new IllegalArgumentException("Property partialTabuSize (" + partialTabuSize
-                    + ") is negative.");
+            throw new IllegalArgumentException("The partialTabuSize (" + partialTabuSize
+                    + ") cannot be negative.");
         }
         if (completeTabuSize + partialTabuSize == 0) {
             throw new IllegalArgumentException("The sum of completeTabuSize and partialTabuSize should be at least 1.");

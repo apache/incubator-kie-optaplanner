@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.lang.ObjectUtils;
 import org.drools.solver.core.localsearch.decider.accepter.Accepter;
 import org.drools.solver.core.localsearch.decider.accepter.CompositeAccepter;
+import org.drools.solver.core.localsearch.decider.accepter.greatdeluge.GreatDelugeAccepter;
 import org.drools.solver.core.localsearch.decider.accepter.simulatedannealing.SimulatedAnnealingAccepter;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.MoveTabuAccepter;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.PropertyTabuAccepter;
@@ -32,6 +34,9 @@ public class AccepterConfig {
     protected Integer partialPropertyTabuSize = null;
     protected Integer completeSolutionTabuSize = null;
     protected Integer partialSolutionTabuSize = null;
+
+    protected Double greatDelugeWaterLevelUpperBoundRate = null;
+    protected Double greatDelugeWaterRisingRate = null;
 
     public Accepter getAccepter() {
         return accepter;
@@ -121,6 +126,14 @@ public class AccepterConfig {
         this.partialSolutionTabuSize = partialSolutionTabuSize;
     }
 
+    public void setGreatDelugeWaterLevelUpperBoundRate(Double greatDelugeWaterLevelUpperBoundRate) {
+        this.greatDelugeWaterLevelUpperBoundRate = greatDelugeWaterLevelUpperBoundRate;
+    }
+
+    public void setGreatDelugeWaterRisingRate(Double greatDelugeWaterRisingRate) {
+        this.greatDelugeWaterRisingRate = greatDelugeWaterRisingRate;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -143,7 +156,7 @@ public class AccepterConfig {
         }
 
         if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.MOVE_TABU))
-                ||  completeMoveTabuSize != null || partialMoveTabuSize != null) {
+                || completeMoveTabuSize != null || partialMoveTabuSize != null) {
             MoveTabuAccepter moveTabuAccepter = new MoveTabuAccepter();
             moveTabuAccepter.setUseUndoMoveAsTabuMove(false);
             if (completeMoveTabuSize != null) {
@@ -155,7 +168,7 @@ public class AccepterConfig {
             accepterList.add(moveTabuAccepter);
         }
         if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.UNDO_MOVE_TABU))
-                ||  completeUndoMoveTabuSize != null || partialUndoMoveTabuSize != null) {
+                || completeUndoMoveTabuSize != null || partialUndoMoveTabuSize != null) {
             MoveTabuAccepter undoMoveTabuAccepter = new MoveTabuAccepter();
             undoMoveTabuAccepter.setUseUndoMoveAsTabuMove(true);
             if (completeUndoMoveTabuSize != null) {
@@ -167,7 +180,7 @@ public class AccepterConfig {
             accepterList.add(undoMoveTabuAccepter);
         }
         if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.PROPERTY_TABU))
-                ||  completePropertyTabuSize != null || partialPropertyTabuSize != null) {
+                || completePropertyTabuSize != null || partialPropertyTabuSize != null) {
             PropertyTabuAccepter propertyTabuAccepter = new PropertyTabuAccepter();
             if (completePropertyTabuSize != null) {
                 propertyTabuAccepter.setCompleteTabuSize(completePropertyTabuSize);
@@ -178,7 +191,7 @@ public class AccepterConfig {
             accepterList.add(propertyTabuAccepter);
         }
         if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.SOLUTION_TABU))
-                ||  completeSolutionTabuSize != null || partialSolutionTabuSize != null) {
+                || completeSolutionTabuSize != null || partialSolutionTabuSize != null) {
             SolutionTabuAccepter solutionTabuAccepter = new SolutionTabuAccepter();
             if (completeSolutionTabuSize != null) {
                 solutionTabuAccepter.setCompleteTabuSize(completeSolutionTabuSize);
@@ -192,10 +205,14 @@ public class AccepterConfig {
             SimulatedAnnealingAccepter simulatedAnnealingAccepter = new SimulatedAnnealingAccepter();
             accepterList.add(simulatedAnnealingAccepter);
         }
-        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.GREAT_DELUGE))) {
-            throw new UnsupportedOperationException();
+        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.GREAT_DELUGE))
+                || greatDelugeWaterLevelUpperBoundRate != null || greatDelugeWaterRisingRate != null) {
+            double waterLevelUpperBoundRate = (Double) ObjectUtils.defaultIfNull(
+                    greatDelugeWaterLevelUpperBoundRate, 1.20);
+            double waterRisingRate = (Double) ObjectUtils.defaultIfNull(
+                    greatDelugeWaterRisingRate, 0.0000001);
+            accepterList.add(new GreatDelugeAccepter(waterLevelUpperBoundRate, waterRisingRate));
         }
-        
         if (accepterList.size() == 1) {
             return accepterList.get(0);
         } else if (accepterList.size() > 1) {
@@ -233,7 +250,7 @@ public class AccepterConfig {
             completeMoveTabuSize = inheritedConfig.getCompleteMoveTabuSize();
         }
         if (partialMoveTabuSize == null) {
-            partialMoveTabuSize = inheritedConfig.getPartialMoveTabuSize();;
+            partialMoveTabuSize = inheritedConfig.getPartialMoveTabuSize();
         }
         if (completeUndoMoveTabuSize == null) {
             completeUndoMoveTabuSize = inheritedConfig.getCompleteUndoMoveTabuSize();
