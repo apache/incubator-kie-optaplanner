@@ -161,7 +161,6 @@ public class LocalSearchSolverConfig {
             }
         }
         RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
-        ruleBaseConfiguration.setShadowProxy(false); // TODO remove me when shadow facts are removed in drools 5
         RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
         try {
             ruleBase.addPackage(packageBuilder.getPackage());
