@@ -42,8 +42,8 @@
                     <!--<version>2.2-beta-1</version>-->
                     <configuration>
                         <descriptors>
-                            <descriptor>src/main/assembly/itc2007Examination/itc2007Examination.xml</descriptor>
-                            <!--<descriptor>src/main/assembly/bin.xml</descriptor>-->
+                            <!--<descriptor>src/main/assembly/itc2007Examination/itc2007Examination.xml</descriptor>-->
+                            <descriptor>src/main/assembly/bin.xml</descriptor>
                             <!--<descriptor>src/main/assembly/src.xml</descriptor>-->
                         </descriptors>
                     </configuration>

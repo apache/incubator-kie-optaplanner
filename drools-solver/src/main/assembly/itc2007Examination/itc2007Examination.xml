@@ -10,16 +10,21 @@
 
     <fileSets>
         <fileSet>
+            <directory>src/main/assembly/itc2007Examination/scripts</directory>
+            <filtered>true</filtered>
+            <outputDirectory/>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/assembly/itc2007Examination/docs</directory>
+            <outputDirectory/>
+        </fileSet>
+        <fileSet>
             <directory>drools-solver-examples/data/itc2007/examination/input</directory>
             <outputDirectory>data/itc2007/examination/input</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>drools-solver-examples/data/itc2007/examination/unsolved</directory>
             <outputDirectory>data/itc2007/examination/unsolved</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>src/main/assembly/itc2007Examination/scripts</directory>
-            <outputDirectory/>
         </fileSet>
         <fileSet>
             <directory>src/main/assembly/emptydir</directory>

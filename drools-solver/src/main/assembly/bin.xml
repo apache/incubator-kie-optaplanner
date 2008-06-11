@@ -16,11 +16,12 @@
         </fileSet>
         <fileSet>
             <directory>src/main/assembly/scripts</directory>
+            <filtered>true</filtered>
             <outputDirectory/>
         </fileSet>
         <!-- Examples -->
         <fileSet>
-            <directory>drools-solver-examples/data/itc2007/examination/unsolved</directory>
+            <directory>drools-solver-examples/data/nqueens/unsolved</directory>
             <outputDirectory>data/nqueens/unsolved</outputDirectory>
         </fileSet>
         <fileSet>
@@ -28,7 +29,7 @@
             <outputDirectory>data/nqueens/solved</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>drools-solver-examples/data/itc2007/examination/unsolved</directory>
+            <directory>drools-solver-examples/data/lessonschedule/unsolved</directory>
             <outputDirectory>data/lessonschedule/unsolved</outputDirectory>
         </fileSet>
         <fileSet>
@@ -36,7 +37,7 @@
             <outputDirectory>data/lessonschedule/solved</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>drools-solver-examples/data/itc2007/examination/unsolved</directory>
+            <directory>drools-solver-examples/data/travelingtournament/smart/unsolved</directory>
             <outputDirectory>data/travelingtournament/unsolved</outputDirectory>
         </fileSet>
         <fileSet>
@@ -44,7 +45,7 @@
             <outputDirectory>data/travelingtournament/solved</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>drools-solver-examples/data/itc2007/examination/unsolved</directory>
+            <directory>drools-solver-examples/data/itc2007/examination/smart/unsolved</directory>
             <outputDirectory>data/itc2007/examination/unsolved</outputDirectory>
         </fileSet>
         <fileSet>
@@ -52,7 +53,7 @@
             <outputDirectory>data/itc2007/examination/solved</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>drools-solver-examples/data/itc2007/examination/unsolved</directory>
+            <directory>drools-solver-examples/data/itc2007/curriculumcourse/unsolved</directory>
             <outputDirectory>data/itc2007/curriculumcourse/unsolved</outputDirectory>
         </fileSet>
         <fileSet>

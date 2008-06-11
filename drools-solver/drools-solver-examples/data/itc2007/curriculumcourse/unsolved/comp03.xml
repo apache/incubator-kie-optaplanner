@@ -1,0 +1,3647 @@
+<org.drools.solver.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule id="1">
+  <id>0</id>
+  <name>Ing0304-1</name>
+  <teacherList id="2">
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="3">
+      <id>10</id>
+      <code>t010</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="4">
+      <id>11</id>
+      <code>t011</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="5">
+      <id>12</id>
+      <code>t012</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="6">
+      <id>50</id>
+      <code>t050</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="7">
+      <id>13</id>
+      <code>t013</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="8">
+      <id>14</id>
+      <code>t014</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="9">
+      <id>52</id>
+      <code>t052</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="10">
+      <id>51</id>
+      <code>t051</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="11">
+      <id>54</id>
+      <code>t054</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="12">
+      <id>53</id>
+      <code>t053</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="13">
+      <id>56</id>
+      <code>t056</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="14">
+      <id>55</id>
+      <code>t055</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="15">
+      <id>58</id>
+      <code>t058</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="16">
+      <id>57</id>
+      <code>t057</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="17">
+      <id>48</id>
+      <code>t048</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="18">
+      <id>49</id>
+      <code>t049</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="19">
+      <id>5</id>
+      <code>t005</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="20">
+      <id>4</id>
+      <code>t004</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="21">
+      <id>7</id>
+      <code>t007</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="22">
+      <id>6</id>
+      <code>t006</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="23">
+      <id>9</id>
+      <code>t009</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="24">
+      <id>8</id>
+      <code>t008</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="25">
+      <id>20</id>
+      <code>t020</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="26">
+      <id>21</id>
+      <code>t021</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="27">
+      <id>24</id>
+      <code>t024</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="28">
+      <id>60</id>
+      <code>t060</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="29">
+      <id>25</id>
+      <code>t025</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="30">
+      <id>22</id>
+      <code>t022</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="31">
+      <id>23</id>
+      <code>t023</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="32">
+      <id>59</id>
+      <code>t059</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="33">
+      <id>18</id>
+      <code>t018</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="34">
+      <id>17</id>
+      <code>t017</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="35">
+      <id>16</id>
+      <code>t016</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="36">
+      <id>15</id>
+      <code>t015</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="37">
+      <id>19</id>
+      <code>t019</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="38">
+      <id>34</id>
+      <code>t034</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="39">
+      <id>33</id>
+      <code>t033</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="40">
+      <id>36</id>
+      <code>t036</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="41">
+      <id>35</id>
+      <code>t035</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="42">
+      <id>30</id>
+      <code>t030</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="43">
+      <id>32</id>
+      <code>t032</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="44">
+      <id>31</id>
+      <code>t031</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="45">
+      <id>26</id>
+      <code>t026</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="46">
+      <id>27</id>
+      <code>t027</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="47">
+      <id>28</id>
+      <code>t028</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="48">
+      <id>29</id>
+      <code>t029</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="49">
+      <id>2</id>
+      <code>t002</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="50">
+      <id>3</id>
+      <code>t003</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="51">
+      <id>0</id>
+      <code>t000</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="52">
+      <id>1</id>
+      <code>t001</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="53">
+      <id>47</id>
+      <code>t047</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="54">
+      <id>46</id>
+      <code>t046</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="55">
+      <id>45</id>
+      <code>t045</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="56">
+      <id>44</id>
+      <code>t044</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="57">
+      <id>43</id>
+      <code>t043</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="58">
+      <id>42</id>
+      <code>t042</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="59">
+      <id>41</id>
+      <code>t041</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="60">
+      <id>40</id>
+      <code>t040</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="61">
+      <id>39</id>
+      <code>t039</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="62">
+      <id>37</id>
+      <code>t037</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="63">
+      <id>38</id>
+      <code>t038</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+  </teacherList>
+  <curriculumList id="64">
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="65">
+      <id>0</id>
+      <code>q000</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="66">
+      <id>1</id>
+      <code>q001</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="67">
+      <id>2</id>
+      <code>q002</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="68">
+      <id>3</id>
+      <code>q003</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="69">
+      <id>4</id>
+      <code>q004</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="70">
+      <id>5</id>
+      <code>q005</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="71">
+      <id>6</id>
+      <code>q006</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="72">
+      <id>7</id>
+      <code>q008</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="73">
+      <id>8</id>
+      <code>q009</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="74">
+      <id>9</id>
+      <code>q010</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="75">
+      <id>10</id>
+      <code>q011</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="76">
+      <id>11</id>
+      <code>q012</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="77">
+      <id>12</id>
+      <code>q013</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="78">
+      <id>13</id>
+      <code>q014</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="79">
+      <id>14</id>
+      <code>q015</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="80">
+      <id>15</id>
+      <code>q016</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="81">
+      <id>16</id>
+      <code>q017</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="82">
+      <id>17</id>
+      <code>q018</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="83">
+      <id>18</id>
+      <code>q019</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="84">
+      <id>19</id>
+      <code>q020</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="85">
+      <id>20</id>
+      <code>q022</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="86">
+      <id>21</id>
+      <code>q023</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="87">
+      <id>22</id>
+      <code>q024</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="88">
+      <id>23</id>
+      <code>q025</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="89">
+      <id>24</id>
+      <code>q026</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="90">
+      <id>25</id>
+      <code>q027</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="91">
+      <id>26</id>
+      <code>q028</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="92">
+      <id>27</id>
+      <code>q029</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="93">
+      <id>28</id>
+      <code>q030</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="94">
+      <id>29</id>
+      <code>q031</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="95">
+      <id>30</id>
+      <code>q032</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="96">
+      <id>31</id>
+      <code>q033</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="97">
+      <id>32</id>
+      <code>q034</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="98">
+      <id>33</id>
+      <code>q035</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="99">
+      <id>34</id>
+      <code>q036</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="100">
+      <id>35</id>
+      <code>q038</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="101">
+      <id>36</id>
+      <code>q039</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="102">
+      <id>37</id>
+      <code>q040</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="103">
+      <id>38</id>
+      <code>q041</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="104">
+      <id>39</id>
+      <code>q042</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="105">
+      <id>40</id>
+      <code>q043</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="106">
+      <id>41</id>
+      <code>q044</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="107">
+      <id>42</id>
+      <code>q045</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="108">
+      <id>43</id>
+      <code>q046</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="109">
+      <id>44</id>
+      <code>q047</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="110">
+      <id>45</id>
+      <code>q048</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="111">
+      <id>46</id>
+      <code>q049</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="112">
+      <id>47</id>
+      <code>q050</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="113">
+      <id>48</id>
+      <code>q051</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="114">
+      <id>49</id>
+      <code>q052</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="115">
+      <id>50</id>
+      <code>q053</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="116">
+      <id>51</id>
+      <code>q054</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="117">
+      <id>52</id>
+      <code>q055</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="118">
+      <id>53</id>
+      <code>q056</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="119">
+      <id>54</id>
+      <code>q057</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="120">
+      <id>55</id>
+      <code>q058</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="121">
+      <id>56</id>
+      <code>q059</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="122">
+      <id>57</id>
+      <code>q060</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="123">
+      <id>58</id>
+      <code>q061</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="124">
+      <id>59</id>
+      <code>q062</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="125">
+      <id>60</id>
+      <code>q063</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="126">
+      <id>61</id>
+      <code>q064</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="127">
+      <id>62</id>
+      <code>q065</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="128">
+      <id>63</id>
+      <code>q066</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="129">
+      <id>64</id>
+      <code>q067</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="130">
+      <id>65</id>
+      <code>q068</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="131">
+      <id>66</id>
+      <code>q069</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="132">
+      <id>67</id>
+      <code>q070</code>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+  </curriculumList>
+  <courseList id="133">
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="134">
+      <id>0</id>
+      <code>ChiGenAn</code>
+      <teacher reference="51"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="135">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="69"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="72"/>
+      </curriculumList>
+      <studentSize>150</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="136">
+      <id>1</id>
+      <code>GeoAn</code>
+      <teacher reference="52"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="137">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="69"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="73"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="113"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="114"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="115"/>
+      </curriculumList>
+      <studentSize>160</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="138">
+      <id>2</id>
+      <code>CamEleAn</code>
+      <teacher reference="49"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="139">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="70"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="94"/>
+      </curriculumList>
+      <studentSize>24</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="140">
+      <id>3</id>
+      <code>FonChiAn</code>
+      <teacher reference="50"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="141">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="70"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="86"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="110"/>
+      </curriculumList>
+      <studentSize>49</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="142">
+      <id>4</id>
+      <code>IngConAn</code>
+      <teacher reference="20"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="143">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="71"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="113"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="114"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="115"/>
+      </curriculumList>
+      <studentSize>100</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="144">
+      <id>5</id>
+      <code>StrIndAn</code>
+      <teacher reference="19"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="145">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="70"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="94"/>
+      </curriculumList>
+      <studentSize>24</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="146">
+      <id>6</id>
+      <code>TecCosAn</code>
+      <teacher reference="22"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="147">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="70"/>
+      </curriculumList>
+      <studentSize>20</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="148">
+      <id>7</id>
+      <code>Mat1Cn</code>
+      <teacher reference="21"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="149">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="68"/>
+      </curriculumList>
+      <studentSize>170</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="150">
+      <id>8</id>
+      <code>MecRazCn</code>
+      <teacher reference="24"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="151">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="69"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="72"/>
+      </curriculumList>
+      <studentSize>150</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="152">
+      <id>9</id>
+      <code>DisCn</code>
+      <teacher reference="23"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="153">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="69"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="72"/>
+      </curriculumList>
+      <studentSize>150</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="154">
+      <id>10</id>
+      <code>TecMatCn</code>
+      <teacher reference="3"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="155">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="72"/>
+      </curriculumList>
+      <studentSize>110</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="156">
+      <id>11</id>
+      <code>ArcTecCn</code>
+      <teacher reference="4"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="157">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="73"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="74"/>
+      </curriculumList>
+      <studentSize>80</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="158">
+      <id>12</id>
+      <code>DisEdiCn</code>
+      <teacher reference="23"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="159">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="74"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="95"/>
+      </curriculumList>
+      <studentSize>44</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="160">
+      <id>13</id>
+      <code>Idr2Cn</code>
+      <teacher reference="5"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="161">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="71"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="73"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="97"/>
+      </curriculumList>
+      <studentSize>64</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="162">
+      <id>14</id>
+      <code>Mat1En</code>
+      <teacher reference="7"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="163">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="75"/>
+      </curriculumList>
+      <studentSize>100</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="164">
+      <id>15</id>
+      <code>ChiStaEn</code>
+      <teacher reference="8"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="165">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="76"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="81"/>
+      </curriculumList>
+      <studentSize>130</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="166">
+      <id>16</id>
+      <code>ConAutEn</code>
+      <teacher reference="36"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="167">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="76"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="81"/>
+      </curriculumList>
+      <studentSize>130</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="168">
+      <id>17</id>
+      <code>RetLogEn</code>
+      <teacher reference="35"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>2</minWorkingDaySize>
+      <curriculumList id="169">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="76"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="106"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="107"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="108"/>
+      </curriculumList>
+      <studentSize>92</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="170">
+      <id>18</id>
+      <code>TeoRetEn</code>
+      <teacher reference="34"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="171">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="76"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="81"/>
+      </curriculumList>
+      <studentSize>130</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="172">
+      <id>19</id>
+      <code>ComEleEn</code>
+      <teacher reference="33"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="173">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="77"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="78"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="79"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="120"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="126"/>
+      </curriculumList>
+      <studentSize>130</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="174">
+      <id>20</id>
+      <code>EleSis1En</code>
+      <teacher reference="37"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>2</minWorkingDaySize>
+      <curriculumList id="175">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="77"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="78"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="79"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="121"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="122"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="123"/>
+      </curriculumList>
+      <studentSize>105</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="176">
+      <id>21</id>
+      <code>MetMatEn</code>
+      <teacher reference="24"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="177">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="79"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="101"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="102"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="105"/>
+      </curriculumList>
+      <studentSize>32</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="178">
+      <id>22</id>
+      <code>RetCal1G1n</code>
+      <teacher reference="25"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="179">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="78"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="82"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="83"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="84"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="103"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="104"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="109"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="110"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="111"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="122"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="123"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="127"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="128"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="129"/>
+      </curriculumList>
+      <studentSize>205</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="180">
+      <id>23</id>
+      <code>Mat1G2n</code>
+      <teacher reference="26"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="181">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="80"/>
+      </curriculumList>
+      <studentSize>170</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="182">
+      <id>24</id>
+      <code>ChiG2n</code>
+      <teacher reference="51"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="183">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="85"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="90"/>
+      </curriculumList>
+      <studentSize>210</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="184">
+      <id>25</id>
+      <code>DisComEsG2n</code>
+      <teacher reference="30"/>
+      <lectureSize>1</lectureSize>
+      <minWorkingDaySize>1</minWorkingDaySize>
+      <curriculumList id="185">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="85"/>
+      </curriculumList>
+      <studentSize>100</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="186">
+      <id>26</id>
+      <code>FonMecG2n</code>
+      <teacher reference="31"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="187">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="85"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="90"/>
+      </curriculumList>
+      <studentSize>210</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="188">
+      <id>27</id>
+      <code>TerAppG2n</code>
+      <teacher reference="27"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="189">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="85"/>
+      </curriculumList>
+      <studentSize>100</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="190">
+      <id>28</id>
+      <code>CalProG2n</code>
+      <teacher reference="29"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="191">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="84"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="88"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="108"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="111"/>
+      </curriculumList>
+      <studentSize>48</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="192">
+      <id>29</id>
+      <code>Mat1Mn</code>
+      <teacher reference="45"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="193">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="89"/>
+      </curriculumList>
+      <studentSize>100</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="194">
+      <id>30</id>
+      <code>DisIndMn</code>
+      <teacher reference="30"/>
+      <lectureSize>2</lectureSize>
+      <minWorkingDaySize>2</minWorkingDaySize>
+      <curriculumList id="195">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="85"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="90"/>
+      </curriculumList>
+      <studentSize>210</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="196">
+      <id>31</id>
+      <code>DisIndEsMn</code>
+      <teacher reference="30"/>
+      <lectureSize>1</lectureSize>
+      <minWorkingDaySize>1</minWorkingDaySize>
+      <curriculumList id="197">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="90"/>
+      </curriculumList>
+      <studentSize>110</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="198">
+      <id>32</id>
+      <code>FluMn</code>
+      <teacher reference="46"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="199">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="90"/>
+      </curriculumList>
+      <studentSize>110</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="200">
+      <id>33</id>
+      <code>ComMecMn</code>
+      <teacher reference="47"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="201">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="91"/>
+      </curriculumList>
+      <studentSize>110</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="202">
+      <id>34</id>
+      <code>CosMacMn</code>
+      <teacher reference="48"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="203">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="91"/>
+      </curriculumList>
+      <studentSize>110</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="204">
+      <id>35</id>
+      <code>TecMec1Mn</code>
+      <teacher reference="42"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="205">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="86"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="87"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="88"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="91"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="124"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="125"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="126"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="130"/>
+      </curriculumList>
+      <studentSize>325</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="206">
+      <id>36</id>
+      <code>Mat1Ar</code>
+      <teacher reference="44"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="207">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="65"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="66"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="67"/>
+      </curriculumList>
+      <studentSize>150</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="208">
+      <id>37</id>
+      <code>FonInfAr</code>
+      <teacher reference="43"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="209">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="65"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="66"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="67"/>
+      </curriculumList>
+      <studentSize>150</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="210">
+      <id>38</id>
+      <code>LabEle1Ar</code>
+      <teacher reference="39"/>
+      <lectureSize>7</lectureSize>
+      <minWorkingDaySize>1</minWorkingDaySize>
+      <curriculumList id="211">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="65"/>
+      </curriculumList>
+      <studentSize>50</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="212">
+      <id>39</id>
+      <code>LabEle2Ar</code>
+      <teacher reference="38"/>
+      <lectureSize>7</lectureSize>
+      <minWorkingDaySize>1</minWorkingDaySize>
+      <curriculumList id="213">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="66"/>
+      </curriculumList>
+      <studentSize>50</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="214">
+      <id>40</id>
+      <code>LabEle3Ar</code>
+      <teacher reference="41"/>
+      <lectureSize>7</lectureSize>
+      <minWorkingDaySize>1</minWorkingDaySize>
+      <curriculumList id="215">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="67"/>
+      </curriculumList>
+      <studentSize>50</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="216">
+      <id>41</id>
+      <code>GeoAppAns</code>
+      <teacher reference="40"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="217">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="92"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="93"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="94"/>
+      </curriculumList>
+      <studentSize>12</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="218">
+      <id>42</id>
+      <code>IdrNumAns</code>
+      <teacher reference="62"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="219">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="92"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="93"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="94"/>
+      </curriculumList>
+      <studentSize>12</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="220">
+      <id>43</id>
+      <code>MecSuoAns</code>
+      <teacher reference="52"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="221">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="93"/>
+      </curriculumList>
+      <studentSize>4</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="222">
+      <id>44</id>
+      <code>PriIngAns</code>
+      <teacher reference="63"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="223">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="94"/>
+      </curriculumList>
+      <studentSize>4</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="224">
+      <id>45</id>
+      <code>StaPenAns</code>
+      <teacher reference="20"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="225">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="92"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="93"/>
+      </curriculumList>
+      <studentSize>8</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="226">
+      <id>46</id>
+      <code>StaAns</code>
+      <teacher reference="29"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="227">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="92"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="93"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="94"/>
+      </curriculumList>
+      <studentSize>12</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="228">
+      <id>47</id>
+      <code>ArcTecCns</code>
+      <teacher reference="4"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="229">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="97"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="98"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="99"/>
+      </curriculumList>
+      <studentSize>16</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="230">
+      <id>48</id>
+      <code>EleTel1Ens</code>
+      <teacher reference="61"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="231">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="83"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="100"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="101"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="102"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="103"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="104"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="105"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="106"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="122"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="123"/>
+      </curriculumList>
+      <studentSize>73</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="232">
+      <id>49</id>
+      <code>SisTel1Ens</code>
+      <teacher reference="60"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="233">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="104"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="105"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="123"/>
+      </curriculumList>
+      <studentSize>23</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="234">
+      <id>50</id>
+      <code>AppIndGns</code>
+      <teacher reference="59"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="235">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="91"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="109"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="110"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="111"/>
+      </curriculumList>
+      <studentSize>122</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="236">
+      <id>51</id>
+      <code>RetCal2Gns</code>
+      <teacher reference="25"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>2</minWorkingDaySize>
+      <curriculumList id="237">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="106"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="107"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="108"/>
+      </curriculumList>
+      <studentSize>12</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="238">
+      <id>52</id>
+      <code>TecCos1Cv</code>
+      <teacher reference="58"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="239">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="71"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="73"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="74"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="113"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="114"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="115"/>
+      </curriculumList>
+      <studentSize>180</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="240">
+      <id>53</id>
+      <code>StoArcCv</code>
+      <teacher reference="57"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="241">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="99"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="113"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="114"/>
+      </curriculumList>
+      <studentSize>48</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="242">
+      <id>54</id>
+      <code>TeoStr1Cv</code>
+      <teacher reference="56"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="243">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="95"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="96"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="113"/>
+      </curriculumList>
+      <studentSize>28</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="244">
+      <id>55</id>
+      <code>MecCom1Cv</code>
+      <teacher reference="55"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="245">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="95"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="96"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="98"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="113"/>
+      </curriculumList>
+      <studentSize>32</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="246">
+      <id>56</id>
+      <code>ArcComCv</code>
+      <teacher reference="54"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="247">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="74"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="116"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="117"/>
+      </curriculumList>
+      <studentSize>70</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="248">
+      <id>57</id>
+      <code>CalAut1Cv</code>
+      <teacher reference="53"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="249">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="96"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="97"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="98"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="99"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="116"/>
+      </curriculumList>
+      <studentSize>35</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="250">
+      <id>58</id>
+      <code>CosZonCv</code>
+      <teacher reference="58"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="251">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="116"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="118"/>
+      </curriculumList>
+      <studentSize>30</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="252">
+      <id>59</id>
+      <code>ImpTec1Cv</code>
+      <teacher reference="17"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="253">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="87"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="109"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="112"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="117"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="119"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="128"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="132"/>
+      </curriculumList>
+      <studentSize>98</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="254">
+      <id>60</id>
+      <code>IdrAppCv</code>
+      <teacher reference="18"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="255">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="118"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="119"/>
+      </curriculumList>
+      <studentSize>30</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="256">
+      <id>61</id>
+      <code>RivSpeCv</code>
+      <teacher reference="6"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="257">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="118"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="119"/>
+      </curriculumList>
+      <studentSize>30</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="258">
+      <id>62</id>
+      <code>CalEle1Ev</code>
+      <teacher reference="10"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="259">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="82"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="100"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="101"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="102"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="103"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="104"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="105"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="107"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="120"/>
+      </curriculumList>
+      <studentSize>93</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="260">
+      <id>63</id>
+      <code>CamEle1Ev</code>
+      <teacher reference="9"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>3</minWorkingDaySize>
+      <curriculumList id="261">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="77"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="78"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="79"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="120"/>
+      </curriculumList>
+      <studentSize>110</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="262">
+      <id>64</id>
+      <code>EleIndEv</code>
+      <teacher reference="12"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="263">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="77"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="100"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="102"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="103"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="121"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="122"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="129"/>
+      </curriculumList>
+      <studentSize>82</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="264">
+      <id>65</id>
+      <code>GesAziGv</code>
+      <teacher reference="11"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="265">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="82"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="83"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="84"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="86"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="87"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="88"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="106"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="107"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="108"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="109"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="110"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="111"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="124"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="125"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="126"/>
+      </curriculumList>
+      <studentSize>224</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="266">
+      <id>66</id>
+      <code>ChiInd1Gv</code>
+      <teacher reference="14"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="267">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="70"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="94"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="124"/>
+      </curriculumList>
+      <studentSize>44</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="268">
+      <id>67</id>
+      <code>OrgPro1Gv</code>
+      <teacher reference="13"/>
+      <lectureSize>3</lectureSize>
+      <minWorkingDaySize>2</minWorkingDaySize>
+      <curriculumList id="269">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="82"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="83"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="84"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="86"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="87"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="88"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="127"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="128"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="129"/>
+      </curriculumList>
+      <studentSize>210</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="270">
+      <id>68</id>
+      <code>Mac1Mv</code>
+      <teacher reference="16"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="271">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="124"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="125"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="130"/>
+      </curriculumList>
+      <studentSize>120</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="272">
+      <id>69</id>
+      <code>TerAppMv</code>
+      <teacher reference="15"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="273">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="112"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="130"/>
+      </curriculumList>
+      <studentSize>64</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="274">
+      <id>70</id>
+      <code>DisAssMv</code>
+      <teacher reference="32"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>4</minWorkingDaySize>
+      <curriculumList id="275">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="131"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="132"/>
+      </curriculumList>
+      <studentSize>65</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="276">
+      <id>71</id>
+      <code>MecVibMn</code>
+      <teacher reference="28"/>
+      <lectureSize>5</lectureSize>
+      <minWorkingDaySize>5</minWorkingDaySize>
+      <curriculumList id="277">
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="131"/>
+        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="132"/>
+      </curriculumList>
+      <studentSize>65</studentSize>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+  </courseList>
+  <dayList id="278">
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="279">
+      <id>0</id>
+      <dayIndex>0</dayIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="280">
+      <id>1</id>
+      <dayIndex>1</dayIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="281">
+      <id>2</id>
+      <dayIndex>2</dayIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="282">
+      <id>3</id>
+      <dayIndex>3</dayIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="283">
+      <id>4</id>
+      <dayIndex>4</dayIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
+  </dayList>
+  <timeslotList id="284">
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="285">
+      <id>0</id>
+      <timeslotIndex>0</timeslotIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="286">
+      <id>1</id>
+      <timeslotIndex>1</timeslotIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="287">
+      <id>2</id>
+      <timeslotIndex>2</timeslotIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="288">
+      <id>3</id>
+      <timeslotIndex>3</timeslotIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="289">
+      <id>4</id>
+      <timeslotIndex>4</timeslotIndex>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
+  </timeslotList>
+  <periodList id="290">
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="291">
+      <id>0</id>
+      <day reference="279"/>
+      <timeslot reference="285"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="292">
+      <id>1</id>
+      <day reference="279"/>
+      <timeslot reference="286"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="293">
+      <id>2</id>
+      <day reference="279"/>
+      <timeslot reference="287"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="294">
+      <id>3</id>
+      <day reference="279"/>
+      <timeslot reference="288"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="295">
+      <id>4</id>
+      <day reference="279"/>
+      <timeslot reference="289"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="296">
+      <id>5</id>
+      <day reference="280"/>
+      <timeslot reference="285"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="297">
+      <id>6</id>
+      <day reference="280"/>
+      <timeslot reference="286"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="298">
+      <id>7</id>
+      <day reference="280"/>
+      <timeslot reference="287"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="299">
+      <id>8</id>
+      <day reference="280"/>
+      <timeslot reference="288"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="300">
+      <id>9</id>
+      <day reference="280"/>
+      <timeslot reference="289"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="301">
+      <id>10</id>
+      <day reference="281"/>
+      <timeslot reference="285"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="302">
+      <id>11</id>
+      <day reference="281"/>
+      <timeslot reference="286"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="303">
+      <id>12</id>
+      <day reference="281"/>
+      <timeslot reference="287"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="304">
+      <id>13</id>
+      <day reference="281"/>
+      <timeslot reference="288"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="305">
+      <id>14</id>
+      <day reference="281"/>
+      <timeslot reference="289"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="306">
+      <id>15</id>
+      <day reference="282"/>
+      <timeslot reference="285"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="307">
+      <id>16</id>
+      <day reference="282"/>
+      <timeslot reference="286"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="308">
+      <id>17</id>
+      <day reference="282"/>
+      <timeslot reference="287"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="309">
+      <id>18</id>
+      <day reference="282"/>
+      <timeslot reference="288"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="310">
+      <id>19</id>
+      <day reference="282"/>
+      <timeslot reference="289"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="311">
+      <id>20</id>
+      <day reference="283"/>
+      <timeslot reference="285"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="312">
+      <id>21</id>
+      <day reference="283"/>
+      <timeslot reference="286"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="313">
+      <id>22</id>
+      <day reference="283"/>
+      <timeslot reference="287"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="314">
+      <id>23</id>
+      <day reference="283"/>
+      <timeslot reference="288"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="315">
+      <id>24</id>
+      <day reference="283"/>
+      <timeslot reference="289"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+  </periodList>
+  <roomList id="316">
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="317">
+      <id>0</id>
+      <code>36</code>
+      <capacity>42</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="318">
+      <id>1</id>
+      <code>37</code>
+      <capacity>42</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="319">
+      <id>2</id>
+      <code>38</code>
+      <capacity>48</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="320">
+      <id>3</id>
+      <code>31</code>
+      <capacity>50</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="321">
+      <id>4</id>
+      <code>27</code>
+      <capacity>100</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="322">
+      <id>5</id>
+      <code>B</code>
+      <capacity>216</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="323">
+      <id>6</id>
+      <code>D</code>
+      <capacity>216</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="324">
+      <id>7</id>
+      <code>E</code>
+      <capacity>216</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="325">
+      <id>8</id>
+      <code>F</code>
+      <capacity>216</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="326">
+      <id>9</id>
+      <code>G</code>
+      <capacity>216</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="327">
+      <id>10</id>
+      <code>A</code>
+      <capacity>312</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="328">
+      <id>11</id>
+      <code>L</code>
+      <capacity>336</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="329">
+      <id>12</id>
+      <code>50</code>
+      <capacity>80</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="330">
+      <id>13</id>
+      <code>52</code>
+      <capacity>90</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="331">
+      <id>14</id>
+      <code>DS1</code>
+      <capacity>90</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="332">
+      <id>15</id>
+      <code>DS2</code>
+      <capacity>90</capacity>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+  </roomList>
+  <unavailablePeriodConstraintList id="333">
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="334">
+      <id>0</id>
+      <course reference="134"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="335">
+      <id>1</id>
+      <course reference="134"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="336">
+      <id>2</id>
+      <course reference="134"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="337">
+      <id>3</id>
+      <course reference="138"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="338">
+      <id>4</id>
+      <course reference="138"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="339">
+      <id>5</id>
+      <course reference="138"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="340">
+      <id>6</id>
+      <course reference="138"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="341">
+      <id>7</id>
+      <course reference="138"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="342">
+      <id>8</id>
+      <course reference="138"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="343">
+      <id>9</id>
+      <course reference="138"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="344">
+      <id>10</id>
+      <course reference="138"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="345">
+      <id>11</id>
+      <course reference="140"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="346">
+      <id>12</id>
+      <course reference="140"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="347">
+      <id>13</id>
+      <course reference="140"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="348">
+      <id>14</id>
+      <course reference="140"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="349">
+      <id>15</id>
+      <course reference="144"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="350">
+      <id>16</id>
+      <course reference="144"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="351">
+      <id>17</id>
+      <course reference="144"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="352">
+      <id>18</id>
+      <course reference="144"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="353">
+      <id>19</id>
+      <course reference="144"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="354">
+      <id>20</id>
+      <course reference="146"/>
+      <period reference="296"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="355">
+      <id>21</id>
+      <course reference="146"/>
+      <period reference="297"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="356">
+      <id>22</id>
+      <course reference="146"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="357">
+      <id>23</id>
+      <course reference="146"/>
+      <period reference="299"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="358">
+      <id>24</id>
+      <course reference="146"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="359">
+      <id>25</id>
+      <course reference="146"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="360">
+      <id>26</id>
+      <course reference="146"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="361">
+      <id>27</id>
+      <course reference="146"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="362">
+      <id>28</id>
+      <course reference="148"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="363">
+      <id>29</id>
+      <course reference="148"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="364">
+      <id>30</id>
+      <course reference="148"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="365">
+      <id>31</id>
+      <course reference="148"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="366">
+      <id>32</id>
+      <course reference="148"/>
+      <period reference="299"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="367">
+      <id>33</id>
+      <course reference="148"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="368">
+      <id>34</id>
+      <course reference="148"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="369">
+      <id>35</id>
+      <course reference="148"/>
+      <period reference="304"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="370">
+      <id>36</id>
+      <course reference="148"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="371">
+      <id>37</id>
+      <course reference="148"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="372">
+      <id>38</id>
+      <course reference="148"/>
+      <period reference="309"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="373">
+      <id>39</id>
+      <course reference="148"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="374">
+      <id>40</id>
+      <course reference="148"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="375">
+      <id>41</id>
+      <course reference="148"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="376">
+      <id>42</id>
+      <course reference="148"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="377">
+      <id>43</id>
+      <course reference="150"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="378">
+      <id>44</id>
+      <course reference="150"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="379">
+      <id>45</id>
+      <course reference="150"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="380">
+      <id>46</id>
+      <course reference="150"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="381">
+      <id>47</id>
+      <course reference="150"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="382">
+      <id>48</id>
+      <course reference="154"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="383">
+      <id>49</id>
+      <course reference="154"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="384">
+      <id>50</id>
+      <course reference="154"/>
+      <period reference="296"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="385">
+      <id>51</id>
+      <course reference="154"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="386">
+      <id>52</id>
+      <course reference="154"/>
+      <period reference="301"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="387">
+      <id>53</id>
+      <course reference="154"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="388">
+      <id>54</id>
+      <course reference="154"/>
+      <period reference="306"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="389">
+      <id>55</id>
+      <course reference="154"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="390">
+      <id>56</id>
+      <course reference="156"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="391">
+      <id>57</id>
+      <course reference="156"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="392">
+      <id>58</id>
+      <course reference="156"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="393">
+      <id>59</id>
+      <course reference="156"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="394">
+      <id>60</id>
+      <course reference="156"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="395">
+      <id>61</id>
+      <course reference="156"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="396">
+      <id>62</id>
+      <course reference="156"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="397">
+      <id>63</id>
+      <course reference="156"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="398">
+      <id>64</id>
+      <course reference="160"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="399">
+      <id>65</id>
+      <course reference="160"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="400">
+      <id>66</id>
+      <course reference="160"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="401">
+      <id>67</id>
+      <course reference="160"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="402">
+      <id>68</id>
+      <course reference="160"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="403">
+      <id>69</id>
+      <course reference="162"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="404">
+      <id>70</id>
+      <course reference="162"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="405">
+      <id>71</id>
+      <course reference="162"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="406">
+      <id>72</id>
+      <course reference="162"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="407">
+      <id>73</id>
+      <course reference="162"/>
+      <period reference="299"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="408">
+      <id>74</id>
+      <course reference="162"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="409">
+      <id>75</id>
+      <course reference="162"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="410">
+      <id>76</id>
+      <course reference="162"/>
+      <period reference="304"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="411">
+      <id>77</id>
+      <course reference="162"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="412">
+      <id>78</id>
+      <course reference="162"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="413">
+      <id>79</id>
+      <course reference="162"/>
+      <period reference="309"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="414">
+      <id>80</id>
+      <course reference="162"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="415">
+      <id>81</id>
+      <course reference="162"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="416">
+      <id>82</id>
+      <course reference="162"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="417">
+      <id>83</id>
+      <course reference="162"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="418">
+      <id>84</id>
+      <course reference="168"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="419">
+      <id>85</id>
+      <course reference="168"/>
+      <period reference="299"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="420">
+      <id>86</id>
+      <course reference="168"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="421">
+      <id>87</id>
+      <course reference="168"/>
+      <period reference="301"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="422">
+      <id>88</id>
+      <course reference="168"/>
+      <period reference="302"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="423">
+      <id>89</id>
+      <course reference="168"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="424">
+      <id>90</id>
+      <course reference="168"/>
+      <period reference="304"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="425">
+      <id>91</id>
+      <course reference="168"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="426">
+      <id>92</id>
+      <course reference="168"/>
+      <period reference="306"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="427">
+      <id>93</id>
+      <course reference="168"/>
+      <period reference="307"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="428">
+      <id>94</id>
+      <course reference="168"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="429">
+      <id>95</id>
+      <course reference="168"/>
+      <period reference="309"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="430">
+      <id>96</id>
+      <course reference="168"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="431">
+      <id>97</id>
+      <course reference="168"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="432">
+      <id>98</id>
+      <course reference="168"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="433">
+      <id>99</id>
+      <course reference="168"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="434">
+      <id>100</id>
+      <course reference="168"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="435">
+      <id>101</id>
+      <course reference="168"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="436">
+      <id>102</id>
+      <course reference="172"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="437">
+      <id>103</id>
+      <course reference="172"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="438">
+      <id>104</id>
+      <course reference="172"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="439">
+      <id>105</id>
+      <course reference="172"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="440">
+      <id>106</id>
+      <course reference="172"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="441">
+      <id>107</id>
+      <course reference="172"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="442">
+      <id>108</id>
+      <course reference="172"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="443">
+      <id>109</id>
+      <course reference="172"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="444">
+      <id>110</id>
+      <course reference="174"/>
+      <period reference="296"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="445">
+      <id>111</id>
+      <course reference="174"/>
+      <period reference="297"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="446">
+      <id>112</id>
+      <course reference="174"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="447">
+      <id>113</id>
+      <course reference="174"/>
+      <period reference="299"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="448">
+      <id>114</id>
+      <course reference="174"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="449">
+      <id>115</id>
+      <course reference="174"/>
+      <period reference="306"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="450">
+      <id>116</id>
+      <course reference="174"/>
+      <period reference="307"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="451">
+      <id>117</id>
+      <course reference="174"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="452">
+      <id>118</id>
+      <course reference="176"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="453">
+      <id>119</id>
+      <course reference="176"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="454">
+      <id>120</id>
+      <course reference="176"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="455">
+      <id>121</id>
+      <course reference="176"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="456">
+      <id>122</id>
+      <course reference="176"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="457">
+      <id>123</id>
+      <course reference="178"/>
+      <period reference="306"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="458">
+      <id>124</id>
+      <course reference="178"/>
+      <period reference="307"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="459">
+      <id>125</id>
+      <course reference="178"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="460">
+      <id>126</id>
+      <course reference="178"/>
+      <period reference="309"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="461">
+      <id>127</id>
+      <course reference="178"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="462">
+      <id>128</id>
+      <course reference="178"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="463">
+      <id>129</id>
+      <course reference="178"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="464">
+      <id>130</id>
+      <course reference="178"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="465">
+      <id>131</id>
+      <course reference="180"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="466">
+      <id>132</id>
+      <course reference="180"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="467">
+      <id>133</id>
+      <course reference="180"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="468">
+      <id>134</id>
+      <course reference="180"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="469">
+      <id>135</id>
+      <course reference="180"/>
+      <period reference="299"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="470">
+      <id>136</id>
+      <course reference="180"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="471">
+      <id>137</id>
+      <course reference="180"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="472">
+      <id>138</id>
+      <course reference="180"/>
+      <period reference="304"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="473">
+      <id>139</id>
+      <course reference="180"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="474">
+      <id>140</id>
+      <course reference="180"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="475">
+      <id>141</id>
+      <course reference="180"/>
+      <period reference="309"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="476">
+      <id>142</id>
+      <course reference="180"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="477">
+      <id>143</id>
+      <course reference="180"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="478">
+      <id>144</id>
+      <course reference="180"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="479">
+      <id>145</id>
+      <course reference="180"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="480">
+      <id>146</id>
+      <course reference="182"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="481">
+      <id>147</id>
+      <course reference="182"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="482">
+      <id>148</id>
+      <course reference="182"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="483">
+      <id>149</id>
+      <course reference="188"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="484">
+      <id>150</id>
+      <course reference="188"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="485">
+      <id>151</id>
+      <course reference="188"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="486">
+      <id>152</id>
+      <course reference="188"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="487">
+      <id>153</id>
+      <course reference="188"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="488">
+      <id>154</id>
+      <course reference="188"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="489">
+      <id>155</id>
+      <course reference="188"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="490">
+      <id>156</id>
+      <course reference="188"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="491">
+      <id>157</id>
+      <course reference="190"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="492">
+      <id>158</id>
+      <course reference="190"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="493">
+      <id>159</id>
+      <course reference="190"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="494">
+      <id>160</id>
+      <course reference="190"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="495">
+      <id>161</id>
+      <course reference="190"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="496">
+      <id>162</id>
+      <course reference="190"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="497">
+      <id>163</id>
+      <course reference="190"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="498">
+      <id>164</id>
+      <course reference="190"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="499">
+      <id>165</id>
+      <course reference="190"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="500">
+      <id>166</id>
+      <course reference="192"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="501">
+      <id>167</id>
+      <course reference="192"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="502">
+      <id>168</id>
+      <course reference="192"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="503">
+      <id>169</id>
+      <course reference="192"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="504">
+      <id>170</id>
+      <course reference="192"/>
+      <period reference="299"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="505">
+      <id>171</id>
+      <course reference="192"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="506">
+      <id>172</id>
+      <course reference="192"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="507">
+      <id>173</id>
+      <course reference="192"/>
+      <period reference="304"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="508">
+      <id>174</id>
+      <course reference="192"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="509">
+      <id>175</id>
+      <course reference="192"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="510">
+      <id>176</id>
+      <course reference="192"/>
+      <period reference="309"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="511">
+      <id>177</id>
+      <course reference="192"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="512">
+      <id>178</id>
+      <course reference="192"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="513">
+      <id>179</id>
+      <course reference="192"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="514">
+      <id>180</id>
+      <course reference="192"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="515">
+      <id>181</id>
+      <course reference="194"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="516">
+      <id>182</id>
+      <course reference="194"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="517">
+      <id>183</id>
+      <course reference="194"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="518">
+      <id>184</id>
+      <course reference="194"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="519">
+      <id>185</id>
+      <course reference="194"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="520">
+      <id>186</id>
+      <course reference="194"/>
+      <period reference="296"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="521">
+      <id>187</id>
+      <course reference="194"/>
+      <period reference="297"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="522">
+      <id>188</id>
+      <course reference="194"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="523">
+      <id>189</id>
+      <course reference="194"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="524">
+      <id>190</id>
+      <course reference="200"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="525">
+      <id>191</id>
+      <course reference="200"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="526">
+      <id>192</id>
+      <course reference="200"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="527">
+      <id>193</id>
+      <course reference="200"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="528">
+      <id>194</id>
+      <course reference="200"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="529">
+      <id>195</id>
+      <course reference="200"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="530">
+      <id>196</id>
+      <course reference="200"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="531">
+      <id>197</id>
+      <course reference="200"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="532">
+      <id>198</id>
+      <course reference="202"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="533">
+      <id>199</id>
+      <course reference="202"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="534">
+      <id>200</id>
+      <course reference="202"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="535">
+      <id>201</id>
+      <course reference="202"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="536">
+      <id>202</id>
+      <course reference="202"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="537">
+      <id>203</id>
+      <course reference="202"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="538">
+      <id>204</id>
+      <course reference="202"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="539">
+      <id>205</id>
+      <course reference="202"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="540">
+      <id>206</id>
+      <course reference="204"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="541">
+      <id>207</id>
+      <course reference="204"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="542">
+      <id>208</id>
+      <course reference="204"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="543">
+      <id>209</id>
+      <course reference="204"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="544">
+      <id>210</id>
+      <course reference="204"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="545">
+      <id>211</id>
+      <course reference="204"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="546">
+      <id>212</id>
+      <course reference="204"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="547">
+      <id>213</id>
+      <course reference="204"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="548">
+      <id>214</id>
+      <course reference="218"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="549">
+      <id>215</id>
+      <course reference="218"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="550">
+      <id>216</id>
+      <course reference="218"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="551">
+      <id>217</id>
+      <course reference="218"/>
+      <period reference="307"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="552">
+      <id>218</id>
+      <course reference="218"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="553">
+      <id>219</id>
+      <course reference="218"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="554">
+      <id>220</id>
+      <course reference="218"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="555">
+      <id>221</id>
+      <course reference="218"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="556">
+      <id>222</id>
+      <course reference="222"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="557">
+      <id>223</id>
+      <course reference="222"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="558">
+      <id>224</id>
+      <course reference="222"/>
+      <period reference="296"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="559">
+      <id>225</id>
+      <course reference="222"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="560">
+      <id>226</id>
+      <course reference="222"/>
+      <period reference="301"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="561">
+      <id>227</id>
+      <course reference="222"/>
+      <period reference="306"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="562">
+      <id>228</id>
+      <course reference="222"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="563">
+      <id>229</id>
+      <course reference="226"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="564">
+      <id>230</id>
+      <course reference="226"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="565">
+      <id>231</id>
+      <course reference="226"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="566">
+      <id>232</id>
+      <course reference="226"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="567">
+      <id>233</id>
+      <course reference="226"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="568">
+      <id>234</id>
+      <course reference="226"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="569">
+      <id>235</id>
+      <course reference="226"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="570">
+      <id>236</id>
+      <course reference="226"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="571">
+      <id>237</id>
+      <course reference="226"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="572">
+      <id>238</id>
+      <course reference="228"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="573">
+      <id>239</id>
+      <course reference="228"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="574">
+      <id>240</id>
+      <course reference="228"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="575">
+      <id>241</id>
+      <course reference="228"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="576">
+      <id>242</id>
+      <course reference="228"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="577">
+      <id>243</id>
+      <course reference="228"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="578">
+      <id>244</id>
+      <course reference="228"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="579">
+      <id>245</id>
+      <course reference="228"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="580">
+      <id>246</id>
+      <course reference="230"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="581">
+      <id>247</id>
+      <course reference="230"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="582">
+      <id>248</id>
+      <course reference="230"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="583">
+      <id>249</id>
+      <course reference="230"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="584">
+      <id>250</id>
+      <course reference="230"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="585">
+      <id>251</id>
+      <course reference="230"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="586">
+      <id>252</id>
+      <course reference="230"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="587">
+      <id>253</id>
+      <course reference="230"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="588">
+      <id>254</id>
+      <course reference="234"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="589">
+      <id>255</id>
+      <course reference="234"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="590">
+      <id>256</id>
+      <course reference="234"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="591">
+      <id>257</id>
+      <course reference="234"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="592">
+      <id>258</id>
+      <course reference="234"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="593">
+      <id>259</id>
+      <course reference="234"/>
+      <period reference="296"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="594">
+      <id>260</id>
+      <course reference="234"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="595">
+      <id>261</id>
+      <course reference="234"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="596">
+      <id>262</id>
+      <course reference="234"/>
+      <period reference="304"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="597">
+      <id>263</id>
+      <course reference="234"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="598">
+      <id>264</id>
+      <course reference="234"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="599">
+      <id>265</id>
+      <course reference="234"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="600">
+      <id>266</id>
+      <course reference="234"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="601">
+      <id>267</id>
+      <course reference="234"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="602">
+      <id>268</id>
+      <course reference="234"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="603">
+      <id>269</id>
+      <course reference="234"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="604">
+      <id>270</id>
+      <course reference="234"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="605">
+      <id>271</id>
+      <course reference="236"/>
+      <period reference="306"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="606">
+      <id>272</id>
+      <course reference="236"/>
+      <period reference="307"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="607">
+      <id>273</id>
+      <course reference="236"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="608">
+      <id>274</id>
+      <course reference="236"/>
+      <period reference="309"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="609">
+      <id>275</id>
+      <course reference="236"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="610">
+      <id>276</id>
+      <course reference="236"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="611">
+      <id>277</id>
+      <course reference="236"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="612">
+      <id>278</id>
+      <course reference="236"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="613">
+      <id>279</id>
+      <course reference="238"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="614">
+      <id>280</id>
+      <course reference="238"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="615">
+      <id>281</id>
+      <course reference="238"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="616">
+      <id>282</id>
+      <course reference="238"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="617">
+      <id>283</id>
+      <course reference="238"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="618">
+      <id>284</id>
+      <course reference="240"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="619">
+      <id>285</id>
+      <course reference="240"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="620">
+      <id>286</id>
+      <course reference="240"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="621">
+      <id>287</id>
+      <course reference="240"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="622">
+      <id>288</id>
+      <course reference="240"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="623">
+      <id>289</id>
+      <course reference="242"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="624">
+      <id>290</id>
+      <course reference="242"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="625">
+      <id>291</id>
+      <course reference="242"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="626">
+      <id>292</id>
+      <course reference="242"/>
+      <period reference="296"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="627">
+      <id>293</id>
+      <course reference="242"/>
+      <period reference="297"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="628">
+      <id>294</id>
+      <course reference="242"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="629">
+      <id>295</id>
+      <course reference="242"/>
+      <period reference="304"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="630">
+      <id>296</id>
+      <course reference="242"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="631">
+      <id>297</id>
+      <course reference="246"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="632">
+      <id>298</id>
+      <course reference="246"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="633">
+      <id>299</id>
+      <course reference="246"/>
+      <period reference="302"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="634">
+      <id>300</id>
+      <course reference="246"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="635">
+      <id>301</id>
+      <course reference="246"/>
+      <period reference="304"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="636">
+      <id>302</id>
+      <course reference="246"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="637">
+      <id>303</id>
+      <course reference="248"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="638">
+      <id>304</id>
+      <course reference="248"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="639">
+      <id>305</id>
+      <course reference="248"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="640">
+      <id>306</id>
+      <course reference="248"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="641">
+      <id>307</id>
+      <course reference="248"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="642">
+      <id>308</id>
+      <course reference="248"/>
+      <period reference="296"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="643">
+      <id>309</id>
+      <course reference="248"/>
+      <period reference="297"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="644">
+      <id>310</id>
+      <course reference="248"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="645">
+      <id>311</id>
+      <course reference="250"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="646">
+      <id>312</id>
+      <course reference="250"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="647">
+      <id>313</id>
+      <course reference="250"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="648">
+      <id>314</id>
+      <course reference="250"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="649">
+      <id>315</id>
+      <course reference="250"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="650">
+      <id>316</id>
+      <course reference="250"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="651">
+      <id>317</id>
+      <course reference="252"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="652">
+      <id>318</id>
+      <course reference="254"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="653">
+      <id>319</id>
+      <course reference="254"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="654">
+      <id>320</id>
+      <course reference="254"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="655">
+      <id>321</id>
+      <course reference="254"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="656">
+      <id>322</id>
+      <course reference="254"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="657">
+      <id>323</id>
+      <course reference="258"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="658">
+      <id>324</id>
+      <course reference="258"/>
+      <period reference="300"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="659">
+      <id>325</id>
+      <course reference="258"/>
+      <period reference="305"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="660">
+      <id>326</id>
+      <course reference="258"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="661">
+      <id>327</id>
+      <course reference="258"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="662">
+      <id>328</id>
+      <course reference="260"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="663">
+      <id>329</id>
+      <course reference="260"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="664">
+      <id>330</id>
+      <course reference="260"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="665">
+      <id>331</id>
+      <course reference="260"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="666">
+      <id>332</id>
+      <course reference="260"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="667">
+      <id>333</id>
+      <course reference="260"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="668">
+      <id>334</id>
+      <course reference="260"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="669">
+      <id>335</id>
+      <course reference="260"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="670">
+      <id>336</id>
+      <course reference="262"/>
+      <period reference="309"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="671">
+      <id>337</id>
+      <course reference="262"/>
+      <period reference="310"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="672">
+      <id>338</id>
+      <course reference="262"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="673">
+      <id>339</id>
+      <course reference="262"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="674">
+      <id>340</id>
+      <course reference="262"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="675">
+      <id>341</id>
+      <course reference="262"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="676">
+      <id>342</id>
+      <course reference="262"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="677">
+      <id>343</id>
+      <course reference="264"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="678">
+      <id>344</id>
+      <course reference="264"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="679">
+      <id>345</id>
+      <course reference="264"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="680">
+      <id>346</id>
+      <course reference="264"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="681">
+      <id>347</id>
+      <course reference="264"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="682">
+      <id>348</id>
+      <course reference="266"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="683">
+      <id>349</id>
+      <course reference="266"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="684">
+      <id>350</id>
+      <course reference="266"/>
+      <period reference="311"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="685">
+      <id>351</id>
+      <course reference="266"/>
+      <period reference="312"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="686">
+      <id>352</id>
+      <course reference="266"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="687">
+      <id>353</id>
+      <course reference="266"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="688">
+      <id>354</id>
+      <course reference="266"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="689">
+      <id>355</id>
+      <course reference="268"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="690">
+      <id>356</id>
+      <course reference="268"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="691">
+      <id>357</id>
+      <course reference="268"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="692">
+      <id>358</id>
+      <course reference="268"/>
+      <period reference="294"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="693">
+      <id>359</id>
+      <course reference="268"/>
+      <period reference="295"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="694">
+      <id>360</id>
+      <course reference="268"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="695">
+      <id>361</id>
+      <course reference="268"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="696">
+      <id>362</id>
+      <course reference="268"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="697">
+      <id>363</id>
+      <course reference="270"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="698">
+      <id>364</id>
+      <course reference="270"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="699">
+      <id>365</id>
+      <course reference="270"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="700">
+      <id>366</id>
+      <course reference="270"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="701">
+      <id>367</id>
+      <course reference="270"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="702">
+      <id>368</id>
+      <course reference="272"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="703">
+      <id>369</id>
+      <course reference="272"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="704">
+      <id>370</id>
+      <course reference="272"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="705">
+      <id>371</id>
+      <course reference="272"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="706">
+      <id>372</id>
+      <course reference="274"/>
+      <period reference="291"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="707">
+      <id>373</id>
+      <course reference="274"/>
+      <period reference="292"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="708">
+      <id>374</id>
+      <course reference="274"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="709">
+      <id>375</id>
+      <course reference="274"/>
+      <period reference="314"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="710">
+      <id>376</id>
+      <course reference="274"/>
+      <period reference="315"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="711">
+      <id>377</id>
+      <course reference="276"/>
+      <period reference="293"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="712">
+      <id>378</id>
+      <course reference="276"/>
+      <period reference="298"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="713">
+      <id>379</id>
+      <course reference="276"/>
+      <period reference="303"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="714">
+      <id>380</id>
+      <course reference="276"/>
+      <period reference="308"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="715">
+      <id>381</id>
+      <course reference="276"/>
+      <period reference="313"/>
+    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+  </unavailablePeriodConstraintList>
+</org.drools.solver.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule>
