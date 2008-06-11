@@ -18,7 +18,7 @@
             <outputDirectory>data/itc2007/examination/unsolved</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>src/main/assembly/scripts</directory>
+            <directory>src/main/assembly/itc2007Examination/scripts</directory>
             <outputDirectory/>
         </fileSet>
         <fileSet>
@@ -49,6 +49,5 @@
             </binaries>
         </moduleSet>
     </moduleSets>
-
 
 </assembly>
