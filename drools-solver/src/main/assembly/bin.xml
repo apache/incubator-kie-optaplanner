@@ -10,9 +10,12 @@
 
     <fileSets>
         <fileSet>
+          <directory>..</directory>
           <includes>
-            <include>../LICENSE-ASL-2.0.txt</include>
+            <include>LICENSE-ASL-2.0.txt</include>
+            <include>JBossORG-EULA.txt</include>
           </includes>
+          <outputDirectory/>
         </fileSet>
         <fileSet>
             <directory>src/main/assembly/scripts</directory>
