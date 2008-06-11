@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
     <name>Drools :: Solver parent</name>
     <description>
-        Drools solver ... TODO
+        Drools solver parent pom ... TODO
     </description>
 
     <repositories>
