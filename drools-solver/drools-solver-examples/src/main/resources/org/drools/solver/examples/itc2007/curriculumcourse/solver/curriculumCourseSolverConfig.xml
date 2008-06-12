@@ -39,5 +39,28 @@
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
+    <!-- Great deluge experiments: -->
+    <!--<selector>-->
+        <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
+            <!--<relativeSelection>0.002</relativeSelection>-->
+        <!--</selector>-->
+        <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
+            <!--<relativeSelection>0.002</relativeSelection>-->
+        <!--</selector>-->
+        <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+            <!--<shuffle>true</shuffle>-->
+        <!--</selector>-->
+    <!--</selector>-->
+    <!--<accepter>-->
+        <!--<greatDelugeWaterLevelUpperBoundRate>1.30</greatDelugeWaterLevelUpperBoundRate>-->
+        <!--<greatDelugeWaterRisingRate>0.000000143</greatDelugeWaterRisingRate>-->
+        <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
+    <!--</accepter>-->
+    <!--<forager>-->
+        <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
+    <!--</forager>-->
 </localSearchSolver>
         
