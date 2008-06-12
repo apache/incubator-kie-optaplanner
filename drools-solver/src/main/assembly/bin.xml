@@ -22,6 +22,11 @@
             <filtered>true</filtered>
             <outputDirectory/>
         </fileSet>
+        <fileSet>
+            <directory>src/main/assembly/docs</directory>
+            <filtered>true</filtered>
+            <outputDirectory/>
+        </fileSet>
         <!-- Examples -->
         <fileSet>
             <directory>drools-solver-examples/data/nqueens/unsolved</directory>
