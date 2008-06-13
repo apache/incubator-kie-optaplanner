@@ -21,7 +21,6 @@ public abstract class CachedMoveFactory extends AbstractMoveFactory {
 
     public abstract List<Move> createCachedMoveList(Solution solution);
 
-    @Override
     public List<Move> createMoveList(Solution solution) {
         // Shallow copy so it can be shuffled and filtered etc
         return new ArrayList<Move>(cachedMoveList);

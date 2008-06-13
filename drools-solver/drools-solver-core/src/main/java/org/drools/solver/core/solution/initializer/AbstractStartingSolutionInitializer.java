@@ -15,7 +15,6 @@ public abstract class AbstractStartingSolutionInitializer implements StartingSol
     // Worker methods
     // ************************************************************************
 
-    @Override
     public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
         return false;
     }

@@ -136,7 +136,6 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         return stepScope;
     }
 
-    @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         localSearchSolverScope.resetTimeMillisSpend();
         logger.info("Solving with random seed ({}).", randomSeed);
@@ -155,28 +154,24 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         decider.solvingStarted(localSearchSolverScope);
     }
 
-    @Override
     public void beforeDeciding(StepScope stepScope) {
         bestSolutionRecaller.beforeDeciding(stepScope);
         finish.beforeDeciding(stepScope);
         decider.beforeDeciding(stepScope);
     }
 
-    @Override
     public void stepDecided(StepScope stepScope) {
         bestSolutionRecaller.stepDecided(stepScope);
         finish.stepDecided(stepScope);
         decider.stepDecided(stepScope);
     }
 
-    @Override
     public void stepTaken(StepScope stepScope) {
         bestSolutionRecaller.stepTaken(stepScope);
         finish.stepTaken(stepScope);
         decider.stepTaken(stepScope);
     }
 
-    @Override
     public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
         bestSolutionRecaller.solvingEnded(localSearchSolverScope);
         finish.solvingEnded(localSearchSolverScope);

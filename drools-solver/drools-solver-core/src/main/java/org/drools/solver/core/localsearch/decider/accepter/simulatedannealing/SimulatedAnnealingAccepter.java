@@ -24,7 +24,6 @@ public class SimulatedAnnealingAccepter extends AbstractAccepter {
     // Worker methods
     // ************************************************************************
 
-    @Override
     public double calculateAcceptChance(MoveScope moveScope) {
         double compareScore = compareToBestScore
                 ? moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()

@@ -25,7 +25,6 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
     // Worker methods
     // ************************************************************************
 
-    @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         double initialScore = localSearchSolverScope.getStartingScore();
         logger.info("Initialization time spend ({}) for score ({}). Updating best solution and best score.",
@@ -35,15 +34,12 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
         localSearchSolverScope.setBestScore(initialScore);
     }
 
-    @Override
     public void beforeDeciding(StepScope stepScope) {
     }
 
-    @Override
     public void stepDecided(StepScope stepScope) {
     }
 
-    @Override
     public void stepTaken(StepScope stepScope) {
         LocalSearchSolverScope localSearchSolverScope = stepScope.getLocalSearchSolverScope();
         double newScore = stepScope.getScore();
@@ -59,7 +55,6 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
         }
     }
 
-    @Override
     public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
     }
 

@@ -45,7 +45,6 @@ public class CompositeSelector extends AbstractSelector {
         }
     }
 
-    @Override
     public List<Move> selectMoveList(StepScope stepScope) {
         int totalSize = 0;
         List<List<Move>> subMoveLists = new ArrayList<List<Move>>(selectorList.size());

@@ -30,7 +30,6 @@ public class TopListSelector extends AbstractSelector {
         topList = Collections.emptyList();
     }
 
-    @Override
     public final List<Move> selectMoveList(StepScope stepScope) {
         return topList;
     }

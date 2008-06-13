@@ -38,7 +38,6 @@ public class CompositeAccepter extends AbstractAccepter {
         }
     }
 
-    @Override
     public double calculateAcceptChance(MoveScope moveScope) {
         double acceptChance = 1.0;
         for (Accepter accepter : accepterList) {

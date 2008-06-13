@@ -61,7 +61,6 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
         tabuSequenceList = new LinkedList<Object>();
     }
 
-    @Override
     public double calculateAcceptChance(MoveScope moveScope) {
         Collection<? extends Object> tabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;

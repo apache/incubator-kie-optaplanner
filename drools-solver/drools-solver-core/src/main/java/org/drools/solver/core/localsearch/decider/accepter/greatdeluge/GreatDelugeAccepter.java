@@ -49,7 +49,6 @@ public class GreatDelugeAccepter extends AbstractAccepter {
         }
     }
 
-    @Override
     public double calculateAcceptChance(MoveScope moveScope) {
         if (moveScope.getScore() >= waterLevelScore) {
             return 1.0;

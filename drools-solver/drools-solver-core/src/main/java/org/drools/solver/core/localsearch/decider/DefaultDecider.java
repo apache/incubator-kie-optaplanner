@@ -57,14 +57,12 @@ public class DefaultDecider implements Decider {
     // Worker methods
     // ************************************************************************
 
-    @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         selector.solvingStarted(localSearchSolverScope);
         accepter.solvingStarted(localSearchSolverScope);
         forager.solvingStarted(localSearchSolverScope);
     }
 
-    @Override
     public void beforeDeciding(StepScope stepScope) {
         selector.beforeDeciding(stepScope);
         accepter.beforeDeciding(stepScope);
@@ -122,21 +120,18 @@ public class DefaultDecider implements Decider {
         forager.addMove(moveScope);
     }
 
-    @Override
     public void stepDecided(StepScope stepScope) {
         selector.stepDecided(stepScope);
         accepter.stepDecided(stepScope);
         forager.stepDecided(stepScope);
     }
 
-    @Override
     public void stepTaken(StepScope stepScope) {
         selector.stepTaken(stepScope);
         accepter.stepTaken(stepScope);
         forager.stepTaken(stepScope);
     }
 
-    @Override
     public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
         selector.solvingEnded(localSearchSolverScope);
         accepter.solvingEnded(localSearchSolverScope);

@@ -50,7 +50,6 @@ public class MoveFactorySelector extends AbstractSelector {
         moveFactory.beforeDeciding(stepScope);
     }
 
-    @Override
     public final List<Move> selectMoveList(StepScope stepScope) {
         List<Move> moveList = moveFactory.createMoveList(stepScope.getWorkingSolution());
         if (shuffle) {

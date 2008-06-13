@@ -54,7 +54,6 @@ public class AcceptedForager extends AbstractForager {
         earlyPickedMoveScope = null;
     }
 
-    @Override
     public void addMove(MoveScope moveScope) {
         if (moveScope.getAcceptChance() > 0.0) {
             checkPickEarly(moveScope);
@@ -103,12 +102,10 @@ public class AcceptedForager extends AbstractForager {
         }
     }
 
-    @Override
     public boolean isQuitEarly() {
         return earlyPickedMoveScope != null;
     }
 
-    @Override
     public MoveScope pickMove(StepScope stepScope) {
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;

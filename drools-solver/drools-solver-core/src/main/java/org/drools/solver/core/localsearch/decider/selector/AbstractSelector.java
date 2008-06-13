@@ -23,27 +23,22 @@ public abstract class AbstractSelector implements Selector {
     // Worker methods
     // ************************************************************************
 
-    @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    @Override
     public void beforeDeciding(StepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    @Override
     public void stepDecided(StepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    @Override
     public void stepTaken(StepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    @Override
     public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
