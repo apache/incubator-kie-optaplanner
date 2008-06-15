@@ -16,13 +16,6 @@
         Drools solver core ... TODO
     </description>
 
-    <repositories>
-        <repository>
-            <id>basedir</id>
-            <url>file://${basedir}/../../m2_repo</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <!-- Internal dependencies -->
         <dependency>

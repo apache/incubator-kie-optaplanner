@@ -16,13 +16,6 @@
         Drools solver examples ... TODO
     </description>
 
-    <repositories>
-        <repository>
-            <id>basedir</id>
-            <url>file://${basedir}/../../m2_repo</url>
-        </repository>
-    </repositories>
-
     <build>
         <pluginManagement>
             <plugins>
