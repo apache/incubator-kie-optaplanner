@@ -22,7 +22,7 @@ the jars and poms should be available in the jboss maven repository:
 You 'll want to add a dependency to drools-solver-core in your project:
 <dependency>
   <groupId>org.drools.solver</groupId>
-  <artifactId>drools-solver</artifactId>
+  <artifactId>drools-solver-core</artifactId>
   <version>${project.version}</version>
 </dependency>
 
