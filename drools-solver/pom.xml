@@ -29,18 +29,6 @@
                         <target>1.5</target>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <!--<version>2.2-beta-1</version>-->
-                    <configuration>
-                        <descriptors>
-                            <!--<descriptor>src/main/assembly/itc2007Examination/itc2007Examination.xml</descriptor>-->
-                            <descriptor>src/main/assembly/bin.xml</descriptor>
-                            <!--<descriptor>src/main/assembly/src.xml</descriptor>-->
-                        </descriptors>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
