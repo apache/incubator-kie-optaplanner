@@ -1,0 +1,17 @@
+<projectDescription>
+  <name>drools-solver-examples</name>
+  <comment>Drools solver examples ... TODO</comment>
+  <projects>
+    <project>drools-solver-core</project>
+    <project>drools-core</project>
+    <project>drools-compiler</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
