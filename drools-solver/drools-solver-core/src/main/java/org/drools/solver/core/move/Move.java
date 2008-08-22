@@ -4,7 +4,6 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.Solver;
 import org.drools.solver.core.move.factory.MoveFactory;
-import org.drools.solver.core.score.calculator.ScoreCalculator;
 import org.drools.solver.core.solution.Solution;
 
 /**
@@ -44,7 +43,7 @@ public interface Move {
     /**
      * Does the Move and updates the {@link Solution} and its {@link WorkingMemory} accordingly.
      * When the solution is modified, the {@link WorkingMemory}'s {@link FactHandle}s should be correctly notified,
-     * otherwise the score(s) calculated by the {@link ScoreCalculator}(s) will be corrupted.
+     * otherwise the score(s) calculated will be corrupted.
      * @param workingMemory the {@link WorkingMemory} that needs to get notified of the changes.
      */
     void doMove(WorkingMemory workingMemory);
