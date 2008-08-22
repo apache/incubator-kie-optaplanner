@@ -29,6 +29,10 @@ public class MoveFactorySelector extends AbstractSelector {
 
     public void setRelativeSelection(Double relativeSelection) {
         this.relativeSelection = relativeSelection;
+        if (relativeSelection < 0.0 || relativeSelection > 1.0) {
+            throw new IllegalArgumentException( "The selector's relativeSelection (" + relativeSelection
+                    + ") is not in the range [0.0,1.0].");
+        }
     }
 
     public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
