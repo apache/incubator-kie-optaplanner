@@ -97,7 +97,7 @@ public class SolutionBusiness {
         if (workingMemory == null) {
             return Collections.emptyList();
         }
-        Iterator<ConstraintOccurrence> it = workingMemory.iterateObjects(
+        Iterator<ConstraintOccurrence> it = (Iterator<ConstraintOccurrence>) workingMemory.iterateObjects(
                 new ClassObjectFilter(ConstraintOccurrence.class));
         while (it.hasNext()) {
             ConstraintOccurrence occurrence = it.next();
