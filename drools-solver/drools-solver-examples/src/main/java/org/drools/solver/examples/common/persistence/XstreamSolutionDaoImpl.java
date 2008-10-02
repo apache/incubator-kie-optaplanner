@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.io.InputStream;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
@@ -41,13 +42,33 @@ public class XstreamSolutionDaoImpl implements SolutionDao {
             logger.info("Loaded: {}", file);
             return solution;
         } catch (IOException e) {
-            throw new IllegalArgumentException("Could not read: " + file, e);
+            throw new IllegalArgumentException("Could not read file: " + file, e);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
                     logger.warn("Problem closing file (" + file + ")", e);
+                }
+            }
+        }
+    }
+
+    public Solution readSolution(InputStream in) {
+        Reader reader = null;
+        try {
+            // xStream.fromXml(InputStream) does not use UTF-8
+            reader = new InputStreamReader(in, "UTF-8");
+            Solution solution = (Solution) xStream.fromXML(reader);
+            return solution;
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read from InputStream: " + in, e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    logger.warn("Problem closing InputStream (" + in + ")", e);
                 }
             }
         }
