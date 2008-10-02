@@ -87,7 +87,9 @@ public class DefaultDecider implements Decider {
         }
         MoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
-            stepScope.setStep(pickedMoveScope.getMove());
+            Move step = pickedMoveScope.getMove();
+            stepScope.setStep(step);
+            stepScope.setUndoStep(step.createUndoMove(workingMemory));
             stepScope.setScore(pickedMoveScope.getScore());
         }
     }

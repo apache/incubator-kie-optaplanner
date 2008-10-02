@@ -16,6 +16,7 @@ public class StepScope {
     private int stepIndex = -1;
     private double timeGradient = Double.NaN;
     private Move step = null;
+    private Move undoStep = null;
     private double score = Double.NaN;
     private Solution clonedSolution = null;
 
@@ -49,6 +50,14 @@ public class StepScope {
 
     public void setStep(Move step) {
         this.step = step;
+    }
+
+    public Move getUndoStep() {
+        return undoStep;
+    }
+
+    public void setUndoStep(Move undoStep) {
+        this.undoStep = undoStep;
     }
 
     public double getScore() {

@@ -30,12 +30,10 @@ public class MoveTabuAccepter extends AbstractTabuAccepter {
     @Override
     protected Collection<? extends Object> findNewTabu(StepScope stepScope) {
         Move tabuMove;
-        Move step = stepScope.getStep();
         if (useUndoMoveAsTabuMove) {
-            // In stepTaken this the undoMove would be corrupted
-            tabuMove = step.createUndoMove(stepScope.getWorkingMemory());
+            tabuMove = stepScope.getUndoStep();
         } else {
-            tabuMove = step;
+            tabuMove = stepScope.getStep();
         }
         return Collections.singletonList(tabuMove);
     }

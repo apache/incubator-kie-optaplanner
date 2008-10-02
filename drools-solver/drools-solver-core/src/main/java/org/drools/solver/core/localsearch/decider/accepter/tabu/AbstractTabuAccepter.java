@@ -97,25 +97,23 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
     }
 
     @Override
-    public void stepDecided(StepScope stepScope) {
-        if (stepScope.getStep() != null) { // TODO fixme by better use of lifecycle method
-            Collection<? extends Object> tabus = findNewTabu(stepScope);
-            for (Object tabu : tabus) {
-                // required to push tabu to the end of the line
-                if (tabuToStepIndexMap.containsKey(tabu)) {
-                    tabuToStepIndexMap.remove(tabu);
-                    tabuSequenceList.remove(tabu);
-                }
-                int maximumTabuListSize = completeTabuSize + partialTabuSize; // is at least 1
-                while (tabuSequenceList.size() >= maximumTabuListSize) {
-                    Iterator<Object> it = tabuSequenceList.iterator();
-                    Object removeTabu = it.next();
-                    it.remove();
-                    tabuToStepIndexMap.remove(removeTabu);
-                }
-                tabuToStepIndexMap.put(tabu, stepScope.getStepIndex());
-                tabuSequenceList.add(tabu);
+    public void stepTaken(StepScope stepScope) {
+        Collection<? extends Object> tabus = findNewTabu(stepScope);
+        for (Object tabu : tabus) {
+            // required to push tabu to the end of the line
+            if (tabuToStepIndexMap.containsKey(tabu)) {
+                tabuToStepIndexMap.remove(tabu);
+                tabuSequenceList.remove(tabu);
             }
+            int maximumTabuListSize = completeTabuSize + partialTabuSize; // is at least 1
+            while (tabuSequenceList.size() >= maximumTabuListSize) {
+                Iterator<Object> it = tabuSequenceList.iterator();
+                Object removeTabu = it.next();
+                it.remove();
+                tabuToStepIndexMap.remove(removeTabu);
+            }
+            tabuToStepIndexMap.put(tabu, stepScope.getStepIndex());
+            tabuSequenceList.add(tabu);
         }
     }
 
