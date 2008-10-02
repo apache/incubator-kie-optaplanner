@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <scoreCalculator>
+        <scoreCalculatorType>SIMPLE</scoreCalculatorType>
+    </scoreCalculator>
+    <finish>
+        <finishCompositionStyle>OR</finishCompositionStyle>
+        <maximumStepCount>5</maximumStepCount>
+        <feasableScore>0.0</feasableScore>
+    </finish>
+    <selector>
+        <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+    </selector>
+    <accepter>
+        <completeSolutionTabuSize>10</completeSolutionTabuSize>
+    </accepter>
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+    </forager>
+</localSearchSolver>
