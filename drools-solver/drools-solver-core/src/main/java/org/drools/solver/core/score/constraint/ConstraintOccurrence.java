@@ -1,6 +1,7 @@
 package org.drools.solver.core.score.constraint;
 
 import java.util.Arrays;
+import java.io.Serializable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -8,7 +9,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class ConstraintOccurrence {
+public abstract class ConstraintOccurrence implements Serializable {
 
     protected String ruleId;
     protected ConstraintType constraintType;
