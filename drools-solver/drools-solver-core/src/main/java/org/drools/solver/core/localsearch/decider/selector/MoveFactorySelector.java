@@ -61,7 +61,7 @@ public class MoveFactorySelector extends AbstractSelector {
         }
         if (relativeSelection != null) {
             int selectionSize = (int) Math.ceil(relativeSelection * moveList.size());
-            if (selectionSize == 0) {
+            if (selectionSize == 0 && !moveList.isEmpty()) {
                 selectionSize = 1;
             }
             moveList = moveList.subList(0, selectionSize);
