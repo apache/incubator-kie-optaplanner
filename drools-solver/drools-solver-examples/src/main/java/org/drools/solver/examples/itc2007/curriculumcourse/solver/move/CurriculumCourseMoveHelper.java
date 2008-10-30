@@ -1,7 +1,8 @@
 package org.drools.solver.examples.itc2007.curriculumcourse.solver.move;
 
-import org.drools.FactHandle;
+
 import org.drools.WorkingMemory;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Period;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Room;

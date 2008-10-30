@@ -1,7 +1,7 @@
 package org.drools.solver.examples.itc2007.examination.solver.move;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
 import org.drools.solver.examples.itc2007.examination.domain.Room;

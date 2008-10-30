@@ -5,8 +5,8 @@ import java.util.Collection;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.TabuPropertyEnabled;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.examples.travelingtournament.domain.Day;
