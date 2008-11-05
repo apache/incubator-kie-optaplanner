@@ -13,25 +13,22 @@ public class ExaminationMoveHelper {
 
     public static void movePeriod(WorkingMemory workingMemory, Exam exam, Period period) {
         FactHandle factHandle = workingMemory.getFactHandle(exam);
-        workingMemory.modifyRetract(factHandle);
         exam.setPeriod(period);
-        workingMemory.modifyInsert(factHandle, exam);
+        workingMemory.update(factHandle, exam);
         movePeriodCoincidene(workingMemory, exam, period);
     }
 
     public static void moveRoom(WorkingMemory workingMemory, Exam exam, Room room) {
         FactHandle factHandle = workingMemory.getFactHandle(exam);
-        workingMemory.modifyRetract(factHandle);
         exam.setRoom(room);
-        workingMemory.modifyInsert(factHandle, exam);
+        workingMemory.update(factHandle, exam);
     }
 
     public static void moveExam(WorkingMemory workingMemory, Exam exam, Period period, Room room) {
         FactHandle factHandle = workingMemory.getFactHandle(exam);
-        workingMemory.modifyRetract(factHandle);
         exam.setPeriod(period);
         exam.setRoom(room);
-        workingMemory.modifyInsert(factHandle, exam);
+        workingMemory.update(factHandle, exam);
         movePeriodCoincidene(workingMemory, exam, period);
     }
 
@@ -39,10 +36,9 @@ public class ExaminationMoveHelper {
         if (exam.getExamCoincidence() != null) {
             for (Exam coincidenceExam : exam.getExamCoincidence().getCoincidenceExamSet()) {
                 if (!exam.equals(coincidenceExam)) {
-                    FactHandle factHandle = workingMemory.getFactHandle(coincidenceExam);
-                    workingMemory.modifyRetract(factHandle);
+                    FactHandle factHandle = workingMemory.getFactHandle(coincidenceExam);                   
                     coincidenceExam.setPeriod(period);
-                    workingMemory.modifyInsert(factHandle, coincidenceExam);
+                    workingMemory.update(factHandle, coincidenceExam);
                 }
             }
         }

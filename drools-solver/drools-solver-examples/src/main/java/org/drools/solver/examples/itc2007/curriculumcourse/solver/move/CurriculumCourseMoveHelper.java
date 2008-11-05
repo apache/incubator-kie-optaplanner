@@ -14,24 +14,21 @@ public class CurriculumCourseMoveHelper {
 
     public static void movePeriod(WorkingMemory workingMemory, Lecture lecture, Period period) {
         FactHandle factHandle = workingMemory.getFactHandle(lecture);
-        workingMemory.modifyRetract(factHandle);
         lecture.setPeriod(period);
-        workingMemory.modifyInsert(factHandle, lecture);
+        workingMemory.update(factHandle, lecture);
     }
 
     public static void moveRoom(WorkingMemory workingMemory, Lecture lecture, Room room) {
         FactHandle factHandle = workingMemory.getFactHandle(lecture);
-        workingMemory.modifyRetract(factHandle);
         lecture.setRoom(room);
-        workingMemory.modifyInsert(factHandle, lecture);
+        workingMemory.update(factHandle, lecture);
     }
 
     public static void moveLecture(WorkingMemory workingMemory, Lecture lecture, Period period, Room room) {
         FactHandle factHandle = workingMemory.getFactHandle(lecture);
-        workingMemory.modifyRetract(factHandle);
         lecture.setPeriod(period);
         lecture.setRoom(room);
-        workingMemory.modifyInsert(factHandle, lecture);
+        workingMemory.update(factHandle, lecture);
     }
 
     private CurriculumCourseMoveHelper() {

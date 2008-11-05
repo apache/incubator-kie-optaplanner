@@ -50,9 +50,8 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                     lecture.setPeriod(period);
                     lectureHandle = workingMemory.insert(lecture);
                 } else {
-                    workingMemory.modifyRetract(lectureHandle);
                     lecture.setPeriod(period);
-                    workingMemory.modifyInsert(lectureHandle, lecture);
+                    workingMemory.update(lectureHandle, lecture);
                 }
                 double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 periodScoringList.add(new PeriodScoring(period, score));
@@ -68,14 +67,12 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                     // No need to check the rest
                     break;
                 }
-                workingMemory.modifyRetract(lectureHandle);
                 lecture.setPeriod(periodScoring.getPeriod());
-                workingMemory.modifyInsert(lectureHandle, lecture);
+                workingMemory.update(lectureHandle, lecture);
 
                 for (Room room : roomList) {
-                    workingMemory.modifyRetract(lectureHandle);
                     lecture.setRoom(room);
-                    workingMemory.modifyInsert(lectureHandle, lecture);
+                    workingMemory.update(lectureHandle, lecture);
                     double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                     if (score < unscheduledScore) {
                         if (score > bestScore) {
@@ -99,10 +96,9 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                     throw new IllegalStateException("The bestPeriod (" + bestPeriod + ") or the bestRoom ("
                             + bestRoom + ") cannot be null.");
                 }
-                workingMemory.modifyRetract(lectureHandle);
                 lecture.setPeriod(bestPeriod);
                 lecture.setRoom(bestRoom);
-                workingMemory.modifyInsert(lectureHandle, lecture);
+                workingMemory.update(lectureHandle, lecture);
             }
             logger.debug("    Lecture ({}) initialized for starting solution.", lecture);
         }
