@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.ClassObjectFilter;
 import org.drools.WorkingMemory;
-import org.drools.runtime.ClassObjectFilter;
 import org.drools.solver.core.Solver;
 import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
