@@ -19,7 +19,7 @@
   <classpathentry kind="var" path="M2_REPO/joda-time/joda-time/1.5.2/joda-time-1.5.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.4-SNAPSHOT/mvel2-2.0.4-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.5/mvel2-2.0.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.4.3/slf4j-log4j12-1.4.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar"/>
