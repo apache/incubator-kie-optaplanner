@@ -2,10 +2,10 @@
   <name>drools-solver-examples</name>
   <comment>Drools solver examples ... TODO</comment>
   <projects>
-    <project>drools-solver-core</project>
-    <project>drools-core</project>
     <project>drools-api</project>
     <project>drools-compiler</project>
+    <project>drools-core</project>
+    <project>drools-solver-core</project>
   </projects>
   <buildSpec>
     <buildCommand>

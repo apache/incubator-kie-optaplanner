@@ -2,9 +2,9 @@
   <name>drools-solver-core</name>
   <comment>Drools solver core ... TODO</comment>
   <projects>
+    <project>drools-api</project>
     <project>drools-compiler</project>
     <project>drools-core</project>
-    <project>drools-api</project>
   </projects>
   <buildSpec>
     <buildCommand>
