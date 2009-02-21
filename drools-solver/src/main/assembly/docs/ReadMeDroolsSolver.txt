@@ -4,7 +4,8 @@ Welcome to drools-solver
 State
 -----
 
-Drools Solver is still in an alfa state: backward incompatible changes may occur in the next version.
+Drools Solver is still in an beta state: backward incompatible changes may occur in the next version,
+but an upgrade recipe will make it easy to upgrade your code to that version.
 
 Run the examples
 ----------------
