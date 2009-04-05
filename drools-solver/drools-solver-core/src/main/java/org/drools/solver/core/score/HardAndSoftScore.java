@@ -1,45 +1,34 @@
 package org.drools.solver.core.score;
 
 /**
- * This class is immutable.
+ * A HardAndSoftScore is a Score based on hard constraints and soft constraints.
+ * Hard constraints have priority over soft constraints.
+ * <p/>
+ * Implementations must be immutable.
+ * @see Score
+ * @see DefaultHardAndSoftScore
  * @author Geoffrey De Smet
  */
-public class HardAndSoftScore extends AbstractScore<HardAndSoftScore> {
+public interface HardAndSoftScore extends Score<HardAndSoftScore> {
 
-    private int hardScore;
-    private int softScore;
+    /**
+     * The total of the broken negative hard constraints and fulfilled postive hard constraints.
+     * Their weight is included in the total.
+     * The hard score is usually a negative number because most use cases only have negative constraints.
+     *
+     * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
+     */
+    int getHardScore();
 
-    public HardAndSoftScore(int hardScore) {
-        this.hardScore = hardScore;
-        // Any other softScore is better
-        softScore = Integer.MIN_VALUE;
-    }
-
-    public HardAndSoftScore(int hardScore, int softScore) {
-        this.hardScore = hardScore;
-        this.softScore = softScore;
-    }
-
-    public int compareTo(HardAndSoftScore other) {
-        if (hardScore != other.hardScore) {
-            if (hardScore < other.hardScore) {
-                return -1;
-            } else {
-                return 1;
-            }
-        } else {
-           if (softScore < other.softScore) {
-               return -1;
-           } else if (softScore > other.softScore) {
-               return 1;
-           } else {
-               return 0;
-           }
-        }
-    }
-
-    public String toString() {
-        return hardScore + "hard/" + softScore + "soft";
-    }
+    /**
+     * The total of the broken negative soft constraints and fulfilled postive soft constraints.
+     * Their weight is included in the total.
+     * The soft score is usually a negative number because most use cases only have negative constraints.
+     * <p/>
+     * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard score.
+     * 
+     * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
+     */
+    int getSoftScore();
 
 }
