@@ -9,6 +9,7 @@ import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.move.Move;
 
 /**
+ * A CompositeSelector unions multiple Selectors.
  * @author Geoffrey De Smet
  */
 public class CompositeSelector extends AbstractSelector {

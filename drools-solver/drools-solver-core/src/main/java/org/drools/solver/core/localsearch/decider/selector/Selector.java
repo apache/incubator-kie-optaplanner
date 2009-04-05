@@ -8,6 +8,8 @@ import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.move.Move;
 
 /**
+ * A Selector selects or generates moves for the Decider.
+ * @see AbstractSelector
  * @author Geoffrey De Smet
  */
 public interface Selector extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
