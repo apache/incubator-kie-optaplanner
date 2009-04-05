@@ -7,7 +7,7 @@ import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
 
 /**
- * Superclass for CompositeFinish classes that combine multiple Finishes.
+ * Abstract superclass for CompositeFinish classes that combine multiple Finishes.
  * @author Geoffrey De Smet
  */
 public abstract class AbstractCompositeFinish extends AbstractFinish implements Finish {
