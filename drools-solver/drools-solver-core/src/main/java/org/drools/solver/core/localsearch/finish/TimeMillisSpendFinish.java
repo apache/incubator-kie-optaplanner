@@ -13,7 +13,7 @@ public class TimeMillisSpendFinish extends AbstractFinish {
         this.maximumTimeMillisSpend = maximumTimeMillisSpend;
         if (maximumTimeMillisSpend <= 0L) {
             throw new IllegalArgumentException("Property maximumTimeMillisSpend (" + maximumTimeMillisSpend
-                    + ") must be greater then 0.");
+                    + ") must be greater than 0.");
         }
     }
 
