@@ -8,7 +8,8 @@ import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.move.Move;
 
 /**
- * Do not implement directly, but instead extend {@link AbstractForager}.
+ * A Forager collects the accepted moves and picks the next step from those for the Decider.
+ * @see AbstractForager
  * @author Geoffrey De Smet
  */
 public interface Forager extends LocalSearchSolverLifecycleListener {
