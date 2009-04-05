@@ -11,6 +11,10 @@ public class StepCountFinish extends AbstractFinish {
 
     public void setMaximumStepCount(int maximumStepCount) {
         this.maximumStepCount = maximumStepCount;
+        if (maximumStepCount < 0) {
+            throw new IllegalArgumentException("Property maximumStepCount (" + maximumStepCount
+                    + ") must be greater or equal to 0.");
+        }
     }
 
     // ************************************************************************
