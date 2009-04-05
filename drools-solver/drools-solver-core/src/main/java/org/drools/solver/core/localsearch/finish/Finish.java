@@ -5,7 +5,7 @@ import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.StepScope;
 
 /**
- * Determines when the LocalSearchSolver should stop.
+ * A Finish determines when the LocalSearchSolver should stop.
  * @author Geoffrey De Smet
  */
 public interface Finish extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
