@@ -4,9 +4,9 @@ import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.decider.MoveScope;
 
 /**
- * Accepts or rejects a selected move that could be the next step.
- * Notice that it's the forager which makes the actual decision.
- * Always extend {@link AbstractAccepter} to avoid future backwards imcompatiblity issues.
+ * An Accepter accepts or rejects a selected move for the Decider.
+ * Notice that the Forager can still ignore the advice of the Accepter.
+ * @see AbstractAccepter
  * @author Geoffrey De Smet
  */
 public interface Accepter extends LocalSearchSolverLifecycleListener {

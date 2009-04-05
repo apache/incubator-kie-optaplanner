@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Abstract superclass for {@link Accepter}.
+ * @see Accepter
  * @author Geoffrey De Smet
  */
 public abstract class AbstractAccepter implements Accepter {
