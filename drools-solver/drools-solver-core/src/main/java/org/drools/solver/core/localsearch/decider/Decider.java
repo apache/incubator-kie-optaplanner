@@ -6,6 +6,8 @@ import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.forager.Forager;
 
 /**
+ * A decider decides the next step.
+ * @see DefaultDecider
  * @author Geoffrey De Smet
  */
 public interface Decider extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
