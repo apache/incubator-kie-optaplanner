@@ -3,7 +3,6 @@ package org.drools.solver.core.localsearch.finish;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
-import org.drools.solver.core.score.comparator.ScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
