@@ -11,6 +11,10 @@ public class UnimprovedStepCountFinish extends AbstractFinish {
 
     public void setMaximumUnimprovedStepCount(int maximumUnimprovedStepCount) {
         this.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
+        if (maximumUnimprovedStepCount < 0) {
+            throw new IllegalArgumentException("Property maximumUnimprovedStepCount (" + maximumUnimprovedStepCount
+                    + ") must be greater or equal to 0.");
+        }
     }
 
     // ************************************************************************
