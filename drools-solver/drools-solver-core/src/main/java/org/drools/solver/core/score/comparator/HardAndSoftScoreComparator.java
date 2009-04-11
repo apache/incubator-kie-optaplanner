@@ -14,10 +14,15 @@ import org.drools.solver.core.score.DefaultHardAndSoftScore;
 public class HardAndSoftScoreComparator extends AbstractScoreComparator<HardAndSoftScore> {
 
     private HardAndSoftScore perfectScore = new DefaultHardAndSoftScore(0, 0);
+    private HardAndSoftScore worstScore = new DefaultHardAndSoftScore(Integer.MIN_VALUE, Integer.MIN_VALUE);
     private double hardScoreTimeGradientWeight = 0.5;
 
     public void setPerfectScore(HardAndSoftScore perfectScore) {
         this.perfectScore = perfectScore;
+    }
+
+    public void setWorstScore(HardAndSoftScore worstScore) {
+        this.worstScore = worstScore;
     }
 
     public void setHardScoreTimeGradientWeight(double hardScoreTimeGradientWeight) {
@@ -73,19 +78,23 @@ public class HardAndSoftScoreComparator extends AbstractScoreComparator<HardAndS
         return perfectScore;
     }
 
+    public HardAndSoftScore getWorstScore() {
+        return worstScore;
+    }
+
     public double calculateTimeGradient(HardAndSoftScore startScore, HardAndSoftScore endScore,
             HardAndSoftScore score) {
         double timeGradient = 0.0;
         int totalHardScore = Math.max(0, endScore.getHardScore() - startScore.getHardScore());
         if (totalHardScore > 0) {
-            int hardScoreDelta = Math.max(0, score.getHardScore() - startScore.getHardScore());
-            double hardTimeGradient = Math.min(1.0, (double) hardScoreDelta / (double) totalHardScore);
+            int deltaHardScore = Math.max(0, score.getHardScore() - startScore.getHardScore());
+            double hardTimeGradient = Math.min(1.0, (double) deltaHardScore / (double) totalHardScore);
             timeGradient += (hardTimeGradient * hardScoreTimeGradientWeight);
         }
         int totalSoftScore = Math.max(0, endScore.getSoftScore() - startScore.getSoftScore());
         if (totalSoftScore > 0) {
-            int softScoreDelta = Math.max(0, score.getSoftScore() - startScore.getSoftScore());
-            double softTimeGradient = Math.min(1.0, (double) softScoreDelta / (double) totalSoftScore);
+            int deltaSoftScore = Math.max(0, score.getSoftScore() - startScore.getSoftScore());
+            double softTimeGradient = Math.min(1.0, (double) deltaSoftScore / (double) totalSoftScore);
             timeGradient += (softTimeGradient * (1.0 - hardScoreTimeGradientWeight)); 
         }
         return timeGradient;

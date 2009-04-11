@@ -14,9 +14,14 @@ import org.drools.solver.core.score.DefaultSimpleScore;
 public class SimpleScoreComparator extends AbstractScoreComparator<SimpleScore> {
 
     private SimpleScore perfectScore = new DefaultSimpleScore(0);
+    private SimpleScore worstScore = new DefaultSimpleScore(Integer.MIN_VALUE);
 
     public void setPerfectScore(SimpleScore perfectScore) {
         this.perfectScore = perfectScore;
+    }
+
+    public void setWorstScore(SimpleScore worstScore) {
+        this.worstScore = worstScore;
     }
 
     // ************************************************************************
@@ -60,12 +65,16 @@ public class SimpleScoreComparator extends AbstractScoreComparator<SimpleScore> 
         return perfectScore;
     }
 
+    public SimpleScore getWorstScore() {
+        return worstScore;
+    }
+
     public double calculateTimeGradient(SimpleScore startScore, SimpleScore endScore, SimpleScore score) {
         double timeGradient = 0.0;
-        int totalSoftScore = Math.max(0, endScore.getScore() - startScore.getScore());
-        if (totalSoftScore > 0) {
-            int softScoreDelta = Math.max(0, score.getScore() - startScore.getScore());
-            timeGradient = Math.min(1.0, (double) softScoreDelta / (double) totalSoftScore);
+        int totalScore = Math.max(0, endScore.getScore() - startScore.getScore());
+        if (totalScore > 0) {
+            int deltaScore = Math.max(0, score.getScore() - startScore.getScore());
+            timeGradient = Math.min(1.0, (double) deltaScore / (double) totalScore);
         }
         return timeGradient;
     }

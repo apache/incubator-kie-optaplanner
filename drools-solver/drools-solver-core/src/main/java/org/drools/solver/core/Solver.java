@@ -3,6 +3,7 @@ package org.drools.solver.core;
 import org.drools.solver.core.solution.Solution;
 
 /**
+ * A Solver solves planning problems.
  * @author Geoffrey De Smet
  */
 public interface Solver {

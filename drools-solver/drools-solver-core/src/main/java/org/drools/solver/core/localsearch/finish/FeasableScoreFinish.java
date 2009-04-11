@@ -9,9 +9,6 @@ import org.drools.solver.core.localsearch.StepScope;
 public class FeasableScoreFinish extends AbstractFinish {
 
     private double feasableScore;
-
-    private double startingScore;
-    private double feasableDelta;
     
     public void setFeasableScore(double feasableScore) {
         this.feasableScore = feasableScore;
@@ -21,22 +18,22 @@ public class FeasableScoreFinish extends AbstractFinish {
     // Worker methods
     // ************************************************************************
 
-    @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        startingScore = localSearchSolverScope.getStartingScore();
-        feasableDelta = startingScore - feasableScore;
-    }
-
     public boolean isFinished(StepScope stepScope) {
         double bestScore = stepScope.getLocalSearchSolverScope().getBestScore();
         return bestScore >= feasableScore;
     }
 
     public double calculateTimeGradient(StepScope stepScope) {
-        double stepScore = stepScope.getLocalSearchSolverScope().getLastCompletedStepScope().getScore();
-        double stepDelta = startingScore - stepScore;
-        double timeGradient = stepDelta / feasableDelta;
-        return Math.min(timeGradient, 1.0);
+        LocalSearchSolverScope localSearchSolverScope = stepScope.getLocalSearchSolverScope();
+        double startingScore = localSearchSolverScope.getStartingScore();
+        double stepScore = localSearchSolverScope.getLastCompletedStepScope().getScore();
+        if (feasableScore <= stepScore) {
+            return 1.0;
+        } else if (stepScore <= startingScore) {
+            return 0.0;
+        } else {
+            return (stepScore - startingScore) / (feasableScore - startingScore);
+        }
     }
     
 }

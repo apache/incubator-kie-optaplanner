@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * A BestSolutionRecaller remembers the best solution that the LocalSearchSolver encounters.
  * @author Geoffrey De Smet
  */
 public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearchSolverLifecycleListener {

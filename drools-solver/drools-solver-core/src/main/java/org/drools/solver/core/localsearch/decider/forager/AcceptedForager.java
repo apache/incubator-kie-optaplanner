@@ -10,6 +10,9 @@ import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.move.Move;
 
 /**
+ * An AcceptedForager is a Forager which forages accepted moves and ignores unaccepted moves.
+ * @See Forager
+ * @See Accepter
  * @author Geoffrey De Smet
  */
 public class AcceptedForager extends AbstractForager {

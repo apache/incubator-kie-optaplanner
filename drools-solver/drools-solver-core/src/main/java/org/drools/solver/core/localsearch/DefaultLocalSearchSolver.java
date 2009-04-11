@@ -72,22 +72,18 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         localSearchSolverScope.setWorkingSolution(startingSolution);
     }
 
-    // TODO define a better API
     public double getBestScore() {
         return this.localSearchSolverScope.getBestScore();
     }
 
-    // TODO define a better API
     public Solution getBestSolution() {
         return this.localSearchSolverScope.getBestSolution();
     }
 
-    // TODO define a better API
     public long getTimeMillisSpend() {
         return this.localSearchSolverScope.calculateTimeMillisSpend();
     }
 
-    // TODO define a better API
     public LocalSearchSolverScope getLocalSearchSolverScope() {
         return localSearchSolverScope;
     }
@@ -116,7 +112,6 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
                             nextStep, decider.getForager().getAcceptedMovesSize()});
             stepDecided(stepScope);
             nextStep.doMove(stepScope.getWorkingMemory());
-//            stepIndex++; // TODO influences
             stepTaken(stepScope);
             stepScope = createNextStepScope(localSearchSolverScope, stepScope);
         }

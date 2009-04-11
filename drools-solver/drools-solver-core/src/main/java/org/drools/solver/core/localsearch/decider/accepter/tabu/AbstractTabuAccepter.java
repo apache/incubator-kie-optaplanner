@@ -11,8 +11,11 @@ import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.localsearch.decider.accepter.AbstractAccepter;
+import org.drools.solver.core.localsearch.decider.accepter.Accepter;
 
 /**
+ * Abstract superclass for all TabuAccepters.
+ * @see Accepter
  * @author Geoffrey De Smet
  */
 public abstract class AbstractTabuAccepter extends AbstractAccepter {
