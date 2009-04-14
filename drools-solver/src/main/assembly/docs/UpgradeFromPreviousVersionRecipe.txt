@@ -1,45 +1,10 @@
-Intro
-=====
+Introduction
+============
 
 Drools solver isn't backwards compatible at the time.
 This file describes how can you upgrade from earlier versions to the latest.
 
-From m2 to next
-===============
+From 5.0.0-m2 to 5.0.0
+----------------------
 
-TODO commit the refactor below
-
-New interface score (replace score as a double) and new class ScoreHolder (replaces ScoreCalculator)
-----------------------------------------------------------------------------------------------------
-
-The score isn't a double any more, now it's an implementation of the interface Score.
-The *ScoreCalculator classes have been replaced by a ScoreHolder.
-
-If you're using a HardAndSoftConstraintScoreCalculator:
-
-    Old code:
-        import org.drools.solver.core.score.calculator.HardAndSoftConstraintScoreCalculator;
-        ...
-        global HardAndSoftConstraintScoreCalculator scoreCalculator;
-
-    New code:
-        import org.drools.solver.core.score.holder.ScoreHolder;
-        import org.drools.solver.core.score.DefaultHardAndSoftScore;
-        ...
-        global ScoreHolder scoreHolder;
-
-Or if you're using a SimpleScoreCalculator:
-
-    Old code:
-        import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
-        ...
-        global SimpleScoreCalculator scoreCalculator;
-
-    New code:
-        import org.drools.solver.core.score.holder.ScoreHolder;
-        import org.drools.solver.core.score.DefaultSimpleScore;
-        ...
-        global ScoreHolder scoreHolder;
-
-
-
+No backwards imcompatible changes.
