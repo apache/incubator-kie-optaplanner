@@ -67,6 +67,10 @@ public class SelectorConfig {
         this.relativeSelection = relativeSelection;
     }
 
+    public Integer getTopSize() {
+        return topSize;
+    }
+
     public void setTopSize(Integer topSize) {
         this.topSize = topSize;
     }
@@ -120,10 +124,28 @@ public class SelectorConfig {
     }
 
     public void inherit(SelectorConfig inheritedConfig) {
-        // TODO FIXME
         if (moveFactory == null && moveFactoryClass == null) {
             moveFactory = inheritedConfig.getMoveFactory();
             moveFactoryClass = inheritedConfig.getMoveFactoryClass();
+        }
+        if (selectorConfigList == null) {
+            selectorConfigList = inheritedConfig.getSelectorConfigList();
+        } else {
+            List<SelectorConfig> inheritedSelectorConfigList = inheritedConfig.getSelectorConfigList();
+            if (inheritedSelectorConfigList != null) {
+                for (SelectorConfig selectorConfig : inheritedSelectorConfigList) {
+                    selectorConfigList.add(selectorConfig);
+                }
+            }
+        }
+        if (shuffle == null) {
+            shuffle = inheritedConfig.getShuffle();
+        }
+        if (relativeSelection == null) {
+            relativeSelection = inheritedConfig.getRelativeSelection();
+        }
+        if (topSize == null) {
+            topSize = inheritedConfig.getTopSize();
         }
     }
     
