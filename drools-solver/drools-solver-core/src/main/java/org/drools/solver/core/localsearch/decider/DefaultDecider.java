@@ -10,6 +10,7 @@ import org.drools.solver.core.localsearch.decider.accepter.Accepter;
 import org.drools.solver.core.localsearch.decider.forager.Forager;
 import org.drools.solver.core.localsearch.decider.selector.Selector;
 import org.drools.solver.core.move.Move;
+import org.drools.solver.core.score.Score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,9 +105,9 @@ public class DefaultDecider implements Decider {
         processMove(moveScope);
         undoMove.doMove(workingMemory);
         if (verifyUndoMoveIsUncorrupted) {
-            double undoScore = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
-            if (undoScore != moveScope.getStepScope().getLocalSearchSolverScope()
-                    .getLastCompletedStepScope().getScore()) {
+            Score undoScore = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
+            if (!undoScore.equals(moveScope.getStepScope().getLocalSearchSolverScope()
+                    .getLastCompletedStepScope().getScore())) {
                 throw new IllegalStateException(
                         "Corrupted undo move (" + undoMove + ") received from move (" + move + ").");
             }
@@ -116,7 +117,7 @@ public class DefaultDecider implements Decider {
     }
 
     private void processMove(MoveScope moveScope) {
-        double score = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
+        Score score = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
         moveScope.setScore(score);
         double acceptChance = accepter.calculateAcceptChance(moveScope);
         moveScope.setAcceptChance(acceptChance);

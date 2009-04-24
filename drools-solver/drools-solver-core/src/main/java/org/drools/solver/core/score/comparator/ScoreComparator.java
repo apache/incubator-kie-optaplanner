@@ -55,26 +55,6 @@ public interface ScoreComparator<S extends Score> extends Comparator<S> {
     int compareWithShiftingPenalty(S score1, S score2);
 
     /**
-     * The perfect score is the score of which there is no better in any problem instance.
-     * This doesn't mean that the current problem instance, or any problem instance for that matter,
-     * could ever attain that score.
-     * </p>
-     * For example, most cases have a perfect score of zero, as most use cases only have negative scores.
-     * @return null if not supported
-     */
-    S getPerfectScore();
-
-    /**
-     * The worst score is the score of which there is no worser in any problem instance.
-     * This doesn't mean that the current problem instance, or any problem instance for that matter,
-     * could ever attain such a bad score.
-     * </p>
-     * For example, most cases have a worst score of negative infinity.
-     * @return null if not supported
-     */
-    S getWorstScore();
-
-    /**
      *
      * @param startScore never null
      * @param endScore never null

@@ -9,6 +9,8 @@ import org.drools.WorkingMemory;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.DefaultHardAndSoftScore;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Course;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule;
@@ -41,7 +43,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
 
         List<Lecture> lectureList = createLectureList(schedule);
         for (Lecture lecture : lectureList) {
-            double unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
             FactHandle lectureHandle = null;
 
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
@@ -53,17 +55,17 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                     lecture.setPeriod(period);
                     workingMemory.update(lectureHandle, lecture);
                 }
-                double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 periodScoringList.add(new PeriodScoring(period, score));
             }
             Collections.sort(periodScoringList);
 
             boolean almostPerfectMatch = false;
-            double bestScore = Double.NEGATIVE_INFINITY;
+            Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
             Period bestPeriod = null;
             Room bestRoom = null;
             for (PeriodScoring periodScoring : periodScoringList) {
-                if (bestScore >= periodScoring.getScore()) {
+                if (bestScore.compareTo(periodScoring.getScore()) >= 0) {
                     // No need to check the rest
                     break;
                 }
@@ -73,14 +75,14 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                 for (Room room : roomList) {
                     lecture.setRoom(room);
                     workingMemory.update(lectureHandle, lecture);
-                    double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
-                    if (score < unscheduledScore) {
-                        if (score > bestScore) {
+                    Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                    if (score.compareTo(unscheduledScore) < 0) {
+                        if (score.compareTo(bestScore) > 0) {
                             bestScore = score;
                             bestPeriod = periodScoring.getPeriod();
                             bestRoom = room;
                         }
-                    } else if (score >= unscheduledScore) {
+                    } else if (score.compareTo(unscheduledScore) >= 0) {
                         // TODO due to the score rules, the score can unscheduledScore can be higher than the score
                         // In theory every possibility should be looked into
                         almostPerfectMatch = true;
@@ -169,9 +171,9 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
     private class PeriodScoring implements Comparable<PeriodScoring> {
 
         private Period period;
-        private double score;
+        private Score score;
 
-        private PeriodScoring(Period period, double score) {
+        private PeriodScoring(Period period, Score score) {
             this.period = period;
             this.score = score;
         }
@@ -180,7 +182,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
             return period;
         }
 
-        public double getScore() {
+        public Score getScore() {
             return score;
         }
 

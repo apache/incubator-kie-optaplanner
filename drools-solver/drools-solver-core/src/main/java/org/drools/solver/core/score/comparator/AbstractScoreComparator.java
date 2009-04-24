@@ -24,11 +24,6 @@ public abstract class AbstractScoreComparator<S extends Score> implements ScoreC
         return compare(score1, score2);
     }
 
-    public S getPerfectScore() {
-        // Hook which can be optionally overwritten by subclasses.
-        return null;
-    }
-
     public double calculateTimeGradient(S startScore, S endScore, S score) {
         // Hook which can be optionally overwritten by subclasses.
         if (startScore.compareTo(score) <= 0) {

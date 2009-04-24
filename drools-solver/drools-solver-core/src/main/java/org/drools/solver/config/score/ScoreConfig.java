@@ -1,7 +1,6 @@
 package org.drools.solver.config.score;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.solver.core.score.Score;
 import org.drools.solver.core.score.DefaultSimpleScore;
 import org.drools.solver.core.score.DefaultHardAndSoftScore;
 
@@ -49,9 +48,9 @@ public class ScoreConfig {
         } else if (scoreType != null) {
             switch (scoreType) {
                 case SIMPLE:
-                    return DefaultSimpleScore.valueOf(scoreString);
+                    return DefaultSimpleScore.parseScore(scoreString);
                 case HARD_AND_SOFT:
-                    return DefaultHardAndSoftScore.valueOf(scoreString);
+                    return DefaultHardAndSoftScore.parseScore(scoreString);
                 default:
                     throw new IllegalStateException("scoreType (" + scoreType + ") not implemented");
             }

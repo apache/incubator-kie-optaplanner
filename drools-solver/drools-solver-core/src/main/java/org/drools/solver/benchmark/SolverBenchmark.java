@@ -92,8 +92,8 @@ public class SolverBenchmark {
     public SolverBenchmarkResult getWorstResult() {
         SolverBenchmarkResult worstResult = null;
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
-            if (worstResult == null || solverBenchmarkResult.getScore() < worstResult.getScore()
-                    || (solverBenchmarkResult.getScore() == worstResult.getScore()
+            if (worstResult == null || solverBenchmarkResult.getScore().compareTo(worstResult.getScore()) < 0
+                    || (solverBenchmarkResult.getScore().equals(worstResult.getScore())
                     && solverBenchmarkResult.getTimeMillesSpend() > worstResult.getTimeMillesSpend())) {
                 worstResult = solverBenchmarkResult;
             }

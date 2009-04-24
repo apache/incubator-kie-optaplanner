@@ -13,17 +13,6 @@ import org.drools.solver.core.score.DefaultSimpleScore;
  */
 public class SimpleScoreComparator extends AbstractScoreComparator<SimpleScore> {
 
-    private SimpleScore perfectScore = new DefaultSimpleScore(0);
-    private SimpleScore worstScore = new DefaultSimpleScore(Integer.MIN_VALUE);
-
-    public void setPerfectScore(SimpleScore perfectScore) {
-        this.perfectScore = perfectScore;
-    }
-
-    public void setWorstScore(SimpleScore worstScore) {
-        this.worstScore = worstScore;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -59,14 +48,6 @@ public class SimpleScoreComparator extends AbstractScoreComparator<SimpleScore> 
     public int compareWithShiftingPenalty(SimpleScore score1, SimpleScore score2) {
         // TODO implement me
         return compare(score1, score2);
-    }
-
-    public SimpleScore getPerfectScore() {
-        return perfectScore;
-    }
-
-    public SimpleScore getWorstScore() {
-        return worstScore;
     }
 
     public double calculateTimeGradient(SimpleScore startScore, SimpleScore endScore, SimpleScore score) {

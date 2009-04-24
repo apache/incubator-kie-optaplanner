@@ -4,8 +4,10 @@ import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.localsearch.decider.accepter.AbstractAccepter;
+import org.drools.solver.core.score.Score;
 
 /**
+ * TODO Under construction. Feel free to create a patch to improve this accepter!
  * @author Geoffrey De Smet
  */
 public class GreatDelugeAccepter extends AbstractAccepter {
@@ -14,18 +16,12 @@ public class GreatDelugeAccepter extends AbstractAccepter {
     protected final double waterRisingRate;
     // TODO lowerboundRate when waterLevel rises on every MoveScope (not just every step) to reset waterlevel to upperbound
 //    protected final double waterLevelLowerBoundRate;
-    protected final double perfectScore;
 
-    protected double waterLevelScore = Double.NaN;
+    protected Score waterLevelScore = null;
 
     public GreatDelugeAccepter(double waterLevelUpperBoundRate, double waterRisingRate) {
-        this(waterLevelUpperBoundRate, waterRisingRate, 0.0);
-    }
-
-    public GreatDelugeAccepter(double waterLevelUpperBoundRate, double waterRisingRate, double perfectScore) {
         this.waterLevelUpperBoundRate = waterLevelUpperBoundRate;
         this.waterRisingRate = waterRisingRate;
-        this.perfectScore = perfectScore;
     }
 
     // ************************************************************************
@@ -42,27 +38,32 @@ public class GreatDelugeAccepter extends AbstractAccepter {
             throw new IllegalArgumentException("The greatDelugeWaterRisingRate (" + waterRisingRate
                     + ") should be between 0.0 and 1.0 (preferably very close to 0.0).");
         }
-        waterLevelScore = localSearchSolverScope.getBestScore() * waterLevelUpperBoundRate;
-        if (waterLevelScore >= perfectScore) {
+        waterLevelScore = localSearchSolverScope.getBestScore().multiply(waterLevelUpperBoundRate);
+        Score perfectMaximumScore = localSearchSolverScope.getScoreDefinition().getPerfectMaximumScore();
+        if (waterLevelScore.compareTo(perfectMaximumScore) > 0) {
             throw new IllegalArgumentException("The waterLevelScore (" + waterLevelScore
-                    + ") should be higher than the perfectScore(" + perfectScore + ").");
+                    + ") should not be higher than the perfectMaximumScore(" + perfectMaximumScore + ").");
         }
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
-        if (moveScope.getScore() >= waterLevelScore) {
+        if (moveScope.getScore().compareTo(waterLevelScore) >= 0) {
             return 1.0;
+        } else {
+            return 0.0;
         }
-        return 0.0;
     }
 
     @Override
     public void stepTaken(StepScope stepScope) {
         if (stepScope.getStepIndex() == stepScope.getLocalSearchSolverScope().getBestSolutionStepIndex()) {
             // New best score
-            waterLevelScore = stepScope.getLocalSearchSolverScope().getBestScore() * waterLevelUpperBoundRate;
+            waterLevelScore = stepScope.getLocalSearchSolverScope().getBestScore().multiply(waterLevelUpperBoundRate);
         } else {
-            waterLevelScore += (perfectScore - waterLevelScore) * waterRisingRate;
+            Score perfectMaximumScore = stepScope.getLocalSearchSolverScope().getScoreDefinition()
+                    .getPerfectMaximumScore();
+            Score waterLevelAugend = perfectMaximumScore.substract(waterLevelScore).multiply(waterRisingRate);
+            waterLevelScore = waterLevelScore.add(waterLevelAugend);
             // TODO maybe if waterlevel is higher than bestScore, than ...
         }
     }

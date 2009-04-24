@@ -5,6 +5,7 @@ import java.util.Random;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
 
 /**
  * @author Geoffrey De Smet
@@ -17,7 +18,7 @@ public class StepScope {
     private double timeGradient = Double.NaN;
     private Move step = null;
     private Move undoStep = null;
-    private double score = Double.NaN;
+    private Score score = null;
     private Solution clonedSolution = null;
 
     public StepScope(LocalSearchSolverScope localSearchSolverScope) {
@@ -60,11 +61,11 @@ public class StepScope {
         this.undoStep = undoStep;
     }
 
-    public double getScore() {
+    public Score getScore() {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setScore(Score score) {
         this.score = score;
     }
 
@@ -75,6 +76,7 @@ public class StepScope {
     public void setClonedSolution(Solution clonedSolution) {
         this.clonedSolution = clonedSolution;
     }
+
     // ************************************************************************
     // Calculated methods
     // ************************************************************************

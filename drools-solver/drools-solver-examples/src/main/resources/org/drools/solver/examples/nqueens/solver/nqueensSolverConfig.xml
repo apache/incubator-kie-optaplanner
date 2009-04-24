@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
     <scoreDrl>/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
-    <scoreCalculator>
-        <scoreCalculatorType>SIMPLE</scoreCalculatorType>
-    </scoreCalculator>
+    <scoreDefinition>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    </scoreDefinition>
     <finish>
         <finishCompositionStyle>OR</finishCompositionStyle>
         <maximumStepCount>100</maximumStepCount>
-        <feasableScore>0.0</feasableScore>
+        <feasableScore>0</feasableScore>
     </finish>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>

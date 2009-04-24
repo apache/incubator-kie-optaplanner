@@ -3,6 +3,7 @@ package org.drools.solver.benchmark;
 import java.io.File;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.solver.core.score.Score;
 
 /**
  * @author Geoffrey De Smet
@@ -11,7 +12,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class SolverBenchmarkResult {
 
     private File unsolvedSolutionFile = null;
-    private Double score = null;
+    private Score score = null;
     private Long timeMillesSpend = null;
     private File solvedSolutionFile = null;
 
@@ -23,11 +24,11 @@ public class SolverBenchmarkResult {
         this.unsolvedSolutionFile = unsolvedSolutionFile;
     }
 
-    public Double getScore() {
+    public Score getScore() {
         return score;
     }
 
-    public void setScore(Double score) {
+    public void setScore(Score score) {
         this.score = score;
     }
 

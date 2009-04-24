@@ -4,6 +4,7 @@ package org.drools.solver.core.score;
  * Default implementation of {@link HardAndSoftScore}.
  * <p/>
  * This class is immutable.
+ * @see HardAndSoftScore
  * @author Geoffrey De Smet
  */
 public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScore>
@@ -12,7 +13,7 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
 
-    public static Score valueOf(String scoreString) {
+    public static DefaultHardAndSoftScore parseScore(String scoreString) {
         String[] scoreTokens = scoreString.split(HARD_LABEL + "\\/");
         if (scoreTokens.length != 2 || !scoreTokens[1].endsWith(SOFT_LABEL)) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
@@ -23,11 +24,11 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
         return valueOf(hardScore, softScore);
     }
 
-    public static Score valueOf(int hardScore) {
+    public static DefaultHardAndSoftScore valueOf(int hardScore) {
         return new DefaultHardAndSoftScore(hardScore);
     }
 
-    public static Score valueOf(int hardScore, int softScore) {
+    public static DefaultHardAndSoftScore valueOf(int hardScore, int softScore) {
         return new DefaultHardAndSoftScore(hardScore, softScore);
     }
 
@@ -56,8 +57,28 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
     // Worker methods
     // ************************************************************************
 
+    public HardAndSoftScore add(HardAndSoftScore augend) {
+        return new DefaultHardAndSoftScore(this.hardScore + augend.getHardScore(),
+                this.softScore + augend.getSoftScore());
+    }
+
+    public HardAndSoftScore substract(HardAndSoftScore subtrahend) {
+        return new DefaultHardAndSoftScore(this.hardScore - subtrahend.getHardScore(),
+                this.softScore - subtrahend.getSoftScore());
+    }
+
+    public HardAndSoftScore multiply(double multiplicand) {
+        return new DefaultHardAndSoftScore((int) Math.round(this.hardScore * multiplicand),
+                (int) Math.round(this.softScore * multiplicand));
+    }
+
+    public HardAndSoftScore divide(double divisor) {
+        return new DefaultHardAndSoftScore((int) Math.round(this.hardScore / divisor),
+                (int) Math.round(this.softScore / divisor));
+    }
+
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) for to avoid dependencies
+        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof HardAndSoftScore) {
@@ -70,12 +91,12 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
     }
 
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) for to avoid dependencies
+        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return (((17 * 37) + hardScore)) * 37 + softScore;
     }
 
     public int compareTo(HardAndSoftScore other) {
-        // A direct implementation (instead of CompareToBuilder) for to avoid dependencies
+        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (hardScore != other.getHardScore()) {
             if (hardScore < other.getHardScore()) {
                 return -1;

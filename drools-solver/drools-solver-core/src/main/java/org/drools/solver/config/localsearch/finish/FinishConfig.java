@@ -12,6 +12,7 @@ import org.drools.solver.core.localsearch.finish.OrCompositeFinish;
 import org.drools.solver.core.localsearch.finish.StepCountFinish;
 import org.drools.solver.core.localsearch.finish.TimeMillisSpendFinish;
 import org.drools.solver.core.localsearch.finish.UnimprovedStepCountFinish;
+import org.drools.solver.core.score.definition.ScoreDefinition;
 
 /**
  * @author Geoffrey De Smet
@@ -29,7 +30,7 @@ public class FinishConfig {
     private Long maximumSecondsSpend = null;
     private Long maximumMinutesSpend = null;
     private Long maximumHouresSpend = null;
-    private Double feasableScore = null;
+    private String feasableScore = null;
     private Integer maximumUnimprovedStepCount = null;
 
     public Finish getFinish() {
@@ -96,11 +97,11 @@ public class FinishConfig {
         this.maximumHouresSpend = maximumHouresSpend;
     }
 
-    public Double getFeasableScore() {
+    public String getFeasableScore() {
         return feasableScore;
     }
 
-    public void setFeasableScore(Double feasableScore) {
+    public void setFeasableScore(String feasableScore) {
         this.feasableScore = feasableScore;
     }
 
@@ -116,7 +117,7 @@ public class FinishConfig {
     // Builder methods
     // ************************************************************************
 
-    public Finish buildFinish() {
+    public Finish buildFinish(ScoreDefinition scoreDefinition) {
         List<Finish> finishList = new ArrayList<Finish>();
         if (finish != null) {
             finishList.add(finish);
@@ -159,7 +160,7 @@ public class FinishConfig {
         }
         if (feasableScore != null) {
             FeasableScoreFinish finish = new FeasableScoreFinish();
-            finish.setFeasableScore(feasableScore);
+            finish.setFeasableScore(scoreDefinition.parseScore(feasableScore));
             finishList.add(finish);
         }
         if (maximumUnimprovedStepCount != null) {

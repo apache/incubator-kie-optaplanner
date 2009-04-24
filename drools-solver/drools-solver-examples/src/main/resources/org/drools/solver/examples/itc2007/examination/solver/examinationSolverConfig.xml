@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
     <scoreDrl>/org/drools/solver/examples/itc2007/examination/solver/examinationScoreRules.drl</scoreDrl>
-    <scoreCalculator>
-        <!--<scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>-->
-        <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-    </scoreCalculator>
+    <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    </scoreDefinition>
     <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
     <finish>
         <!--
@@ -13,7 +12,7 @@
             ge0ffrey's old pc: 1152
         -->
         <maximumSecondsSpend>429</maximumSecondsSpend>
-        <!--<feasableScore>-999999.0</feasableScore>-->
+        <!--<feasableScore>-0hard/-999999soft</feasableScore>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
     <selector>

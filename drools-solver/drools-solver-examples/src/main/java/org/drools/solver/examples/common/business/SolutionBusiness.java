@@ -20,6 +20,7 @@ import org.drools.solver.core.score.constraint.ConstraintOccurrence;
 import org.drools.solver.core.score.constraint.DoubleConstraintOccurrence;
 import org.drools.solver.core.score.constraint.IntConstraintOccurrence;
 import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence;
+import org.drools.solver.core.score.Score;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.SolutionDao;
 import org.slf4j.Logger;
@@ -87,7 +88,7 @@ public class SolutionBusiness {
         return localSearchSolverScope.getWorkingSolution();
     }
 
-    public double getScore() {
+    public Score getScore() {
         return localSearchSolverScope.calculateScoreFromWorkingMemory();
     }
 

@@ -7,9 +7,9 @@
     <inheritedUnsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
-        <scoreCalculator>
-            <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-        </scoreCalculator>
+        <scoreDefinition>
+            <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        </scoreDefinition>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
@@ -25,7 +25,7 @@
         <localSearchSolver>
             <finish>
                 <finishCompositionStyle>AND</finishCompositionStyle>
-                <feasableScore>-188727.0</feasableScore><!-- 188728 (Van Hentenryck and Vergados, May 18 2006) -->
+                <feasableScore>-0hard/-188727soft</feasableScore><!-- 188728 (Van Hentenryck and Vergados, May 18 2006) -->
                 <maximumUnimprovedStepCount>20</maximumUnimprovedStepCount>
             </finish>
         </localSearchSolver>

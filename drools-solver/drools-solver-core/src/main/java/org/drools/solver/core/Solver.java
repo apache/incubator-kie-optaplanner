@@ -1,6 +1,7 @@
 package org.drools.solver.core;
 
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
 
 /**
  * A Solver solves planning problems.
@@ -10,7 +11,7 @@ public interface Solver {
 
     void setStartingSolution(Solution startingSolution);
 
-    double getBestScore();
+    Score getBestScore();
     Solution getBestSolution();
 
     /**

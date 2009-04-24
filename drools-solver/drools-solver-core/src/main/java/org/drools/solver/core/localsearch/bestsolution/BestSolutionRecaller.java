@@ -5,6 +5,7 @@ import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.score.Score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
     // ************************************************************************
 
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        double initialScore = localSearchSolverScope.getStartingScore();
+        Score initialScore = localSearchSolverScope.getStartingScore();
         logger.info("Initialization time spend ({}) for score ({}). Updating best solution and best score.",
                 localSearchSolverScope.calculateTimeMillisSpend(), initialScore);
         localSearchSolverScope.setBestSolutionStepIndex(-1);
@@ -43,9 +44,9 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
 
     public void stepTaken(StepScope stepScope) {
         LocalSearchSolverScope localSearchSolverScope = stepScope.getLocalSearchSolverScope();
-        double newScore = stepScope.getScore();
-        double bestScore = localSearchSolverScope.getBestScore();
-        if (newScore > bestScore) {
+        Score newScore = stepScope.getScore();
+        Score bestScore = localSearchSolverScope.getBestScore();
+        if (newScore.compareTo(bestScore) > 0) {
             logger.info("New score ({}) is better then last best score ({}). Updating best solution and best score.",
                     newScore, bestScore);
             localSearchSolverScope.setBestSolutionStepIndex(stepScope.getStepIndex());

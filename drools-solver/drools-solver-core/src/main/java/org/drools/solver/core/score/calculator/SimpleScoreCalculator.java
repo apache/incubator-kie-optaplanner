@@ -1,17 +1,20 @@
 package org.drools.solver.core.score.calculator;
 
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.DefaultSimpleScore;
+
 /**
  * @author Geoffrey De Smet
  */
 public class SimpleScoreCalculator extends AbstractScoreCalculator {
 
-    private double score;
+    private int score;
 
-    public double getScore() {
+    public int getScore() {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setScore(int score) {
         this.score = score;
     }
 
@@ -19,8 +22,8 @@ public class SimpleScoreCalculator extends AbstractScoreCalculator {
     // Worker methods
     // ************************************************************************
 
-    public double calculateStepScore() {
-        return score;
+    public Score calculateScore() {
+        return DefaultSimpleScore.valueOf(score);
     }
 
 }

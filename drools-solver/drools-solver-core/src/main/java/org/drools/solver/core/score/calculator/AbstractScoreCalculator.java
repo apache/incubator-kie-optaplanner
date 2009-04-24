@@ -12,8 +12,4 @@ public abstract class AbstractScoreCalculator implements ScoreCalculator, Serial
     // Worker methods
     // ************************************************************************
 
-    public double calculateDecisionScore() {
-        return calculateStepScore();
-    }
-
 }

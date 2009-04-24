@@ -2,6 +2,8 @@ package org.drools.solver.examples.nqueens;
 
 import junit.framework.TestCase;
 import org.drools.solver.core.Solver;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.DefaultSimpleScore;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.config.XmlSolverConfigurer;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
@@ -28,8 +30,8 @@ public class NQueensSmokeTest extends TestCase {
         solver.solve();
         Solution bestSolution = solver.getBestSolution();
         assertNotNull(bestSolution);
-        double bestScore = solver.getBestScore();
-        assertEquals(0.0, bestScore);
+        Score bestScore = solver.getBestScore();
+        assertEquals(DefaultSimpleScore.valueOf(0), bestScore);
     }
 
 }

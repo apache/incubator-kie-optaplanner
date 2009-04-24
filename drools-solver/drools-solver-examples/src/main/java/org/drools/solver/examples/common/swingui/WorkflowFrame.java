@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 public class WorkflowFrame extends JFrame {
     
-    public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
-
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private SolutionBusiness solutionBusiness;
@@ -186,7 +184,7 @@ public class WorkflowFrame extends JFrame {
     public void updateScreen() {
         solutionPanel.resetPanel();
         validate();
-        resultLabel.setText("Score = " + NUMBER_FORMAT.format(solutionBusiness.getScore()));
+        resultLabel.setText("Score = " + solutionBusiness.getScore());
     }
 
 }

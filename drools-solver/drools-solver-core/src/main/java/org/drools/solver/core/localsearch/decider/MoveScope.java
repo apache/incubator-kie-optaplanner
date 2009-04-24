@@ -6,6 +6,8 @@ import org.drools.WorkingMemory;
 import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.DefaultHardAndSoftScore;
 
 /**
  * @author Geoffrey De Smet
@@ -16,8 +18,7 @@ public class MoveScope {
     private Move move = null;
     private Move undoMove = null;
     private double acceptChance = Double.NaN;
-    private double score = Double.NEGATIVE_INFINITY;
-    private double decisionScore = Double.NaN;
+    private Score score = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     public MoveScope(StepScope stepScope) {
         this.stepScope = stepScope;
@@ -51,20 +52,12 @@ public class MoveScope {
         this.acceptChance = acceptChance;
     }
 
-    public double getScore() {
+    public Score getScore() {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setScore(Score score) {
         this.score = score;
-    }
-
-    public double getDecisionScore() {
-        return decisionScore;
-    }
-
-    public void setDecisionScore(double decisionScore) {
-        this.decisionScore = decisionScore;
     }
 
     // ************************************************************************

@@ -6,6 +6,8 @@ import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.score.calculator.ScoreCalculator;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.definition.ScoreDefinition;
 import org.drools.solver.core.solution.Solution;
 
 /**
@@ -16,6 +18,7 @@ public class LocalSearchSolverScope {
     public static final String GLOBAL_SCORE_CALCULATOR_KEY = "scoreCalculator";
 
     protected RuleBase ruleBase;
+    private ScoreDefinition scoreDefinition;
 
     private long startingSystemTimeMillis;
 
@@ -24,16 +27,28 @@ public class LocalSearchSolverScope {
     private ScoreCalculator workingScoreCalculator;
     private Random workingRandom;
 
-    private double startingScore;
+    private Score startingScore;
 
     private int bestSolutionStepIndex;
     private Solution bestSolution;
-    private double bestScore;
+    private Score bestScore;
 
     private StepScope lastCompletedStepScope;
 
+    public RuleBase getRuleBase() {
+        return ruleBase;
+    }
+
     public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
+    }
+
+    public ScoreDefinition getScoreDefinition() {
+        return scoreDefinition;
+    }
+
+    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
+        this.scoreDefinition = scoreDefinition;
     }
 
     public long getStartingSystemTimeMillis() {
@@ -73,11 +88,11 @@ public class LocalSearchSolverScope {
         this.workingRandom = workingRandom;
     }
 
-    public double getStartingScore() {
+    public Score getStartingScore() {
         return startingScore;
     }
 
-    public void setStartingScore(double startingScore) {
+    public void setStartingScore(Score startingScore) {
         this.startingScore = startingScore;
     }
 
@@ -97,11 +112,11 @@ public class LocalSearchSolverScope {
         this.bestSolution = bestSolution;
     }
 
-    public double getBestScore() {
+    public Score getBestScore() {
         return bestScore;
     }
 
-    public void setBestScore(double bestScore) {
+    public void setBestScore(Score bestScore) {
         this.bestScore = bestScore;
     }
 
@@ -117,9 +132,9 @@ public class LocalSearchSolverScope {
     // Calculated methods
     // ************************************************************************
 
-    public double calculateScoreFromWorkingMemory() {
+    public Score calculateScoreFromWorkingMemory() {
         workingMemory.fireAllRules();
-        return workingScoreCalculator.calculateStepScore();
+        return workingScoreCalculator.calculateScore();
     }
 
     public void resetTimeMillisSpend() {

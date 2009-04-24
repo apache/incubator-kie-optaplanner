@@ -78,7 +78,7 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
             return 1.0;
         }
         if (aspirationEnabled
-                && moveScope.getScore() > moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) {
+                && moveScope.getScore().compareTo(moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
             logger.debug("    Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
             return 1.0;
         }

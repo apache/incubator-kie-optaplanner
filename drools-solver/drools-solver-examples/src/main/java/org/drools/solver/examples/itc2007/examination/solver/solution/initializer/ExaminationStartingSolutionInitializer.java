@@ -13,6 +13,8 @@ import org.drools.WorkingMemory;
 import org.drools.FactHandle;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.DefaultHardAndSoftScore;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
@@ -49,7 +51,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         List<ExamInitializationWeight> examInitialWeightList = createExamAssigningScoreList(examination);
 
         for (ExamInitializationWeight examInitialWeight : examInitialWeightList) {
-            double unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
             Exam leader = examInitialWeight.getExam();
             FactHandle leaderHandle = null;
 
@@ -77,7 +79,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                         workingMemory.modifyInsert(examToHandle.getExamHandle(), examToHandle.getExam());
                     }
                 }
-                double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 periodScoringList.add(new PeriodScoring(period, score));
             }
             Collections.sort(periodScoringList);
@@ -101,14 +103,14 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
     }
 
     private void scheduleLeader(List<PeriodScoring> periodScoringList, List<Room> roomList,
-            LocalSearchSolverScope localSearchSolverScope, WorkingMemory workingMemory, double unscheduledScore,
+            LocalSearchSolverScope localSearchSolverScope, WorkingMemory workingMemory, Score unscheduledScore,
             List<ExamToHandle> examToHandleList, Exam leader, FactHandle leaderHandle) {
         boolean perfectMatch = false;
-        double bestScore = Double.NEGATIVE_INFINITY;
+        Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
         Period bestPeriod = null;
         Room bestRoom = null;
         for (PeriodScoring periodScoring : periodScoringList) {
-            if (bestScore >= periodScoring.getScore()) {
+            if (bestScore.compareTo(periodScoring.getScore()) >= 0) {
                 // No need to check the rest
                 break;
             }
@@ -121,14 +123,14 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 workingMemory.modifyRetract(leaderHandle);
                 leader.setRoom(room);
                 workingMemory.modifyInsert(leaderHandle, leader);
-                double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
-                if (score < unscheduledScore) {
-                    if (score > bestScore) {
+                Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                if (score.compareTo(unscheduledScore) < 0) {
+                    if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
                         bestPeriod = periodScoring.getPeriod();
                         bestRoom = room;
                     }
-                } else if (score == unscheduledScore) {
+                } else if (score.equals(unscheduledScore)) {
                     perfectMatch = true;
                     break;
                 } else {
@@ -163,21 +165,21 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         if (exam.getRoom() != null) {
             throw new IllegalStateException("Exam (" + exam + ") already has a room.");
         }
-        double unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
+        Score unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
         boolean perfectMatch = false;
-        double bestScore = Double.NEGATIVE_INFINITY;
+        Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
         Room bestRoom = null;
         for (Room room : roomList) {
             workingMemory.modifyRetract(examHandle);
             exam.setRoom(room);
             workingMemory.modifyInsert(examHandle, exam);
-            double score = localSearchSolverScope.calculateScoreFromWorkingMemory();
-            if (score < unscheduledScore) {
-                if (score > bestScore) {
+            Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+            if (score.compareTo(unscheduledScore) < 0) {
+                if (score.compareTo(bestScore) > 0) {
                     bestScore = score;
                     bestRoom = room;
                 }
-            } else if (score == unscheduledScore) {
+            } else if (score.equals(unscheduledScore)) {
                 perfectMatch = true;
                 break;
             } else {
@@ -345,9 +347,9 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
     private class PeriodScoring implements Comparable<PeriodScoring> {
 
         private Period period;
-        private double score;
+        private Score score;
 
-        private PeriodScoring(Period period, double score) {
+        private PeriodScoring(Period period, Score score) {
             this.period = period;
             this.score = score;
         }
@@ -356,7 +358,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             return period;
         }
 
-        public double getScore() {
+        public Score getScore() {
             return score;
         }
 

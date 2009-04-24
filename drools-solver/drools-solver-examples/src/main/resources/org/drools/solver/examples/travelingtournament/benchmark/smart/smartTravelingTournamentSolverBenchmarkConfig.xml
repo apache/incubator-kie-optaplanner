@@ -7,9 +7,9 @@
     <inheritedUnsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl10.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
-        <scoreCalculator>
-            <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-        </scoreCalculator>
+        <scoreDefinition>
+            <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        </scoreDefinition>
         <finish>
             <maximumHouresSpend>2</maximumHouresSpend>
         </finish>

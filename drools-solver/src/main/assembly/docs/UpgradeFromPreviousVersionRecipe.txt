@@ -8,3 +8,69 @@ From 5.0.0-m2 to 5.0.0
 ----------------------
 
 No backwards imcompatible changes.
+
+From 5.0.0 to 5.0.1
+-------------------
+
+A score is no longer a double, now it's a Score instance.
+
+
+In the Solver interface, the return type of the getBestScore() method changed:
+Before:
+    double score = solver.getBestScore();
+After:
+    Score score = solver.getBestScore();
+
+
+Simple scores are written "-999", and hard and soft scores are written "-999hard/-999soft".
+You will see this in the examples GUI.
+In the *ScoreConfig.xml, configuring a feasableScore also reflects this.
+Before with simple score:
+    <finish>
+        <feasableScore>-123456789.0</feasableScore>
+    </finish>
+After:
+    <finish>
+        <feasableScore>-123456789</feasableScore>
+    </finish>
+Before with hard and soft score (Note that the hard part started from 1000000):
+    <finish>
+        <feasableScore>-123456789.0</feasableScore>
+    </finish>
+After:
+    <finish>
+        <feasableScore>-123hard/-456789soft</feasableScore>-->
+    </finish>
+
+
+In the *ScoreConfig.xml, you no longer configure a ScoreCalculator,
+but now you configure a ScoreDefinition instead.
+
+Before:
+    <scoreCalculator>
+        <scoreCalculatorType>SIMPLE</scoreCalculatorType>
+    </scoreCalculator>
+After:
+    <scoreDefinition>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    </scoreDefinition>
+
+Before:
+    <scoreCalculator>
+        <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+    </scoreCalculator>
+After:
+    <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    </scoreDefinition>
+
+DYNAMIC_HARD_AND_SOFT_CONSTRAINTS was bugged and has been removed, but will be replaced
+by shiftingPenalty support.
+Before:
+    <scoreCalculator>
+        <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+    </scoreCalculator>
+After:
+    <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    </scoreDefinition>

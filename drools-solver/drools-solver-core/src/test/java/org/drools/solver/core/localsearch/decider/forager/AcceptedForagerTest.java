@@ -9,6 +9,9 @@ import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.move.DummyMove;
 import org.drools.solver.core.move.Move;
+import org.drools.solver.core.score.DefaultSimpleScore;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.definition.SimpleScoreDefinition;
 
 /**
  * @author Geoffrey De Smet
@@ -23,11 +26,11 @@ public class AcceptedForagerTest extends TestCase {
         StepScope stepScope = new StepScope(localSearchSolverScope);
         forager.beforeDeciding(stepScope);
         // Pre conditions
-        MoveScope a = createMoveScope(stepScope, -20.0, 30.0);
-        MoveScope b = createMoveScope(stepScope, -1.0, 9.0);
-        MoveScope c = createMoveScope(stepScope, -20.0, 20.0);
-        MoveScope d = createMoveScope(stepScope, -300.0, 50000.0);
-        MoveScope e = createMoveScope(stepScope, -1.0, 1.0);
+        MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 30.0);
+        MoveScope b = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 9.0);
+        MoveScope c = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 20.0);
+        MoveScope d = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-300), 50000.0);
+        MoveScope e = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 1.0);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -59,10 +62,10 @@ public class AcceptedForagerTest extends TestCase {
         StepScope stepScope = new StepScope(localSearchSolverScope);
         forager.beforeDeciding(stepScope);
         // Pre conditions
-        MoveScope a = createMoveScope(stepScope, -1.0, 0.0);
-        MoveScope b = createMoveScope(stepScope, -20.0, 1.0);
-        MoveScope c = createMoveScope(stepScope, -300.0, 1.0);
-        MoveScope d = createMoveScope(stepScope, -1.0, 0.3);
+        MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.0);
+        MoveScope b = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 1.0);
+        MoveScope c = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-300), 1.0);
+        MoveScope d = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.3);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -89,10 +92,10 @@ public class AcceptedForagerTest extends TestCase {
         StepScope stepScope = new StepScope(localSearchSolverScope);
         forager.beforeDeciding(stepScope);
         // Pre conditions
-        MoveScope a = createMoveScope(stepScope, -1.0, 0.0);
-        MoveScope b = createMoveScope(stepScope, -300.0, 1.0);
-        MoveScope c = createMoveScope(stepScope, -4000.0, 1.0);
-        MoveScope d = createMoveScope(stepScope, -20.0, 0.3);
+        MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.0);
+        MoveScope b = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-300), 1.0);
+        MoveScope c = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-4000), 1.0);
+        MoveScope d = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 0.3);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -119,10 +122,10 @@ public class AcceptedForagerTest extends TestCase {
         StepScope stepScope = new StepScope(localSearchSolverScope);
         forager.beforeDeciding(stepScope);
         // Pre conditions
-        MoveScope a = createMoveScope(stepScope, -20.0, 0.0);
-        MoveScope b = createMoveScope(stepScope, -1.0, 0.1);
-        MoveScope c = createMoveScope(stepScope, -1.0, 0.0);
-        MoveScope d = createMoveScope(stepScope, -20.0, 0.3);
+        MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 0.0);
+        MoveScope b = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.1);
+        MoveScope c = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.0);
+        MoveScope d = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 0.3);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
@@ -143,19 +146,20 @@ public class AcceptedForagerTest extends TestCase {
 
     private LocalSearchSolverScope createLocalSearchSolverScope() {
         LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
+        localSearchSolverScope.setScoreDefinition(new SimpleScoreDefinition());
         localSearchSolverScope.setWorkingRandom(new Random() {
             public double nextDouble() {
                 return 0.2;
             }
         });
-        localSearchSolverScope.setBestScore(-10.0);
+        localSearchSolverScope.setBestScore(DefaultSimpleScore.valueOf(-10));
         StepScope lastStepScope = new StepScope(localSearchSolverScope);
-        lastStepScope.setScore(-100.0);
+        lastStepScope.setScore(DefaultSimpleScore.valueOf(-100));
         localSearchSolverScope.setLastCompletedStepScope(lastStepScope);
         return localSearchSolverScope;
     }
 
-    public MoveScope createMoveScope(StepScope stepScope, double score, double acceptChance) {
+    public MoveScope createMoveScope(StepScope stepScope, Score score, double acceptChance) {
         MoveScope moveScope = new MoveScope(stepScope);
         moveScope.setMove(new DummyMove());
         moveScope.setScore(score);

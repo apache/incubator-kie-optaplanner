@@ -10,13 +10,13 @@
     <inheritedUnsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
-        <scoreCalculator>
-            <scoreCalculatorType>SIMPLE</scoreCalculatorType>
-        </scoreCalculator>
+        <scoreDefinition>
+            <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+        </scoreDefinition>
         <finish>
             <finishCompositionStyle>OR</finishCompositionStyle>
             <maximumSecondsSpend>10</maximumSecondsSpend>
-            <feasableScore>0.0</feasableScore>
+            <feasableScore>0</feasableScore>
         </finish>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>

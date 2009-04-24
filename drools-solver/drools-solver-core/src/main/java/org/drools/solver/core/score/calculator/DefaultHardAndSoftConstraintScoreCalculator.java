@@ -1,9 +1,12 @@
 package org.drools.solver.core.score.calculator;
 
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.DefaultHardAndSoftScore;
+
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AbstractHardAndSoftConstraintScoreCalculator extends AbstractScoreCalculator
+public class DefaultHardAndSoftConstraintScoreCalculator extends AbstractScoreCalculator
         implements HardAndSoftConstraintScoreCalculator {
 
     protected int hardConstraintsBroken;
@@ -29,10 +32,8 @@ public abstract class AbstractHardAndSoftConstraintScoreCalculator extends Abstr
     // Worker methods
     // ************************************************************************
 
-    public double calculateHardAndSoftConstraintScore(double hardConstraintsWeight) {
-        double constraintsBroken = ((double) hardConstraintsBroken) * hardConstraintsWeight;
-        constraintsBroken += (double) softConstraintsBroken;
-        return -constraintsBroken;
+    public Score calculateScore() {
+        return DefaultHardAndSoftScore.valueOf(-hardConstraintsBroken, -softConstraintsBroken);
     }
 
 }

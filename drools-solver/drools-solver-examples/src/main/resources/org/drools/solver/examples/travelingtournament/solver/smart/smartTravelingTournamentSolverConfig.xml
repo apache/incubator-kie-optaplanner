@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
     <scoreDrl>/org/drools/solver/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
-    <scoreCalculator>
-        <scoreCalculatorType>HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-    </scoreCalculator>
+    <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    </scoreDefinition>
     <finish>
         <!--<maximumHouresSpend>2</maximumHouresSpend>-->
         <maximumStepCount>100</maximumStepCount>

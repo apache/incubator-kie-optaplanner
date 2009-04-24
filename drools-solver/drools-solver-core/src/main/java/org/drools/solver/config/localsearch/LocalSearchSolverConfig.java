@@ -16,14 +16,15 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.solver.config.localsearch.decider.accepter.AccepterConfig;
 import org.drools.solver.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.solver.config.localsearch.decider.selector.SelectorConfig;
-import org.drools.solver.config.localsearch.evaluation.scorecalculator.ScoreCalculatorConfig;
 import org.drools.solver.config.localsearch.finish.FinishConfig;
+import org.drools.solver.config.score.definition.ScoreDefinitionConfig;
 import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.bestsolution.BestSolutionRecaller;
 import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.localsearch.decider.DefaultDecider;
 import org.drools.solver.core.solution.initializer.StartingSolutionInitializer;
+import org.drools.solver.core.score.definition.ScoreDefinition;
 
 /**
  * @author Geoffrey De Smet
@@ -35,8 +36,8 @@ public class LocalSearchSolverConfig {
 
     @XStreamImplicit(itemFieldName = "scoreDrl")
     private List<String> scoreDrlList = null;
-    @XStreamAlias("scoreCalculator")
-    private ScoreCalculatorConfig scoreCalculatorConfig = new ScoreCalculatorConfig();
+    @XStreamAlias("scoreDefinition")
+    private ScoreDefinitionConfig scoreDefinitionConfig = new ScoreDefinitionConfig();
 
     private StartingSolutionInitializer startingSolutionInitializer = null;
     private Class<StartingSolutionInitializer> startingSolutionInitializerClass = null;
@@ -67,12 +68,12 @@ public class LocalSearchSolverConfig {
         this.scoreDrlList = scoreDrlList;
     }
 
-    public ScoreCalculatorConfig getScoreCalculatorConfig() {
-        return scoreCalculatorConfig;
+    public ScoreDefinitionConfig getScoreDefinitionConfig() {
+        return scoreDefinitionConfig;
     }
 
-    public void setScoreCalculatorConfig(ScoreCalculatorConfig scoreCalculatorConfig) {
-        this.scoreCalculatorConfig = scoreCalculatorConfig;
+    public void setScoreDefinitionConfig(ScoreDefinitionConfig scoreDefinitionConfig) {
+        this.scoreDefinitionConfig = scoreDefinitionConfig;
     }
 
     public StartingSolutionInitializer getStartingSolutionInitializer() {
@@ -135,10 +136,13 @@ public class LocalSearchSolverConfig {
             localSearchSolver.setRandomSeed(0L);
         }
         localSearchSolver.setRuleBase(buildRuleBase());
-        localSearchSolver.setScoreCalculator(scoreCalculatorConfig.buildScoreCalculator());
+        ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
+        localSearchSolver.setScoreDefinition(scoreDefinition);
+        // remove when score-in-solution refactor
+        localSearchSolver.setScoreCalculator(scoreDefinitionConfig.buildScoreCalculator());
         localSearchSolver.setStartingSolutionInitializer(buildStartingSolutionInitializer());
         localSearchSolver.setBestSolutionRecaller(new BestSolutionRecaller());
-        localSearchSolver.setFinish(finishConfig.buildFinish());
+        localSearchSolver.setFinish(finishConfig.buildFinish(scoreDefinition));
         localSearchSolver.setDecider(buildDecider());
         return localSearchSolver;
     }
@@ -214,10 +218,10 @@ public class LocalSearchSolverConfig {
                 }
             }
         }
-        if (scoreCalculatorConfig == null) {
-            scoreCalculatorConfig = inheritedConfig.getScoreCalculatorConfig();
-        } else if (inheritedConfig.getScoreCalculatorConfig() != null) {
-            scoreCalculatorConfig.inherit(inheritedConfig.getScoreCalculatorConfig());
+        if (scoreDefinitionConfig == null) {
+            scoreDefinitionConfig = inheritedConfig.getScoreDefinitionConfig();
+        } else if (inheritedConfig.getScoreDefinitionConfig() != null) {
+            scoreDefinitionConfig.inherit(inheritedConfig.getScoreDefinitionConfig());
         }
         if (startingSolutionInitializer == null && startingSolutionInitializerClass == null) {
             startingSolutionInitializer = inheritedConfig.getStartingSolutionInitializer();

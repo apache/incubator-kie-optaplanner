@@ -12,18 +12,8 @@ import org.drools.solver.core.score.DefaultHardAndSoftScore;
  * @author Geoffrey De Smet
  */
 public class HardAndSoftScoreComparator extends AbstractScoreComparator<HardAndSoftScore> {
-
-    private HardAndSoftScore perfectScore = new DefaultHardAndSoftScore(0, 0);
-    private HardAndSoftScore worstScore = new DefaultHardAndSoftScore(Integer.MIN_VALUE, Integer.MIN_VALUE);
+    
     private double hardScoreTimeGradientWeight = 0.5;
-
-    public void setPerfectScore(HardAndSoftScore perfectScore) {
-        this.perfectScore = perfectScore;
-    }
-
-    public void setWorstScore(HardAndSoftScore worstScore) {
-        this.worstScore = worstScore;
-    }
 
     public void setHardScoreTimeGradientWeight(double hardScoreTimeGradientWeight) {
         this.hardScoreTimeGradientWeight = hardScoreTimeGradientWeight;
@@ -72,14 +62,6 @@ public class HardAndSoftScoreComparator extends AbstractScoreComparator<HardAndS
     public int compareWithShiftingPenalty(HardAndSoftScore score1, HardAndSoftScore score2) {
         // TODO implement me
         return compare(score1, score2);
-    }
-
-    public HardAndSoftScore getPerfectScore() {
-        return perfectScore;
-    }
-
-    public HardAndSoftScore getWorstScore() {
-        return worstScore;
     }
 
     public double calculateTimeGradient(HardAndSoftScore startScore, HardAndSoftScore endScore,

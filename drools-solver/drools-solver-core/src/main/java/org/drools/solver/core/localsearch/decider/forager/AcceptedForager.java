@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.move.Move;
+import org.drools.solver.core.score.Score;
 
 /**
  * An AcceptedForager is a Forager which forages accepted moves and ignores unaccepted moves.
@@ -24,7 +25,7 @@ public class AcceptedForager extends AbstractForager {
 
     protected List<MoveScope> acceptedList;
     protected boolean listSorted;
-    protected double maxScore;
+    protected Score maxScore;
     protected double acceptChanceMaxScoreTotal;
 
     protected MoveScope earlyPickedMoveScope = null;
@@ -52,7 +53,7 @@ public class AcceptedForager extends AbstractForager {
     public void beforeDeciding(StepScope stepScope) {
         acceptedList = new ArrayList<MoveScope>(); // TODO use size of moveList in decider
         listSorted = false;
-        maxScore = Double.NEGATIVE_INFINITY;
+        maxScore = stepScope.getLocalSearchSolverScope().getScoreDefinition().getPerfectMinimumScore();
         acceptChanceMaxScoreTotal = 0.0;
         earlyPickedMoveScope = null;
     }
@@ -69,13 +70,13 @@ public class AcceptedForager extends AbstractForager {
             case NONE:
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
-                if (moveScope.getScore() > moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) {
+                if (moveScope.getScore().compareTo(moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_LAST_STEP_SCORE_IMPROVING:
-                if (moveScope.getScore() > moveScope.getStepScope().getLocalSearchSolverScope()
-                        .getLastCompletedStepScope().getScore()) {
+                if (moveScope.getScore().compareTo(moveScope.getStepScope().getLocalSearchSolverScope()
+                        .getLastCompletedStepScope().getScore()) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
@@ -97,10 +98,10 @@ public class AcceptedForager extends AbstractForager {
     protected void addMoveScopeToAcceptedList(MoveScope moveScope) {
         acceptedList.add(moveScope);
         listSorted = false;
-        if (moveScope.getScore() > maxScore) {
+        if (moveScope.getScore().compareTo(maxScore) > 0) {
             acceptChanceMaxScoreTotal = moveScope.getAcceptChance();
             maxScore = moveScope.getScore();
-        } else if (moveScope.getScore() == maxScore) {
+        } else if (moveScope.getScore().equals(maxScore)) {
             acceptChanceMaxScoreTotal += moveScope.getAcceptChance();
         }
     }

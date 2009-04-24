@@ -8,6 +8,9 @@ import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.MoveScope;
 import org.drools.solver.core.localsearch.decider.accepter.Accepter;
 import org.drools.solver.core.move.DummyMove;
+import org.drools.solver.core.score.DefaultSimpleScore;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.definition.SimpleScoreDefinition;
 
 /**
  * @author Geoffrey De Smet
@@ -23,13 +26,13 @@ public class GreatDelugeAccepterTest extends TestCase {
         stepScope.setStepIndex(0);
         accepter.beforeDeciding(stepScope);
         // Pre conditions
-        MoveScope a1 = createMoveScope(stepScope, -2000.0);
-        MoveScope a2 = createMoveScope(stepScope, -1300.0);
-        MoveScope a3 = createMoveScope(stepScope, -1200.0);
-        MoveScope b1 = createMoveScope(stepScope, -1200.0);
-        MoveScope b2 = createMoveScope(stepScope, -100.0);
-        MoveScope c1 = createMoveScope(stepScope, -1100.0);
-        MoveScope c2 = createMoveScope(stepScope, -120.0);
+        MoveScope a1 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-2000));
+        MoveScope a2 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1300));
+        MoveScope a3 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1200));
+        MoveScope b1 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1200));
+        MoveScope b2 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-100));
+        MoveScope c1 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1100));
+        MoveScope c2 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-120));
         // Do stuff
         assertEquals(0.0, accepter.calculateAcceptChance(a1));
         assertEquals(0.0, accepter.calculateAcceptChance(a2));
@@ -49,19 +52,20 @@ public class GreatDelugeAccepterTest extends TestCase {
 
     private LocalSearchSolverScope createLocalSearchSolverScope() {
         LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
+        localSearchSolverScope.setScoreDefinition(new SimpleScoreDefinition());
         localSearchSolverScope.setWorkingRandom(new Random() {
             public double nextDouble() {
                 return 0.2;
             }
         });
-        localSearchSolverScope.setBestScore(-1000.0);
+        localSearchSolverScope.setBestScore(DefaultSimpleScore.valueOf(-1000));
         StepScope lastStepScope = new StepScope(localSearchSolverScope);
-        lastStepScope.setScore(-1000.0);
+        lastStepScope.setScore(DefaultSimpleScore.valueOf(-1000));
         localSearchSolverScope.setLastCompletedStepScope(lastStepScope);
         return localSearchSolverScope;
     }
 
-    public MoveScope createMoveScope(StepScope stepScope, double score) {
+    public MoveScope createMoveScope(StepScope stepScope, Score score) {
         MoveScope moveScope = new MoveScope(stepScope);
         moveScope.setMove(new DummyMove());
         moveScope.setScore(score);

@@ -8,12 +8,16 @@ import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.localsearch.finish.Finish;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.score.calculator.ScoreCalculator;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.HardAndSoftScore;
+import org.drools.solver.core.score.definition.ScoreDefinition;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.solution.initializer.StartingSolutionInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Default implementation of {@link LocalSearchSolver}.
  * @author Geoffrey De Smet
  */
 public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchSolverLifecycleListener {
@@ -35,6 +39,10 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
 
     public void setRuleBase(RuleBase ruleBase) {
         localSearchSolverScope.setRuleBase(ruleBase);
+    }
+
+    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
+        localSearchSolverScope.setScoreDefinition(scoreDefinition);
     }
 
     public void setScoreCalculator(ScoreCalculator scoreCalculator) {
@@ -72,7 +80,7 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         localSearchSolverScope.setWorkingSolution(startingSolution);
     }
 
-    public double getBestScore() {
+    public Score getBestScore() {
         return this.localSearchSolverScope.getBestScore();
     }
 

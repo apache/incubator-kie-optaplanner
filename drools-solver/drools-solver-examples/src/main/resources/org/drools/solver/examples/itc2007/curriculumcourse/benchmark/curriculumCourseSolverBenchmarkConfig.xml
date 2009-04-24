@@ -35,9 +35,9 @@
 
     <solverBenchmark>
         <localSearchSolver>
-            <scoreCalculator>
-                <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
-            </scoreCalculator>
+            <scoreDefinition>
+                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+            </scoreDefinition>
             <selector>
                 <selector>
                     <topSize>10</topSize>
