@@ -148,7 +148,7 @@ public class WorkflowFrame extends JFrame {
     private class CancelSolvingAction extends AbstractAction {
 
         public CancelSolvingAction() {
-            super("Cancel solving");
+            super("Cancel solving (coming soon)");
         }
 
         public void actionPerformed(ActionEvent e) {
