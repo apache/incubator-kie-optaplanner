@@ -79,6 +79,7 @@ public class WorkflowFrame extends JFrame {
             panel.add(new JButton(action));
         }
         JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(25);
         scrollPane.setPreferredSize(new Dimension(250, 200));
         return scrollPane;
     }
@@ -90,6 +91,7 @@ public class WorkflowFrame extends JFrame {
             panel.add(new JButton(action));
         }
         JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(25);
         scrollPane.setPreferredSize(new Dimension(250, 200));
         return scrollPane;
     }
