@@ -93,12 +93,12 @@
   <teamList id="25">
     <org.drools.solver.examples.travelingtournament.domain.Team id="26">
       <id>0</id>
-      <name>ATL</name>
+      <name>BFN</name>
       <distanceToTeamMap id="27">
         <entry>
           <org.drools.solver.examples.travelingtournament.domain.Team id="28">
-            <id>8</id>
-            <name>STL</name>
+            <id>5</id>
+            <name>SYD</name>
             <distanceToTeamMap id="29">
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
@@ -106,12 +106,12 @@
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team id="30">
-                  <id>6</id>
-                  <name>CIN</name>
+                  <id>10</id>
+                  <name>DUN</name>
                   <distanceToTeamMap id="31">
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                      <int>311</int>
+                      <int>1288</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
@@ -119,16 +119,16 @@
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team id="32">
-                        <id>2</id>
-                        <name>PHI</name>
+                        <id>11</id>
+                        <name>PER</name>
                         <distanceToTeamMap id="33">
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                            <int>808</int>
+                            <int>2042</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                            <int>501</int>
+                            <int>3013</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
@@ -136,20 +136,20 @@
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team id="34">
-                              <id>1</id>
-                              <name>NYM</name>
+                              <id>2</id>
+                              <name>CAN</name>
                               <distanceToTeamMap id="35">
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                                  <int>871</int>
+                                  <int>154</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                                  <int>567</int>
+                                  <int>1310</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                                  <int>80</int>
+                                  <int>1916</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
@@ -157,24 +157,24 @@
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team id="36">
-                                    <id>9</id>
-                                    <name>MIL</name>
+                                    <id>1</id>
+                                    <name>AKL</name>
                                     <distanceToTeamMap id="37">
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                                        <int>328</int>
+                                        <int>1338</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                                        <int>325</int>
+                                        <int>641</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                                        <int>697</int>
+                                        <int>3318</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                                        <int>741</int>
+                                        <int>1429</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
@@ -182,69 +182,61 @@
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team id="38">
-                                          <id>3</id>
-                                          <name>MON</name>
+                                          <id>9</id>
+                                          <name>DUR</name>
                                           <distanceToTeamMap id="39">
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                                              <int>878</int>
+                                              <int>6546</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                                              <int>622</int>
+                                              <int>6627</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                                              <int>380</int>
+                                              <int>4883</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                                              <int>337</int>
+                                              <int>6391</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                                              <int>732</int>
+                                              <int>7254</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
                                               <int>0</int>
                                             </entry>
                                             <entry>
-                                              <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                                              <int>929</int>
-                                            </entry>
-                                            <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team id="40">
-                                                <id>11</id>
-                                                <name>COL</name>
+                                                <id>6</id>
+                                                <name>JOH</name>
                                                 <distanceToTeamMap id="41">
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                                                    <int>794</int>
+                                                    <int>6852</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                                                    <int>1090</int>
+                                                    <int>6935</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                                                    <int>1570</int>
+                                                    <int>5160</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                                                    <int>1630</int>
+                                                    <int>6698</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                                                    <int>905</int>
+                                                    <int>7563</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                                                    <int>1530</int>
-                                                  </entry>
-                                                  <entry>
-                                                    <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                                                    <int>1210</int>
+                                                    <int>311</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
@@ -252,40 +244,36 @@
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team id="42">
-                                                      <id>10</id>
-                                                      <name>HOU</name>
+                                                      <id>4</id>
+                                                      <name>HLM</name>
                                                       <distanceToTeamMap id="43">
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                                                          <int>679</int>
+                                                          <int>1369</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                                                          <int>897</int>
+                                                          <int>592</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                                                          <int>1340</int>
+                                                          <int>3332</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                                                          <int>1420</int>
+                                                          <int>1455</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                                                          <int>1005</int>
+                                                          <int>71</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                                                          <int>1520</int>
-                                                        </entry>
-                                                        <entry>
-                                                          <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                                                          <int>700</int>
+                                                          <int>7214</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                                                          <int>878</int>
+                                                          <int>7522</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
@@ -293,44 +281,40 @@
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team id="44">
-                                                            <id>4</id>
-                                                            <name>FLA</name>
+                                                            <id>7</id>
+                                                            <name>CHC</name>
                                                             <distanceToTeamMap id="45">
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                                                                <int>1060</int>
+                                                                <int>1327</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                                                                <int>957</int>
+                                                                <int>179</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                                                                <int>1020</int>
+                                                                <int>3136</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                                                                <int>1090</int>
+                                                                <int>1369</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                                                                <int>1270</int>
+                                                                <int>474</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                                                                <int>1380</int>
-                                                              </entry>
-                                                              <entry>
-                                                                <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                                                                <int>605</int>
+                                                                <int>6805</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                                                                <int>1720</int>
+                                                                <int>7113</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                                                                <int>966</int>
+                                                                <int>419</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
@@ -338,48 +322,44 @@
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team id="46">
-                                                                  <id>7</id>
-                                                                  <name>CHI</name>
+                                                                  <id>3</id>
+                                                                  <name>PRE</name>
                                                                   <distanceToTeamMap id="47">
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                                                                      <int>260</int>
+                                                                      <int>6867</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                                                                      <int>250</int>
+                                                                      <int>6958</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                                                                      <int>664</int>
+                                                                      <int>5165</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                                                                      <int>712</int>
+                                                                      <int>6712</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                                                                      <int>86</int>
+                                                                      <int>7586</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                                                                      <int>646</int>
-                                                                    </entry>
-                                                                    <entry>
-                                                                      <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                                                                      <int>587</int>
+                                                                      <int>332</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                                                                      <int>916</int>
+                                                                      <int>34</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                                                                      <int>939</int>
+                                                                      <int>7546</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                                                                      <int>1190</int>
+                                                                      <int>7136</int>
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
@@ -387,1151 +367,1171 @@
                                                                     </entry>
                                                                     <entry>
                                                                       <org.drools.solver.examples.travelingtournament.domain.Team id="48">
-                                                                        <id>5</id>
-                                                                        <name>PIT</name>
+                                                                        <id>8</id>
+                                                                        <name>BRI</name>
                                                                         <distanceToTeamMap id="49">
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-                                                                            <int>557</int>
+                                                                            <int>455</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-                                                                            <int>253</int>
+                                                                            <int>1564</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                                                                            <int>257</int>
+                                                                            <int>2238</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                                                                            <int>315</int>
+                                                                            <int>588</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                                                                            <int>451</int>
+                                                                            <int>1421</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                                                                            <int>408</int>
-                                                                          </entry>
-                                                                          <entry>
-                                                                            <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                                                                            <int>521</int>
+                                                                            <int>6919</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                                                                            <int>1320</int>
+                                                                            <int>7221</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                                                                            <int>1140</int>
+                                                                            <int>1471</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                                                                            <int>1010</int>
+                                                                            <int>1555</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                                                                            <int>410</int>
+                                                                            <int>7234</int>
                                                                           </entry>
                                                                           <entry>
                                                                             <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
                                                                             <int>0</int>
                                                                           </entry>
+                                                                          <entry>
+                                                                            <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                                                                            <int>7166</int>
+                                                                          </entry>
                                                                         </distanceToTeamMap>
                                                                       </org.drools.solver.examples.travelingtournament.domain.Team>
-                                                                      <int>410</int>
+                                                                      <int>7234</int>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                                                                      <int>226</int>
                                                                     </entry>
                                                                   </distanceToTeamMap>
                                                                 </org.drools.solver.examples.travelingtournament.domain.Team>
-                                                                <int>1190</int>
+                                                                <int>7136</int>
                                                               </entry>
                                                               <entry>
                                                                 <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                                                                <int>1010</int>
+                                                                <int>1555</int>
+                                                              </entry>
+                                                              <entry>
+                                                                <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                                                                <int>6974</int>
                                                               </entry>
                                                             </distanceToTeamMap>
                                                           </org.drools.solver.examples.travelingtournament.domain.Team>
-                                                          <int>966</int>
+                                                          <int>419</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                                                          <int>939</int>
+                                                          <int>7546</int>
                                                         </entry>
                                                         <entry>
                                                           <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                                                          <int>1140</int>
+                                                          <int>1471</int>
+                                                        </entry>
+                                                        <entry>
+                                                          <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                                                          <int>7387</int>
                                                         </entry>
                                                       </distanceToTeamMap>
                                                     </org.drools.solver.examples.travelingtournament.domain.Team>
-                                                    <int>878</int>
+                                                    <int>7522</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                                                    <int>1720</int>
+                                                    <int>7113</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                                                    <int>916</int>
+                                                    <int>34</int>
                                                   </entry>
                                                   <entry>
                                                     <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                                                    <int>1320</int>
+                                                    <int>7221</int>
+                                                  </entry>
+                                                  <entry>
+                                                    <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                                                    <int>232</int>
                                                   </entry>
                                                 </distanceToTeamMap>
                                               </org.drools.solver.examples.travelingtournament.domain.Team>
-                                              <int>1530</int>
+                                              <int>311</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                                              <int>1520</int>
+                                              <int>7214</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                                              <int>1380</int>
+                                              <int>6805</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                                              <int>646</int>
+                                              <int>332</int>
                                             </entry>
                                             <entry>
                                               <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                                              <int>408</int>
+                                              <int>6919</int>
+                                            </entry>
+                                            <entry>
+                                              <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                                              <int>290</int>
                                             </entry>
                                           </distanceToTeamMap>
                                         </org.drools.solver.examples.travelingtournament.domain.Team>
-                                        <int>732</int>
-                                      </entry>
-                                      <entry>
-                                        <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                                        <int>670</int>
+                                        <int>7254</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                                        <int>905</int>
+                                        <int>7563</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                                        <int>1005</int>
+                                        <int>71</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                                        <int>1270</int>
+                                        <int>474</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                                        <int>86</int>
+                                        <int>7586</int>
                                       </entry>
                                       <entry>
                                         <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                                        <int>451</int>
+                                        <int>1421</int>
+                                      </entry>
+                                      <entry>
+                                        <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                                        <int>7431</int>
                                       </entry>
                                     </distanceToTeamMap>
                                   </org.drools.solver.examples.travelingtournament.domain.Team>
-                                  <int>741</int>
+                                  <int>1429</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                                  <int>337</int>
-                                </entry>
-                                <entry>
-                                  <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                                  <int>745</int>
+                                  <int>6391</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                                  <int>1630</int>
+                                  <int>6698</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                                  <int>1420</int>
+                                  <int>1455</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                                  <int>1090</int>
+                                  <int>1369</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                                  <int>712</int>
+                                  <int>6712</int>
                                 </entry>
                                 <entry>
                                   <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                                  <int>315</int>
+                                  <int>588</int>
+                                </entry>
+                                <entry>
+                                  <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                                  <int>6628</int>
                                 </entry>
                               </distanceToTeamMap>
                             </org.drools.solver.examples.travelingtournament.domain.Team>
-                            <int>80</int>
+                            <int>1916</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                            <int>697</int>
+                            <int>3318</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                            <int>380</int>
-                          </entry>
-                          <entry>
-                            <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                            <int>665</int>
+                            <int>4883</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                            <int>1570</int>
+                            <int>5160</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                            <int>1340</int>
+                            <int>3332</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                            <int>1020</int>
+                            <int>3136</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                            <int>664</int>
+                            <int>5165</int>
                           </entry>
                           <entry>
                             <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                            <int>257</int>
+                            <int>2238</int>
+                          </entry>
+                          <entry>
+                            <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                            <int>5159</int>
                           </entry>
                         </distanceToTeamMap>
                       </org.drools.solver.examples.travelingtournament.domain.Team>
-                      <int>501</int>
+                      <int>3013</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                      <int>567</int>
+                      <int>1310</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                      <int>325</int>
+                      <int>641</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                      <int>622</int>
-                    </entry>
-                    <entry>
-                      <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                      <int>370</int>
+                      <int>6627</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                      <int>1090</int>
+                      <int>6935</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                      <int>897</int>
+                      <int>592</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                      <int>957</int>
+                      <int>179</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                      <int>250</int>
+                      <int>6958</int>
                     </entry>
                     <entry>
                       <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                      <int>253</int>
+                      <int>1564</int>
+                    </entry>
+                    <entry>
+                      <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                      <int>6797</int>
                     </entry>
                   </distanceToTeamMap>
                 </org.drools.solver.examples.travelingtournament.domain.Team>
-                <int>311</int>
+                <int>1288</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-                <int>808</int>
+                <int>2042</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-                <int>871</int>
+                <int>154</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-                <int>328</int>
+                <int>1338</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-                <int>878</int>
-              </entry>
-              <entry>
-                <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
-                <int>467</int>
+                <int>6546</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-                <int>794</int>
+                <int>6852</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-                <int>679</int>
+                <int>1369</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-                <int>1060</int>
+                <int>1327</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-                <int>260</int>
+                <int>6867</int>
               </entry>
               <entry>
                 <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-                <int>557</int>
+                <int>455</int>
+              </entry>
+              <entry>
+                <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
+                <int>6782</int>
               </entry>
             </distanceToTeamMap>
           </org.drools.solver.examples.travelingtournament.domain.Team>
-          <int>467</int>
+          <int>6782</int>
         </entry>
         <entry>
           <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-          <int>370</int>
+          <int>6797</int>
         </entry>
         <entry>
           <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-          <int>665</int>
+          <int>5159</int>
         </entry>
         <entry>
           <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-          <int>745</int>
+          <int>6628</int>
         </entry>
         <entry>
           <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-          <int>670</int>
+          <int>7431</int>
         </entry>
         <entry>
           <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
-          <int>929</int>
+          <int>290</int>
+        </entry>
+        <entry>
+          <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
+          <int>232</int>
+        </entry>
+        <entry>
+          <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
+          <int>7387</int>
+        </entry>
+        <entry>
+          <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
+          <int>6974</int>
+        </entry>
+        <entry>
+          <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
+          <int>226</int>
+        </entry>
+        <entry>
+          <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
+          <int>7166</int>
         </entry>
         <entry>
           <org.drools.solver.examples.travelingtournament.domain.Team reference="26"/>
           <int>0</int>
         </entry>
-        <entry>
-          <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
-          <int>1210</int>
-        </entry>
-        <entry>
-          <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-          <int>700</int>
-        </entry>
-        <entry>
-          <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
-          <int>605</int>
-        </entry>
-        <entry>
-          <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-          <int>587</int>
-        </entry>
-        <entry>
-          <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
-          <int>521</int>
-        </entry>
       </distanceToTeamMap>
     </org.drools.solver.examples.travelingtournament.domain.Team>
+    <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
     <org.drools.solver.examples.travelingtournament.domain.Team reference="34"/>
-    <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
-    <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
+    <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
+    <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
+    <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
+    <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
     <org.drools.solver.examples.travelingtournament.domain.Team reference="44"/>
     <org.drools.solver.examples.travelingtournament.domain.Team reference="48"/>
+    <org.drools.solver.examples.travelingtournament.domain.Team reference="38"/>
     <org.drools.solver.examples.travelingtournament.domain.Team reference="30"/>
-    <org.drools.solver.examples.travelingtournament.domain.Team reference="46"/>
-    <org.drools.solver.examples.travelingtournament.domain.Team reference="28"/>
-    <org.drools.solver.examples.travelingtournament.domain.Team reference="36"/>
-    <org.drools.solver.examples.travelingtournament.domain.Team reference="42"/>
-    <org.drools.solver.examples.travelingtournament.domain.Team reference="40"/>
+    <org.drools.solver.examples.travelingtournament.domain.Team reference="32"/>
   </teamList>
   <matchList id="50">
     <org.drools.solver.examples.travelingtournament.domain.Match id="51">
       <id>0</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="34"/>
+      <awayTeam reference="36"/>
       <day reference="9"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="52">
       <id>1</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="32"/>
-      <day reference="15"/>
+      <awayTeam reference="34"/>
+      <day reference="4"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="53">
       <id>2</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="38"/>
+      <awayTeam reference="46"/>
       <day reference="21"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="54">
       <id>3</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="44"/>
-      <day reference="5"/>
+      <awayTeam reference="42"/>
+      <day reference="11"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="55">
       <id>4</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="48"/>
-      <day reference="11"/>
+      <awayTeam reference="28"/>
+      <day reference="12"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="56">
       <id>5</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="30"/>
-      <day reference="6"/>
+      <awayTeam reference="40"/>
+      <day reference="17"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="57">
       <id>6</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="46"/>
-      <day reference="12"/>
+      <awayTeam reference="44"/>
+      <day reference="3"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="58">
       <id>7</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="28"/>
+      <awayTeam reference="48"/>
       <day reference="18"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="59">
       <id>8</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="36"/>
-      <day reference="24"/>
+      <awayTeam reference="38"/>
+      <day reference="20"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="60">
       <id>9</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="42"/>
-      <day reference="8"/>
+      <awayTeam reference="30"/>
+      <day reference="5"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="61">
       <id>10</id>
       <homeTeam reference="26"/>
-      <awayTeam reference="40"/>
-      <day reference="14"/>
+      <awayTeam reference="32"/>
+      <day reference="16"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="62">
       <id>11</id>
-      <homeTeam reference="34"/>
+      <homeTeam reference="36"/>
       <awayTeam reference="26"/>
-      <day reference="20"/>
+      <day reference="14"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="63">
       <id>12</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="32"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="34"/>
       <day reference="10"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="64">
       <id>13</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="38"/>
-      <day reference="16"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="46"/>
+      <day reference="11"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="65">
       <id>14</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="44"/>
-      <day reference="22"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="42"/>
+      <day reference="6"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="66">
       <id>15</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="48"/>
-      <day reference="17"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="28"/>
+      <day reference="15"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="67">
       <id>16</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="30"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="40"/>
       <day reference="23"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="68">
       <id>17</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="46"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="44"/>
       <day reference="7"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="69">
       <id>18</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="28"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="48"/>
       <day reference="13"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="70">
       <id>19</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="36"/>
-      <day reference="19"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="38"/>
+      <day reference="24"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="71">
       <id>20</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="42"/>
-      <day reference="3"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="30"/>
+      <day reference="19"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="72">
       <id>21</id>
-      <homeTeam reference="34"/>
-      <awayTeam reference="40"/>
-      <day reference="15"/>
+      <homeTeam reference="36"/>
+      <awayTeam reference="32"/>
+      <day reference="22"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="73">
       <id>22</id>
-      <homeTeam reference="32"/>
+      <homeTeam reference="34"/>
       <awayTeam reference="26"/>
-      <day reference="4"/>
+      <day reference="22"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="74">
       <id>23</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="34"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="36"/>
       <day reference="21"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="75">
       <id>24</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="38"/>
-      <day reference="11"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="46"/>
+      <day reference="12"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="76">
       <id>25</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="44"/>
-      <day reference="6"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="42"/>
+      <day reference="17"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="77">
       <id>26</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="48"/>
-      <day reference="12"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="28"/>
+      <day reference="3"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="78">
       <id>27</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="30"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="40"/>
       <day reference="18"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="79">
       <id>28</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="46"/>
-      <day reference="24"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="44"/>
+      <day reference="20"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="80">
       <id>29</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="28"/>
-      <day reference="8"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="48"/>
+      <day reference="5"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="81">
       <id>30</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="36"/>
-      <day reference="14"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="38"/>
+      <day reference="16"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="82">
       <id>31</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="42"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="30"/>
       <day reference="9"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="83">
       <id>32</id>
-      <homeTeam reference="32"/>
-      <awayTeam reference="40"/>
-      <day reference="16"/>
+      <homeTeam reference="34"/>
+      <awayTeam reference="32"/>
+      <day reference="11"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="84">
       <id>33</id>
-      <homeTeam reference="38"/>
+      <homeTeam reference="46"/>
       <awayTeam reference="26"/>
       <day reference="10"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="85">
       <id>34</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="34"/>
-      <day reference="5"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="36"/>
+      <day reference="8"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="86">
       <id>35</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="32"/>
-      <day reference="22"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="34"/>
+      <day reference="6"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="87">
       <id>36</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="44"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="42"/>
       <day reference="23"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="88">
       <id>37</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="48"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="28"/>
       <day reference="7"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="89">
       <id>38</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="30"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="40"/>
       <day reference="13"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="90">
       <id>39</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="46"/>
-      <day reference="19"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="44"/>
+      <day reference="24"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="91">
       <id>40</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="28"/>
-      <day reference="3"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="48"/>
+      <day reference="19"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="92">
       <id>41</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="36"/>
-      <day reference="20"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="38"/>
+      <day reference="14"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="93">
       <id>42</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="42"/>
-      <day reference="15"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="30"/>
+      <day reference="22"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="94">
       <id>43</id>
-      <homeTeam reference="38"/>
-      <awayTeam reference="40"/>
-      <day reference="6"/>
+      <homeTeam reference="46"/>
+      <awayTeam reference="32"/>
+      <day reference="15"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="95">
       <id>44</id>
-      <homeTeam reference="44"/>
+      <homeTeam reference="42"/>
       <awayTeam reference="26"/>
-      <day reference="16"/>
+      <day reference="8"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="96">
       <id>45</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="34"/>
-      <day reference="11"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="36"/>
+      <day reference="12"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="97">
       <id>46</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="32"/>
-      <day reference="17"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="34"/>
+      <day reference="15"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="98">
       <id>47</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="38"/>
-      <day reference="12"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="46"/>
+      <day reference="3"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="99">
       <id>48</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="48"/>
-      <day reference="24"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="28"/>
+      <day reference="20"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="100">
       <id>49</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="30"/>
-      <day reference="8"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="40"/>
+      <day reference="5"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="101">
       <id>50</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="46"/>
-      <day reference="14"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="44"/>
+      <day reference="19"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="102">
       <id>51</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="28"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="48"/>
       <day reference="9"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="103">
       <id>52</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="36"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="38"/>
       <day reference="4"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="104">
       <id>53</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="42"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="30"/>
       <day reference="21"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="105">
       <id>54</id>
-      <homeTeam reference="44"/>
-      <awayTeam reference="40"/>
+      <homeTeam reference="42"/>
+      <awayTeam reference="32"/>
       <day reference="7"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="106">
       <id>55</id>
-      <homeTeam reference="48"/>
+      <homeTeam reference="28"/>
       <awayTeam reference="26"/>
-      <day reference="22"/>
+      <day reference="6"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="107">
       <id>56</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="34"/>
-      <day reference="6"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="36"/>
+      <day reference="17"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="108">
       <id>57</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="32"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="34"/>
       <day reference="23"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="109">
       <id>58</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="38"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="46"/>
       <day reference="18"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="110">
       <id>59</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="44"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="42"/>
       <day reference="13"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="111">
       <id>60</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="30"/>
-      <day reference="3"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="40"/>
+      <day reference="19"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="112">
       <id>61</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="46"/>
-      <day reference="20"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="44"/>
+      <day reference="14"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="113">
       <id>62</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="28"/>
-      <day reference="15"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="48"/>
+      <day reference="22"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="114">
       <id>63</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="36"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="38"/>
       <day reference="10"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="115">
       <id>64</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="42"/>
-      <day reference="5"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="30"/>
+      <day reference="11"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="116">
       <id>65</id>
-      <homeTeam reference="48"/>
-      <awayTeam reference="40"/>
-      <day reference="8"/>
+      <homeTeam reference="28"/>
+      <awayTeam reference="32"/>
+      <day reference="5"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="117">
       <id>66</id>
-      <homeTeam reference="30"/>
+      <homeTeam reference="40"/>
       <awayTeam reference="26"/>
-      <day reference="17"/>
+      <day reference="15"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="118">
       <id>67</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="34"/>
-      <day reference="12"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="36"/>
+      <day reference="3"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="119">
       <id>68</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="32"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="34"/>
       <day reference="7"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="120">
       <id>69</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="38"/>
-      <day reference="24"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="46"/>
+      <day reference="20"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="121">
       <id>70</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="44"/>
-      <day reference="19"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="42"/>
+      <day reference="24"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="122">
       <id>71</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="48"/>
-      <day reference="14"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="28"/>
+      <day reference="16"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="123">
       <id>72</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="46"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="44"/>
       <day reference="4"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="124">
       <id>73</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="28"/>
-      <day reference="21"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="48"/>
+      <day reference="10"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="125">
       <id>74</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="36"/>
-      <day reference="16"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="38"/>
+      <day reference="11"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="126">
       <id>75</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="42"/>
-      <day reference="11"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="30"/>
+      <day reference="12"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="127">
       <id>76</id>
-      <homeTeam reference="30"/>
-      <awayTeam reference="40"/>
-      <day reference="20"/>
+      <homeTeam reference="40"/>
+      <awayTeam reference="32"/>
+      <day reference="14"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="128">
       <id>77</id>
-      <homeTeam reference="46"/>
+      <homeTeam reference="44"/>
       <awayTeam reference="26"/>
       <day reference="23"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="129">
       <id>78</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="34"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="36"/>
       <day reference="18"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="130">
       <id>79</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="32"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="34"/>
       <day reference="13"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="131">
       <id>80</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="38"/>
-      <day reference="8"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="46"/>
+      <day reference="5"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="132">
       <id>81</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="44"/>
-      <day reference="3"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="42"/>
+      <day reference="16"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="133">
       <id>82</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="48"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="28"/>
       <day reference="9"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="134">
       <id>83</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="30"/>
-      <day reference="15"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="40"/>
+      <day reference="22"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="135">
       <id>84</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="28"/>
-      <day reference="5"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="48"/>
+      <day reference="8"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="136">
       <id>85</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="36"/>
-      <day reference="22"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="38"/>
+      <day reference="6"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="137">
       <id>86</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="42"/>
-      <day reference="6"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="30"/>
+      <day reference="17"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="138">
       <id>87</id>
-      <homeTeam reference="46"/>
-      <awayTeam reference="40"/>
+      <homeTeam reference="44"/>
+      <awayTeam reference="32"/>
       <day reference="21"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="139">
       <id>88</id>
-      <homeTeam reference="28"/>
+      <homeTeam reference="48"/>
       <awayTeam reference="26"/>
       <day reference="7"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="140">
       <id>89</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="34"/>
-      <day reference="24"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="36"/>
+      <day reference="20"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="141">
       <id>90</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="32"/>
-      <day reference="19"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="34"/>
+      <day reference="24"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="142">
       <id>91</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="38"/>
-      <day reference="14"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="46"/>
+      <day reference="16"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="143">
       <id>92</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="44"/>
-      <day reference="20"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="42"/>
+      <day reference="14"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="144">
       <id>93</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="48"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="28"/>
       <day reference="4"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="145">
       <id>94</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="30"/>
-      <day reference="10"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="40"/>
+      <day reference="21"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="146">
       <id>95</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="46"/>
-      <day reference="16"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="44"/>
+      <day reference="11"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="147">
       <id>96</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="36"/>
-      <day reference="17"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="38"/>
+      <day reference="15"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="148">
       <id>97</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="42"/>
-      <day reference="12"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="30"/>
+      <day reference="23"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="149">
       <id>98</id>
-      <homeTeam reference="28"/>
-      <awayTeam reference="40"/>
-      <day reference="22"/>
+      <homeTeam reference="48"/>
+      <awayTeam reference="32"/>
+      <day reference="6"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="150">
       <id>99</id>
-      <homeTeam reference="36"/>
+      <homeTeam reference="38"/>
       <awayTeam reference="26"/>
       <day reference="13"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="151">
       <id>100</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="34"/>
-      <day reference="8"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="36"/>
+      <day reference="5"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="152">
       <id>101</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="32"/>
-      <day reference="3"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="34"/>
+      <day reference="19"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="153">
       <id>102</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="38"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="46"/>
       <day reference="9"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="154">
       <id>103</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="44"/>
-      <day reference="15"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="42"/>
+      <day reference="22"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="155">
       <id>104</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="48"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="28"/>
       <day reference="21"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="156">
       <id>105</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="30"/>
-      <day reference="5"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="40"/>
+      <day reference="8"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="157">
       <id>106</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="46"/>
-      <day reference="11"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="44"/>
+      <day reference="12"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="158">
       <id>107</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="28"/>
-      <day reference="6"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="48"/>
+      <day reference="17"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="159">
       <id>108</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="42"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="30"/>
       <day reference="18"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="160">
       <id>109</id>
-      <homeTeam reference="36"/>
-      <awayTeam reference="40"/>
-      <day reference="12"/>
+      <homeTeam reference="38"/>
+      <awayTeam reference="32"/>
+      <day reference="3"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="161">
       <id>110</id>
-      <homeTeam reference="42"/>
+      <homeTeam reference="30"/>
       <awayTeam reference="26"/>
-      <day reference="19"/>
+      <day reference="24"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="162">
       <id>111</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="34"/>
-      <day reference="14"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="36"/>
+      <day reference="16"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="163">
       <id>112</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="32"/>
-      <day reference="20"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="34"/>
+      <day reference="14"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="164">
       <id>113</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="38"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="46"/>
       <day reference="4"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="165">
       <id>114</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="44"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="42"/>
       <day reference="10"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="166">
       <id>115</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="48"/>
-      <day reference="16"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="28"/>
+      <day reference="8"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="167">
       <id>116</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="30"/>
-      <day reference="22"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="40"/>
+      <day reference="6"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="168">
       <id>117</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="46"/>
-      <day reference="17"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="44"/>
+      <day reference="15"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="169">
       <id>118</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="28"/>
-      <day reference="23"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="48"/>
+      <day reference="3"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="170">
       <id>119</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="36"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="38"/>
       <day reference="7"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="171">
       <id>120</id>
-      <homeTeam reference="42"/>
-      <awayTeam reference="40"/>
-      <day reference="13"/>
+      <homeTeam reference="30"/>
+      <awayTeam reference="32"/>
+      <day reference="20"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="172">
       <id>121</id>
-      <homeTeam reference="40"/>
+      <homeTeam reference="32"/>
       <awayTeam reference="26"/>
-      <day reference="3"/>
+      <day reference="19"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="173">
       <id>122</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="34"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="36"/>
       <day reference="4"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="174">
       <id>123</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="32"/>
-      <day reference="5"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="34"/>
+      <day reference="8"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="175">
       <id>124</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="38"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="46"/>
       <day reference="17"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="176">
       <id>125</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="44"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="42"/>
       <day reference="18"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="177">
       <id>126</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="48"/>
-      <day reference="19"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="28"/>
+      <day reference="24"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="178">
       <id>127</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="30"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="40"/>
       <day reference="9"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="179">
       <id>128</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="46"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="44"/>
       <day reference="10"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="180">
       <id>129</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="28"/>
-      <day reference="11"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="48"/>
+      <day reference="12"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="181">
       <id>130</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="36"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="38"/>
       <day reference="23"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
     <org.drools.solver.examples.travelingtournament.domain.Match id="182">
       <id>131</id>
-      <homeTeam reference="40"/>
-      <awayTeam reference="42"/>
-      <day reference="24"/>
+      <homeTeam reference="32"/>
+      <awayTeam reference="30"/>
+      <day reference="13"/>
     </org.drools.solver.examples.travelingtournament.domain.Match>
   </matchList>
 </org.drools.solver.examples.travelingtournament.domain.TravelingTournament>
