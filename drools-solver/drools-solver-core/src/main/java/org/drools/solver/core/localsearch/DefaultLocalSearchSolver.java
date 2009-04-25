@@ -13,6 +13,7 @@ import org.drools.solver.core.score.HardAndSoftScore;
 import org.drools.solver.core.score.definition.ScoreDefinition;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.solution.initializer.StartingSolutionInitializer;
+import org.drools.solver.core.AbstractSolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +21,8 @@ import org.slf4j.LoggerFactory;
  * Default implementation of {@link LocalSearchSolver}.
  * @author Geoffrey De Smet
  */
-public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchSolverLifecycleListener {
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSearchSolver,
+        LocalSearchSolverLifecycleListener {
 
     protected long randomSeed; // TODO refactor to AbstractSolver
 
@@ -100,12 +100,13 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
     // Worker methods
     // ************************************************************************
 
-    public void solve() {
+    @Override
+    protected void solveImplementation() {
         LocalSearchSolverScope localSearchSolverScope = this.localSearchSolverScope;
         solvingStarted(localSearchSolverScope);
 
         StepScope stepScope = createNextStepScope(localSearchSolverScope, null);
-        while (!finish.isFinished(stepScope)) {
+        while (!cancelled.get() && !finish.isFinished(stepScope)) {
             stepScope.setTimeGradient(finish.calculateTimeGradient(stepScope));
             beforeDeciding(stepScope);
             decider.decideNextStep(stepScope);
@@ -179,9 +180,11 @@ public class DefaultLocalSearchSolver implements LocalSearchSolver, LocalSearchS
         bestSolutionRecaller.solvingEnded(localSearchSolverScope);
         finish.solvingEnded(localSearchSolverScope);
         decider.solvingEnded(localSearchSolverScope);
-        logger.info("Solved in {} steps and {} time millis spend.",
+        logger.info("Solved at step index ({}) with time spend ({}) for best score ({}).", new Object[] {
                 localSearchSolverScope.getLastCompletedStepScope().getStepIndex(),
-                localSearchSolverScope.calculateTimeMillisSpend());
+                localSearchSolverScope.calculateTimeMillisSpend(),
+                localSearchSolverScope.getBestScore()
+        });
     }
 
 }

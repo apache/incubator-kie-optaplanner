@@ -150,6 +150,10 @@ public class SolutionBusiness {
         solver.setStartingSolution(solution);
     }
 
+    public void cancelSolving() {
+        solver.cancel();
+    }
+
     public class SolverExampleFileFilter implements FileFilter {
 
         public boolean accept(File file) {

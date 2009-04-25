@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -35,6 +34,9 @@ public class WorkflowFrame extends JFrame {
     private SolutionPanel solutionPanel;
     private JLabel resultLabel;
     private ConstraintScoreMapDialog constraintScoreMapDialog;
+    private Action cancelSolvingAction;
+    private Action solveAction;
+    private Action saveAction;
 
     public WorkflowFrame(SolutionPanel solutionPanel, String exampleName) {
         super("Drools solver example " + exampleName);
@@ -107,6 +109,8 @@ public class WorkflowFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             solutionBusiness.load(file);
+            solveAction.setEnabled(true);
+            saveAction.setEnabled(true);
             updateScreen();
         }
 
@@ -114,9 +118,14 @@ public class WorkflowFrame extends JFrame {
 
     private JComponent createProcessingPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 1));
-        Action solveAction = new SolveAction();
+        solveAction = new SolveAction();
+        solveAction.setEnabled(false);
         panel.add(new JButton(solveAction));
-        Action saveAction = new SaveAction();
+        cancelSolvingAction = new CancelSolvingAction();
+        cancelSolvingAction.setEnabled(false);
+        panel.add(new JButton(cancelSolvingAction));
+        saveAction = new SaveAction();
+        saveAction.setEnabled(false);
         panel.add(new JButton(saveAction));
         return panel;
     }
@@ -128,8 +137,23 @@ public class WorkflowFrame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent e) {
+            cancelSolvingAction.setEnabled(true);
             solutionBusiness.solve();
+            cancelSolvingAction.setEnabled(false);
             updateScreen();
+        }
+
+    }
+
+    private class CancelSolvingAction extends AbstractAction {
+
+        public CancelSolvingAction() {
+            super("Cancel solving");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            // This async, so it doesn't stop the solving immediatly
+            solutionBusiness.cancelSolving();
         }
 
     }
