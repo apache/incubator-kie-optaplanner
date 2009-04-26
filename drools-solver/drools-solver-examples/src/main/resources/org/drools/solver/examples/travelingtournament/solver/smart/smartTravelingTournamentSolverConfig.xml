@@ -5,14 +5,16 @@
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
     <finish>
-        <!--<maximumHouresSpend>2</maximumHouresSpend>-->
-        <maximumStepCount>100</maximumStepCount>
+        <!--<finishCompositionStyle>AND</finishCompositionStyle>-->
+        <!--<feasableScore>0hard/-467267soft</feasableScore>-->
+        <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount>
     </finish>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+        <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
     </accepter>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
