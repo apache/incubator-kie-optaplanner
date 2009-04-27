@@ -166,11 +166,11 @@ public class LocalSearchSolverConfig {
         }
         RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
         RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
-        try {
-            ruleBase.addPackage(packageBuilder.getPackage());
-        } catch (Exception e) { // TODO remove me if removed in drools 4.0.1
-            throw new IllegalArgumentException("scoreDrlList (" + scoreDrlList + ") could not be loaded.", e);
+        if (packageBuilder.hasErrors()) {
+            throw new IllegalStateException("There are errors in the scoreDrl's:"
+                    + packageBuilder.getErrors().toString());
         }
+        ruleBase.addPackage(packageBuilder.getPackage());
         return ruleBase;
     }
 
