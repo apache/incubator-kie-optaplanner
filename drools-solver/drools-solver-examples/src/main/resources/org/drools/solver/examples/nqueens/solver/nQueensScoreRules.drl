@@ -1,4 +1,5 @@
 package org.drools.solver.examples.nqueens.solver;
+    dialect "java"
 
 import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
 import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence;
