@@ -3124,138 +3124,1101 @@
     <org.drools.solver.examples.manners2009.domain.Table id="600">
       <id>0</id>
       <tableIndex>0</tableIndex>
-      <size>12</size>
+      <seatList id="601">
+        <org.drools.solver.examples.manners2009.domain.Seat id="602">
+          <id>0</id>
+          <table reference="600"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="603">
+            <id>11</id>
+            <table reference="600"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="604">
+              <id>10</id>
+              <table reference="600"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="605">
+                <id>9</id>
+                <table reference="600"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="606">
+                  <id>8</id>
+                  <table reference="600"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="607">
+                    <id>7</id>
+                    <table reference="600"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="608">
+                      <id>6</id>
+                      <table reference="600"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="609">
+                        <id>5</id>
+                        <table reference="600"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="610">
+                          <id>4</id>
+                          <table reference="600"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="611">
+                            <id>3</id>
+                            <table reference="600"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="612">
+                              <id>2</id>
+                              <table reference="600"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="613">
+                                <id>1</id>
+                                <table reference="600"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="602"/>
+                                <rightSeat reference="612"/>
+                              </leftSeat>
+                              <rightSeat reference="611"/>
+                            </leftSeat>
+                            <rightSeat reference="610"/>
+                          </leftSeat>
+                          <rightSeat reference="609"/>
+                        </leftSeat>
+                        <rightSeat reference="608"/>
+                      </leftSeat>
+                      <rightSeat reference="607"/>
+                    </leftSeat>
+                    <rightSeat reference="606"/>
+                  </leftSeat>
+                  <rightSeat reference="605"/>
+                </leftSeat>
+                <rightSeat reference="604"/>
+              </leftSeat>
+              <rightSeat reference="603"/>
+            </leftSeat>
+            <rightSeat reference="602"/>
+          </leftSeat>
+          <rightSeat reference="613"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="613"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="612"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="611"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="610"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="609"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="608"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="607"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="606"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="605"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="604"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="603"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="601">
+    <org.drools.solver.examples.manners2009.domain.Table id="614">
       <id>1</id>
       <tableIndex>1</tableIndex>
-      <size>12</size>
+      <seatList id="615">
+        <org.drools.solver.examples.manners2009.domain.Seat id="616">
+          <id>12</id>
+          <table reference="614"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="617">
+            <id>23</id>
+            <table reference="614"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="618">
+              <id>22</id>
+              <table reference="614"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="619">
+                <id>21</id>
+                <table reference="614"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="620">
+                  <id>20</id>
+                  <table reference="614"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="621">
+                    <id>19</id>
+                    <table reference="614"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="622">
+                      <id>18</id>
+                      <table reference="614"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="623">
+                        <id>17</id>
+                        <table reference="614"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="624">
+                          <id>16</id>
+                          <table reference="614"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="625">
+                            <id>15</id>
+                            <table reference="614"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="626">
+                              <id>14</id>
+                              <table reference="614"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="627">
+                                <id>13</id>
+                                <table reference="614"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="616"/>
+                                <rightSeat reference="626"/>
+                              </leftSeat>
+                              <rightSeat reference="625"/>
+                            </leftSeat>
+                            <rightSeat reference="624"/>
+                          </leftSeat>
+                          <rightSeat reference="623"/>
+                        </leftSeat>
+                        <rightSeat reference="622"/>
+                      </leftSeat>
+                      <rightSeat reference="621"/>
+                    </leftSeat>
+                    <rightSeat reference="620"/>
+                  </leftSeat>
+                  <rightSeat reference="619"/>
+                </leftSeat>
+                <rightSeat reference="618"/>
+              </leftSeat>
+              <rightSeat reference="617"/>
+            </leftSeat>
+            <rightSeat reference="616"/>
+          </leftSeat>
+          <rightSeat reference="627"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="627"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="626"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="625"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="624"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="623"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="622"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="621"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="620"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="619"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="618"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="617"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="602">
+    <org.drools.solver.examples.manners2009.domain.Table id="628">
       <id>2</id>
       <tableIndex>2</tableIndex>
-      <size>12</size>
+      <seatList id="629">
+        <org.drools.solver.examples.manners2009.domain.Seat id="630">
+          <id>24</id>
+          <table reference="628"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="631">
+            <id>35</id>
+            <table reference="628"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="632">
+              <id>34</id>
+              <table reference="628"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="633">
+                <id>33</id>
+                <table reference="628"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="634">
+                  <id>32</id>
+                  <table reference="628"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="635">
+                    <id>31</id>
+                    <table reference="628"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="636">
+                      <id>30</id>
+                      <table reference="628"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="637">
+                        <id>29</id>
+                        <table reference="628"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="638">
+                          <id>28</id>
+                          <table reference="628"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="639">
+                            <id>27</id>
+                            <table reference="628"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="640">
+                              <id>26</id>
+                              <table reference="628"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="641">
+                                <id>25</id>
+                                <table reference="628"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="630"/>
+                                <rightSeat reference="640"/>
+                              </leftSeat>
+                              <rightSeat reference="639"/>
+                            </leftSeat>
+                            <rightSeat reference="638"/>
+                          </leftSeat>
+                          <rightSeat reference="637"/>
+                        </leftSeat>
+                        <rightSeat reference="636"/>
+                      </leftSeat>
+                      <rightSeat reference="635"/>
+                    </leftSeat>
+                    <rightSeat reference="634"/>
+                  </leftSeat>
+                  <rightSeat reference="633"/>
+                </leftSeat>
+                <rightSeat reference="632"/>
+              </leftSeat>
+              <rightSeat reference="631"/>
+            </leftSeat>
+            <rightSeat reference="630"/>
+          </leftSeat>
+          <rightSeat reference="641"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="641"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="640"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="639"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="638"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="637"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="636"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="635"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="634"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="633"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="632"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="631"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="603">
+    <org.drools.solver.examples.manners2009.domain.Table id="642">
       <id>3</id>
       <tableIndex>3</tableIndex>
-      <size>12</size>
+      <seatList id="643">
+        <org.drools.solver.examples.manners2009.domain.Seat id="644">
+          <id>36</id>
+          <table reference="642"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="645">
+            <id>47</id>
+            <table reference="642"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="646">
+              <id>46</id>
+              <table reference="642"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="647">
+                <id>45</id>
+                <table reference="642"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="648">
+                  <id>44</id>
+                  <table reference="642"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="649">
+                    <id>43</id>
+                    <table reference="642"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="650">
+                      <id>42</id>
+                      <table reference="642"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="651">
+                        <id>41</id>
+                        <table reference="642"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="652">
+                          <id>40</id>
+                          <table reference="642"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="653">
+                            <id>39</id>
+                            <table reference="642"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="654">
+                              <id>38</id>
+                              <table reference="642"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="655">
+                                <id>37</id>
+                                <table reference="642"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="644"/>
+                                <rightSeat reference="654"/>
+                              </leftSeat>
+                              <rightSeat reference="653"/>
+                            </leftSeat>
+                            <rightSeat reference="652"/>
+                          </leftSeat>
+                          <rightSeat reference="651"/>
+                        </leftSeat>
+                        <rightSeat reference="650"/>
+                      </leftSeat>
+                      <rightSeat reference="649"/>
+                    </leftSeat>
+                    <rightSeat reference="648"/>
+                  </leftSeat>
+                  <rightSeat reference="647"/>
+                </leftSeat>
+                <rightSeat reference="646"/>
+              </leftSeat>
+              <rightSeat reference="645"/>
+            </leftSeat>
+            <rightSeat reference="644"/>
+          </leftSeat>
+          <rightSeat reference="655"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="655"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="654"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="653"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="652"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="651"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="650"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="649"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="648"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="647"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="646"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="645"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="604">
+    <org.drools.solver.examples.manners2009.domain.Table id="656">
       <id>4</id>
       <tableIndex>4</tableIndex>
-      <size>12</size>
+      <seatList id="657">
+        <org.drools.solver.examples.manners2009.domain.Seat id="658">
+          <id>48</id>
+          <table reference="656"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="659">
+            <id>59</id>
+            <table reference="656"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="660">
+              <id>58</id>
+              <table reference="656"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="661">
+                <id>57</id>
+                <table reference="656"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="662">
+                  <id>56</id>
+                  <table reference="656"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="663">
+                    <id>55</id>
+                    <table reference="656"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="664">
+                      <id>54</id>
+                      <table reference="656"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="665">
+                        <id>53</id>
+                        <table reference="656"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="666">
+                          <id>52</id>
+                          <table reference="656"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="667">
+                            <id>51</id>
+                            <table reference="656"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="668">
+                              <id>50</id>
+                              <table reference="656"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="669">
+                                <id>49</id>
+                                <table reference="656"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="658"/>
+                                <rightSeat reference="668"/>
+                              </leftSeat>
+                              <rightSeat reference="667"/>
+                            </leftSeat>
+                            <rightSeat reference="666"/>
+                          </leftSeat>
+                          <rightSeat reference="665"/>
+                        </leftSeat>
+                        <rightSeat reference="664"/>
+                      </leftSeat>
+                      <rightSeat reference="663"/>
+                    </leftSeat>
+                    <rightSeat reference="662"/>
+                  </leftSeat>
+                  <rightSeat reference="661"/>
+                </leftSeat>
+                <rightSeat reference="660"/>
+              </leftSeat>
+              <rightSeat reference="659"/>
+            </leftSeat>
+            <rightSeat reference="658"/>
+          </leftSeat>
+          <rightSeat reference="669"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="669"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="668"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="667"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="666"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="665"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="664"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="663"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="662"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="661"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="660"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="659"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="605">
+    <org.drools.solver.examples.manners2009.domain.Table id="670">
       <id>5</id>
       <tableIndex>5</tableIndex>
-      <size>12</size>
+      <seatList id="671">
+        <org.drools.solver.examples.manners2009.domain.Seat id="672">
+          <id>60</id>
+          <table reference="670"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="673">
+            <id>71</id>
+            <table reference="670"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="674">
+              <id>70</id>
+              <table reference="670"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="675">
+                <id>69</id>
+                <table reference="670"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="676">
+                  <id>68</id>
+                  <table reference="670"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="677">
+                    <id>67</id>
+                    <table reference="670"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="678">
+                      <id>66</id>
+                      <table reference="670"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="679">
+                        <id>65</id>
+                        <table reference="670"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="680">
+                          <id>64</id>
+                          <table reference="670"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="681">
+                            <id>63</id>
+                            <table reference="670"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="682">
+                              <id>62</id>
+                              <table reference="670"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="683">
+                                <id>61</id>
+                                <table reference="670"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="672"/>
+                                <rightSeat reference="682"/>
+                              </leftSeat>
+                              <rightSeat reference="681"/>
+                            </leftSeat>
+                            <rightSeat reference="680"/>
+                          </leftSeat>
+                          <rightSeat reference="679"/>
+                        </leftSeat>
+                        <rightSeat reference="678"/>
+                      </leftSeat>
+                      <rightSeat reference="677"/>
+                    </leftSeat>
+                    <rightSeat reference="676"/>
+                  </leftSeat>
+                  <rightSeat reference="675"/>
+                </leftSeat>
+                <rightSeat reference="674"/>
+              </leftSeat>
+              <rightSeat reference="673"/>
+            </leftSeat>
+            <rightSeat reference="672"/>
+          </leftSeat>
+          <rightSeat reference="683"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="683"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="682"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="681"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="680"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="679"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="678"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="677"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="676"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="675"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="674"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="673"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="606">
+    <org.drools.solver.examples.manners2009.domain.Table id="684">
       <id>6</id>
       <tableIndex>6</tableIndex>
-      <size>12</size>
+      <seatList id="685">
+        <org.drools.solver.examples.manners2009.domain.Seat id="686">
+          <id>72</id>
+          <table reference="684"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="687">
+            <id>83</id>
+            <table reference="684"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="688">
+              <id>82</id>
+              <table reference="684"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="689">
+                <id>81</id>
+                <table reference="684"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="690">
+                  <id>80</id>
+                  <table reference="684"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="691">
+                    <id>79</id>
+                    <table reference="684"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="692">
+                      <id>78</id>
+                      <table reference="684"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="693">
+                        <id>77</id>
+                        <table reference="684"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="694">
+                          <id>76</id>
+                          <table reference="684"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="695">
+                            <id>75</id>
+                            <table reference="684"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="696">
+                              <id>74</id>
+                              <table reference="684"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="697">
+                                <id>73</id>
+                                <table reference="684"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="686"/>
+                                <rightSeat reference="696"/>
+                              </leftSeat>
+                              <rightSeat reference="695"/>
+                            </leftSeat>
+                            <rightSeat reference="694"/>
+                          </leftSeat>
+                          <rightSeat reference="693"/>
+                        </leftSeat>
+                        <rightSeat reference="692"/>
+                      </leftSeat>
+                      <rightSeat reference="691"/>
+                    </leftSeat>
+                    <rightSeat reference="690"/>
+                  </leftSeat>
+                  <rightSeat reference="689"/>
+                </leftSeat>
+                <rightSeat reference="688"/>
+              </leftSeat>
+              <rightSeat reference="687"/>
+            </leftSeat>
+            <rightSeat reference="686"/>
+          </leftSeat>
+          <rightSeat reference="697"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="697"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="696"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="695"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="694"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="693"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="692"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="691"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="690"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="689"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="688"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="687"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="607">
+    <org.drools.solver.examples.manners2009.domain.Table id="698">
       <id>7</id>
       <tableIndex>7</tableIndex>
-      <size>12</size>
+      <seatList id="699">
+        <org.drools.solver.examples.manners2009.domain.Seat id="700">
+          <id>84</id>
+          <table reference="698"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="701">
+            <id>95</id>
+            <table reference="698"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="702">
+              <id>94</id>
+              <table reference="698"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="703">
+                <id>93</id>
+                <table reference="698"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="704">
+                  <id>92</id>
+                  <table reference="698"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="705">
+                    <id>91</id>
+                    <table reference="698"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="706">
+                      <id>90</id>
+                      <table reference="698"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="707">
+                        <id>89</id>
+                        <table reference="698"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="708">
+                          <id>88</id>
+                          <table reference="698"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="709">
+                            <id>87</id>
+                            <table reference="698"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="710">
+                              <id>86</id>
+                              <table reference="698"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="711">
+                                <id>85</id>
+                                <table reference="698"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="700"/>
+                                <rightSeat reference="710"/>
+                              </leftSeat>
+                              <rightSeat reference="709"/>
+                            </leftSeat>
+                            <rightSeat reference="708"/>
+                          </leftSeat>
+                          <rightSeat reference="707"/>
+                        </leftSeat>
+                        <rightSeat reference="706"/>
+                      </leftSeat>
+                      <rightSeat reference="705"/>
+                    </leftSeat>
+                    <rightSeat reference="704"/>
+                  </leftSeat>
+                  <rightSeat reference="703"/>
+                </leftSeat>
+                <rightSeat reference="702"/>
+              </leftSeat>
+              <rightSeat reference="701"/>
+            </leftSeat>
+            <rightSeat reference="700"/>
+          </leftSeat>
+          <rightSeat reference="711"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="711"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="710"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="709"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="708"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="707"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="706"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="705"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="704"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="703"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="702"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="701"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="608">
+    <org.drools.solver.examples.manners2009.domain.Table id="712">
       <id>8</id>
       <tableIndex>8</tableIndex>
-      <size>12</size>
+      <seatList id="713">
+        <org.drools.solver.examples.manners2009.domain.Seat id="714">
+          <id>96</id>
+          <table reference="712"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="715">
+            <id>107</id>
+            <table reference="712"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="716">
+              <id>106</id>
+              <table reference="712"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="717">
+                <id>105</id>
+                <table reference="712"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="718">
+                  <id>104</id>
+                  <table reference="712"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="719">
+                    <id>103</id>
+                    <table reference="712"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="720">
+                      <id>102</id>
+                      <table reference="712"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="721">
+                        <id>101</id>
+                        <table reference="712"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="722">
+                          <id>100</id>
+                          <table reference="712"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="723">
+                            <id>99</id>
+                            <table reference="712"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="724">
+                              <id>98</id>
+                              <table reference="712"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="725">
+                                <id>97</id>
+                                <table reference="712"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="714"/>
+                                <rightSeat reference="724"/>
+                              </leftSeat>
+                              <rightSeat reference="723"/>
+                            </leftSeat>
+                            <rightSeat reference="722"/>
+                          </leftSeat>
+                          <rightSeat reference="721"/>
+                        </leftSeat>
+                        <rightSeat reference="720"/>
+                      </leftSeat>
+                      <rightSeat reference="719"/>
+                    </leftSeat>
+                    <rightSeat reference="718"/>
+                  </leftSeat>
+                  <rightSeat reference="717"/>
+                </leftSeat>
+                <rightSeat reference="716"/>
+              </leftSeat>
+              <rightSeat reference="715"/>
+            </leftSeat>
+            <rightSeat reference="714"/>
+          </leftSeat>
+          <rightSeat reference="725"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="725"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="724"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="723"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="722"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="721"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="720"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="719"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="718"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="717"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="716"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="715"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="609">
+    <org.drools.solver.examples.manners2009.domain.Table id="726">
       <id>9</id>
       <tableIndex>9</tableIndex>
-      <size>12</size>
+      <seatList id="727">
+        <org.drools.solver.examples.manners2009.domain.Seat id="728">
+          <id>108</id>
+          <table reference="726"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="729">
+            <id>119</id>
+            <table reference="726"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="730">
+              <id>118</id>
+              <table reference="726"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="731">
+                <id>117</id>
+                <table reference="726"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="732">
+                  <id>116</id>
+                  <table reference="726"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="733">
+                    <id>115</id>
+                    <table reference="726"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="734">
+                      <id>114</id>
+                      <table reference="726"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="735">
+                        <id>113</id>
+                        <table reference="726"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="736">
+                          <id>112</id>
+                          <table reference="726"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="737">
+                            <id>111</id>
+                            <table reference="726"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="738">
+                              <id>110</id>
+                              <table reference="726"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="739">
+                                <id>109</id>
+                                <table reference="726"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="728"/>
+                                <rightSeat reference="738"/>
+                              </leftSeat>
+                              <rightSeat reference="737"/>
+                            </leftSeat>
+                            <rightSeat reference="736"/>
+                          </leftSeat>
+                          <rightSeat reference="735"/>
+                        </leftSeat>
+                        <rightSeat reference="734"/>
+                      </leftSeat>
+                      <rightSeat reference="733"/>
+                    </leftSeat>
+                    <rightSeat reference="732"/>
+                  </leftSeat>
+                  <rightSeat reference="731"/>
+                </leftSeat>
+                <rightSeat reference="730"/>
+              </leftSeat>
+              <rightSeat reference="729"/>
+            </leftSeat>
+            <rightSeat reference="728"/>
+          </leftSeat>
+          <rightSeat reference="739"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="739"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="738"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="737"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="736"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="735"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="734"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="733"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="732"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="731"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="730"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="729"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="610">
+    <org.drools.solver.examples.manners2009.domain.Table id="740">
       <id>10</id>
       <tableIndex>10</tableIndex>
-      <size>12</size>
+      <seatList id="741">
+        <org.drools.solver.examples.manners2009.domain.Seat id="742">
+          <id>120</id>
+          <table reference="740"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="743">
+            <id>131</id>
+            <table reference="740"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="744">
+              <id>130</id>
+              <table reference="740"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="745">
+                <id>129</id>
+                <table reference="740"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="746">
+                  <id>128</id>
+                  <table reference="740"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="747">
+                    <id>127</id>
+                    <table reference="740"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="748">
+                      <id>126</id>
+                      <table reference="740"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="749">
+                        <id>125</id>
+                        <table reference="740"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="750">
+                          <id>124</id>
+                          <table reference="740"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="751">
+                            <id>123</id>
+                            <table reference="740"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="752">
+                              <id>122</id>
+                              <table reference="740"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="753">
+                                <id>121</id>
+                                <table reference="740"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="742"/>
+                                <rightSeat reference="752"/>
+                              </leftSeat>
+                              <rightSeat reference="751"/>
+                            </leftSeat>
+                            <rightSeat reference="750"/>
+                          </leftSeat>
+                          <rightSeat reference="749"/>
+                        </leftSeat>
+                        <rightSeat reference="748"/>
+                      </leftSeat>
+                      <rightSeat reference="747"/>
+                    </leftSeat>
+                    <rightSeat reference="746"/>
+                  </leftSeat>
+                  <rightSeat reference="745"/>
+                </leftSeat>
+                <rightSeat reference="744"/>
+              </leftSeat>
+              <rightSeat reference="743"/>
+            </leftSeat>
+            <rightSeat reference="742"/>
+          </leftSeat>
+          <rightSeat reference="753"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="753"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="752"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="751"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="750"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="749"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="748"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="747"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="746"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="745"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="744"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="743"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
-    <org.drools.solver.examples.manners2009.domain.Table id="611">
+    <org.drools.solver.examples.manners2009.domain.Table id="754">
       <id>11</id>
       <tableIndex>11</tableIndex>
-      <size>12</size>
+      <seatList id="755">
+        <org.drools.solver.examples.manners2009.domain.Seat id="756">
+          <id>132</id>
+          <table reference="754"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="757">
+            <id>143</id>
+            <table reference="754"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="758">
+              <id>142</id>
+              <table reference="754"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="759">
+                <id>141</id>
+                <table reference="754"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="760">
+                  <id>140</id>
+                  <table reference="754"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="761">
+                    <id>139</id>
+                    <table reference="754"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="762">
+                      <id>138</id>
+                      <table reference="754"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="763">
+                        <id>137</id>
+                        <table reference="754"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="764">
+                          <id>136</id>
+                          <table reference="754"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="765">
+                            <id>135</id>
+                            <table reference="754"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="766">
+                              <id>134</id>
+                              <table reference="754"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="767">
+                                <id>133</id>
+                                <table reference="754"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="756"/>
+                                <rightSeat reference="766"/>
+                              </leftSeat>
+                              <rightSeat reference="765"/>
+                            </leftSeat>
+                            <rightSeat reference="764"/>
+                          </leftSeat>
+                          <rightSeat reference="763"/>
+                        </leftSeat>
+                        <rightSeat reference="762"/>
+                      </leftSeat>
+                      <rightSeat reference="761"/>
+                    </leftSeat>
+                    <rightSeat reference="760"/>
+                  </leftSeat>
+                  <rightSeat reference="759"/>
+                </leftSeat>
+                <rightSeat reference="758"/>
+              </leftSeat>
+              <rightSeat reference="757"/>
+            </leftSeat>
+            <rightSeat reference="756"/>
+          </leftSeat>
+          <rightSeat reference="767"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="767"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="766"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="765"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="764"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="763"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="762"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="761"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="760"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="759"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="758"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="757"/>
+      </seatList>
     </org.drools.solver.examples.manners2009.domain.Table>
   </tableList>
-  <seatList id="612">
-    <org.drools.solver.examples.manners2009.domain.Seat id="613">
-      <id>0</id>
-      <table reference="600"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="614">
-        <id>11</id>
-        <table reference="600"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="615">
-          <id>10</id>
-          <table reference="600"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="616">
-            <id>9</id>
-            <table reference="600"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="617">
-              <id>8</id>
-              <table reference="600"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="618">
-                <id>7</id>
-                <table reference="600"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="619">
-                  <id>6</id>
-                  <table reference="600"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="620">
-                    <id>5</id>
-                    <table reference="600"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="621">
-                      <id>4</id>
-                      <table reference="600"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="622">
-                        <id>3</id>
-                        <table reference="600"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="623">
-                          <id>2</id>
-                          <table reference="600"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="624">
-                            <id>1</id>
-                            <table reference="600"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="613"/>
-                            <rightSeat reference="623"/>
-                          </leftSeat>
-                          <rightSeat reference="622"/>
-                        </leftSeat>
-                        <rightSeat reference="621"/>
-                      </leftSeat>
-                      <rightSeat reference="620"/>
-                    </leftSeat>
-                    <rightSeat reference="619"/>
-                  </leftSeat>
-                  <rightSeat reference="618"/>
-                </leftSeat>
-                <rightSeat reference="617"/>
-              </leftSeat>
-              <rightSeat reference="616"/>
-            </leftSeat>
-            <rightSeat reference="615"/>
-          </leftSeat>
-          <rightSeat reference="614"/>
-        </leftSeat>
-        <rightSeat reference="613"/>
-      </leftSeat>
-      <rightSeat reference="624"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
+  <seatList id="768">
+    <org.drools.solver.examples.manners2009.domain.Seat reference="602"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="613"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="612"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="611"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="610"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="609"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="608"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="607"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="606"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="605"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="604"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="603"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="616"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="627"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="626"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="625"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="624"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="623"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="622"/>
@@ -3264,337 +4227,31 @@
     <org.drools.solver.examples.manners2009.domain.Seat reference="619"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="618"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="617"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="616"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="615"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="614"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="625">
-      <id>12</id>
-      <table reference="601"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="626">
-        <id>23</id>
-        <table reference="601"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="627">
-          <id>22</id>
-          <table reference="601"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="628">
-            <id>21</id>
-            <table reference="601"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="629">
-              <id>20</id>
-              <table reference="601"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="630">
-                <id>19</id>
-                <table reference="601"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="631">
-                  <id>18</id>
-                  <table reference="601"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="632">
-                    <id>17</id>
-                    <table reference="601"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="633">
-                      <id>16</id>
-                      <table reference="601"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="634">
-                        <id>15</id>
-                        <table reference="601"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="635">
-                          <id>14</id>
-                          <table reference="601"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="636">
-                            <id>13</id>
-                            <table reference="601"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="625"/>
-                            <rightSeat reference="635"/>
-                          </leftSeat>
-                          <rightSeat reference="634"/>
-                        </leftSeat>
-                        <rightSeat reference="633"/>
-                      </leftSeat>
-                      <rightSeat reference="632"/>
-                    </leftSeat>
-                    <rightSeat reference="631"/>
-                  </leftSeat>
-                  <rightSeat reference="630"/>
-                </leftSeat>
-                <rightSeat reference="629"/>
-              </leftSeat>
-              <rightSeat reference="628"/>
-            </leftSeat>
-            <rightSeat reference="627"/>
-          </leftSeat>
-          <rightSeat reference="626"/>
-        </leftSeat>
-        <rightSeat reference="625"/>
-      </leftSeat>
-      <rightSeat reference="636"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="630"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="641"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="640"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="639"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="638"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="637"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="636"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="635"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="634"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="633"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="632"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="631"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="630"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="629"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="628"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="627"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="626"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="637">
-      <id>24</id>
-      <table reference="602"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="638">
-        <id>35</id>
-        <table reference="602"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="639">
-          <id>34</id>
-          <table reference="602"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="640">
-            <id>33</id>
-            <table reference="602"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="641">
-              <id>32</id>
-              <table reference="602"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="642">
-                <id>31</id>
-                <table reference="602"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="643">
-                  <id>30</id>
-                  <table reference="602"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="644">
-                    <id>29</id>
-                    <table reference="602"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="645">
-                      <id>28</id>
-                      <table reference="602"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="646">
-                        <id>27</id>
-                        <table reference="602"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="647">
-                          <id>26</id>
-                          <table reference="602"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="648">
-                            <id>25</id>
-                            <table reference="602"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="637"/>
-                            <rightSeat reference="647"/>
-                          </leftSeat>
-                          <rightSeat reference="646"/>
-                        </leftSeat>
-                        <rightSeat reference="645"/>
-                      </leftSeat>
-                      <rightSeat reference="644"/>
-                    </leftSeat>
-                    <rightSeat reference="643"/>
-                  </leftSeat>
-                  <rightSeat reference="642"/>
-                </leftSeat>
-                <rightSeat reference="641"/>
-              </leftSeat>
-              <rightSeat reference="640"/>
-            </leftSeat>
-            <rightSeat reference="639"/>
-          </leftSeat>
-          <rightSeat reference="638"/>
-        </leftSeat>
-        <rightSeat reference="637"/>
-      </leftSeat>
-      <rightSeat reference="648"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="648"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="647"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="646"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="645"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="644"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="643"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="642"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="641"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="640"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="639"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="638"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="649">
-      <id>36</id>
-      <table reference="603"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="650">
-        <id>47</id>
-        <table reference="603"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="651">
-          <id>46</id>
-          <table reference="603"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="652">
-            <id>45</id>
-            <table reference="603"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="653">
-              <id>44</id>
-              <table reference="603"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="654">
-                <id>43</id>
-                <table reference="603"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="655">
-                  <id>42</id>
-                  <table reference="603"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="656">
-                    <id>41</id>
-                    <table reference="603"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="657">
-                      <id>40</id>
-                      <table reference="603"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="658">
-                        <id>39</id>
-                        <table reference="603"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="659">
-                          <id>38</id>
-                          <table reference="603"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="660">
-                            <id>37</id>
-                            <table reference="603"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="649"/>
-                            <rightSeat reference="659"/>
-                          </leftSeat>
-                          <rightSeat reference="658"/>
-                        </leftSeat>
-                        <rightSeat reference="657"/>
-                      </leftSeat>
-                      <rightSeat reference="656"/>
-                    </leftSeat>
-                    <rightSeat reference="655"/>
-                  </leftSeat>
-                  <rightSeat reference="654"/>
-                </leftSeat>
-                <rightSeat reference="653"/>
-              </leftSeat>
-              <rightSeat reference="652"/>
-            </leftSeat>
-            <rightSeat reference="651"/>
-          </leftSeat>
-          <rightSeat reference="650"/>
-        </leftSeat>
-        <rightSeat reference="649"/>
-      </leftSeat>
-      <rightSeat reference="660"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="660"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="659"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="658"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="657"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="656"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="655"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="654"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="653"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="652"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="651"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="650"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="661">
-      <id>48</id>
-      <table reference="604"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="662">
-        <id>59</id>
-        <table reference="604"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="663">
-          <id>58</id>
-          <table reference="604"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="664">
-            <id>57</id>
-            <table reference="604"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="665">
-              <id>56</id>
-              <table reference="604"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="666">
-                <id>55</id>
-                <table reference="604"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="667">
-                  <id>54</id>
-                  <table reference="604"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="668">
-                    <id>53</id>
-                    <table reference="604"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="669">
-                      <id>52</id>
-                      <table reference="604"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="670">
-                        <id>51</id>
-                        <table reference="604"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="671">
-                          <id>50</id>
-                          <table reference="604"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="672">
-                            <id>49</id>
-                            <table reference="604"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="661"/>
-                            <rightSeat reference="671"/>
-                          </leftSeat>
-                          <rightSeat reference="670"/>
-                        </leftSeat>
-                        <rightSeat reference="669"/>
-                      </leftSeat>
-                      <rightSeat reference="668"/>
-                    </leftSeat>
-                    <rightSeat reference="667"/>
-                  </leftSeat>
-                  <rightSeat reference="666"/>
-                </leftSeat>
-                <rightSeat reference="665"/>
-              </leftSeat>
-              <rightSeat reference="664"/>
-            </leftSeat>
-            <rightSeat reference="663"/>
-          </leftSeat>
-          <rightSeat reference="662"/>
-        </leftSeat>
-        <rightSeat reference="661"/>
-      </leftSeat>
-      <rightSeat reference="672"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="672"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="671"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="670"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="649"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="648"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="647"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="646"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="645"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="658"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="669"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="668"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="667"/>
@@ -3603,80 +4260,10 @@
     <org.drools.solver.examples.manners2009.domain.Seat reference="664"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="663"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="662"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="673">
-      <id>60</id>
-      <table reference="605"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="674">
-        <id>71</id>
-        <table reference="605"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="675">
-          <id>70</id>
-          <table reference="605"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="676">
-            <id>69</id>
-            <table reference="605"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="677">
-              <id>68</id>
-              <table reference="605"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="678">
-                <id>67</id>
-                <table reference="605"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="679">
-                  <id>66</id>
-                  <table reference="605"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="680">
-                    <id>65</id>
-                    <table reference="605"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="681">
-                      <id>64</id>
-                      <table reference="605"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="682">
-                        <id>63</id>
-                        <table reference="605"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="683">
-                          <id>62</id>
-                          <table reference="605"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="684">
-                            <id>61</id>
-                            <table reference="605"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="673"/>
-                            <rightSeat reference="683"/>
-                          </leftSeat>
-                          <rightSeat reference="682"/>
-                        </leftSeat>
-                        <rightSeat reference="681"/>
-                      </leftSeat>
-                      <rightSeat reference="680"/>
-                    </leftSeat>
-                    <rightSeat reference="679"/>
-                  </leftSeat>
-                  <rightSeat reference="678"/>
-                </leftSeat>
-                <rightSeat reference="677"/>
-              </leftSeat>
-              <rightSeat reference="676"/>
-            </leftSeat>
-            <rightSeat reference="675"/>
-          </leftSeat>
-          <rightSeat reference="674"/>
-        </leftSeat>
-        <rightSeat reference="673"/>
-      </leftSeat>
-      <rightSeat reference="684"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="684"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="661"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="660"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="659"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="672"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="683"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="682"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="681"/>
@@ -3687,79 +4274,9 @@
     <org.drools.solver.examples.manners2009.domain.Seat reference="676"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="675"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="674"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="685">
-      <id>72</id>
-      <table reference="606"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="686">
-        <id>83</id>
-        <table reference="606"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="687">
-          <id>82</id>
-          <table reference="606"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="688">
-            <id>81</id>
-            <table reference="606"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="689">
-              <id>80</id>
-              <table reference="606"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="690">
-                <id>79</id>
-                <table reference="606"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="691">
-                  <id>78</id>
-                  <table reference="606"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="692">
-                    <id>77</id>
-                    <table reference="606"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="693">
-                      <id>76</id>
-                      <table reference="606"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="694">
-                        <id>75</id>
-                        <table reference="606"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="695">
-                          <id>74</id>
-                          <table reference="606"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="696">
-                            <id>73</id>
-                            <table reference="606"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="685"/>
-                            <rightSeat reference="695"/>
-                          </leftSeat>
-                          <rightSeat reference="694"/>
-                        </leftSeat>
-                        <rightSeat reference="693"/>
-                      </leftSeat>
-                      <rightSeat reference="692"/>
-                    </leftSeat>
-                    <rightSeat reference="691"/>
-                  </leftSeat>
-                  <rightSeat reference="690"/>
-                </leftSeat>
-                <rightSeat reference="689"/>
-              </leftSeat>
-              <rightSeat reference="688"/>
-            </leftSeat>
-            <rightSeat reference="687"/>
-          </leftSeat>
-          <rightSeat reference="686"/>
-        </leftSeat>
-        <rightSeat reference="685"/>
-      </leftSeat>
-      <rightSeat reference="696"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="673"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="686"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="697"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="696"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="695"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="694"/>
@@ -3770,80 +4287,10 @@
     <org.drools.solver.examples.manners2009.domain.Seat reference="689"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="688"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="687"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="686"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="697">
-      <id>84</id>
-      <table reference="607"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="698">
-        <id>95</id>
-        <table reference="607"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="699">
-          <id>94</id>
-          <table reference="607"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="700">
-            <id>93</id>
-            <table reference="607"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="701">
-              <id>92</id>
-              <table reference="607"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="702">
-                <id>91</id>
-                <table reference="607"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="703">
-                  <id>90</id>
-                  <table reference="607"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="704">
-                    <id>89</id>
-                    <table reference="607"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="705">
-                      <id>88</id>
-                      <table reference="607"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="706">
-                        <id>87</id>
-                        <table reference="607"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="707">
-                          <id>86</id>
-                          <table reference="607"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="708">
-                            <id>85</id>
-                            <table reference="607"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="697"/>
-                            <rightSeat reference="707"/>
-                          </leftSeat>
-                          <rightSeat reference="706"/>
-                        </leftSeat>
-                        <rightSeat reference="705"/>
-                      </leftSeat>
-                      <rightSeat reference="704"/>
-                    </leftSeat>
-                    <rightSeat reference="703"/>
-                  </leftSeat>
-                  <rightSeat reference="702"/>
-                </leftSeat>
-                <rightSeat reference="701"/>
-              </leftSeat>
-              <rightSeat reference="700"/>
-            </leftSeat>
-            <rightSeat reference="699"/>
-          </leftSeat>
-          <rightSeat reference="698"/>
-        </leftSeat>
-        <rightSeat reference="697"/>
-      </leftSeat>
-      <rightSeat reference="708"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="700"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="711"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="710"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="709"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="708"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="707"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="706"/>
@@ -3852,337 +4299,31 @@
     <org.drools.solver.examples.manners2009.domain.Seat reference="703"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="702"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="701"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="700"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="699"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="698"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="709">
-      <id>96</id>
-      <table reference="608"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="710">
-        <id>107</id>
-        <table reference="608"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="711">
-          <id>106</id>
-          <table reference="608"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="712">
-            <id>105</id>
-            <table reference="608"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="713">
-              <id>104</id>
-              <table reference="608"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="714">
-                <id>103</id>
-                <table reference="608"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="715">
-                  <id>102</id>
-                  <table reference="608"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="716">
-                    <id>101</id>
-                    <table reference="608"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="717">
-                      <id>100</id>
-                      <table reference="608"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="718">
-                        <id>99</id>
-                        <table reference="608"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="719">
-                          <id>98</id>
-                          <table reference="608"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="720">
-                            <id>97</id>
-                            <table reference="608"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="709"/>
-                            <rightSeat reference="719"/>
-                          </leftSeat>
-                          <rightSeat reference="718"/>
-                        </leftSeat>
-                        <rightSeat reference="717"/>
-                      </leftSeat>
-                      <rightSeat reference="716"/>
-                    </leftSeat>
-                    <rightSeat reference="715"/>
-                  </leftSeat>
-                  <rightSeat reference="714"/>
-                </leftSeat>
-                <rightSeat reference="713"/>
-              </leftSeat>
-              <rightSeat reference="712"/>
-            </leftSeat>
-            <rightSeat reference="711"/>
-          </leftSeat>
-          <rightSeat reference="710"/>
-        </leftSeat>
-        <rightSeat reference="709"/>
-      </leftSeat>
-      <rightSeat reference="720"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="714"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="725"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="724"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="723"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="722"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="721"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="720"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="719"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="718"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="717"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="716"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="715"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="714"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="713"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="712"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="711"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="710"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="721">
-      <id>108</id>
-      <table reference="609"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="722">
-        <id>119</id>
-        <table reference="609"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="723">
-          <id>118</id>
-          <table reference="609"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="724">
-            <id>117</id>
-            <table reference="609"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="725">
-              <id>116</id>
-              <table reference="609"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="726">
-                <id>115</id>
-                <table reference="609"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="727">
-                  <id>114</id>
-                  <table reference="609"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="728">
-                    <id>113</id>
-                    <table reference="609"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="729">
-                      <id>112</id>
-                      <table reference="609"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="730">
-                        <id>111</id>
-                        <table reference="609"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="731">
-                          <id>110</id>
-                          <table reference="609"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="732">
-                            <id>109</id>
-                            <table reference="609"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="721"/>
-                            <rightSeat reference="731"/>
-                          </leftSeat>
-                          <rightSeat reference="730"/>
-                        </leftSeat>
-                        <rightSeat reference="729"/>
-                      </leftSeat>
-                      <rightSeat reference="728"/>
-                    </leftSeat>
-                    <rightSeat reference="727"/>
-                  </leftSeat>
-                  <rightSeat reference="726"/>
-                </leftSeat>
-                <rightSeat reference="725"/>
-              </leftSeat>
-              <rightSeat reference="724"/>
-            </leftSeat>
-            <rightSeat reference="723"/>
-          </leftSeat>
-          <rightSeat reference="722"/>
-        </leftSeat>
-        <rightSeat reference="721"/>
-      </leftSeat>
-      <rightSeat reference="732"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="732"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="731"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="730"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="729"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="728"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="727"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="726"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="725"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="724"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="723"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="722"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="733">
-      <id>120</id>
-      <table reference="610"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="734">
-        <id>131</id>
-        <table reference="610"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="735">
-          <id>130</id>
-          <table reference="610"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="736">
-            <id>129</id>
-            <table reference="610"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="737">
-              <id>128</id>
-              <table reference="610"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="738">
-                <id>127</id>
-                <table reference="610"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="739">
-                  <id>126</id>
-                  <table reference="610"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="740">
-                    <id>125</id>
-                    <table reference="610"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="741">
-                      <id>124</id>
-                      <table reference="610"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="742">
-                        <id>123</id>
-                        <table reference="610"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="743">
-                          <id>122</id>
-                          <table reference="610"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="744">
-                            <id>121</id>
-                            <table reference="610"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="733"/>
-                            <rightSeat reference="743"/>
-                          </leftSeat>
-                          <rightSeat reference="742"/>
-                        </leftSeat>
-                        <rightSeat reference="741"/>
-                      </leftSeat>
-                      <rightSeat reference="740"/>
-                    </leftSeat>
-                    <rightSeat reference="739"/>
-                  </leftSeat>
-                  <rightSeat reference="738"/>
-                </leftSeat>
-                <rightSeat reference="737"/>
-              </leftSeat>
-              <rightSeat reference="736"/>
-            </leftSeat>
-            <rightSeat reference="735"/>
-          </leftSeat>
-          <rightSeat reference="734"/>
-        </leftSeat>
-        <rightSeat reference="733"/>
-      </leftSeat>
-      <rightSeat reference="744"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="744"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="743"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="742"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="741"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="740"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="739"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="738"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="737"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="736"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="735"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="734"/>
-    <org.drools.solver.examples.manners2009.domain.Seat id="745">
-      <id>132</id>
-      <table reference="611"/>
-      <seatIndexInTable>0</seatIndexInTable>
-      <leftSeat id="746">
-        <id>143</id>
-        <table reference="611"/>
-        <seatIndexInTable>11</seatIndexInTable>
-        <leftSeat id="747">
-          <id>142</id>
-          <table reference="611"/>
-          <seatIndexInTable>10</seatIndexInTable>
-          <leftSeat id="748">
-            <id>141</id>
-            <table reference="611"/>
-            <seatIndexInTable>9</seatIndexInTable>
-            <leftSeat id="749">
-              <id>140</id>
-              <table reference="611"/>
-              <seatIndexInTable>8</seatIndexInTable>
-              <leftSeat id="750">
-                <id>139</id>
-                <table reference="611"/>
-                <seatIndexInTable>7</seatIndexInTable>
-                <leftSeat id="751">
-                  <id>138</id>
-                  <table reference="611"/>
-                  <seatIndexInTable>6</seatIndexInTable>
-                  <leftSeat id="752">
-                    <id>137</id>
-                    <table reference="611"/>
-                    <seatIndexInTable>5</seatIndexInTable>
-                    <leftSeat id="753">
-                      <id>136</id>
-                      <table reference="611"/>
-                      <seatIndexInTable>4</seatIndexInTable>
-                      <leftSeat id="754">
-                        <id>135</id>
-                        <table reference="611"/>
-                        <seatIndexInTable>3</seatIndexInTable>
-                        <leftSeat id="755">
-                          <id>134</id>
-                          <table reference="611"/>
-                          <seatIndexInTable>2</seatIndexInTable>
-                          <leftSeat id="756">
-                            <id>133</id>
-                            <table reference="611"/>
-                            <seatIndexInTable>1</seatIndexInTable>
-                            <leftSeat reference="745"/>
-                            <rightSeat reference="755"/>
-                          </leftSeat>
-                          <rightSeat reference="754"/>
-                        </leftSeat>
-                        <rightSeat reference="753"/>
-                      </leftSeat>
-                      <rightSeat reference="752"/>
-                    </leftSeat>
-                    <rightSeat reference="751"/>
-                  </leftSeat>
-                  <rightSeat reference="750"/>
-                </leftSeat>
-                <rightSeat reference="749"/>
-              </leftSeat>
-              <rightSeat reference="748"/>
-            </leftSeat>
-            <rightSeat reference="747"/>
-          </leftSeat>
-          <rightSeat reference="746"/>
-        </leftSeat>
-        <rightSeat reference="745"/>
-      </leftSeat>
-      <rightSeat reference="756"/>
-    </org.drools.solver.examples.manners2009.domain.Seat>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="756"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="755"/>
-    <org.drools.solver.examples.manners2009.domain.Seat reference="754"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="733"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="732"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="731"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="730"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="729"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="742"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="753"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="752"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="751"/>
@@ -4191,5 +4332,20 @@
     <org.drools.solver.examples.manners2009.domain.Seat reference="748"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="747"/>
     <org.drools.solver.examples.manners2009.domain.Seat reference="746"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="745"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="744"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="743"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="756"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="767"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="766"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="765"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="764"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="763"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="762"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="761"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="760"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="759"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="758"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="757"/>
   </seatList>
 </org.drools.solver.examples.manners2009.domain.Manners2009>

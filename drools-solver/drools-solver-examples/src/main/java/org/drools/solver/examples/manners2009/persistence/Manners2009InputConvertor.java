@@ -5,22 +5,22 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
-import org.drools.solver.examples.manners2009.domain.Manners2009;
-import org.drools.solver.examples.manners2009.domain.Job;
-import org.drools.solver.examples.manners2009.domain.Guest;
-import org.drools.solver.examples.manners2009.domain.HobbyPractician;
-import org.drools.solver.examples.manners2009.domain.Table;
-import org.drools.solver.examples.manners2009.domain.Seat;
 import org.drools.solver.examples.manners2009.domain.Gender;
+import org.drools.solver.examples.manners2009.domain.Guest;
 import org.drools.solver.examples.manners2009.domain.Hobby;
+import org.drools.solver.examples.manners2009.domain.HobbyPractician;
+import org.drools.solver.examples.manners2009.domain.Job;
 import org.drools.solver.examples.manners2009.domain.JobType;
+import org.drools.solver.examples.manners2009.domain.Manners2009;
+import org.drools.solver.examples.manners2009.domain.Seat;
+import org.drools.solver.examples.manners2009.domain.Table;
 
 /**
  * @author Geoffrey De Smet
@@ -96,7 +96,7 @@ public class Manners2009InputConvertor extends LoggingMain {
             Table table = new Table();
             table.setId((long) i);
             table.setTableIndex(i);
-            table.setSize(seatsPerTable);
+            List<Seat> tableSeatList = new ArrayList<Seat>(seatsPerTable);
             Seat firstSeat = null;
             Seat previousSeat = null;
             for (int j = 0; j < seatsPerTable; j++) {
@@ -110,11 +110,13 @@ public class Manners2009InputConvertor extends LoggingMain {
                 } else {
                     firstSeat = seat; 
                 }
+                tableSeatList.add(seat);
                 seatList.add(seat);
                 previousSeat = seat;
             }
             firstSeat.setLeftSeat(previousSeat);
             previousSeat.setRightSeat(firstSeat);
+            table.setSeatList(tableSeatList);
             tableList.add(table);
         }
         manners2009.setTableList(tableList);

@@ -71,6 +71,10 @@ public class Manners2009 extends AbstractPersistable implements Solution {
     }
 
 
+    public boolean isInitialized() {
+        return (seatDesignationList != null);
+    }
+
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(jobList);
@@ -78,7 +82,9 @@ public class Manners2009 extends AbstractPersistable implements Solution {
         facts.addAll(hobbyPracticianList);
         facts.addAll(tableList);
         facts.addAll(seatList);
-        facts.addAll(seatDesignationList);
+        if (isInitialized()) {
+            facts.addAll(seatDesignationList);
+        }
         return facts;
     }
 

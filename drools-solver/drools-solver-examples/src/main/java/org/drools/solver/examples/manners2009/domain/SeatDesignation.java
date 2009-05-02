@@ -84,4 +84,12 @@ public class SeatDesignation extends AbstractPersistable implements Comparable<S
         return guest + " @ " + seat;
     }
 
+    public Job getGuestJob() {
+        return getGuest().getJob();
+    }
+
+    public Table getSeatTable() {
+        return getSeat().getTable();
+    }
+
 }

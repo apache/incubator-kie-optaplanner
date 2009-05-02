@@ -1,0 +1,79 @@
+package org.drools.solver.examples.nqueens.solver;
+
+import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
+import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence;
+import org.drools.solver.core.score.constraint.ConstraintType;
+
+import org.drools.solver.examples.manners2009.domain.Gender;
+import org.drools.solver.examples.manners2009.domain.Guest;
+import org.drools.solver.examples.manners2009.domain.Hobby;
+import org.drools.solver.examples.manners2009.domain.HobbyPractician;
+import org.drools.solver.examples.manners2009.domain.Job;
+import org.drools.solver.examples.manners2009.domain.JobType;
+import org.drools.solver.examples.manners2009.domain.Manners2009;
+import org.drools.solver.examples.manners2009.domain.Seat;
+import org.drools.solver.examples.manners2009.domain.SeatDesignation;
+import org.drools.solver.examples.manners2009.domain.Table;
+
+global SimpleScoreCalculator scoreCalculator;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+// Maintain a boy-girl-boy-girl seating arrangement is obsolete because it's build into the moves
+
+// 1 democrat
+rule "oneDemocratPoliticianPerTable"
+    when
+        $job : Job(jobType == JobType.POLITICIAN, name == "Democrat");
+        $table : Table();
+        not SeatDesignation(guestJob == $job, seatTable == $table);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("oneDemocratPoliticianPerTable",
+                $table));
+end
+
+// 1 republican
+rule "oneRepublicanPoliticianPerTable"
+    when
+        $job : Job(jobType == JobType.POLITICIAN, name == "Republican");
+        $table : Table();
+        not SeatDesignation(guestJob == $job, seatTable == $table);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("oneRepublicanPoliticianPerTable",
+                $table));
+end
+
+// 2 doctors at each table but NOT two of the same kind
+// 2 socialites at each table
+// 2 sports stars at each table but NOT two of the same kind
+// 2 teachers at each table
+// 2 programmers at each table but NOT two of the same kind
+
+
+// Each person MUST have someone (left or right) who has the same hobby.
+//rule "leftOrRightHasHobbyInCommon"
+//    when
+//        $leftSeat : Seat();
+//        $rightSeat : Seat(leftSeat == $leftSeat);
+//        $leftDesignation : SeatDesignation($leftGuest : guest, seat == $leftSeat);
+//        $rightDesignation : SeatDesignation($rightGuest : guest, seat == $rightSeat);
+//        HobbyPractician(guest == $leftGuest, $leftHobby : hobby);
+//        not HobbyPractician(guest == $rightGuest, hobby == leftHobby);
+// TODO this is bugged because they have to have every hobby in common and both and right seat have to
+//    then
+//        insertLogical(new UnweightedConstraintOccurrence("leftOrRightHasHobbyInCommon",
+//                $leftDesignation, $rightDesignation));
+//end
+
+
+rule "hardConstraintsBroken"
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        );
+    then
+        scoreCalculator.setScore(- $occurrenceCount.intValue());
+end

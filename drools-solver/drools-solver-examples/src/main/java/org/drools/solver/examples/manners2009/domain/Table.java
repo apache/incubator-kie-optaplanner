@@ -1,5 +1,7 @@
 package org.drools.solver.examples.manners2009.domain;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 import org.drools.solver.examples.itc2007.examination.domain.Room;
@@ -10,7 +12,8 @@ import org.drools.solver.examples.itc2007.examination.domain.Room;
 public class Table extends AbstractPersistable implements Comparable<Table> {
 
     private int tableIndex;
-    private int size;
+
+    private List<Seat> seatList;
 
     public int getTableIndex() {
         return tableIndex;
@@ -20,12 +23,12 @@ public class Table extends AbstractPersistable implements Comparable<Table> {
         this.tableIndex = tableIndex;
     }
 
-    public int getSize() {
-        return size;
+    public List<Seat> getSeatList() {
+        return seatList;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setSeatList(List<Seat> seatList) {
+        this.seatList = seatList;
     }
 
     public int compareTo(Table other) {

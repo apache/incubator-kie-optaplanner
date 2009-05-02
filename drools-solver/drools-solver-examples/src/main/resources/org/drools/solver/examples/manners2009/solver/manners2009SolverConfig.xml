@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/solver/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
+    <scoreDefinition>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    </scoreDefinition>
+    <finish>
+        <finishCompositionStyle>OR</finishCompositionStyle>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+        <feasableScore>0</feasableScore>
+    </finish>
+    <selector>
+        <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+    </selector>
+    <accepter>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+    </accepter>
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <!--<foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>-->
+    </forager>
+</localSearchSolver>
