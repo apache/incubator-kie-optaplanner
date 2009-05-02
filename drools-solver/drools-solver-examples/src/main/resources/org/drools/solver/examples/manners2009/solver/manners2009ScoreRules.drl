@@ -24,7 +24,6 @@ global SimpleScoreCalculator scoreCalculator;
 
 // Maintain a boy-girl-boy-girl seating arrangement is obsolete because it's build into the moves
 
-// 1 democrat
 rule "oneDemocratPoliticianPerTable"
     when
         $job : Job(jobType == JobType.POLITICIAN, name == "Democrat");
@@ -35,7 +34,6 @@ rule "oneDemocratPoliticianPerTable"
                 $table));
 end
 
-// 1 republican
 rule "oneRepublicanPoliticianPerTable"
     when
         $job : Job(jobType == JobType.POLITICIAN, name == "Republican");
@@ -46,16 +44,23 @@ rule "oneRepublicanPoliticianPerTable"
                 $table));
 end
 
+// 1 democrat and 1 republican
 // 2 doctors at each table but NOT two of the same kind
-rule "twoDoctorsPerTable"
+// 2 sports stars at each table but NOT two of the same kind
+// 2 programmers at each table but NOT two of the same kind
+// 2 socialites at each table
+// 2 teachers at each table
+rule "twoSameJobTypePerTable"
     when
+        $jobType : JobType();
         $table : Table();
         not (
-            SeatDesignation(guestJobType == JobType.DOCTOR, seatTable == $table, $firstJob : guestJob)
-            and SeatDesignation(guestJobType == JobType.DOCTOR, seatTable == $table, guestJob != $firstJob)
+            SeatDesignation(guestJobType == $jobType, seatTable == $table, $firstJob : guestJob)
+            and SeatDesignation(guestJobType == $jobType, seatTable == $table, $secondJob : guestJob)
+            and (eval($jobType == JobType.SOCIALITE) or eval($jobType == JobType.TEACHER) or eval($firstJob != $secondJob))
         );
     then
-        insertLogical(new UnweightedConstraintOccurrence("twoDoctorsPerTable",
+        insertLogical(new UnweightedConstraintOccurrence("twoSameJobTypePerTable",
                 $table));
 end
 
@@ -72,10 +77,6 @@ rule "atLeastOneJobTypePerTableScoreGuider"
                 $table, $jobType));
 end
 
-// 2 socialites at each table
-// 2 sports stars at each table but NOT two of the same kind
-// 2 teachers at each table
-// 2 programmers at each table but NOT two of the same kind
 
 
 // Each person must share a hobby with his/her left neighbour
