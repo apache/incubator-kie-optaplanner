@@ -4,13 +4,14 @@
     <scoreDefinition>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     </scoreDefinition>
-    <finish>
+    <startingSolutionInitializerClass>org.drools.solver.examples.manners2009.solver.solution.initializer.Manners2009StartingSolutionInitializer</startingSolutionInitializerClass>
+        <finish>
         <finishCompositionStyle>OR</finishCompositionStyle>
         <maximumMinutesSpend>5</maximumMinutesSpend>
         <feasableScore>0</feasableScore>
     </finish>
     <selector>
-        <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.solver.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1000</completeSolutionTabuSize>

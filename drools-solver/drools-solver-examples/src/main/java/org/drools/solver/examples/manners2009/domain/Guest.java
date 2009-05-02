@@ -47,7 +47,7 @@ public class Guest extends AbstractPersistable implements Comparable<Guest> {
 
     @Override
     public String toString() {
-        return code + "(" + job + "," + gender + ")";
+        return code + "(" + job + "," + gender.getCode() + ")";
     }
 
 }

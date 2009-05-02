@@ -4,11 +4,11 @@ package org.drools.solver.examples.manners2009.domain;
  * @author Geoffrey De Smet
  */
 public enum Hobby {
-    Tennis("1"),
-    Golf("2"),
-    Motorcycles("3"),
-    Chess("4"),
-    Poker("5");
+    TENNIS("1"),
+    GOLF("2"),
+    MOTORCYCLES("3"),
+    CHESS("4"),
+    POKER("5");
 
     public static Hobby valueOfCode(String code) {
         for (Hobby hobby : values()) {

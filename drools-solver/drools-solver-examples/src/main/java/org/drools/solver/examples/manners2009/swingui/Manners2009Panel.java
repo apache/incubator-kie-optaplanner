@@ -54,7 +54,10 @@ public class Manners2009Panel extends SolutionPanel {
             // Formula: 4(columns - 1) = tableSize
             int edgeLength = (int) Math.ceil(((double) (table.getSeatList().size() + 4)) / 4.0);
             JPanel tablePanel = new JPanel(new GridLayout(0, edgeLength));
-            tablePanel.setBorder(BorderFactory.createTitledBorder("Table " + table.getTableIndex()));
+            tablePanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                    BorderFactory.createTitledBorder("Table " + table.getTableIndex())
+                    ));
             add(tablePanel);
             tablePanelMap.put(table, tablePanel);
             for (int y = 0; y < edgeLength; y++) {
@@ -97,7 +100,7 @@ public class Manners2009Panel extends SolutionPanel {
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JLabel seatLabel = new JLabel(Integer.toString(seat.getSeatIndexInTable()), SwingConstants.CENTER);
+            JLabel seatLabel = new JLabel("Seat " + seat.getSeatIndexInTable(), SwingConstants.CENTER);
             add(seatLabel);
         }
 
@@ -113,7 +116,7 @@ public class Manners2009Panel extends SolutionPanel {
         private SeatDesignation seatDesignation;
 
         public SeatDesignationAction(SeatDesignation seatDesignation) {
-            super(seatDesignation.toString());
+            super(seatDesignation.getGuest().toString());
             this.seatDesignation = seatDesignation;
         }
 

@@ -37,7 +37,7 @@ public class Job extends AbstractPersistable implements Comparable<Job> {
 
     @Override
     public String toString() {
-        return name + "(" + jobType + ")";
+        return name + "(" + jobType.getCode() + ")";
     }
 
 }
