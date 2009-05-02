@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.EnumSet;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
@@ -77,8 +78,10 @@ public class Manners2009 extends AbstractPersistable implements Solution {
 
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
+        facts.addAll(EnumSet.allOf(JobType.class));
         facts.addAll(jobList);
         facts.addAll(guestList);
+        facts.addAll(EnumSet.allOf(Hobby.class));
         facts.addAll(hobbyPracticianList);
         facts.addAll(tableList);
         facts.addAll(seatList);

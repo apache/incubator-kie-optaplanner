@@ -1,4 +1,5 @@
 package org.drools.solver.examples.nqueens.solver;
+    dialect "java"
 
 import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
 import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence;
@@ -46,14 +47,40 @@ rule "oneRepublicanPoliticianPerTable"
 end
 
 // 2 doctors at each table but NOT two of the same kind
+rule "twoDoctorsPerTable"
+    when
+        $table : Table();
+        not (
+            SeatDesignation(guestJobType == JobType.DOCTOR, seatTable == $table, $firstJob : guestJob)
+            and SeatDesignation(guestJobType == JobType.DOCTOR, seatTable == $table, guestJob != $firstJob)
+        );
+    then
+        insertLogical(new UnweightedConstraintOccurrence("twoDoctorsPerTable",
+                $table));
+end
+
+// This is to avoid score traps. The score function should for example give an insentive
+// to put it 1 doctor at a table without doctors even though 2 doctors are needed.
+// This extra rule can be avoided by weighting the broken constrainst of the other rule
+rule "atLeastOneJobTypePerTableScoreGuider"
+    when
+        $table : Table();
+        $jobType : JobType();
+        not SeatDesignation(guestJobType == $jobType, seatTable == $table);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("tableWithoutJobTypeShouldBePunishedExtra",
+                $table, $jobType));
+end
+
 // 2 socialites at each table
 // 2 sports stars at each table but NOT two of the same kind
 // 2 teachers at each table
 // 2 programmers at each table but NOT two of the same kind
 
 
-// Each person MUST have someone (left or right) who has the same hobby.
-//rule "leftOrRightHasHobbyInCommon"
+// Each person must share a hobby with his/her left neighbour
+// (so also the same or another hobby with his/her right neighbour)
+//rule "leftHasHobbyInCommon"
 //    when
 //        $leftSeat : Seat();
 //        $rightSeat : Seat(leftSeat == $leftSeat);
@@ -61,7 +88,7 @@ end
 //        $rightDesignation : SeatDesignation($rightGuest : guest, seat == $rightSeat);
 //        HobbyPractician(guest == $leftGuest, $leftHobby : hobby);
 //        not HobbyPractician(guest == $rightGuest, hobby == leftHobby);
-// TODO this is bugged because they have to have every hobby in common and both and right seat have to
+// TODO this is bugged because they have to have every hobby in common
 //    then
 //        insertLogical(new UnweightedConstraintOccurrence("leftOrRightHasHobbyInCommon",
 //                $leftDesignation, $rightDesignation));
