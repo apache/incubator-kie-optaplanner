@@ -25,7 +25,9 @@ public class SeatDesignationSwitchMoveFactory extends CachedMoveFactory {
             for (ListIterator<SeatDesignation> rightIt = seatDesignationList.listIterator(leftIt.nextIndex());
                     rightIt.hasNext();) {
                 SeatDesignation rightSeatDesignation = rightIt.next();
-                moveList.add(new SeatDesignationSwitchMove(leftSeatDesignation, rightSeatDesignation));
+                if (leftSeatDesignation.getGuest().getGender() == rightSeatDesignation.getGuest().getGender()) {
+                    moveList.add(new SeatDesignationSwitchMove(leftSeatDesignation, rightSeatDesignation));
+                }
             }
         }
         return moveList;

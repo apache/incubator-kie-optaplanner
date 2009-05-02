@@ -24,27 +24,7 @@ global SimpleScoreCalculator scoreCalculator;
 
 // Maintain a boy-girl-boy-girl seating arrangement is obsolete because it's build into the moves
 
-rule "oneDemocratPoliticianPerTable"
-    when
-        $job : Job(jobType == JobType.POLITICIAN, name == "Democrat");
-        $table : Table();
-        not SeatDesignation(guestJob == $job, seatTable == $table);
-    then
-        insertLogical(new UnweightedConstraintOccurrence("oneDemocratPoliticianPerTable",
-                $table));
-end
-
-rule "oneRepublicanPoliticianPerTable"
-    when
-        $job : Job(jobType == JobType.POLITICIAN, name == "Republican");
-        $table : Table();
-        not SeatDesignation(guestJob == $job, seatTable == $table);
-    then
-        insertLogical(new UnweightedConstraintOccurrence("oneRepublicanPoliticianPerTable",
-                $table));
-end
-
-// 1 democrat and 1 republican
+// 1 democrat and 1 republican = 2 politians at each table but NOT two of the same kind
 // 2 doctors at each table but NOT two of the same kind
 // 2 sports stars at each table but NOT two of the same kind
 // 2 programmers at each table but NOT two of the same kind

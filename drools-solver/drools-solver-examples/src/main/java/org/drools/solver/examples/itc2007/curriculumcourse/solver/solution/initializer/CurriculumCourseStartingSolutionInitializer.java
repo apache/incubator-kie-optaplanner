@@ -125,10 +125,10 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
             for (int i = 0; i < course.getLectureSize(); i++) {
                 Lecture lecture = new Lecture();
                 lecture.setId((long) lectureId);
+                lectureId++;
                 lecture.setCourse(course);
                 lecture.setLectureIndexInCourse(i);
                 lectureList.add(lecture);
-                lectureId++;
             }
         }
         return lectureList;

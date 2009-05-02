@@ -59,4 +59,8 @@ public class Seat extends AbstractPersistable implements Comparable<Seat> {
         return table + "." + seatIndexInTable;
     }
 
+    public Gender getRequiredGender() {
+        return (seatIndexInTable % 2 == 0) ? Gender.MALE : Gender.FEMALE;
+    }
+
 }
