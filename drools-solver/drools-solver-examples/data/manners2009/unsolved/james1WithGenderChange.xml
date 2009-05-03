@@ -931,31 +931,31 @@
       <id>139</id>
       <code>140</code>
       <job reference="3"/>
-      <gender>MALE</gender>
+      <gender>FEMALE</gender>
     </org.drools.solver.examples.manners2009.domain.Guest>
     <org.drools.solver.examples.manners2009.domain.Guest id="162">
       <id>140</id>
       <code>141</code>
       <job reference="3"/>
-      <gender>MALE</gender>
+      <gender>FEMALE</gender>
     </org.drools.solver.examples.manners2009.domain.Guest>
     <org.drools.solver.examples.manners2009.domain.Guest id="163">
       <id>141</id>
       <code>142</code>
       <job reference="3"/>
-      <gender>MALE</gender>
+      <gender>FEMALE</gender>
     </org.drools.solver.examples.manners2009.domain.Guest>
     <org.drools.solver.examples.manners2009.domain.Guest id="164">
       <id>142</id>
       <code>143</code>
       <job reference="16"/>
-      <gender>MALE</gender>
+      <gender>FEMALE</gender>
     </org.drools.solver.examples.manners2009.domain.Guest>
     <org.drools.solver.examples.manners2009.domain.Guest id="165">
       <id>143</id>
       <code>144</code>
       <job reference="16"/>
-      <gender>MALE</gender>
+      <gender>FEMALE</gender>
     </org.drools.solver.examples.manners2009.domain.Guest>
   </guestList>
   <hobbyPracticianList id="166">

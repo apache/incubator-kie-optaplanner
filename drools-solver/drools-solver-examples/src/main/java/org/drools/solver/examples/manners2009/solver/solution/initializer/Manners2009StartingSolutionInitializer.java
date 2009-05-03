@@ -54,6 +54,7 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
         List<SeatDesignation> seatDesignationList = createSeatDesignationList(manners2009);
         // Assign one guest at a time
+        List<Seat> undesignatedSeatList = manners2009.getSeatList();
         for (SeatDesignation seatDesignation : seatDesignationList) {
             Score bestScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
             Seat bestSeat = null;
@@ -62,7 +63,7 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
             // Try every seat for that guest
             // TODO by reordening the seats so index 0 has a different table then index 1 and so on,
             // this will probably be faster because perfectMatch will be true sooner
-            for (Seat seat : manners2009.getSeatList()) {
+            for (Seat seat : undesignatedSeatList) {
                 if (seatDesignation.getGuest().getGender() == seat.getRequiredGender()) {
                     if (seatDesignationHandle == null) {
                         seatDesignation.setSeat(seat);
@@ -85,6 +86,7 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
             workingMemory.modifyRetract(seatDesignationHandle);
             seatDesignation.setSeat(bestSeat);
             workingMemory.modifyInsert(seatDesignationHandle, seatDesignation);
+            undesignatedSeatList.remove(bestSeat);
         }
         Collections.sort(seatDesignationList); // For the GUI's combobox list mainly, not really needed
         manners2009.setSeatDesignationList(seatDesignationList);

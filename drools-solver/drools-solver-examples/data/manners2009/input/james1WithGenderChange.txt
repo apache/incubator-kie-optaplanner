@@ -141,8 +141,8 @@ Num,Profession,SubProf,Gender,Spt1,Spt2,Spt3
 137,Socialite,Democrat,F,3,4,1
 138,Socialite,Democrat,F,2,5,3
 139,Socialite,Republican,M,3,1,5
-140,Socialite,Republican,M,1,2,3
-141,Socialite,Republican,M,1,5,3
-142,Socialite,Republican,M,4,2,3
-143,Socialite,Democrat,M,4,1,2
-144,Socialite,Democrat,M,1,5,3
+140,Socialite,Republican,F,1,2,3
+141,Socialite,Republican,F,1,5,3
+142,Socialite,Republican,F,4,2,3
+143,Socialite,Democrat,F,4,1,2
+144,Socialite,Democrat,F,1,5,3
