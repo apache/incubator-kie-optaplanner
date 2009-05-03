@@ -38,8 +38,6 @@ public class Guest extends AbstractPersistable implements Comparable<Guest> {
 
     public int compareTo(Guest other) {
         return new CompareToBuilder()
-                .append(job, other.job)
-                .append(gender, other.gender)
                 .append(code, other.code)
                 .append(id, other.id)
                 .toComparison();
