@@ -159,14 +159,17 @@ public class Manners2009InputConvertor extends LoggingMain {
             }
             guest.setJob(job);
             guest.setGender(Gender.valueOfCode(lineTokens[3].trim()));
+            List<HobbyPractician> hobbyPracticianOfGuestList = new ArrayList<HobbyPractician>(lineTokens.length - 4);
             for (int j = 4; j < lineTokens.length; j++) {
                 HobbyPractician hobbyPractician = new HobbyPractician();
                 hobbyPractician.setId((long) hobbyPracticianJobId);
                 hobbyPracticianJobId++;
                 hobbyPractician.setGuest(guest);
                 hobbyPractician.setHobby(Hobby.valueOfCode(lineTokens[j].trim()));
+                hobbyPracticianOfGuestList.add(hobbyPractician);
                 hobbyPracticianList.add(hobbyPractician);
             }
+            guest.setHobbyPracticianList(hobbyPracticianOfGuestList);
             guestList.add(guest);
         }
         manners2009.setJobList(new ArrayList<Job>(jobMap.values()));

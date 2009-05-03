@@ -1,5 +1,7 @@
 package org.drools.solver.examples.manners2009.domain;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
@@ -11,6 +13,8 @@ public class Guest extends AbstractPersistable implements Comparable<Guest> {
     private String code;
     private Job job;
     private Gender gender;
+
+    private List<HobbyPractician> hobbyPracticianList;
 
     public String getCode() {
         return code;
@@ -34,6 +38,14 @@ public class Guest extends AbstractPersistable implements Comparable<Guest> {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public List<HobbyPractician> getHobbyPracticianList() {
+        return hobbyPracticianList;
+    }
+
+    public void setHobbyPracticianList(List<HobbyPractician> hobbyPracticianList) {
+        this.hobbyPracticianList = hobbyPracticianList;
     }
 
     public int compareTo(Guest other) {

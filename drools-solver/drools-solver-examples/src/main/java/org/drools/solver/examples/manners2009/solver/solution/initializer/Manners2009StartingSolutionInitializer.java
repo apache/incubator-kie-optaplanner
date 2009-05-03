@@ -88,7 +88,8 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
             workingMemory.modifyInsert(seatDesignationHandle, seatDesignation);
             undesignatedSeatList.remove(bestSeat);
         }
-        Collections.sort(seatDesignationList); // For the GUI's combobox list mainly, not really needed
+        // For the GUI's combobox list mainly, not really needed
+        Collections.sort(seatDesignationList, new PersistableIdComparator());
         manners2009.setSeatDesignationList(seatDesignationList);
     }
 

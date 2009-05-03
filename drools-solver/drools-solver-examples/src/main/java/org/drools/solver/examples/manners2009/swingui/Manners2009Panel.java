@@ -26,6 +26,7 @@ import org.drools.solver.examples.manners2009.domain.Manners2009;
 import org.drools.solver.examples.manners2009.domain.Table;
 import org.drools.solver.examples.manners2009.domain.Seat;
 import org.drools.solver.examples.manners2009.domain.SeatDesignation;
+import org.drools.solver.examples.manners2009.domain.HobbyPractician;
 import org.drools.solver.examples.manners2009.solver.move.SeatDesignationSwitchMove;
 
 /**
@@ -107,6 +108,15 @@ public class Manners2009Panel extends SolutionPanel {
         public void addSeatDesignation(SeatDesignation seatDesignation) {
             JButton button = new JButton(new SeatDesignationAction(seatDesignation));
             add(button);
+            add(new JLabel(seatDesignation.getGuest().getJob().getJobType().getCode() + ": " + seatDesignation.getGuest().getJob().getName(), SwingConstants.CENTER));
+            StringBuilder hobbyString = new StringBuilder();
+            for (HobbyPractician hobbyPractician : seatDesignation.getGuest().getHobbyPracticianList()) {
+                if (hobbyString.length() > 0) {
+                    hobbyString.append(", ");
+                }
+                hobbyString.append(hobbyPractician.getHobby().toString());
+            }
+            add(new JLabel(hobbyString.toString(), SwingConstants.CENTER));
         }
 
     }
@@ -116,7 +126,7 @@ public class Manners2009Panel extends SolutionPanel {
         private SeatDesignation seatDesignation;
 
         public SeatDesignationAction(SeatDesignation seatDesignation) {
-            super(seatDesignation.getGuest().toString());
+            super(seatDesignation.getGuest().getCode() + "(" + seatDesignation.getGuest().getGender().getCode() + ")");
             this.seatDesignation = seatDesignation;
         }
 
