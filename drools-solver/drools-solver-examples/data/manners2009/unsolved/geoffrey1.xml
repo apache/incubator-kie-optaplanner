@@ -1,0 +1,3631 @@
+<org.drools.solver.examples.manners2009.domain.Manners2009 id="1">
+  <id>0</id>
+  <jobList id="2">
+    <org.drools.solver.examples.manners2009.domain.Job id="3">
+      <id>16</id>
+      <jobType>SOCIALITE</jobType>
+      <name>Republican</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="4">
+      <id>13</id>
+      <jobType>PROGRAMMER</jobType>
+      <name>MacIntosh</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="5">
+      <id>15</id>
+      <jobType>PROGRAMMER</jobType>
+      <name>COBOL</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="6">
+      <id>11</id>
+      <jobType>TEACHER</jobType>
+      <name>Sports</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="7">
+      <id>14</id>
+      <jobType>PROGRAMMER</jobType>
+      <name>Windows</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="8">
+      <id>9</id>
+      <jobType>TEACHER</jobType>
+      <name>English</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="9">
+      <id>12</id>
+      <jobType>TEACHER</jobType>
+      <name>History</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="10">
+      <id>2</id>
+      <jobType>DOCTOR</jobType>
+      <name>Pediatrician</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="11">
+      <id>1</id>
+      <jobType>POLITICIAN</jobType>
+      <name>Republican</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="12">
+      <id>8</id>
+      <jobType>TEACHER</jobType>
+      <name>Math</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="13">
+      <id>10</id>
+      <jobType>TEACHER</jobType>
+      <name>Science</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="14">
+      <id>6</id>
+      <jobType>SPORTS_STAR</jobType>
+      <name>Football</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="15">
+      <id>5</id>
+      <jobType>SPORTS_STAR</jobType>
+      <name>Basketball</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="16">
+      <id>17</id>
+      <jobType>SOCIALITE</jobType>
+      <name>Democrat</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="17">
+      <id>4</id>
+      <jobType>DOCTOR</jobType>
+      <name>Osteopath</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="18">
+      <id>0</id>
+      <jobType>POLITICIAN</jobType>
+      <name>Democrat</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="19">
+      <id>7</id>
+      <jobType>SPORTS_STAR</jobType>
+      <name>Baseball</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+    <org.drools.solver.examples.manners2009.domain.Job id="20">
+      <id>3</id>
+      <jobType>DOCTOR</jobType>
+      <name>Surgeon</name>
+    </org.drools.solver.examples.manners2009.domain.Job>
+  </jobList>
+  <guestList id="21">
+    <org.drools.solver.examples.manners2009.domain.Guest id="22">
+      <id>0</id>
+      <code>1</code>
+      <job reference="18"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="23">
+      <id>1</id>
+      <code>2</code>
+      <job reference="18"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="24">
+      <id>2</id>
+      <code>3</code>
+      <job reference="18"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="25">
+      <id>3</id>
+      <code>4</code>
+      <job reference="18"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="26">
+      <id>4</id>
+      <code>5</code>
+      <job reference="18"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="27">
+      <id>5</id>
+      <code>6</code>
+      <job reference="18"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="28">
+      <id>6</id>
+      <code>7</code>
+      <job reference="18"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="29">
+      <id>7</id>
+      <code>8</code>
+      <job reference="18"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="30">
+      <id>8</id>
+      <code>9</code>
+      <job reference="18"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="31">
+      <id>9</id>
+      <code>10</code>
+      <job reference="18"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="32">
+      <id>10</id>
+      <code>11</code>
+      <job reference="18"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="33">
+      <id>11</id>
+      <code>12</code>
+      <job reference="18"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="34">
+      <id>12</id>
+      <code>13</code>
+      <job reference="11"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="35">
+      <id>13</id>
+      <code>14</code>
+      <job reference="11"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="36">
+      <id>14</id>
+      <code>15</code>
+      <job reference="11"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="37">
+      <id>15</id>
+      <code>16</code>
+      <job reference="11"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="38">
+      <id>16</id>
+      <code>17</code>
+      <job reference="11"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="39">
+      <id>17</id>
+      <code>18</code>
+      <job reference="11"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="40">
+      <id>18</id>
+      <code>19</code>
+      <job reference="11"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="41">
+      <id>19</id>
+      <code>20</code>
+      <job reference="11"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="42">
+      <id>20</id>
+      <code>21</code>
+      <job reference="11"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="43">
+      <id>21</id>
+      <code>22</code>
+      <job reference="11"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="44">
+      <id>22</id>
+      <code>23</code>
+      <job reference="11"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="45">
+      <id>23</id>
+      <code>24</code>
+      <job reference="11"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="46">
+      <id>24</id>
+      <code>25</code>
+      <job reference="10"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="47">
+      <id>25</id>
+      <code>26</code>
+      <job reference="10"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="48">
+      <id>26</id>
+      <code>27</code>
+      <job reference="10"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="49">
+      <id>27</id>
+      <code>28</code>
+      <job reference="10"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="50">
+      <id>28</id>
+      <code>29</code>
+      <job reference="10"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="51">
+      <id>29</id>
+      <code>30</code>
+      <job reference="10"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="52">
+      <id>30</id>
+      <code>31</code>
+      <job reference="10"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="53">
+      <id>31</id>
+      <code>32</code>
+      <job reference="10"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="54">
+      <id>32</id>
+      <code>33</code>
+      <job reference="20"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="55">
+      <id>33</id>
+      <code>34</code>
+      <job reference="20"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="56">
+      <id>34</id>
+      <code>35</code>
+      <job reference="20"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="57">
+      <id>35</id>
+      <code>36</code>
+      <job reference="20"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="58">
+      <id>36</id>
+      <code>37</code>
+      <job reference="20"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="59">
+      <id>37</id>
+      <code>38</code>
+      <job reference="20"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="60">
+      <id>38</id>
+      <code>39</code>
+      <job reference="20"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="61">
+      <id>39</id>
+      <code>40</code>
+      <job reference="20"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="62">
+      <id>40</id>
+      <code>41</code>
+      <job reference="17"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="63">
+      <id>41</id>
+      <code>42</code>
+      <job reference="17"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="64">
+      <id>42</id>
+      <code>43</code>
+      <job reference="17"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="65">
+      <id>43</id>
+      <code>44</code>
+      <job reference="17"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="66">
+      <id>44</id>
+      <code>45</code>
+      <job reference="17"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="67">
+      <id>45</id>
+      <code>46</code>
+      <job reference="17"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="68">
+      <id>46</id>
+      <code>47</code>
+      <job reference="17"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="69">
+      <id>47</id>
+      <code>48</code>
+      <job reference="17"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="70">
+      <id>48</id>
+      <code>49</code>
+      <job reference="15"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="71">
+      <id>49</id>
+      <code>50</code>
+      <job reference="15"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="72">
+      <id>50</id>
+      <code>51</code>
+      <job reference="15"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="73">
+      <id>51</id>
+      <code>52</code>
+      <job reference="15"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="74">
+      <id>52</id>
+      <code>53</code>
+      <job reference="15"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="75">
+      <id>53</id>
+      <code>54</code>
+      <job reference="15"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="76">
+      <id>54</id>
+      <code>55</code>
+      <job reference="15"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="77">
+      <id>55</id>
+      <code>56</code>
+      <job reference="15"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="78">
+      <id>56</id>
+      <code>57</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="79">
+      <id>57</id>
+      <code>58</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="80">
+      <id>58</id>
+      <code>59</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="81">
+      <id>59</id>
+      <code>60</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="82">
+      <id>60</id>
+      <code>61</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="83">
+      <id>61</id>
+      <code>62</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="84">
+      <id>62</id>
+      <code>63</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="85">
+      <id>63</id>
+      <code>64</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="86">
+      <id>64</id>
+      <code>65</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="87">
+      <id>65</id>
+      <code>66</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="88">
+      <id>66</id>
+      <code>67</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="89">
+      <id>67</id>
+      <code>68</code>
+      <job reference="14"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="90">
+      <id>68</id>
+      <code>69</code>
+      <job reference="19"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="91">
+      <id>69</id>
+      <code>70</code>
+      <job reference="19"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="92">
+      <id>70</id>
+      <code>71</code>
+      <job reference="19"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="93">
+      <id>71</id>
+      <code>72</code>
+      <job reference="19"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="94">
+      <id>72</id>
+      <code>73</code>
+      <job reference="12"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="95">
+      <id>73</id>
+      <code>74</code>
+      <job reference="12"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="96">
+      <id>74</id>
+      <code>75</code>
+      <job reference="12"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="97">
+      <id>75</id>
+      <code>76</code>
+      <job reference="12"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="98">
+      <id>76</id>
+      <code>77</code>
+      <job reference="12"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="99">
+      <id>77</id>
+      <code>78</code>
+      <job reference="12"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="100">
+      <id>78</id>
+      <code>79</code>
+      <job reference="12"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="101">
+      <id>79</id>
+      <code>80</code>
+      <job reference="12"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="102">
+      <id>80</id>
+      <code>81</code>
+      <job reference="8"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="103">
+      <id>81</id>
+      <code>82</code>
+      <job reference="8"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="104">
+      <id>82</id>
+      <code>83</code>
+      <job reference="8"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="105">
+      <id>83</id>
+      <code>84</code>
+      <job reference="8"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="106">
+      <id>84</id>
+      <code>85</code>
+      <job reference="13"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="107">
+      <id>85</id>
+      <code>86</code>
+      <job reference="13"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="108">
+      <id>86</id>
+      <code>87</code>
+      <job reference="13"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="109">
+      <id>87</id>
+      <code>88</code>
+      <job reference="13"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="110">
+      <id>88</id>
+      <code>89</code>
+      <job reference="6"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="111">
+      <id>89</id>
+      <code>90</code>
+      <job reference="6"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="112">
+      <id>90</id>
+      <code>91</code>
+      <job reference="6"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="113">
+      <id>91</id>
+      <code>92</code>
+      <job reference="6"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="114">
+      <id>92</id>
+      <code>93</code>
+      <job reference="9"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="115">
+      <id>93</id>
+      <code>94</code>
+      <job reference="9"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="116">
+      <id>94</id>
+      <code>95</code>
+      <job reference="9"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="117">
+      <id>95</id>
+      <code>96</code>
+      <job reference="9"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="118">
+      <id>96</id>
+      <code>97</code>
+      <job reference="4"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="119">
+      <id>97</id>
+      <code>98</code>
+      <job reference="4"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="120">
+      <id>98</id>
+      <code>99</code>
+      <job reference="4"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="121">
+      <id>99</id>
+      <code>100</code>
+      <job reference="4"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="122">
+      <id>100</id>
+      <code>101</code>
+      <job reference="4"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="123">
+      <id>101</id>
+      <code>102</code>
+      <job reference="4"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="124">
+      <id>102</id>
+      <code>103</code>
+      <job reference="4"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="125">
+      <id>103</id>
+      <code>104</code>
+      <job reference="4"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="126">
+      <id>104</id>
+      <code>105</code>
+      <job reference="7"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="127">
+      <id>105</id>
+      <code>106</code>
+      <job reference="7"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="128">
+      <id>106</id>
+      <code>107</code>
+      <job reference="7"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="129">
+      <id>107</id>
+      <code>108</code>
+      <job reference="7"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="130">
+      <id>108</id>
+      <code>109</code>
+      <job reference="7"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="131">
+      <id>109</id>
+      <code>110</code>
+      <job reference="7"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="132">
+      <id>110</id>
+      <code>111</code>
+      <job reference="7"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="133">
+      <id>111</id>
+      <code>112</code>
+      <job reference="7"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="134">
+      <id>112</id>
+      <code>113</code>
+      <job reference="5"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="135">
+      <id>113</id>
+      <code>114</code>
+      <job reference="5"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="136">
+      <id>114</id>
+      <code>115</code>
+      <job reference="5"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="137">
+      <id>115</id>
+      <code>116</code>
+      <job reference="5"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="138">
+      <id>116</id>
+      <code>117</code>
+      <job reference="5"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="139">
+      <id>117</id>
+      <code>118</code>
+      <job reference="5"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="140">
+      <id>118</id>
+      <code>119</code>
+      <job reference="5"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="141">
+      <id>119</id>
+      <code>120</code>
+      <job reference="5"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="142">
+      <id>120</id>
+      <code>121</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="143">
+      <id>121</id>
+      <code>122</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="144">
+      <id>122</id>
+      <code>123</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="145">
+      <id>123</id>
+      <code>124</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="146">
+      <id>124</id>
+      <code>125</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="147">
+      <id>125</id>
+      <code>126</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="148">
+      <id>126</id>
+      <code>127</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="149">
+      <id>127</id>
+      <code>128</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="150">
+      <id>128</id>
+      <code>129</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="151">
+      <id>129</id>
+      <code>130</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="152">
+      <id>130</id>
+      <code>131</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="153">
+      <id>131</id>
+      <code>132</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="154">
+      <id>132</id>
+      <code>133</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="155">
+      <id>133</id>
+      <code>134</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="156">
+      <id>134</id>
+      <code>135</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="157">
+      <id>135</id>
+      <code>136</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="158">
+      <id>136</id>
+      <code>137</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="159">
+      <id>137</id>
+      <code>138</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="160">
+      <id>138</id>
+      <code>139</code>
+      <job reference="3"/>
+      <gender>MALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="161">
+      <id>139</id>
+      <code>140</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="162">
+      <id>140</id>
+      <code>141</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="163">
+      <id>141</id>
+      <code>142</code>
+      <job reference="3"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="164">
+      <id>142</id>
+      <code>143</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+    <org.drools.solver.examples.manners2009.domain.Guest id="165">
+      <id>143</id>
+      <code>144</code>
+      <job reference="16"/>
+      <gender>FEMALE</gender>
+    </org.drools.solver.examples.manners2009.domain.Guest>
+  </guestList>
+  <hobbyPracticianList id="166">
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="167">
+      <id>0</id>
+      <guest reference="22"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="168">
+      <id>1</id>
+      <guest reference="23"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="169">
+      <id>2</id>
+      <guest reference="23"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="170">
+      <id>3</id>
+      <guest reference="24"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="171">
+      <id>4</id>
+      <guest reference="24"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="172">
+      <id>5</id>
+      <guest reference="24"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="173">
+      <id>6</id>
+      <guest reference="25"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="174">
+      <id>7</id>
+      <guest reference="26"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="175">
+      <id>8</id>
+      <guest reference="26"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="176">
+      <id>9</id>
+      <guest reference="27"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="177">
+      <id>10</id>
+      <guest reference="27"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="178">
+      <id>11</id>
+      <guest reference="27"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="179">
+      <id>12</id>
+      <guest reference="28"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="180">
+      <id>13</id>
+      <guest reference="29"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="181">
+      <id>14</id>
+      <guest reference="29"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="182">
+      <id>15</id>
+      <guest reference="30"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="183">
+      <id>16</id>
+      <guest reference="30"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="184">
+      <id>17</id>
+      <guest reference="30"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="185">
+      <id>18</id>
+      <guest reference="31"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="186">
+      <id>19</id>
+      <guest reference="32"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="187">
+      <id>20</id>
+      <guest reference="32"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="188">
+      <id>21</id>
+      <guest reference="33"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="189">
+      <id>22</id>
+      <guest reference="33"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="190">
+      <id>23</id>
+      <guest reference="33"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="191">
+      <id>24</id>
+      <guest reference="34"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="192">
+      <id>25</id>
+      <guest reference="35"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="193">
+      <id>26</id>
+      <guest reference="35"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="194">
+      <id>27</id>
+      <guest reference="36"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="195">
+      <id>28</id>
+      <guest reference="36"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="196">
+      <id>29</id>
+      <guest reference="36"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="197">
+      <id>30</id>
+      <guest reference="37"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="198">
+      <id>31</id>
+      <guest reference="38"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="199">
+      <id>32</id>
+      <guest reference="38"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="200">
+      <id>33</id>
+      <guest reference="39"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="201">
+      <id>34</id>
+      <guest reference="39"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="202">
+      <id>35</id>
+      <guest reference="39"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="203">
+      <id>36</id>
+      <guest reference="40"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="204">
+      <id>37</id>
+      <guest reference="41"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="205">
+      <id>38</id>
+      <guest reference="41"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="206">
+      <id>39</id>
+      <guest reference="42"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="207">
+      <id>40</id>
+      <guest reference="42"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="208">
+      <id>41</id>
+      <guest reference="42"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="209">
+      <id>42</id>
+      <guest reference="43"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="210">
+      <id>43</id>
+      <guest reference="44"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="211">
+      <id>44</id>
+      <guest reference="44"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="212">
+      <id>45</id>
+      <guest reference="45"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="213">
+      <id>46</id>
+      <guest reference="45"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="214">
+      <id>47</id>
+      <guest reference="45"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="215">
+      <id>48</id>
+      <guest reference="46"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="216">
+      <id>49</id>
+      <guest reference="47"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="217">
+      <id>50</id>
+      <guest reference="47"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="218">
+      <id>51</id>
+      <guest reference="48"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="219">
+      <id>52</id>
+      <guest reference="48"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="220">
+      <id>53</id>
+      <guest reference="48"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="221">
+      <id>54</id>
+      <guest reference="49"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="222">
+      <id>55</id>
+      <guest reference="50"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="223">
+      <id>56</id>
+      <guest reference="50"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="224">
+      <id>57</id>
+      <guest reference="51"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="225">
+      <id>58</id>
+      <guest reference="51"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="226">
+      <id>59</id>
+      <guest reference="51"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="227">
+      <id>60</id>
+      <guest reference="52"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="228">
+      <id>61</id>
+      <guest reference="53"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="229">
+      <id>62</id>
+      <guest reference="53"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="230">
+      <id>63</id>
+      <guest reference="54"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="231">
+      <id>64</id>
+      <guest reference="54"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="232">
+      <id>65</id>
+      <guest reference="54"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="233">
+      <id>66</id>
+      <guest reference="55"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="234">
+      <id>67</id>
+      <guest reference="56"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="235">
+      <id>68</id>
+      <guest reference="56"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="236">
+      <id>69</id>
+      <guest reference="57"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="237">
+      <id>70</id>
+      <guest reference="57"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="238">
+      <id>71</id>
+      <guest reference="57"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="239">
+      <id>72</id>
+      <guest reference="58"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="240">
+      <id>73</id>
+      <guest reference="59"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="241">
+      <id>74</id>
+      <guest reference="59"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="242">
+      <id>75</id>
+      <guest reference="60"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="243">
+      <id>76</id>
+      <guest reference="60"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="244">
+      <id>77</id>
+      <guest reference="60"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="245">
+      <id>78</id>
+      <guest reference="61"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="246">
+      <id>79</id>
+      <guest reference="62"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="247">
+      <id>80</id>
+      <guest reference="62"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="248">
+      <id>81</id>
+      <guest reference="63"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="249">
+      <id>82</id>
+      <guest reference="63"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="250">
+      <id>83</id>
+      <guest reference="63"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="251">
+      <id>84</id>
+      <guest reference="64"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="252">
+      <id>85</id>
+      <guest reference="65"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="253">
+      <id>86</id>
+      <guest reference="65"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="254">
+      <id>87</id>
+      <guest reference="66"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="255">
+      <id>88</id>
+      <guest reference="66"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="256">
+      <id>89</id>
+      <guest reference="66"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="257">
+      <id>90</id>
+      <guest reference="67"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="258">
+      <id>91</id>
+      <guest reference="68"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="259">
+      <id>92</id>
+      <guest reference="68"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="260">
+      <id>93</id>
+      <guest reference="69"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="261">
+      <id>94</id>
+      <guest reference="69"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="262">
+      <id>95</id>
+      <guest reference="69"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="263">
+      <id>96</id>
+      <guest reference="70"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="264">
+      <id>97</id>
+      <guest reference="71"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="265">
+      <id>98</id>
+      <guest reference="71"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="266">
+      <id>99</id>
+      <guest reference="72"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="267">
+      <id>100</id>
+      <guest reference="72"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="268">
+      <id>101</id>
+      <guest reference="72"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="269">
+      <id>102</id>
+      <guest reference="73"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="270">
+      <id>103</id>
+      <guest reference="74"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="271">
+      <id>104</id>
+      <guest reference="74"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="272">
+      <id>105</id>
+      <guest reference="75"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="273">
+      <id>106</id>
+      <guest reference="75"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="274">
+      <id>107</id>
+      <guest reference="75"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="275">
+      <id>108</id>
+      <guest reference="76"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="276">
+      <id>109</id>
+      <guest reference="77"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="277">
+      <id>110</id>
+      <guest reference="77"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="278">
+      <id>111</id>
+      <guest reference="78"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="279">
+      <id>112</id>
+      <guest reference="78"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="280">
+      <id>113</id>
+      <guest reference="78"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="281">
+      <id>114</id>
+      <guest reference="79"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="282">
+      <id>115</id>
+      <guest reference="80"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="283">
+      <id>116</id>
+      <guest reference="80"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="284">
+      <id>117</id>
+      <guest reference="81"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="285">
+      <id>118</id>
+      <guest reference="81"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="286">
+      <id>119</id>
+      <guest reference="81"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="287">
+      <id>120</id>
+      <guest reference="82"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="288">
+      <id>121</id>
+      <guest reference="83"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="289">
+      <id>122</id>
+      <guest reference="83"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="290">
+      <id>123</id>
+      <guest reference="84"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="291">
+      <id>124</id>
+      <guest reference="84"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="292">
+      <id>125</id>
+      <guest reference="84"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="293">
+      <id>126</id>
+      <guest reference="85"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="294">
+      <id>127</id>
+      <guest reference="86"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="295">
+      <id>128</id>
+      <guest reference="86"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="296">
+      <id>129</id>
+      <guest reference="87"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="297">
+      <id>130</id>
+      <guest reference="87"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="298">
+      <id>131</id>
+      <guest reference="87"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="299">
+      <id>132</id>
+      <guest reference="88"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="300">
+      <id>133</id>
+      <guest reference="89"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="301">
+      <id>134</id>
+      <guest reference="89"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="302">
+      <id>135</id>
+      <guest reference="90"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="303">
+      <id>136</id>
+      <guest reference="90"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="304">
+      <id>137</id>
+      <guest reference="90"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="305">
+      <id>138</id>
+      <guest reference="91"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="306">
+      <id>139</id>
+      <guest reference="92"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="307">
+      <id>140</id>
+      <guest reference="92"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="308">
+      <id>141</id>
+      <guest reference="93"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="309">
+      <id>142</id>
+      <guest reference="93"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="310">
+      <id>143</id>
+      <guest reference="93"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="311">
+      <id>144</id>
+      <guest reference="94"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="312">
+      <id>145</id>
+      <guest reference="95"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="313">
+      <id>146</id>
+      <guest reference="95"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="314">
+      <id>147</id>
+      <guest reference="96"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="315">
+      <id>148</id>
+      <guest reference="96"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="316">
+      <id>149</id>
+      <guest reference="96"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="317">
+      <id>150</id>
+      <guest reference="97"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="318">
+      <id>151</id>
+      <guest reference="98"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="319">
+      <id>152</id>
+      <guest reference="98"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="320">
+      <id>153</id>
+      <guest reference="99"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="321">
+      <id>154</id>
+      <guest reference="99"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="322">
+      <id>155</id>
+      <guest reference="99"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="323">
+      <id>156</id>
+      <guest reference="100"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="324">
+      <id>157</id>
+      <guest reference="101"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="325">
+      <id>158</id>
+      <guest reference="101"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="326">
+      <id>159</id>
+      <guest reference="102"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="327">
+      <id>160</id>
+      <guest reference="102"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="328">
+      <id>161</id>
+      <guest reference="102"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="329">
+      <id>162</id>
+      <guest reference="103"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="330">
+      <id>163</id>
+      <guest reference="104"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="331">
+      <id>164</id>
+      <guest reference="104"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="332">
+      <id>165</id>
+      <guest reference="105"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="333">
+      <id>166</id>
+      <guest reference="105"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="334">
+      <id>167</id>
+      <guest reference="105"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="335">
+      <id>168</id>
+      <guest reference="106"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="336">
+      <id>169</id>
+      <guest reference="107"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="337">
+      <id>170</id>
+      <guest reference="107"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="338">
+      <id>171</id>
+      <guest reference="108"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="339">
+      <id>172</id>
+      <guest reference="108"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="340">
+      <id>173</id>
+      <guest reference="108"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="341">
+      <id>174</id>
+      <guest reference="109"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="342">
+      <id>175</id>
+      <guest reference="110"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="343">
+      <id>176</id>
+      <guest reference="110"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="344">
+      <id>177</id>
+      <guest reference="111"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="345">
+      <id>178</id>
+      <guest reference="111"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="346">
+      <id>179</id>
+      <guest reference="111"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="347">
+      <id>180</id>
+      <guest reference="112"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="348">
+      <id>181</id>
+      <guest reference="113"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="349">
+      <id>182</id>
+      <guest reference="113"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="350">
+      <id>183</id>
+      <guest reference="114"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="351">
+      <id>184</id>
+      <guest reference="114"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="352">
+      <id>185</id>
+      <guest reference="114"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="353">
+      <id>186</id>
+      <guest reference="115"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="354">
+      <id>187</id>
+      <guest reference="116"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="355">
+      <id>188</id>
+      <guest reference="116"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="356">
+      <id>189</id>
+      <guest reference="117"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="357">
+      <id>190</id>
+      <guest reference="117"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="358">
+      <id>191</id>
+      <guest reference="117"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="359">
+      <id>192</id>
+      <guest reference="118"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="360">
+      <id>193</id>
+      <guest reference="119"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="361">
+      <id>194</id>
+      <guest reference="119"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="362">
+      <id>195</id>
+      <guest reference="120"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="363">
+      <id>196</id>
+      <guest reference="120"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="364">
+      <id>197</id>
+      <guest reference="120"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="365">
+      <id>198</id>
+      <guest reference="121"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="366">
+      <id>199</id>
+      <guest reference="122"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="367">
+      <id>200</id>
+      <guest reference="122"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="368">
+      <id>201</id>
+      <guest reference="123"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="369">
+      <id>202</id>
+      <guest reference="123"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="370">
+      <id>203</id>
+      <guest reference="123"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="371">
+      <id>204</id>
+      <guest reference="124"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="372">
+      <id>205</id>
+      <guest reference="125"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="373">
+      <id>206</id>
+      <guest reference="125"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="374">
+      <id>207</id>
+      <guest reference="126"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="375">
+      <id>208</id>
+      <guest reference="126"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="376">
+      <id>209</id>
+      <guest reference="126"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="377">
+      <id>210</id>
+      <guest reference="127"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="378">
+      <id>211</id>
+      <guest reference="128"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="379">
+      <id>212</id>
+      <guest reference="128"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="380">
+      <id>213</id>
+      <guest reference="129"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="381">
+      <id>214</id>
+      <guest reference="129"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="382">
+      <id>215</id>
+      <guest reference="129"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="383">
+      <id>216</id>
+      <guest reference="130"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="384">
+      <id>217</id>
+      <guest reference="131"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="385">
+      <id>218</id>
+      <guest reference="131"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="386">
+      <id>219</id>
+      <guest reference="132"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="387">
+      <id>220</id>
+      <guest reference="132"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="388">
+      <id>221</id>
+      <guest reference="132"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="389">
+      <id>222</id>
+      <guest reference="133"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="390">
+      <id>223</id>
+      <guest reference="134"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="391">
+      <id>224</id>
+      <guest reference="134"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="392">
+      <id>225</id>
+      <guest reference="135"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="393">
+      <id>226</id>
+      <guest reference="135"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="394">
+      <id>227</id>
+      <guest reference="135"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="395">
+      <id>228</id>
+      <guest reference="136"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="396">
+      <id>229</id>
+      <guest reference="137"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="397">
+      <id>230</id>
+      <guest reference="137"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="398">
+      <id>231</id>
+      <guest reference="138"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="399">
+      <id>232</id>
+      <guest reference="138"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="400">
+      <id>233</id>
+      <guest reference="138"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="401">
+      <id>234</id>
+      <guest reference="139"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="402">
+      <id>235</id>
+      <guest reference="140"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="403">
+      <id>236</id>
+      <guest reference="140"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="404">
+      <id>237</id>
+      <guest reference="141"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="405">
+      <id>238</id>
+      <guest reference="141"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="406">
+      <id>239</id>
+      <guest reference="141"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="407">
+      <id>240</id>
+      <guest reference="142"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="408">
+      <id>241</id>
+      <guest reference="143"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="409">
+      <id>242</id>
+      <guest reference="143"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="410">
+      <id>243</id>
+      <guest reference="144"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="411">
+      <id>244</id>
+      <guest reference="144"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="412">
+      <id>245</id>
+      <guest reference="144"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="413">
+      <id>246</id>
+      <guest reference="145"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="414">
+      <id>247</id>
+      <guest reference="146"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="415">
+      <id>248</id>
+      <guest reference="146"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="416">
+      <id>249</id>
+      <guest reference="147"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="417">
+      <id>250</id>
+      <guest reference="147"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="418">
+      <id>251</id>
+      <guest reference="147"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="419">
+      <id>252</id>
+      <guest reference="148"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="420">
+      <id>253</id>
+      <guest reference="149"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="421">
+      <id>254</id>
+      <guest reference="149"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="422">
+      <id>255</id>
+      <guest reference="150"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="423">
+      <id>256</id>
+      <guest reference="150"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="424">
+      <id>257</id>
+      <guest reference="150"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="425">
+      <id>258</id>
+      <guest reference="151"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="426">
+      <id>259</id>
+      <guest reference="152"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="427">
+      <id>260</id>
+      <guest reference="152"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="428">
+      <id>261</id>
+      <guest reference="153"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="429">
+      <id>262</id>
+      <guest reference="153"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="430">
+      <id>263</id>
+      <guest reference="153"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="431">
+      <id>264</id>
+      <guest reference="154"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="432">
+      <id>265</id>
+      <guest reference="155"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="433">
+      <id>266</id>
+      <guest reference="155"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="434">
+      <id>267</id>
+      <guest reference="156"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="435">
+      <id>268</id>
+      <guest reference="156"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="436">
+      <id>269</id>
+      <guest reference="156"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="437">
+      <id>270</id>
+      <guest reference="157"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="438">
+      <id>271</id>
+      <guest reference="158"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="439">
+      <id>272</id>
+      <guest reference="158"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="440">
+      <id>273</id>
+      <guest reference="159"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="441">
+      <id>274</id>
+      <guest reference="159"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="442">
+      <id>275</id>
+      <guest reference="159"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="443">
+      <id>276</id>
+      <guest reference="160"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="444">
+      <id>277</id>
+      <guest reference="161"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="445">
+      <id>278</id>
+      <guest reference="161"/>
+      <hobby>GOLF</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="446">
+      <id>279</id>
+      <guest reference="162"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="447">
+      <id>280</id>
+      <guest reference="162"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="448">
+      <id>281</id>
+      <guest reference="162"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="449">
+      <id>282</id>
+      <guest reference="163"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="450">
+      <id>283</id>
+      <guest reference="164"/>
+      <hobby>CHESS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="451">
+      <id>284</id>
+      <guest reference="164"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="452">
+      <id>285</id>
+      <guest reference="165"/>
+      <hobby>TENNIS</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="453">
+      <id>286</id>
+      <guest reference="165"/>
+      <hobby>POKER</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+    <org.drools.solver.examples.manners2009.domain.HobbyPractician id="454">
+      <id>287</id>
+      <guest reference="165"/>
+      <hobby>MOTORCYCLES</hobby>
+    </org.drools.solver.examples.manners2009.domain.HobbyPractician>
+  </hobbyPracticianList>
+  <tableList id="455">
+    <org.drools.solver.examples.manners2009.domain.Table id="456">
+      <id>0</id>
+      <tableIndex>0</tableIndex>
+      <seatList id="457">
+        <org.drools.solver.examples.manners2009.domain.Seat id="458">
+          <id>0</id>
+          <table reference="456"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="459">
+            <id>11</id>
+            <table reference="456"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="460">
+              <id>10</id>
+              <table reference="456"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="461">
+                <id>9</id>
+                <table reference="456"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="462">
+                  <id>8</id>
+                  <table reference="456"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="463">
+                    <id>7</id>
+                    <table reference="456"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="464">
+                      <id>6</id>
+                      <table reference="456"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="465">
+                        <id>5</id>
+                        <table reference="456"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="466">
+                          <id>4</id>
+                          <table reference="456"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="467">
+                            <id>3</id>
+                            <table reference="456"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="468">
+                              <id>2</id>
+                              <table reference="456"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="469">
+                                <id>1</id>
+                                <table reference="456"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="458"/>
+                                <rightSeat reference="468"/>
+                              </leftSeat>
+                              <rightSeat reference="467"/>
+                            </leftSeat>
+                            <rightSeat reference="466"/>
+                          </leftSeat>
+                          <rightSeat reference="465"/>
+                        </leftSeat>
+                        <rightSeat reference="464"/>
+                      </leftSeat>
+                      <rightSeat reference="463"/>
+                    </leftSeat>
+                    <rightSeat reference="462"/>
+                  </leftSeat>
+                  <rightSeat reference="461"/>
+                </leftSeat>
+                <rightSeat reference="460"/>
+              </leftSeat>
+              <rightSeat reference="459"/>
+            </leftSeat>
+            <rightSeat reference="458"/>
+          </leftSeat>
+          <rightSeat reference="469"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="469"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="468"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="467"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="466"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="465"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="464"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="463"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="462"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="461"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="460"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="459"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="470">
+      <id>1</id>
+      <tableIndex>1</tableIndex>
+      <seatList id="471">
+        <org.drools.solver.examples.manners2009.domain.Seat id="472">
+          <id>12</id>
+          <table reference="470"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="473">
+            <id>23</id>
+            <table reference="470"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="474">
+              <id>22</id>
+              <table reference="470"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="475">
+                <id>21</id>
+                <table reference="470"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="476">
+                  <id>20</id>
+                  <table reference="470"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="477">
+                    <id>19</id>
+                    <table reference="470"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="478">
+                      <id>18</id>
+                      <table reference="470"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="479">
+                        <id>17</id>
+                        <table reference="470"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="480">
+                          <id>16</id>
+                          <table reference="470"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="481">
+                            <id>15</id>
+                            <table reference="470"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="482">
+                              <id>14</id>
+                              <table reference="470"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="483">
+                                <id>13</id>
+                                <table reference="470"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="472"/>
+                                <rightSeat reference="482"/>
+                              </leftSeat>
+                              <rightSeat reference="481"/>
+                            </leftSeat>
+                            <rightSeat reference="480"/>
+                          </leftSeat>
+                          <rightSeat reference="479"/>
+                        </leftSeat>
+                        <rightSeat reference="478"/>
+                      </leftSeat>
+                      <rightSeat reference="477"/>
+                    </leftSeat>
+                    <rightSeat reference="476"/>
+                  </leftSeat>
+                  <rightSeat reference="475"/>
+                </leftSeat>
+                <rightSeat reference="474"/>
+              </leftSeat>
+              <rightSeat reference="473"/>
+            </leftSeat>
+            <rightSeat reference="472"/>
+          </leftSeat>
+          <rightSeat reference="483"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="483"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="482"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="481"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="480"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="479"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="478"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="477"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="476"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="475"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="474"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="473"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="484">
+      <id>2</id>
+      <tableIndex>2</tableIndex>
+      <seatList id="485">
+        <org.drools.solver.examples.manners2009.domain.Seat id="486">
+          <id>24</id>
+          <table reference="484"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="487">
+            <id>35</id>
+            <table reference="484"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="488">
+              <id>34</id>
+              <table reference="484"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="489">
+                <id>33</id>
+                <table reference="484"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="490">
+                  <id>32</id>
+                  <table reference="484"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="491">
+                    <id>31</id>
+                    <table reference="484"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="492">
+                      <id>30</id>
+                      <table reference="484"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="493">
+                        <id>29</id>
+                        <table reference="484"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="494">
+                          <id>28</id>
+                          <table reference="484"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="495">
+                            <id>27</id>
+                            <table reference="484"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="496">
+                              <id>26</id>
+                              <table reference="484"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="497">
+                                <id>25</id>
+                                <table reference="484"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="486"/>
+                                <rightSeat reference="496"/>
+                              </leftSeat>
+                              <rightSeat reference="495"/>
+                            </leftSeat>
+                            <rightSeat reference="494"/>
+                          </leftSeat>
+                          <rightSeat reference="493"/>
+                        </leftSeat>
+                        <rightSeat reference="492"/>
+                      </leftSeat>
+                      <rightSeat reference="491"/>
+                    </leftSeat>
+                    <rightSeat reference="490"/>
+                  </leftSeat>
+                  <rightSeat reference="489"/>
+                </leftSeat>
+                <rightSeat reference="488"/>
+              </leftSeat>
+              <rightSeat reference="487"/>
+            </leftSeat>
+            <rightSeat reference="486"/>
+          </leftSeat>
+          <rightSeat reference="497"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="497"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="496"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="495"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="494"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="493"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="492"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="491"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="490"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="489"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="488"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="487"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="498">
+      <id>3</id>
+      <tableIndex>3</tableIndex>
+      <seatList id="499">
+        <org.drools.solver.examples.manners2009.domain.Seat id="500">
+          <id>36</id>
+          <table reference="498"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="501">
+            <id>47</id>
+            <table reference="498"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="502">
+              <id>46</id>
+              <table reference="498"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="503">
+                <id>45</id>
+                <table reference="498"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="504">
+                  <id>44</id>
+                  <table reference="498"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="505">
+                    <id>43</id>
+                    <table reference="498"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="506">
+                      <id>42</id>
+                      <table reference="498"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="507">
+                        <id>41</id>
+                        <table reference="498"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="508">
+                          <id>40</id>
+                          <table reference="498"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="509">
+                            <id>39</id>
+                            <table reference="498"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="510">
+                              <id>38</id>
+                              <table reference="498"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="511">
+                                <id>37</id>
+                                <table reference="498"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="500"/>
+                                <rightSeat reference="510"/>
+                              </leftSeat>
+                              <rightSeat reference="509"/>
+                            </leftSeat>
+                            <rightSeat reference="508"/>
+                          </leftSeat>
+                          <rightSeat reference="507"/>
+                        </leftSeat>
+                        <rightSeat reference="506"/>
+                      </leftSeat>
+                      <rightSeat reference="505"/>
+                    </leftSeat>
+                    <rightSeat reference="504"/>
+                  </leftSeat>
+                  <rightSeat reference="503"/>
+                </leftSeat>
+                <rightSeat reference="502"/>
+              </leftSeat>
+              <rightSeat reference="501"/>
+            </leftSeat>
+            <rightSeat reference="500"/>
+          </leftSeat>
+          <rightSeat reference="511"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="511"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="510"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="509"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="508"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="507"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="506"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="505"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="504"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="503"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="502"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="501"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="512">
+      <id>4</id>
+      <tableIndex>4</tableIndex>
+      <seatList id="513">
+        <org.drools.solver.examples.manners2009.domain.Seat id="514">
+          <id>48</id>
+          <table reference="512"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="515">
+            <id>59</id>
+            <table reference="512"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="516">
+              <id>58</id>
+              <table reference="512"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="517">
+                <id>57</id>
+                <table reference="512"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="518">
+                  <id>56</id>
+                  <table reference="512"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="519">
+                    <id>55</id>
+                    <table reference="512"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="520">
+                      <id>54</id>
+                      <table reference="512"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="521">
+                        <id>53</id>
+                        <table reference="512"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="522">
+                          <id>52</id>
+                          <table reference="512"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="523">
+                            <id>51</id>
+                            <table reference="512"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="524">
+                              <id>50</id>
+                              <table reference="512"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="525">
+                                <id>49</id>
+                                <table reference="512"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="514"/>
+                                <rightSeat reference="524"/>
+                              </leftSeat>
+                              <rightSeat reference="523"/>
+                            </leftSeat>
+                            <rightSeat reference="522"/>
+                          </leftSeat>
+                          <rightSeat reference="521"/>
+                        </leftSeat>
+                        <rightSeat reference="520"/>
+                      </leftSeat>
+                      <rightSeat reference="519"/>
+                    </leftSeat>
+                    <rightSeat reference="518"/>
+                  </leftSeat>
+                  <rightSeat reference="517"/>
+                </leftSeat>
+                <rightSeat reference="516"/>
+              </leftSeat>
+              <rightSeat reference="515"/>
+            </leftSeat>
+            <rightSeat reference="514"/>
+          </leftSeat>
+          <rightSeat reference="525"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="525"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="524"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="523"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="522"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="521"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="520"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="519"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="518"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="517"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="516"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="515"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="526">
+      <id>5</id>
+      <tableIndex>5</tableIndex>
+      <seatList id="527">
+        <org.drools.solver.examples.manners2009.domain.Seat id="528">
+          <id>60</id>
+          <table reference="526"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="529">
+            <id>71</id>
+            <table reference="526"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="530">
+              <id>70</id>
+              <table reference="526"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="531">
+                <id>69</id>
+                <table reference="526"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="532">
+                  <id>68</id>
+                  <table reference="526"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="533">
+                    <id>67</id>
+                    <table reference="526"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="534">
+                      <id>66</id>
+                      <table reference="526"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="535">
+                        <id>65</id>
+                        <table reference="526"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="536">
+                          <id>64</id>
+                          <table reference="526"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="537">
+                            <id>63</id>
+                            <table reference="526"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="538">
+                              <id>62</id>
+                              <table reference="526"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="539">
+                                <id>61</id>
+                                <table reference="526"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="528"/>
+                                <rightSeat reference="538"/>
+                              </leftSeat>
+                              <rightSeat reference="537"/>
+                            </leftSeat>
+                            <rightSeat reference="536"/>
+                          </leftSeat>
+                          <rightSeat reference="535"/>
+                        </leftSeat>
+                        <rightSeat reference="534"/>
+                      </leftSeat>
+                      <rightSeat reference="533"/>
+                    </leftSeat>
+                    <rightSeat reference="532"/>
+                  </leftSeat>
+                  <rightSeat reference="531"/>
+                </leftSeat>
+                <rightSeat reference="530"/>
+              </leftSeat>
+              <rightSeat reference="529"/>
+            </leftSeat>
+            <rightSeat reference="528"/>
+          </leftSeat>
+          <rightSeat reference="539"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="539"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="538"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="537"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="536"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="535"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="534"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="533"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="532"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="531"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="530"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="529"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="540">
+      <id>6</id>
+      <tableIndex>6</tableIndex>
+      <seatList id="541">
+        <org.drools.solver.examples.manners2009.domain.Seat id="542">
+          <id>72</id>
+          <table reference="540"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="543">
+            <id>83</id>
+            <table reference="540"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="544">
+              <id>82</id>
+              <table reference="540"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="545">
+                <id>81</id>
+                <table reference="540"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="546">
+                  <id>80</id>
+                  <table reference="540"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="547">
+                    <id>79</id>
+                    <table reference="540"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="548">
+                      <id>78</id>
+                      <table reference="540"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="549">
+                        <id>77</id>
+                        <table reference="540"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="550">
+                          <id>76</id>
+                          <table reference="540"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="551">
+                            <id>75</id>
+                            <table reference="540"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="552">
+                              <id>74</id>
+                              <table reference="540"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="553">
+                                <id>73</id>
+                                <table reference="540"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="542"/>
+                                <rightSeat reference="552"/>
+                              </leftSeat>
+                              <rightSeat reference="551"/>
+                            </leftSeat>
+                            <rightSeat reference="550"/>
+                          </leftSeat>
+                          <rightSeat reference="549"/>
+                        </leftSeat>
+                        <rightSeat reference="548"/>
+                      </leftSeat>
+                      <rightSeat reference="547"/>
+                    </leftSeat>
+                    <rightSeat reference="546"/>
+                  </leftSeat>
+                  <rightSeat reference="545"/>
+                </leftSeat>
+                <rightSeat reference="544"/>
+              </leftSeat>
+              <rightSeat reference="543"/>
+            </leftSeat>
+            <rightSeat reference="542"/>
+          </leftSeat>
+          <rightSeat reference="553"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="553"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="552"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="551"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="550"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="549"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="548"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="547"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="546"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="545"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="544"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="543"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="554">
+      <id>7</id>
+      <tableIndex>7</tableIndex>
+      <seatList id="555">
+        <org.drools.solver.examples.manners2009.domain.Seat id="556">
+          <id>84</id>
+          <table reference="554"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="557">
+            <id>95</id>
+            <table reference="554"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="558">
+              <id>94</id>
+              <table reference="554"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="559">
+                <id>93</id>
+                <table reference="554"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="560">
+                  <id>92</id>
+                  <table reference="554"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="561">
+                    <id>91</id>
+                    <table reference="554"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="562">
+                      <id>90</id>
+                      <table reference="554"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="563">
+                        <id>89</id>
+                        <table reference="554"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="564">
+                          <id>88</id>
+                          <table reference="554"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="565">
+                            <id>87</id>
+                            <table reference="554"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="566">
+                              <id>86</id>
+                              <table reference="554"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="567">
+                                <id>85</id>
+                                <table reference="554"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="556"/>
+                                <rightSeat reference="566"/>
+                              </leftSeat>
+                              <rightSeat reference="565"/>
+                            </leftSeat>
+                            <rightSeat reference="564"/>
+                          </leftSeat>
+                          <rightSeat reference="563"/>
+                        </leftSeat>
+                        <rightSeat reference="562"/>
+                      </leftSeat>
+                      <rightSeat reference="561"/>
+                    </leftSeat>
+                    <rightSeat reference="560"/>
+                  </leftSeat>
+                  <rightSeat reference="559"/>
+                </leftSeat>
+                <rightSeat reference="558"/>
+              </leftSeat>
+              <rightSeat reference="557"/>
+            </leftSeat>
+            <rightSeat reference="556"/>
+          </leftSeat>
+          <rightSeat reference="567"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="567"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="566"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="565"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="564"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="563"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="562"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="561"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="560"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="559"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="558"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="557"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="568">
+      <id>8</id>
+      <tableIndex>8</tableIndex>
+      <seatList id="569">
+        <org.drools.solver.examples.manners2009.domain.Seat id="570">
+          <id>96</id>
+          <table reference="568"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="571">
+            <id>107</id>
+            <table reference="568"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="572">
+              <id>106</id>
+              <table reference="568"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="573">
+                <id>105</id>
+                <table reference="568"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="574">
+                  <id>104</id>
+                  <table reference="568"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="575">
+                    <id>103</id>
+                    <table reference="568"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="576">
+                      <id>102</id>
+                      <table reference="568"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="577">
+                        <id>101</id>
+                        <table reference="568"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="578">
+                          <id>100</id>
+                          <table reference="568"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="579">
+                            <id>99</id>
+                            <table reference="568"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="580">
+                              <id>98</id>
+                              <table reference="568"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="581">
+                                <id>97</id>
+                                <table reference="568"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="570"/>
+                                <rightSeat reference="580"/>
+                              </leftSeat>
+                              <rightSeat reference="579"/>
+                            </leftSeat>
+                            <rightSeat reference="578"/>
+                          </leftSeat>
+                          <rightSeat reference="577"/>
+                        </leftSeat>
+                        <rightSeat reference="576"/>
+                      </leftSeat>
+                      <rightSeat reference="575"/>
+                    </leftSeat>
+                    <rightSeat reference="574"/>
+                  </leftSeat>
+                  <rightSeat reference="573"/>
+                </leftSeat>
+                <rightSeat reference="572"/>
+              </leftSeat>
+              <rightSeat reference="571"/>
+            </leftSeat>
+            <rightSeat reference="570"/>
+          </leftSeat>
+          <rightSeat reference="581"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="581"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="580"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="579"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="578"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="577"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="576"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="575"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="574"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="573"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="572"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="571"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="582">
+      <id>9</id>
+      <tableIndex>9</tableIndex>
+      <seatList id="583">
+        <org.drools.solver.examples.manners2009.domain.Seat id="584">
+          <id>108</id>
+          <table reference="582"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="585">
+            <id>119</id>
+            <table reference="582"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="586">
+              <id>118</id>
+              <table reference="582"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="587">
+                <id>117</id>
+                <table reference="582"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="588">
+                  <id>116</id>
+                  <table reference="582"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="589">
+                    <id>115</id>
+                    <table reference="582"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="590">
+                      <id>114</id>
+                      <table reference="582"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="591">
+                        <id>113</id>
+                        <table reference="582"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="592">
+                          <id>112</id>
+                          <table reference="582"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="593">
+                            <id>111</id>
+                            <table reference="582"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="594">
+                              <id>110</id>
+                              <table reference="582"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="595">
+                                <id>109</id>
+                                <table reference="582"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="584"/>
+                                <rightSeat reference="594"/>
+                              </leftSeat>
+                              <rightSeat reference="593"/>
+                            </leftSeat>
+                            <rightSeat reference="592"/>
+                          </leftSeat>
+                          <rightSeat reference="591"/>
+                        </leftSeat>
+                        <rightSeat reference="590"/>
+                      </leftSeat>
+                      <rightSeat reference="589"/>
+                    </leftSeat>
+                    <rightSeat reference="588"/>
+                  </leftSeat>
+                  <rightSeat reference="587"/>
+                </leftSeat>
+                <rightSeat reference="586"/>
+              </leftSeat>
+              <rightSeat reference="585"/>
+            </leftSeat>
+            <rightSeat reference="584"/>
+          </leftSeat>
+          <rightSeat reference="595"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="595"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="594"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="593"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="592"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="591"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="590"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="589"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="588"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="587"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="586"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="585"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="596">
+      <id>10</id>
+      <tableIndex>10</tableIndex>
+      <seatList id="597">
+        <org.drools.solver.examples.manners2009.domain.Seat id="598">
+          <id>120</id>
+          <table reference="596"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="599">
+            <id>131</id>
+            <table reference="596"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="600">
+              <id>130</id>
+              <table reference="596"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="601">
+                <id>129</id>
+                <table reference="596"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="602">
+                  <id>128</id>
+                  <table reference="596"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="603">
+                    <id>127</id>
+                    <table reference="596"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="604">
+                      <id>126</id>
+                      <table reference="596"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="605">
+                        <id>125</id>
+                        <table reference="596"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="606">
+                          <id>124</id>
+                          <table reference="596"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="607">
+                            <id>123</id>
+                            <table reference="596"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="608">
+                              <id>122</id>
+                              <table reference="596"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="609">
+                                <id>121</id>
+                                <table reference="596"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="598"/>
+                                <rightSeat reference="608"/>
+                              </leftSeat>
+                              <rightSeat reference="607"/>
+                            </leftSeat>
+                            <rightSeat reference="606"/>
+                          </leftSeat>
+                          <rightSeat reference="605"/>
+                        </leftSeat>
+                        <rightSeat reference="604"/>
+                      </leftSeat>
+                      <rightSeat reference="603"/>
+                    </leftSeat>
+                    <rightSeat reference="602"/>
+                  </leftSeat>
+                  <rightSeat reference="601"/>
+                </leftSeat>
+                <rightSeat reference="600"/>
+              </leftSeat>
+              <rightSeat reference="599"/>
+            </leftSeat>
+            <rightSeat reference="598"/>
+          </leftSeat>
+          <rightSeat reference="609"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="609"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="608"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="607"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="606"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="605"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="604"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="603"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="602"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="601"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="600"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="599"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+    <org.drools.solver.examples.manners2009.domain.Table id="610">
+      <id>11</id>
+      <tableIndex>11</tableIndex>
+      <seatList id="611">
+        <org.drools.solver.examples.manners2009.domain.Seat id="612">
+          <id>132</id>
+          <table reference="610"/>
+          <seatIndexInTable>0</seatIndexInTable>
+          <leftSeat id="613">
+            <id>143</id>
+            <table reference="610"/>
+            <seatIndexInTable>11</seatIndexInTable>
+            <leftSeat id="614">
+              <id>142</id>
+              <table reference="610"/>
+              <seatIndexInTable>10</seatIndexInTable>
+              <leftSeat id="615">
+                <id>141</id>
+                <table reference="610"/>
+                <seatIndexInTable>9</seatIndexInTable>
+                <leftSeat id="616">
+                  <id>140</id>
+                  <table reference="610"/>
+                  <seatIndexInTable>8</seatIndexInTable>
+                  <leftSeat id="617">
+                    <id>139</id>
+                    <table reference="610"/>
+                    <seatIndexInTable>7</seatIndexInTable>
+                    <leftSeat id="618">
+                      <id>138</id>
+                      <table reference="610"/>
+                      <seatIndexInTable>6</seatIndexInTable>
+                      <leftSeat id="619">
+                        <id>137</id>
+                        <table reference="610"/>
+                        <seatIndexInTable>5</seatIndexInTable>
+                        <leftSeat id="620">
+                          <id>136</id>
+                          <table reference="610"/>
+                          <seatIndexInTable>4</seatIndexInTable>
+                          <leftSeat id="621">
+                            <id>135</id>
+                            <table reference="610"/>
+                            <seatIndexInTable>3</seatIndexInTable>
+                            <leftSeat id="622">
+                              <id>134</id>
+                              <table reference="610"/>
+                              <seatIndexInTable>2</seatIndexInTable>
+                              <leftSeat id="623">
+                                <id>133</id>
+                                <table reference="610"/>
+                                <seatIndexInTable>1</seatIndexInTable>
+                                <leftSeat reference="612"/>
+                                <rightSeat reference="622"/>
+                              </leftSeat>
+                              <rightSeat reference="621"/>
+                            </leftSeat>
+                            <rightSeat reference="620"/>
+                          </leftSeat>
+                          <rightSeat reference="619"/>
+                        </leftSeat>
+                        <rightSeat reference="618"/>
+                      </leftSeat>
+                      <rightSeat reference="617"/>
+                    </leftSeat>
+                    <rightSeat reference="616"/>
+                  </leftSeat>
+                  <rightSeat reference="615"/>
+                </leftSeat>
+                <rightSeat reference="614"/>
+              </leftSeat>
+              <rightSeat reference="613"/>
+            </leftSeat>
+            <rightSeat reference="612"/>
+          </leftSeat>
+          <rightSeat reference="623"/>
+        </org.drools.solver.examples.manners2009.domain.Seat>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="623"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="622"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="621"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="620"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="619"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="618"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="617"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="616"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="615"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="614"/>
+        <org.drools.solver.examples.manners2009.domain.Seat reference="613"/>
+      </seatList>
+    </org.drools.solver.examples.manners2009.domain.Table>
+  </tableList>
+  <seatList id="624">
+    <org.drools.solver.examples.manners2009.domain.Seat reference="458"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="469"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="468"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="467"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="466"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="465"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="464"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="463"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="462"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="461"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="460"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="459"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="472"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="483"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="482"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="481"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="480"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="479"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="478"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="477"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="476"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="475"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="474"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="473"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="486"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="497"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="496"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="495"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="494"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="493"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="492"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="491"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="490"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="489"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="488"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="487"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="500"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="511"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="510"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="509"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="508"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="507"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="506"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="505"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="504"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="503"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="502"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="501"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="514"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="525"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="524"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="523"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="522"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="521"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="520"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="519"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="518"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="517"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="516"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="515"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="528"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="539"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="538"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="537"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="536"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="535"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="534"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="533"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="532"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="531"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="530"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="529"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="542"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="553"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="552"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="551"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="550"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="549"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="548"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="547"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="546"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="545"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="544"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="543"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="556"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="567"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="566"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="565"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="564"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="563"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="562"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="561"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="560"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="559"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="558"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="557"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="570"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="581"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="580"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="579"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="578"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="577"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="576"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="575"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="574"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="573"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="572"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="571"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="584"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="595"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="594"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="593"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="592"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="591"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="590"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="589"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="588"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="587"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="586"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="585"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="598"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="609"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="608"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="607"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="606"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="605"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="604"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="603"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="602"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="601"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="600"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="599"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="612"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="623"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="622"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="621"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="620"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="619"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="618"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="617"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="616"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="615"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="614"/>
+    <org.drools.solver.examples.manners2009.domain.Seat reference="613"/>
+  </seatList>
+</org.drools.solver.examples.manners2009.domain.Manners2009>
