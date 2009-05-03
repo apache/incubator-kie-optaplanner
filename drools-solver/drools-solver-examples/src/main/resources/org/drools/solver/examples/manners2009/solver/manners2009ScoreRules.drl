@@ -41,7 +41,7 @@ rule "twoSameJobTypePerTable"
         );
     then
         insertLogical(new UnweightedConstraintOccurrence("twoSameJobTypePerTable",
-                $table));
+                $jobType, $table));
 end
 
 // This is to avoid score traps. The score function should for example give an insentive
@@ -54,27 +54,26 @@ rule "atLeastOneJobTypePerTableScoreGuider"
         not SeatDesignation(guestJobType == $jobType, seatTable == $table);
     then
         insertLogical(new UnweightedConstraintOccurrence("tableWithoutJobTypeShouldBePunishedExtra",
-                $table, $jobType));
+                $jobType, $table));
 end
-
 
 
 // Each person must share a hobby with his/her left neighbour
 // (so also the same or another hobby with his/her right neighbour)
-//rule "leftHasHobbyInCommon"
-//    when
-//        $leftSeat : Seat();
-//        $rightSeat : Seat(leftSeat == $leftSeat);
-//        $leftDesignation : SeatDesignation($leftGuest : guest, seat == $leftSeat);
-//        $rightDesignation : SeatDesignation($rightGuest : guest, seat == $rightSeat);
-//        HobbyPractician(guest == $leftGuest, $leftHobby : hobby);
-//        not HobbyPractician(guest == $rightGuest, hobby == leftHobby);
-// TODO this is bugged because they have to have every hobby in common
-//    then
-//        insertLogical(new UnweightedConstraintOccurrence("leftOrRightHasHobbyInCommon",
-//                $leftDesignation, $rightDesignation));
-//end
-
+rule "leftHasHobbyInCommon"
+    when
+        $leftSeat : Seat();
+        $rightSeat : Seat(leftSeat == $leftSeat);
+        $leftDesignation : SeatDesignation($leftGuest : guest, seat == $leftSeat);
+        $rightDesignation : SeatDesignation($rightGuest : guest, seat == $rightSeat);
+        not (
+            HobbyPractician(guest == $leftGuest, $leftHobby : hobby)
+            and HobbyPractician(guest == $rightGuest, hobby == $leftHobby)
+        );
+    then
+        insertLogical(new UnweightedConstraintOccurrence("leftHasHobbyInCommon",
+                $leftDesignation, $rightDesignation));
+end
 
 rule "hardConstraintsBroken"
     when

@@ -6,8 +6,8 @@
     </scoreDefinition>
     <startingSolutionInitializerClass>org.drools.solver.examples.manners2009.solver.solution.initializer.Manners2009StartingSolutionInitializer</startingSolutionInitializerClass>
         <finish>
-        <finishCompositionStyle>OR</finishCompositionStyle>
-        <maximumMinutesSpend>1</maximumMinutesSpend>
+        <!--<finishCompositionStyle>OR</finishCompositionStyle>-->
+        <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->
         <feasableScore>0</feasableScore>
     </finish>
     <selector>
