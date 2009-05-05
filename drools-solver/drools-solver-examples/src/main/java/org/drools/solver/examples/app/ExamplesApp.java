@@ -7,6 +7,7 @@ import org.drools.solver.examples.lessonschedule.app.LessonScheduleApp;
 import org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp;
 import org.drools.solver.examples.itc2007.examination.app.ExaminationApp;
 import org.drools.solver.examples.itc2007.curriculumcourse.app.CurriculumCourseApp;
+import org.drools.solver.examples.manners2009.app.Manners2009App;
 
 /**
  * @author Geoffrey De Smet
@@ -19,7 +20,8 @@ public class ExamplesApp {
                 "LessonSchedule",
                 "TravelingTournament",
                 "ITC2007 Examination",
-                "ITC2007 CurriculumCourse"
+                "ITC2007 CurriculumCourse",
+                "Miss Manners 2009"
         };
         int choice = JOptionPane.showOptionDialog(null, "Which example do you want to see?", "Choose an example",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -38,6 +40,9 @@ public class ExamplesApp {
                 break;
             case 4 :
                 new CurriculumCourseApp().init();
+                break;
+            case 5 :
+                new Manners2009App().init();
                 break;
             default :
                 throw new IllegalArgumentException("Unknown example choice");
