@@ -200,7 +200,6 @@ public class WorkflowFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser(solutionBusiness.getSolvedDataDir());
-            fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
             fileChooser.setFileFilter(new FileFilter() {
                 public boolean accept(File file) {
                     return file.isDirectory() || file.getName().endsWith(".xml");
@@ -209,7 +208,7 @@ public class WorkflowFrame extends JFrame {
                     return "Solver xml files";
                 }
             });
-            int approved = fileChooser.showOpenDialog(WorkflowFrame.this);
+            int approved = fileChooser.showSaveDialog(WorkflowFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 solutionBusiness.save(fileChooser.getSelectedFile());
             }
