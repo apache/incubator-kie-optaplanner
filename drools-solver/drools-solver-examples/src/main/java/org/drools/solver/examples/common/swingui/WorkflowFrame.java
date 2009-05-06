@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.JProgressBar;
 import javax.swing.filechooser.FileFilter;
 
 import org.drools.solver.examples.common.business.SolutionBusiness;
@@ -37,7 +38,6 @@ public class WorkflowFrame extends JFrame {
     private SolutionBusiness solutionBusiness;
 
     private SolutionPanel solutionPanel;
-    private JLabel resultLabel;
     private ConstraintScoreMapDialog constraintScoreMapDialog;
 
     private List<Action> loadUnsolvedActionList;
@@ -45,6 +45,10 @@ public class WorkflowFrame extends JFrame {
     private Action cancelSolvingAction;
     private Action solveAction;
     private Action saveAction;
+    
+    private JProgressBar progressBar;
+    private JLabel resultLabel;
+    private ShowConstraintScoreMapDialogAction showConstraintScoreMapDialogAction;
 
     public WorkflowFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
         super("Drools solver example " + exampleName);
@@ -139,7 +143,7 @@ public class WorkflowFrame extends JFrame {
         return panel;
     }
 
-    private void setEnabledSolving(boolean solving) {
+    private void setSolvingState(boolean solving) {
         for (Action action : loadUnsolvedActionList) {
             action.setEnabled(!solving);
         }
@@ -150,6 +154,10 @@ public class WorkflowFrame extends JFrame {
         cancelSolvingAction.setEnabled(solving);
         saveAction.setEnabled(!solving);
         solutionPanel.setEnabled(!solving);
+        progressBar.setIndeterminate(solving);
+        progressBar.setStringPainted(solving);
+        progressBar.setString(solving ?  "Solving..." : null);
+        showConstraintScoreMapDialogAction.setEnabled(!solving);
     }
 
     private class SolveAction extends AbstractAction {
@@ -162,14 +170,14 @@ public class WorkflowFrame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent e) {
-            setEnabledSolving(true);
+            setSolvingState(true);
             // This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
             solvingExecutor.submit(new Runnable() {
                 public void run() {
                     solutionBusiness.solve();
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            setEnabledSolving(false);
+                            setSolvingState(false);
                             updateScreen();
                         }
                     });
@@ -218,11 +226,13 @@ public class WorkflowFrame extends JFrame {
 
     private JPanel createScorePanel() {
         JPanel panel = new JPanel(new BorderLayout());
+        progressBar = new JProgressBar(0, 100);
+        panel.add(progressBar, BorderLayout.WEST);
         resultLabel = new JLabel("No solution loaded yet");
         resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         panel.add(resultLabel, BorderLayout.CENTER);
-        JButton constraintScoreMapButton = new JButton(new ShowConstraintScoreMapDialogAction());
-
+        showConstraintScoreMapDialogAction = new ShowConstraintScoreMapDialogAction();
+        JButton constraintScoreMapButton = new JButton(showConstraintScoreMapDialogAction);
         panel.add(constraintScoreMapButton, BorderLayout.EAST);
         return panel;
     }
