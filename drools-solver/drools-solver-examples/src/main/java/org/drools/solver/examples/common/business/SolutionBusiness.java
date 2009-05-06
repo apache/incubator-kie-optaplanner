@@ -38,7 +38,8 @@ public class SolutionBusiness {
     private File unsolvedDataDir;
     private File solvedDataDir;
 
-    private Solver solver;
+    // volatile because the solve method doesn't come from the event thread (like every other method call)
+    private volatile Solver solver;
     private LocalSearchSolverScope localSearchSolverScope;
 
     public void setSolutionDao(SolutionDao solutionDao) {

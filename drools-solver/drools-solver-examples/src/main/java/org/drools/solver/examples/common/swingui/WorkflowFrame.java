@@ -5,6 +5,10 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -16,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import org.drools.solver.examples.common.business.SolutionBusiness;
@@ -34,22 +39,22 @@ public class WorkflowFrame extends JFrame {
     private SolutionPanel solutionPanel;
     private JLabel resultLabel;
     private ConstraintScoreMapDialog constraintScoreMapDialog;
+
+    private List<Action> loadUnsolvedActionList;
+    private List<Action> loadSolvedActionList;
     private Action cancelSolvingAction;
     private Action solveAction;
     private Action saveAction;
 
-    public WorkflowFrame(SolutionPanel solutionPanel, String exampleName) {
+    public WorkflowFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
         super("Drools solver example " + exampleName);
+        this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
+        solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setWorkflowFrame(this);
         constraintScoreMapDialog = new ConstraintScoreMapDialog(this);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    public void setSolutionBusiness(SolutionBusiness solutionBusiness) {
-        this.solutionBusiness = solutionBusiness;
-        solutionPanel.setSolutionBusiness(solutionBusiness);
         constraintScoreMapDialog.setSolutionBusiness(solutionBusiness);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void init() {
@@ -75,10 +80,12 @@ public class WorkflowFrame extends JFrame {
     }
 
     private JComponent createLoadUnsolvedPanel() {
+        loadUnsolvedActionList = new ArrayList<Action>();
         JPanel panel = new JPanel(new GridLayout(0, 1));
         for (File file : solutionBusiness.getUnsolvedFileList()) {
-            Action action = new LoadAction(file);
-            panel.add(new JButton(action));
+            Action loadUnsolvedAction = new LoadAction(file);
+            loadUnsolvedActionList.add(loadUnsolvedAction);
+            panel.add(new JButton(loadUnsolvedAction));
         }
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(25);
@@ -87,10 +94,12 @@ public class WorkflowFrame extends JFrame {
     }
 
     private JComponent createLoadSolvedPanel() {
+        loadSolvedActionList = new ArrayList<Action>();
         JPanel panel = new JPanel(new GridLayout(0, 1));
         for (File file : solutionBusiness.getSolvedFileList()) {
-            Action action = new LoadAction(file);
-            panel.add(new JButton(action));
+            Action loadSolvedAction = new LoadAction(file);
+            loadSolvedActionList.add(loadSolvedAction);
+            panel.add(new JButton(loadSolvedAction));
         }
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(25);
@@ -130,17 +139,42 @@ public class WorkflowFrame extends JFrame {
         return panel;
     }
 
+    private void setEnabledSolving(boolean solving) {
+        for (Action action : loadUnsolvedActionList) {
+            action.setEnabled(!solving);
+        }
+        for (Action action : loadSolvedActionList) {
+            action.setEnabled(!solving);
+        }
+        solveAction.setEnabled(!solving);
+        cancelSolvingAction.setEnabled(solving);
+        saveAction.setEnabled(!solving);
+        solutionPanel.setEnabled(!solving);
+    }
+
     private class SolveAction extends AbstractAction {
+        
+        // This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
+        private ExecutorService solvingExecutor = Executors.newFixedThreadPool(1);
 
         public SolveAction() {
             super("Solve!");
         }
 
         public void actionPerformed(ActionEvent e) {
-            cancelSolvingAction.setEnabled(true);
-            solutionBusiness.solve();
-            cancelSolvingAction.setEnabled(false);
-            updateScreen();
+            setEnabledSolving(true);
+            // This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
+            solvingExecutor.submit(new Runnable() {
+                public void run() {
+                    solutionBusiness.solve();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            setEnabledSolving(false);
+                            updateScreen();
+                        }
+                    });
+                }
+            });
         }
 
     }
@@ -148,7 +182,7 @@ public class WorkflowFrame extends JFrame {
     private class CancelSolvingAction extends AbstractAction {
 
         public CancelSolvingAction() {
-            super("Cancel solving (coming soon)");
+            super("Cancel solving");
         }
 
         public void actionPerformed(ActionEvent e) {

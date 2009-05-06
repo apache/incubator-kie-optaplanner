@@ -17,12 +17,11 @@ public abstract class CommonApp extends LoggingMain {
     private WorkflowFrame workflowFrame;
 
     public CommonApp() {
-        workflowFrame = new WorkflowFrame(createSolutionPanel(), getExampleDirName());
-        workflowFrame.setSolutionBusiness(createSolutionBusiness());
-        workflowFrame.init();
+        workflowFrame = new WorkflowFrame(createSolutionBusiness(), createSolutionPanel(), getExampleDirName());
     }
 
     public void init() {
+        workflowFrame.init();
         workflowFrame.setVisible(true);
     }
 
