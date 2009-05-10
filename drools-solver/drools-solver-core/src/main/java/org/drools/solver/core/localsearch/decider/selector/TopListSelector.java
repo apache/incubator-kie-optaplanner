@@ -36,7 +36,7 @@ public class TopListSelector extends AbstractSelector {
 
     @Override
     public void stepTaken(StepScope stepScope) {
-        // TODO FIXME: it shouldn't know DefaultLocalSearchSolver that intemitly
+        // TODO FIXME: it shouldn't know DefaultLocalSearchSolver that intimitly
         topList = ((DefaultLocalSearchSolver) localSearchSolver).getDecider().getForager().getTopList(topSize);
     }
 
