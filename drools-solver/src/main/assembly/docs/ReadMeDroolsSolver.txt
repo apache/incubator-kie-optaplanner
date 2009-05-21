@@ -1,11 +1,11 @@
 Welcome to drools-solver
 ========================
 
-State
------
+Introduction
+------------
 
-Drools Solver is still in an beta state: backward incompatible changes may occur in the next version,
-but an upgrade recipe will make it easy to upgrade your code to that version.
+Drools Solver is in a beta state: backward incompatible changes may occur in the next version,
+but the upgrade recipe makes it easy to upgrade your code to every new version.
 
 Run the examples
 ----------------
@@ -32,3 +32,8 @@ Using drools-solver otherwise
 
 The drools-solver jars are located in the lib directory.
 To use drools-solver, you need all the jars except the drools-solver-examples jar.
+
+Reference manual
+----------------
+
+Take a look at the online reference manual!
