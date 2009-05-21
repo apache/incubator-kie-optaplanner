@@ -14,7 +14,8 @@
     <packaging>pom</packaging>
     <name>Drools :: Solver parent</name>
     <description>
-        Drools solver parent pom ... TODO
+        Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
+        This is the drools-solver parent pom.
     </description>
 
     <build>

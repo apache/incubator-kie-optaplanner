@@ -13,7 +13,8 @@
     <packaging>jar</packaging>
     <name>Drools :: Solver examples</name>
     <description>
-        Drools solver examples ... TODO
+        Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
+        This is the drools-solver-examples module which contains the examples which show how to use drools-solver.
     </description>
 
     <build>

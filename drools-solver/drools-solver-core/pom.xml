@@ -13,7 +13,8 @@
     <packaging>jar</packaging>
     <name>Drools :: Solver core</name>
     <description>
-        Drools solver core ... TODO
+        Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
+        This is the drools-solver-core module which contains the search algorithms.
     </description>
 
     <dependencies>
