@@ -34,16 +34,17 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <configuration>
+                        <classpathScope>runtime</classpathScope>                        
                         <executable>${JAVA_HOME}/bin/java</executable>
                         <arguments>
-                            <argument>-Xmx128M</argument>
-                            <!--<argument>-Xbatch</argument>-->
+                            <argument>-Xms256m</argument>
+                            <argument>-Xmx512m</argument>
                             <argument>-server</argument>
                             <argument>-classpath</argument>
                             <classpath/>
                             <argument>${exec.mainClass}</argument>
+                            <!-- Program arguments can be set at mvn exec:exec -->
                             <argument>${exec.programArgs}</argument>
-                            <!-- Empty string by default -->
                         </arguments>
                     </configuration>
                 </plugin>

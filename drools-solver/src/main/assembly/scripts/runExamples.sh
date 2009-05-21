@@ -14,4 +14,4 @@ echo
 echo "Starting examples app..."
 
 # -Xmx128M or less works too, but it might be slower
-$JAVA_HOME/bin/java -server -Xmx256M -cp ${mainJar} ${mainClass} $*
+$JAVA_HOME/bin/java -Xms256m -Xmx512m -server -cp ${mainJar} ${mainClass} $*
