@@ -21,7 +21,7 @@ public class AcceptedForager extends AbstractForager {
     // final to allow better hotspot optimization. TODO prove that it indeed makes a difference
     protected final PickEarlyByScore pickEarlyByScore;
     protected final boolean pickEarlyRandomly;
-    protected final AcceptedMoveScopeComparator acceptionComparator;
+    protected final AcceptedMoveScopeComparator acceptedMoveScopeComparator;
 
     protected List<MoveScope> acceptedList;
     protected boolean listSorted;
@@ -39,10 +39,10 @@ public class AcceptedForager extends AbstractForager {
     }
 
     public AcceptedForager(PickEarlyByScore pickEarlyByScore, boolean pickEarlyRandomly,
-            AcceptedMoveScopeComparator acceptionComparator) {
+            AcceptedMoveScopeComparator acceptedMoveScopeComparator) {
         this.pickEarlyByScore = pickEarlyByScore;
         this.pickEarlyRandomly = pickEarlyRandomly;
-        this.acceptionComparator = acceptionComparator;
+        this.acceptedMoveScopeComparator = acceptedMoveScopeComparator;
     }
 
     // ************************************************************************
@@ -51,6 +51,7 @@ public class AcceptedForager extends AbstractForager {
 
     @Override
     public void beforeDeciding(StepScope stepScope) {
+        acceptedMoveScopeComparator.setDeciderScoreComparator(stepScope.getDeciderScoreComparator());
         acceptedList = new ArrayList<MoveScope>(); // TODO use size of moveList in decider
         listSorted = false;
         maxScore = stepScope.getLocalSearchSolverScope().getScoreDefinition().getPerfectMinimumScore();
@@ -70,13 +71,15 @@ public class AcceptedForager extends AbstractForager {
             case NONE:
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
-                if (moveScope.getScore().compareTo(moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
+                if (moveScope.getStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
+                        moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_LAST_STEP_SCORE_IMPROVING:
-                if (moveScope.getScore().compareTo(moveScope.getStepScope().getLocalSearchSolverScope()
-                        .getLastCompletedStepScope().getScore()) > 0) {
+                if (moveScope.getStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
+                        moveScope.getStepScope().getLocalSearchSolverScope().getLastCompletedStepScope().getScore())
+                        > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
@@ -98,7 +101,7 @@ public class AcceptedForager extends AbstractForager {
     protected void addMoveScopeToAcceptedList(MoveScope moveScope) {
         acceptedList.add(moveScope);
         listSorted = false;
-        if (moveScope.getScore().compareTo(maxScore) > 0) {
+        if (moveScope.getStepScope().getDeciderScoreComparator().compare(moveScope.getScore(), maxScore) > 0) {
             acceptChanceMaxScoreTotal = moveScope.getAcceptChance();
             maxScore = moveScope.getScore();
         } else if (moveScope.getScore().equals(maxScore)) {
@@ -163,7 +166,7 @@ public class AcceptedForager extends AbstractForager {
 
     protected void sortAcceptedList() {
         if (!listSorted) {
-            Collections.sort(acceptedList, acceptionComparator);
+            Collections.sort(acceptedList, acceptedMoveScopeComparator);
             listSorted = true;
         }
     }

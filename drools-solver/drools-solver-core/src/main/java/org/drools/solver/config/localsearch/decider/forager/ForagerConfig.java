@@ -11,7 +11,7 @@ import org.drools.solver.core.localsearch.decider.forager.PickEarlyByScore;
 @XStreamAlias("forager")
 public class ForagerConfig {
 
-    private Forager forager = null;
+    private Forager forager = null; // TODO remove this and document extending ForagerConfig
     private Class<Forager> foragerClass = null;
     private ForagerType foragerType = null;
 

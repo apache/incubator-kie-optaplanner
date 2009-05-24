@@ -3,6 +3,7 @@ package org.drools.solver.core.localsearch.decider.selector;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.Decider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +16,10 @@ public abstract class AbstractSelector implements Selector {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected LocalSearchSolver localSearchSolver;
+    protected Decider decider;
 
-    public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
-        this.localSearchSolver = localSearchSolver;
+    public void setDecider(Decider decider) {
+        this.decider = decider;
     }
 
     // ************************************************************************

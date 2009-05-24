@@ -9,6 +9,7 @@ import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.accepter.Accepter;
 import org.drools.solver.core.localsearch.decider.forager.Forager;
 import org.drools.solver.core.localsearch.decider.selector.Selector;
+import org.drools.solver.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.score.Score;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ public class DefaultDecider implements Decider {
 
     protected LocalSearchSolver localSearchSolver;
 
+    protected DeciderScoreComparatorFactory deciderScoreComparatorFactory;
     protected Selector selector;
     protected Accepter accepter;
     protected Forager forager;
@@ -32,11 +34,19 @@ public class DefaultDecider implements Decider {
 
     public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
         this.localSearchSolver = localSearchSolver;
-        selector.setLocalSearchSolver(localSearchSolver);
+    }
+
+    public DeciderScoreComparatorFactory getDeciderScoreComparator() {
+        return deciderScoreComparatorFactory;
+    }
+
+    public void setDeciderScoreComparator(DeciderScoreComparatorFactory deciderScoreComparator) {
+        this.deciderScoreComparatorFactory = deciderScoreComparator;
     }
 
     public void setSelector(Selector selector) {
         this.selector = selector;
+        selector.setDecider(this);
     }
 
     public void setAccepter(Accepter accepter) {
@@ -60,18 +70,21 @@ public class DefaultDecider implements Decider {
     // ************************************************************************
 
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+        deciderScoreComparatorFactory.solvingStarted(localSearchSolverScope);
         selector.solvingStarted(localSearchSolverScope);
         accepter.solvingStarted(localSearchSolverScope);
         forager.solvingStarted(localSearchSolverScope);
     }
 
     public void beforeDeciding(StepScope stepScope) {
+        deciderScoreComparatorFactory.beforeDeciding(stepScope);
         selector.beforeDeciding(stepScope);
         accepter.beforeDeciding(stepScope);
         forager.beforeDeciding(stepScope);
     }
 
     public void decideNextStep(StepScope stepScope) {
+        stepScope.setDeciderScoreComparator(deciderScoreComparatorFactory.createDeciderScoreComparator());
         WorkingMemory workingMemory = stepScope.getWorkingMemory();
         List<Move> moveList = selector.selectMoveList(stepScope);
         for (Move move : moveList) {
@@ -125,18 +138,21 @@ public class DefaultDecider implements Decider {
     }
 
     public void stepDecided(StepScope stepScope) {
+        deciderScoreComparatorFactory.stepDecided(stepScope);
         selector.stepDecided(stepScope);
         accepter.stepDecided(stepScope);
         forager.stepDecided(stepScope);
     }
 
     public void stepTaken(StepScope stepScope) {
+        deciderScoreComparatorFactory.stepTaken(stepScope);
         selector.stepTaken(stepScope);
         accepter.stepTaken(stepScope);
         forager.stepTaken(stepScope);
     }
 
     public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+        deciderScoreComparatorFactory.solvingEnded(localSearchSolverScope);
         selector.solvingEnded(localSearchSolverScope);
         accepter.solvingEnded(localSearchSolverScope);
         forager.solvingEnded(localSearchSolverScope);

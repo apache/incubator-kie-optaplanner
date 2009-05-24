@@ -2,6 +2,7 @@ package org.drools.solver.core.localsearch.decider.accepter;
 
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.decider.MoveScope;
+import org.drools.solver.core.localsearch.decider.DeciderAware;
 
 /**
  * An Accepter accepts or rejects a selected move for the Decider.

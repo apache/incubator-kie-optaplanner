@@ -5,6 +5,7 @@ import java.util.List;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.decider.MoveScope;
+import org.drools.solver.core.localsearch.decider.DeciderAware;
 import org.drools.solver.core.move.Move;
 
 /**

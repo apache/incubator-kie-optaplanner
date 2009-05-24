@@ -77,10 +77,13 @@ public abstract class AbstractTabuAccepter extends AbstractAccepter {
             // The move isn't tabu at all
             return 1.0;
         }
-        if (aspirationEnabled
-                && moveScope.getScore().compareTo(moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
-            logger.debug("    Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
-            return 1.0;
+        if (aspirationEnabled) {
+            // Doesn't use the deciderScoreComparator because shifting penalties don't apply
+            if (moveScope.getScore().compareTo(
+                    moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
+                logger.debug("    Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
+                return 1.0;
+            }
         }
         int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex - 1;
         if (tabuStepCount < completeTabuSize) {

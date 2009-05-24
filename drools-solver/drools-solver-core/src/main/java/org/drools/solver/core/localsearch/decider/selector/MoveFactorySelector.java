@@ -6,6 +6,7 @@ import java.util.List;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.move.factory.MoveFactory;
 
@@ -35,9 +36,10 @@ public class MoveFactorySelector extends AbstractSelector {
         }
     }
 
-    public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
-        super.setLocalSearchSolver(localSearchSolver);
-        moveFactory.setLocalSearchSolver(localSearchSolver);
+    @Override
+    public void setDecider(Decider decider) {
+        super.setDecider(decider);
+        moveFactory.setDecider(decider);
     }
 
     // ************************************************************************

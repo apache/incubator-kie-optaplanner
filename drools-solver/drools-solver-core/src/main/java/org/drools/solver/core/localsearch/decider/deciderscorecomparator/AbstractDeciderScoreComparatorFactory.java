@@ -1,24 +1,19 @@
-package org.drools.solver.core.move.factory;
+package org.drools.solver.core.localsearch.decider.deciderscorecomparator;
 
-import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
-import org.drools.solver.core.localsearch.decider.Decider;
+import org.drools.solver.core.score.Score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Abstract superclass for {@link DeciderScoreComparatorFactory}.
+ * @see DeciderScoreComparatorFactory
  * @author Geoffrey De Smet
  */
-public abstract class AbstractMoveFactory implements MoveFactory {
+public abstract class AbstractDeciderScoreComparatorFactory implements DeciderScoreComparatorFactory {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
-    protected Decider decider;
-
-    public void setDecider(Decider decider) {
-        this.decider = decider;
-    }
 
     // ************************************************************************
     // Worker methods

@@ -1,7 +1,6 @@
 package org.drools.solver.core.score.definition;
 
 import org.drools.solver.core.score.Score;
-import org.drools.solver.core.score.comparator.ScoreComparator;
 
 /**
  * A ScoreDefinition knows how to compare scores and what the perfect maximum/minimum Score is.
@@ -10,10 +9,6 @@ import org.drools.solver.core.score.comparator.ScoreComparator;
  * @author Geoffrey De Smet
  */
 public interface ScoreDefinition<S extends Score> {
-
-//    ScoreComparator getScoreComparator();
-//
-//    ScoreComparator getShiftingPenaltyScoreComparator();
 
     /**
      * The perfect maximum score is the score of which there is no better in any problem instance.

@@ -1,6 +1,7 @@
 package org.drools.solver.core.localsearch;
 
 import java.util.Random;
+import java.util.Comparator;
 
 import org.drools.WorkingMemory;
 import org.drools.solver.core.move.Move;
@@ -16,6 +17,7 @@ public class StepScope {
 
     private int stepIndex = -1;
     private double timeGradient = Double.NaN;
+    private Comparator<Score> deciderScoreComparator;
     private Move step = null;
     private Move undoStep = null;
     private Score score = null;
@@ -43,6 +45,14 @@ public class StepScope {
 
     public void setTimeGradient(double timeGradient) {
         this.timeGradient = timeGradient;
+    }
+
+    public Comparator<Score> getDeciderScoreComparator() {
+        return deciderScoreComparator;
+    }
+
+    public void setDeciderScoreComparator(Comparator<Score> deciderScoreComparator) {
+        this.deciderScoreComparator = deciderScoreComparator;
     }
 
     public Move getStep() {

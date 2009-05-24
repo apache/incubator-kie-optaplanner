@@ -15,6 +15,15 @@
         <!--<feasableScore>-0hard/-999999soft</feasableScore>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
     </finish>
+    <!--<deciderScoreComparatorFactory>-->
+        <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
+        <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
+        <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
+        <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
+        <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
+        <!--<hardWeightDegradationRatio>0.2</hardWeightDegradationRatio>-->
+        <!--<startingHardWeight>1000</startingHardWeight>-->
+    <!--</deciderScoreComparatorFactory>-->
     <selector>
         <selector>
             <topSize>10</topSize>

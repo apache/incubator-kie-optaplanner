@@ -16,6 +16,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.solver.config.localsearch.decider.accepter.AccepterConfig;
 import org.drools.solver.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.solver.config.localsearch.decider.selector.SelectorConfig;
+import org.drools.solver.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.drools.solver.config.localsearch.finish.FinishConfig;
 import org.drools.solver.config.score.definition.ScoreDefinitionConfig;
 import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
@@ -45,6 +46,9 @@ public class LocalSearchSolverConfig {
     @XStreamAlias("finish")
     private FinishConfig finishConfig = new FinishConfig(); // TODO this new is pointless due to xstream
 
+    @XStreamAlias("deciderScoreComparatorFactory")
+    private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig
+            = new DeciderScoreComparatorFactoryConfig();
     @XStreamAlias("selector")
     private SelectorConfig selectorConfig = new SelectorConfig();
     @XStreamAlias("accepter")
@@ -98,6 +102,15 @@ public class LocalSearchSolverConfig {
 
     public void setFinishConfig(FinishConfig finishConfig) {
         this.finishConfig = finishConfig;
+    }
+
+    public DeciderScoreComparatorFactoryConfig getDeciderScoreComparatorFactoryConfig() {
+        return deciderScoreComparatorFactoryConfig;
+    }
+
+    public void setDeciderScoreComparatorFactoryConfig(
+            DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig) {
+        this.deciderScoreComparatorFactoryConfig = deciderScoreComparatorFactoryConfig;
     }
 
     public SelectorConfig getSelectorConfig() {
@@ -196,6 +209,7 @@ public class LocalSearchSolverConfig {
 
     private Decider buildDecider() {
         DefaultDecider decider = new DefaultDecider();
+        decider.setDeciderScoreComparator(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
         decider.setSelector(selectorConfig.buildSelector());
         decider.setAccepter(accepterConfig.buildAccepter());
         decider.setForager(foragerConfig.buildForager());
@@ -231,6 +245,11 @@ public class LocalSearchSolverConfig {
             finishConfig = inheritedConfig.getFinishConfig();
         } else if (inheritedConfig.getFinishConfig() != null) {
             finishConfig.inherit(inheritedConfig.getFinishConfig());
+        }
+        if (deciderScoreComparatorFactoryConfig == null) {
+            deciderScoreComparatorFactoryConfig = inheritedConfig.getDeciderScoreComparatorFactoryConfig();
+        } else if (inheritedConfig.getDeciderScoreComparatorFactoryConfig() != null) {
+            deciderScoreComparatorFactoryConfig.inherit(inheritedConfig.getDeciderScoreComparatorFactoryConfig());
         }
         if (selectorConfig == null) {
             selectorConfig = inheritedConfig.getSelectorConfig();

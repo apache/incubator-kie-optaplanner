@@ -6,6 +6,7 @@ import java.util.List;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
+import org.drools.solver.core.localsearch.decider.Decider;
 import org.drools.solver.core.move.Move;
 
 /**
@@ -21,10 +22,10 @@ public class CompositeSelector extends AbstractSelector {
     }
 
     @Override
-    public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
-        super.setLocalSearchSolver(localSearchSolver);
+    public void setDecider(Decider decider) {
+        super.setDecider(decider);
         for (Selector selector : selectorList) {
-            selector.setLocalSearchSolver(localSearchSolver);
+            selector.setDecider(decider);
         }
     }
 
