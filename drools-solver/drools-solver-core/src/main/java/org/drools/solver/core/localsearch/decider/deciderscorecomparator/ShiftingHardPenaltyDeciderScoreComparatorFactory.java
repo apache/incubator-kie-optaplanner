@@ -6,6 +6,7 @@ import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.score.HardAndSoftScore;
 import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.comparator.NaturalScoreComparator;
 
 /**
  * Implementation of {@link HardAndSoftScore}.
@@ -27,7 +28,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
     private boolean shiftingPenaltyActive;
     private int hardWeight;
 
-    private Comparator<Score> naturalDeciderScoreComparator = new NaturalDeciderScoreComparator();
+    private Comparator<Score> naturalDeciderScoreComparator = new NaturalScoreComparator();
 
     public void setHardScoreActivationThreshold(int hardScoreActivationThreshold) {
         this.hardScoreActivationThreshold = hardScoreActivationThreshold;

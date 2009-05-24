@@ -3,6 +3,7 @@ package org.drools.solver.core.localsearch.decider.deciderscorecomparator;
 import java.util.Comparator;
 
 import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.comparator.NaturalScoreComparator;
 
 /**
  * Implementation of {@link DeciderScoreComparatorFactory}.
@@ -12,7 +13,7 @@ import org.drools.solver.core.score.Score;
  */
 public class NaturalDeciderScoreComparatorFactory extends AbstractDeciderScoreComparatorFactory {
 
-    private Comparator<Score> naturalDeciderScoreComparator = new NaturalDeciderScoreComparator();
+    private Comparator<Score> naturalDeciderScoreComparator = new NaturalScoreComparator();
 
     public Comparator<Score> createDeciderScoreComparator() {
         return naturalDeciderScoreComparator;
