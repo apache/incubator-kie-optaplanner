@@ -69,7 +69,7 @@
                 <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
                 <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
                 <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightDegradationRatio>0.2</hardWeightDegradationRatio>
+                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
                 <startingHardWeight>1000</startingHardWeight>
             </deciderScoreComparatorFactory>
             <selector>
@@ -106,7 +106,7 @@
                 <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
                 <successiveNoHardChangeMaximum>10</successiveNoHardChangeMaximum>
                 <successiveNoHardChangeRepetitionMultiplicand>10.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightDegradationRatio>0.2</hardWeightDegradationRatio>
+                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
                 <startingHardWeight>1000</startingHardWeight>
             </deciderScoreComparatorFactory>
             <selector>
@@ -143,7 +143,7 @@
                 <successiveNoHardChangeMinimum>4</successiveNoHardChangeMinimum>
                 <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
                 <successiveNoHardChangeRepetitionMultiplicand>10.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightDegradationRatio>0.2</hardWeightDegradationRatio>
+                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
                 <startingHardWeight>1000</startingHardWeight>
             </deciderScoreComparatorFactory>
             <selector>
@@ -180,7 +180,7 @@
                 <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
                 <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
                 <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightDegradationRatio>0.2</hardWeightDegradationRatio>
+                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
                 <startingHardWeight>500</startingHardWeight>
             </deciderScoreComparatorFactory>
             <selector>
@@ -217,7 +217,7 @@
                 <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
                 <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
                 <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightDegradationRatio>0.2</hardWeightDegradationRatio>
+                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
                 <startingHardWeight>1000</startingHardWeight>
             </deciderScoreComparatorFactory>
             <selector>

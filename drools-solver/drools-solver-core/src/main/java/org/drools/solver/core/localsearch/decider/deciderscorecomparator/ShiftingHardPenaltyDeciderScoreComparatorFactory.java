@@ -20,7 +20,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
     private int successiveNoHardChangeMinimum = 2;
     private int successiveNoHardChangeMaximum = 20;
     private double successiveNoHardChangeRepetitionMultiplicand = 20.0;
-    private double hardWeightDegradationRatio = 0.2;
+    private double hardWeightSurvivalRatio = 0.8;
 
     private int startingHardWeight = 1000; // TODO determine dynamically
 
@@ -46,8 +46,8 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
         this.successiveNoHardChangeRepetitionMultiplicand = successiveNoHardChangeRepetitionMultiplicand;
     }
 
-    public void setHardWeightDegradationRatio(double hardWeightDegradationRatio) {
-        this.hardWeightDegradationRatio = hardWeightDegradationRatio;
+    public void setHardWeightSurvivalRatio(double hardWeightSurvivalRatio) {
+        this.hardWeightSurvivalRatio = hardWeightSurvivalRatio;
     }
 
     public void setStartingHardWeight(int startingHardWeight) {
@@ -93,7 +93,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
                     if (successiveNoHardScoreChange == min) {
                         hardWeight = startingHardWeight;
                     } else {
-                        hardWeight *= hardWeightDegradationRatio;
+                        hardWeight *= hardWeightSurvivalRatio;
                     }
                     break;
                 }

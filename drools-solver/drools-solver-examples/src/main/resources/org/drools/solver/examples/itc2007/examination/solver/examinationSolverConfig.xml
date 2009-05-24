@@ -21,7 +21,7 @@
         <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
         <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
         <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
-        <!--<hardWeightDegradationRatio>0.2</hardWeightDegradationRatio>-->
+        <!--<hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>-->
         <!--<startingHardWeight>1000</startingHardWeight>-->
     <!--</deciderScoreComparatorFactory>-->
     <selector>

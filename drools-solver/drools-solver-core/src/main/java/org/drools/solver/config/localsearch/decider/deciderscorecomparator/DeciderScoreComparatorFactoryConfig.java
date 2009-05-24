@@ -18,7 +18,7 @@ public class DeciderScoreComparatorFactoryConfig {
     private Integer successiveNoHardChangeMinimum = null;
     private Integer successiveNoHardChangeMaximum = null;
     private Double successiveNoHardChangeRepetitionMultiplicand = null;
-    private Double hardWeightDegradationRatio = null;
+    private Double hardWeightSurvivalRatio = null;
     private Integer startingHardWeight = null; // TODO determine dynamically
 
     public Class<DeciderScoreComparatorFactory> getDeciderScoreComparatorClass() {
@@ -77,12 +77,12 @@ public class DeciderScoreComparatorFactoryConfig {
         this.successiveNoHardChangeRepetitionMultiplicand = successiveNoHardChangeRepetitionMultiplicand;
     }
 
-    public Double getHardWeightDegradationRatio() {
-        return hardWeightDegradationRatio;
+    public Double getHardWeightSurvivalRatio() {
+        return hardWeightSurvivalRatio;
     }
 
-    public void setHardWeightDegradationRatio(Double hardWeightDegradationRatio) {
-        this.hardWeightDegradationRatio = hardWeightDegradationRatio;
+    public void setHardWeightSurvivalRatio(Double hardWeightSurvivalRatio) {
+        this.hardWeightSurvivalRatio = hardWeightSurvivalRatio;
     }
 
     public Integer getStartingHardWeight() {
@@ -128,8 +128,8 @@ public class DeciderScoreComparatorFactoryConfig {
                         deciderScoreComparator.setSuccessiveNoHardChangeRepetitionMultiplicand(
                                 successiveNoHardChangeRepetitionMultiplicand);
                     }
-                    if (hardWeightDegradationRatio != null) {
-                        deciderScoreComparator.setHardWeightDegradationRatio(hardWeightDegradationRatio);
+                    if (hardWeightSurvivalRatio != null) {
+                        deciderScoreComparator.setHardWeightSurvivalRatio(hardWeightSurvivalRatio);
                     }
                     if (startingHardWeight != null) {
                         deciderScoreComparator.setStartingHardWeight(startingHardWeight);
@@ -162,8 +162,8 @@ public class DeciderScoreComparatorFactoryConfig {
             successiveNoHardChangeRepetitionMultiplicand = inheritedConfig
                     .getSuccessiveNoHardChangeRepetitionMultiplicand();
         }
-        if (hardWeightDegradationRatio == null) {
-            hardWeightDegradationRatio = inheritedConfig.getHardWeightDegradationRatio();
+        if (hardWeightSurvivalRatio == null) {
+            hardWeightSurvivalRatio = inheritedConfig.getHardWeightSurvivalRatio();
         }
         if (startingHardWeight == null) {
             startingHardWeight = inheritedConfig.getStartingHardWeight();

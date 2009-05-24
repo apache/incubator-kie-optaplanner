@@ -17,6 +17,10 @@ public class HardPenaltyDeciderScoreComparator implements Comparator<Score> {
         this.hardWeight = hardWeight;
     }
 
+    public int getHardWeight() {
+        return hardWeight;
+    }
+
     public int compare(Score s1, Score s2) {
         HardAndSoftScore score1 = (HardAndSoftScore) s1;
         HardAndSoftScore score2 = (HardAndSoftScore) s2;
