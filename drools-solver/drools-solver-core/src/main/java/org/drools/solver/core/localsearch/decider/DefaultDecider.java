@@ -78,13 +78,13 @@ public class DefaultDecider implements Decider {
 
     public void beforeDeciding(StepScope stepScope) {
         deciderScoreComparatorFactory.beforeDeciding(stepScope);
+        stepScope.setDeciderScoreComparator(deciderScoreComparatorFactory.createDeciderScoreComparator());
         selector.beforeDeciding(stepScope);
         accepter.beforeDeciding(stepScope);
         forager.beforeDeciding(stepScope);
     }
 
     public void decideNextStep(StepScope stepScope) {
-        stepScope.setDeciderScoreComparator(deciderScoreComparatorFactory.createDeciderScoreComparator());
         WorkingMemory workingMemory = stepScope.getWorkingMemory();
         List<Move> moveList = selector.selectMoveList(stepScope);
         for (Move move : moveList) {

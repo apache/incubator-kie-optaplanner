@@ -93,12 +93,12 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
                     if (successiveNoHardScoreChange == min) {
                         hardWeight = startingHardWeight;
                     } else {
-                        hardWeight *= hardWeightSurvivalRatio;
+                        hardWeight = (int) Math.round(((double) hardWeight) * hardWeightSurvivalRatio);
                     }
                     break;
                 }
-                min *= successiveNoHardChangeRepetitionMultiplicand;
-                max *= successiveNoHardChangeRepetitionMultiplicand;
+                min = (int) Math.round(((double) min) * successiveNoHardChangeRepetitionMultiplicand);
+                max = (int) Math.round(((double) max) * successiveNoHardChangeRepetitionMultiplicand);
             }
         }
     }
