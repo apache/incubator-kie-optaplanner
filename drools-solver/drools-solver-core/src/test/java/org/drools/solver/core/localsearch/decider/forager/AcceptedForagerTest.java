@@ -11,6 +11,7 @@ import org.drools.solver.core.move.DummyMove;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.score.DefaultSimpleScore;
 import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.comparator.NaturalScoreComparator;
 import org.drools.solver.core.score.definition.SimpleScoreDefinition;
 
 /**
@@ -22,12 +23,12 @@ public class AcceptedForagerTest extends TestCase {
         
     }
     
-    public void FIXME_testPickMoveMaxScoreOfAll() {
+    public void testPickMoveMaxScoreOfAll() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyByScore.NONE, false);
         LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
         forager.solvingStarted(localSearchSolverScope);
-        StepScope stepScope = new StepScope(localSearchSolverScope);
+        StepScope stepScope = createStepScope(localSearchSolverScope);
         forager.beforeDeciding(stepScope);
         // Pre conditions
         MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 30.0);
@@ -58,12 +59,12 @@ public class AcceptedForagerTest extends TestCase {
         forager.solvingEnded(localSearchSolverScope);
     }
 
-    public void FIXME_testPickMoveFirstBestScoreImproving() {
+    public void testPickMoveFirstBestScoreImproving() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyByScore.FIRST_BEST_SCORE_IMPROVING, false);
         LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
         forager.solvingStarted(localSearchSolverScope);
-        StepScope stepScope = new StepScope(localSearchSolverScope);
+        StepScope stepScope = createStepScope(localSearchSolverScope);
         forager.beforeDeciding(stepScope);
         // Pre conditions
         MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.0);
@@ -88,12 +89,12 @@ public class AcceptedForagerTest extends TestCase {
         forager.solvingEnded(localSearchSolverScope);
     }
 
-    public void FIXME_testPickMoveFirstLastStepScoreImproving() {
+    public void testPickMoveFirstLastStepScoreImproving() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyByScore.FIRST_LAST_STEP_SCORE_IMPROVING, false);
         LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
         forager.solvingStarted(localSearchSolverScope);
-        StepScope stepScope = new StepScope(localSearchSolverScope);
+        StepScope stepScope = createStepScope(localSearchSolverScope);
         forager.beforeDeciding(stepScope);
         // Pre conditions
         MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.0);
@@ -118,12 +119,12 @@ public class AcceptedForagerTest extends TestCase {
         forager.solvingEnded(localSearchSolverScope);
     }
 
-    public void FIXME_testPickMoveRandomly() {
+    public void testPickMoveRandomly() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyByScore.NONE, true);
         LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
         forager.solvingStarted(localSearchSolverScope);
-        StepScope stepScope = new StepScope(localSearchSolverScope);
+        StepScope stepScope = createStepScope(localSearchSolverScope);
         forager.beforeDeciding(stepScope);
         // Pre conditions
         MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 0.0);
@@ -161,6 +162,12 @@ public class AcceptedForagerTest extends TestCase {
         lastStepScope.setScore(DefaultSimpleScore.valueOf(-100));
         localSearchSolverScope.setLastCompletedStepScope(lastStepScope);
         return localSearchSolverScope;
+    }
+
+    private StepScope createStepScope(LocalSearchSolverScope localSearchSolverScope) {
+        StepScope stepScope = new StepScope(localSearchSolverScope);
+        stepScope.setDeciderScoreComparator(new NaturalScoreComparator());
+        return stepScope;
     }
 
     public MoveScope createMoveScope(StepScope stepScope, Score score, double acceptChance) {
