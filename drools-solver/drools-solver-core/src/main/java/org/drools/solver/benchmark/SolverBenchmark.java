@@ -14,6 +14,8 @@ import org.drools.solver.config.localsearch.LocalSearchSolverConfig;
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmark {
 
+    private String name = null;
+
     @XStreamAlias("localSearchSolver")
     private LocalSearchSolverConfig localSearchSolverConfig = null;
     @XStreamImplicit(itemFieldName = "unsolvedSolutionFile")
@@ -21,6 +23,14 @@ public class SolverBenchmark {
 
     @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public LocalSearchSolverConfig getLocalSearchSolverConfig() {
         return localSearchSolverConfig;

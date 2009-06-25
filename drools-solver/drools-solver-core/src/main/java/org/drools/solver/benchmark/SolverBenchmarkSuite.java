@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -105,7 +107,18 @@ public class SolverBenchmarkSuite {
     // ************************************************************************
 
     public void benchmarkingStarted() {
+        Set<String> nameSet = new HashSet<String>(solverBenchmarkList.size());
+        Set<SolverBenchmark> noNameBenchmarkSet = new HashSet<SolverBenchmark>(solverBenchmarkList.size());
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            if (solverBenchmark.getName() != null) {
+                boolean unique = nameSet.add(solverBenchmark.getName());
+                if (!unique) {
+                    throw new IllegalStateException("The benchmark name (" + solverBenchmark.getName()
+                            + ") is used in more than 1 benchmark.");
+                }
+            } else {
+                noNameBenchmarkSet.add(solverBenchmark);
+            }
             if (inheritedLocalSearchSolverConfig != null) {
                 solverBenchmark.inheritLocalSearchSolverConfig(inheritedLocalSearchSolverConfig);
             }
@@ -113,11 +126,23 @@ public class SolverBenchmarkSuite {
                 solverBenchmark.inheritUnsolvedSolutionFileList(inheritedUnsolvedSolutionFileList);
             }
         }
+        int generatedNameIndex = 0;
+        for (SolverBenchmark solverBenchmark : noNameBenchmarkSet) {
+            String generatedName = "Config_" + generatedNameIndex;
+            while (nameSet.contains(generatedName)) {
+                generatedNameIndex++;
+                generatedName = "Config_" + generatedNameIndex;
+            }
+            solverBenchmark.setName(generatedName);
+            generatedNameIndex++;
+        }
     }
 
     public void benchmark(XStream xStream) { // TODO refactor out xstream
         benchmarkingStarted();
-        solvedSolutionFilesDirectory.mkdirs();
+        if (solvedSolutionFilesDirectory != null) {
+            solvedSolutionFilesDirectory.mkdirs();
+        }
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             Solver solver = solverBenchmark.getLocalSearchSolverConfig().buildSolver();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
@@ -128,7 +153,7 @@ public class SolverBenchmarkSuite {
                 result.setTimeMillesSpend(solver.getTimeMillisSpend());
                 result.setScore(solver.getBestScore());
                 Solution solvedSolution = solver.getBestSolution();
-                writeSolvedSolution(xStream, result, solvedSolution);
+                writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
             }
         }
         benchmarkingEnded();
@@ -148,14 +173,19 @@ public class SolverBenchmarkSuite {
         return unsolvedSolution;
     }
 
-    private void writeSolvedSolution(XStream xStream, SolverBenchmarkResult result, Solution solvedSolution) {
+    private void writeSolvedSolution(XStream xStream, SolverBenchmark solverBenchmark, SolverBenchmarkResult result,
+            Solution solvedSolution) {
+        if (solvedSolutionFilesDirectory == null) {
+            return;
+        }
         File solvedSolutionFile = null;
         Writer writer = null;
         try {
             String baseName = FilenameUtils.getBaseName(result.getUnsolvedSolutionFile().getName());
+            String solverBenchmarkName = solverBenchmark.getName().replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
             String scoreString = result.getScore().toString().replaceAll("[\\/ ]", "_");
             String timeString = TIME_FORMAT.format(result.getTimeMillesSpend()) + "ms";
-            solvedSolutionFile = new File(solvedSolutionFilesDirectory, baseName
+            solvedSolutionFile = new File(solvedSolutionFilesDirectory, baseName + "_" + solverBenchmarkName
                     + "_score" + scoreString + "_time" + timeString + ".xml");
             writer = new OutputStreamWriter(new FileOutputStream(solvedSolutionFile), "utf-8");
             xStream.toXML(solvedSolution, writer);

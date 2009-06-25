@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
     <solvedSolutionFilesDirectory>local/data/nqueens/solved</solvedSolutionFilesDirectory>
-    <sortSolverBenchmarks>true</sortSolverBenchmarks>
-    <!-- solverBenchmarkResultComparator -->
     
-    <inheritedUnsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens08.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens16.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
         <scoreDefinition>
@@ -24,7 +20,7 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</unsolvedSolutionFile>
+        <name>Move tabu</name>
         <localSearchSolver>
             <accepter>
                 <completeMoveTabuSize>5</completeMoveTabuSize>
@@ -35,6 +31,7 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
+        <name>Undo move tabu</name>
         <localSearchSolver>
             <accepter>
                 <completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>
@@ -45,6 +42,7 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
+        <name>Solution tabu</name>
         <localSearchSolver>
             <accepter>
                 <completeSolutionTabuSize>1000</completeSolutionTabuSize>
