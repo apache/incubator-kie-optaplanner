@@ -20,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.InstitutionalWeighting;
 import org.drools.solver.examples.itc2007.examination.domain.Period;
@@ -30,55 +31,30 @@ import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraint;
 import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
+import org.drools.solver.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationInputConvertor extends LoggingMain {
+public class ExaminationInputConvertor extends AbstractInputConvertor {
 
     private static final String INPUT_FILE_SUFFIX = ".exam";
-    private static final String OUTPUT_FILE_SUFFIX = ".xml";
     private static final String SPLIT_REGEX = "\\,\\ ?";
 
     public static void main(String[] args) {
         new ExaminationInputConvertor().convert();
     }
 
-    private final File inputDir = new File("data/itc2007/examination/input/");
-    private final File outputDir = new File("data/itc2007/examination/unsolved/");
-
-    public void convert() {
-        XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
-        File[] inputFiles = inputDir.listFiles();
-        if (inputFiles == null) {
-            throw new IllegalArgumentException(
-                    "Your working dir should be drools-solver-examples and contain: " + inputDir);
-        }
-        for (File inputFile : inputFiles) {
-            String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
-                Examination examination = readExamination(inputFile);
-                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length())
-                        + OUTPUT_FILE_SUFFIX;
-                File outputFile = new File(outputDir, outputFileName);
-                solutionDao.writeSolution(examination, outputFile);
-            }
-        }
+    protected String getExampleDirName() {
+        return "itc2007/examination";
     }
 
-    public Examination readExamination(File inputFile) {
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new FileReader(inputFile));
-            return readExamination(bufferedReader);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        } finally {
-            IOUtils.closeQuietly(bufferedReader);
-        }
+    @Override
+    protected String getInputFileSuffix() {
+        return INPUT_FILE_SUFFIX;
     }
 
-    public Examination readExamination(BufferedReader bufferedReader) throws IOException {
+    public Solution readSolution(BufferedReader bufferedReader) throws IOException {
         Examination examination = new Examination();
         examination.setId(0L);
 

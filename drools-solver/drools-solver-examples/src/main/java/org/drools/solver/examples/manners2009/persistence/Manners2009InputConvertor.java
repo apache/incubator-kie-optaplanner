@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
 import org.drools.solver.examples.manners2009.domain.Gender;
 import org.drools.solver.examples.manners2009.domain.Guest;
 import org.drools.solver.examples.manners2009.domain.Hobby;
@@ -21,55 +22,22 @@ import org.drools.solver.examples.manners2009.domain.JobType;
 import org.drools.solver.examples.manners2009.domain.Manners2009;
 import org.drools.solver.examples.manners2009.domain.Seat;
 import org.drools.solver.examples.manners2009.domain.Table;
+import org.drools.solver.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet
  */
-public class Manners2009InputConvertor extends LoggingMain {
-
-    private static final String INPUT_FILE_SUFFIX = ".txt";
-    private static final String OUTPUT_FILE_SUFFIX = ".xml";
-    private static final String SPLIT_REGEX = "[\\ \\t]+";
+public class Manners2009InputConvertor extends AbstractInputConvertor {
 
     public static void main(String[] args) {
         new Manners2009InputConvertor().convert();
     }
 
-    private final File inputDir = new File("data/manners2009/input/");
-    private final File outputDir = new File("data/manners2009/unsolved/");
-
-    public void convert() {
-        XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
-        File[] inputFiles = inputDir.listFiles();
-        if (inputFiles == null) {
-            throw new IllegalArgumentException(
-                    "Your working dir should be drools-solver-examples and contain: " + inputDir);
-        }
-        for (File inputFile : inputFiles) {
-            String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
-                Manners2009 manners2009 = readManners2009(inputFile);
-                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length())
-                        + OUTPUT_FILE_SUFFIX;
-                File outputFile = new File(outputDir, outputFileName);
-                solutionDao.writeSolution(manners2009, outputFile);
-            }
-        }
+    protected String getExampleDirName() {
+        return "manners2009";
     }
 
-    public Manners2009 readManners2009(File inputFile) {
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new FileReader(inputFile));
-            return readManners2009(bufferedReader);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        } finally {
-            IOUtils.closeQuietly(bufferedReader);
-        }
-    }
-
-    public Manners2009 readManners2009(BufferedReader bufferedReader) throws IOException {
+    public Solution readSolution(BufferedReader bufferedReader) throws IOException {
         Manners2009 manners2009 = new Manners2009();
         manners2009.setId(0L);
 

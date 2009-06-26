@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Course;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule;
@@ -22,55 +23,30 @@ import org.drools.solver.examples.itc2007.curriculumcourse.domain.Room;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint;
+import org.drools.solver.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet
  */
-public class CurriculumCourseInputConvertor extends LoggingMain {
+public class CurriculumCourseInputConvertor extends AbstractInputConvertor {
 
     private static final String INPUT_FILE_SUFFIX = ".ctt";
-    private static final String OUTPUT_FILE_SUFFIX = ".xml";
     private static final String SPLIT_REGEX = "[\\ \\t]+";
 
     public static void main(String[] args) {
         new CurriculumCourseInputConvertor().convert();
     }
 
-    private final File inputDir = new File("data/itc2007/curriculumcourse/input/");
-    private final File outputDir = new File("data/itc2007/curriculumcourse/unsolved/");
-
-    public void convert() {
-        XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
-        File[] inputFiles = inputDir.listFiles();
-        if (inputFiles == null) {
-            throw new IllegalArgumentException(
-                    "Your working dir should be drools-solver-examples and contain: " + inputDir);
-        }
-        for (File inputFile : inputFiles) {
-            String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
-                CurriculumCourseSchedule schedule = readCurriculumCourseSchedule(inputFile);
-                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length())
-                        + OUTPUT_FILE_SUFFIX;
-                File outputFile = new File(outputDir, outputFileName);
-                solutionDao.writeSolution(schedule, outputFile);
-            }
-        }
+    protected String getExampleDirName() {
+        return "itc2007/curriculumcourse";
     }
 
-    public CurriculumCourseSchedule readCurriculumCourseSchedule(File inputFile) {
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new FileReader(inputFile));
-            return readCurriculumCourseSchedule(bufferedReader);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        } finally {
-            IOUtils.closeQuietly(bufferedReader);
-        }
+    @Override
+    protected String getInputFileSuffix() {
+        return INPUT_FILE_SUFFIX;
     }
 
-    public CurriculumCourseSchedule readCurriculumCourseSchedule(BufferedReader bufferedReader) throws IOException {
+    public Solution readSolution(BufferedReader bufferedReader) throws IOException {
         CurriculumCourseSchedule schedule = new CurriculumCourseSchedule();
         schedule.setId(0L);
         // Name: ToyExample

@@ -19,6 +19,7 @@ public class SimpleTravelingTournamentInputConvertor extends TravelingTournament
 
     private final File outputDir = new File("data/travelingtournament/simple/unsolved/");
 
+    @Override
     protected File getOutputDir() {
         return outputDir;
     }

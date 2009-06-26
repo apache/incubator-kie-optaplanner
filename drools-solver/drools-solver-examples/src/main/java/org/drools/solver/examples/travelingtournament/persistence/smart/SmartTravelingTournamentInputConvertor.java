@@ -19,6 +19,7 @@ public class SmartTravelingTournamentInputConvertor extends TravelingTournamentI
 
     private final File outputDir = new File("data/travelingtournament/smart/unsolved/");
 
+    @Override
     protected File getOutputDir() {
         return outputDir;
     }

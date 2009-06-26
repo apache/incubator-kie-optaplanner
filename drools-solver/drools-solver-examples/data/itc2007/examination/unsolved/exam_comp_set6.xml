@@ -44093,136 +44093,136 @@
   <periodHardConstraintList id="8424">
     <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8425">
       <id>0</id>
-      <periodHardConstraintType id="8426">EXAM_COINCIDENCE</periodHardConstraintType>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="7916"/>
       <rightSideTopic reference="7930"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8427">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8426">
       <id>1</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="7918"/>
       <rightSideTopic reference="7934"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8428">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8427">
       <id>2</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="7940"/>
       <rightSideTopic reference="7994"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8429">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8428">
       <id>3</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="7982"/>
       <rightSideTopic reference="8070"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8430">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8429">
       <id>4</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="7984"/>
       <rightSideTopic reference="8074"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8431">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8430">
       <id>5</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8078"/>
       <rightSideTopic reference="8112"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8432">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8431">
       <id>6</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8114"/>
       <rightSideTopic reference="8154"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8433">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8432">
       <id>7</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8136"/>
       <rightSideTopic reference="8158"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8434">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8433">
       <id>8</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8156"/>
       <rightSideTopic reference="8182"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8435">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8434">
       <id>9</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8166"/>
       <rightSideTopic reference="8186"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8436">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8435">
       <id>10</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8194"/>
       <rightSideTopic reference="8212"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8437">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8436">
       <id>11</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8214"/>
       <rightSideTopic reference="8216"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8438">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8437">
       <id>13</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8222"/>
       <rightSideTopic reference="8238"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8439">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8438">
       <id>14</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8240"/>
       <rightSideTopic reference="8244"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8440">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8439">
       <id>15</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8246"/>
       <rightSideTopic reference="8254"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8441">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8440">
       <id>16</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8260"/>
       <rightSideTopic reference="8292"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8442">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8441">
       <id>17</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8272"/>
       <rightSideTopic reference="8286"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8443">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8442">
       <id>18</id>
-      <periodHardConstraintType reference="8426"/>
+      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
       <leftSideTopic reference="8294"/>
       <rightSideTopic reference="8312"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8444">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8443">
       <id>19</id>
-      <periodHardConstraintType id="8445">AFTER</periodHardConstraintType>
+      <periodHardConstraintType>AFTER</periodHardConstraintType>
       <leftSideTopic reference="8216"/>
       <rightSideTopic reference="7920"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8446">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8444">
       <id>20</id>
-      <periodHardConstraintType reference="8445"/>
+      <periodHardConstraintType>AFTER</periodHardConstraintType>
       <leftSideTopic reference="7980"/>
       <rightSideTopic reference="7924"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8447">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8445">
       <id>21</id>
-      <periodHardConstraintType id="8448">EXCLUSION</periodHardConstraintType>
+      <periodHardConstraintType>EXCLUSION</periodHardConstraintType>
       <leftSideTopic reference="8160"/>
       <rightSideTopic reference="8156"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
-    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8449">
+    <org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint id="8446">
       <id>22</id>
-      <periodHardConstraintType reference="8448"/>
+      <periodHardConstraintType>EXCLUSION</periodHardConstraintType>
       <leftSideTopic reference="8246"/>
       <rightSideTopic reference="7950"/>
     </org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint>
   </periodHardConstraintList>
-  <roomHardConstraintList id="8450"/>
+  <roomHardConstraintList id="8447"/>
 </org.drools.solver.examples.itc2007.examination.domain.Examination>

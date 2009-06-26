@@ -76,7 +76,7 @@ public class ExaminationShellApp extends LoggingMain {
     private void processs() {
         List<File> inputFileList = getInputFileList();
         for (File inputFile : inputFileList) {
-            Examination examination = examinationInputConvertor.readExamination(inputFile);
+            Examination examination = (Examination) examinationInputConvertor.readSolution(inputFile);
             solver.setStartingSolution(examination);
             solver.solve();
             examination = (Examination) solver.getBestSolution();

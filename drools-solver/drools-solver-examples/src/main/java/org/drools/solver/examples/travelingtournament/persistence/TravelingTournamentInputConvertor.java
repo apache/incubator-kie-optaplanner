@@ -12,53 +12,23 @@ import java.util.StringTokenizer;
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
 import org.drools.solver.examples.travelingtournament.domain.Day;
 import org.drools.solver.examples.travelingtournament.domain.Match;
 import org.drools.solver.examples.travelingtournament.domain.Team;
 import org.drools.solver.examples.travelingtournament.domain.TravelingTournament;
+import org.drools.solver.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet
  */
-public abstract class TravelingTournamentInputConvertor extends LoggingMain {
-    
-    private static final String INPUT_FILE_SUFFIX = ".txt";
-    private static final String OUTPUT_FILE_SUFFIX = ".xml";
+public abstract class TravelingTournamentInputConvertor extends AbstractInputConvertor {
 
-    private final File inputDir = new File("data/travelingtournament/input/");
-
-    public void convert() {
-        XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
-        File[] inputFiles = inputDir.listFiles();
-        if (inputFiles == null) {
-            throw new IllegalArgumentException(
-                    "Your working dir should be drools-solver-examples and contain: " + inputDir);
-        }
-        for (File inputFile : inputFiles) {
-            String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
-                TravelingTournament travelingTournament = createTravelingTournament(inputFile);
-                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length())
-                        + OUTPUT_FILE_SUFFIX;
-                File outputFile = new File(getOutputDir(), outputFileName);
-                solutionDao.writeSolution(travelingTournament, outputFile);
-            }
-        }
+    protected String getExampleDirName() {
+        return "travelingtournament";
     }
 
-    private TravelingTournament createTravelingTournament(File inputFile) {
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new FileReader(inputFile));
-            return readTravelingTournament(bufferedReader);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        } finally {
-            IOUtils.closeQuietly(bufferedReader);
-        }
-    }
-
-    private TravelingTournament readTravelingTournament(BufferedReader bufferedReader) throws IOException {
+    public Solution readSolution(BufferedReader bufferedReader) throws IOException {
         TravelingTournament travelingTournament = new TravelingTournament();
         travelingTournament.setId(0L);
         int n = readN(bufferedReader);
@@ -140,8 +110,6 @@ public abstract class TravelingTournamentInputConvertor extends LoggingMain {
         }
         return matchList;
     }
-
-    protected abstract File getOutputDir();
 
     protected abstract void initializeMatchDays(TravelingTournament travelingTournament);
 
