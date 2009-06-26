@@ -71,5 +71,52 @@ public abstract class AbstractInputConvertor extends LoggingMain {
     }
 
     public abstract Solution readSolution(BufferedReader bufferedReader) throws IOException;
-    
+
+    // ************************************************************************
+    // Helper methods
+    // ************************************************************************
+
+    public void readEmptyLine(BufferedReader bufferedReader) throws IOException {
+        readConstantLine(bufferedReader, "");
+    }
+
+    public void readConstantLine(BufferedReader bufferedReader, String constantValue) throws IOException {
+        String line = bufferedReader.readLine();
+        String value = line.trim();
+        if (!value.equals(constantValue)) {
+            throw new IllegalArgumentException("Read line (" + line + ") is expected to be a constant value ("
+                    + constantValue + ").");
+        }
+    }
+
+    public int readIntegerValue(BufferedReader bufferedReader) throws IOException {
+        return readIntegerValue(bufferedReader, "");
+    }
+
+    public int readIntegerValue(BufferedReader bufferedReader, String prefix) throws IOException {
+        return readIntegerValue(bufferedReader, prefix, "");
+    }
+
+    public int readIntegerValue(BufferedReader bufferedReader, String prefix, String suffix) throws IOException {
+        String line = bufferedReader.readLine();
+        String value = line.trim();
+        if (!value.startsWith(prefix)) {
+            throw new IllegalArgumentException("Read line (" + line + ") is expected to start with prefix ("
+                    + prefix + ").");
+        }
+        value = value.substring(prefix.length());
+        if (!value.endsWith(suffix)) {
+            throw new IllegalArgumentException("Read line (" + line + ") is expected to end with suffix ("
+                    + suffix + ").");
+        }
+        value = value.substring(0, value.length() - suffix.length());
+        value = value.trim();
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Read line (" + line + ") is expected to contain an integer value ("
+                    + value + ").", e);
+        }
+    }
+
 }

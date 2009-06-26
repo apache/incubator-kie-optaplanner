@@ -1,17 +1,12 @@
 package org.drools.solver.examples.manners2009.persistence;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-import org.drools.solver.examples.common.app.LoggingMain;
-import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
 import org.drools.solver.examples.manners2009.domain.Gender;
 import org.drools.solver.examples.manners2009.domain.Guest;
@@ -56,8 +51,8 @@ public class Manners2009InputConvertor extends AbstractInputConvertor {
 
     private void readTableListAndSeatList(BufferedReader bufferedReader, Manners2009 manners2009)
             throws IOException {
-        int tableListSize = Integer.parseInt(readParam(bufferedReader, "Tables:"));
-        int seatsPerTable = Integer.parseInt(readParam(bufferedReader, "SeatsPerTable:"));
+        int tableListSize = readIntegerValue(bufferedReader, "Tables:");
+        int seatsPerTable = readIntegerValue(bufferedReader, "SeatsPerTable:");
         List<Table> tableList = new ArrayList<Table>(tableListSize);
         List<Seat> seatList = new ArrayList<Seat>(tableListSize * seatsPerTable);
         for (int i = 0; i < tableListSize; i++) {
@@ -94,8 +89,8 @@ public class Manners2009InputConvertor extends AbstractInputConvertor {
 
     private void readJobListGuestListAndHobbyPracticianList(BufferedReader bufferedReader, Manners2009 manners2009)
             throws IOException {
-        readHeader(bufferedReader, "Num,Profession,SubProf,Gender,Spt1,Spt2,Spt3");
-        readHeader(bufferedReader, "-------------------------------------------");
+        readConstantLine(bufferedReader, "Num,Profession,SubProf,Gender,Spt1,Spt2,Spt3");
+        readConstantLine(bufferedReader, "-------------------------------------------");
         int guestSize = manners2009.getSeatList().size();
 
         List<Guest> guestList = new ArrayList<Guest>(guestSize);
@@ -143,23 +138,6 @@ public class Manners2009InputConvertor extends AbstractInputConvertor {
         manners2009.setJobList(new ArrayList<Job>(jobMap.values()));
         manners2009.setGuestList(guestList);
         manners2009.setHobbyPracticianList(hobbyPracticianList);
-    }
-
-    private String readParam(BufferedReader bufferedReader, String key) throws IOException {
-        String line = bufferedReader.readLine();
-        String[] lineTokens = line.split("[\\ \\t]+");
-        if (lineTokens.length != 2 || !lineTokens[0].equals(key)) {
-            throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 2 tokens"
-                    + " and start with \"" + key + "\".");
-        }
-        return lineTokens[1];
-    }
-
-    private void readHeader(BufferedReader bufferedReader, String header) throws IOException {
-        String line = bufferedReader.readLine();
-        if (!line.equals(header)) {
-            throw new IllegalArgumentException("Read line (" + line + ") is expected to be \"" + header + "\".");
-        }
     }
 
 }

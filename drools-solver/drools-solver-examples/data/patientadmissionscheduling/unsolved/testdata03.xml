@@ -1,0 +1,25 @@
+<org.drools.solver.examples.patientadmissionscheduling.domain.PatientAdmissionSchedule id="1">
+  <id>0</id>
+  <specialismList id="2">
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Specialism id="3">
+      <id>1</id>
+      <name>Specialism1</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Specialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Specialism id="4">
+      <id>2</id>
+      <name>Specialism2</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Specialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Specialism id="5">
+      <id>3</id>
+      <name>Specialism3</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Specialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Specialism id="6">
+      <id>4</id>
+      <name>Specialism4</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Specialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Specialism id="7">
+      <id>5</id>
+      <name>Specialism5</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Specialism>
+  </specialismList>
+</org.drools.solver.examples.patientadmissionscheduling.domain.PatientAdmissionSchedule>
