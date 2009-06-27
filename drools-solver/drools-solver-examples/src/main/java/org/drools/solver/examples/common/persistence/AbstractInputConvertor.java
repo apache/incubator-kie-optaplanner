@@ -18,7 +18,25 @@ public abstract class AbstractInputConvertor extends LoggingMain {
     private static final String DEFAULT_INPUT_FILE_SUFFIX = ".txt";
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";
 
-    public void convert() {
+    protected File getInputDir() {
+        return new File("data/" + getExampleDirName() + "/input/");
+    }
+
+    protected File getOutputDir() {
+        return new File("data/" + getExampleDirName() + "/unsolved/");
+    }
+
+    protected abstract String getExampleDirName();
+
+    protected String getInputFileSuffix() {
+        return DEFAULT_INPUT_FILE_SUFFIX;
+    }
+
+    protected String getOutputFileSuffix() {
+        return DEFAULT_OUTPUT_FILE_SUFFIX;
+    }
+
+    public void convertAll() {
         File inputDir = getInputDir();
         File outputDir = getOutputDir();
         XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
@@ -40,29 +58,15 @@ public abstract class AbstractInputConvertor extends LoggingMain {
         }
     }
 
-    protected File getInputDir() {
-        return new File("data/" + getExampleDirName() + "/input/");
-    }
-
-    protected File getOutputDir() {
-        return new File("data/" + getExampleDirName() + "/unsolved/");
-    }
-
-    protected abstract String getExampleDirName();
-
-    protected String getInputFileSuffix() {
-        return DEFAULT_INPUT_FILE_SUFFIX;
-    }
-
-    protected String getOutputFileSuffix() {
-        return DEFAULT_OUTPUT_FILE_SUFFIX;
-    }
+    public abstract InputBuilder createInputBuilder();
 
     public Solution readSolution(File inputFile) {
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(inputFile));
-            return readSolution(bufferedReader);
+            InputBuilder inputBuilder = createInputBuilder();
+            inputBuilder.setBufferedReader(bufferedReader);
+            return inputBuilder.readSolution();
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         } finally {
@@ -70,53 +74,63 @@ public abstract class AbstractInputConvertor extends LoggingMain {
         }
     }
 
-    public abstract Solution readSolution(BufferedReader bufferedReader) throws IOException;
+    public abstract class InputBuilder {
 
-    // ************************************************************************
-    // Helper methods
-    // ************************************************************************
+        protected BufferedReader bufferedReader;
 
-    public void readEmptyLine(BufferedReader bufferedReader) throws IOException {
-        readConstantLine(bufferedReader, "");
-    }
-
-    public void readConstantLine(BufferedReader bufferedReader, String constantValue) throws IOException {
-        String line = bufferedReader.readLine();
-        String value = line.trim();
-        if (!value.equals(constantValue)) {
-            throw new IllegalArgumentException("Read line (" + line + ") is expected to be a constant value ("
-                    + constantValue + ").");
+        public void setBufferedReader(BufferedReader bufferedReader) {
+            this.bufferedReader = bufferedReader;
         }
-    }
 
-    public int readIntegerValue(BufferedReader bufferedReader) throws IOException {
-        return readIntegerValue(bufferedReader, "");
-    }
+        public abstract Solution readSolution() throws IOException;
 
-    public int readIntegerValue(BufferedReader bufferedReader, String prefix) throws IOException {
-        return readIntegerValue(bufferedReader, prefix, "");
-    }
+        // ************************************************************************
+        // Helper methods
+        // ************************************************************************
 
-    public int readIntegerValue(BufferedReader bufferedReader, String prefix, String suffix) throws IOException {
-        String line = bufferedReader.readLine();
-        String value = line.trim();
-        if (!value.startsWith(prefix)) {
-            throw new IllegalArgumentException("Read line (" + line + ") is expected to start with prefix ("
-                    + prefix + ").");
+        public void readEmptyLine() throws IOException {
+            readConstantLine("");
         }
-        value = value.substring(prefix.length());
-        if (!value.endsWith(suffix)) {
-            throw new IllegalArgumentException("Read line (" + line + ") is expected to end with suffix ("
-                    + suffix + ").");
+
+        public void readConstantLine(String constantValue) throws IOException {
+            String line = bufferedReader.readLine();
+            String value = line.trim();
+            if (!value.equals(constantValue)) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to be a constant value ("
+                        + constantValue + ").");
+            }
         }
-        value = value.substring(0, value.length() - suffix.length());
-        value = value.trim();
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Read line (" + line + ") is expected to contain an integer value ("
-                    + value + ").", e);
+
+        public int readIntegerValue() throws IOException {
+            return readIntegerValue("");
         }
+
+        public int readIntegerValue(String prefix) throws IOException {
+            return readIntegerValue(prefix, "");
+        }
+
+        public int readIntegerValue(String prefix, String suffix) throws IOException {
+            String line = bufferedReader.readLine();
+            String value = line.trim();
+            if (!value.startsWith(prefix)) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to start with prefix ("
+                        + prefix + ").");
+            }
+            value = value.substring(prefix.length());
+            if (!value.endsWith(suffix)) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to end with suffix ("
+                        + suffix + ").");
+            }
+            value = value.substring(0, value.length() - suffix.length());
+            value = value.trim();
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain an integer value ("
+                        + value + ").", e);
+            }
+        }
+
     }
 
 }
