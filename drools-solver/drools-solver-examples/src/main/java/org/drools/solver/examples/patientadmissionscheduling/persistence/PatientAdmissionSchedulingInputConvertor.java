@@ -11,6 +11,7 @@ import org.drools.solver.examples.patientadmissionscheduling.domain.PatientAdmis
 import org.drools.solver.examples.patientadmissionscheduling.domain.Specialism;
 import org.drools.solver.examples.patientadmissionscheduling.domain.Department;
 import org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism;
+import org.drools.solver.examples.patientadmissionscheduling.domain.Equipment;
 import org.drools.solver.core.solution.Solution;
 
 /**
@@ -32,36 +33,52 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
 
     public class PatientAdmissionSchedulingInputBuilder extends InputBuilder {
 
-        private Map<Long, Specialism> specialismMap = null;
+        private PatientAdmissionSchedule patientAdmissionSchedule;
+
+        private int specialismListSize;
+        private int departmentListSize;
+        private int equipmentListSize;
+        private int roomListSize;
+        private int bedListSize;
+        private int patientListSize;
+        private int nightListSize;
+
+        private Map<Long, Specialism> idToSpecialismMap = null;
+        private Map<Integer, Equipment> indexToEquipmentMap = null;
 
         public Solution readSolution() throws IOException {
-            PatientAdmissionSchedule patientAdmissionSchedule = new PatientAdmissionSchedule();
+            patientAdmissionSchedule = new PatientAdmissionSchedule();
             patientAdmissionSchedule.setId(0L);
-
-            readConstantLine("ARTICLE BENCHMARK DATA SET");
-            int roomListSize = readIntegerValue("Rooms:");
-            int roomPropertyListSize = readIntegerValue("Roomproperties:");
-            int bedListSize = readIntegerValue("Beds:");
-            int departmentListSize = readIntegerValue("Departments:");
-            int specialismListSize = readIntegerValue("Specialisms:");
-            int patientListSize = readIntegerValue("Patients:");
-            int nightListSize = readIntegerValue("Planning horizon:");
+            readSizes();
             readEmptyLine();
             readEmptyLine();
+            readSpecialismList();
+            readEmptyLine();
+            readDepartmentListAndDepartmentSpecialismList();
+            readEmptyLine();
+            readEquipmentList();
+            readEmptyLine();
 
-            readSpecialismList(patientAdmissionSchedule, specialismListSize);
-
-            readDepartmentListAndDepartmentSpecialismList(patientAdmissionSchedule, departmentListSize);
-
+            
 
             return patientAdmissionSchedule;
         }
 
-        private void readSpecialismList(PatientAdmissionSchedule patientAdmissionSchedule,
-                int specialismListSize) throws IOException {
+        private void readSizes() throws IOException {
+            readConstantLine("ARTICLE BENCHMARK DATA SET");
+            roomListSize = readIntegerValue("Rooms:");
+            equipmentListSize = readIntegerValue("Roomproperties:");
+            bedListSize = readIntegerValue("Beds:");
+            departmentListSize = readIntegerValue("Departments:");
+            specialismListSize = readIntegerValue("Specialisms:");
+            patientListSize = readIntegerValue("Patients:");
+            nightListSize = readIntegerValue("Planning horizon:");
+        }
+
+        private void readSpecialismList() throws IOException {
             readConstantLine("SPECIALISMS:");
             List<Specialism> specialismList = new ArrayList<Specialism>(specialismListSize);
-            specialismMap = new HashMap<Long, Specialism>(specialismListSize);
+            idToSpecialismMap = new HashMap<Long, Specialism>(specialismListSize);
             for (int i = 0; i < specialismListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
@@ -69,13 +86,12 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                 specialism.setId(Long.parseLong(lineTokens[0]));
                 specialism.setName(lineTokens[1]);
                 specialismList.add(specialism);
-                specialismMap.put(specialism.getId(), specialism);
+                idToSpecialismMap.put(specialism.getId(), specialism);
             }
             patientAdmissionSchedule.setSpecialismList(specialismList);
-            readEmptyLine();
         }
 
-        private void readDepartmentListAndDepartmentSpecialismList(PatientAdmissionSchedule patientAdmissionSchedule, int departmentListSize) throws IOException {
+        private void readDepartmentListAndDepartmentSpecialismList() throws IOException {
             readConstantLine("DEPARTMENTS:");
             List<Department> departmentList = new ArrayList<Department>(departmentListSize);
             List<DepartmentSpecialism> departmentSpecialismList = new ArrayList<DepartmentSpecialism>(
@@ -110,15 +126,34 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                     DepartmentSpecialism departmentSpecialism = new DepartmentSpecialism();
                     departmentSpecialism.setId((long) j / 2);
                     departmentSpecialism.setDepartment(department);
-                    departmentSpecialism.setSpecialism(specialismMap.get(specialismId));
+                    departmentSpecialism.setSpecialism(idToSpecialismMap.get(specialismId));
                     departmentSpecialism.setPriority(priority);
                     departmentSpecialismList.add(departmentSpecialism);
                 }
             }
             patientAdmissionSchedule.setDepartmentList(departmentList);
             patientAdmissionSchedule.setDepartmentSpecialismList(departmentSpecialismList);
-            readEmptyLine();
         }
+
+        private void readEquipmentList() throws IOException {
+            readConstantLine("ROOMPROPERTIES:");
+            List<Equipment> equipmentList = new ArrayList<Equipment>(equipmentListSize);
+            indexToEquipmentMap = new HashMap<Integer, Equipment>(equipmentListSize);
+            for (int i = 0; i < equipmentListSize; i++) {
+                String line = bufferedReader.readLine();
+                String[] lineTokens = splitBySpace(line, 2);
+                Equipment equipment = new Equipment();
+                equipment.setId(Long.parseLong(lineTokens[0]));
+                equipment.setName(lineTokens[1]);
+                equipmentList.add(equipment);
+                indexToEquipmentMap.put(i, equipment);
+            }
+            patientAdmissionSchedule.setEquipmentList(equipmentList);
+        }
+
+        // ************************************************************************
+        // Helper methods
+        // ************************************************************************
 
         private String[] splitBySpace(String line) {
             String[] lineTokens = line.trim().split("\\ ");

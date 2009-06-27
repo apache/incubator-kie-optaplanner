@@ -19,6 +19,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
     private List<Specialism> specialismList;
     private List<Department> departmentList;
     private List<DepartmentSpecialism> departmentSpecialismList;
+    private List<Equipment> equipmentList;
 
     private List<Exam> examList;
 
@@ -50,11 +51,20 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.departmentSpecialismList = departmentSpecialismList;
     }
 
+    public List<Equipment> getEquipmentList() {
+        return equipmentList;
+    }
+
+    public void setEquipmentList(List<Equipment> equipmentList) {
+        this.equipmentList = equipmentList;
+    }
+
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(specialismList);
         facts.addAll(departmentList);
         facts.addAll(departmentSpecialismList);
+        facts.addAll(equipmentList);
 
 
 //        facts.addAll(roomList);
@@ -75,6 +85,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         clone.specialismList = specialismList;
         clone.departmentList = departmentList;
         clone.departmentSpecialismList = departmentSpecialismList;
+        clone.equipmentList = equipmentList;
 
         
 //        clone.roomList = roomList;
