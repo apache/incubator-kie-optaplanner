@@ -15,9 +15,9 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
 public class PatientAdmissionSchedule extends AbstractPersistable implements Solution {
 
     private List<Specialism> specialismList;
+    private List<Equipment> equipmentList;
     private List<Department> departmentList;
     private List<DepartmentSpecialism> departmentSpecialismList;
-    private List<Equipment> equipmentList;
     private List<Room> roomList;
     private List<RoomSpecialism> roomSpecialismList;
     private List<RoomEquipment> roomEquipmentList;
@@ -38,6 +38,14 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.specialismList = specialismList;
     }
 
+    public List<Equipment> getEquipmentList() {
+        return equipmentList;
+    }
+
+    public void setEquipmentList(List<Equipment> equipmentList) {
+        this.equipmentList = equipmentList;
+    }
+
     public List<Department> getDepartmentList() {
         return departmentList;
     }
@@ -52,14 +60,6 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
 
     public void setDepartmentSpecialismList(List<DepartmentSpecialism> departmentSpecialismList) {
         this.departmentSpecialismList = departmentSpecialismList;
-    }
-
-    public List<Equipment> getEquipmentList() {
-        return equipmentList;
-    }
-
-    public void setEquipmentList(List<Equipment> equipmentList) {
-        this.equipmentList = equipmentList;
     }
 
     public List<Room> getRoomList() {
@@ -149,9 +149,9 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(specialismList);
+        facts.addAll(equipmentList);
         facts.addAll(departmentList);
         facts.addAll(departmentSpecialismList);
-        facts.addAll(equipmentList);
         facts.addAll(roomList);
         facts.addAll(roomSpecialismList);
         facts.addAll(roomEquipmentList);
@@ -174,9 +174,9 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         PatientAdmissionSchedule clone = new PatientAdmissionSchedule();
         clone.id = id;
         clone.specialismList = specialismList;
+        clone.equipmentList = equipmentList;
         clone.departmentList = departmentList;
         clone.departmentSpecialismList = departmentSpecialismList;
-        clone.equipmentList = equipmentList;
         clone.roomList = roomList;
         clone.roomSpecialismList = roomSpecialismList;
         clone.roomEquipmentList = roomEquipmentList;

@@ -39,10 +39,10 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
     }
 
     public InputBuilder createInputBuilder() {
-        return new PatientAdmissionSchedulingInputBuilder();
+        return new PatientAdmissionScheduleInputBuilder();
     }
 
-    public class PatientAdmissionSchedulingInputBuilder extends InputBuilder {
+    public class PatientAdmissionScheduleInputBuilder extends InputBuilder {
 
         private PatientAdmissionSchedule patientAdmissionSchedule;
 
@@ -80,6 +80,18 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
             readPatientListAndAdmissionListAndRequiredPatientEquipmentListAndPreferredPatientEquipmentList();
             readEmptyLine();
             readConstantLine("END.");
+
+            // TODO not all nights are planned, only the "planning horizon" nights are planned
+            logger.info("PatientAdmissionSchedule with {} specialisms, {} equipments, {} departments, {} rooms, "
+                    + "{} beds, {} nights, {} patients and {} admissions.",
+                    new Object[]{patientAdmissionSchedule.getSpecialismList().size(),
+                            patientAdmissionSchedule.getEquipmentList().size(),
+                            patientAdmissionSchedule.getDepartmentList().size(),
+                            patientAdmissionSchedule.getRoomList().size(),
+                            patientAdmissionSchedule.getBedList().size(),
+                            patientAdmissionSchedule.getNightList().size(),
+                            patientAdmissionSchedule.getPatientList().size(),
+                            patientAdmissionSchedule.getAdmissionList().size()});
 
 
             return patientAdmissionSchedule;
