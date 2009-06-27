@@ -102,11 +102,11 @@ public class Manners2009 extends AbstractPersistable implements Solution {
         clone.hobbyPracticianList = hobbyPracticianList;
         clone.tableList = tableList;
         clone.seatList = seatList;
-        List<SeatDesignation> clonedMatchList = new ArrayList<SeatDesignation>(seatDesignationList.size());
+        List<SeatDesignation> clonedSeatDesignationList = new ArrayList<SeatDesignation>(seatDesignationList.size());
         for (SeatDesignation seatDesignation : seatDesignationList) {
-            clonedMatchList.add(seatDesignation.clone());
+            clonedSeatDesignationList.add(seatDesignation.clone());
         }
-        clone.seatDesignationList = clonedMatchList;
+        clone.seatDesignationList = clonedSeatDesignationList;
         return clone;
     }
 

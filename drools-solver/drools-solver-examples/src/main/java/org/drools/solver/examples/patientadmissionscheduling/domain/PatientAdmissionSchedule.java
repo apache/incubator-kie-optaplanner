@@ -29,7 +29,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
     private List<RequiredPatientEquipment> requiredPatientEquipmentList;
     private List<PreferredPatientEquipment> preferredPatientEquipmentList;
 
-    private List<Exam> examList;
+    private List<BedDesignation> bedDesignationList;
 
     public List<Specialism> getSpecialismList() {
         return specialismList;
@@ -45,10 +45,6 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
 
     public void setDepartmentList(List<Department> departmentList) {
         this.departmentList = departmentList;
-    }
-
-    public boolean isInitialized() {
-        return (examList != null);
     }
 
     public List<DepartmentSpecialism> getDepartmentSpecialismList() {
@@ -139,6 +135,18 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.preferredPatientEquipmentList = preferredPatientEquipmentList;
     }
 
+    public List<BedDesignation> getBedDesignationList() {
+        return bedDesignationList;
+    }
+
+    public void setBedDesignationList(List<BedDesignation> bedDesignationList) {
+        this.bedDesignationList = bedDesignationList;
+    }
+
+    public boolean isInitialized() {
+        return (bedDesignationList != null);
+    }
+
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(specialismList);
@@ -154,13 +162,8 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         facts.addAll(admissionList);
         facts.addAll(requiredPatientEquipmentList);
         facts.addAll(preferredPatientEquipmentList);
-
-
-//        facts.addAll(roomList);
-//        facts.addAll(periodHardConstraintList);
-//        facts.addAll(roomHardConstraintList);
         if (isInitialized()) {
-            facts.addAll(examList);
+            facts.addAll(bedDesignationList);
         }
         return facts;
     }
@@ -184,18 +187,12 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         clone.admissionList = admissionList;
         clone.requiredPatientEquipmentList = requiredPatientEquipmentList;
         clone.preferredPatientEquipmentList = preferredPatientEquipmentList;
-
-        
-//        clone.roomList = roomList;
-//        clone.periodHardConstraintList = periodHardConstraintList;
-//        clone.roomHardConstraintList = roomHardConstraintList;
-        // deep clone exams
-        List<Exam> clonedExamList = new ArrayList<Exam>(examList.size());
-        for (Exam exam : examList) {
-            Exam clonedExam = exam.clone();
-            clonedExamList.add(clonedExam);
+        List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
+        for (BedDesignation bedDesignation : bedDesignationList) {
+            BedDesignation clonedBedDesignation = bedDesignation.clone();
+            clonedBedDesignationList.add(clonedBedDesignation);
         }
-        clone.examList = clonedExamList;
+        clone.bedDesignationList = clonedBedDesignationList;
         return clone;
     }
 
@@ -207,14 +204,14 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
             return false;
         } else {
             PatientAdmissionSchedule other = (PatientAdmissionSchedule) o;
-            if (examList.size() != other.examList.size()) {
+            if (bedDesignationList.size() != other.bedDesignationList.size()) {
                 return false;
             }
-            for (Iterator<Exam> it = examList.iterator(), otherIt = other.examList.iterator(); it.hasNext();) {
-                Exam exam = it.next();
-                Exam otherExam = otherIt.next();
+            for (Iterator<BedDesignation> it = bedDesignationList.iterator(), otherIt = other.bedDesignationList.iterator(); it.hasNext();) {
+                BedDesignation bedDesignation = it.next();
+                BedDesignation otherBedDesignation = otherIt.next();
                 // Notice: we don't use equals()
-                if (!exam.solutionEquals(otherExam)) {
+                if (!bedDesignation.solutionEquals(otherBedDesignation)) {
                     return false;
                 }
             }
@@ -224,9 +221,9 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Exam exam : examList) {
+        for (BedDesignation bedDesignation : bedDesignationList) {
             // Notice: we don't use hashCode()
-            hashCodeBuilder.append(exam.solutionHashCode());
+            hashCodeBuilder.append(bedDesignation.solutionHashCode());
         }
         return hashCodeBuilder.toHashCode();
     }
