@@ -28,10 +28,10 @@ import org.drools.solver.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConvertor {
+public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvertor {
 
     public static void main(String[] args) {
-        new PatientAdmissionSchedulingInputConvertor().convertAll();
+        new PatientAdmissionScheduleInputConvertor().convertAll();
     }
 
     protected String getExampleDirName() {
