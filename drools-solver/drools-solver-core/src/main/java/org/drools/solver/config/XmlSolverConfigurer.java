@@ -49,7 +49,11 @@ public class XmlSolverConfigurer {
     // ************************************************************************
 
     public XmlSolverConfigurer configure(String resource) {
-        return configure(getClass().getResourceAsStream(resource));
+        InputStream in = getClass().getResourceAsStream(resource);
+        if (in == null) {
+            throw new IllegalArgumentException("The solver configuration (" + resource + ") does not exist.");
+        }
+        return configure(in);
     }
 
     public XmlSolverConfigurer configure(InputStream in) {
