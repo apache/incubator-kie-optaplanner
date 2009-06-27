@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/solver/examples/patientadmissionschedule/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
+    <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    </scoreDefinition>
+    <startingSolutionInitializerClass>org.drools.solver.examples.patientadmissionschedule.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>
+    <finish>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+    </finish>
+    <!--<deciderScoreComparatorFactory>-->
+        <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
+        <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
+        <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
+        <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
+        <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
+        <!--<hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>-->
+        <!--<startingHardWeight>1000</startingHardWeight>-->
+    <!--</deciderScoreComparatorFactory>-->
+    <selector>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
+    </selector>
+    <accepter>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+        <completePropertyTabuSize>7</completePropertyTabuSize>
+    </accepter>
+    <forager>
+        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
+    </forager>
+</localSearchSolver>
+        
