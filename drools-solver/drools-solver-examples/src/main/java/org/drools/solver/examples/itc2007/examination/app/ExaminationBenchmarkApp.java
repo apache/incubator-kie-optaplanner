@@ -3,7 +3,6 @@ package org.drools.solver.examples.itc2007.examination.app;
 import java.io.File;
 
 import org.drools.solver.examples.common.app.CommonBenchmarkApp;
-import org.drools.solver.examples.nqueens.app.NQueensBenchmarkApp;
 
 /**
  * @author Geoffrey De Smet
@@ -24,7 +23,7 @@ public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
         } else {
             solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
         }
-        new NQueensBenchmarkApp(solverConfig, SOLVER_BENCHMARK_RESULT_FILE).process();
+        new ExaminationBenchmarkApp(solverConfig, SOLVER_BENCHMARK_RESULT_FILE).process();
     }
 
     public ExaminationBenchmarkApp(String solverBenchmarkConfig, File resultFile) {

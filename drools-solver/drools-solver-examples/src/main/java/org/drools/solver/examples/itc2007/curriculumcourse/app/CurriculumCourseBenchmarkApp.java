@@ -24,7 +24,7 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
         } else {
             solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
         }
-        new NQueensBenchmarkApp(solverConfig, SOLVER_BENCHMARK_RESULT_FILE).process();
+        new CurriculumCourseBenchmarkApp(solverConfig, SOLVER_BENCHMARK_RESULT_FILE).process();
     }
 
     public CurriculumCourseBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
