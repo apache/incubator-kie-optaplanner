@@ -23,6 +23,11 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
     private List<RoomSpecialism> roomSpecialismList;
     private List<RoomEquipment> roomEquipmentList;
     private List<Bed> bedList;
+    private List<Night> nightList;
+    private List<Patient> patientList;
+    private List<Admission> admissionList;
+    private List<RequiredPatientEquipment> requiredPatientEquipmentList;
+    private List<PreferredPatientEquipment> preferredPatientEquipmentList;
 
     private List<Exam> examList;
 
@@ -94,6 +99,46 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.bedList = bedList;
     }
 
+    public List<Night> getNightList() {
+        return nightList;
+    }
+
+    public void setNightList(List<Night> nightList) {
+        this.nightList = nightList;
+    }
+
+    public List<Patient> getPatientList() {
+        return patientList;
+    }
+
+    public void setPatientList(List<Patient> patientList) {
+        this.patientList = patientList;
+    }
+
+    public List<Admission> getAdmissionList() {
+        return admissionList;
+    }
+
+    public void setAdmissionList(List<Admission> admissionList) {
+        this.admissionList = admissionList;
+    }
+
+    public List<RequiredPatientEquipment> getRequiredPatientEquipmentList() {
+        return requiredPatientEquipmentList;
+    }
+
+    public void setRequiredPatientEquipmentList(List<RequiredPatientEquipment> requiredPatientEquipmentList) {
+        this.requiredPatientEquipmentList = requiredPatientEquipmentList;
+    }
+
+    public List<PreferredPatientEquipment> getPreferredPatientEquipmentList() {
+        return preferredPatientEquipmentList;
+    }
+
+    public void setPreferredPatientEquipmentList(List<PreferredPatientEquipment> preferredPatientEquipmentList) {
+        this.preferredPatientEquipmentList = preferredPatientEquipmentList;
+    }
+
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(specialismList);
@@ -104,6 +149,11 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         facts.addAll(roomSpecialismList);
         facts.addAll(roomEquipmentList);
         facts.addAll(bedList);
+        facts.addAll(nightList);
+        facts.addAll(patientList);
+        facts.addAll(admissionList);
+        facts.addAll(requiredPatientEquipmentList);
+        facts.addAll(preferredPatientEquipmentList);
 
 
 //        facts.addAll(roomList);
@@ -129,6 +179,11 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         clone.roomSpecialismList = roomSpecialismList;
         clone.roomEquipmentList = roomEquipmentList;
         clone.bedList = bedList;
+        clone.nightList = nightList;
+        clone.patientList = patientList;
+        clone.admissionList = admissionList;
+        clone.requiredPatientEquipmentList = requiredPatientEquipmentList;
+        clone.preferredPatientEquipmentList = preferredPatientEquipmentList;
 
         
 //        clone.roomList = roomList;

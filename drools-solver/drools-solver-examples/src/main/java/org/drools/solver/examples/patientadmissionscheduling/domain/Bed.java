@@ -29,6 +29,8 @@ public class Bed extends AbstractPersistable implements Comparable<Bed> {
 
     public int compareTo(Bed other) {
         return new CompareToBuilder()
+                .append(room, other.room)
+                .append(indexInRoom, other.indexInRoom)
                 .append(id, other.id)
                 .toComparison();
     }

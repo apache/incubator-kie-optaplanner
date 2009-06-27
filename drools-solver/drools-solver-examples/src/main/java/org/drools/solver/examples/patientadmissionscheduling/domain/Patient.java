@@ -1,0 +1,59 @@
+package org.drools.solver.examples.patientadmissionscheduling.domain;
+
+import org.apache.commons.lang.builder.CompareToBuilder;
+import org.drools.solver.examples.common.domain.AbstractPersistable;
+
+/**
+ * @author Geoffrey De Smet
+ */
+public class Patient extends AbstractPersistable implements Comparable<Patient> {
+
+    private String name;
+    private Gender gender;
+    private int age;
+    private int preferredMaximumRoomCapacity;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getPreferredMaximumRoomCapacity() {
+        return preferredMaximumRoomCapacity;
+    }
+
+    public void setPreferredMaximumRoomCapacity(int preferredMaximumRoomCapacity) {
+        this.preferredMaximumRoomCapacity = preferredMaximumRoomCapacity;
+    }
+
+    public int compareTo(Patient other) {
+        return new CompareToBuilder()
+                .append(id, other.id)
+                .toComparison();
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+}

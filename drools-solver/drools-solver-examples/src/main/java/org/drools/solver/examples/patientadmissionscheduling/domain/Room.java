@@ -48,6 +48,7 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
 
     public int compareTo(Room other) {
         return new CompareToBuilder()
+                .append(department, other.department)
                 .append(id, other.id)
                 .toComparison();
     }
