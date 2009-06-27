@@ -16,6 +16,7 @@ import org.drools.solver.examples.patientadmissionscheduling.domain.Room;
 import org.drools.solver.examples.patientadmissionscheduling.domain.RoomSpecialism;
 import org.drools.solver.examples.patientadmissionscheduling.domain.GenderLimitation;
 import org.drools.solver.examples.patientadmissionscheduling.domain.RoomEquipment;
+import org.drools.solver.examples.patientadmissionscheduling.domain.Bed;
 import org.drools.solver.core.solution.Solution;
 
 /**
@@ -66,7 +67,9 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
             readEmptyLine();
             readRoomListAndRoomSpecialismListAndRoomEquipmentList();
             readEmptyLine();
-            
+            readBedList();
+            readEmptyLine();
+
 
             return patientAdmissionSchedule;
         }
@@ -220,6 +223,30 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
             patientAdmissionSchedule.setRoomEquipmentList(roomEquipmentList);
+        }
+
+        private void readBedList() throws IOException {
+            readConstantLine("BEDS:");
+            List<Bed> bedList = new ArrayList<Bed>(bedListSize);
+            Map<Room, Integer> roomToLastIndexInRoomMap = new HashMap<Room, Integer>(roomListSize);
+            for (int i = 0; i < bedListSize; i++) {
+                String line = bufferedReader.readLine();
+                String[] lineTokens = splitBySpace(line, 2);
+                Bed bed = new Bed();
+                bed.setId(Long.parseLong(lineTokens[0]));
+                Room room = idToRoomMap.get(Long.parseLong(lineTokens[1]));
+                bed.setRoom(room);
+                Integer indexInRoom = roomToLastIndexInRoomMap.get(room);
+                if (indexInRoom == null) {
+                    indexInRoom = 0;
+                } else {
+                    indexInRoom++;
+                }
+                bed.setIndexInRoom(indexInRoom);
+                roomToLastIndexInRoomMap.put(room, indexInRoom);
+                bedList.add(bed);
+            }
+            patientAdmissionSchedule.setBedList(bedList);
         }
 
 
