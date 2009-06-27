@@ -80,6 +80,8 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
             readPatientListAndAdmissionListAndRequiredPatientEquipmentListAndPreferredPatientEquipmentList();
             readEmptyLine();
             readConstantLine("END.");
+
+
             return patientAdmissionSchedule;
         }
 
@@ -116,6 +118,7 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
             idToDepartmentMap = new HashMap<Long, Department>(departmentListSize);
             List<DepartmentSpecialism> departmentSpecialismList = new ArrayList<DepartmentSpecialism>(
                     departmentListSize * 5);
+            long departmentSpecialismId = 0L;
             for (int i = 0; i < departmentListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitByPipeline(line, 2);
@@ -143,12 +146,13 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                 }
                 for (int j = 0; j < departmentSpecialismTokens.length; j += 2) {
                     DepartmentSpecialism departmentSpecialism = new DepartmentSpecialism();
-                    departmentSpecialism.setId((long) j / 2);
+                    departmentSpecialism.setId(departmentSpecialismId);
                     departmentSpecialism.setDepartment(department);
                     departmentSpecialism.setPriority(Integer.parseInt(departmentSpecialismTokens[j]));
                     departmentSpecialism.setSpecialism(idToSpecialismMap.get(
                             Long.parseLong(departmentSpecialismTokens[j + 1])));
                     departmentSpecialismList.add(departmentSpecialism);
+                    departmentSpecialismId++;
                 }
             }
             patientAdmissionSchedule.setDepartmentList(departmentList);
@@ -177,6 +181,8 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
             idToRoomMap = new HashMap<Long, Room>(roomListSize);
             List<RoomSpecialism> roomSpecialismList = new ArrayList<RoomSpecialism>(roomListSize * 5);
             List<RoomEquipment> roomEquipmentList = new ArrayList<RoomEquipment>(roomListSize * 2);
+            long roomSpecialismId = 0L;
+            long roomEquipmentId = 0L;
             for (int i = 0; i < roomListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitByPipeline(line, 6);
@@ -202,11 +208,12 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                     int priority = Integer.parseInt(roomSpecialismTokens[j]);
                     long specialismId = Long.parseLong(roomSpecialismTokens[j + 1]);
                     RoomSpecialism roomSpecialism = new RoomSpecialism();
-                    roomSpecialism.setId((long) j / 2);
+                    roomSpecialism.setId(roomSpecialismId);
                     roomSpecialism.setRoom(room);
                     roomSpecialism.setSpecialism(idToSpecialismMap.get(specialismId));
                     roomSpecialism.setPriority(priority);
                     roomSpecialismList.add(roomSpecialism);
+                    roomSpecialismId++;
                 }
 
                 String[] roomEquipmentTokens = splitBySpace(lineTokens[5]);
@@ -219,10 +226,11 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                     int hasEquipment = Integer.parseInt(roomEquipmentTokens[j]);
                     if (hasEquipment == 1) {
                         RoomEquipment roomEquipment = new RoomEquipment();
-                        roomEquipment.setId((long) j);
+                        roomEquipment.setId(roomEquipmentId);
                         roomEquipment.setRoom(room);
                         roomEquipment.setEquipment(indexToEquipmentMap.get(j));
                         roomEquipmentList.add(roomEquipment);
+                        roomEquipmentId++;
                     } else if (hasEquipment != 0) {
                         throw new IllegalArgumentException("Read line (" + line
                             + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
@@ -261,12 +269,14 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
         private void generateNightList() {
             List<Night> nightList = new ArrayList<Night>(nightListSize);
             indexToNightMap = new HashMap<Integer, Night>(nightListSize);
+            long nightId = 0L;
             for (int i = 0; i < nightListSize; i++) {
                 Night night = new Night();
-                night.setId((long) i);
+                night.setId(nightId);
                 night.setIndex(i);
                 nightList.add(night);
                 indexToNightMap.put(i, night);
+                nightId++;
             }
             patientAdmissionSchedule.setNightList(nightList);
         }
@@ -277,6 +287,9 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
             List<Admission> admissionList = new ArrayList<Admission>(patientListSize);
             List<RequiredPatientEquipment> requiredPatientEquipmentList = new ArrayList<RequiredPatientEquipment>(patientListSize * equipmentListSize);
             List<PreferredPatientEquipment> preferredPatientEquipmentList = new ArrayList<PreferredPatientEquipment>(patientListSize * equipmentListSize);
+            long admissionId = 0L;
+            long requiredPatientEquipmentId = 0L;
+            long preferredPatientEquipmentId = 0L;
             for (int i = 0; i < patientListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitByPipeline(line, 6);
@@ -306,7 +319,6 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                             + ") is expected to contain " + ((patientAdmissionListSize * 2) + 1)
                             + " number of tokens after 2th pipeline (|).");
                 }
-                long admissionId = 0;
                 int nextFirstNightIndex = firstNight.getIndex();
                 for (int j = 1; j < admissionTokens.length; j += 2) {
                     long specialismId = Long.parseLong(admissionTokens[j]);
@@ -337,11 +349,12 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                 for (int j = 0; j < requiredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(requiredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
-                        RequiredPatientEquipment patientEquipment = new RequiredPatientEquipment();
-                        patientEquipment.setId((long) j);
-                        patientEquipment.setPatient(patient);
-                        patientEquipment.setEquipment(indexToEquipmentMap.get(j));
-                        requiredPatientEquipmentList.add(patientEquipment);
+                        RequiredPatientEquipment requiredPatientEquipment = new RequiredPatientEquipment();
+                        requiredPatientEquipment.setId(requiredPatientEquipmentId);
+                        requiredPatientEquipment.setPatient(patient);
+                        requiredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                        requiredPatientEquipmentList.add(requiredPatientEquipment);
+                        requiredPatientEquipmentId++;
                     } else if (hasEquipment != 0) {
                         throw new IllegalArgumentException("Read line (" + line
                             + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
@@ -358,11 +371,12 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                 for (int j = 0; j < preferredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(preferredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
-                        PreferredPatientEquipment patientEquipment = new PreferredPatientEquipment();
-                        patientEquipment.setId((long) j);
-                        patientEquipment.setPatient(patient);
-                        patientEquipment.setEquipment(indexToEquipmentMap.get(j));
-                        preferredPatientEquipmentList.add(patientEquipment);
+                        PreferredPatientEquipment preferredPatientEquipment = new PreferredPatientEquipment();
+                        preferredPatientEquipment.setId(preferredPatientEquipmentId);
+                        preferredPatientEquipment.setPatient(patient);
+                        preferredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                        preferredPatientEquipmentList.add(preferredPatientEquipment);
+                        preferredPatientEquipmentId++;
                     } else if (hasEquipment != 0) {
                         throw new IllegalArgumentException("Read line (" + line
                             + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
@@ -382,12 +396,14 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
         private void ensureEnoughNights(int lastNightIndex) {
             List<Night> nightList = patientAdmissionSchedule.getNightList();
             if (lastNightIndex >= nightList.size()) {
+                long nightId = nightList.size();
                 for (int j = nightList.size(); j <= lastNightIndex; j++) {
                     Night night = new Night();
-                    night.setId((long) j);
+                    night.setId(nightId);
                     night.setIndex(j);
                     nightList.add(night);
                     indexToNightMap.put(j, night);
+                    nightId++;
                 }
             }
         }
