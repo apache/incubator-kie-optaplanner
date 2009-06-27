@@ -1,10 +1,7 @@
-package org.drools.solver.examples.patientadmissionscheduling.domain;
+package org.drools.solver.examples.patientadmissionschedule.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
-import org.drools.solver.examples.manners2009.domain.Guest;
-import org.drools.solver.examples.manners2009.domain.Hobby;
-import org.drools.solver.examples.manners2009.domain.HobbyPractician;
 
 /**
  * @author Geoffrey De Smet

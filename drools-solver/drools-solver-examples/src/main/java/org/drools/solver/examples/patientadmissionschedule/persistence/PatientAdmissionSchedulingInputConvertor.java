@@ -1,4 +1,4 @@
-package org.drools.solver.examples.patientadmissionscheduling.persistence;
+package org.drools.solver.examples.patientadmissionschedule.persistence;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,22 +7,22 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
-import org.drools.solver.examples.patientadmissionscheduling.domain.PatientAdmissionSchedule;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Specialism;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Department;
-import org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Equipment;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Room;
-import org.drools.solver.examples.patientadmissionscheduling.domain.RoomSpecialism;
-import org.drools.solver.examples.patientadmissionscheduling.domain.GenderLimitation;
-import org.drools.solver.examples.patientadmissionscheduling.domain.RoomEquipment;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Bed;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Night;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Patient;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Admission;
-import org.drools.solver.examples.patientadmissionscheduling.domain.RequiredPatientEquipment;
-import org.drools.solver.examples.patientadmissionscheduling.domain.PreferredPatientEquipment;
-import org.drools.solver.examples.patientadmissionscheduling.domain.Gender;
+import org.drools.solver.examples.patientadmissionschedule.domain.PatientAdmissionSchedule;
+import org.drools.solver.examples.patientadmissionschedule.domain.Specialism;
+import org.drools.solver.examples.patientadmissionschedule.domain.Department;
+import org.drools.solver.examples.patientadmissionschedule.domain.DepartmentSpecialism;
+import org.drools.solver.examples.patientadmissionschedule.domain.Equipment;
+import org.drools.solver.examples.patientadmissionschedule.domain.Room;
+import org.drools.solver.examples.patientadmissionschedule.domain.RoomSpecialism;
+import org.drools.solver.examples.patientadmissionschedule.domain.GenderLimitation;
+import org.drools.solver.examples.patientadmissionschedule.domain.RoomEquipment;
+import org.drools.solver.examples.patientadmissionschedule.domain.Bed;
+import org.drools.solver.examples.patientadmissionschedule.domain.Night;
+import org.drools.solver.examples.patientadmissionschedule.domain.Patient;
+import org.drools.solver.examples.patientadmissionschedule.domain.Admission;
+import org.drools.solver.examples.patientadmissionschedule.domain.RequiredPatientEquipment;
+import org.drools.solver.examples.patientadmissionschedule.domain.PreferredPatientEquipment;
+import org.drools.solver.examples.patientadmissionschedule.domain.Gender;
 import org.drools.solver.core.solution.Solution;
 
 /**

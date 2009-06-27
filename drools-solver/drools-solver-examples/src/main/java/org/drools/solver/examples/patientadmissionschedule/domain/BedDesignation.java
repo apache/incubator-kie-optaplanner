@@ -1,12 +1,9 @@
-package org.drools.solver.examples.patientadmissionscheduling.domain;
+package org.drools.solver.examples.patientadmissionschedule.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
-import org.drools.solver.examples.manners2009.domain.Job;
-import org.drools.solver.examples.manners2009.domain.JobType;
-import org.drools.solver.examples.manners2009.domain.Table;
 
 /**
  * @author Geoffrey De Smet

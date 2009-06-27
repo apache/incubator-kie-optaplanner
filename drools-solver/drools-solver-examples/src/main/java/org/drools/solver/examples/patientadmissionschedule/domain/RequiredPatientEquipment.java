@@ -1,4 +1,4 @@
-package org.drools.solver.examples.patientadmissionscheduling.domain;
+package org.drools.solver.examples.patientadmissionschedule.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
@@ -6,17 +6,17 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
 /**
  * @author Geoffrey De Smet
  */
-public class RoomEquipment extends AbstractPersistable implements Comparable<RoomEquipment> {
+public class RequiredPatientEquipment extends AbstractPersistable implements Comparable<RequiredPatientEquipment> {
 
-    private Room room;
+    private Patient patient;
     private Equipment equipment;
 
-    public Room getRoom() {
-        return room;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public Equipment getEquipment() {
@@ -27,9 +27,9 @@ public class RoomEquipment extends AbstractPersistable implements Comparable<Roo
         this.equipment = equipment;
     }
 
-    public int compareTo(RoomEquipment other) {
+    public int compareTo(RequiredPatientEquipment other) {
         return new CompareToBuilder()
-                .append(room, other.room)
+                .append(patient, other.patient)
                 .append(equipment, other.equipment)
                 .append(id, other.id)
                 .toComparison();
@@ -37,7 +37,7 @@ public class RoomEquipment extends AbstractPersistable implements Comparable<Roo
 
     @Override
     public String toString() {
-        return room + "-" + equipment;
+        return patient + "-" + equipment;
     }
 
 }

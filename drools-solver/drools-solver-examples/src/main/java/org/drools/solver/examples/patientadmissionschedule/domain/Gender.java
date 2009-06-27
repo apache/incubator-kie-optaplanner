@@ -1,4 +1,4 @@
-package org.drools.solver.examples.patientadmissionscheduling.domain;
+package org.drools.solver.examples.patientadmissionschedule.domain;
 
 /**
  * @author Geoffrey De Smet

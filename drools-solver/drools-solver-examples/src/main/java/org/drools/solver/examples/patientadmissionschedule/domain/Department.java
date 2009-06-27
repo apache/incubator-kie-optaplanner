@@ -1,4 +1,4 @@
-package org.drools.solver.examples.patientadmissionscheduling.domain;
+package org.drools.solver.examples.patientadmissionschedule.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;

@@ -1,4 +1,4 @@
-package org.drools.solver.examples.patientadmissionscheduling.domain;
+package org.drools.solver.examples.patientadmissionschedule.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
@@ -6,10 +6,10 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
 /**
  * @author Geoffrey De Smet
  */
-public class Bed extends AbstractPersistable implements Comparable<Bed> {
+public class RoomEquipment extends AbstractPersistable implements Comparable<RoomEquipment> {
 
     private Room room;
-    private int indexInRoom;
+    private Equipment equipment;
 
     public Room getRoom() {
         return room;
@@ -19,25 +19,25 @@ public class Bed extends AbstractPersistable implements Comparable<Bed> {
         this.room = room;
     }
 
-    public int getIndexInRoom() {
-        return indexInRoom;
+    public Equipment getEquipment() {
+        return equipment;
     }
 
-    public void setIndexInRoom(int indexInRoom) {
-        this.indexInRoom = indexInRoom;
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
     }
 
-    public int compareTo(Bed other) {
+    public int compareTo(RoomEquipment other) {
         return new CompareToBuilder()
                 .append(room, other.room)
-                .append(indexInRoom, other.indexInRoom)
+                .append(equipment, other.equipment)
                 .append(id, other.id)
                 .toComparison();
     }
 
     @Override
     public String toString() {
-        return room + "_" + indexInRoom;
+        return room + "-" + equipment;
     }
 
 }
