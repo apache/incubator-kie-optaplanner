@@ -26,4 +26,142 @@
       <name>Specialism6</name>
     </org.drools.solver.examples.patientadmissionscheduling.domain.Specialism>
   </specialismList>
+  <departmentList id="9">
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Department id="10">
+      <id>1</id>
+      <name>Department1</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Department>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Department id="11">
+      <id>2</id>
+      <name>Department2</name>
+      <maximumAge>16</maximumAge>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Department>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Department id="12">
+      <id>3</id>
+      <name>Department3</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Department>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Department id="13">
+      <id>4</id>
+      <name>Department4</name>
+      <minimumAge>65</minimumAge>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Department>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Department id="14">
+      <id>5</id>
+      <name>Department5</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Department>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.Department id="15">
+      <id>6</id>
+      <name>Department6</name>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.Department>
+  </departmentList>
+  <departmentSpecialismList id="16">
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="17">
+      <id>0</id>
+      <department reference="10"/>
+      <specialism reference="3"/>
+      <priority>1</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="18">
+      <id>1</id>
+      <department reference="10"/>
+      <specialism reference="4"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="19">
+      <id>2</id>
+      <department reference="10"/>
+      <specialism reference="5"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="20">
+      <id>0</id>
+      <department reference="11"/>
+      <specialism reference="4"/>
+      <priority>1</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="21">
+      <id>1</id>
+      <department reference="11"/>
+      <specialism reference="5"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="22">
+      <id>2</id>
+      <department reference="11"/>
+      <specialism reference="6"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="23">
+      <id>0</id>
+      <department reference="12"/>
+      <specialism reference="5"/>
+      <priority>1</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="24">
+      <id>1</id>
+      <department reference="12"/>
+      <specialism reference="6"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="25">
+      <id>2</id>
+      <department reference="12"/>
+      <specialism reference="7"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="26">
+      <id>0</id>
+      <department reference="13"/>
+      <specialism reference="6"/>
+      <priority>1</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="27">
+      <id>1</id>
+      <department reference="13"/>
+      <specialism reference="7"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="28">
+      <id>2</id>
+      <department reference="13"/>
+      <specialism reference="8"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="29">
+      <id>0</id>
+      <department reference="14"/>
+      <specialism reference="7"/>
+      <priority>1</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="30">
+      <id>1</id>
+      <department reference="14"/>
+      <specialism reference="8"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="31">
+      <id>2</id>
+      <department reference="14"/>
+      <specialism reference="3"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="32">
+      <id>0</id>
+      <department reference="15"/>
+      <specialism reference="8"/>
+      <priority>1</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="33">
+      <id>1</id>
+      <department reference="15"/>
+      <specialism reference="3"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+    <org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism id="34">
+      <id>2</id>
+      <department reference="15"/>
+      <specialism reference="4"/>
+      <priority>2</priority>
+    </org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism>
+  </departmentSpecialismList>
 </org.drools.solver.examples.patientadmissionscheduling.domain.PatientAdmissionSchedule>

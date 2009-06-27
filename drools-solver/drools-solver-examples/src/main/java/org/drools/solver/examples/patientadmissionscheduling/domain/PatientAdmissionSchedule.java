@@ -17,11 +17,8 @@ import org.drools.solver.examples.itc2007.examination.domain.Room;
 public class PatientAdmissionSchedule extends AbstractPersistable implements Solution {
 
     private List<Specialism> specialismList;
-    private List<Period> periodList;
-    private List<Room> roomList;
-
-    private List<PeriodHardConstraint> periodHardConstraintList;
-    private List<RoomHardConstraint> roomHardConstraintList;
+    private List<Department> departmentList;
+    private List<DepartmentSpecialism> departmentSpecialismList;
 
     private List<Exam> examList;
 
@@ -33,17 +30,36 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.specialismList = specialismList;
     }
 
+    public List<Department> getDepartmentList() {
+        return departmentList;
+    }
+
+    public void setDepartmentList(List<Department> departmentList) {
+        this.departmentList = departmentList;
+    }
+
     public boolean isInitialized() {
         return (examList != null);
+    }
+
+    public List<DepartmentSpecialism> getDepartmentSpecialismList() {
+        return departmentSpecialismList;
+    }
+
+    public void setDepartmentSpecialismList(List<DepartmentSpecialism> departmentSpecialismList) {
+        this.departmentSpecialismList = departmentSpecialismList;
     }
 
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(specialismList);
-        facts.addAll(periodList);
-        facts.addAll(roomList);
-        facts.addAll(periodHardConstraintList);
-        facts.addAll(roomHardConstraintList);
+        facts.addAll(departmentList);
+        facts.addAll(departmentSpecialismList);
+
+
+//        facts.addAll(roomList);
+//        facts.addAll(periodHardConstraintList);
+//        facts.addAll(roomHardConstraintList);
         if (isInitialized()) {
             facts.addAll(examList);
         }
@@ -57,10 +73,13 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         PatientAdmissionSchedule clone = new PatientAdmissionSchedule();
         clone.id = id;
         clone.specialismList = specialismList;
-        clone.periodList = periodList;
-        clone.roomList = roomList;
-        clone.periodHardConstraintList = periodHardConstraintList;
-        clone.roomHardConstraintList = roomHardConstraintList;
+        clone.departmentList = departmentList;
+        clone.departmentSpecialismList = departmentSpecialismList;
+
+        
+//        clone.roomList = roomList;
+//        clone.periodHardConstraintList = periodHardConstraintList;
+//        clone.roomHardConstraintList = roomHardConstraintList;
         // deep clone exams
         List<Exam> clonedExamList = new ArrayList<Exam>(examList.size());
         for (Exam exam : examList) {
