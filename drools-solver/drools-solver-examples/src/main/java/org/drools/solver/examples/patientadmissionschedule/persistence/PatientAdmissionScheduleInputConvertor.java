@@ -80,7 +80,6 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
             readPatientListAndAdmissionListAndRequiredPatientEquipmentListAndPreferredPatientEquipmentList();
             readEmptyLine();
             readConstantLine("END.");
-
             // TODO not all nights are planned, only the "planning horizon" nights are planned
             logger.info("PatientAdmissionSchedule with {} specialisms, {} equipments, {} departments, {} rooms, "
                     + "{} beds, {} nights, {} patients and {} admissions.",
@@ -92,8 +91,6 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             patientAdmissionSchedule.getNightList().size(),
                             patientAdmissionSchedule.getPatientList().size(),
                             patientAdmissionSchedule.getAdmissionList().size()});
-
-
             return patientAdmissionSchedule;
         }
 
