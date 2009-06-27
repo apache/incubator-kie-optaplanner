@@ -8,8 +8,27 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
  */
 public class Room extends AbstractPersistable implements Comparable<Room> {
 
-    private int capacity; // TODO clean me up
-    private int penalty;
+    private String name;
+
+    private Department department;
+    private int capacity;
+    private GenderLimitation genderLimitation;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 
     public int getCapacity() {
         return capacity;
@@ -19,12 +38,12 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
         this.capacity = capacity;
     }
 
-    public int getPenalty() {
-        return penalty;
+    public GenderLimitation getGenderLimitation() {
+        return genderLimitation;
     }
 
-    public void setPenalty(int penalty) {
-        this.penalty = penalty;
+    public void setGenderLimitation(GenderLimitation genderLimitation) {
+        this.genderLimitation = genderLimitation;
     }
 
     public int compareTo(Room other) {
@@ -35,7 +54,7 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
 
     @Override
     public String toString() {
-        return id + " {C" + capacity + "}";
+        return department + "_" + name;
     }
 
 }

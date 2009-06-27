@@ -12,6 +12,10 @@ import org.drools.solver.examples.patientadmissionscheduling.domain.Specialism;
 import org.drools.solver.examples.patientadmissionscheduling.domain.Department;
 import org.drools.solver.examples.patientadmissionscheduling.domain.DepartmentSpecialism;
 import org.drools.solver.examples.patientadmissionscheduling.domain.Equipment;
+import org.drools.solver.examples.patientadmissionscheduling.domain.Room;
+import org.drools.solver.examples.patientadmissionscheduling.domain.RoomSpecialism;
+import org.drools.solver.examples.patientadmissionscheduling.domain.GenderLimitation;
+import org.drools.solver.examples.patientadmissionscheduling.domain.RoomEquipment;
 import org.drools.solver.core.solution.Solution;
 
 /**
@@ -44,7 +48,9 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
         private int nightListSize;
 
         private Map<Long, Specialism> idToSpecialismMap = null;
+        private Map<Long, Department> idToDepartmentMap = null;
         private Map<Integer, Equipment> indexToEquipmentMap = null;
+        private Map<Long, Room> idToRoomMap = null;
 
         public Solution readSolution() throws IOException {
             patientAdmissionSchedule = new PatientAdmissionSchedule();
@@ -58,7 +64,8 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
             readEmptyLine();
             readEquipmentList();
             readEmptyLine();
-
+            readRoomListAndRoomSpecialismListAndRoomEquipmentList();
+            readEmptyLine();
             
 
             return patientAdmissionSchedule;
@@ -94,6 +101,7 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
         private void readDepartmentListAndDepartmentSpecialismList() throws IOException {
             readConstantLine("DEPARTMENTS:");
             List<Department> departmentList = new ArrayList<Department>(departmentListSize);
+            idToDepartmentMap = new HashMap<Long, Department>(departmentListSize);
             List<DepartmentSpecialism> departmentSpecialismList = new ArrayList<DepartmentSpecialism>(
                     departmentListSize * 5);
             for (int i = 0; i < departmentListSize; i++) {
@@ -113,6 +121,7 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                     department.setMaximumAge(Integer.valueOf(maximumAge));
                 }
                 departmentList.add(department);
+                idToDepartmentMap.put(department.getId(), department);
 
                 String[] departmentSpecialismTokens = splitBySpace(lineTokens[1]);
                 if (departmentSpecialismTokens.length % 2 != 0) {
@@ -121,13 +130,12 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
                             + ") after pipeline (|) seperated by a space ( ).");
                 }
                 for (int j = 0; j < departmentSpecialismTokens.length; j += 2) {
-                    int priority = Integer.parseInt(departmentSpecialismTokens[j]);
-                    long specialismId = Long.parseLong(departmentSpecialismTokens[j + 1]);
                     DepartmentSpecialism departmentSpecialism = new DepartmentSpecialism();
                     departmentSpecialism.setId((long) j / 2);
                     departmentSpecialism.setDepartment(department);
-                    departmentSpecialism.setSpecialism(idToSpecialismMap.get(specialismId));
-                    departmentSpecialism.setPriority(priority);
+                    departmentSpecialism.setPriority(Integer.parseInt(departmentSpecialismTokens[j]));
+                    departmentSpecialism.setSpecialism(idToSpecialismMap.get(
+                            Long.parseLong(departmentSpecialismTokens[j + 1])));
                     departmentSpecialismList.add(departmentSpecialism);
                 }
             }
@@ -151,17 +159,81 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
             patientAdmissionSchedule.setEquipmentList(equipmentList);
         }
 
+        private void readRoomListAndRoomSpecialismListAndRoomEquipmentList() throws IOException {
+            readConstantLine("ROOMS:");
+            List<Room> roomList = new ArrayList<Room>(roomListSize);
+            idToRoomMap = new HashMap<Long, Room>(roomListSize);
+            List<RoomSpecialism> roomSpecialismList = new ArrayList<RoomSpecialism>(roomListSize * 5);
+            List<RoomEquipment> roomEquipmentList = new ArrayList<RoomEquipment>(roomListSize * 2);
+            for (int i = 0; i < roomListSize; i++) {
+                String line = bufferedReader.readLine();
+                String[] lineTokens = splitByPipeline(line, 6);
+
+                String[] roomTokens = splitBySpace(lineTokens[0], 2);
+                Room room = new Room();
+                room.setId(Long.parseLong(roomTokens[0]));
+                room.setName(roomTokens[1]);
+                room.setCapacity(Integer.parseInt(lineTokens[1]));
+                room.setDepartment(idToDepartmentMap.get(
+                        Long.parseLong(lineTokens[2])));
+                room.setGenderLimitation(GenderLimitation.valueOfCode(lineTokens[3]));
+                roomList.add(room);
+                idToRoomMap.put(room.getId(), room);
+
+                String[] roomSpecialismTokens = splitBySpace(lineTokens[4]);
+                if (roomSpecialismTokens.length % 2 != 0) {
+                    throw new IllegalArgumentException("Read line (" + line
+                            + ") is expected to contain even number of tokens (" + roomSpecialismTokens.length
+                            + ") after pipeline (|) seperated by a space ( ).");
+                }
+                for (int j = 0; j < roomSpecialismTokens.length; j += 2) {
+                    int priority = Integer.parseInt(roomSpecialismTokens[j]);
+                    long specialismId = Long.parseLong(roomSpecialismTokens[j + 1]);
+                    RoomSpecialism roomSpecialism = new RoomSpecialism();
+                    roomSpecialism.setId((long) j / 2);
+                    roomSpecialism.setRoom(room);
+                    roomSpecialism.setSpecialism(idToSpecialismMap.get(specialismId));
+                    roomSpecialism.setPriority(priority);
+                    roomSpecialismList.add(roomSpecialism);
+                }
+
+                String[] roomEquipmentTokens = splitBySpace(lineTokens[5]);
+                if (roomEquipmentTokens.length % 2 != 0) {
+                    throw new IllegalArgumentException("Read line (" + line
+                            + ") is expected to contain even number of tokens (" + roomEquipmentTokens.length
+                            + ") after pipeline (|) seperated by a space ( ).");
+                }
+                for (int j = 0; j < roomEquipmentTokens.length; j++) {
+                    int hasEquipment = Integer.parseInt(roomEquipmentTokens[j]);
+                    if (hasEquipment == 1) {
+                        RoomEquipment roomEquipment = new RoomEquipment();
+                        roomEquipment.setId((long) j);
+                        roomEquipment.setRoom(room);
+                        roomEquipment.setEquipment(indexToEquipmentMap.get(j));
+                        roomEquipmentList.add(roomEquipment);
+                    } else if (hasEquipment != 0) {
+                        throw new IllegalArgumentException("Read line (" + line
+                            + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
+                    }
+                }
+            }
+            patientAdmissionSchedule.setRoomList(roomList);
+            patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
+            patientAdmissionSchedule.setRoomEquipmentList(roomEquipmentList);
+        }
+
+
         // ************************************************************************
         // Helper methods
         // ************************************************************************
 
         private String[] splitBySpace(String line) {
-            String[] lineTokens = line.trim().split("\\ ");
+            String[] lineTokens = line.split("\\ ");
             return lineTokens;
         }
 
         private String[] splitBySpace(String line, int numberOfTokens) {
-            String[] lineTokens = line.trim().split("\\ ");
+            String[] lineTokens = line.split("\\ ");
             if (lineTokens.length != numberOfTokens) {
                 throw new IllegalArgumentException("Read line (" + line
                         + ") is expected to contain " +  numberOfTokens + " tokens seperated by a space ( ).");
@@ -170,10 +242,13 @@ public class PatientAdmissionSchedulingInputConvertor extends AbstractInputConve
         }
 
         private String[] splitByPipeline(String line, int numberOfTokens) {
-            String[] lineTokens = line.trim().split("\\|");
+            String[] lineTokens = line.split("\\|");
             if (lineTokens.length != numberOfTokens) {
                 throw new IllegalArgumentException("Read line (" + line
                         + ") is expected to contain " +  numberOfTokens + " tokens seperated by a pipeline (|).");
+            }
+            for (int i = 0; i < lineTokens.length; i++) {
+                lineTokens[i] = lineTokens[i].trim();
             }
             return lineTokens;
         }

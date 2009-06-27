@@ -8,8 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
-import org.drools.solver.examples.itc2007.examination.domain.*;
-import org.drools.solver.examples.itc2007.examination.domain.Room;
+import org.drools.solver.examples.itc2007.examination.domain.Exam;
 
 /**
  * @author Geoffrey De Smet
@@ -20,6 +19,9 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
     private List<Department> departmentList;
     private List<DepartmentSpecialism> departmentSpecialismList;
     private List<Equipment> equipmentList;
+    private List<Room> roomList;
+    private List<RoomSpecialism> roomSpecialismList;
+    private List<RoomEquipment> roomEquipmentList;
 
     private List<Exam> examList;
 
@@ -59,12 +61,39 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.equipmentList = equipmentList;
     }
 
+    public List<Room> getRoomList() {
+        return roomList;
+    }
+
+    public void setRoomList(List<Room> roomList) {
+        this.roomList = roomList;
+    }
+
+    public List<RoomSpecialism> getRoomSpecialismList() {
+        return roomSpecialismList;
+    }
+
+    public void setRoomSpecialismList(List<RoomSpecialism> roomSpecialismList) {
+        this.roomSpecialismList = roomSpecialismList;
+    }
+
+    public List<RoomEquipment> getRoomEquipmentList() {
+        return roomEquipmentList;
+    }
+
+    public void setRoomEquipmentList(List<RoomEquipment> roomEquipmentList) {
+        this.roomEquipmentList = roomEquipmentList;
+    }
+
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(specialismList);
         facts.addAll(departmentList);
         facts.addAll(departmentSpecialismList);
         facts.addAll(equipmentList);
+        facts.addAll(roomList);
+        facts.addAll(roomSpecialismList);
+        facts.addAll(roomEquipmentList);
 
 
 //        facts.addAll(roomList);
@@ -86,6 +115,9 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         clone.departmentList = departmentList;
         clone.departmentSpecialismList = departmentSpecialismList;
         clone.equipmentList = equipmentList;
+        clone.roomList = roomList;
+        clone.roomSpecialismList = roomSpecialismList;
+        clone.roomEquipmentList = roomEquipmentList;
 
         
 //        clone.roomList = roomList;
