@@ -40,4 +40,8 @@ public class Bed extends AbstractPersistable implements Comparable<Bed> {
         return room + "_" + indexInRoom;
     }
 
+    public boolean allowsAdmission(Admission admission) {
+        return room.allowsAdmission(admission);
+    }
+
 }

@@ -1,5 +1,7 @@
 package org.drools.solver.examples.patientadmissionschedule.domain;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
@@ -12,6 +14,8 @@ public class Patient extends AbstractPersistable implements Comparable<Patient> 
     private Gender gender;
     private int age;
     private int preferredMaximumRoomCapacity;
+
+    private List<RequiredPatientEquipment> requiredPatientEquipmentList;
 
     public String getName() {
         return name;
@@ -43,6 +47,14 @@ public class Patient extends AbstractPersistable implements Comparable<Patient> 
 
     public void setPreferredMaximumRoomCapacity(int preferredMaximumRoomCapacity) {
         this.preferredMaximumRoomCapacity = preferredMaximumRoomCapacity;
+    }
+
+    public List<RequiredPatientEquipment> getRequiredPatientEquipmentList() {
+        return requiredPatientEquipmentList;
+    }
+
+    public void setRequiredPatientEquipmentList(List<RequiredPatientEquipment> requiredPatientEquipmentList) {
+        this.requiredPatientEquipmentList = requiredPatientEquipmentList;
     }
 
     public int compareTo(Patient other) {

@@ -225,6 +225,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                     roomSpecialismId++;
                 }
 
+                List<RoomEquipment> roomEquipmentOfRoomList = new ArrayList<RoomEquipment>(equipmentListSize);
                 String[] roomEquipmentTokens = splitBySpace(lineTokens[5]);
                 if (roomEquipmentTokens.length != equipmentListSize) {
                     throw new IllegalArgumentException("Read line (" + line
@@ -238,6 +239,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                         roomEquipment.setId(roomEquipmentId);
                         roomEquipment.setRoom(room);
                         roomEquipment.setEquipment(indexToEquipmentMap.get(j));
+                        roomEquipmentOfRoomList.add(roomEquipment);
                         roomEquipmentList.add(roomEquipment);
                         roomEquipmentId++;
                     } else if (hasEquipment != 0) {
@@ -245,6 +247,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
                     }
                 }
+                room.setRoomEquipmentList(roomEquipmentOfRoomList);
             }
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
@@ -348,6 +351,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + ") different from the sum of admissionNightListSize (" + nextFirstNightIndex + ")");
                 }
 
+                List<RequiredPatientEquipment> requiredPatientEquipmentOfPatientList = new ArrayList<RequiredPatientEquipment>(equipmentListSize);
                 String[] requiredPatientEquipmentTokens = splitBySpace(lineTokens[4]);
                 if (requiredPatientEquipmentTokens.length != equipmentListSize) {
                     throw new IllegalArgumentException("Read line (" + line
@@ -362,6 +366,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                         requiredPatientEquipment.setId(requiredPatientEquipmentId);
                         requiredPatientEquipment.setPatient(patient);
                         requiredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                        requiredPatientEquipmentOfPatientList.add(requiredPatientEquipment);
                         requiredPatientEquipmentList.add(requiredPatientEquipment);
                         requiredPatientEquipmentId++;
                     } else if (hasEquipment != 0) {
@@ -369,6 +374,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
                     }
                 }
+                patient.setRequiredPatientEquipmentList(requiredPatientEquipmentOfPatientList);
 
                 String[] preferredPatientEquipmentTokens = splitBySpace(lineTokens[5]);
                 if (preferredPatientEquipmentTokens.length != equipmentListSize) {

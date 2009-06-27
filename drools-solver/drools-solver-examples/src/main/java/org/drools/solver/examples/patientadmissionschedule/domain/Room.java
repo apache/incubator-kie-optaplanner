@@ -1,5 +1,7 @@
 package org.drools.solver.examples.patientadmissionschedule.domain;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
@@ -13,6 +15,8 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
     private Department department;
     private int capacity;
     private GenderLimitation genderLimitation;
+
+    private List<RoomEquipment> roomEquipmentList;
 
     public String getName() {
         return name;
@@ -46,6 +50,14 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
         this.genderLimitation = genderLimitation;
     }
 
+    public List<RoomEquipment> getRoomEquipmentList() {
+        return roomEquipmentList;
+    }
+
+    public void setRoomEquipmentList(List<RoomEquipment> roomEquipmentList) {
+        this.roomEquipmentList = roomEquipmentList;
+    }
+
     public int compareTo(Room other) {
         return new CompareToBuilder()
                 .append(department, other.department)
@@ -56,6 +68,44 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
     @Override
     public String toString() {
         return department + "_" + name;
+    }
+
+    public boolean allowsAdmission(Admission admission) {
+        return department.allowsAdmission(admission)
+            && allowsPatientGender(admission.getPatient())
+            && hasRequiredRoomProperties(admission.getPatient());
+    }
+
+    public boolean allowsPatientGender(Patient patient) {
+        switch (genderLimitation) {
+            case ANY_GENDER:
+                return true;
+            case MALE_ONLY:
+                return patient.getGender() == Gender.MALE;
+            case FEMALE_ONLY:
+                return patient.getGender() == Gender.FEMALE;
+            case SAME_GENDER:
+                // scoreRules check this
+                return true;
+            default:
+                throw new IllegalStateException("genderLimitation (" + genderLimitation + ") not implemented");
+        }
+    }
+
+    public boolean hasRequiredRoomProperties(Patient patient) {
+        for (RequiredPatientEquipment requiredPatientEquipment : patient.getRequiredPatientEquipmentList()) {
+            Equipment requiredEquipment = requiredPatientEquipment.getEquipment();
+            boolean hasRequiredEquipment = false;
+            for (RoomEquipment roomEquipment : roomEquipmentList) {
+                if (roomEquipment.getEquipment().equals(requiredEquipment)) {
+                    hasRequiredEquipment = true;
+                }
+            }
+            if (!hasRequiredEquipment) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
