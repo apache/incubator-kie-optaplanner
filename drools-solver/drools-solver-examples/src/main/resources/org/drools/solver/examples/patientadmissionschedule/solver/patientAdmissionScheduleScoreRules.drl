@@ -23,6 +23,7 @@ import org.drools.solver.examples.patientadmissionschedule.domain.RoomEquipment;
 import org.drools.solver.examples.patientadmissionschedule.domain.RoomSpecialism;
 import org.drools.solver.examples.patientadmissionschedule.domain.Specialism;
 import org.drools.solver.examples.patientadmissionschedule.domain.solver.AdmissionPartConflict;
+import org.drools.solver.examples.patientadmissionschedule.domain.solver.AdmissionPartSpecialismMissingInRoom;
 
 // @author Geoffrey De Smet
 
@@ -43,7 +44,7 @@ rule "sameBedInSameNight"
         $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed);
     then
         insertLogical(new IntConstraintOccurrence("sameBedInSameNight",
-                ConstraintType.NEGATIVE_HARD, $admissionPartConflict.getNightSize(),
+                ConstraintType.NEGATIVE_HARD, 100 * $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
 
@@ -58,7 +59,7 @@ rule "differentGenderInSameGenderRoomInSameNight"
         $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart);
     then
         insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight",
-                ConstraintType.NEGATIVE_HARD, $admissionPartConflict.getNightSize(),
+                ConstraintType.NEGATIVE_HARD, 5 * $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
 
@@ -111,13 +112,22 @@ rule "departmentSpecialism"
 end
 
 // RoomSpecialism constraint
-rule "roomSpecialism"
+rule "roomSpecialismNotExists"
     when
-        $bedDesignation : BedDesignation($specialism : admissionPartSpecialism, $room : room);
+        $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism, $room : room);
         not RoomSpecialism(room == $room, specialism == $specialism);
     then
-        insertLogical(new IntConstraintOccurrence("roomSpecialism",
-                ConstraintType.NEGATIVE_SOFT, 10,
+        insertLogical(new IntConstraintOccurrence("roomSpecialismNotExists",
+                ConstraintType.NEGATIVE_SOFT, 20 * $bedDesignation.getAdmissionPart().getNightCount(),
+                $bedDesignation));
+end
+rule "roomSpecialismNotFirstPriority"
+    when
+        $bedDesignation : BedDesignation(admissionPartSpecialism != null, $specialism : admissionPartSpecialism, $room : room);
+        RoomSpecialism(priority > 1, room == $room, specialism == $specialism, $priority : priority);
+    then
+        insertLogical(new IntConstraintOccurrence("roomSpecialismNotFirstPriority",
+                ConstraintType.NEGATIVE_SOFT, 10 * ($priority - 1) * $bedDesignation.getAdmissionPart().getNightCount(),
                 $bedDesignation));
 end
 

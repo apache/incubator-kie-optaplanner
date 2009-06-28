@@ -221,6 +221,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + ") is expected to contain even number of tokens (" + roomSpecialismTokens.length
                             + ") after 4th pipeline (|) seperated by a space ( ).");
                 }
+                List<RoomSpecialism> roomSpecialismListOfRoom = new ArrayList<RoomSpecialism>(roomSpecialismTokens.length / 2);
                 for (int j = 0; j < roomSpecialismTokens.length; j += 2) {
                     int priority = Integer.parseInt(roomSpecialismTokens[j]);
                     long specialismId = Long.parseLong(roomSpecialismTokens[j + 1]);
@@ -235,12 +236,14 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                         }
                         roomSpecialism.setSpecialism(specialism);
                         roomSpecialism.setPriority(priority);
+                        roomSpecialismListOfRoom.add(roomSpecialism);
                         roomSpecialismList.add(roomSpecialism);
                         roomSpecialismId++;
                     }
                 }
+                room.setRoomSpecialismList(roomSpecialismListOfRoom);
 
-                List<RoomEquipment> roomEquipmentOfRoomList = new ArrayList<RoomEquipment>(equipmentListSize);
+                List<RoomEquipment> roomEquipmentListOfRoom = new ArrayList<RoomEquipment>(equipmentListSize);
                 String[] roomEquipmentTokens = splitBySpace(lineTokens[5]);
                 if (roomEquipmentTokens.length != equipmentListSize) {
                     throw new IllegalArgumentException("Read line (" + line
@@ -254,7 +257,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                         roomEquipment.setId(roomEquipmentId);
                         roomEquipment.setRoom(room);
                         roomEquipment.setEquipment(indexToEquipmentMap.get(j));
-                        roomEquipmentOfRoomList.add(roomEquipment);
+                        roomEquipmentListOfRoom.add(roomEquipment);
                         roomEquipmentList.add(roomEquipment);
                         roomEquipmentId++;
                     } else if (hasEquipment != 0) {
@@ -262,7 +265,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
                     }
                 }
-                room.setRoomEquipmentList(roomEquipmentOfRoomList);
+                room.setRoomEquipmentList(roomEquipmentListOfRoom);
             }
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);

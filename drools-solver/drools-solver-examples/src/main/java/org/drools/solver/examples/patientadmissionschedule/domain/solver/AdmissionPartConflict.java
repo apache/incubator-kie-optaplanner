@@ -47,27 +47,6 @@ public class AdmissionPartConflict implements Serializable {
         this.nightSize = nightSize;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof AdmissionPartConflict) {
-            AdmissionPartConflict other = (AdmissionPartConflict) o;
-            return new EqualsBuilder()
-                    .append(leftAdmissionPart, other.leftAdmissionPart)
-                    .append(rightAdmissionPart, other.rightAdmissionPart)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    public int hashCode() {
-        return new HashCodeBuilder()
-                .append(leftAdmissionPart)
-                .append(rightAdmissionPart)
-                .toHashCode();
-    }
-
     public int compareTo(AdmissionPartConflict other) {
         return new CompareToBuilder()
                 .append(leftAdmissionPart, other.leftAdmissionPart)

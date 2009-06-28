@@ -16,6 +16,7 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
     private int capacity;
     private GenderLimitation genderLimitation;
 
+    private List<RoomSpecialism> roomSpecialismList;
     private List<RoomEquipment> roomEquipmentList;
 
     public String getName() {
@@ -48,6 +49,14 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
 
     public void setGenderLimitation(GenderLimitation genderLimitation) {
         this.genderLimitation = genderLimitation;
+    }
+
+    public List<RoomSpecialism> getRoomSpecialismList() {
+        return roomSpecialismList;
+    }
+
+    public void setRoomSpecialismList(List<RoomSpecialism> roomSpecialismList) {
+        this.roomSpecialismList = roomSpecialismList;
     }
 
     public List<RoomEquipment> getRoomEquipmentList() {
