@@ -59,7 +59,7 @@ rule "differentGenderInSameGenderRoomInSameNight"
         $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart);
     then
         insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight",
-                ConstraintType.NEGATIVE_HARD, 5 * $admissionPartConflict.getNightSize(),
+                ConstraintType.NEGATIVE_HARD, 50 * $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
 
@@ -107,7 +107,7 @@ rule "departmentSpecialism"
         not DepartmentSpecialism(department == $department, specialism == $specialism);
     then
         insertLogical(new IntConstraintOccurrence("departmentSpecialism",
-                ConstraintType.NEGATIVE_SOFT, 10,
+                ConstraintType.NEGATIVE_SOFT, 10 * $bedDesignation.getAdmissionPart().getNightCount(),
                 $bedDesignation));
 end
 
