@@ -95,7 +95,7 @@ rule "preferredMaximumRoomCapacity"
     then
         insertLogical(new IntConstraintOccurrence("preferredMaximumRoomCapacity",
                 ConstraintType.NEGATIVE_SOFT,
-                ($bedDesignation.getRoomCapacity() - $bedDesignation.getPatientPreferredMaximumRoomCapacity()) * 8,
+                8 * ($bedDesignation.getRoomCapacity() - $bedDesignation.getPatientPreferredMaximumRoomCapacity()),
                 $bedDesignation));
 end
 
@@ -129,8 +129,8 @@ rule "preferredPatientEquipment"
         not RoomEquipment(room == $room, equipment == $equipment);
     then
         insertLogical(new IntConstraintOccurrence("preferredPatientEquipment",
-                ConstraintType.NEGATIVE_SOFT, 20,
-                $bedDesignation));
+                ConstraintType.NEGATIVE_SOFT, 20 * $bedDesignation.getAdmissionPart().getNightCount(),
+                $bedDesignation, $preferredPatientEquipment));
 end
 
 // Do not change bed in an AdmissionPart on different Nights constraint is build-in
