@@ -1,10 +1,11 @@
-package org.drools.solver.examples.itc2007.examination.domain;
+package org.drools.solver.examples.itc2007.examination.domain.solver;
 
 import java.io.Serializable;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.solver.examples.itc2007.examination.domain.Topic;
 
 /**
  * Calculated during initialization, not modified during score calculation.

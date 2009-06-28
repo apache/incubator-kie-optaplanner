@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.itc2007.examination.domain.InstitutionalWeighting;
@@ -25,7 +26,6 @@ import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraint;
 import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
-import org.drools.solver.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet

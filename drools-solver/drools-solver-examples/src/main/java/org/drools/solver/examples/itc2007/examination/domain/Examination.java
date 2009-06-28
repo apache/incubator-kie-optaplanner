@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
+import org.drools.solver.examples.itc2007.examination.domain.solver.TopicConflict;
 
 /**
  * @author Geoffrey De Smet

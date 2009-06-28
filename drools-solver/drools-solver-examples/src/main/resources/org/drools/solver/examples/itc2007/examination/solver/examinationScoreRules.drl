@@ -16,7 +16,7 @@ import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraint;
 import org.drools.solver.examples.itc2007.examination.domain.RoomHardConstraintType;
 import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
-import org.drools.solver.examples.itc2007.examination.domain.TopicConflict;
+import org.drools.solver.examples.itc2007.examination.domain.solver.TopicConflict;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 

@@ -1,4 +1,4 @@
-package org.drools.solver.examples.travelingtournament.solver.domain;
+package org.drools.solver.examples.travelingtournament.domain.solver;
 
 import java.io.Serializable;
 import java.util.Map;
