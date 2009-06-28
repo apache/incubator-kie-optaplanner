@@ -2,37 +2,23 @@ package org.drools.solver.examples.patientadmissionschedule.solver.solution.init
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.solver.core.score.Score;
 import org.drools.solver.core.score.DefaultHardAndSoftScore;
-import org.drools.solver.core.score.DefaultSimpleScore;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
-import org.drools.solver.examples.itc2007.examination.domain.Exam;
-import org.drools.solver.examples.itc2007.examination.domain.Examination;
-import org.drools.solver.examples.itc2007.examination.domain.Period;
-import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraint;
-import org.drools.solver.examples.itc2007.examination.domain.PeriodHardConstraintType;
-import org.drools.solver.examples.itc2007.examination.domain.Room;
-import org.drools.solver.examples.itc2007.examination.domain.Topic;
-import org.drools.solver.examples.itc2007.examination.domain.solver.ExamBefore;
-import org.drools.solver.examples.itc2007.examination.domain.solver.ExamCoincidence;
-import org.drools.solver.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule;
-import org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture;
-import org.drools.solver.examples.itc2007.curriculumcourse.domain.Course;
 import org.drools.solver.examples.manners2009.domain.Manners2009;
 import org.drools.solver.examples.manners2009.domain.Guest;
 import org.drools.solver.examples.manners2009.domain.SeatDesignation;
 import org.drools.solver.examples.manners2009.domain.Seat;
+import org.drools.solver.examples.patientadmissionschedule.domain.PatientAdmissionSchedule;
+import org.drools.solver.examples.patientadmissionschedule.domain.Bed;
+import org.drools.solver.examples.patientadmissionschedule.domain.BedDesignation;
+import org.drools.solver.examples.patientadmissionschedule.domain.AdmissionPart;
 
 /**
  * @author Geoffrey De Smet
@@ -41,67 +27,70 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
 
     @Override
     public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
-        Manners2009 manners2009 = (Manners2009) localSearchSolverScope.getWorkingSolution();
-        return manners2009.isInitialized();
+        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) localSearchSolverScope.getWorkingSolution();
+        return patientAdmissionSchedule.isInitialized();
     }
 
     public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
-        Manners2009 manners2009 = (Manners2009) localSearchSolverScope.getWorkingSolution();
-        initializeSeatDesignationList(localSearchSolverScope, manners2009);
+        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule)
+                localSearchSolverScope.getWorkingSolution();
+        initializeBedDesignationList(localSearchSolverScope, patientAdmissionSchedule);
     }
 
-    private void initializeSeatDesignationList(LocalSearchSolverScope localSearchSolverScope, Manners2009 manners2009) {
+    private void initializeBedDesignationList(LocalSearchSolverScope localSearchSolverScope,
+            PatientAdmissionSchedule patientAdmissionSchedule) {
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
-        List<SeatDesignation> seatDesignationList = createSeatDesignationList(manners2009);
-        // Assign one guest at a time
-        List<Seat> undesignatedSeatList = manners2009.getSeatList();
-        for (SeatDesignation seatDesignation : seatDesignationList) {
-            Score bestScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
-            Seat bestSeat = null;
+        List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
+        // Assign one admissionPart at a time
+        List<Bed> undesignatedBedList = patientAdmissionSchedule.getBedList();
+        for (BedDesignation bedDesignation : bedDesignationList) {
+            Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE);
+            Bed bestBed = null;
 
-            FactHandle seatDesignationHandle = null;
-            // Try every seat for that guest
-            // TODO by reordening the seats so index 0 has a different table then index 1 and so on,
+            FactHandle bedDesignationHandle = null;
+            // Try every bed for that admissionPart
+            // TODO by reordening the beds so index 0 has a different table then index 1 and so on,
             // this will probably be faster because perfectMatch will be true sooner
-            for (Seat seat : undesignatedSeatList) {
-                if (seatDesignation.getGuest().getGender() == seat.getRequiredGender()) {
-                    if (seatDesignationHandle == null) {
-                        seatDesignation.setSeat(seat);
-                        seatDesignationHandle = workingMemory.insert(seatDesignation);
+            for (Bed bed : undesignatedBedList) {
+                if (bed.allowsAdmissionPart(bedDesignation.getAdmissionPart())) {
+                    if (bedDesignationHandle == null) {
+                        bedDesignation.setBed(bed);
+                        bedDesignationHandle = workingMemory.insert(bedDesignation);
                     } else {
-                        workingMemory.modifyRetract(seatDesignationHandle);
-                        seatDesignation.setSeat(seat);
-                        workingMemory.modifyInsert(seatDesignationHandle, seatDesignation);
+                        workingMemory.modifyRetract(bedDesignationHandle);
+                        bedDesignation.setBed(bed);
+                        workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
                     }
                     Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
-                        bestSeat = seat;
+                        bestBed = bed;
                     }
                 }
             }
-            if (bestSeat == null) {
-                throw new IllegalStateException("The bestSeat (" + bestSeat + ") cannot be null.");
+            if (bestBed == null) {
+                throw new IllegalStateException("The bestBed (" + bestBed + ") cannot be null.");
             }
-            workingMemory.modifyRetract(seatDesignationHandle);
-            seatDesignation.setSeat(bestSeat);
-            workingMemory.modifyInsert(seatDesignationHandle, seatDesignation);
-            undesignatedSeatList.remove(bestSeat);
+            workingMemory.modifyRetract(bedDesignationHandle);
+            bedDesignation.setBed(bestBed);
+            workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
+            undesignatedBedList.remove(bestBed);
         }
         // For the GUI's combobox list mainly, not really needed
-        Collections.sort(seatDesignationList, new PersistableIdComparator());
-        manners2009.setSeatDesignationList(seatDesignationList);
+        Collections.sort(bedDesignationList, new PersistableIdComparator());
+        patientAdmissionSchedule.setBedDesignationList(bedDesignationList);
     }
 
-    private List<SeatDesignation> createSeatDesignationList(Manners2009 manners2009) {
-        List<SeatDesignation> seatDesignationList = new ArrayList<SeatDesignation>(manners2009.getGuestList().size());
-        for (Guest guest : manners2009.getGuestList()) {
-            SeatDesignation seatDesignation = new SeatDesignation();
-            seatDesignation.setId(guest.getId());
-            seatDesignation.setGuest(guest);
-            seatDesignationList.add(seatDesignation);
+    private List<BedDesignation> createBedDesignationList(PatientAdmissionSchedule patientAdmissionSchedule) {
+        List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(
+                patientAdmissionSchedule.getAdmissionPartList().size());
+        for (AdmissionPart admissionPart : patientAdmissionSchedule.getAdmissionPartList()) {
+            BedDesignation bedDesignation = new BedDesignation();
+            bedDesignation.setId(admissionPart.getId());
+            bedDesignation.setAdmissionPart(admissionPart);
+            bedDesignationList.add(bedDesignation);
         }
-        return seatDesignationList;
+        return bedDesignationList;
     }
 
 }
