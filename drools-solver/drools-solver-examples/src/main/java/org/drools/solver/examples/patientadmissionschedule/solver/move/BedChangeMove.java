@@ -10,8 +10,8 @@ import org.drools.WorkingMemory;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.TabuPropertyEnabled;
 import org.drools.solver.core.move.Move;
-import org.drools.solver.examples.patientadmissionschedule.domain.BedDesignation;
 import org.drools.solver.examples.patientadmissionschedule.domain.Bed;
+import org.drools.solver.examples.patientadmissionschedule.domain.BedDesignation;
 
 /**
  * @author Geoffrey De Smet

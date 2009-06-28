@@ -2,6 +2,7 @@ package org.drools.solver.examples.patientadmissionschedule.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
+import org.drools.solver.examples.patientadmissionschedule.domain.solver.AdmissionPartConflict;
 
 /**
  * @author Geoffrey De Smet
@@ -56,6 +57,12 @@ public class AdmissionPart extends AbstractPersistable implements Comparable<Adm
     @Override
     public String toString() {
         return patient + "(" + firstNight + "-" + lastNight + ")";
+    }
+
+    public int calculateSameNightCount(AdmissionPart other) {
+        int firstNightIndex = Math.max(getFirstNight().getIndex(), other.getFirstNight().getIndex());
+        int lastNightIndex = Math.min(getLastNight().getIndex(), other.getLastNight().getIndex());
+        return Math.max(0, lastNightIndex - firstNightIndex + 1);
     }
 
 }

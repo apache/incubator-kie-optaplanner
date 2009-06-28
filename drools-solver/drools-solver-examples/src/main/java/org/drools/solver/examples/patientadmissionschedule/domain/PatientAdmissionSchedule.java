@@ -177,13 +177,10 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         for (AdmissionPart leftAdmissionPart : admissionPartList) {
             for (AdmissionPart rightAdmissionPart : admissionPartList) {
                 if (leftAdmissionPart.getId() < rightAdmissionPart.getId()) {
-                    int firstNightIndex = Math.max(leftAdmissionPart.getFirstNight().getIndex(),
-                            rightAdmissionPart.getFirstNight().getIndex());
-                    int lastNightIndex = Math.min(leftAdmissionPart.getLastNight().getIndex(),
-                            rightAdmissionPart.getLastNight().getIndex());
-                    if (firstNightIndex <= lastNightIndex) {
+                    int sameNightCount = leftAdmissionPart.calculateSameNightCount(rightAdmissionPart);
+                    if (sameNightCount > 0) {
                         admissionPartConflictList.add(new AdmissionPartConflict(
-                                leftAdmissionPart, rightAdmissionPart, lastNightIndex - firstNightIndex + 1));
+                                leftAdmissionPart, rightAdmissionPart, sameNightCount));
                     }
                 }
             }

@@ -6,14 +6,9 @@ import java.util.List;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.move.factory.CachedMoveFactory;
 import org.drools.solver.core.solution.Solution;
-import org.drools.solver.examples.itc2007.examination.domain.Exam;
-import org.drools.solver.examples.itc2007.examination.domain.Examination;
-import org.drools.solver.examples.itc2007.examination.domain.Period;
-import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeMove;
-import org.drools.solver.examples.patientadmissionschedule.domain.PatientAdmissionSchedule;
 import org.drools.solver.examples.patientadmissionschedule.domain.Bed;
-import org.drools.solver.examples.patientadmissionschedule.domain.AdmissionPart;
 import org.drools.solver.examples.patientadmissionschedule.domain.BedDesignation;
+import org.drools.solver.examples.patientadmissionschedule.domain.PatientAdmissionSchedule;
 import org.drools.solver.examples.patientadmissionschedule.solver.move.BedChangeMove;
 
 /**
