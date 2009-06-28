@@ -32,6 +32,8 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Hard constraints
 // ############################################################################
 
+// RoomMaintenance constraint is not yet applicable
+
 // Two patients in the same bed for a number of nights.
 rule "sameBedInSameNight"
     when
@@ -40,12 +42,12 @@ rule "sameBedInSameNight"
         $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed);
         $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed);
     then
-        insertLogical(new IntConstraintOccurrence("sameBedInSameNight", ConstraintType.NEGATIVE_HARD,
-                $admissionPartConflict.getNightSize(),
+        insertLogical(new IntConstraintOccurrence("sameBedInSameNight",
+                ConstraintType.NEGATIVE_HARD, $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
 
-// Two admissionParts in the same bed for a number of nights.
+// Different genders in the same room when the room doesn't allow it.
 rule "differentGenderInSameGenderRoomInSameNight"
     when
         $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
@@ -55,10 +57,18 @@ rule "differentGenderInSameGenderRoomInSameNight"
                 admissionPart == $leftAdmissionPart, $room : room);
         $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart);
     then
-        insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight", ConstraintType.NEGATIVE_HARD,
-                $admissionPartConflict.getNightSize(),
+        insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight",
+                ConstraintType.NEGATIVE_HARD, $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
+
+// Room's GenderLimitation male only and female only constraint is build-in
+
+// Departement's mininumAge and maximumAge constraint is build-in
+
+// RequiredPatientEquipment constraint is build-in
+
+// Patient's requiredRoomCapacity constraint is not yet applicable
 
 // Accumulate hard constraints
 rule "hardConstraintsBroken"
@@ -75,6 +85,21 @@ end
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+
+// PreferredPatientEquipment constraint
+rule "preferredPatientEquipment"
+    when
+        $preferredPatientEquipment : PreferredPatientEquipment($patient : patient, $equipment : equipment);
+        $bedDesignation : BedDesignation(patient == $patient, $room : room);
+        not RoomEquipment(room == $room, equipment == $equipment);
+    then
+        insertLogical(new IntConstraintOccurrence("preferredPatientEquipment",
+                ConstraintType.NEGATIVE_SOFT, 20,
+                $bedDesignation));
+end
+
+// Do not change bed in an AdmissionPart on different Nights constraint is build-in
 
 // Accumulate soft constraints
 rule "softConstraintsBroken"
