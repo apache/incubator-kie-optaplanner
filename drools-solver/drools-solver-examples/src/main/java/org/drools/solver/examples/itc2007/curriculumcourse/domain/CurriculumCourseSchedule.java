@@ -130,7 +130,7 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
     }
 
     /**
-     * Clone will only deep copy the lectures
+     * Clone will only deep copy the lectureList
      */
     public CurriculumCourseSchedule cloneSolution() {
         CurriculumCourseSchedule clone = new CurriculumCourseSchedule();

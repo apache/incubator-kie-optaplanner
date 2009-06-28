@@ -110,7 +110,7 @@ public class Examination extends AbstractPersistable implements Solution {
         if (isInitialized()) {
             facts.addAll(examList);
         }
-        // A faster alternative to the insertLogicalTopicConflicts rule.
+        // A faster alternative to a insertLogicalTopicConflicts rule.
         facts.addAll(calculateTopicConflictList());
         return facts;
     }
@@ -137,7 +137,7 @@ public class Examination extends AbstractPersistable implements Solution {
     }
 
     /**
-     * Clone will only deep copy the exams
+     * Clone will only deep copy the examList
      */
     public Examination cloneSolution() {
         Examination clone = new Examination();

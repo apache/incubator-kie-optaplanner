@@ -8,6 +8,10 @@ import java.util.List;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
+import org.drools.solver.examples.itc2007.examination.domain.solver.TopicConflict;
+import org.drools.solver.examples.itc2007.examination.domain.Topic;
+import org.drools.solver.examples.itc2007.examination.domain.Student;
+import org.drools.solver.examples.patientadmissionschedule.domain.solver.AdmissionPartConflict;
 
 /**
  * @author Geoffrey De Smet
@@ -164,11 +168,31 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         if (isInitialized()) {
             facts.addAll(bedDesignationList);
         }
+        facts.addAll(calculateAdmissionPartConflictList());
         return facts;
     }
 
+    private List<AdmissionPartConflict> calculateAdmissionPartConflictList() {
+        List<AdmissionPartConflict> admissionPartConflictList = new ArrayList<AdmissionPartConflict>();
+        for (AdmissionPart leftAdmissionPart : admissionPartList) {
+            for (AdmissionPart rightAdmissionPart : admissionPartList) {
+                if (leftAdmissionPart.getId() < rightAdmissionPart.getId()) {
+                    int firstNightIndex = Math.max(leftAdmissionPart.getFirstNight().getIndex(),
+                            rightAdmissionPart.getFirstNight().getIndex());
+                    int lastNightIndex = Math.min(leftAdmissionPart.getLastNight().getIndex(),
+                            rightAdmissionPart.getLastNight().getIndex());
+                    if (firstNightIndex <= lastNightIndex) {
+                        admissionPartConflictList.add(new AdmissionPartConflict(
+                                leftAdmissionPart, rightAdmissionPart, lastNightIndex - firstNightIndex + 1));
+                    }
+                }
+            }
+        }
+        return admissionPartConflictList;
+    }
+
     /**
-     * Clone will only deep copy the exams
+     * Clone will only deep copy the bedDesignationList
      */
     public PatientAdmissionSchedule cloneSolution() {
         PatientAdmissionSchedule clone = new PatientAdmissionSchedule();

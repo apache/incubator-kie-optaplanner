@@ -17,11 +17,6 @@ public class TopicConflict implements Serializable {
     private Topic rightTopic;
     private int studentSize;
 
-    public TopicConflict(Topic leftTopic, Topic rightTopic) {
-        this.leftTopic = leftTopic;
-        this.rightTopic = rightTopic;
-    }
-
     public TopicConflict(Topic leftTopic, Topic rightTopic, int studentSize) {
         this.leftTopic = leftTopic;
         this.rightTopic = rightTopic;
@@ -52,7 +47,6 @@ public class TopicConflict implements Serializable {
         this.studentSize = studentSize;
     }
 
-    // TODO decide to keep or remove this object logicallyAsserted
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -67,7 +61,6 @@ public class TopicConflict implements Serializable {
         }
     }
 
-    // TODO decide to keep or remove this object logicallyAsserted
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(leftTopic)

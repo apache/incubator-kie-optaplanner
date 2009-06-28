@@ -92,7 +92,7 @@ public class Manners2009 extends AbstractPersistable implements Solution {
     }
 
     /**
-     * Clone will only deep copy the matches
+     * Clone will only deep copy the seatDesignationList
      */
     public Manners2009 cloneSolution() {
         Manners2009 clone = new Manners2009();

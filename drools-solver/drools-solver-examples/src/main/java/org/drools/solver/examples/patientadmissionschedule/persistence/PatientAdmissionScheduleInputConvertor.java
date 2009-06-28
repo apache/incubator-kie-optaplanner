@@ -2,31 +2,32 @@ package org.drools.solver.examples.patientadmissionschedule.persistence;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
+import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
-import org.drools.solver.examples.patientadmissionschedule.domain.PatientAdmissionSchedule;
-import org.drools.solver.examples.patientadmissionschedule.domain.Specialism;
+import org.drools.solver.examples.patientadmissionschedule.domain.AdmissionPart;
+import org.drools.solver.examples.patientadmissionschedule.domain.Bed;
 import org.drools.solver.examples.patientadmissionschedule.domain.Department;
 import org.drools.solver.examples.patientadmissionschedule.domain.DepartmentSpecialism;
 import org.drools.solver.examples.patientadmissionschedule.domain.Equipment;
-import org.drools.solver.examples.patientadmissionschedule.domain.Room;
-import org.drools.solver.examples.patientadmissionschedule.domain.RoomSpecialism;
+import org.drools.solver.examples.patientadmissionschedule.domain.Gender;
 import org.drools.solver.examples.patientadmissionschedule.domain.GenderLimitation;
-import org.drools.solver.examples.patientadmissionschedule.domain.RoomEquipment;
-import org.drools.solver.examples.patientadmissionschedule.domain.Bed;
 import org.drools.solver.examples.patientadmissionschedule.domain.Night;
 import org.drools.solver.examples.patientadmissionschedule.domain.Patient;
-import org.drools.solver.examples.patientadmissionschedule.domain.AdmissionPart;
-import org.drools.solver.examples.patientadmissionschedule.domain.RequiredPatientEquipment;
+import org.drools.solver.examples.patientadmissionschedule.domain.PatientAdmissionSchedule;
 import org.drools.solver.examples.patientadmissionschedule.domain.PreferredPatientEquipment;
-import org.drools.solver.examples.patientadmissionschedule.domain.Gender;
-import org.drools.solver.core.solution.Solution;
+import org.drools.solver.examples.patientadmissionschedule.domain.RequiredPatientEquipment;
+import org.drools.solver.examples.patientadmissionschedule.domain.Room;
+import org.drools.solver.examples.patientadmissionschedule.domain.RoomEquipment;
+import org.drools.solver.examples.patientadmissionschedule.domain.RoomSpecialism;
+import org.drools.solver.examples.patientadmissionschedule.domain.Specialism;
 
 /**
  * @author Geoffrey De Smet
+ * @author Wim Vancroonenburg
  */
 public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvertor {
 
@@ -321,34 +322,36 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                 ensureEnoughNights(lastNightIndex);
                 Night endNight = indexToNightMap.get(lastNightIndex);
                 int patientNightListSize = endNight.getIndex() - firstNight.getIndex();
-
-                String[] admissionPartTokens = splitBySpace(lineTokens[2]);
-                if (admissionPartTokens.length % 2 != 1) {
-                }
-                int patientAdmissionPartListSize = Integer.parseInt(admissionPartTokens[0]);
-                if (admissionPartTokens.length != ((patientAdmissionPartListSize * 2) + 1)) {
-                    throw new IllegalArgumentException("Read line (" + line
-                            + ") is expected to contain " + ((patientAdmissionPartListSize * 2) + 1)
-                            + " number of tokens after 2th pipeline (|).");
-                }
-                int nextFirstNightIndex = firstNight.getIndex();
-                for (int j = 1; j < admissionPartTokens.length; j += 2) {
-                    long specialismId = Long.parseLong(admissionPartTokens[j]);
-                    int admissionPartNightListSize = Integer.parseInt(admissionPartTokens[j + 1]);
-                    AdmissionPart admissionPart = new AdmissionPart();
-                    admissionPart.setId(admissionPartId);
-                    admissionPart.setPatient(patient);
-                    admissionPart.setSpecialism(idToSpecialismMap.get(specialismId));
-                    admissionPart.setFirstNight(indexToNightMap.get(nextFirstNightIndex));
-                    admissionPart.setLastNight(indexToNightMap.get(nextFirstNightIndex + admissionPartNightListSize - 1));
-                    admissionPartList.add(admissionPart);
-                    admissionPartId++;
-                    nextFirstNightIndex += admissionPartNightListSize;
-                }
-                if (nextFirstNightIndex != nextFirstNightIndex) {
-                    throw new IllegalArgumentException("Read line (" + line
-                            + ") has patientNightListSize (" + patientNightListSize
-                            + ") different from the sum of admissionPartNightListSize (" + nextFirstNightIndex + ")");
+                // A patient with no nights doesn't have a admissionPart
+                if (patientNightListSize != 0) {
+                    String[] admissionPartTokens = splitBySpace(lineTokens[2]);
+                    if (admissionPartTokens.length % 2 != 1) {
+                    }
+                    int patientAdmissionPartListSize = Integer.parseInt(admissionPartTokens[0]);
+                    if (admissionPartTokens.length != ((patientAdmissionPartListSize * 2) + 1)) {
+                        throw new IllegalArgumentException("Read line (" + line
+                                + ") is expected to contain " + ((patientAdmissionPartListSize * 2) + 1)
+                                + " number of tokens after 2th pipeline (|).");
+                    }
+                    int nextFirstNightIndex = firstNight.getIndex();
+                    for (int j = 1; j < admissionPartTokens.length; j += 2) {
+                        long specialismId = Long.parseLong(admissionPartTokens[j]);
+                        int admissionPartNightListSize = Integer.parseInt(admissionPartTokens[j + 1]);
+                        AdmissionPart admissionPart = new AdmissionPart();
+                        admissionPart.setId(admissionPartId);
+                        admissionPart.setPatient(patient);
+                        admissionPart.setSpecialism(idToSpecialismMap.get(specialismId));
+                        admissionPart.setFirstNight(indexToNightMap.get(nextFirstNightIndex));
+                        admissionPart.setLastNight(indexToNightMap.get(nextFirstNightIndex + admissionPartNightListSize - 1));
+                        admissionPartList.add(admissionPart);
+                        admissionPartId++;
+                        nextFirstNightIndex += admissionPartNightListSize;
+                    }
+                    if (nextFirstNightIndex != nextFirstNightIndex) {
+                        throw new IllegalArgumentException("Read line (" + line
+                                + ") has patientNightListSize (" + patientNightListSize
+                                + ") different from the sum of admissionPartNightListSize (" + nextFirstNightIndex + ")");
+                    }
                 }
 
                 List<RequiredPatientEquipment> requiredPatientEquipmentOfPatientList = new ArrayList<RequiredPatientEquipment>(equipmentListSize);

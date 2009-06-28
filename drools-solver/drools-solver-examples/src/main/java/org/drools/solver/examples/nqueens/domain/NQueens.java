@@ -44,7 +44,7 @@ public class NQueens extends AbstractPersistable implements Solution {
     }
 
     /**
-     * Clone will only deep copy the queens
+     * Clone will only deep copy the queenList
      */
     public NQueens cloneSolution() {
         NQueens clone = new NQueens();

@@ -57,7 +57,7 @@ public class TravelingTournament extends AbstractPersistable implements Solution
     }
 
     /**
-     * Clone will only deep copy the matches
+     * Clone will only deep copy the matchList
      */
     public TravelingTournament cloneSolution() {
         TravelingTournament clone = new TravelingTournament();
