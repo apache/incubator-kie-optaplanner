@@ -4,21 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.WorkingMemory;
 import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
-import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.solver.core.score.Score;
 import org.drools.solver.core.score.DefaultHardAndSoftScore;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
-import org.drools.solver.examples.manners2009.domain.Manners2009;
-import org.drools.solver.examples.manners2009.domain.Guest;
-import org.drools.solver.examples.manners2009.domain.SeatDesignation;
-import org.drools.solver.examples.manners2009.domain.Seat;
-import org.drools.solver.examples.patientadmissionschedule.domain.PatientAdmissionSchedule;
+import org.drools.solver.examples.patientadmissionschedule.domain.AdmissionPart;
 import org.drools.solver.examples.patientadmissionschedule.domain.Bed;
 import org.drools.solver.examples.patientadmissionschedule.domain.BedDesignation;
-import org.drools.solver.examples.patientadmissionschedule.domain.AdmissionPart;
+import org.drools.solver.examples.patientadmissionschedule.domain.PatientAdmissionSchedule;
 
 /**
  * @author Geoffrey De Smet
