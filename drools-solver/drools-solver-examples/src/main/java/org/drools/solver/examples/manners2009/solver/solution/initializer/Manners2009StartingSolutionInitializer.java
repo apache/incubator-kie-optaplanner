@@ -68,6 +68,7 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
             workingMemory.modifyRetract(seatDesignationHandle);
             seatDesignation.setSeat(bestSeat);
             workingMemory.modifyInsert(seatDesignationHandle, seatDesignation);
+            // There will always be enough allowed seats: ok to do this for this problem, but not ok for most problems
             undesignatedSeatList.remove(bestSeat);
         }
         // For the GUI's combobox list mainly, not really needed
