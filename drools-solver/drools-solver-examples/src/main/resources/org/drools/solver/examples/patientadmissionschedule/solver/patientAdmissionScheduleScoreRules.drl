@@ -91,6 +91,7 @@ end
 rule "preferredMaximumRoomCapacity"
     when
         $bedDesignation : BedDesignation(patientPreferredMaximumRoomCapacity < roomCapacity);
+        // TODO bugged (we want jess like behaviour!)
     then
         insertLogical(new IntConstraintOccurrence("preferredMaximumRoomCapacity",
                 ConstraintType.NEGATIVE_SOFT,
