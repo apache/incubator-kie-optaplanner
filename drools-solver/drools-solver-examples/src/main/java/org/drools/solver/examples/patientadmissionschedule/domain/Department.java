@@ -47,8 +47,8 @@ public class Department extends AbstractPersistable implements Comparable<Depart
         return name;
     }
 
-    public boolean allowsAdmission(Admission admission) {
-        return allowsPatientAge(admission.getPatient());
+    public boolean allowsAdmissionPart(AdmissionPart admissionPart) {
+        return allowsPatientAge(admissionPart.getPatient());
     }
 
     public boolean allowsPatientAge(Patient patient) {

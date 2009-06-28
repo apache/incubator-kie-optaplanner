@@ -24,7 +24,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
     private List<Bed> bedList;
     private List<Night> nightList;
     private List<Patient> patientList;
-    private List<Admission> admissionList;
+    private List<AdmissionPart> admissionPartList;
     private List<RequiredPatientEquipment> requiredPatientEquipmentList;
     private List<PreferredPatientEquipment> preferredPatientEquipmentList;
 
@@ -110,12 +110,12 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.patientList = patientList;
     }
 
-    public List<Admission> getAdmissionList() {
-        return admissionList;
+    public List<AdmissionPart> getAdmissionPartList() {
+        return admissionPartList;
     }
 
-    public void setAdmissionList(List<Admission> admissionList) {
-        this.admissionList = admissionList;
+    public void setAdmissionPartList(List<AdmissionPart> admissionPartList) {
+        this.admissionPartList = admissionPartList;
     }
 
     public List<RequiredPatientEquipment> getRequiredPatientEquipmentList() {
@@ -158,7 +158,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         facts.addAll(bedList);
         facts.addAll(nightList);
         facts.addAll(patientList);
-        facts.addAll(admissionList);
+        facts.addAll(admissionPartList);
         facts.addAll(requiredPatientEquipmentList);
         facts.addAll(preferredPatientEquipmentList);
         if (isInitialized()) {
@@ -183,7 +183,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         clone.bedList = bedList;
         clone.nightList = nightList;
         clone.patientList = patientList;
-        clone.admissionList = admissionList;
+        clone.admissionPartList = admissionPartList;
         clone.requiredPatientEquipmentList = requiredPatientEquipmentList;
         clone.preferredPatientEquipmentList = preferredPatientEquipmentList;
         List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());

@@ -6,7 +6,7 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
 /**
  * @author Geoffrey De Smet
  */
-public class Admission extends AbstractPersistable implements Comparable<Admission> {
+public class AdmissionPart extends AbstractPersistable implements Comparable<AdmissionPart> {
 
     private Patient patient;
     private Night firstNight;
@@ -45,7 +45,7 @@ public class Admission extends AbstractPersistable implements Comparable<Admissi
         this.specialism = specialism;
     }
 
-    public int compareTo(Admission other) {
+    public int compareTo(AdmissionPart other) {
         return new CompareToBuilder()
                 .append(patient, other.patient)
                 .append(firstNight, other.firstNight)

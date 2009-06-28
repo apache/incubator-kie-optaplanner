@@ -10,15 +10,15 @@ import org.drools.solver.examples.common.domain.AbstractPersistable;
  */
 public class BedDesignation extends AbstractPersistable implements Comparable<BedDesignation> {
 
-    private Admission admission;
+    private AdmissionPart admissionPart;
     private Bed bed;
 
-    public Admission getAdmission() {
-        return admission;
+    public AdmissionPart getAdmissionPart() {
+        return admissionPart;
     }
 
-    public void setAdmission(Admission admission) {
-        this.admission = admission;
+    public void setAdmissionPart(AdmissionPart admissionPart) {
+        this.admissionPart = admissionPart;
     }
 
     public Bed getBed() {
@@ -31,7 +31,7 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
 
     public int compareTo(BedDesignation other) {
         return new CompareToBuilder()
-                .append(admission, other.admission)
+                .append(admissionPart, other.admissionPart)
                 .append(bed, other.bed)
                 .append(id, other.id)
                 .toComparison();
@@ -40,7 +40,7 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
     public BedDesignation clone() {
         BedDesignation clone = new BedDesignation();
         clone.id = id;
-        clone.admission = admission;
+        clone.admissionPart = admissionPart;
         clone.bed = bed;
         return clone;
     }
@@ -57,7 +57,7 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
             BedDesignation other = (BedDesignation) o;
             return new EqualsBuilder()
                     .append(id, other.id)
-                    .append(admission, other.admission)
+                    .append(admissionPart, other.admissionPart)
                     .append(bed, other.bed)
                     .isEquals();
         } else {
@@ -78,7 +78,7 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
 
     @Override
     public String toString() {
-        return admission + " @ " + bed;
+        return admissionPart + " @ " + bed;
     }
 
 }
