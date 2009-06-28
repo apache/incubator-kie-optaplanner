@@ -13,7 +13,7 @@ public class Patient extends AbstractPersistable implements Comparable<Patient> 
     private String name;
     private Gender gender;
     private int age;
-    private int preferredMaximumRoomCapacity;
+    private Integer preferredMaximumRoomCapacity;
 
     private List<RequiredPatientEquipment> requiredPatientEquipmentList;
 

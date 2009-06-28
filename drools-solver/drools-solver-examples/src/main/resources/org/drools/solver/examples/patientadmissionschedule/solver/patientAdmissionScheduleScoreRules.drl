@@ -44,7 +44,7 @@ rule "sameBedInSameNight"
         $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed);
     then
         insertLogical(new IntConstraintOccurrence("sameBedInSameNight",
-                ConstraintType.NEGATIVE_HARD, 100 * $admissionPartConflict.getNightSize(),
+                ConstraintType.NEGATIVE_HARD, 1000 * $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
 
@@ -59,7 +59,10 @@ rule "differentGenderInSameGenderRoomInSameNight"
         $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart);
     then
         insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight",
-                ConstraintType.NEGATIVE_HARD, 50 * $admissionPartConflict.getNightSize(),
+                // TODO this would be better for the problem
+                // ConstraintType.NEGATIVE_HARD,
+                ConstraintType.NEGATIVE_SOFT,
+                50 * $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
 
@@ -91,12 +94,15 @@ end
 // Patient preferredMaximumRoomCapacity
 rule "preferredMaximumRoomCapacity"
     when
-        $bedDesignation : BedDesignation(patientPreferredMaximumRoomCapacity < roomCapacity);
-        // TODO bugged (we want jess like behaviour!)
+        $bedDesignation : BedDesignation(patientPreferredMaximumRoomCapacity != null,
+                patientPreferredMaximumRoomCapacity < roomCapacity);
     then
         insertLogical(new IntConstraintOccurrence("preferredMaximumRoomCapacity",
                 ConstraintType.NEGATIVE_SOFT,
-                8 * ($bedDesignation.getRoomCapacity() - $bedDesignation.getPatientPreferredMaximumRoomCapacity()),
+                // TODO this would be better for the problem
+                // 8 * ($bedDesignation.getRoomCapacity() - $bedDesignation.getPatientPreferredMaximumRoomCapacity())
+                // * $bedDesignation.getAdmissionPart().getNightCount(),
+                8 * $bedDesignation.getAdmissionPart().getNightCount(),
                 $bedDesignation));
 end
 

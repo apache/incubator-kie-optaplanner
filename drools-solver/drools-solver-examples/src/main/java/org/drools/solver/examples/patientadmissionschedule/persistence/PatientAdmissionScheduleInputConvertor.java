@@ -330,7 +330,9 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                 patient.setName(patientTokens[1]);
                 patient.setAge(Integer.parseInt(patientTokens[2]));
                 patient.setGender(Gender.valueOfCode(patientTokens[3]));
-                patient.setPreferredMaximumRoomCapacity(Integer.parseInt(lineTokens[3]));
+                int preferredMaximumRoomCapacity = Integer.parseInt(lineTokens[3]);
+                patient.setPreferredMaximumRoomCapacity(preferredMaximumRoomCapacity == 0
+                        ? null : preferredMaximumRoomCapacity);
                 patientList.add(patient);
 
                 String[] nightTokens = splitBySpace(lineTokens[1], 2);
