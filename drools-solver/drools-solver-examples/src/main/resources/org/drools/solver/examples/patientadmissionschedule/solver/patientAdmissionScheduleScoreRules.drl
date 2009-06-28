@@ -24,20 +24,38 @@ import org.drools.solver.examples.patientadmissionschedule.domain.RoomSpecialism
 import org.drools.solver.examples.patientadmissionschedule.domain.Specialism;
 import org.drools.solver.examples.patientadmissionschedule.domain.solver.AdmissionPartConflict;
 
+// @author Geoffrey De Smet
+
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################
 // Hard constraints
 // ############################################################################
 
-// Two admissionParts in the same bed for a number of nights.
-rule "conflictingBedDesignationInSameNight"
+// Two patients in the same bed for a number of nights.
+rule "sameBedInSameNight"
     when
-        $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart, $rightAdmissionPart : rightAdmissionPart);
+        $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
+                $rightAdmissionPart : rightAdmissionPart);
         $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed);
         $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed);
     then
-        insertLogical(new IntConstraintOccurrence("conflictingBedDesignationInSameNight", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new IntConstraintOccurrence("sameBedInSameNight", ConstraintType.NEGATIVE_HARD,
+                $admissionPartConflict.getNightSize(),
+                $leftBedDesignation, $rightBedDesignation));
+end
+
+// Two admissionParts in the same bed for a number of nights.
+rule "differentGenderInSameGenderRoomInSameNight"
+    when
+        $room : Room(genderLimitation == GenderLimitation.SAME_GENDER);
+        $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
+                $rightAdmissionPart : rightAdmissionPart,
+                differentGender == true);
+        $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, room == $room);
+        $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, room == $room);
+    then
+        insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight", ConstraintType.NEGATIVE_HARD,
                 $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end

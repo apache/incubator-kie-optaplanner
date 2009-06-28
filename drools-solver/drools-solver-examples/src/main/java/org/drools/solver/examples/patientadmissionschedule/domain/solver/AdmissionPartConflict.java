@@ -80,4 +80,8 @@ public class AdmissionPartConflict implements Serializable {
         return leftAdmissionPart + " & " + rightAdmissionPart + " = " + nightSize;
     }
 
+    public boolean isDifferentGender() {
+        return leftAdmissionPart.getPatient().getGender() != rightAdmissionPart.getPatient().getGender();
+    }
+
 }

@@ -11,6 +11,8 @@ import org.drools.solver.examples.travelingtournament.domain.Team;
 import org.drools.solver.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.solver.examples.travelingtournament.domain.solver.Hop;
 
+// @author Geoffrey De Smet
+
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

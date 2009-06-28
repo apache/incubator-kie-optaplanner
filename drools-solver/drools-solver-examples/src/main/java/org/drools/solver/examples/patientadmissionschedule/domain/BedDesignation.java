@@ -81,4 +81,8 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
         return admissionPart + " @ " + bed;
     }
 
+    public Room getRoom() {
+        return bed.getRoom();
+    }
+
 }

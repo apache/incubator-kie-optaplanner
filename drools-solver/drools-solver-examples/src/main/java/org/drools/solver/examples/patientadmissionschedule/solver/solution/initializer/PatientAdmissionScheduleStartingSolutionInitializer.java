@@ -67,6 +67,8 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                         }
                     } else if (score.equals(unscheduledScore)) {
                         perfectMatch = true;
+                        bestScore = score;
+                        bestBed = bed;
                         break;
                     } else {
                         throw new IllegalStateException("The score (" + score
@@ -77,14 +79,17 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                     break;
                 }
             }
+            if (bestBed == null) {
+                throw new IllegalStateException("The bestBed (" + bestBed + ") cannot be null.");
+            }
             if (!perfectMatch) {
-                if (bestBed == null) {
-                    throw new IllegalStateException("The bestBed (" + bestBed + ") cannot be null.");
-                }
                 workingMemory.modifyRetract(bedDesignationHandle);
                 bedDesignation.setBed(bestBed);
                 workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
             }
+            // put the occupied bed at the end of the list
+            bedList.remove(bestBed);
+            bedList.add(bestBed);
         }
         // For the GUI's combobox list mainly, not really needed
         Collections.sort(bedDesignationList, new PersistableIdComparator());

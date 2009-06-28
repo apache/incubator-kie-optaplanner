@@ -10,6 +10,8 @@ import org.drools.solver.examples.lessonschedule.domain.Teacher;
 import org.drools.solver.examples.lessonschedule.domain.Group;
 import org.drools.solver.examples.lessonschedule.domain.Lesson;
 
+// @author Geoffrey De Smet
+
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

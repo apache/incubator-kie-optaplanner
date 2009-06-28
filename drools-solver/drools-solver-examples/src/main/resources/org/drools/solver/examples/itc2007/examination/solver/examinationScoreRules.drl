@@ -18,6 +18,8 @@ import org.drools.solver.examples.itc2007.examination.domain.Student;
 import org.drools.solver.examples.itc2007.examination.domain.Topic;
 import org.drools.solver.examples.itc2007.examination.domain.solver.TopicConflict;
 
+// @author Geoffrey De Smet
+
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

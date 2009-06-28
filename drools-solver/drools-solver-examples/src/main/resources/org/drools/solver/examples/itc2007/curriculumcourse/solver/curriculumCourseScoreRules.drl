@@ -16,6 +16,8 @@ import org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot;
 import org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint;
 
+// @author Geoffrey De Smet
+
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################
