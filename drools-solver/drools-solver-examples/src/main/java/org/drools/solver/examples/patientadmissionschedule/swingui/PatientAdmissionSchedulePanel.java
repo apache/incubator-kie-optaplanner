@@ -30,6 +30,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     public PatientAdmissionSchedulePanel() {
         gridLayout = new GridLayout(0, 1);
         setLayout(gridLayout);
+        add(new JLabel("GUI TODO"));
     }
 
     private PatientAdmissionSchedule getPatientAdmissionSchedule() {

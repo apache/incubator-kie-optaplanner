@@ -155,14 +155,21 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + ") after 1st pipeline (|) seperated by a space ( ).");
                 }
                 for (int j = 0; j < departmentSpecialismTokens.length; j += 2) {
-                    DepartmentSpecialism departmentSpecialism = new DepartmentSpecialism();
-                    departmentSpecialism.setId(departmentSpecialismId);
-                    departmentSpecialism.setDepartment(department);
-                    departmentSpecialism.setPriority(Integer.parseInt(departmentSpecialismTokens[j]));
-                    departmentSpecialism.setSpecialism(idToSpecialismMap.get(
-                            Long.parseLong(departmentSpecialismTokens[j + 1])));
-                    departmentSpecialismList.add(departmentSpecialism);
-                    departmentSpecialismId++;
+                    long specialismId = Long.parseLong(departmentSpecialismTokens[j + 1]);
+                    if (specialismId != 0) {
+                        DepartmentSpecialism departmentSpecialism = new DepartmentSpecialism();
+                        departmentSpecialism.setId(departmentSpecialismId);
+                        departmentSpecialism.setDepartment(department);
+                        departmentSpecialism.setPriority(Integer.parseInt(departmentSpecialismTokens[j]));
+                        Specialism specialism = idToSpecialismMap.get(specialismId);
+                        if (specialism == null) {
+                            throw new IllegalArgumentException("Read line (" + line
+                                + ") has a non existing specialismId (" + specialismId + ").");
+                        }
+                        departmentSpecialism.setSpecialism(specialism);
+                        departmentSpecialismList.add(departmentSpecialism);
+                        departmentSpecialismId++;
+                    }
                 }
             }
             patientAdmissionSchedule.setDepartmentList(departmentList);
@@ -217,13 +224,20 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                 for (int j = 0; j < roomSpecialismTokens.length; j += 2) {
                     int priority = Integer.parseInt(roomSpecialismTokens[j]);
                     long specialismId = Long.parseLong(roomSpecialismTokens[j + 1]);
-                    RoomSpecialism roomSpecialism = new RoomSpecialism();
-                    roomSpecialism.setId(roomSpecialismId);
-                    roomSpecialism.setRoom(room);
-                    roomSpecialism.setSpecialism(idToSpecialismMap.get(specialismId));
-                    roomSpecialism.setPriority(priority);
-                    roomSpecialismList.add(roomSpecialism);
-                    roomSpecialismId++;
+                    if (specialismId != 0) {
+                        RoomSpecialism roomSpecialism = new RoomSpecialism();
+                        roomSpecialism.setId(roomSpecialismId);
+                        roomSpecialism.setRoom(room);
+                        Specialism specialism = idToSpecialismMap.get(specialismId);
+                        if (specialism == null) {
+                            throw new IllegalArgumentException("Read line (" + line
+                                + ") has a non existing specialismId (" + specialismId + ").");
+                        }
+                        roomSpecialism.setSpecialism(specialism);
+                        roomSpecialism.setPriority(priority);
+                        roomSpecialismList.add(roomSpecialism);
+                        roomSpecialismId++;
+                    }
                 }
 
                 List<RoomEquipment> roomEquipmentOfRoomList = new ArrayList<RoomEquipment>(equipmentListSize);
@@ -340,7 +354,12 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                         AdmissionPart admissionPart = new AdmissionPart();
                         admissionPart.setId(admissionPartId);
                         admissionPart.setPatient(patient);
-                        admissionPart.setSpecialism(idToSpecialismMap.get(specialismId));
+                        Specialism specialism = (specialismId == 0) ? null : idToSpecialismMap.get(specialismId);
+                        if (specialism == null) {
+                            throw new IllegalArgumentException("Read line (" + line
+                                + ") has a non existing specialismId (" + specialismId + ").");
+                        }
+                        admissionPart.setSpecialism(specialism);
                         admissionPart.setFirstNight(indexToNightMap.get(nextFirstNightIndex));
                         admissionPart.setLastNight(indexToNightMap.get(nextFirstNightIndex + admissionPartNightListSize - 1));
                         admissionPartList.add(admissionPart);
