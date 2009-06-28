@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
-import org.drools.solver.examples.itc2007.examination.domain.Room;
 
 /**
  * @author Geoffrey De Smet

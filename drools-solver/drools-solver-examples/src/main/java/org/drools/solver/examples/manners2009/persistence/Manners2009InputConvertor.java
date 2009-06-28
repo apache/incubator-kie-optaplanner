@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
 import org.drools.solver.examples.manners2009.domain.Gender;
 import org.drools.solver.examples.manners2009.domain.Guest;
@@ -16,7 +17,6 @@ import org.drools.solver.examples.manners2009.domain.JobType;
 import org.drools.solver.examples.manners2009.domain.Manners2009;
 import org.drools.solver.examples.manners2009.domain.Seat;
 import org.drools.solver.examples.manners2009.domain.Table;
-import org.drools.solver.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet

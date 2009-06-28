@@ -10,12 +10,8 @@ import org.drools.WorkingMemory;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.solver.core.localsearch.decider.accepter.tabu.TabuPropertyEnabled;
 import org.drools.solver.core.move.Move;
-import org.drools.solver.examples.itc2007.examination.domain.Exam;
-import org.drools.solver.examples.itc2007.examination.domain.Period;
-import org.drools.solver.examples.itc2007.examination.domain.Room;
-import org.drools.solver.examples.itc2007.examination.solver.move.ExaminationMoveHelper;
-import org.drools.solver.examples.manners2009.domain.SeatDesignation;
 import org.drools.solver.examples.manners2009.domain.Seat;
+import org.drools.solver.examples.manners2009.domain.SeatDesignation;
 
 /**
  * @author Geoffrey De Smet

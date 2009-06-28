@@ -17,16 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.drools.solver.examples.common.swingui.SolutionPanel;
-import org.drools.solver.examples.itc2007.examination.domain.Exam;
-import org.drools.solver.examples.itc2007.examination.domain.Period;
-import org.drools.solver.examples.itc2007.examination.domain.Room;
-import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeMove;
-import org.drools.solver.examples.itc2007.examination.solver.move.RoomChangeMove;
+import org.drools.solver.examples.manners2009.domain.HobbyPractician;
 import org.drools.solver.examples.manners2009.domain.Manners2009;
-import org.drools.solver.examples.manners2009.domain.Table;
 import org.drools.solver.examples.manners2009.domain.Seat;
 import org.drools.solver.examples.manners2009.domain.SeatDesignation;
-import org.drools.solver.examples.manners2009.domain.HobbyPractician;
+import org.drools.solver.examples.manners2009.domain.Table;
 import org.drools.solver.examples.manners2009.solver.move.SeatDesignationSwitchMove;
 
 /**

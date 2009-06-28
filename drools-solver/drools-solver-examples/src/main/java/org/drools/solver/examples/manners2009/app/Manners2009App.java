@@ -4,8 +4,6 @@ import org.drools.solver.config.XmlSolverConfigurer;
 import org.drools.solver.core.Solver;
 import org.drools.solver.examples.common.app.CommonApp;
 import org.drools.solver.examples.common.swingui.SolutionPanel;
-import org.drools.solver.examples.itc2007.examination.swingui.ExaminationPanel;
-import org.drools.solver.examples.itc2007.examination.app.ExaminationApp;
 import org.drools.solver.examples.manners2009.swingui.Manners2009Panel;
 
 /**
