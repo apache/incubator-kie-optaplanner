@@ -87,6 +87,17 @@ end
 // ############################################################################
 
 
+// Patient preferredMaximumRoomCapacity
+rule "preferredMaximumRoomCapacity"
+    when
+        $bedDesignation : BedDesignation(patientPreferredMaximumRoomCapacity < roomCapacity);
+    then
+        insertLogical(new IntConstraintOccurrence("preferredMaximumRoomCapacity",
+                ConstraintType.NEGATIVE_SOFT,
+                ($bedDesignation.getRoomCapacity() - $bedDesignation.getPatientPreferredMaximumRoomCapacity()) * 8,
+                $bedDesignation));
+end
+
 // DepartmentSpecialism constraint
 rule "departmentSpecialism"
     when

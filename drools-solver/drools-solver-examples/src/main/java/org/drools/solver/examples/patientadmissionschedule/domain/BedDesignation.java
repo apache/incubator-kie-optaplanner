@@ -85,12 +85,20 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
         return admissionPart.getPatient();
     }
 
+    public int getPatientPreferredMaximumRoomCapacity() {
+        return admissionPart.getPatient().getPreferredMaximumRoomCapacity();
+    }
+
     public Specialism getAdmissionPartSpecialism() {
         return admissionPart.getSpecialism();
     }
 
     public Room getRoom() {
         return bed.getRoom();
+    }
+
+    public int getRoomCapacity() {
+        return bed.getRoom().getCapacity();
     }
 
     public Department getDepartment() {
