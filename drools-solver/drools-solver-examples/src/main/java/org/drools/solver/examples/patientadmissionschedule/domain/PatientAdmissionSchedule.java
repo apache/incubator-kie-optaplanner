@@ -170,7 +170,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
             facts.addAll(bedDesignationList);
         }
         facts.addAll(calculateAdmissionPartConflictList());
-        facts.addAll(calculateAdmissionPartSpecialismMissingInRoomList());
+//        facts.addAll(calculateAdmissionPartSpecialismMissingInRoomList());
         return facts;
     }
 
@@ -190,28 +190,28 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         return admissionPartConflictList;
     }
 
-    private List<AdmissionPartSpecialismMissingInRoom> calculateAdmissionPartSpecialismMissingInRoomList() {
-        List<AdmissionPartSpecialismMissingInRoom> admissionPartSpecialismMissingInRoomList
-                = new ArrayList<AdmissionPartSpecialismMissingInRoom>();
-        for (AdmissionPart admissionPart : admissionPartList) {
-            if (admissionPart.getSpecialism() != null) {
-                for (Room room : roomList) {
-                    int mininumPriority = Integer.MAX_VALUE;
-                    for (RoomSpecialism roomSpecialism : room.getRoomSpecialismList()) {
-                        if (roomSpecialism.getSpecialism().equals(admissionPart.getSpecialism())) {
-                            mininumPriority = Math.min(mininumPriority, roomSpecialism.getPriority());
-                        }
-                    }
-                    int weight = (mininumPriority == Integer.MAX_VALUE) ? 2 : mininumPriority - 1;
-                    if (weight > 0) {
-                        admissionPartSpecialismMissingInRoomList.add(
-                                new AdmissionPartSpecialismMissingInRoom(admissionPart, room, mininumPriority));
-                    }
-                }
-            }
-        }
-        return admissionPartSpecialismMissingInRoomList;
-    }
+//    private List<AdmissionPartSpecialismMissingInRoom> calculateAdmissionPartSpecialismMissingInRoomList() {
+//        List<AdmissionPartSpecialismMissingInRoom> admissionPartSpecialismMissingInRoomList
+//                = new ArrayList<AdmissionPartSpecialismMissingInRoom>();
+//        for (AdmissionPart admissionPart : admissionPartList) {
+//            if (admissionPart.getSpecialism() != null) {
+//                for (Room room : roomList) {
+//                    int mininumPriority = Integer.MAX_VALUE;
+//                    for (RoomSpecialism roomSpecialism : room.getRoomSpecialismList()) {
+//                        if (roomSpecialism.getSpecialism().equals(admissionPart.getSpecialism())) {
+//                            mininumPriority = Math.min(mininumPriority, roomSpecialism.getPriority());
+//                        }
+//                    }
+//                    int weight = (mininumPriority == Integer.MAX_VALUE) ? 2 : mininumPriority - 1;
+//                    if (weight > 0) {
+//                        admissionPartSpecialismMissingInRoomList.add(
+//                                new AdmissionPartSpecialismMissingInRoom(admissionPart, room, mininumPriority));
+//                    }
+//                }
+//            }
+//        }
+//        return admissionPartSpecialismMissingInRoomList;
+//    }
 
     /**
      * Clone will only deep copy the bedDesignationList
