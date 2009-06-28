@@ -19,17 +19,13 @@
     <!--</deciderScoreComparatorFactory>-->
     <selector>
         <selector>
-            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
             <relativeSelection>0.002</relativeSelection>
         </selector>
-        <selector>
-            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-            <relativeSelection>0.002</relativeSelection>
-        </selector>
-        <selector>
-            <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-            <relativeSelection>0.002</relativeSelection>
-        </selector>
+        <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>-->
+            <!--<relativeSelection>0.002</relativeSelection>-->
+        <!--</selector>-->
     </selector>
     <accepter>
         <completeSolutionTabuSize>1000</completeSolutionTabuSize>
