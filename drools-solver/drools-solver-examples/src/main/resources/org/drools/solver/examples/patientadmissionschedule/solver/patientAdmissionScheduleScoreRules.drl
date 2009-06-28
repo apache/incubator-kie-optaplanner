@@ -87,6 +87,18 @@ end
 // ############################################################################
 
 
+
+// RoomSpecialism constraint
+rule "roomSpecialism"
+    when
+        $bedDesignation : BedDesignation($specialism : admissionPartSpecialism, $room : room);
+        not RoomSpecialism(room == $room, specialism == $specialism);
+    then
+        insertLogical(new IntConstraintOccurrence("roomSpecialism",
+                ConstraintType.NEGATIVE_SOFT, 10,
+                $bedDesignation));
+end
+
 // PreferredPatientEquipment constraint
 rule "preferredPatientEquipment"
     when
