@@ -38,8 +38,10 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
         List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
         // Assign one admissionPart at a time
-        List<Bed> undesignatedBedList = patientAdmissionSchedule.getBedList();
+        List<Bed> bedList = patientAdmissionSchedule.getBedList();
         for (BedDesignation bedDesignation : bedDesignationList) {
+            Score unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
+            boolean perfectMatch = false;
             Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE);
             Bed bestBed = null;
 
@@ -47,7 +49,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
             // Try every bed for that admissionPart
             // TODO by reordening the beds so index 0 has a different table then index 1 and so on,
             // this will probably be faster because perfectMatch will be true sooner
-            for (Bed bed : undesignatedBedList) {
+            for (Bed bed : bedList) {
                 if (bed.allowsAdmissionPart(bedDesignation.getAdmissionPart())) {
                     if (bedDesignationHandle == null) {
                         bedDesignation.setBed(bed);
@@ -58,19 +60,31 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                         workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
                     }
                     Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
-                    if (score.compareTo(bestScore) > 0) {
-                        bestScore = score;
-                        bestBed = bed;
+                    if (score.compareTo(unscheduledScore) < 0) {
+                        if (score.compareTo(bestScore) > 0) {
+                            bestScore = score;
+                            bestBed = bed;
+                        }
+                    } else if (score.equals(unscheduledScore)) {
+                        perfectMatch = true;
+                        break;
+                    } else {
+                        throw new IllegalStateException("The score (" + score
+                                + ") cannot be higher than unscheduledScore (" + unscheduledScore + ").");
                     }
                 }
+                if (perfectMatch) {
+                    break;
+                }
             }
-            if (bestBed == null) {
-                throw new IllegalStateException("The bestBed (" + bestBed + ") cannot be null.");
+            if (!perfectMatch) {
+                if (bestBed == null) {
+                    throw new IllegalStateException("The bestBed (" + bestBed + ") cannot be null.");
+                }
+                workingMemory.modifyRetract(bedDesignationHandle);
+                bedDesignation.setBed(bestBed);
+                workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
             }
-            workingMemory.modifyRetract(bedDesignationHandle);
-            bedDesignation.setBed(bestBed);
-            workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
-            undesignatedBedList.remove(bestBed);
         }
         // For the GUI's combobox list mainly, not really needed
         Collections.sort(bedDesignationList, new PersistableIdComparator());
