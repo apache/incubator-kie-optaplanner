@@ -68,7 +68,9 @@ public class PatientAdmissionScheduleOutputConvertor extends LoggingMain {
             bufferedWriter.write(Long.toString(patient.getId()));
             for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
                 if (bedDesignation.getPatient().equals(patient)) {
-                    bufferedWriter.write(" " + Long.toString(bedDesignation.getBed().getId()));
+                    for (int i = 0; i < bedDesignation.getAdmissionPart().getNightCount(); i++) {
+                        bufferedWriter.write(" " + Long.toString(bedDesignation.getBed().getId()));
+                    }
                 }
             }
             bufferedWriter.write("\n");

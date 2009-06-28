@@ -59,6 +59,10 @@ public class AdmissionPart extends AbstractPersistable implements Comparable<Adm
         return patient + "(" + firstNight + "-" + lastNight + ")";
     }
 
+    public int getNightCount() {
+        return lastNight.getIndex() - firstNight.getIndex() + 1;
+    }
+
     public int calculateSameNightCount(AdmissionPart other) {
         int firstNightIndex = Math.max(getFirstNight().getIndex(), other.getFirstNight().getIndex());
         int lastNightIndex = Math.min(getLastNight().getIndex(), other.getLastNight().getIndex());
