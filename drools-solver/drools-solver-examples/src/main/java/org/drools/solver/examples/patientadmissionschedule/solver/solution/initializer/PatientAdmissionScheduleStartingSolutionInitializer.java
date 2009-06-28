@@ -39,7 +39,9 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
         List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
         // Assign one admissionPart at a time
         List<Bed> bedList = patientAdmissionSchedule.getBedList();
+int stillRunningCounter = 0; // TODO https://jira.jboss.org/jira/browse/JBRULES-2145
         for (BedDesignation bedDesignation : bedDesignationList) {
+System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignationList.size() + " but we are not working on trunk. See JBRULES-2145.");
             Score unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
             boolean perfectMatch = false;
             Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE);

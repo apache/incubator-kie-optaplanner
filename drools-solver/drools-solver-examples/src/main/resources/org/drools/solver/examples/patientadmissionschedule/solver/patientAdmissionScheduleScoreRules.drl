@@ -48,12 +48,12 @@ end
 // Two admissionParts in the same bed for a number of nights.
 rule "differentGenderInSameGenderRoomInSameNight"
     when
-        $room : Room(genderLimitation == GenderLimitation.SAME_GENDER);
         $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
                 $rightAdmissionPart : rightAdmissionPart,
                 differentGender == true);
-        $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, room == $room);
-        $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, room == $room);
+        $leftBedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.SAME_GENDER,
+                admissionPart == $leftAdmissionPart, $room : room);
+        $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart);
     then
         insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight", ConstraintType.NEGATIVE_HARD,
                 $admissionPartConflict.getNightSize(),

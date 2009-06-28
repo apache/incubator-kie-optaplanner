@@ -85,4 +85,8 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
         return bed.getRoom();
     }
 
+    public GenderLimitation getRoomGenderLimitation() {
+        return bed.getRoom().getGenderLimitation();
+    }
+
 }
