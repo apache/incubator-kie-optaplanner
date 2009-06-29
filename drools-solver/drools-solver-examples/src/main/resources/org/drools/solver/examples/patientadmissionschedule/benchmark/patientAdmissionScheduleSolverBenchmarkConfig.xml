@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
     <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
-    <solvedSolutionFilesDirectory>local/data/itc2007/examination/solved</solvedSolutionFilesDirectory>
+    <solvedSolutionFilesDirectory>local/data/patientadmissionschedule/solved</solvedSolutionFilesDirectory>
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
     <!-- solverBenchmarkResultComparator -->
     
