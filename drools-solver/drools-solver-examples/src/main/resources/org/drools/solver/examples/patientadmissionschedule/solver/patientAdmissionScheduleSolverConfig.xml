@@ -8,23 +8,14 @@
     <finish>
         <maximumMinutesSpend>5</maximumMinutesSpend>
     </finish>
-    <!--<deciderScoreComparatorFactory>-->
-        <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
-        <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
-        <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
-        <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
-        <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
-        <!--<hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>-->
-        <!--<startingHardWeight>1000</startingHardWeight>-->
-    <!--</deciderScoreComparatorFactory>-->
     <selector>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-            <relativeSelection>0.002</relativeSelection>
+            <relativeSelection>0.0004</relativeSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-            <relativeSelection>0.002</relativeSelection>
+            <relativeSelection>0.0004</relativeSelection>
         </selector>
     </selector>
     <accepter>
@@ -32,7 +23,7 @@
         <completePropertyTabuSize>7</completePropertyTabuSize>
     </accepter>
     <forager>
-        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
 </localSearchSolver>
         
