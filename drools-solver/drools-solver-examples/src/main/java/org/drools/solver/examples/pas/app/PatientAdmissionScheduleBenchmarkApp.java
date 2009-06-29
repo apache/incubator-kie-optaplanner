@@ -14,7 +14,7 @@ public class PatientAdmissionScheduleBenchmarkApp extends CommonBenchmarkApp {
     public static final String SHORT_SOLVER_BENCHMARK_CONFIG
             = "/org/drools/solver/examples/pas/benchmark/patientAdmissionScheduleShortSolverBenchmarkConfig.xml";
     public static final File SOLVER_BENCHMARK_RESULT_FILE
-            = new File("local/data/patientadmissionschedule/patientAdmissionScheduleSolverBenchmarkResult.xml");
+            = new File("local/data/pas/patientAdmissionScheduleSolverBenchmarkResult.xml");
 
     public static void main(String[] args) {
         String solverConfig;

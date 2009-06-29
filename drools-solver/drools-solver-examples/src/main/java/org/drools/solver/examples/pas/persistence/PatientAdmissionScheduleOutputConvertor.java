@@ -25,8 +25,8 @@ public class PatientAdmissionScheduleOutputConvertor extends LoggingMain {
         new PatientAdmissionScheduleOutputConvertor().convert();
     }
 
-    private final File inputDir = new File("data/patientadmissionschedule/solved/");
-    private final File outputDir = new File("data/patientadmissionschedule/output/");
+    private final File inputDir = new File("data/pas/solved/");
+    private final File outputDir = new File("data/pas/output/");
 
     public void convert() {
         XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
     <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
-    <solvedSolutionFilesDirectory>local/data/patientadmissionschedule/solved</solvedSolutionFilesDirectory>
+    <solvedSolutionFilesDirectory>local/data/pas/solved</solvedSolutionFilesDirectory>
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
     <!-- solverBenchmarkResultComparator -->
     
-    <!--<inheritedUnsolvedSolutionFile>data/patientadmissionschedule/unsolved/testdata01.xml</inheritedUnsolvedSolutionFile>-->
-    <inheritedUnsolvedSolutionFile>data/patientadmissionschedule/unsolved/testdata02.xml</inheritedUnsolvedSolutionFile>
-    <!--<inheritedUnsolvedSolutionFile>data/patientadmissionschedule/unsolved/testdata03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/patientadmissionschedule/unsolved/testdata04.xml</inheritedUnsolvedSolutionFile>-->
-    <inheritedUnsolvedSolutionFile>data/patientadmissionschedule/unsolved/testdata05.xml</inheritedUnsolvedSolutionFile>
-    <!--<inheritedUnsolvedSolutionFile>data/patientadmissionschedule/unsolved/testdata06.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata01.xml</inheritedUnsolvedSolutionFile>-->
+    <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata02.xml</inheritedUnsolvedSolutionFile>
+    <!--<inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata03.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata04.xml</inheritedUnsolvedSolutionFile>-->
+    <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata05.xml</inheritedUnsolvedSolutionFile>
+    <!--<inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata06.xml</inheritedUnsolvedSolutionFile>-->
 
     <inheritedLocalSearchSolver>
-        <scoreDrl>/org/drools/solver/examples/patientadmissionschedule/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/drools/solver/examples/pas/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
         <scoreDefinition>
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         </scoreDefinition>

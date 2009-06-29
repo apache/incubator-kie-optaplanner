@@ -27,7 +27,7 @@ public class PatientAdmissionScheduleApp extends CommonApp {
 
     @Override
     protected String getExampleDirName() {
-        return "patientadmissionschedule";
+        return "pas";
     }
 
     @Override

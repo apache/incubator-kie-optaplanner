@@ -36,7 +36,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
     }
 
     protected String getExampleDirName() {
-        return "patientadmissionschedule";
+        return "pas";
     }
 
     public InputBuilder createInputBuilder() {
