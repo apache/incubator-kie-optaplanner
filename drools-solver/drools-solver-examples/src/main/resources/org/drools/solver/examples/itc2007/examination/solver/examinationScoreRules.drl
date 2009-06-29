@@ -59,6 +59,7 @@ rule "roomCapacityTooSmall" // TODO improve performance, as it takes 50% of the 
         );
         // HACK to fix wierd truth maintance behavior in drools
         // because making weight part of the equals/hashcode doesn't cut it
+        // Vote for https://jira.jboss.org/jira/browse/JBRULES-1804
         not IntConstraintOccurrence(
             ruleId == "roomCapacityTooSmall",
             constraintType == ConstraintType.NEGATIVE_HARD,
