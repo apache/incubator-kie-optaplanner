@@ -29,11 +29,11 @@
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0004</relativeSelection>
+                    <relativeSelection>0.0008</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0004</relativeSelection>
+                    <relativeSelection>0.0008</relativeSelection>
                 </selector>
             </selector>
             <accepter>
@@ -45,37 +45,16 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>first_best_score_improving</name>
-        <localSearchSolver>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0004</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0004</relativeSelection>
-                </selector>
-            </selector>
-            <accepter>
-                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-            </accepter>
-            <forager>
-                <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
         <name>relativeSelection less</name>
         <localSearchSolver>
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0002</relativeSelection>
+                    <relativeSelection>0.0007</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0002</relativeSelection>
+                    <relativeSelection>0.0007</relativeSelection>
                 </selector>
             </selector>
             <accepter>
@@ -92,11 +71,11 @@
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0008</relativeSelection>
+                    <relativeSelection>0.0010</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0008</relativeSelection>
+                    <relativeSelection>0.0010</relativeSelection>
                 </selector>
             </selector>
             <accepter>
@@ -108,21 +87,21 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>completePropertyTabuSize 7</name>
+        <name>completeMoveTabuSize 5</name>
         <localSearchSolver>
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0004</relativeSelection>
+                    <relativeSelection>0.0008</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0004</relativeSelection>
+                    <relativeSelection>0.0008</relativeSelection>
                 </selector>
             </selector>
             <accepter>
                 <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-                <completePropertyTabuSize>7</completePropertyTabuSize>
+                <completeMoveTabuSize>5</completeMoveTabuSize>
             </accepter>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
@@ -130,29 +109,21 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>shifting_hard_penalty</name>
+        <name>completeMoveTabuSize 7</name>
         <localSearchSolver>
-            <deciderScoreComparatorFactory>
-                <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-                <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
-                <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
-                <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
-                <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
-                <startingHardWeight>1000</startingHardWeight>
-            </deciderScoreComparatorFactory>
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0004</relativeSelection>
+                    <relativeSelection>0.0008</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.patientadmissionschedule.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0004</relativeSelection>
+                    <relativeSelection>0.0008</relativeSelection>
                 </selector>
             </selector>
             <accepter>
                 <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+                <completeMoveTabuSize>7</completeMoveTabuSize>
             </accepter>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
