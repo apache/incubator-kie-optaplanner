@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -108,7 +109,7 @@ public class SolverBenchmarkSuite {
 
     public void benchmarkingStarted() {
         Set<String> nameSet = new HashSet<String>(solverBenchmarkList.size());
-        Set<SolverBenchmark> noNameBenchmarkSet = new HashSet<SolverBenchmark>(solverBenchmarkList.size());
+        Set<SolverBenchmark> noNameBenchmarkSet = new LinkedHashSet<SolverBenchmark>(solverBenchmarkList.size());
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             if (solverBenchmark.getName() != null) {
                 boolean unique = nameSet.add(solverBenchmark.getName());
