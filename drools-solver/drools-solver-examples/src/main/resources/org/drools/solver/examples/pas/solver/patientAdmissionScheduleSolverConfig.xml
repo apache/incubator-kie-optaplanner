@@ -6,7 +6,11 @@
     </scoreDefinition>
     <startingSolutionInitializerClass>org.drools.solver.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>
     <finish>
-        <maximumMinutesSpend>5</maximumMinutesSpend>
+        <!--
+           On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
+           On Peter Demeester's PC: 300 (short run), 3000 (long run).
+        -->
+        <maximumSecondsSpend>3720</maximumSecondsSpend>
     </finish>
     <selector>
         <selector>
