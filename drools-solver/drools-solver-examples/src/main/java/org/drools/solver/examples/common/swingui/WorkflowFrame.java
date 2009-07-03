@@ -166,7 +166,7 @@ public class WorkflowFrame extends JFrame {
         private ExecutorService solvingExecutor = Executors.newFixedThreadPool(1);
 
         public SolveAction() {
-            super("Solve!");
+            super("Solve");
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -190,12 +190,12 @@ public class WorkflowFrame extends JFrame {
     private class CancelSolvingAction extends AbstractAction {
 
         public CancelSolvingAction() {
-            super("Cancel solving");
+            super("Terminate solving early");
         }
 
         public void actionPerformed(ActionEvent e) {
             // This async, so it doesn't stop the solving immediatly
-            solutionBusiness.cancelSolving();
+            solutionBusiness.terminateSolvingEarly();
         }
 
     }

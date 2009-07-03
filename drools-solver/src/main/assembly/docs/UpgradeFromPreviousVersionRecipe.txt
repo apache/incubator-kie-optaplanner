@@ -74,3 +74,14 @@ After:
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
+
+From 5.0.1 to 5.1.0
+-------------------
+
+The Solver.cancel() method has been renamed to Solver.terminateEarly()
+because it does not undo the solving but terminates it early and there's a best solution.
+Before:
+    solver.cancel();
+After:
+    solver.terminateEarly();
+Likewise, Solver.isCancelled() has been renamed to Solver.isTerminatedEarly().

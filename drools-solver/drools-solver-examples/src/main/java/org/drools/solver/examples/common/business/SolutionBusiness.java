@@ -151,8 +151,8 @@ public class SolutionBusiness {
         solver.setStartingSolution(solution);
     }
 
-    public void cancelSolving() {
-        solver.cancel();
+    public void terminateSolvingEarly() {
+        solver.terminateEarly();
     }
 
     public class SolverExampleFileFilter implements FileFilter {

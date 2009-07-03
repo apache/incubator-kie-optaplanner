@@ -9,13 +9,10 @@ import org.drools.solver.core.localsearch.finish.Finish;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.score.calculator.ScoreCalculator;
 import org.drools.solver.core.score.Score;
-import org.drools.solver.core.score.HardAndSoftScore;
 import org.drools.solver.core.score.definition.ScoreDefinition;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.solution.initializer.StartingSolutionInitializer;
 import org.drools.solver.core.AbstractSolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of {@link LocalSearchSolver}.
@@ -106,7 +103,7 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         solvingStarted(localSearchSolverScope);
 
         StepScope stepScope = createNextStepScope(localSearchSolverScope, null);
-        while (!cancelled.get() && !finish.isFinished(stepScope)) {
+        while (!terminatedEarly.get() && !finish.isFinished(stepScope)) {
             stepScope.setTimeGradient(finish.calculateTimeGradient(stepScope));
             beforeDeciding(stepScope);
             decider.decideNextStep(stepScope);

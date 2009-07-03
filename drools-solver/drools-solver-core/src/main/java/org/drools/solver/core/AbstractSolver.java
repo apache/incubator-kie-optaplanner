@@ -18,22 +18,22 @@ public abstract class AbstractSolver implements Solver {
 
     // TODO atomic enum with values NOT_STARTED, RUNNING, DONE, CANCELLED
     // TODO introduce a solver factory and make a solver one time use
-    protected final AtomicBoolean cancelled = new AtomicBoolean(false);
+    protected final AtomicBoolean terminatedEarly = new AtomicBoolean(false);
 
-    public boolean cancel() {
-        boolean cancellingSuccesful = !cancelled.getAndSet(true);
-        if (cancellingSuccesful) {
-            logger.info("Cancelling solver.");
+    public boolean terminateEarly() {
+        boolean terminationEarlySuccessful = !terminatedEarly.getAndSet(true);
+        if (terminationEarlySuccessful) {
+            logger.info("Terminating solver early.");
         }
-        return cancellingSuccesful;
+        return terminationEarlySuccessful;
     }
 
-    public boolean isCancelled() {
-        return cancelled.get();
+    public boolean isTerminatedEarly() {
+        return terminatedEarly.get();
     }
 
     public final void solve() {
-        cancelled.set(false);
+        terminatedEarly.set(false);
         solveImplementation();
     }
 
