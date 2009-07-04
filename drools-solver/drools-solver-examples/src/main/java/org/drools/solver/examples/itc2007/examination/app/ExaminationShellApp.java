@@ -81,7 +81,7 @@ public class ExaminationShellApp extends LoggingMain {
             solver.solve();
             examination = (Examination) solver.getBestSolution();
             File outputFile = getOutputFile(inputFile);
-            examinationOutputConvertor.writeExamination(examination, outputFile);
+            examinationOutputConvertor.writeSolution(examination, outputFile);
         }
     }
 

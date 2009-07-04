@@ -24,6 +24,7 @@ import org.drools.solver.examples.itc2007.curriculumcourse.solver.move.PeriodCha
 import org.drools.solver.examples.itc2007.curriculumcourse.solver.move.RoomChangeMove;
 
 /**
+ * TODO this code is highly unoptimzed
  * @author Geoffrey De Smet
  */
 public class CurriculumCoursePanel extends SolutionPanel {

@@ -12,96 +12,92 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.solver.examples.common.app.LoggingMain;
 import org.drools.solver.examples.common.domain.PersistableIdComparator;
 import org.drools.solver.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.solver.examples.common.persistence.AbstractOutputConvertor;
 import org.drools.solver.examples.itc2007.examination.domain.Exam;
 import org.drools.solver.examples.itc2007.examination.domain.Examination;
 import org.drools.solver.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.solver.examples.travelingtournament.domain.Team;
 import org.drools.solver.examples.travelingtournament.domain.Match;
 import org.drools.solver.examples.travelingtournament.domain.Day;
+import org.drools.solver.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet
  */
-public class SmartTravelingTournamentOutputConvertor extends LoggingMain {
+public class SmartTravelingTournamentOutputConvertor extends AbstractOutputConvertor {
 
-    private static final String INPUT_FILE_SUFFIX = ".xml";
     private static final String OUTPUT_FILE_SUFFIX = ".trick.txt";
 
     public static void main(String[] args) {
-        new SmartTravelingTournamentOutputConvertor().convert();
+        new SmartTravelingTournamentOutputConvertor().convertAll();
     }
 
     private final File inputDir = new File("data/travelingtournament/smart/solved/");
-    private final File outputDir = new File("data/travelingtournament/output/");
 
-    public void convert() {
-        XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
-        File[] inputFiles = inputDir.listFiles();
-        if (inputFiles == null) {
-            throw new IllegalArgumentException(
-                    "Your working dir should be drools-solver-examples and contain: " + inputDir);
-        }
-        for (File inputFile : inputFiles) {
-            String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(INPUT_FILE_SUFFIX)) {
-                TravelingTournament travelingTournament = (TravelingTournament) solutionDao.readSolution(inputFile);
-                String outputFileName = inputFileName.substring(0, inputFileName.length() - INPUT_FILE_SUFFIX.length())
-                        + OUTPUT_FILE_SUFFIX;
-                File outputFile = new File(outputDir, outputFileName);
-                writeTravelingTournament(travelingTournament, outputFile);
-            }
-        }
+    protected String getExampleDirName() {
+        return "travelingtournament/smart";
     }
 
-    public void writeTravelingTournament(TravelingTournament travelingTournament, File outputFile) {
-        BufferedWriter bufferedWriter = null;
-        try {
-            bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
-            writeTravelingTournament(travelingTournament, bufferedWriter);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        } finally {
-            IOUtils.closeQuietly(bufferedWriter);
-        }
+    @Override
+    protected File getInputDir() {
+        return inputDir;
     }
 
-    public void writeTravelingTournament(TravelingTournament travelingTournament, BufferedWriter bufferedWriter)
-            throws IOException {
-        int maximumTeamNameLength = 0;
-        for (Team team : travelingTournament.getTeamList()) {
-            if (team.getName().length() > maximumTeamNameLength) {
-                maximumTeamNameLength = team.getName().length();
-            }
+    @Override
+    protected String getOutputFileSuffix() {
+        return OUTPUT_FILE_SUFFIX;
+    }
+
+    public OutputBuilder createOutputBuilder() {
+        return new SmartTravelingTournamentOutputBuilder();
+    }
+
+    public class SmartTravelingTournamentOutputBuilder extends OutputBuilder {
+
+        private TravelingTournament travelingTournament;
+
+        public void setSolution(Solution solution) {
+            travelingTournament = (TravelingTournament) solution;
         }
-        for (Team team : travelingTournament.getTeamList()) {
-            bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", team.getName()));
-        }
-        bufferedWriter.write("\n");
-        for (Team team : travelingTournament.getTeamList()) {
-            bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", team.getName().replaceAll("[\\w\\d]", "-")));
-        }
-        bufferedWriter.write("\n");
-        for (Day day : travelingTournament.getDayList()) {
+
+        public void writeSolution() throws IOException {
+            int maximumTeamNameLength = 0;
             for (Team team : travelingTournament.getTeamList()) {
-                // this could be put in a hashmap first for performance
-                boolean opponentIsHome = false;
-                Team opponentTeam = null;
-                for (Match match : travelingTournament.getMatchList()) {
-                    if (match.getDay().equals(day)) {
-                        if (match.getHomeTeam().equals(team)) {
-                            opponentIsHome = false;
-                            opponentTeam = match.getAwayTeam();
-                        } else  if (match.getAwayTeam().equals(team)) {
-                            opponentIsHome = true;
-                            opponentTeam = match.getHomeTeam();
-                        }
-                    }
+                if (team.getName().length() > maximumTeamNameLength) {
+                    maximumTeamNameLength = team.getName().length();
                 }
-                String opponentName = (opponentIsHome ? "@" : "") + opponentTeam.getName();
-                bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", opponentName));
+            }
+            for (Team team : travelingTournament.getTeamList()) {
+                bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", team.getName()));
             }
             bufferedWriter.write("\n");
+            for (Team team : travelingTournament.getTeamList()) {
+                bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", team.getName().replaceAll("[\\w\\d]", "-")));
+            }
+            bufferedWriter.write("\n");
+            for (Day day : travelingTournament.getDayList()) {
+                for (Team team : travelingTournament.getTeamList()) {
+                    // this could be put in a hashmap first for performance
+                    boolean opponentIsHome = false;
+                    Team opponentTeam = null;
+                    for (Match match : travelingTournament.getMatchList()) {
+                        if (match.getDay().equals(day)) {
+                            if (match.getHomeTeam().equals(team)) {
+                                opponentIsHome = false;
+                                opponentTeam = match.getAwayTeam();
+                            } else  if (match.getAwayTeam().equals(team)) {
+                                opponentIsHome = true;
+                                opponentTeam = match.getHomeTeam();
+                            }
+                        }
+                    }
+                    String opponentName = (opponentIsHome ? "@" : "") + opponentTeam.getName();
+                    bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", opponentName));
+                }
+                bufferedWriter.write("\n");
+            }
         }
+
     }
 
 }

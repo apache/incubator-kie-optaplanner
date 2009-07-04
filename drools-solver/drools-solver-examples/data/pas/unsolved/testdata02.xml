@@ -6094,1979 +6094,1979 @@
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1141">
-      <id>39</id>
-      <room reference="151"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1142">
-      <id>40</id>
-      <room reference="151"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1143">
-      <id>41</id>
-      <room reference="151"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1144">
-      <id>42</id>
-      <room reference="151"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1145">
       <id>43</id>
       <room reference="145"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1146">
+    <org.drools.solver.examples.pas.domain.Bed id="1142">
       <id>44</id>
       <room reference="145"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1147">
+    <org.drools.solver.examples.pas.domain.Bed id="1143">
       <id>45</id>
       <room reference="145"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1148">
+    <org.drools.solver.examples.pas.domain.Bed id="1144">
       <id>46</id>
       <room reference="145"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1149">
-      <id>47</id>
-      <room reference="167"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1145">
+      <id>39</id>
+      <room reference="151"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1150">
-      <id>48</id>
-      <room reference="167"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1146">
+      <id>40</id>
+      <room reference="151"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1151">
-      <id>49</id>
-      <room reference="167"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1147">
+      <id>41</id>
+      <room reference="151"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1152">
-      <id>50</id>
-      <room reference="167"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1148">
+      <id>42</id>
+      <room reference="151"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1153">
+    <org.drools.solver.examples.pas.domain.Bed id="1149">
       <id>51</id>
       <room reference="159"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1154">
+    <org.drools.solver.examples.pas.domain.Bed id="1150">
       <id>52</id>
       <room reference="159"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1155">
+    <org.drools.solver.examples.pas.domain.Bed id="1151">
       <id>53</id>
       <room reference="159"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1156">
+    <org.drools.solver.examples.pas.domain.Bed id="1152">
       <id>54</id>
       <room reference="159"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1157">
-      <id>55</id>
-      <room reference="180"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1153">
+      <id>47</id>
+      <room reference="167"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1158">
-      <id>56</id>
-      <room reference="180"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1154">
+      <id>48</id>
+      <room reference="167"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1159">
-      <id>57</id>
-      <room reference="180"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1155">
+      <id>49</id>
+      <room reference="167"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1160">
-      <id>58</id>
-      <room reference="180"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1156">
+      <id>50</id>
+      <room reference="167"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1161">
+    <org.drools.solver.examples.pas.domain.Bed id="1157">
       <id>59</id>
       <room reference="174"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1162">
+    <org.drools.solver.examples.pas.domain.Bed id="1158">
       <id>60</id>
       <room reference="174"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1163">
+    <org.drools.solver.examples.pas.domain.Bed id="1159">
       <id>61</id>
       <room reference="174"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1164">
+    <org.drools.solver.examples.pas.domain.Bed id="1160">
       <id>62</id>
       <room reference="174"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1165">
-      <id>63</id>
-      <room reference="195"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1161">
+      <id>55</id>
+      <room reference="180"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1166">
-      <id>64</id>
-      <room reference="195"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1162">
+      <id>56</id>
+      <room reference="180"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1167">
-      <id>65</id>
-      <room reference="195"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1163">
+      <id>57</id>
+      <room reference="180"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1168">
-      <id>66</id>
-      <room reference="195"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1164">
+      <id>58</id>
+      <room reference="180"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1169">
+    <org.drools.solver.examples.pas.domain.Bed id="1165">
       <id>67</id>
       <room reference="187"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1170">
+    <org.drools.solver.examples.pas.domain.Bed id="1166">
       <id>68</id>
       <room reference="187"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1171">
+    <org.drools.solver.examples.pas.domain.Bed id="1167">
       <id>69</id>
       <room reference="187"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1172">
+    <org.drools.solver.examples.pas.domain.Bed id="1168">
       <id>70</id>
       <room reference="187"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1173">
-      <id>71</id>
-      <room reference="209"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1169">
+      <id>63</id>
+      <room reference="195"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1174">
-      <id>72</id>
-      <room reference="209"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1170">
+      <id>64</id>
+      <room reference="195"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1175">
-      <id>73</id>
-      <room reference="209"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1171">
+      <id>65</id>
+      <room reference="195"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1176">
-      <id>74</id>
-      <room reference="209"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1172">
+      <id>66</id>
+      <room reference="195"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1177">
+    <org.drools.solver.examples.pas.domain.Bed id="1173">
       <id>75</id>
       <room reference="203"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1178">
+    <org.drools.solver.examples.pas.domain.Bed id="1174">
       <id>76</id>
       <room reference="203"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1179">
+    <org.drools.solver.examples.pas.domain.Bed id="1175">
       <id>77</id>
       <room reference="203"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1180">
+    <org.drools.solver.examples.pas.domain.Bed id="1176">
       <id>78</id>
       <room reference="203"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1181">
-      <id>79</id>
-      <room reference="222"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1177">
+      <id>71</id>
+      <room reference="209"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1182">
-      <id>80</id>
-      <room reference="222"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1178">
+      <id>72</id>
+      <room reference="209"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1183">
-      <id>81</id>
-      <room reference="222"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1179">
+      <id>73</id>
+      <room reference="209"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1184">
-      <id>82</id>
-      <room reference="222"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1180">
+      <id>74</id>
+      <room reference="209"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1185">
+    <org.drools.solver.examples.pas.domain.Bed id="1181">
       <id>83</id>
       <room reference="216"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1186">
+    <org.drools.solver.examples.pas.domain.Bed id="1182">
       <id>84</id>
       <room reference="216"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1187">
+    <org.drools.solver.examples.pas.domain.Bed id="1183">
       <id>85</id>
       <room reference="216"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1188">
+    <org.drools.solver.examples.pas.domain.Bed id="1184">
       <id>86</id>
       <room reference="216"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1189">
-      <id>87</id>
-      <room reference="237"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1185">
+      <id>79</id>
+      <room reference="222"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1190">
-      <id>88</id>
-      <room reference="237"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1186">
+      <id>80</id>
+      <room reference="222"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1191">
-      <id>89</id>
-      <room reference="237"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1187">
+      <id>81</id>
+      <room reference="222"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1192">
-      <id>90</id>
-      <room reference="237"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1188">
+      <id>82</id>
+      <room reference="222"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1193">
+    <org.drools.solver.examples.pas.domain.Bed id="1189">
       <id>91</id>
       <room reference="230"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1194">
+    <org.drools.solver.examples.pas.domain.Bed id="1190">
       <id>92</id>
       <room reference="230"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1195">
+    <org.drools.solver.examples.pas.domain.Bed id="1191">
       <id>93</id>
       <room reference="230"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1196">
+    <org.drools.solver.examples.pas.domain.Bed id="1192">
       <id>94</id>
       <room reference="230"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1197">
-      <id>95</id>
-      <room reference="251"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1193">
+      <id>87</id>
+      <room reference="237"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1198">
+    <org.drools.solver.examples.pas.domain.Bed id="1194">
+      <id>88</id>
+      <room reference="237"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1195">
+      <id>89</id>
+      <room reference="237"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1196">
+      <id>90</id>
+      <room reference="237"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1197">
       <id>96</id>
       <room reference="244"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1198">
+      <id>95</id>
+      <room reference="251"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1199">
-      <id>97</id>
-      <room reference="270"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1200">
-      <id>98</id>
-      <room reference="270"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1201">
-      <id>99</id>
-      <room reference="277"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1202">
-      <id>100</id>
-      <room reference="277"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1203">
       <id>101</id>
       <room reference="258"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1204">
+    <org.drools.solver.examples.pas.domain.Bed id="1200">
       <id>102</id>
       <room reference="258"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1205">
+    <org.drools.solver.examples.pas.domain.Bed id="1201">
       <id>103</id>
       <room reference="264"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1206">
+    <org.drools.solver.examples.pas.domain.Bed id="1202">
       <id>104</id>
       <room reference="264"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1203">
+      <id>97</id>
+      <room reference="270"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1204">
+      <id>98</id>
+      <room reference="270"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1205">
+      <id>99</id>
+      <room reference="277"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1206">
+      <id>100</id>
+      <room reference="277"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1207">
-      <id>105</id>
-      <room reference="296"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1208">
-      <id>106</id>
-      <room reference="296"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1209">
-      <id>107</id>
-      <room reference="303"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1210">
-      <id>108</id>
-      <room reference="303"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1211">
-      <id>109</id>
-      <room reference="303"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1212">
-      <id>110</id>
-      <room reference="303"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1213">
       <id>111</id>
       <room reference="283"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1214">
+    <org.drools.solver.examples.pas.domain.Bed id="1208">
       <id>112</id>
       <room reference="283"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1215">
+    <org.drools.solver.examples.pas.domain.Bed id="1209">
       <id>113</id>
       <room reference="290"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1216">
+    <org.drools.solver.examples.pas.domain.Bed id="1210">
       <id>114</id>
       <room reference="290"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1211">
+      <id>105</id>
+      <room reference="296"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1212">
+      <id>106</id>
+      <room reference="296"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1213">
+      <id>107</id>
+      <room reference="303"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1214">
+      <id>108</id>
+      <room reference="303"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1215">
+      <id>109</id>
+      <room reference="303"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1216">
+      <id>110</id>
+      <room reference="303"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1217">
-      <id>115</id>
-      <room reference="326"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1218">
-      <id>116</id>
-      <room reference="326"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1219">
-      <id>117</id>
-      <room reference="326"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1220">
-      <id>118</id>
-      <room reference="326"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1221">
-      <id>119</id>
-      <room reference="334"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1222">
-      <id>120</id>
-      <room reference="334"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1223">
-      <id>121</id>
-      <room reference="334"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1224">
-      <id>122</id>
-      <room reference="334"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1225">
       <id>123</id>
       <room reference="310"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1226">
+    <org.drools.solver.examples.pas.domain.Bed id="1218">
       <id>124</id>
       <room reference="310"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1227">
+    <org.drools.solver.examples.pas.domain.Bed id="1219">
       <id>125</id>
       <room reference="310"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1228">
+    <org.drools.solver.examples.pas.domain.Bed id="1220">
       <id>126</id>
       <room reference="310"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1229">
+    <org.drools.solver.examples.pas.domain.Bed id="1221">
       <id>127</id>
       <room reference="318"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1230">
+    <org.drools.solver.examples.pas.domain.Bed id="1222">
       <id>128</id>
       <room reference="318"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1231">
+    <org.drools.solver.examples.pas.domain.Bed id="1223">
       <id>129</id>
       <room reference="318"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1232">
+    <org.drools.solver.examples.pas.domain.Bed id="1224">
       <id>130</id>
       <room reference="318"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1225">
+      <id>115</id>
+      <room reference="326"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1226">
+      <id>116</id>
+      <room reference="326"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1227">
+      <id>117</id>
+      <room reference="326"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1228">
+      <id>118</id>
+      <room reference="326"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1229">
+      <id>119</id>
+      <room reference="334"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1230">
+      <id>120</id>
+      <room reference="334"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1231">
+      <id>121</id>
+      <room reference="334"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1232">
+      <id>122</id>
+      <room reference="334"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1233">
-      <id>131</id>
-      <room reference="356"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1234">
-      <id>132</id>
-      <room reference="356"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1235">
-      <id>133</id>
-      <room reference="356"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1236">
-      <id>134</id>
-      <room reference="356"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1237">
-      <id>135</id>
-      <room reference="364"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1238">
-      <id>136</id>
-      <room reference="364"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1239">
-      <id>137</id>
-      <room reference="364"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1240">
-      <id>138</id>
-      <room reference="364"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1241">
       <id>139</id>
       <room reference="341"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1242">
+    <org.drools.solver.examples.pas.domain.Bed id="1234">
       <id>140</id>
       <room reference="341"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1243">
+    <org.drools.solver.examples.pas.domain.Bed id="1235">
       <id>141</id>
       <room reference="341"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1244">
+    <org.drools.solver.examples.pas.domain.Bed id="1236">
       <id>142</id>
       <room reference="341"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1245">
+    <org.drools.solver.examples.pas.domain.Bed id="1237">
       <id>143</id>
       <room reference="349"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1246">
+    <org.drools.solver.examples.pas.domain.Bed id="1238">
       <id>144</id>
       <room reference="349"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1247">
+    <org.drools.solver.examples.pas.domain.Bed id="1239">
       <id>145</id>
       <room reference="349"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1248">
+    <org.drools.solver.examples.pas.domain.Bed id="1240">
       <id>146</id>
       <room reference="349"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1241">
+      <id>131</id>
+      <room reference="356"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1242">
+      <id>132</id>
+      <room reference="356"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1243">
+      <id>133</id>
+      <room reference="356"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1244">
+      <id>134</id>
+      <room reference="356"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1245">
+      <id>135</id>
+      <room reference="364"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1246">
+      <id>136</id>
+      <room reference="364"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1247">
+      <id>137</id>
+      <room reference="364"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1248">
+      <id>138</id>
+      <room reference="364"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1249">
-      <id>147</id>
-      <room reference="390"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1250">
-      <id>148</id>
-      <room reference="390"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1251">
-      <id>149</id>
-      <room reference="390"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1252">
-      <id>150</id>
-      <room reference="390"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1253">
-      <id>151</id>
-      <room reference="383"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1254">
-      <id>152</id>
-      <room reference="383"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1255">
-      <id>153</id>
-      <room reference="383"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1256">
-      <id>154</id>
-      <room reference="383"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1257">
-      <id>155</id>
-      <room reference="376"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1258">
-      <id>156</id>
-      <room reference="376"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1259">
-      <id>157</id>
-      <room reference="376"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1260">
-      <id>158</id>
-      <room reference="376"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1261">
       <id>159</id>
       <room reference="370"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1262">
+    <org.drools.solver.examples.pas.domain.Bed id="1250">
       <id>160</id>
       <room reference="370"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1263">
+    <org.drools.solver.examples.pas.domain.Bed id="1251">
       <id>161</id>
       <room reference="370"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1264">
+    <org.drools.solver.examples.pas.domain.Bed id="1252">
       <id>162</id>
       <room reference="370"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1265">
-      <id>163</id>
-      <room reference="416"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1253">
+      <id>155</id>
+      <room reference="376"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1266">
-      <id>164</id>
-      <room reference="410"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1267">
-      <id>165</id>
-      <room reference="404"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1268">
-      <id>166</id>
-      <room reference="404"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1254">
+      <id>156</id>
+      <room reference="376"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1269">
-      <id>167</id>
-      <room reference="404"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1255">
+      <id>157</id>
+      <room reference="376"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1270">
-      <id>168</id>
-      <room reference="404"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1256">
+      <id>158</id>
+      <room reference="376"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1271">
+    <org.drools.solver.examples.pas.domain.Bed id="1257">
+      <id>151</id>
+      <room reference="383"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1258">
+      <id>152</id>
+      <room reference="383"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1259">
+      <id>153</id>
+      <room reference="383"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1260">
+      <id>154</id>
+      <room reference="383"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1261">
+      <id>147</id>
+      <room reference="390"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1262">
+      <id>148</id>
+      <room reference="390"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1263">
+      <id>149</id>
+      <room reference="390"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1264">
+      <id>150</id>
+      <room reference="390"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1265">
       <id>169</id>
       <room reference="396"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1272">
+    <org.drools.solver.examples.pas.domain.Bed id="1266">
       <id>170</id>
       <room reference="396"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1273">
+    <org.drools.solver.examples.pas.domain.Bed id="1267">
       <id>171</id>
       <room reference="396"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1274">
+    <org.drools.solver.examples.pas.domain.Bed id="1268">
       <id>172</id>
       <room reference="396"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1269">
+      <id>165</id>
+      <room reference="404"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1270">
+      <id>166</id>
+      <room reference="404"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1271">
+      <id>167</id>
+      <room reference="404"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1272">
+      <id>168</id>
+      <room reference="404"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1273">
+      <id>164</id>
+      <room reference="410"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1274">
+      <id>163</id>
+      <room reference="416"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1275">
-      <id>173</id>
-      <room reference="444"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1276">
-      <id>174</id>
-      <room reference="444"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1277">
-      <id>175</id>
-      <room reference="437"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1278">
-      <id>176</id>
-      <room reference="437"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1279">
-      <id>177</id>
-      <room reference="430"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1280">
-      <id>178</id>
-      <room reference="430"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1281">
       <id>179</id>
       <room reference="422"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1276">
+      <id>177</id>
+      <room reference="430"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1277">
+      <id>178</id>
+      <room reference="430"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1278">
+      <id>175</id>
+      <room reference="437"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1279">
+      <id>176</id>
+      <room reference="437"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1280">
+      <id>173</id>
+      <room reference="444"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1281">
+      <id>174</id>
+      <room reference="444"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1282">
-      <id>180</id>
-      <room reference="473"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1283">
-      <id>181</id>
-      <room reference="473"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1284">
-      <id>182</id>
-      <room reference="466"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1285">
-      <id>183</id>
-      <room reference="466"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1286">
-      <id>184</id>
-      <room reference="459"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1287">
-      <id>185</id>
-      <room reference="459"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1288">
       <id>186</id>
       <room reference="451"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1289">
+    <org.drools.solver.examples.pas.domain.Bed id="1283">
       <id>187</id>
       <room reference="451"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1284">
+      <id>184</id>
+      <room reference="459"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1285">
+      <id>185</id>
+      <room reference="459"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1286">
+      <id>182</id>
+      <room reference="466"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1287">
+      <id>183</id>
+      <room reference="466"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1288">
+      <id>180</id>
+      <room reference="473"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1289">
+      <id>181</id>
+      <room reference="473"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1290">
-      <id>188</id>
-      <room reference="506"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1291">
-      <id>189</id>
-      <room reference="506"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1292">
-      <id>190</id>
-      <room reference="506"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1293">
-      <id>191</id>
-      <room reference="506"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1294">
-      <id>192</id>
-      <room reference="513"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1295">
-      <id>193</id>
-      <room reference="513"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1296">
-      <id>194</id>
-      <room reference="513"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1297">
-      <id>195</id>
-      <room reference="513"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1298">
-      <id>196</id>
-      <room reference="519"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1299">
-      <id>197</id>
-      <room reference="519"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1300">
-      <id>198</id>
-      <room reference="519"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1301">
-      <id>199</id>
-      <room reference="519"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1302">
-      <id>200</id>
-      <room reference="525"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1303">
-      <id>201</id>
-      <room reference="525"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1304">
-      <id>202</id>
-      <room reference="525"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1305">
-      <id>203</id>
-      <room reference="525"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1306">
       <id>204</id>
       <room reference="481"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1307">
+    <org.drools.solver.examples.pas.domain.Bed id="1291">
       <id>205</id>
       <room reference="481"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1308">
+    <org.drools.solver.examples.pas.domain.Bed id="1292">
       <id>206</id>
       <room reference="481"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1309">
+    <org.drools.solver.examples.pas.domain.Bed id="1293">
       <id>207</id>
       <room reference="481"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1310">
+    <org.drools.solver.examples.pas.domain.Bed id="1294">
       <id>208</id>
       <room reference="487"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1311">
+    <org.drools.solver.examples.pas.domain.Bed id="1295">
       <id>209</id>
       <room reference="487"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1312">
+    <org.drools.solver.examples.pas.domain.Bed id="1296">
       <id>210</id>
       <room reference="487"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1313">
+    <org.drools.solver.examples.pas.domain.Bed id="1297">
       <id>211</id>
       <room reference="487"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1314">
+    <org.drools.solver.examples.pas.domain.Bed id="1298">
       <id>212</id>
       <room reference="493"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1315">
+    <org.drools.solver.examples.pas.domain.Bed id="1299">
       <id>213</id>
       <room reference="493"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1316">
+    <org.drools.solver.examples.pas.domain.Bed id="1300">
       <id>214</id>
       <room reference="493"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1317">
+    <org.drools.solver.examples.pas.domain.Bed id="1301">
       <id>215</id>
       <room reference="493"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1318">
+    <org.drools.solver.examples.pas.domain.Bed id="1302">
       <id>216</id>
       <room reference="500"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1319">
+    <org.drools.solver.examples.pas.domain.Bed id="1303">
       <id>217</id>
       <room reference="500"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1320">
+    <org.drools.solver.examples.pas.domain.Bed id="1304">
       <id>218</id>
       <room reference="500"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1321">
+    <org.drools.solver.examples.pas.domain.Bed id="1305">
       <id>219</id>
       <room reference="500"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1306">
+      <id>188</id>
+      <room reference="506"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1307">
+      <id>189</id>
+      <room reference="506"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1308">
+      <id>190</id>
+      <room reference="506"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1309">
+      <id>191</id>
+      <room reference="506"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1310">
+      <id>192</id>
+      <room reference="513"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1311">
+      <id>193</id>
+      <room reference="513"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1312">
+      <id>194</id>
+      <room reference="513"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1313">
+      <id>195</id>
+      <room reference="513"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1314">
+      <id>196</id>
+      <room reference="519"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1315">
+      <id>197</id>
+      <room reference="519"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1316">
+      <id>198</id>
+      <room reference="519"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1317">
+      <id>199</id>
+      <room reference="519"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1318">
+      <id>200</id>
+      <room reference="525"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1319">
+      <id>201</id>
+      <room reference="525"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1320">
+      <id>202</id>
+      <room reference="525"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1321">
+      <id>203</id>
+      <room reference="525"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1322">
-      <id>220</id>
-      <room reference="559"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1323">
-      <id>221</id>
-      <room reference="559"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1324">
-      <id>222</id>
-      <room reference="559"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1325">
-      <id>223</id>
-      <room reference="559"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1326">
-      <id>224</id>
-      <room reference="566"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1327">
-      <id>225</id>
-      <room reference="566"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1328">
-      <id>226</id>
-      <room reference="566"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1329">
-      <id>227</id>
-      <room reference="566"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1330">
-      <id>228</id>
-      <room reference="573"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1331">
-      <id>229</id>
-      <room reference="573"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1332">
-      <id>230</id>
-      <room reference="573"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1333">
-      <id>231</id>
-      <room reference="573"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1334">
-      <id>232</id>
-      <room reference="581"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1335">
-      <id>233</id>
-      <room reference="581"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1336">
-      <id>234</id>
-      <room reference="581"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1337">
-      <id>235</id>
-      <room reference="581"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1338">
       <id>236</id>
       <room reference="532"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1339">
+    <org.drools.solver.examples.pas.domain.Bed id="1323">
       <id>237</id>
       <room reference="532"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1340">
+    <org.drools.solver.examples.pas.domain.Bed id="1324">
       <id>238</id>
       <room reference="532"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1341">
+    <org.drools.solver.examples.pas.domain.Bed id="1325">
       <id>239</id>
       <room reference="532"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1342">
+    <org.drools.solver.examples.pas.domain.Bed id="1326">
       <id>240</id>
       <room reference="538"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1343">
+    <org.drools.solver.examples.pas.domain.Bed id="1327">
       <id>241</id>
       <room reference="538"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1344">
+    <org.drools.solver.examples.pas.domain.Bed id="1328">
       <id>242</id>
       <room reference="538"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1345">
+    <org.drools.solver.examples.pas.domain.Bed id="1329">
       <id>243</id>
       <room reference="538"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1346">
+    <org.drools.solver.examples.pas.domain.Bed id="1330">
       <id>244</id>
       <room reference="546"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1347">
+    <org.drools.solver.examples.pas.domain.Bed id="1331">
       <id>245</id>
       <room reference="546"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1348">
+    <org.drools.solver.examples.pas.domain.Bed id="1332">
       <id>246</id>
       <room reference="546"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1349">
+    <org.drools.solver.examples.pas.domain.Bed id="1333">
       <id>247</id>
       <room reference="546"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1350">
+    <org.drools.solver.examples.pas.domain.Bed id="1334">
       <id>248</id>
       <room reference="552"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1351">
+    <org.drools.solver.examples.pas.domain.Bed id="1335">
       <id>249</id>
       <room reference="552"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1352">
+    <org.drools.solver.examples.pas.domain.Bed id="1336">
       <id>250</id>
       <room reference="552"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1353">
+    <org.drools.solver.examples.pas.domain.Bed id="1337">
       <id>251</id>
       <room reference="552"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1354">
-      <id>252</id>
-      <room reference="621"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1338">
+      <id>220</id>
+      <room reference="559"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1355">
-      <id>253</id>
-      <room reference="614"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1356">
-      <id>254</id>
-      <room reference="636"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1357">
-      <id>255</id>
-      <room reference="636"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1339">
+      <id>221</id>
+      <room reference="559"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1358">
-      <id>256</id>
-      <room reference="629"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1359">
-      <id>257</id>
-      <room reference="595"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1360">
-      <id>258</id>
-      <room reference="595"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1361">
-      <id>259</id>
-      <room reference="595"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1340">
+      <id>222</id>
+      <room reference="559"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1362">
-      <id>260</id>
-      <room reference="595"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1341">
+      <id>223</id>
+      <room reference="559"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1363">
+    <org.drools.solver.examples.pas.domain.Bed id="1342">
+      <id>224</id>
+      <room reference="566"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1343">
+      <id>225</id>
+      <room reference="566"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1344">
+      <id>226</id>
+      <room reference="566"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1345">
+      <id>227</id>
+      <room reference="566"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1346">
+      <id>228</id>
+      <room reference="573"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1347">
+      <id>229</id>
+      <room reference="573"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1348">
+      <id>230</id>
+      <room reference="573"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1349">
+      <id>231</id>
+      <room reference="573"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1350">
+      <id>232</id>
+      <room reference="581"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1351">
+      <id>233</id>
+      <room reference="581"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1352">
+      <id>234</id>
+      <room reference="581"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1353">
+      <id>235</id>
+      <room reference="581"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1354">
       <id>261</id>
       <room reference="589"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1364">
+    <org.drools.solver.examples.pas.domain.Bed id="1355">
       <id>262</id>
       <room reference="589"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1365">
+    <org.drools.solver.examples.pas.domain.Bed id="1356">
       <id>263</id>
       <room reference="589"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1366">
+    <org.drools.solver.examples.pas.domain.Bed id="1357">
       <id>264</id>
       <room reference="589"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1367">
-      <id>265</id>
-      <room reference="608"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1358">
+      <id>257</id>
+      <room reference="595"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1368">
+    <org.drools.solver.examples.pas.domain.Bed id="1359">
+      <id>258</id>
+      <room reference="595"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1360">
+      <id>259</id>
+      <room reference="595"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1361">
+      <id>260</id>
+      <room reference="595"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1362">
       <id>266</id>
       <room reference="602"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1363">
+      <id>265</id>
+      <room reference="608"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1364">
+      <id>253</id>
+      <room reference="614"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1365">
+      <id>252</id>
+      <room reference="621"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1366">
+      <id>256</id>
+      <room reference="629"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1367">
+      <id>254</id>
+      <room reference="636"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1368">
+      <id>255</id>
+      <room reference="636"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1369">
-      <id>267</id>
-      <room reference="680"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1370">
-      <id>268</id>
-      <room reference="680"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1371">
-      <id>269</id>
-      <room reference="680"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1372">
-      <id>270</id>
-      <room reference="680"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1373">
-      <id>271</id>
-      <room reference="672"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1374">
-      <id>272</id>
-      <room reference="672"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1375">
-      <id>273</id>
-      <room reference="694"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1376">
-      <id>274</id>
-      <room reference="694"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1377">
-      <id>275</id>
-      <room reference="694"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1378">
-      <id>276</id>
-      <room reference="694"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1379">
-      <id>277</id>
-      <room reference="687"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1380">
-      <id>278</id>
-      <room reference="687"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1381">
-      <id>279</id>
-      <room reference="687"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1382">
-      <id>280</id>
-      <room reference="687"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1383">
-      <id>281</id>
-      <room reference="649"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1384">
-      <id>282</id>
-      <room reference="649"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1385">
       <id>283</id>
       <room reference="642"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1386">
+    <org.drools.solver.examples.pas.domain.Bed id="1370">
       <id>284</id>
       <room reference="642"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1387">
-      <id>285</id>
-      <room reference="664"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1371">
+      <id>281</id>
+      <room reference="649"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1388">
-      <id>286</id>
-      <room reference="664"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1372">
+      <id>282</id>
+      <room reference="649"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1389">
+    <org.drools.solver.examples.pas.domain.Bed id="1373">
       <id>287</id>
       <room reference="656"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1390">
+    <org.drools.solver.examples.pas.domain.Bed id="1374">
       <id>288</id>
       <room reference="656"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1375">
+      <id>285</id>
+      <room reference="664"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1376">
+      <id>286</id>
+      <room reference="664"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1377">
+      <id>271</id>
+      <room reference="672"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1378">
+      <id>272</id>
+      <room reference="672"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1379">
+      <id>267</id>
+      <room reference="680"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1380">
+      <id>268</id>
+      <room reference="680"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1381">
+      <id>269</id>
+      <room reference="680"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1382">
+      <id>270</id>
+      <room reference="680"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1383">
+      <id>277</id>
+      <room reference="687"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1384">
+      <id>278</id>
+      <room reference="687"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1385">
+      <id>279</id>
+      <room reference="687"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1386">
+      <id>280</id>
+      <room reference="687"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1387">
+      <id>273</id>
+      <room reference="694"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1388">
+      <id>274</id>
+      <room reference="694"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1389">
+      <id>275</id>
+      <room reference="694"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1390">
+      <id>276</id>
+      <room reference="694"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1391">
-      <id>289</id>
-      <room reference="745"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1392">
-      <id>290</id>
-      <room reference="745"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1393">
-      <id>291</id>
-      <room reference="745"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1394">
-      <id>292</id>
-      <room reference="745"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1395">
-      <id>293</id>
-      <room reference="752"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1396">
-      <id>294</id>
-      <room reference="752"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1397">
-      <id>295</id>
-      <room reference="752"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1398">
-      <id>296</id>
-      <room reference="752"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1399">
-      <id>297</id>
-      <room reference="731"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1400">
-      <id>298</id>
-      <room reference="731"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1401">
-      <id>299</id>
-      <room reference="731"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1402">
-      <id>300</id>
-      <room reference="731"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1403">
-      <id>301</id>
-      <room reference="738"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1404">
-      <id>302</id>
-      <room reference="738"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1405">
-      <id>303</id>
-      <room reference="738"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1406">
-      <id>304</id>
-      <room reference="738"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1407">
-      <id>305</id>
-      <room reference="716"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1408">
-      <id>306</id>
-      <room reference="716"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1409">
-      <id>307</id>
-      <room reference="716"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1410">
-      <id>308</id>
-      <room reference="716"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1411">
-      <id>309</id>
-      <room reference="723"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1412">
-      <id>310</id>
-      <room reference="723"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1413">
-      <id>311</id>
-      <room reference="723"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1414">
-      <id>312</id>
-      <room reference="723"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1415">
       <id>313</id>
       <room reference="701"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1416">
+    <org.drools.solver.examples.pas.domain.Bed id="1392">
       <id>314</id>
       <room reference="701"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1417">
+    <org.drools.solver.examples.pas.domain.Bed id="1393">
       <id>315</id>
       <room reference="701"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1418">
+    <org.drools.solver.examples.pas.domain.Bed id="1394">
       <id>316</id>
       <room reference="701"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1419">
+    <org.drools.solver.examples.pas.domain.Bed id="1395">
       <id>317</id>
       <room reference="708"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1420">
+    <org.drools.solver.examples.pas.domain.Bed id="1396">
       <id>318</id>
       <room reference="708"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1421">
+    <org.drools.solver.examples.pas.domain.Bed id="1397">
       <id>319</id>
       <room reference="708"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1422">
+    <org.drools.solver.examples.pas.domain.Bed id="1398">
       <id>320</id>
       <room reference="708"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1399">
+      <id>305</id>
+      <room reference="716"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1400">
+      <id>306</id>
+      <room reference="716"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1401">
+      <id>307</id>
+      <room reference="716"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1402">
+      <id>308</id>
+      <room reference="716"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1403">
+      <id>309</id>
+      <room reference="723"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1404">
+      <id>310</id>
+      <room reference="723"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1405">
+      <id>311</id>
+      <room reference="723"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1406">
+      <id>312</id>
+      <room reference="723"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1407">
+      <id>297</id>
+      <room reference="731"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1408">
+      <id>298</id>
+      <room reference="731"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1409">
+      <id>299</id>
+      <room reference="731"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1410">
+      <id>300</id>
+      <room reference="731"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1411">
+      <id>301</id>
+      <room reference="738"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1412">
+      <id>302</id>
+      <room reference="738"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1413">
+      <id>303</id>
+      <room reference="738"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1414">
+      <id>304</id>
+      <room reference="738"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1415">
+      <id>289</id>
+      <room reference="745"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1416">
+      <id>290</id>
+      <room reference="745"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1417">
+      <id>291</id>
+      <room reference="745"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1418">
+      <id>292</id>
+      <room reference="745"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1419">
+      <id>293</id>
+      <room reference="752"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1420">
+      <id>294</id>
+      <room reference="752"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1421">
+      <id>295</id>
+      <room reference="752"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1422">
+      <id>296</id>
+      <room reference="752"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1423">
-      <id>321</id>
-      <room reference="800"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1424">
-      <id>322</id>
-      <room reference="800"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1425">
-      <id>323</id>
-      <room reference="806"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1426">
-      <id>324</id>
-      <room reference="806"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1427">
-      <id>325</id>
-      <room reference="787"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1428">
-      <id>326</id>
-      <room reference="794"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1429">
-      <id>327</id>
-      <room reference="794"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1430">
-      <id>328</id>
-      <room reference="773"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1431">
-      <id>329</id>
-      <room reference="780"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1432">
       <id>330</id>
       <room reference="760"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1433">
+    <org.drools.solver.examples.pas.domain.Bed id="1424">
       <id>331</id>
       <room reference="760"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1434">
+    <org.drools.solver.examples.pas.domain.Bed id="1425">
       <id>332</id>
       <room reference="760"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1435">
+    <org.drools.solver.examples.pas.domain.Bed id="1426">
       <id>333</id>
       <room reference="760"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1436">
+    <org.drools.solver.examples.pas.domain.Bed id="1427">
       <id>334</id>
       <room reference="767"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1437">
+    <org.drools.solver.examples.pas.domain.Bed id="1428">
       <id>335</id>
       <room reference="767"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1438">
+    <org.drools.solver.examples.pas.domain.Bed id="1429">
       <id>336</id>
       <room reference="767"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1439">
+    <org.drools.solver.examples.pas.domain.Bed id="1430">
       <id>337</id>
       <room reference="767"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1431">
+      <id>328</id>
+      <room reference="773"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1432">
+      <id>329</id>
+      <room reference="780"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1433">
+      <id>325</id>
+      <room reference="787"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1434">
+      <id>326</id>
+      <room reference="794"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1435">
+      <id>327</id>
+      <room reference="794"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1436">
+      <id>321</id>
+      <room reference="800"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1437">
+      <id>322</id>
+      <room reference="800"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1438">
+      <id>323</id>
+      <room reference="806"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1439">
+      <id>324</id>
+      <room reference="806"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1440">
-      <id>338</id>
-      <room reference="863"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1441">
-      <id>339</id>
-      <room reference="863"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1442">
-      <id>340</id>
-      <room reference="863"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1443">
-      <id>341</id>
-      <room reference="863"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1444">
-      <id>342</id>
-      <room reference="856"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1445">
-      <id>343</id>
-      <room reference="856"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1446">
-      <id>344</id>
-      <room reference="856"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1447">
-      <id>345</id>
-      <room reference="856"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1448">
-      <id>346</id>
-      <room reference="849"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1449">
-      <id>347</id>
-      <room reference="849"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1450">
-      <id>348</id>
-      <room reference="849"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1451">
-      <id>349</id>
-      <room reference="849"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1452">
-      <id>350</id>
-      <room reference="843"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1453">
-      <id>351</id>
-      <room reference="843"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1454">
-      <id>352</id>
-      <room reference="843"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1455">
-      <id>353</id>
-      <room reference="843"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1456">
-      <id>354</id>
-      <room reference="837"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1457">
-      <id>355</id>
-      <room reference="837"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1458">
-      <id>356</id>
-      <room reference="837"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1459">
-      <id>357</id>
-      <room reference="837"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1460">
-      <id>358</id>
-      <room reference="829"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1461">
-      <id>359</id>
-      <room reference="829"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1462">
-      <id>360</id>
-      <room reference="821"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1463">
-      <id>361</id>
-      <room reference="821"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1464">
       <id>362</id>
       <room reference="814"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1465">
+    <org.drools.solver.examples.pas.domain.Bed id="1441">
       <id>363</id>
       <room reference="814"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1442">
+      <id>360</id>
+      <room reference="821"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1443">
+      <id>361</id>
+      <room reference="821"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1444">
+      <id>358</id>
+      <room reference="829"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1445">
+      <id>359</id>
+      <room reference="829"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1446">
+      <id>354</id>
+      <room reference="837"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1447">
+      <id>355</id>
+      <room reference="837"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1448">
+      <id>356</id>
+      <room reference="837"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1449">
+      <id>357</id>
+      <room reference="837"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1450">
+      <id>350</id>
+      <room reference="843"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1451">
+      <id>351</id>
+      <room reference="843"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1452">
+      <id>352</id>
+      <room reference="843"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1453">
+      <id>353</id>
+      <room reference="843"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1454">
+      <id>346</id>
+      <room reference="849"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1455">
+      <id>347</id>
+      <room reference="849"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1456">
+      <id>348</id>
+      <room reference="849"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1457">
+      <id>349</id>
+      <room reference="849"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1458">
+      <id>342</id>
+      <room reference="856"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1459">
+      <id>343</id>
+      <room reference="856"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1460">
+      <id>344</id>
+      <room reference="856"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1461">
+      <id>345</id>
+      <room reference="856"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1462">
+      <id>338</id>
+      <room reference="863"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1463">
+      <id>339</id>
+      <room reference="863"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1464">
+      <id>340</id>
+      <room reference="863"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1465">
+      <id>341</id>
+      <room reference="863"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1466">
-      <id>364</id>
-      <room reference="920"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1467">
-      <id>365</id>
-      <room reference="920"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1468">
-      <id>366</id>
-      <room reference="920"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1469">
-      <id>367</id>
-      <room reference="920"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1470">
-      <id>368</id>
-      <room reference="913"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1471">
-      <id>369</id>
-      <room reference="913"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1472">
-      <id>370</id>
-      <room reference="913"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1473">
-      <id>371</id>
-      <room reference="913"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1474">
-      <id>372</id>
-      <room reference="906"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1475">
-      <id>373</id>
-      <room reference="906"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1476">
-      <id>374</id>
-      <room reference="906"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1477">
-      <id>375</id>
-      <room reference="906"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1478">
-      <id>376</id>
-      <room reference="899"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1479">
-      <id>377</id>
-      <room reference="899"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1480">
-      <id>378</id>
-      <room reference="899"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1481">
-      <id>379</id>
-      <room reference="899"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1482">
-      <id>380</id>
-      <room reference="891"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1483">
-      <id>381</id>
-      <room reference="891"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1484">
-      <id>382</id>
-      <room reference="891"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1485">
-      <id>383</id>
-      <room reference="891"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1486">
-      <id>384</id>
-      <room reference="884"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1487">
-      <id>385</id>
-      <room reference="884"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1488">
-      <id>386</id>
-      <room reference="884"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1489">
-      <id>387</id>
-      <room reference="884"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1490">
-      <id>388</id>
-      <room reference="878"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1491">
-      <id>389</id>
-      <room reference="878"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1492">
-      <id>390</id>
-      <room reference="878"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1493">
-      <id>391</id>
-      <room reference="878"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1494">
       <id>392</id>
       <room reference="870"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1495">
+    <org.drools.solver.examples.pas.domain.Bed id="1467">
       <id>393</id>
       <room reference="870"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1496">
+    <org.drools.solver.examples.pas.domain.Bed id="1468">
       <id>394</id>
       <room reference="870"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1497">
+    <org.drools.solver.examples.pas.domain.Bed id="1469">
       <id>395</id>
       <room reference="870"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1470">
+      <id>388</id>
+      <room reference="878"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1471">
+      <id>389</id>
+      <room reference="878"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1472">
+      <id>390</id>
+      <room reference="878"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1473">
+      <id>391</id>
+      <room reference="878"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1474">
+      <id>384</id>
+      <room reference="884"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1475">
+      <id>385</id>
+      <room reference="884"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1476">
+      <id>386</id>
+      <room reference="884"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1477">
+      <id>387</id>
+      <room reference="884"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1478">
+      <id>380</id>
+      <room reference="891"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1479">
+      <id>381</id>
+      <room reference="891"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1480">
+      <id>382</id>
+      <room reference="891"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1481">
+      <id>383</id>
+      <room reference="891"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1482">
+      <id>376</id>
+      <room reference="899"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1483">
+      <id>377</id>
+      <room reference="899"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1484">
+      <id>378</id>
+      <room reference="899"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1485">
+      <id>379</id>
+      <room reference="899"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1486">
+      <id>372</id>
+      <room reference="906"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1487">
+      <id>373</id>
+      <room reference="906"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1488">
+      <id>374</id>
+      <room reference="906"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1489">
+      <id>375</id>
+      <room reference="906"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1490">
+      <id>368</id>
+      <room reference="913"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1491">
+      <id>369</id>
+      <room reference="913"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1492">
+      <id>370</id>
+      <room reference="913"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1493">
+      <id>371</id>
+      <room reference="913"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1494">
+      <id>364</id>
+      <room reference="920"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1495">
+      <id>365</id>
+      <room reference="920"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1496">
+      <id>366</id>
+      <room reference="920"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1497">
+      <id>367</id>
+      <room reference="920"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1498">
-      <id>396</id>
-      <room reference="991"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1499">
-      <id>397</id>
-      <room reference="991"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1500">
-      <id>398</id>
-      <room reference="983"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1501">
-      <id>399</id>
-      <room reference="983"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1502">
-      <id>400</id>
-      <room reference="1006"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1503">
-      <id>401</id>
-      <room reference="1006"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1504">
-      <id>402</id>
-      <room reference="999"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1505">
-      <id>403</id>
-      <room reference="999"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1506">
-      <id>404</id>
-      <room reference="1022"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1507">
-      <id>405</id>
-      <room reference="1022"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1508">
-      <id>406</id>
-      <room reference="1014"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1509">
-      <id>407</id>
-      <room reference="1014"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1510">
-      <id>408</id>
-      <room reference="1035"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1511">
-      <id>409</id>
-      <room reference="1035"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1512">
-      <id>410</id>
-      <room reference="1035"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1513">
-      <id>411</id>
-      <room reference="1035"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1514">
-      <id>412</id>
-      <room reference="1028"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1515">
-      <id>413</id>
-      <room reference="1028"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1516">
-      <id>414</id>
-      <room reference="933"/>
-      <indexInRoom>0</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1517">
-      <id>415</id>
-      <room reference="933"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1518">
-      <id>416</id>
-      <room reference="933"/>
-      <indexInRoom>2</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1519">
-      <id>417</id>
-      <room reference="933"/>
-      <indexInRoom>3</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1520">
       <id>418</id>
       <room reference="927"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1521">
+    <org.drools.solver.examples.pas.domain.Bed id="1499">
       <id>419</id>
       <room reference="927"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1522">
+    <org.drools.solver.examples.pas.domain.Bed id="1500">
       <id>420</id>
       <room reference="927"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1523">
+    <org.drools.solver.examples.pas.domain.Bed id="1501">
       <id>421</id>
       <room reference="927"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1524">
-      <id>422</id>
-      <room reference="947"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1502">
+      <id>414</id>
+      <room reference="933"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1525">
+    <org.drools.solver.examples.pas.domain.Bed id="1503">
+      <id>415</id>
+      <room reference="933"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1504">
+      <id>416</id>
+      <room reference="933"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1505">
+      <id>417</id>
+      <room reference="933"/>
+      <indexInRoom>3</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1506">
       <id>423</id>
       <room reference="939"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1526">
+    <org.drools.solver.examples.pas.domain.Bed id="1507">
       <id>424</id>
       <room reference="939"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1527">
+    <org.drools.solver.examples.pas.domain.Bed id="1508">
       <id>425</id>
       <room reference="939"/>
       <indexInRoom>2</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1528">
+    <org.drools.solver.examples.pas.domain.Bed id="1509">
       <id>426</id>
       <room reference="939"/>
       <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1529">
-      <id>427</id>
-      <room reference="962"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1510">
+      <id>422</id>
+      <room reference="947"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1530">
-      <id>428</id>
-      <room reference="962"/>
-      <indexInRoom>1</indexInRoom>
-    </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1531">
+    <org.drools.solver.examples.pas.domain.Bed id="1511">
       <id>429</id>
       <room reference="955"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1532">
-      <id>430</id>
-      <room reference="976"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1512">
+      <id>427</id>
+      <room reference="962"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1533">
-      <id>431</id>
-      <room reference="976"/>
+    <org.drools.solver.examples.pas.domain.Bed id="1513">
+      <id>428</id>
+      <room reference="962"/>
       <indexInRoom>1</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1534">
+    <org.drools.solver.examples.pas.domain.Bed id="1514">
       <id>432</id>
       <room reference="969"/>
       <indexInRoom>0</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
-    <org.drools.solver.examples.pas.domain.Bed id="1535">
+    <org.drools.solver.examples.pas.domain.Bed id="1515">
       <id>433</id>
       <room reference="969"/>
       <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1516">
+      <id>430</id>
+      <room reference="976"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1517">
+      <id>431</id>
+      <room reference="976"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1518">
+      <id>398</id>
+      <room reference="983"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1519">
+      <id>399</id>
+      <room reference="983"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1520">
+      <id>396</id>
+      <room reference="991"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1521">
+      <id>397</id>
+      <room reference="991"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1522">
+      <id>402</id>
+      <room reference="999"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1523">
+      <id>403</id>
+      <room reference="999"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1524">
+      <id>400</id>
+      <room reference="1006"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1525">
+      <id>401</id>
+      <room reference="1006"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1526">
+      <id>406</id>
+      <room reference="1014"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1527">
+      <id>407</id>
+      <room reference="1014"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1528">
+      <id>404</id>
+      <room reference="1022"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1529">
+      <id>405</id>
+      <room reference="1022"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1530">
+      <id>412</id>
+      <room reference="1028"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1531">
+      <id>413</id>
+      <room reference="1028"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1532">
+      <id>408</id>
+      <room reference="1035"/>
+      <indexInRoom>0</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1533">
+      <id>409</id>
+      <room reference="1035"/>
+      <indexInRoom>1</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1534">
+      <id>410</id>
+      <room reference="1035"/>
+      <indexInRoom>2</indexInRoom>
+    </org.drools.solver.examples.pas.domain.Bed>
+    <org.drools.solver.examples.pas.domain.Bed id="1535">
+      <id>411</id>
+      <room reference="1035"/>
+      <indexInRoom>3</indexInRoom>
     </org.drools.solver.examples.pas.domain.Bed>
     <org.drools.solver.examples.pas.domain.Bed id="1536">
       <id>434</id>

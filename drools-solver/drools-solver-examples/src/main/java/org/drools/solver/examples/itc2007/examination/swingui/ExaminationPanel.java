@@ -24,6 +24,7 @@ import org.drools.solver.examples.itc2007.examination.solver.move.PeriodChangeMo
 import org.drools.solver.examples.itc2007.examination.solver.move.RoomChangeMove;
 
 /**
+ * TODO this code is highly unoptimzed
  * @author Geoffrey De Smet
  */
 public class ExaminationPanel extends SolutionPanel {

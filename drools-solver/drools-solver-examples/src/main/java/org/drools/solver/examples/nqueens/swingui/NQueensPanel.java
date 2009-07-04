@@ -22,6 +22,7 @@ import org.drools.solver.examples.nqueens.domain.Queen;
 import org.drools.solver.examples.nqueens.solver.move.YChangeMove;
 
 /**
+ * TODO this code is highly unoptimzed
  * @author Geoffrey De Smet
  */
 public class NQueensPanel extends SolutionPanel {

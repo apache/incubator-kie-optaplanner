@@ -25,6 +25,7 @@ import org.drools.solver.examples.manners2009.domain.Table;
 import org.drools.solver.examples.manners2009.solver.move.SeatDesignationSwitchMove;
 
 /**
+ * TODO this code is highly unoptimzed
  * @author Geoffrey De Smet
  */
 public class Manners2009Panel extends SolutionPanel {

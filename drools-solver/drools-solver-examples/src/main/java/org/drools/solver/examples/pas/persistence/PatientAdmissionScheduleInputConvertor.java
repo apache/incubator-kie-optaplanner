@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.examples.common.persistence.AbstractInputConvertor;
@@ -172,6 +173,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                     }
                 }
             }
+            Collections.sort(departmentList);
             patientAdmissionSchedule.setDepartmentList(departmentList);
             patientAdmissionSchedule.setDepartmentSpecialismList(departmentSpecialismList);
         }
@@ -267,6 +269,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                 }
                 room.setRoomEquipmentList(roomEquipmentListOfRoom);
             }
+            Collections.sort(roomList);
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
             patientAdmissionSchedule.setRoomEquipmentList(roomEquipmentList);
@@ -293,6 +296,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                 roomToLastIndexInRoomMap.put(room, indexInRoom);
                 bedList.add(bed);
             }
+            Collections.sort(bedList);
             patientAdmissionSchedule.setBedList(bedList);
         }
 

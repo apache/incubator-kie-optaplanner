@@ -23,6 +23,7 @@ import org.drools.solver.examples.lessonschedule.domain.Timeslot;
 import org.drools.solver.examples.lessonschedule.solver.move.TimeslotChangeMove;
 
 /**
+ * TODO this code is highly unoptimzed
  * @author Geoffrey De Smet
  */
 public class LessonSchedulePanel extends SolutionPanel {

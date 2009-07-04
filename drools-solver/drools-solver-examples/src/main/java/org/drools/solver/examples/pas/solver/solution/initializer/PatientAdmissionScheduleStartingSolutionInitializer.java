@@ -38,7 +38,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
         List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
         // Assign one admissionPart at a time
-        List<Bed> bedList = patientAdmissionSchedule.getBedList();
+        List<Bed> bedListInPriority = new ArrayList(patientAdmissionSchedule.getBedList());
 int stillRunningCounter = 0; // TODO https://jira.jboss.org/jira/browse/JBRULES-2145
         for (BedDesignation bedDesignation : bedDesignationList) {
 System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignationList.size() + " but we do not use trunk. See JBRULES-2145.");
@@ -51,7 +51,7 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
             // Try every bed for that admissionPart
             // TODO by reordening the beds so index 0 has a different table then index 1 and so on,
             // this will probably be faster because perfectMatch will be true sooner
-            for (Bed bed : bedList) {
+            for (Bed bed : bedListInPriority) {
                 if (bed.allowsAdmissionPart(bedDesignation.getAdmissionPart())) {
                     if (bedDesignationHandle == null) {
                         bedDesignation.setBed(bed);
@@ -90,8 +90,8 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
                 workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
             }
             // put the occupied bed at the end of the list
-            bedList.remove(bestBed);
-            bedList.add(bestBed);
+            bedListInPriority.remove(bestBed);
+            bedListInPriority.add(bestBed);
         }
         // For the GUI's combobox list mainly, not really needed
         Collections.sort(bedDesignationList, new PersistableIdComparator());
