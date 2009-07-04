@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -22,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.JProgressBar;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import org.drools.solver.examples.common.business.SolutionBusiness;
@@ -174,7 +178,12 @@ public class WorkflowFrame extends JFrame {
             // This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
             solvingExecutor.submit(new Runnable() {
                 public void run() {
-                    solutionBusiness.solve();
+                    try {
+                        solutionBusiness.solve();
+                    } catch (final Throwable e) {
+                        // Otherwise the newFixedThreadPool will eat the exception...
+                        logger.error("Solving failed: " + e.getMessage(), e);
+                    }
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             setSolvingState(false);
