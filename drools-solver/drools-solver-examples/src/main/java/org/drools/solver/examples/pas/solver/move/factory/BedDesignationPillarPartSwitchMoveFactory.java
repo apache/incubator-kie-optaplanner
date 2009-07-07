@@ -83,17 +83,32 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
                     // which is bad for memory, but the opposite is bad for performance (which is worse)
                     List<Move> moveListByPillarPartDuo = new ArrayList<Move>(
                             leftBedDesignationList.size() + rightBedDesignationList.size());
-                    int minimumLastNightIndex = pillarPartBedDesignation.getAdmissionPart().getLastNight().getIndex();
-                    Bed otherBed = pillarPartBedDesignation.getBed().equals(leftBed) ? rightBed : leftBed;
+                    int lastNightIndex = pillarPartBedDesignation.getAdmissionPart().getLastNight().getIndex();
+                    Bed otherBed;
+                    int leftMinimumLastNightIndex = Integer.MIN_VALUE;
+                    int rightMinimumLastNightIndex = Integer.MIN_VALUE;
+                    if (lowestIt.isLastNextWasLeft()) {
+                        otherBed = rightBed;
+                        leftMinimumLastNightIndex = lastNightIndex;
+                    } else {
+                        otherBed = leftBed;
+                        rightMinimumLastNightIndex = lastNightIndex;
+                    }
                     boolean allBedsAllowAdmissionPart = otherBed.allowsAdmissionPart(
                             pillarPartBedDesignation.getAdmissionPart());
                     moveListByPillarPartDuo.add(new BedChangeMove(pillarPartBedDesignation, otherBed));
                     // For every BedDesignation in that pillar part duo
-                    while (lowestIt.hasNextWithMaximumFirstNightIndex(minimumLastNightIndex)) {
+                    while (lowestIt.hasNextWithMaximumFirstNightIndexes(
+                            leftMinimumLastNightIndex, rightMinimumLastNightIndex)) {
                         pillarPartBedDesignation = lowestIt.next();
-                        minimumLastNightIndex = Math.max(minimumLastNightIndex,
-                                pillarPartBedDesignation.getAdmissionPart().getLastNight().getIndex());
-                        otherBed = pillarPartBedDesignation.getBed().equals(leftBed) ? rightBed : leftBed;
+                        lastNightIndex = pillarPartBedDesignation.getAdmissionPart().getLastNight().getIndex();
+                        if (lowestIt.isLastNextWasLeft()) {
+                            otherBed = rightBed;
+                            leftMinimumLastNightIndex = Math.max(leftMinimumLastNightIndex, lastNightIndex);
+                        } else {
+                            otherBed = leftBed;
+                            rightMinimumLastNightIndex = Math.max(rightMinimumLastNightIndex, lastNightIndex);
+                        }
                         allBedsAllowAdmissionPart = allBedsAllowAdmissionPart
                                 && otherBed.allowsAdmissionPart(pillarPartBedDesignation.getAdmissionPart());
                         moveListByPillarPartDuo.add(new BedChangeMove(pillarPartBedDesignation, otherBed));
@@ -118,8 +133,11 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
         private BedDesignation nextLeft;
         private BedDesignation nextRight;
 
+        private boolean lastNextWasLeft;
+
         public LowestFirstNightBedDesignationIterator(
                 List<BedDesignation> leftBedDesignationList, List<BedDesignation> rightBedDesignationList) {
+            // Buffer the nextLeft and nextRight
             leftIterator = leftBedDesignationList.iterator();
             if (leftIterator.hasNext()) {
                 nextLeft = leftIterator.next();
@@ -140,32 +158,28 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
             return leftHasNext || rightHasNext;
         }
 
-        public boolean hasNextWithMaximumFirstNightIndex(int maximumFirstNightIndex) {
-            return (leftHasNext
-                    && nextLeft.getAdmissionPart().getFirstNight().getIndex() <= maximumFirstNightIndex)
-                    || (rightHasNext
-                    && nextRight.getAdmissionPart().getFirstNight().getIndex() <= maximumFirstNightIndex);
+        public boolean hasNextWithMaximumFirstNightIndexes(
+                int leftMinimumLastNightIndex, int rightMinimumLastNightIndex) {
+            if (!hasNext()) {
+                return false;
+            }
+            boolean nextIsLeft = nextIsLeft();
+            if (nextIsLeft) {
+                int firstNightIndex = nextLeft.getAdmissionPart().getFirstNight().getIndex();
+                // It should not be conflict in the same pillar and it should be in conflict with the other pillar
+                return firstNightIndex > leftMinimumLastNightIndex && firstNightIndex <= rightMinimumLastNightIndex;
+            } else {
+                int firstNightIndex = nextRight.getAdmissionPart().getFirstNight().getIndex();
+                // It should not be conflict in the same pillar and it should be in conflict with the other pillar
+                return firstNightIndex > rightMinimumLastNightIndex && firstNightIndex <= leftMinimumLastNightIndex;
+            }
         }
 
         public BedDesignation next() {
-            boolean returnLeft;
-            if (leftHasNext) {
-                if (rightHasNext) {
-                    int leftFirstNightIndex = nextLeft.getAdmissionPart().getFirstNight().getIndex();
-                    int rightFirstNightIndex = nextRight.getAdmissionPart().getFirstNight().getIndex();
-                    returnLeft = leftFirstNightIndex < rightFirstNightIndex;
-                } else {
-                    returnLeft = true;
-                }
-            } else {
-                if (rightHasNext) {
-                    returnLeft = false;
-                } else {
-                    throw new NoSuchElementException();
-                }
-            }
+            lastNextWasLeft = nextIsLeft();
+            // Buffer the nextLeft or nextRight
             BedDesignation lowest;
-            if (returnLeft) {
+            if (lastNextWasLeft) {
                 lowest = nextLeft;
                 if (leftIterator.hasNext()) {
                     nextLeft = leftIterator.next();
@@ -185,8 +199,32 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
             return lowest;
         }
 
+        private boolean nextIsLeft() {
+            boolean returnLeft;
+            if (leftHasNext) {
+                if (rightHasNext) {
+                    int leftFirstNightIndex = nextLeft.getAdmissionPart().getFirstNight().getIndex();
+                    int rightFirstNightIndex = nextRight.getAdmissionPart().getFirstNight().getIndex();
+                    returnLeft = leftFirstNightIndex < rightFirstNightIndex;
+                } else {
+                    returnLeft = true;
+                }
+            } else {
+                if (rightHasNext) {
+                    returnLeft = false;
+                } else {
+                    throw new NoSuchElementException();
+                }
+            }
+            return returnLeft;
+        }
+
         public void remove() {
             throw new UnsupportedSynchronousOperationException("Remove not supported.");
+        }
+
+        public boolean isLastNextWasLeft() {
+            return lastNextWasLeft;
         }
     }
 
