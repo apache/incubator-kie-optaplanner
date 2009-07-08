@@ -23,12 +23,12 @@
         <!--</selector>-->
         <selector>
             <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
-            <relativeSelection>0.0008</relativeSelection>
+            <relativeSelection>0.0010</relativeSelection>
         </selector>
     </selector>
     <accepter>
         <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
+        <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
     </accepter>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>

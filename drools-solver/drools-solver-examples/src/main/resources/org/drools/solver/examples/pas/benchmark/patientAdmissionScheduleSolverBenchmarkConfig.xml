@@ -32,33 +32,8 @@
         <localSearchSolver>
             <selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
                     <relativeSelection>0.0008</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0008</relativeSelection>
-                </selector>
-            </selector>
-            <accepter>
-                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-            </accepter>
-            <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <name>relativeSelection less</name>
-        <localSearchSolver>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0007</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0007</relativeSelection>
                 </selector>
             </selector>
             <accepter>
@@ -74,11 +49,7 @@
         <localSearchSolver>
             <selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0010</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
                     <relativeSelection>0.0010</relativeSelection>
                 </selector>
             </selector>
@@ -91,21 +62,68 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>completeMoveTabuSize 5</name>
+        <name>relativeSelection much more</name>
         <localSearchSolver>
             <selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0008</relativeSelection>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.0020</relativeSelection>
                 </selector>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>relativeSelection less</name>
+        <localSearchSolver>
+            <selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.0007</relativeSelection>
+                </selector>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>relativeSelection much less</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.0004</relativeSelection>
+                </selector>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>completeMoveTabuSize 3</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
                     <relativeSelection>0.0008</relativeSelection>
                 </selector>
             </selector>
             <accepter>
                 <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-                <completeMoveTabuSize>5</completeMoveTabuSize>
+                <completeMoveTabuSize>3</completeMoveTabuSize>
             </accepter>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
@@ -117,11 +135,7 @@
         <localSearchSolver>
             <selector>
                 <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0008</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
                     <relativeSelection>0.0008</relativeSelection>
                 </selector>
             </selector>
@@ -134,4 +148,147 @@
             </forager>
         </localSearchSolver>
     </solverBenchmark>
+    <solverBenchmark>
+        <name>completeUndoMoveTabuSize 3</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.0008</relativeSelection>
+                </selector>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+                <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>completeUndoMoveTabuSize 7</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+                    <relativeSelection>0.0008</relativeSelection>
+                </selector>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+                <completeUndoMoveTabuSize>7</completeUndoMoveTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <!--<solverBenchmark>-->
+        <!--<name>basis</name>-->
+        <!--<localSearchSolver>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0008</relativeSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0008</relativeSelection>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<accepter>-->
+                <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+            <!--</accepter>-->
+            <!--<forager>-->
+                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
+    <!--<solverBenchmark>-->
+        <!--<name>relativeSelection less</name>-->
+        <!--<localSearchSolver>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0007</relativeSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0007</relativeSelection>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<accepter>-->
+                <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+            <!--</accepter>-->
+            <!--<forager>-->
+                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
+    <!--<solverBenchmark>-->
+        <!--<name>relativeSelection more</name>-->
+        <!--<localSearchSolver>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0010</relativeSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0010</relativeSelection>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<accepter>-->
+                <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+            <!--</accepter>-->
+            <!--<forager>-->
+                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
+    <!--<solverBenchmark>-->
+        <!--<name>completeMoveTabuSize 5</name>-->
+        <!--<localSearchSolver>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0008</relativeSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0008</relativeSelection>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<accepter>-->
+                <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+                <!--<completeMoveTabuSize>5</completeMoveTabuSize>-->
+            <!--</accepter>-->
+            <!--<forager>-->
+                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
+    <!--<solverBenchmark>-->
+        <!--<name>completeMoveTabuSize 7</name>-->
+        <!--<localSearchSolver>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0008</relativeSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
+                    <!--<relativeSelection>0.0008</relativeSelection>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<accepter>-->
+                <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+                <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
+            <!--</accepter>-->
+            <!--<forager>-->
+                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
 </solverBenchmarkSuite>
