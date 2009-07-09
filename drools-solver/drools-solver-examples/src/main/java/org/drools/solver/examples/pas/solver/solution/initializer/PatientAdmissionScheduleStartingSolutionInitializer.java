@@ -110,13 +110,12 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
             BedDesignation bedDesignation = new BedDesignation();
             bedDesignation.setId(admissionPart.getId());
             bedDesignation.setAdmissionPart(admissionPart);
-            int weight = 0;
+            int disallowedCount = 0;
             for (Room room : patientAdmissionSchedule.getRoomList()) {
-                weight += (room.getCapacity() * room.countDisallowedAdmissionPart(admissionPart));
+                disallowedCount += (room.getCapacity() * room.countDisallowedAdmissionPart(admissionPart));
             }
-            weight *= 1000;
-            weight += bedDesignation.getAdmissionPart().getNightCount();
-            initializationWeightList.add(new BedDesignationInitializationWeight(bedDesignation, weight));
+            initializationWeightList.add(new BedDesignationInitializationWeight(bedDesignation,
+                    disallowedCount, bedDesignation.getAdmissionPart().getNightCount()));
         }
         Collections.sort(initializationWeightList);
         List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(
@@ -130,11 +129,13 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
     private class BedDesignationInitializationWeight implements Comparable<BedDesignationInitializationWeight> {
 
         private BedDesignation bedDesignation;
-        private int weight;
+        private int disallowedCount;
+        private int nightCount;
 
-        private BedDesignationInitializationWeight(BedDesignation bedDesignation, int weight) {
+        private BedDesignationInitializationWeight(BedDesignation bedDesignation, int disallowedCount, int nightCount) {
             this.bedDesignation = bedDesignation;
-            this.weight = weight;
+            this.disallowedCount = disallowedCount;
+            this.nightCount = nightCount;
         }
 
         public BedDesignation getBedDesignation() {
@@ -143,7 +144,8 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
 
         public int compareTo(BedDesignationInitializationWeight other) {
             return -new CompareToBuilder()
-                    .append(weight, other.weight)
+                    .append(disallowedCount, other.disallowedCount)
+                    .append(nightCount, other.nightCount)
                     .toComparison();
         }
 
