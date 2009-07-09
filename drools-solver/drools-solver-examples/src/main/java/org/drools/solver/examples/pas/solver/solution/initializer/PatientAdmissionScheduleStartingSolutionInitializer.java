@@ -143,10 +143,17 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
         }
 
         public int compareTo(BedDesignationInitializationWeight other) {
-            return -new CompareToBuilder()
-                    .append(disallowedCount, other.disallowedCount)
-                    .append(nightCount, other.nightCount)
-                    .toComparison();
+            if (disallowedCount < other.disallowedCount) {
+                return 1;
+            } else if (disallowedCount > other.disallowedCount) {
+                return -1;
+            } else if (nightCount < other.nightCount) {
+                return 1;
+            } else if (nightCount > other.nightCount) {
+                return -1;
+            } else {
+                return 0;
+            }
         }
 
     }
