@@ -61,4 +61,19 @@ public class Department extends AbstractPersistable implements Comparable<Depart
         return true;
     }
 
+    public int countDisallowedAdmissionPart(AdmissionPart admissionPart) {
+        return countDisallowedPatientAge(admissionPart.getPatient());
+    }
+
+    public int countDisallowedPatientAge(Patient patient) {
+        int count = 0;
+        if (minimumAge != null && patient.getAge() < minimumAge) {
+            count++;
+        }
+        if (maximumAge != null && patient.getAge() > maximumAge) {
+            count++;
+        }
+        return count;
+    }
+
 }

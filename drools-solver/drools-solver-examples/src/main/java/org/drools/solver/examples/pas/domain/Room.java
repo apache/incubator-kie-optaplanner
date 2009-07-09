@@ -117,4 +117,43 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
         return true;
     }
 
+    public int countDisallowedAdmissionPart(AdmissionPart admissionPart) {
+        return department.countDisallowedAdmissionPart(admissionPart)
+            + countDisallowedPatientGender(admissionPart.getPatient())
+            + countMissingRequiredRoomProperties(admissionPart.getPatient());
+    }
+
+    public int countDisallowedPatientGender(Patient patient) {
+        switch (genderLimitation) {
+            case ANY_GENDER:
+                return 0;
+            case MALE_ONLY:
+                return patient.getGender() == Gender.MALE ? 0 : 1;
+            case FEMALE_ONLY:
+                return patient.getGender() == Gender.FEMALE ? 0 : 1;
+            case SAME_GENDER:
+                // scoreRules check this
+                return 0;
+            default:
+                throw new IllegalStateException("genderLimitation (" + genderLimitation + ") not implemented");
+        }
+    }
+
+    public int countMissingRequiredRoomProperties(Patient patient) {
+        int count = 0;
+        for (RequiredPatientEquipment requiredPatientEquipment : patient.getRequiredPatientEquipmentList()) {
+            Equipment requiredEquipment = requiredPatientEquipment.getEquipment();
+            boolean hasRequiredEquipment = false;
+            for (RoomEquipment roomEquipment : roomEquipmentList) {
+                if (roomEquipment.getEquipment().equals(requiredEquipment)) {
+                    hasRequiredEquipment = true;
+                }
+            }
+            if (!hasRequiredEquipment) {
+                count++;
+            }
+        }
+        return count;
+    }
+
 }

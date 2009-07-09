@@ -3,6 +3,7 @@ package org.drools.solver.examples.pas.solver.solution.initializer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Comparator;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -15,6 +16,9 @@ import org.drools.solver.examples.pas.domain.AdmissionPart;
 import org.drools.solver.examples.pas.domain.Bed;
 import org.drools.solver.examples.pas.domain.BedDesignation;
 import org.drools.solver.examples.pas.domain.PatientAdmissionSchedule;
+import org.drools.solver.examples.pas.domain.Room;
+import org.drools.solver.examples.itc2007.examination.domain.Period;
+import org.apache.commons.lang.builder.CompareToBuilder;
 
 /**
  * @author Geoffrey De Smet
@@ -38,7 +42,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
         List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
         // Assign one admissionPart at a time
-        List<Bed> bedListInPriority = new ArrayList(patientAdmissionSchedule.getBedList());
+        List<Bed> bedListInPriority = new ArrayList(patientAdmissionSchedule.getBedList()); // TODO try LinkedList
 int stillRunningCounter = 0; // TODO https://jira.jboss.org/jira/browse/JBRULES-2145
         for (BedDesignation bedDesignation : bedDesignationList) {
 System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignationList.size() + " but we do not use trunk. See JBRULES-2145.");
@@ -99,15 +103,49 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
     }
 
     private List<BedDesignation> createBedDesignationList(PatientAdmissionSchedule patientAdmissionSchedule) {
-        List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(
-                patientAdmissionSchedule.getAdmissionPartList().size());
+        List<BedDesignationInitializationWeight> initializationWeightList
+                = new ArrayList<BedDesignationInitializationWeight>(
+                        patientAdmissionSchedule.getAdmissionPartList().size());
         for (AdmissionPart admissionPart : patientAdmissionSchedule.getAdmissionPartList()) {
             BedDesignation bedDesignation = new BedDesignation();
             bedDesignation.setId(admissionPart.getId());
             bedDesignation.setAdmissionPart(admissionPart);
-            bedDesignationList.add(bedDesignation);
+            int weight = 0;
+            for (Room room : patientAdmissionSchedule.getRoomList()) {
+                weight += (room.getCapacity() * room.countDisallowedAdmissionPart(admissionPart));
+            }
+            weight *= bedDesignation.getAdmissionPart().getNightCount();
+            initializationWeightList.add(new BedDesignationInitializationWeight(bedDesignation, weight));
+        }
+        Collections.sort(initializationWeightList);
+        List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(
+                patientAdmissionSchedule.getAdmissionPartList().size());
+        for (BedDesignationInitializationWeight bedDesignationInitializationWeight : initializationWeightList) {
+            bedDesignationList.add(bedDesignationInitializationWeight.getBedDesignation());
         }
         return bedDesignationList;
+    }
+
+    private class BedDesignationInitializationWeight implements Comparable<BedDesignationInitializationWeight> {
+
+        private BedDesignation bedDesignation;
+        private int weight;
+
+        private BedDesignationInitializationWeight(BedDesignation bedDesignation, int weight) {
+            this.bedDesignation = bedDesignation;
+            this.weight = weight;
+        }
+
+        public BedDesignation getBedDesignation() {
+            return bedDesignation;
+        }
+
+        public int compareTo(BedDesignationInitializationWeight other) {
+            return -new CompareToBuilder()
+                    .append(weight, other.weight)
+                    .toComparison();
+        }
+
     }
 
 }
