@@ -114,7 +114,8 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
             for (Room room : patientAdmissionSchedule.getRoomList()) {
                 weight += (room.getCapacity() * room.countDisallowedAdmissionPart(admissionPart));
             }
-            weight *= bedDesignation.getAdmissionPart().getNightCount();
+            weight *= 1000;
+            weight += bedDesignation.getAdmissionPart().getNightCount();
             initializationWeightList.add(new BedDesignationInitializationWeight(bedDesignation, weight));
         }
         Collections.sort(initializationWeightList);
