@@ -23,7 +23,7 @@
                On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
                On Peter Demeester's PC: 300 (short run), 3000 (long run).
             -->
-            <maximumSecondsSpend>1</maximumSecondsSpend>
+            <maximumSecondsSpend>3720</maximumSecondsSpend>
         </finish>
     </inheritedLocalSearchSolver>
 
@@ -33,11 +33,12 @@
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.0008</relativeSelection>
+                    <relativeSelection>0.0010</relativeSelection>
                 </selector>
             </selector>
             <accepter>
                 <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+                <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
             </accepter>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
