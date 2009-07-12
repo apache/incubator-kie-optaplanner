@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.app.LoggingMain;
@@ -45,6 +46,7 @@ public abstract class AbstractInputConvertor extends LoggingMain {
             throw new IllegalArgumentException(
                     "Your working dir should be drools-solver-examples and contain: " + inputDir);
         }
+        Arrays.sort(inputFiles);
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();
             if (inputFileName.endsWith(getInputFileSuffix())) {

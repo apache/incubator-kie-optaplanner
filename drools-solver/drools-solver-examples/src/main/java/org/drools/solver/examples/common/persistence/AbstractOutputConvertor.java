@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.solver.examples.common.app.LoggingMain;
@@ -41,6 +42,7 @@ public abstract class AbstractOutputConvertor extends LoggingMain {
         File outputDir = getOutputDir();
         XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
         File[] inputFiles = inputDir.listFiles();
+        Arrays.sort(inputFiles);
         if (inputFiles == null) {
             throw new IllegalArgumentException(
                     "Your working dir should be drools-solver-examples and contain: " + inputDir);
