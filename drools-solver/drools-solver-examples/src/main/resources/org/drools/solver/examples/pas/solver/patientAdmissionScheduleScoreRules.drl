@@ -49,6 +49,7 @@ rule "sameBedInSameNight"
 end
 
 // Different genders in the same room when the room doesn't allow it.
+// TODO the official spec gives slighly lower scores in big rooms (capacity >= 3) where this constraint is broken
 rule "differentGenderInSameGenderRoomInSameNight"
     when
         $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
