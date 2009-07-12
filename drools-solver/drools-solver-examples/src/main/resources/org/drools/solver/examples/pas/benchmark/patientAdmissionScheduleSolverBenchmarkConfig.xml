@@ -4,13 +4,27 @@
     <solvedSolutionFilesDirectory>local/data/pas/solved</solvedSolutionFilesDirectory>
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
     <!-- solverBenchmarkResultComparator -->
-    
+
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata01.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata02.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata03.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata04.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata05.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata06.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata07.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata08.xml</inheritedUnsolvedSolutionFile>
+    <!--
+      Testdata 09 cannot be handled by the initializer with checkSameBedInSameNight = true.
+      TODO phasing: first a slow solver with sameBedInSameNight constraint, next a fast solver without it
+      <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata09.xml</inheritedUnsolvedSolutionFile>
+    -->
+    <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata10.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata11.xml</inheritedUnsolvedSolutionFile>
+    <!--
+      Testdata 12 cannot be handled by the initializer with checkSameBedInSameNight = true.
+      TODO phasing: first a slow solver with sameBedInSameNight constraint, next a fast solver without it
+      <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata12.xml</inheritedUnsolvedSolutionFile>
+    -->
 
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>

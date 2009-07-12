@@ -54,7 +54,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                     patientAdmissionSchedule.getBedList().size());
         }
         // Assign one admissionPart at a time
-        List<Bed> bedListInPriority = new ArrayList(patientAdmissionSchedule.getBedList()); // TODO try LinkedList
+        List<Bed> bedListInPriority = new ArrayList(patientAdmissionSchedule.getBedList());
 int stillRunningCounter = 0; // TODO https://jira.jboss.org/jira/browse/JBRULES-2145
         for (BedDesignation bedDesignation : bedDesignationList) {
 System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignationList.size() + " but we do not use trunk. See JBRULES-2145.");
