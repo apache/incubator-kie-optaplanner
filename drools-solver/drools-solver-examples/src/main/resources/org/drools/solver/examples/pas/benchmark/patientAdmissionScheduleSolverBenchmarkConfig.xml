@@ -13,7 +13,7 @@
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata06.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
-        <scoreDrl>/org/drools/solver/examples/pas/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/drools/solver/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
         <scoreDefinition>
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         </scoreDefinition>

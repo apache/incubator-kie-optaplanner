@@ -33,20 +33,9 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Hard constraints
 // ############################################################################
 
-// RoomMaintenance constraint is not yet applicable
+// Not yet applicable: RoomMaintenance constraint
 
-// Two patients in the same bed for a number of nights.
-rule "sameBedInSameNight"
-    when
-        $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
-                $rightAdmissionPart : rightAdmissionPart);
-        $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed);
-        $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed);
-    then
-        insertLogical(new IntConstraintOccurrence("sameBedInSameNight",
-                ConstraintType.NEGATIVE_HARD, 1000 * $admissionPartConflict.getNightSize(),
-                $leftBedDesignation, $rightBedDesignation));
-end
+// In seperate drl or build-in: Two patients in the same bed for a number of nights
 
 // Different genders in the same room when the room doesn't allow it.
 // TODO the official spec gives slighly lower scores in big rooms (capacity >= 3) where this constraint is broken
@@ -60,20 +49,20 @@ rule "differentGenderInSameGenderRoomInSameNight"
         $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart);
     then
         insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight",
-                // TODO this would be better for the problem
+                // TODO this would be better for the problem, though the official spec does not do it
                 // ConstraintType.NEGATIVE_HARD,
                 ConstraintType.NEGATIVE_SOFT,
                 50 * $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
 
-// Room's GenderLimitation male only and female only constraint is build-in
+// Build-in: Room's GenderLimitation male only and female only constraint
 
-// Departement's mininumAge and maximumAge constraint is build-in
+// Build-in: Departement's mininumAge and maximumAge constraint
 
-// RequiredPatientEquipment constraint is build-in
+// Build-in: RequiredPatientEquipment constraint
 
-// Patient's requiredRoomCapacity constraint is not yet applicable
+// Not yet applicable: Patient's requiredRoomCapacity constraint
 
 // Accumulate hard constraints
 rule "hardConstraintsBroken"
@@ -100,7 +89,7 @@ rule "preferredMaximumRoomCapacity"
     then
         insertLogical(new IntConstraintOccurrence("preferredMaximumRoomCapacity",
                 ConstraintType.NEGATIVE_SOFT,
-                // TODO this would be better for the problem
+                // TODO this would be better for the problem, though the official spec does not do it
                 // 8 * ($bedDesignation.getRoomCapacity() - $bedDesignation.getPatientPreferredMaximumRoomCapacity())
                 // * $bedDesignation.getAdmissionPart().getNightCount(),
                 8 * $bedDesignation.getAdmissionPart().getNightCount(),
