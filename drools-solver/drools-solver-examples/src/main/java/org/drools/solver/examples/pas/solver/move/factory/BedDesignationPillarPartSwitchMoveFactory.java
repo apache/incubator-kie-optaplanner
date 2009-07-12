@@ -19,7 +19,6 @@ import org.drools.solver.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.solver.examples.pas.domain.Bed;
 import org.drools.solver.examples.pas.solver.move.BedChangeMove;
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.jmock.lib.concurrent.UnsupportedSynchronousOperationException;
 
 /**
  * @author Geoffrey De Smet
@@ -220,7 +219,7 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
         }
 
         public void remove() {
-            throw new UnsupportedSynchronousOperationException("Remove not supported.");
+            throw new UnsupportedOperationException("Remove not supported.");
         }
 
         public boolean isLastNextWasLeft() {
