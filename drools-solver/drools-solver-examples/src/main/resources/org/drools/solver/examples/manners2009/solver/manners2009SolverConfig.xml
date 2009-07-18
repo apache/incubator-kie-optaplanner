@@ -5,11 +5,11 @@
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     </scoreDefinition>
     <startingSolutionInitializerClass>org.drools.solver.examples.manners2009.solver.solution.initializer.Manners2009StartingSolutionInitializer</startingSolutionInitializerClass>
-        <finish>
-        <!--<finishCompositionStyle>OR</finishCompositionStyle>-->
+        <termination>
+        <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->
         <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->
         <feasableScore>0</feasableScore>
-    </finish>
+    </termination>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
     </selector>

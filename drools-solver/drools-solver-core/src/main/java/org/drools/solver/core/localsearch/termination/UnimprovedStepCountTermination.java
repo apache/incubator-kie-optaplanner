@@ -1,11 +1,11 @@
-package org.drools.solver.core.localsearch.finish;
+package org.drools.solver.core.localsearch.termination;
 
 import org.drools.solver.core.localsearch.StepScope;
 
 /**
  * @author Geoffrey De Smet
  */
-public class UnimprovedStepCountFinish extends AbstractFinish {
+public class UnimprovedStepCountTermination extends AbstractTermination {
 
     private int maximumUnimprovedStepCount = 100;
 
@@ -27,7 +27,7 @@ public class UnimprovedStepCountFinish extends AbstractFinish {
         return stepIndex - bestStepIndex;
     }
 
-    public boolean isFinished(StepScope stepScope) {
+    public boolean isTerminated(StepScope stepScope) {
         int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
         return unimprovedStepCount >= maximumUnimprovedStepCount;
     }

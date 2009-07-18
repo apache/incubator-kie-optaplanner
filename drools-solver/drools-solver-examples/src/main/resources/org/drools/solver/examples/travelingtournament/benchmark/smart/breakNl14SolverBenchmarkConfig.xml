@@ -23,11 +23,11 @@
 
     <solverBenchmark>
         <localSearchSolver>
-            <finish>
-                <finishCompositionStyle>AND</finishCompositionStyle>
+            <termination>
+                <terminationCompositionStyle>AND</terminationCompositionStyle>
                 <feasableScore>-0hard/-188727soft</feasableScore><!-- 188728 (Van Hentenryck and Vergados, May 18 2006) -->
                 <maximumUnimprovedStepCount>20</maximumUnimprovedStepCount>
-            </finish>
+            </termination>
         </localSearchSolver>
     </solverBenchmark>
 </solverBenchmarkSuite>

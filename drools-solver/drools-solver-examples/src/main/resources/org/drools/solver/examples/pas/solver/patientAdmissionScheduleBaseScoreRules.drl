@@ -66,7 +66,7 @@ end
 
 // Accumulate hard constraints
 rule "hardConstraintsBroken"
-        salience -1 // Finish the other rules first (optional, for performance)
+        salience -1 // Do the other rules first (optional, for performance)
     when
         $hardTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
@@ -143,7 +143,7 @@ end
 
 // Accumulate soft constraints
 rule "softConstraintsBroken"
-        salience -1 // Finish the other rules first (optional, for performance)
+        salience -1 // Do the other rules first (optional, for performance)
     when
         $softTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),

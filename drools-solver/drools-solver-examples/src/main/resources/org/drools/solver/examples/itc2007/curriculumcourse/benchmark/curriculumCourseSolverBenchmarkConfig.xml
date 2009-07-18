@@ -23,14 +23,14 @@
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/itc2007/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
-        <finish>
+        <termination>
             <!--
                 Official benchmark maximumSecondsSpend allowed on:
                 ge0ffrey's main pc: 429
                 ge0ffrey's old pc: 1152
             -->
             <maximumSecondsSpend>429</maximumSecondsSpend>
-        </finish>
+        </termination>
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>

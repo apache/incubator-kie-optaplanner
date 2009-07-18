@@ -1,11 +1,11 @@
-package org.drools.solver.core.localsearch.finish;
+package org.drools.solver.core.localsearch.termination;
 
 import org.drools.solver.core.localsearch.StepScope;
 
 /**
  * @author Geoffrey De Smet
  */
-public class TimeMillisSpendFinish extends AbstractFinish {
+public class TimeMillisSpendTermination extends AbstractTermination {
 
     private long maximumTimeMillisSpend;
 
@@ -21,7 +21,7 @@ public class TimeMillisSpendFinish extends AbstractFinish {
     // Worker methods
     // ************************************************************************
 
-    public boolean isFinished(StepScope stepScope) {
+    public boolean isTerminated(StepScope stepScope) {
         long timeMillisSpend = stepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
         return timeMillisSpend >= maximumTimeMillisSpend;
     }

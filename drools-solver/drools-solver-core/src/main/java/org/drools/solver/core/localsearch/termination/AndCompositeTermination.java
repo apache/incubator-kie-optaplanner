@@ -1,23 +1,23 @@
-package org.drools.solver.core.localsearch.finish;
+package org.drools.solver.core.localsearch.termination;
 
 import org.drools.solver.core.localsearch.StepScope;
 
 /**
  * @author Geoffrey De Smet
  */
-public class AndCompositeFinish extends AbstractCompositeFinish {
+public class AndCompositeTermination extends AbstractCompositeTermination {
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     /**
-     * @return true if all the Finishes are finished.
+     * @return true if all the Terminations are terminated.
      * @param stepScope
      */
-    public boolean isFinished(StepScope stepScope) {
-        for (Finish finish : finishList) {
-            if (!finish.isFinished(stepScope)) {
+    public boolean isTerminated(StepScope stepScope) {
+        for (Termination termination : terminationList) {
+            if (!termination.isTerminated(stepScope)) {
                 return false;
             }
         }
@@ -25,15 +25,15 @@ public class AndCompositeFinish extends AbstractCompositeFinish {
     }
 
     /**
-     * Calculates the minimum timeGradient of all finishes.
+     * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored. 
-     * @return the minimum timeGradient of the finishes.
+     * @return the minimum timeGradient of the Terminations.
      * @param stepScope
      */
     public double calculateTimeGradient(StepScope stepScope) {
         double timeGradient = 1.0;
-        for (Finish finish : finishList) {
-            double nextTimeGradient = finish.calculateTimeGradient(stepScope);
+        for (Termination termination : terminationList) {
+            double nextTimeGradient = termination.calculateTimeGradient(stepScope);
             if (nextTimeGradient >= 0.0) {
                 timeGradient = Math.min(timeGradient, nextTimeGradient);
             }

@@ -5,7 +5,7 @@ import java.util.Random;
 import org.drools.RuleBase;
 import org.drools.solver.core.localsearch.bestsolution.BestSolutionRecaller;
 import org.drools.solver.core.localsearch.decider.Decider;
-import org.drools.solver.core.localsearch.finish.Finish;
+import org.drools.solver.core.localsearch.termination.Termination;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.score.calculator.ScoreCalculator;
 import org.drools.solver.core.score.Score;
@@ -25,7 +25,7 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
 
     protected StartingSolutionInitializer startingSolutionInitializer = null; // TODO refactor to AbstractSolver
     protected BestSolutionRecaller bestSolutionRecaller;
-    protected Finish finish;
+    protected Termination termination;
     protected Decider decider;
 
     protected LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope(); // TODO remove me
@@ -68,9 +68,9 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         this.decider.setLocalSearchSolver(this);
     }
 
-    public void setFinish(Finish finish) {
-        this.finish = finish;
-        this.finish.setLocalSearchSolver(this);
+    public void setTermination(Termination termination) {
+        this.termination = termination;
+        this.termination.setLocalSearchSolver(this);
     }
 
     public void setStartingSolution(Solution startingSolution) {
@@ -103,13 +103,14 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         solvingStarted(localSearchSolverScope);
 
         StepScope stepScope = createNextStepScope(localSearchSolverScope, null);
-        while (!terminatedEarly.get() && !finish.isFinished(stepScope)) {
-            stepScope.setTimeGradient(finish.calculateTimeGradient(stepScope));
+        while (!terminatedEarly.get() && !termination.isTerminated(stepScope)) {
+            stepScope.setTimeGradient(termination.calculateTimeGradient(stepScope));
             beforeDeciding(stepScope);
             decider.decideNextStep(stepScope);
             Move nextStep = stepScope.getStep();
             if (nextStep == null) {
-                logger.warn("No move accepted for step index ({}) out of {} accepted moves. Finishing early.",
+                // TODO JBRULES-2213 do not terminate, but warn and try again (especially with relativeSelection)
+                logger.warn("No move accepted for step index ({}) out of {} accepted moves. Terminating by exception.",
                         stepScope.getStepIndex(), decider.getForager().getAcceptedMovesSize());
                 break;
             }
@@ -151,31 +152,31 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         }
         localSearchSolverScope.setStartingScore(localSearchSolverScope.calculateScoreFromWorkingMemory());
         bestSolutionRecaller.solvingStarted(localSearchSolverScope);
-        finish.solvingStarted(localSearchSolverScope);
+        termination.solvingStarted(localSearchSolverScope);
         decider.solvingStarted(localSearchSolverScope);
     }
 
     public void beforeDeciding(StepScope stepScope) {
         bestSolutionRecaller.beforeDeciding(stepScope);
-        finish.beforeDeciding(stepScope);
+        termination.beforeDeciding(stepScope);
         decider.beforeDeciding(stepScope);
     }
 
     public void stepDecided(StepScope stepScope) {
         bestSolutionRecaller.stepDecided(stepScope);
-        finish.stepDecided(stepScope);
+        termination.stepDecided(stepScope);
         decider.stepDecided(stepScope);
     }
 
     public void stepTaken(StepScope stepScope) {
         bestSolutionRecaller.stepTaken(stepScope);
-        finish.stepTaken(stepScope);
+        termination.stepTaken(stepScope);
         decider.stepTaken(stepScope);
     }
 
     public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
         bestSolutionRecaller.solvingEnded(localSearchSolverScope);
-        finish.solvingEnded(localSearchSolverScope);
+        termination.solvingEnded(localSearchSolverScope);
         decider.solvingEnded(localSearchSolverScope);
         logger.info("Solved at step index ({}) with time spend ({}) for best score ({}).", new Object[] {
                 localSearchSolverScope.getLastCompletedStepScope().getStepIndex(),

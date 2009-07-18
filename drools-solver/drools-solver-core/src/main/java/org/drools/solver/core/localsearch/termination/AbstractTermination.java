@@ -1,4 +1,4 @@
-package org.drools.solver.core.localsearch.finish;
+package org.drools.solver.core.localsearch.termination;
 
 import org.drools.solver.core.localsearch.LocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract superclass for {@link Finish}.
+ * Abstract superclass for {@link Termination}.
  * @author Geoffrey De Smet
  */
-public abstract class AbstractFinish implements Finish {
+public abstract class AbstractTermination implements Termination {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

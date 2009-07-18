@@ -12,7 +12,8 @@ No backwards imcompatible changes.
 From 5.0.0 to 5.0.1
 -------------------
 
-A score is no longer a double, now it's a Score instance.
+A score is no longer a double, now it's a Score instance,
+because a SimpleScore is now just an int and a HardAndSoftScore is now 2 seperated ints.
 
 
 In the Solver interface, the return type of the getBestScore() method changed:
@@ -84,4 +85,37 @@ Before:
     solver.cancel();
 After:
     solver.terminateEarly();
+
 Likewise, Solver.isCancelled() has been renamed to Solver.isTerminatedEarly().
+Before:
+    solver.isCancelled();
+After:
+    solver.isTerminatedEarly();
+
+
+The Finish interface has been renamed to Termination
+because Termination seems the defacto standard name for it in the literature.
+Before:
+   ... extends Finish
+After:
+   ... extends Termination
+Before in solver config xml's and benchmarker config xml's :
+    <finish>
+        ...
+    </finish>
+After:
+    <termination>
+        ...
+    </termination>
+
+Likewise FinishCompositionStyle has been renamed to TerminationCompositionStyle.
+Before in solver config xml's and benchmarker config xml's :
+        <finishCompositionStyle>...</finishCompositionStyle>
+After:
+        <terminationCompositionStyle>...</terminationCompositionStyle>
+
+The Finish.isFinished(...) has been renamed to Termination.isTerminated().
+Before:
+   .isFinished(...)
+After:
+   .isTerminated(...)

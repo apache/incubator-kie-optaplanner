@@ -37,13 +37,13 @@
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         </scoreDefinition>
         <startingSolutionInitializerClass>org.drools.solver.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>
-        <finish>
+        <termination>
             <!--
                On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
                On Peter Demeester's PC: 300 (short run), 3000 (long run).
             -->
             <maximumSecondsSpend>3720</maximumSecondsSpend>
-        </finish>
+        </termination>
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>

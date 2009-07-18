@@ -1,21 +1,21 @@
-package org.drools.solver.core.localsearch.finish;
+package org.drools.solver.core.localsearch.termination;
 
 import org.drools.solver.core.localsearch.LocalSearchSolverAware;
 import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.StepScope;
 
 /**
- * A Finish determines when the LocalSearchSolver should stop.
+ * A Termination determines when the LocalSearchSolver should stop.
  * @author Geoffrey De Smet
  */
-public interface Finish extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
+public interface Termination extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
 
     /**
      * Called by the LocalSearchSolver after every step to determine if the search should stop.
      * @param stepScope never null
-     * @return true if the search should finish.
+     * @return true if the search should terminate.
      */
-    boolean isFinished(StepScope stepScope);
+    boolean isTerminated(StepScope stepScope);
 
     /**
      * A timeGradient is a relative estimate of how long the search will continue.
@@ -26,7 +26,7 @@ public interface Finish extends LocalSearchSolverAware, LocalSearchSolverLifecyc
      * If a timeGradient can not be calulated, it should return -1.0.
      * Several implementations (such a similated annealing) require a correctly implemented timeGradient.
      * <p/>
-     * A Finish's timeGradient can be requested after they are finished, so implementations
+     * A Termination's timeGradient can be requested after they are terminated, so implementations
      * should be carefull not to return a tempature above 1.0.
      * @param stepScope never null
      * @return timeGradient t for which 0.0 &lt;= t &lt;= 1.0 or -1.0 when it is not supported.

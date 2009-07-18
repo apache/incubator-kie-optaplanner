@@ -5,7 +5,7 @@
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
     <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
-    <finish>
+    <termination>
         <!--
             Official benchmark maximumSecondsSpend allowed on:
             ge0ffrey's main pc: 429
@@ -14,7 +14,7 @@
         <maximumSecondsSpend>429</maximumSecondsSpend>
         <!--<feasableScore>-0hard/-999999soft</feasableScore>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
-    </finish>
+    </termination>
     <!--<deciderScoreComparatorFactory>-->
         <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
         <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->

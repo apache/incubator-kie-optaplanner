@@ -1,4 +1,4 @@
-package org.drools.solver.core.localsearch.finish;
+package org.drools.solver.core.localsearch.termination;
 
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
@@ -7,7 +7,7 @@ import org.drools.solver.core.score.Score;
 /**
  * @author Geoffrey De Smet
  */
-public class FeasableScoreFinish extends AbstractFinish {
+public class FeasableScoreTermination extends AbstractTermination {
 
     private Score feasableScore;
     
@@ -19,7 +19,7 @@ public class FeasableScoreFinish extends AbstractFinish {
     // Worker methods
     // ************************************************************************
 
-    public boolean isFinished(StepScope stepScope) {
+    public boolean isTerminated(StepScope stepScope) {
         Score bestScore = stepScope.getLocalSearchSolverScope().getBestScore();
         return bestScore.compareTo(feasableScore) >= 0;
     }
@@ -31,5 +31,5 @@ public class FeasableScoreFinish extends AbstractFinish {
         return localSearchSolverScope.getScoreDefinition()
                 .calculateTimeGradient(startingScore, feasableScore, stepScore);
     }
-    
+
 }

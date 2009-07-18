@@ -50,7 +50,7 @@ rule "matchRepeater"
 end
 
 rule "hardConstraintsBroken"
-        salience -1 // Finish the other rules first (optional, for performance)
+        salience -1 // Do the other rules first (optional, for performance)
     when
         $occurrenceCount : Number() from accumulate(
             $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
@@ -101,7 +101,7 @@ rule "awayToEndHop"
 end
 
 rule "softConstraintsBroken"
-        salience -1 // Finish the other rules first (optional, for performance)
+        salience -1 // Do the other rules first (optional, for performance)
     when
         $totalDistance : Double() from accumulate(
             Hop($distance : distance),

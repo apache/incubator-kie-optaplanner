@@ -10,9 +10,9 @@
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/solver/examples/itc2007/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
-        <finish>
+        <termination>
             <maximumStepCount>500</maximumStepCount>
-        </finish>
+        </termination>
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>

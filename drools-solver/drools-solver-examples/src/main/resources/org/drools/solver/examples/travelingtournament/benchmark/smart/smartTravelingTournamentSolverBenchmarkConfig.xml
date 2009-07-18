@@ -10,10 +10,10 @@
         <scoreDefinition>
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         </scoreDefinition>
-        <finish>
+        <termination>
             <!--<maximumHouresSpend>2</maximumHouresSpend>-->
             <maximumMinutesSpend>10</maximumMinutesSpend>
-        </finish>
+        </termination>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
@@ -49,9 +49,9 @@
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
             <!-- Warmup JIT -->
-            <!--<finish>-->
+            <!--<termination>-->
                 <!--<maximumMinutesSpend>2</maximumMinutesSpend>-->
-            <!--</finish>-->
+            <!--</termination>-->
             <!--<accepter>-->
                 <!--<completeSolutionTabuSize>10</completeSolutionTabuSize>-->
                 <!--<completeMoveTabuSize>10</completeMoveTabuSize>-->

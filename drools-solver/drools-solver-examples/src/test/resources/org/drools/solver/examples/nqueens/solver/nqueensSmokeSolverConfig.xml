@@ -4,11 +4,11 @@
     <scoreDefinition>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     </scoreDefinition>
-    <finish>
-        <finishCompositionStyle>OR</finishCompositionStyle>
+    <termination>
+        <terminationCompositionStyle>OR</terminationCompositionStyle>
         <maximumStepCount>5</maximumStepCount>
         <feasableScore>0</feasableScore>
-    </finish>
+    </termination>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
     </selector>

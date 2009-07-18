@@ -4,9 +4,9 @@
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
-    <finish>
+    <termination>
         <maximumUnimprovedStepCount>10</maximumUnimprovedStepCount>
-    </finish>
+    </termination>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.lessonschedule.solver.move.factory.LessonScheduleMoveFactory</moveFactoryClass>
     </selector>

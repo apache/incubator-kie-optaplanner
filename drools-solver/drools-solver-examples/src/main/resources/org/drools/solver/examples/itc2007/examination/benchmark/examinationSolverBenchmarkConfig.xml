@@ -20,14 +20,14 @@
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         </scoreDefinition>
         <startingSolutionInitializerClass>org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
-        <finish>
+        <termination>
             <!--
                 Official benchmark maximumSecondsSpend allowed on:
                 ge0ffrey's main pc: 429
                 ge0ffrey's old pc: 1152
             -->
             <maximumSecondsSpend>429</maximumSecondsSpend>
-        </finish>
+        </termination>
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>

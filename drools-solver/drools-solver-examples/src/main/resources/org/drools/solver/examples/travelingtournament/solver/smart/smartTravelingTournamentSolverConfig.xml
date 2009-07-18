@@ -4,9 +4,9 @@
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
-    <finish>
+    <termination>
         <feasableScore>0hard/0soft</feasableScore>
-    </finish>
+    </termination>
     <deciderScoreComparatorFactory>
         <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
         <hardScoreActivationThreshold>0</hardScoreActivationThreshold>

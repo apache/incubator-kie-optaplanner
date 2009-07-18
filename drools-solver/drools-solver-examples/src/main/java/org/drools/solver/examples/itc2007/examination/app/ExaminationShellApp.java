@@ -53,7 +53,7 @@ public class ExaminationShellApp extends LoggingMain {
     private void configureSolver(long maximumSecondsSpend) {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
-        configurer.getConfig().getFinishConfig().setMaximumSecondsSpend(maximumSecondsSpend);
+        configurer.getConfig().getTerminationConfig().setMaximumSecondsSpend(maximumSecondsSpend);
         solver = configurer.buildSolver();
     }
 

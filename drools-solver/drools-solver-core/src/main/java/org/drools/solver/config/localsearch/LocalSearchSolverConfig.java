@@ -17,7 +17,7 @@ import org.drools.solver.config.localsearch.decider.accepter.AccepterConfig;
 import org.drools.solver.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.solver.config.localsearch.decider.selector.SelectorConfig;
 import org.drools.solver.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
-import org.drools.solver.config.localsearch.finish.FinishConfig;
+import org.drools.solver.config.localsearch.termination.TerminationConfig;
 import org.drools.solver.config.score.definition.ScoreDefinitionConfig;
 import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolver;
@@ -43,8 +43,8 @@ public class LocalSearchSolverConfig {
     private StartingSolutionInitializer startingSolutionInitializer = null;
     private Class<StartingSolutionInitializer> startingSolutionInitializerClass = null;
 
-    @XStreamAlias("finish")
-    private FinishConfig finishConfig = new FinishConfig(); // TODO this new is pointless due to xstream
+    @XStreamAlias("termination")
+    private TerminationConfig terminationConfig = new TerminationConfig(); // TODO this new is pointless due to xstream
 
     @XStreamAlias("deciderScoreComparatorFactory")
     private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig
@@ -96,12 +96,12 @@ public class LocalSearchSolverConfig {
         this.startingSolutionInitializerClass = startingSolutionInitializerClass;
     }
 
-    public FinishConfig getFinishConfig() {
-        return finishConfig;
+    public TerminationConfig getTerminationConfig() {
+        return terminationConfig;
     }
 
-    public void setFinishConfig(FinishConfig finishConfig) {
-        this.finishConfig = finishConfig;
+    public void setTerminationConfig(TerminationConfig terminationConfig) {
+        this.terminationConfig = terminationConfig;
     }
 
     public DeciderScoreComparatorFactoryConfig getDeciderScoreComparatorFactoryConfig() {
@@ -155,7 +155,7 @@ public class LocalSearchSolverConfig {
         localSearchSolver.setScoreCalculator(scoreDefinitionConfig.buildScoreCalculator());
         localSearchSolver.setStartingSolutionInitializer(buildStartingSolutionInitializer());
         localSearchSolver.setBestSolutionRecaller(new BestSolutionRecaller());
-        localSearchSolver.setFinish(finishConfig.buildFinish(scoreDefinition));
+        localSearchSolver.setTermination(terminationConfig.buildTermination(scoreDefinition));
         localSearchSolver.setDecider(buildDecider());
         return localSearchSolver;
     }
@@ -241,10 +241,10 @@ public class LocalSearchSolverConfig {
             startingSolutionInitializer = inheritedConfig.getStartingSolutionInitializer();
             startingSolutionInitializerClass = inheritedConfig.getStartingSolutionInitializerClass();
         }
-        if (finishConfig == null) {
-            finishConfig = inheritedConfig.getFinishConfig();
-        } else if (inheritedConfig.getFinishConfig() != null) {
-            finishConfig.inherit(inheritedConfig.getFinishConfig());
+        if (terminationConfig == null) {
+            terminationConfig = inheritedConfig.getTerminationConfig();
+        } else if (inheritedConfig.getTerminationConfig() != null) {
+            terminationConfig.inherit(inheritedConfig.getTerminationConfig());
         }
         if (deciderScoreComparatorFactoryConfig == null) {
             deciderScoreComparatorFactoryConfig = inheritedConfig.getDeciderScoreComparatorFactoryConfig();
