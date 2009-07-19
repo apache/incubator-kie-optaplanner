@@ -79,7 +79,7 @@ After:
 From 5.0.1 to 5.1.0
 -------------------
 
-The Solver.cancel() method has been renamed to Solver.terminateEarly()
+The method Solver.cancel() has been renamed to Solver.terminateEarly()
 because it does not undo the solving but terminates it early and there's a best solution.
 Before:
     solver.cancel();
@@ -93,7 +93,7 @@ After:
     solver.isTerminatedEarly();
 
 
-The Finish interface has been renamed to Termination
+The interface Finish has been renamed to Termination
 because Termination seems the defacto standard name for it in the literature.
 Before:
    ... extends Finish
@@ -119,3 +119,15 @@ Before:
    .isFinished(...)
 After:
    .isTerminated(...)
+
+
+The class FeasableScoreTermination has been renamed to ScoreAttainedTermination.
+Its property feasableScore has been renamed to scoreAttained.
+Before in solver config xml's and benchmarker config xml's :
+    <termination>
+        <feasableScore>...</feasableScore>
+    </termination>
+After:
+    <termination>
+        <scoreAttained>...</scoreAttained>
+    </termination>

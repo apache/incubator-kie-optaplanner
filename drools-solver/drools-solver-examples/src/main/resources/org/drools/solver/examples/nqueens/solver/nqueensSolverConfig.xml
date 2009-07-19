@@ -7,7 +7,7 @@
     <termination>
         <terminationCompositionStyle>OR</terminationCompositionStyle>
         <maximumStepCount>100</maximumStepCount>
-        <feasableScore>0</feasableScore>
+        <scoreAttained>0</scoreAttained>
     </termination>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>

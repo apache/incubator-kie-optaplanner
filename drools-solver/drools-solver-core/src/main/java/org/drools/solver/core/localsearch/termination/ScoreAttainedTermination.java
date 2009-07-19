@@ -7,12 +7,12 @@ import org.drools.solver.core.score.Score;
 /**
  * @author Geoffrey De Smet
  */
-public class FeasableScoreTermination extends AbstractTermination {
+public class ScoreAttainedTermination extends AbstractTermination {
 
-    private Score feasableScore;
-    
-    public void setFeasableScore(Score feasableScore) {
-        this.feasableScore = feasableScore;
+    private Score scoreAttained;
+
+    public void setScoreAttained(Score scoreAttained) {
+        this.scoreAttained = scoreAttained;
     }
 
     // ************************************************************************
@@ -21,7 +21,7 @@ public class FeasableScoreTermination extends AbstractTermination {
 
     public boolean isTerminated(StepScope stepScope) {
         Score bestScore = stepScope.getLocalSearchSolverScope().getBestScore();
-        return bestScore.compareTo(feasableScore) >= 0;
+        return bestScore.compareTo(scoreAttained) >= 0;
     }
 
     public double calculateTimeGradient(StepScope stepScope) {
@@ -29,7 +29,7 @@ public class FeasableScoreTermination extends AbstractTermination {
         Score startingScore = localSearchSolverScope.getStartingScore();
         Score stepScore = localSearchSolverScope.getLastCompletedStepScope().getScore();
         return localSearchSolverScope.getScoreDefinition()
-                .calculateTimeGradient(startingScore, feasableScore, stepScore);
+                .calculateTimeGradient(startingScore, scoreAttained, stepScore);
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.solver.core.localsearch.termination.AbstractCompositeTermination;
 import org.drools.solver.core.localsearch.termination.AndCompositeTermination;
-import org.drools.solver.core.localsearch.termination.FeasableScoreTermination;
+import org.drools.solver.core.localsearch.termination.ScoreAttainedTermination;
 import org.drools.solver.core.localsearch.termination.Termination;
 import org.drools.solver.core.localsearch.termination.OrCompositeTermination;
 import org.drools.solver.core.localsearch.termination.StepCountTermination;
@@ -30,7 +30,7 @@ public class TerminationConfig {
     private Long maximumSecondsSpend = null;
     private Long maximumMinutesSpend = null;
     private Long maximumHouresSpend = null;
-    private String feasableScore = null;
+    private String scoreAttained = null;
     private Integer maximumUnimprovedStepCount = null;
 
     public Termination getTermination() {
@@ -97,12 +97,12 @@ public class TerminationConfig {
         this.maximumHouresSpend = maximumHouresSpend;
     }
 
-    public String getFeasableScore() {
-        return feasableScore;
+    public String getScoreAttained() {
+        return scoreAttained;
     }
 
-    public void setFeasableScore(String feasableScore) {
-        this.feasableScore = feasableScore;
+    public void setScoreAttained(String scoreAttained) {
+        this.scoreAttained = scoreAttained;
     }
 
     public Integer getMaximumUnimprovedStepCount() {
@@ -158,9 +158,9 @@ public class TerminationConfig {
             termination.setMaximumTimeMillisSpend(maximumHouresSpend * 3600000L);
             terminationList.add(termination);
         }
-        if (feasableScore != null) {
-            FeasableScoreTermination termination = new FeasableScoreTermination();
-            termination.setFeasableScore(scoreDefinition.parseScore(feasableScore));
+        if (scoreAttained != null) {
+            ScoreAttainedTermination termination = new ScoreAttainedTermination();
+            termination.setScoreAttained(scoreDefinition.parseScore(scoreAttained));
             terminationList.add(termination);
         }
         if (maximumUnimprovedStepCount != null) {
@@ -215,8 +215,8 @@ public class TerminationConfig {
         if (maximumHouresSpend == null) {
             maximumHouresSpend = inheritedConfig.getMaximumHouresSpend();
         }
-        if (feasableScore == null) {
-            feasableScore = inheritedConfig.getFeasableScore();
+        if (scoreAttained == null) {
+            scoreAttained = inheritedConfig.getScoreAttained();
         }
         if (maximumUnimprovedStepCount == null) {
             maximumUnimprovedStepCount = inheritedConfig.getMaximumUnimprovedStepCount();

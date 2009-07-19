@@ -8,7 +8,7 @@
         <termination>
         <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->
         <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->
-        <feasableScore>0</feasableScore>
+        <scoreAttained>0</scoreAttained>
     </termination>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>

@@ -5,7 +5,7 @@
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
     <termination>
-        <feasableScore>0hard/0soft</feasableScore>
+        <scoreAttained>0hard/0soft</scoreAttained>
     </termination>
     <deciderScoreComparatorFactory>
         <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>

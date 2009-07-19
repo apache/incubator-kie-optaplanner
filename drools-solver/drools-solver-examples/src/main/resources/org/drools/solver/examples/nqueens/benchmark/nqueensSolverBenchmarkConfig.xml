@@ -12,7 +12,7 @@
         <termination>
             <terminationCompositionStyle>OR</terminationCompositionStyle>
             <maximumSecondsSpend>10</maximumSecondsSpend>
-            <feasableScore>0</feasableScore>
+            <scoreAttained>0</scoreAttained>
         </termination>
         <selector>
             <moveFactoryClass>org.drools.solver.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>

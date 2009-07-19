@@ -12,7 +12,7 @@
             ge0ffrey's old pc: 1152
         -->
         <maximumSecondsSpend>429</maximumSecondsSpend>
-        <!--<feasableScore>-0hard/-999999soft</feasableScore>-->
+        <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
     </termination>
     <selector>
