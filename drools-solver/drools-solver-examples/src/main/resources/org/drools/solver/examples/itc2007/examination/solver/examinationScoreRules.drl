@@ -134,18 +134,6 @@ rule "roomHardConstraintExclusive"
                 $leftExam, $rightExam));
 end
 
-// Accumulate hard constraints
-rule "hardConstraintsBroken"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        );
-    then
-        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
-end
-
 // ############################################################################
 // Soft constraints
 // ############################################################################
@@ -252,6 +240,22 @@ rule "roomPenalty"
         insertLogical(new IntConstraintOccurrence("roomPenalty", ConstraintType.NEGATIVE_SOFT,
                 $room.getPenalty(),
                 $exam));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+// Accumulate hard constraints
+rule "hardConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
 end
 
 // Accumulate soft constraints

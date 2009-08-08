@@ -58,17 +58,6 @@ rule "matchRepeater"
         insertLogical(new UnweightedConstraintOccurrence("matchRepeater", $m));
 end
 
-rule "hardConstraintsBroken"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $occurrenceCount : Number() from accumulate(
-            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
-            count($unweightedConstraintOccurrence)
-        );
-    then
-        scoreCalculator.setHardConstraintsBroken($occurrenceCount.intValue());
-end
-
 // ############################################################################
 // Soft constraints
 // ############################################################################
@@ -107,6 +96,21 @@ rule "awayToEndHop"
         not Day(eval(index == $day.getIndex() + 1));
     then
         insertLogical(new Hop($team, $fromTeam, $team));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+rule "hardConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($occurrenceCount.intValue());
 end
 
 rule "softConstraintsBroken"

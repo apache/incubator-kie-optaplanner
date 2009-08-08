@@ -77,6 +77,10 @@ rule "leftHasHobbyInCommon"
                 $leftDesignation, $rightDesignation));
 end
 
+// ############################################################################
+// Calculate score
+// ############################################################################
+
 rule "hardConstraintsBroken"
     when
         $occurrenceCount : Number() from accumulate(

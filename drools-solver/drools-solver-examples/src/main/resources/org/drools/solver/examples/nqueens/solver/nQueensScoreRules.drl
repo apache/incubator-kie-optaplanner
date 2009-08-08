@@ -39,6 +39,10 @@ rule "multipleQueensDescendingDiagonal"
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
 end
 
+// ############################################################################
+// Calculate score
+// ############################################################################
+
 rule "hardConstraintsBroken"
     when
         $occurrenceCount : Number() from accumulate(
