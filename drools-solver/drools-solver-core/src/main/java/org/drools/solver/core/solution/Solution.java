@@ -3,6 +3,13 @@ package org.drools.solver.core.solution;
 import java.util.Collection;
 
 /**
+ * A Solution represents a problem and a possible solution of that problem.
+ * A possible solution does not need to optimal or even feasible.
+ * A Solution does not even have to be initialized with a possible solution.
+ * <p/>
+ * A Solution is mutable.
+ * Drools-solver will continiously modify the same solution for scalibility reasons
+ * and clone it to recall the best solution.
  * @author Geoffrey De Smet
  */
 public interface Solution {
