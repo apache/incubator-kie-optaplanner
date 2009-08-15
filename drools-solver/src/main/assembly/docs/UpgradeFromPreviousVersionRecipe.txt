@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Drools solver isn't backwards compatible at the time.
+Drools solver isn't always backwards compatible at this time.
 This file describes how can you upgrade from earlier versions to the latest.
 
 From 5.0.0-m2 to 5.0.0
