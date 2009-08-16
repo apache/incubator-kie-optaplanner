@@ -52,6 +52,10 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
     }
 
 
+    public String getLabel() {
+        return course + "-" + lectureIndexInCourse;
+    }
+
     public int getStudentSize() {
         return course.getStudentSize();
     }

@@ -108,7 +108,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
         private Lecture lecture;
 
         public ExamAction(Lecture lecture) {
-            super(lecture.toString());
+            super(lecture.getLabel());
             this.lecture = lecture;
         }
 
