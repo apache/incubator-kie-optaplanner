@@ -13,6 +13,7 @@ import java.util.Map;
 import org.drools.ClassObjectFilter;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.Solver;
+import org.drools.solver.core.event.SolverEventListener;
 import org.drools.solver.core.localsearch.DefaultLocalSearchSolver;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.move.Move;
@@ -91,6 +92,10 @@ public class SolutionBusiness {
 
     public Score getScore() {
         return localSearchSolverScope.calculateScoreFromWorkingMemory();
+    }
+
+    public void addSolverEventLister(SolverEventListener eventListener) {
+        solver.addEventListener(eventListener);
     }
 
     public List<ScoreDetail> getScoreDetailList() {

@@ -29,6 +29,9 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import org.drools.solver.examples.common.business.SolutionBusiness;
+import org.drools.solver.core.event.SolverEventListener;
+import org.drools.solver.core.event.BestSolutionChangedEvent;
+import org.drools.solver.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,9 +63,23 @@ public class WorkflowFrame extends JFrame {
         this.solutionPanel = solutionPanel;
         solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setWorkflowFrame(this);
+        registerSolverEventListener();
         constraintScoreMapDialog = new ConstraintScoreMapDialog(this);
         constraintScoreMapDialog.setSolutionBusiness(solutionBusiness);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private void registerSolverEventListener() {
+        solutionBusiness.addSolverEventLister(new SolverEventListener() {
+            public void bestSolutionChanged(BestSolutionChangedEvent event) {
+                final Solution bestSolution = event.getNewBestSolution();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        resultLabel.setText("Latest best score: " + bestSolution.getScore());
+                    }
+                });
+            }
+        });
     }
 
     public void init() {
@@ -262,7 +279,7 @@ public class WorkflowFrame extends JFrame {
     public void updateScreen() {
         solutionPanel.resetPanel();
         validate();
-        resultLabel.setText("Score = " + solutionBusiness.getScore());
+        resultLabel.setText("Score: " + solutionBusiness.getScore());
     }
 
 }
