@@ -21,6 +21,7 @@ public class StepScope {
     private Move step = null;
     private Move undoStep = null;
     private Score score = null;
+    // Stays null if there is no need to clone it
     private Solution clonedSolution = null;
 
     public StepScope(LocalSearchSolverScope localSearchSolverScope) {

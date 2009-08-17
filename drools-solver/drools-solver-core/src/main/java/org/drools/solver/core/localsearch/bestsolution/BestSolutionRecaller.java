@@ -6,6 +6,8 @@ import org.drools.solver.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.solver.core.localsearch.LocalSearchSolverScope;
 import org.drools.solver.core.localsearch.StepScope;
 import org.drools.solver.core.score.Score;
+import org.drools.solver.core.event.SolverEventSupport;
+import org.drools.solver.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +20,14 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected LocalSearchSolver localSearchSolver;
+    protected SolverEventSupport solverEventSupport;
 
     public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
         this.localSearchSolver = localSearchSolver;
+    }
+
+    public void setSolverEventSupport(SolverEventSupport solverEventSupport) {
+        this.solverEventSupport = solverEventSupport;
     }
 
     // ************************************************************************
@@ -50,8 +57,10 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
             logger.info("New score ({}) is better then last best score ({}). Updating best solution and best score.",
                     newScore, bestScore);
             localSearchSolverScope.setBestSolutionStepIndex(stepScope.getStepIndex());
-            localSearchSolverScope.setBestSolution(stepScope.createOrGetClonedSolution());
-            localSearchSolverScope.setBestScore(stepScope.getScore());
+            Solution newBestSolution = stepScope.createOrGetClonedSolution();
+            localSearchSolverScope.setBestSolution(newBestSolution);
+            localSearchSolverScope.setBestScore(newBestSolution.getScore());
+            solverEventSupport.fireBestSolutionChanged(newBestSolution);
         } else {
             logger.info("New score ({}) is not better then last best score ({}).", newScore, bestScore);
         }

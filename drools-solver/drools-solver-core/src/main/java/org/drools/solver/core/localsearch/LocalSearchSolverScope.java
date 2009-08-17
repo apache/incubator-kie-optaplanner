@@ -31,7 +31,7 @@ public class LocalSearchSolverScope {
 
     private int bestSolutionStepIndex;
     private Solution bestSolution;
-    private Score bestScore;
+    private Score bestScore; // TODO remove me
 
     private StepScope lastCompletedStepScope;
 

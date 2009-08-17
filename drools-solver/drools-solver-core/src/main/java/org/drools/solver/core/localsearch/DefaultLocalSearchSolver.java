@@ -57,6 +57,7 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
     public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.bestSolutionRecaller.setLocalSearchSolver(this);
+        this.bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
     }
 
     public Decider getDecider() {
@@ -115,6 +116,8 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
                             nextStep, decider.getForager().getAcceptedMovesSize()});
             stepDecided(stepScope);
             nextStep.doMove(stepScope.getWorkingMemory());
+            // there is no need to recalculate the score, but we still need to set it
+            localSearchSolverScope.getWorkingSolution().setScore(stepScope.getScore());
             stepTaken(stepScope);
             stepScope = createNextStepScope(localSearchSolverScope, stepScope);
         }

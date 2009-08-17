@@ -4,6 +4,7 @@ import java.util.concurrent.Future;
 
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.score.Score;
+import org.drools.solver.core.event.SolverEventListener;
 
 /**
  * A Solver solves planning problems.
@@ -52,5 +53,14 @@ public interface Solver {
      * @return true if terminateEarly has been called since the {@Solver} started.
      */
     boolean isTerminatedEarly();
+
+    /**
+     * @param eventListener never null
+     */
+    void addEventListener(SolverEventListener eventListener);
+    /**
+     * @param eventListener never null
+     */
+    void removeEventListener(SolverEventListener eventListener);
 
 }
