@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.HardAndSoftScore;
+import org.drools.solver.core.score.Score;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 import org.drools.solver.examples.itc2007.examination.domain.solver.TopicConflict;
 
@@ -26,6 +28,8 @@ public class Examination extends AbstractPersistable implements Solution {
     private List<RoomHardConstraint> roomHardConstraintList;
 
     private List<Exam> examList;
+
+    private HardAndSoftScore score;
 
     public InstitutionalWeighting getInstitutionalWeighting() {
         return institutionalWeighting;
@@ -89,6 +93,14 @@ public class Examination extends AbstractPersistable implements Solution {
 
     public void setExamList(List<Exam> examList) {
         this.examList = examList;
+    }
+
+    public HardAndSoftScore getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = (HardAndSoftScore) score;
     }
 
 
@@ -156,6 +168,7 @@ public class Examination extends AbstractPersistable implements Solution {
             clonedExamList.add(clonedExam);
         }
         clone.examList = clonedExamList;
+        clone.score = score;
         return clone;
     }
 

@@ -131,3 +131,57 @@ After:
     <termination>
         <scoreAttained>...</scoreAttained>
     </termination>
+
+
+The interface Solution now has a Score property: Solution.getScore() and Solution.getScore()
+Before:
+    public class ... implements Solution {
+        ...
+    }
+After if you use a SimpleScore:
+    public class ... implements Solution {
+        ...
+        private SimpleScore score;
+        ...
+        public SimpleScore getScore() {
+            return score;
+        }
+        public void setScore(Score score) {
+            this.score = (SimpleScore) score;
+        }
+        ...
+    }
+After if you use a HardAndSoftScore:
+    public class ... implements Solution {
+        ...
+        private HardAndSoftScore score;
+        ...
+        public HardAndSoftScore getScore() {
+            return score;
+        }
+        public void setScore(Score score) {
+            this.score = (HardAndSoftScore) score;
+        }
+        ...
+    }
+
+The score property of a Solution needs to be cloned:
+Before:
+    public X cloneSolution() {
+        X clone = new X();
+        ...
+        return clone;
+    }
+After:
+    public X cloneSolution() {
+        X clone = new X();
+        ...
+        clone.score = score;
+        return clone;
+    }
+
+The Solver interface no longer has a method Solver.getBestScore().
+Before:
+     solver.getBestScore()
+After:
+     solver.getBestSolution().getScore()

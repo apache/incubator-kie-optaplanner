@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.HardAndSoftScore;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
 /**
@@ -27,6 +29,8 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
     private List<UnavailablePeriodConstraint> unavailablePeriodConstraintList;
 
     private List<Lecture> lectureList;
+
+    private HardAndSoftScore score;
 
     public String getName() {
         return name;
@@ -108,6 +112,14 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         this.lectureList = lectureList;
     }
 
+    public HardAndSoftScore getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = (HardAndSoftScore) score;
+    }
+
 
     public boolean isInitialized() {
         return (lectureList != null);
@@ -151,6 +163,7 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
             clonedLectureList.add(clonedLecture);
         }
         clone.lectureList = clonedLectureList;
+        clone.score = score;
         return clone;
     }
 

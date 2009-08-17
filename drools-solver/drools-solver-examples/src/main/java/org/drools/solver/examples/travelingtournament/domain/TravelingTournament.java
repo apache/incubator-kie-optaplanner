@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.HardAndSoftScore;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
 /**
@@ -18,6 +20,8 @@ public class TravelingTournament extends AbstractPersistable implements Solution
     private List<Team> teamList;
 
     private List<Match> matchList;
+
+    private HardAndSoftScore score;
 
     public List<Day> getDayList() {
         return dayList;
@@ -41,6 +45,14 @@ public class TravelingTournament extends AbstractPersistable implements Solution
 
     public void setMatchList(List<Match> matchSets) {
         this.matchList = matchSets;
+    }
+
+    public HardAndSoftScore getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = (HardAndSoftScore) score;
     }
 
     public int getN() {
@@ -69,6 +81,7 @@ public class TravelingTournament extends AbstractPersistable implements Solution
             clonedMatchList.add(match.clone());
         }
         clone.matchList = clonedMatchList;
+        clone.score = score;
         return clone;
     }
 

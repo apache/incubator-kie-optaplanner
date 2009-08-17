@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.SimpleScore;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
 /**
@@ -22,6 +24,8 @@ public class Manners2009 extends AbstractPersistable implements Solution {
     private List<Seat> seatList;
 
     private List<SeatDesignation> seatDesignationList;
+
+    private SimpleScore score;
 
     public List<Job> getJobList() {
         return jobList;
@@ -71,6 +75,14 @@ public class Manners2009 extends AbstractPersistable implements Solution {
         this.seatDesignationList = seatDesignationList;
     }
 
+    public SimpleScore getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = (SimpleScore) score;
+    }
+
 
     public boolean isInitialized() {
         return (seatDesignationList != null);
@@ -107,6 +119,7 @@ public class Manners2009 extends AbstractPersistable implements Solution {
             clonedSeatDesignationList.add(seatDesignation.clone());
         }
         clone.seatDesignationList = clonedSeatDesignationList;
+        clone.score = score;
         return clone;
     }
 

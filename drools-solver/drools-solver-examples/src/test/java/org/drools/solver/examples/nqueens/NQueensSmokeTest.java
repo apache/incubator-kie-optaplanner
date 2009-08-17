@@ -30,7 +30,7 @@ public class NQueensSmokeTest extends TestCase {
         solver.solve();
         Solution bestSolution = solver.getBestSolution();
         assertNotNull(bestSolution);
-        Score bestScore = solver.getBestScore();
+        Score bestScore = solver.getBestSolution().getScore();
         assertEquals(DefaultSimpleScore.valueOf(0), bestScore);
     }
 

@@ -152,8 +152,8 @@ public class SolverBenchmarkSuite {
                 solver.setStartingSolution(unsolvedSolution);
                 solver.solve();
                 result.setTimeMillesSpend(solver.getTimeMillisSpend());
-                result.setScore(solver.getBestScore());
                 Solution solvedSolution = solver.getBestSolution();
+                result.setScore(solvedSolution.getScore());
                 writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
             }
         }

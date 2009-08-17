@@ -77,10 +77,6 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         localSearchSolverScope.setWorkingSolution(startingSolution);
     }
 
-    public Score getBestScore() {
-        return this.localSearchSolverScope.getBestScore();
-    }
-
     public Solution getBestSolution() {
         return this.localSearchSolverScope.getBestSolution();
     }

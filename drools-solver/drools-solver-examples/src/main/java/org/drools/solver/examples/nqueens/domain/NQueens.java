@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.HardAndSoftScore;
+import org.drools.solver.core.score.SimpleScore;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
 /**
@@ -14,12 +17,22 @@ public class NQueens extends AbstractPersistable implements Solution {
 
     private List<Queen> queenList;
 
+    private SimpleScore score;
+
     public List<Queen> getQueenList() {
         return queenList;
     }
 
     public void setQueenList(List<Queen> queenList) {
         this.queenList = queenList;
+    }
+
+    public SimpleScore getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = (SimpleScore) score;
     }
 
     public int getN() {
@@ -54,6 +67,7 @@ public class NQueens extends AbstractPersistable implements Solution {
             clonedQueenList.add(queen.clone());
         }
         clone.queenList = clonedQueenList;
+        clone.score = score;
         return clone;
     }
 

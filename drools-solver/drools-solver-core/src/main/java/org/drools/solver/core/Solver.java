@@ -14,11 +14,9 @@ import org.drools.solver.core.score.Score;
 public interface Solver {
 
     /**
-     * @param startingSolution cannot be null
+     * @param startingSolution never null
      */
     void setStartingSolution(Solution startingSolution);
-
-    Score getBestScore();
     
     Solution getBestSolution();
 

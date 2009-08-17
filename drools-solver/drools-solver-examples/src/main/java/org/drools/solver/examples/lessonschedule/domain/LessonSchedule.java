@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.HardAndSoftScore;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 
 /**
@@ -17,6 +19,8 @@ public class LessonSchedule extends AbstractPersistable implements Solution {
     private List<Group> groupList;
 
     private List<Lesson> lessonList;
+
+    private HardAndSoftScore score;
 
     public List<Timeslot> getTimeslotList() {
         return timeslotList;
@@ -50,6 +54,14 @@ public class LessonSchedule extends AbstractPersistable implements Solution {
         this.lessonList = lessonList;
     }
 
+    public HardAndSoftScore getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = (HardAndSoftScore) score;
+    }
+
 
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
@@ -74,6 +86,7 @@ public class LessonSchedule extends AbstractPersistable implements Solution {
             clonedLessonList.add(lesson.clone());
         }
         clone.lessonList = clonedLessonList;
+        clone.score = score;
         return clone;
     }
     

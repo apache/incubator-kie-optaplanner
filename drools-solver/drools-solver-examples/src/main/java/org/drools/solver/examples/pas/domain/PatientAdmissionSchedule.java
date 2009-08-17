@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.HardAndSoftScore;
 import org.drools.solver.examples.common.domain.AbstractPersistable;
 import org.drools.solver.examples.pas.domain.solver.AdmissionPartConflict;
 
@@ -30,6 +32,8 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
     private List<PreferredPatientEquipment> preferredPatientEquipmentList;
 
     private List<BedDesignation> bedDesignationList;
+
+    private HardAndSoftScore score;
 
     public List<Specialism> getSpecialismList() {
         return specialismList;
@@ -143,6 +147,15 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.bedDesignationList = bedDesignationList;
     }
 
+    public HardAndSoftScore getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = (HardAndSoftScore) score;
+    }
+
+
     public boolean isInitialized() {
         return (bedDesignationList != null);
     }
@@ -234,6 +247,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
             clonedBedDesignationList.add(clonedBedDesignation);
         }
         clone.bedDesignationList = clonedBedDesignationList;
+        clone.score = score;
         return clone;
     }
 

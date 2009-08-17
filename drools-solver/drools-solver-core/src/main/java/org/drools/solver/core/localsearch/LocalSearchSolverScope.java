@@ -134,7 +134,9 @@ public class LocalSearchSolverScope {
 
     public Score calculateScoreFromWorkingMemory() {
         workingMemory.fireAllRules();
-        return workingScoreCalculator.calculateScore();
+        Score score = workingScoreCalculator.calculateScore();
+        workingSolution.setScore(score);
+        return score;
     }
 
     public void resetTimeMillisSpend() {
