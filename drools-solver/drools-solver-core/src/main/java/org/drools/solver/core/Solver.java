@@ -22,6 +22,7 @@ public interface Solver {
     Solution getBestSolution();
 
     /**
+     * TODO timeMillisSpend should not continue to increase after the solver has been terminated
      * @return the amount of millis spend since this solver started
      */
     long getTimeMillisSpend();

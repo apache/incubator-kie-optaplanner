@@ -3,6 +3,7 @@ package org.drools.solver.core.event;
 import java.util.EventObject;
 
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.Solver;
 
 /**
  * Delivered when the best solution changes during solving.
@@ -10,15 +11,24 @@ import org.drools.solver.core.solution.Solution;
  */
 public class BestSolutionChangedEvent extends EventObject {
 
-    public final Solution newBestSolution;
+    private final long timeMillisSpend;
+    private final Solution newBestSolution;
 
     /**
      * Internal API.
      * @param newBestSolution never null
      */
-    public BestSolutionChangedEvent(Solution newBestSolution) {
-        super(newBestSolution); // TODO is this really the source of this event?
+    public BestSolutionChangedEvent(Solver source, long timeMillisSpend, Solution newBestSolution) {
+        super(source);
+        this.timeMillisSpend = timeMillisSpend;
         this.newBestSolution = newBestSolution;
+    }
+
+    /**
+     * @return the amount of millis spend since the solver started untill that best solution was found
+     */
+    public long getTimeMillisSpend() {
+        return timeMillisSpend;
     }
 
     /**

@@ -60,7 +60,8 @@ public class BestSolutionRecaller implements LocalSearchSolverAware, LocalSearch
             Solution newBestSolution = stepScope.createOrGetClonedSolution();
             localSearchSolverScope.setBestSolution(newBestSolution);
             localSearchSolverScope.setBestScore(newBestSolution.getScore());
-            solverEventSupport.fireBestSolutionChanged(newBestSolution);
+            solverEventSupport.fireBestSolutionChanged(localSearchSolver,
+                    localSearchSolverScope.calculateTimeMillisSpend(), newBestSolution);
         } else {
             logger.info("New score ({}) is not better then last best score ({}).", newScore, bestScore);
         }
