@@ -97,7 +97,7 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
                 // scoreRules check this
                 return true;
             default:
-                throw new IllegalStateException("genderLimitation (" + genderLimitation + ") not implemented");
+                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented");
         }
     }
 
@@ -135,7 +135,7 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
                 // scoreRules check this
                 return 0;
             default:
-                throw new IllegalStateException("genderLimitation (" + genderLimitation + ") not implemented");
+                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented");
         }
     }
 

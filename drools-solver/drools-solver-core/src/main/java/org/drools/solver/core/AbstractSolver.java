@@ -18,7 +18,7 @@ public abstract class AbstractSolver implements Solver {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolverEventSupport solverEventSupport = new SolverEventSupport();
+    protected SolverEventSupport solverEventSupport = new SolverEventSupport(this);
 
     // TODO atomic enum with values NOT_STARTED, RUNNING, DONE, CANCELLED
     // TODO introduce a solver factory and make a solver one time use

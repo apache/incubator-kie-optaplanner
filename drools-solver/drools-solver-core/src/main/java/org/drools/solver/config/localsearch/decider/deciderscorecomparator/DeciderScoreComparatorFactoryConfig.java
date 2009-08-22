@@ -136,8 +136,8 @@ public class DeciderScoreComparatorFactoryConfig {
                     }
                     return deciderScoreComparator;
                 default:
-                    throw new IllegalStateException("deciderScoreComparatorFactoryType ("
-                            + deciderScoreComparatorFactoryType + ") not implemented");
+                    throw new IllegalStateException("The deciderScoreComparatorFactoryType ("
+                            + deciderScoreComparatorFactoryType + ") is not implemented");
             }
         } else {
             return new NaturalDeciderScoreComparatorFactory();

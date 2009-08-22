@@ -177,8 +177,8 @@ public class TerminationConfig {
             } else if (terminationCompositionStyle == TerminationCompositionStyle.AND) {
                 compositeTermination = new AndCompositeTermination();
             } else {
-                throw new IllegalStateException("terminationCompositionStyle (" + terminationCompositionStyle
-                        + ") not implemented");
+                throw new IllegalStateException("The terminationCompositionStyle (" + terminationCompositionStyle
+                        + ") is not implemented");
             }
             compositeTermination.setTerminationList(terminationList);
             return compositeTermination;

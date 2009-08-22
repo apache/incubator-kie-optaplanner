@@ -14,11 +14,17 @@ import org.drools.event.BeforePackageAddedEvent;
  */
 public class SolverEventSupport extends AbstractEventSupport<SolverEventListener> {
 
-    public void fireBestSolutionChanged(Solver source, long timeMillisSpend, Solution newBestSolution) {
+    private Solver solver;
+
+    public SolverEventSupport(Solver solver) {
+        this.solver = solver;
+    }
+
+    public void fireBestSolutionChanged(Solution newBestSolution) {
         final Iterator<SolverEventListener> iter = getEventListenersIterator();
         if (iter.hasNext()) {
-            final BestSolutionChangedEvent event = new BestSolutionChangedEvent(
-                    source, timeMillisSpend, newBestSolution);
+            final BestSolutionChangedEvent event = new BestSolutionChangedEvent(solver,
+                    solver.getTimeMillisSpend(), newBestSolution);
             do {
                 iter.next().bestSolutionChanged(event);
             } while (iter.hasNext());

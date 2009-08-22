@@ -52,7 +52,7 @@ public class ScoreConfig {
                 case HARD_AND_SOFT:
                     return DefaultHardAndSoftScore.parseScore(scoreString);
                 default:
-                    throw new IllegalStateException("scoreType (" + scoreType + ") not implemented");
+                    throw new IllegalStateException("The scoreType (" + scoreType + ") is not implemented");
             }
         } else {
             return null;

@@ -84,7 +84,7 @@ public class AcceptedForager extends AbstractForager {
                 }
                 break;
             default:
-                throw new IllegalStateException("pickEarlyByScore (" + pickEarlyByScore + ") not implemented");
+                throw new IllegalStateException("The pickEarlyByScore (" + pickEarlyByScore + ") is not implemented");
         }
         if (pickEarlyRandomly) {
             if (moveScope.getAcceptChance() >= 1.0) {

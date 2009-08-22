@@ -28,13 +28,13 @@ public class XmlSolverBenchmarker {
         // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
         xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
-        Annotations.configureAliases(xStream, SolverBenchmarkSuite.class);
+        xStream.processAnnotations(SolverBenchmarkSuite.class);
         // It doesn't pick up the annotations of the @XStreamImplicit in xstream 1.2.2
-        Annotations.configureAliases(xStream, SolverBenchmark.class);
+        xStream.processAnnotations(SolverBenchmark.class);
     }
 
-    public void addXstreamAlias(Class aliasClass) {
-		Annotations.configureAliases(xStream, aliasClass);
+    public void addXstreamAnnotations(Class annotationsClass) {
+        xStream.processAnnotations(annotationsClass);
     }
 
     // ************************************************************************

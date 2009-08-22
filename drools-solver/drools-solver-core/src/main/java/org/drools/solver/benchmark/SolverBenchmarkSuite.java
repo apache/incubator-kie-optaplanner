@@ -16,6 +16,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -25,6 +27,9 @@ import org.apache.commons.io.IOUtils;
 import org.drools.solver.config.localsearch.LocalSearchSolverConfig;
 import org.drools.solver.core.Solver;
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.benchmark.statistic.BestSolutionStatisticListener;
+import org.drools.solver.benchmark.statistic.BestSolutionStatistic;
+import org.drools.solver.benchmark.statistic.SolverStatistic;
 
 /**
  * @author Geoffrey De Smet
@@ -38,6 +43,8 @@ public class SolverBenchmarkSuite {
     private File solvedSolutionFilesDirectory = null;
     private boolean sortSolverBenchmarks = true;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
+    private SolverStatisticType solverStatisticType = SolverStatisticType.NONE;
+    private File solverStatisticFilesDirectory = null;
 
     @XStreamAlias("inheritedLocalSearchSolver")
     private LocalSearchSolverConfig inheritedLocalSearchSolverConfig = null;
@@ -77,6 +84,22 @@ public class SolverBenchmarkSuite {
 
     public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
         this.solverBenchmarkComparator = solverBenchmarkComparator;
+    }
+
+    public SolverStatisticType getSolverStatisticType() {
+        return solverStatisticType;
+    }
+
+    public void setSolverStatisticType(SolverStatisticType solverStatisticType) {
+        this.solverStatisticType = solverStatisticType;
+    }
+
+    public File getSolverStatisticFilesDirectory() {
+        return solverStatisticFilesDirectory;
+    }
+
+    public void setSolverStatisticFilesDirectory(File solverStatisticFilesDirectory) {
+        this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
     }
 
     public LocalSearchSolverConfig getInheritedLocalSearchSolverConfig() {
@@ -144,17 +167,44 @@ public class SolverBenchmarkSuite {
         if (solvedSolutionFilesDirectory != null) {
             solvedSolutionFilesDirectory.mkdirs();
         }
+        Map<File, SolverStatistic> unsolvedSolutionFileToStatisticMap;
+        if (solverStatisticType != SolverStatisticType.NONE) {
+            unsolvedSolutionFileToStatisticMap = new HashMap<File, SolverStatistic>();
+            if (solverStatisticFilesDirectory == null) {
+                throw new IllegalArgumentException("With solverStatisticType (" + solverStatisticType
+                        + ") the solverStatisticFilesDirectory must not be null.");
+            }
+            solverStatisticFilesDirectory.mkdirs();
+        } else {
+            unsolvedSolutionFileToStatisticMap = null;
+        }
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             Solver solver = solverBenchmark.getLocalSearchSolverConfig().buildSolver();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
                 File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
                 Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
                 solver.setStartingSolution(unsolvedSolution);
+                if (solverStatisticType != SolverStatisticType.NONE) {
+                    SolverStatistic statistic = unsolvedSolutionFileToStatisticMap.get(unsolvedSolutionFile);
+                    if (statistic == null) {
+                        statistic = solverStatisticType.create();
+                        unsolvedSolutionFileToStatisticMap.put(unsolvedSolutionFile, statistic);
+                    }
+                    statistic.addListener(solver, solverBenchmark.getName());
+                }
                 solver.solve();
                 result.setTimeMillesSpend(solver.getTimeMillisSpend());
                 Solution solvedSolution = solver.getBestSolution();
                 result.setScore(solvedSolution.getScore());
                 writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
+            }
+            if (solverStatisticType != SolverStatisticType.NONE) {
+                for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
+                    File unsolvedSolutionFile = entry.getKey();
+                    SolverStatistic statistic = entry.getValue();
+                    String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
+                    statistic.writeStatistic(solverStatisticFilesDirectory, baseName);
+                }
             }
         }
         benchmarkingEnded();
@@ -180,14 +230,14 @@ public class SolverBenchmarkSuite {
             return;
         }
         File solvedSolutionFile = null;
+        String baseName = FilenameUtils.getBaseName(result.getUnsolvedSolutionFile().getName());
+        String solverBenchmarkName = solverBenchmark.getName().replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
+        String scoreString = result.getScore().toString().replaceAll("[\\/ ]", "_");
+        String timeString = TIME_FORMAT.format(result.getTimeMillesSpend()) + "ms";
+        solvedSolutionFile = new File(solvedSolutionFilesDirectory, baseName + "_" + solverBenchmarkName
+                + "_score" + scoreString + "_time" + timeString + ".xml");
         Writer writer = null;
         try {
-            String baseName = FilenameUtils.getBaseName(result.getUnsolvedSolutionFile().getName());
-            String solverBenchmarkName = solverBenchmark.getName().replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
-            String scoreString = result.getScore().toString().replaceAll("[\\/ ]", "_");
-            String timeString = TIME_FORMAT.format(result.getTimeMillesSpend()) + "ms";
-            solvedSolutionFile = new File(solvedSolutionFilesDirectory, baseName + "_" + solverBenchmarkName
-                    + "_score" + scoreString + "_time" + timeString + ".xml");
             writer = new OutputStreamWriter(new FileOutputStream(solvedSolutionFile), "utf-8");
             xStream.toXML(solvedSolution, writer);
         } catch (IOException e) {
@@ -208,6 +258,22 @@ public class SolverBenchmarkSuite {
     
     public static enum SolvedSolutionVerbosity {
         ALL
+    }
+
+    public static enum SolverStatisticType {
+        NONE,
+        BEST_SOLUTION_CHANGED;
+
+        public SolverStatistic create() {
+            switch (this) {
+                case NONE:
+                    return null;
+                case BEST_SOLUTION_CHANGED:
+                    return new BestSolutionStatistic();
+                default:
+                    throw new IllegalStateException("The solverStatisticType (" + this + ") is not implemented");
+            }
+        }
     }
 
 }

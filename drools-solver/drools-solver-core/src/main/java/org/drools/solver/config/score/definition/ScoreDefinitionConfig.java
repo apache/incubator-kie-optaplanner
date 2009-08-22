@@ -66,7 +66,8 @@ public class ScoreDefinitionConfig {
                 case HARD_AND_SOFT:
                     return new HardAndSoftScoreDefinition();
                 default:
-                    throw new IllegalStateException("scoreDefinitionType (" + scoreDefinitionType + ") not implemented");
+                    throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
+                            + ") is not implemented");
             }
         } else {
             return new SimpleScoreDefinition();
@@ -84,7 +85,8 @@ public class ScoreDefinitionConfig {
                 case HARD_AND_SOFT:
                     return new DefaultHardAndSoftConstraintScoreCalculator();
                 default:
-                    throw new IllegalStateException("scoreDefinitionType (" + scoreDefinitionType + ") not implemented");
+                    throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
+                            + ") is not implemented");
             }
         } else {
             return new SimpleScoreCalculator();

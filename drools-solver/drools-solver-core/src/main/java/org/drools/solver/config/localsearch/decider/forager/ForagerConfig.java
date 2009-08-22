@@ -67,7 +67,7 @@ public class ForagerConfig {
                 case FIRST_RANDOMLY_ACCEPTED:
                     return new AcceptedForager(PickEarlyByScore.NONE, true);
                 default:
-                    throw new IllegalStateException("foragerType (" + foragerType + ") not implemented");
+                    throw new IllegalStateException("The foragerType (" + foragerType + ") is not implemented");
             }
         } else {
             return new AcceptedForager(PickEarlyByScore.NONE, false);
