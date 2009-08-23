@@ -27,8 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.drools.solver.config.localsearch.LocalSearchSolverConfig;
 import org.drools.solver.core.Solver;
 import org.drools.solver.core.solution.Solution;
-import org.drools.solver.benchmark.statistic.BestSolutionStatisticListener;
-import org.drools.solver.benchmark.statistic.BestSolutionStatistic;
+import org.drools.solver.benchmark.statistic.BestScoreStatistic;
 import org.drools.solver.benchmark.statistic.SolverStatistic;
 
 /**
@@ -196,6 +195,10 @@ public class SolverBenchmarkSuite {
                 result.setTimeMillesSpend(solver.getTimeMillisSpend());
                 Solution solvedSolution = solver.getBestSolution();
                 result.setScore(solvedSolution.getScore());
+                if (solverStatisticType != SolverStatisticType.NONE) {
+                    SolverStatistic statistic = unsolvedSolutionFileToStatisticMap.get(unsolvedSolutionFile);
+                    statistic.removeListener(solver, solverBenchmark.getName());
+                }
                 writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
             }
             if (solverStatisticType != SolverStatisticType.NONE) {
@@ -269,7 +272,7 @@ public class SolverBenchmarkSuite {
                 case NONE:
                     return null;
                 case BEST_SOLUTION_CHANGED:
-                    return new BestSolutionStatistic();
+                    return new BestScoreStatistic();
                 default:
                     throw new IllegalStateException("The solverStatisticType (" + this + ") is not implemented");
             }

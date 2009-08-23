@@ -22,29 +22,39 @@ import org.apache.commons.io.IOUtils;
 /**
  * @author Geoffrey De Smet
  */
-public class BestSolutionStatistic implements SolverStatistic {
+public class BestScoreStatistic implements SolverStatistic {
 
     // A LinkedHashMap because the order is important
-    private Map<String, BestSolutionStatisticListener> bestSolutionStatisticListenerMap
-            = new LinkedHashMap<String, BestSolutionStatisticListener>();
+    private Map<String, BestScoreStatisticListener> bestScoreStatisticListenerMap
+            = new LinkedHashMap<String, BestScoreStatisticListener>();
 
     public void addListener(Solver solver) {
         addListener(solver, "solver");
     }
 
     public void addListener(Solver solver, String configName) {
-        if (bestSolutionStatisticListenerMap.containsKey(configName)) {
+        if (bestScoreStatisticListenerMap.containsKey(configName)) {
             throw new IllegalArgumentException("Cannot add a listener with the same configName (" + configName
                     + ") twice.");
         }
-        BestSolutionStatisticListener bestSolutionStatisticListener = new BestSolutionStatisticListener();
-        solver.addEventListener(bestSolutionStatisticListener);
-        bestSolutionStatisticListenerMap.put(configName, bestSolutionStatisticListener);
+        BestScoreStatisticListener bestScoreStatisticListener = new BestScoreStatisticListener();
+        solver.addEventListener(bestScoreStatisticListener);
+        bestScoreStatisticListenerMap.put(configName, bestScoreStatisticListener);
+    }
+
+    public void removeListener(Solver solver) {
+        removeListener(solver, "solver");
+    }
+
+    public void removeListener(Solver solver, String configName) {
+        BestScoreStatisticListener bestScoreStatisticListener = bestScoreStatisticListenerMap.get(configName);
+        solver.removeEventListener(bestScoreStatisticListener);
     }
 
     public void writeStatistic(File solverStatisticFilesDirectory, String baseName) {
-        Set<String> configNameSet = bestSolutionStatisticListenerMap.keySet();
-        List<TimeMillisSpendDetail> timeMillisSpendDetailList = extractTimeMillisSpendDetailList();
+        // The configNameSet is ordered because it comes from a LinkedHashMap 
+        Set<String> configNameSet = bestScoreStatisticListenerMap.keySet();
+        List<TimeToBestScoresLine> timeToBestScoresLineList = extractTimeToBestScoresLineList();
         File statisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.csv");
         Writer writer = null;
         try {
@@ -54,11 +64,11 @@ public class BestSolutionStatistic implements SolverStatistic {
                 writer.append(",\"").append(configName.replaceAll("\\\"","\\\"")).append("\"");
             }
             writer.append("\n");
-            for (TimeMillisSpendDetail timeMillisSpendDetail : timeMillisSpendDetailList) {
-                writer.write(Long.toString(timeMillisSpendDetail.getTimeMillisSpend()));
+            for (TimeToBestScoresLine timeToBestScoresLine : timeToBestScoresLineList) {
+                writer.write(Long.toString(timeToBestScoresLine.getTimeMillisSpend()));
                 for (String configName : configNameSet) {
                     writer.append(",");
-                    Score score = timeMillisSpendDetail.getConfigNameToScoreMap().get(configName);
+                    Score score = timeToBestScoresLine.getConfigNameToScoreMap().get(configName);
                     if (score != null) {
                         Integer scoreAlias;
                         if (score instanceof SimpleScore) {
@@ -88,34 +98,34 @@ public class BestSolutionStatistic implements SolverStatistic {
         }
     }
 
-    private List<TimeMillisSpendDetail> extractTimeMillisSpendDetailList() {
-        Map<Long, TimeMillisSpendDetail> timeMillisSpendToDetailMap = new HashMap<Long, TimeMillisSpendDetail>();
-        for (Map.Entry<String, BestSolutionStatisticListener> listenerEntry : bestSolutionStatisticListenerMap.entrySet()) {
+    private List<TimeToBestScoresLine> extractTimeToBestScoresLineList() {
+        Map<Long, TimeToBestScoresLine> timeToBestScoresLineMap = new HashMap<Long, TimeToBestScoresLine>();
+        for (Map.Entry<String, BestScoreStatisticListener> listenerEntry : bestScoreStatisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
-            List<BestSolutionStatisticDetail> statisticDetailList = listenerEntry.getValue()
-                    .getBestSolutionStatisticDetailList();
-            for (BestSolutionStatisticDetail statisticDetail : statisticDetailList) {
-                long timeMillisSpend = statisticDetail.getTimeMillisSpend();
-                TimeMillisSpendDetail detail = timeMillisSpendToDetailMap.get(timeMillisSpend);
-                if (detail == null) {
-                    detail = new TimeMillisSpendDetail(timeMillisSpend);
-                    timeMillisSpendToDetailMap.put(timeMillisSpend, detail);
+            List<BestScoreStatisticPoint> statisticPointList = listenerEntry.getValue()
+                    .getBestScoreStatisticPointList();
+            for (BestScoreStatisticPoint statisticPoint : statisticPointList) {
+                long timeMillisSpend = statisticPoint.getTimeMillisSpend();
+                TimeToBestScoresLine line = timeToBestScoresLineMap.get(timeMillisSpend);
+                if (line == null) {
+                    line = new TimeToBestScoresLine(timeMillisSpend);
+                    timeToBestScoresLineMap.put(timeMillisSpend, line);
                 }
-                detail.getConfigNameToScoreMap().put(configName, statisticDetail.getScore());
+                line.getConfigNameToScoreMap().put(configName, statisticPoint.getScore());
             }
         }
-        List<TimeMillisSpendDetail> timeMillisSpendDetailList
-                = new ArrayList<TimeMillisSpendDetail>(timeMillisSpendToDetailMap.values());
-        Collections.sort(timeMillisSpendDetailList);
-        return timeMillisSpendDetailList;
+        List<TimeToBestScoresLine> timeToBestScoresLineList
+                = new ArrayList<TimeToBestScoresLine>(timeToBestScoresLineMap.values());
+        Collections.sort(timeToBestScoresLineList);
+        return timeToBestScoresLineList;
     }
 
-    protected class TimeMillisSpendDetail implements Comparable<TimeMillisSpendDetail> {
+    protected class TimeToBestScoresLine implements Comparable<TimeToBestScoresLine> {
 
         private long timeMillisSpend;
         private Map<String, Score> configNameToScoreMap;
 
-        public TimeMillisSpendDetail(long timeMillisSpend) {
+        public TimeToBestScoresLine(long timeMillisSpend) {
             this.timeMillisSpend = timeMillisSpend;
             configNameToScoreMap = new HashMap<String, Score>();
         }
@@ -128,7 +138,7 @@ public class BestSolutionStatistic implements SolverStatistic {
             return configNameToScoreMap;
         }
 
-        public int compareTo(TimeMillisSpendDetail other) {
+        public int compareTo(TimeToBestScoresLine other) {
             return timeMillisSpend < other.timeMillisSpend ? -1 : (timeMillisSpend > other.timeMillisSpend ? 1 : 0);
         }
 

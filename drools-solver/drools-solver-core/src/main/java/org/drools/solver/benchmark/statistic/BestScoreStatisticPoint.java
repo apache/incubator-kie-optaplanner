@@ -7,12 +7,12 @@ import org.drools.solver.core.score.Score;
 /**
  * @author Geoffrey De Smet
  */
-public class BestSolutionStatisticDetail {
+public class BestScoreStatisticPoint {
 
     private long timeMillisSpend;
     private Score score;
 
-    public BestSolutionStatisticDetail(BestSolutionChangedEvent event) {
+    public BestScoreStatisticPoint(BestSolutionChangedEvent event) {
         timeMillisSpend = event.getTimeMillisSpend();
         score = event.getNewBestSolution().getScore();
     }

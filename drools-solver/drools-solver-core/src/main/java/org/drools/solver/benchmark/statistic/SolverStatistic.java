@@ -14,6 +14,10 @@ public interface SolverStatistic {
 
     void addListener(Solver solver, String configName);
 
+    void removeListener(Solver solver);
+
+    void removeListener(Solver solver, String configName);
+
     void writeStatistic(File solverStatisticFilesDirectory, String baseName);
 
 }
