@@ -45,25 +45,38 @@ public class BestSolutionStatistic implements SolverStatistic {
     public void writeStatistic(File solverStatisticFilesDirectory, String baseName) {
         Set<String> configNameSet = bestSolutionStatisticListenerMap.keySet();
         List<TimeMillisSpendDetail> timeMillisSpendDetailList = extractTimeMillisSpendDetailList();
-        File statisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.txt");
+        File statisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.csv");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(statisticFile), "utf-8");
+            writer.append("\"TimeMillisSpend\"");
+            for (String configName : configNameSet) {
+                writer.append(",\"").append(configName.replaceAll("\\\"","\\\"")).append("\"");
+            }
+            writer.append("\n");
             for (TimeMillisSpendDetail timeMillisSpendDetail : timeMillisSpendDetailList) {
                 writer.write(Long.toString(timeMillisSpendDetail.getTimeMillisSpend()));
                 for (String configName : configNameSet) {
-                    writer.append(";");
+                    writer.append(",");
                     Score score = timeMillisSpendDetail.getConfigNameToScoreMap().get(configName);
                     if (score != null) {
-                        int scoreAlias;
+                        Integer scoreAlias;
                         if (score instanceof SimpleScore) {
-                            scoreAlias = ((SimpleScore) score).getScore();
+                            SimpleScore simpleScore = (SimpleScore) score;
+                            scoreAlias = simpleScore.getScore();
                         } else if (score instanceof HardAndSoftScore) {
-                            scoreAlias = ((HardAndSoftScore) score).getSoftScore();
+                            HardAndSoftScore hardAndSoftScore = (HardAndSoftScore) score;
+                            if (hardAndSoftScore.getHardScore() == 0) {
+                                scoreAlias = hardAndSoftScore.getSoftScore();
+                            } else {
+                                scoreAlias = null;
+                            }
                         } else {
                             throw new IllegalStateException("Score class (" + score.getClass() + ") not supported.");
                         }
-                        writer.append(Integer.toString(scoreAlias));
+                        if (scoreAlias != null) {
+                            writer.append(scoreAlias.toString());
+                        }
                     }
                 }
                 writer.append("\n");
