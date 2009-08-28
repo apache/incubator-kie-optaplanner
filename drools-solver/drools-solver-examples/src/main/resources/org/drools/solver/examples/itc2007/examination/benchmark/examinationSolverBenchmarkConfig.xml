@@ -3,6 +3,8 @@
     <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
     <solvedSolutionFilesDirectory>local/data/itc2007/examination/solved</solvedSolutionFilesDirectory>
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
+    <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+    <solverStatisticFilesDirectory>local/data/itc2007/examination/statistic</solverStatisticFilesDirectory>
     <!-- solverBenchmarkResultComparator -->
     
     <inheritedUnsolvedSolutionFile>data/itc2007/examination/unsolved/exam_comp_set1.xml</inheritedUnsolvedSolutionFile>
@@ -31,15 +33,13 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
+        <name>relative0.002_solutionTabu500_propertyTabu10</name>
         <localSearchSolver>
             <deciderScoreComparatorFactory>
                 <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
             </deciderScoreComparatorFactory>
             <selector>
                 <selector>
-                    <topSize>10</topSize>
-                </selector>
-                <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
                     <relativeSelection>0.002</relativeSelection>
                 </selector>
@@ -62,31 +62,23 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
+        <name>relative0.004_solutionTabu500_propertyTabu10</name>
         <localSearchSolver>
             <deciderScoreComparatorFactory>
-                <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-                <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
-                <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
-                <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
-                <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
-                <startingHardWeight>1000</startingHardWeight>
+                <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
             </deciderScoreComparatorFactory>
             <selector>
                 <selector>
-                    <topSize>10</topSize>
-                </selector>
-                <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
+                    <relativeSelection>0.004</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
+                    <relativeSelection>0.004</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
+                    <relativeSelection>0.004</relativeSelection>
                 </selector>
             </selector>
             <accepter>
@@ -99,20 +91,12 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
+        <name>relative0.002_solutionTabu500_moveTabu7</name>
         <localSearchSolver>
             <deciderScoreComparatorFactory>
-                <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-                <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
-                <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
-                <successiveNoHardChangeMaximum>10</successiveNoHardChangeMaximum>
-                <successiveNoHardChangeRepetitionMultiplicand>10.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
-                <startingHardWeight>1000</startingHardWeight>
+                <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
             </deciderScoreComparatorFactory>
             <selector>
-                <selector>
-                    <topSize>10</topSize>
-                </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
                     <relativeSelection>0.002</relativeSelection>
@@ -124,6 +108,32 @@
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
                     <relativeSelection>0.002</relativeSelection>
+                </selector>
+            </selector>
+            <accepter>
+                <completeSolutionTabuSize>500</completeSolutionTabuSize>
+                <completeMoveTabuSize>7</completeMoveTabuSize>
+            </accepter>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>noRelative_solutionTabu500_propertyTabu10</name>
+        <localSearchSolver>
+            <deciderScoreComparatorFactory>
+                <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+            </deciderScoreComparatorFactory>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
                 </selector>
             </selector>
             <accepter>
@@ -136,113 +146,27 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
+        <name>simmulatedAnnealing</name>
         <localSearchSolver>
             <deciderScoreComparatorFactory>
-                <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-                <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
-                <successiveNoHardChangeMinimum>4</successiveNoHardChangeMinimum>
-                <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
-                <successiveNoHardChangeRepetitionMultiplicand>10.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
-                <startingHardWeight>1000</startingHardWeight>
+                <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
             </deciderScoreComparatorFactory>
             <selector>
                 <selector>
-                    <topSize>10</topSize>
-                </selector>
-                <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
                 </selector>
             </selector>
             <accepter>
-                <completeSolutionTabuSize>500</completeSolutionTabuSize>
-                <completePropertyTabuSize>10</completePropertyTabuSize>
+                <accepterType>SIMULATED_ANNEALING</accepterType>
             </accepter>
             <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <localSearchSolver>
-            <deciderScoreComparatorFactory>
-                <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-                <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
-                <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
-                <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
-                <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
-                <startingHardWeight>500</startingHardWeight>
-            </deciderScoreComparatorFactory>
-            <selector>
-                <selector>
-                    <topSize>10</topSize>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
-                </selector>
-            </selector>
-            <accepter>
-                <completeSolutionTabuSize>500</completeSolutionTabuSize>
-                <completePropertyTabuSize>10</completePropertyTabuSize>
-            </accepter>
-            <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <localSearchSolver>
-            <deciderScoreComparatorFactory>
-                <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-                <hardScoreActivationThreshold>1</hardScoreActivationThreshold>
-                <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
-                <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
-                <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>
-                <startingHardWeight>1000</startingHardWeight>
-            </deciderScoreComparatorFactory>
-            <selector>
-                <selector>
-                    <topSize>10</topSize>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.solver.examples.itc2007.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
-                </selector>
-            </selector>
-            <accepter>
-                <completeSolutionTabuSize>500</completeSolutionTabuSize>
-                <completePropertyTabuSize>10</completePropertyTabuSize>
-            </accepter>
-            <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
             </forager>
         </localSearchSolver>
     </solverBenchmark>
