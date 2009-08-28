@@ -97,6 +97,12 @@
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
         </dependency>
+
+        <!-- Benchmarker statistic graphs -->
+        <dependency>
+          <groupId>jfree</groupId>
+          <artifactId>jfreechart</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
