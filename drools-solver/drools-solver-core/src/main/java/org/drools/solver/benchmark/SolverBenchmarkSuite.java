@@ -201,13 +201,13 @@ public class SolverBenchmarkSuite {
                 }
                 writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
             }
-            if (solverStatisticType != SolverStatisticType.NONE) {
-                for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
-                    File unsolvedSolutionFile = entry.getKey();
-                    SolverStatistic statistic = entry.getValue();
-                    String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
-                    statistic.writeStatistic(solverStatisticFilesDirectory, baseName);
-                }
+        }
+        if (solverStatisticType != SolverStatisticType.NONE) {
+            for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
+                File unsolvedSolutionFile = entry.getKey();
+                SolverStatistic statistic = entry.getValue();
+                String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
+                statistic.writeStatistic(solverStatisticFilesDirectory, baseName);
             }
         }
         benchmarkingEnded();
