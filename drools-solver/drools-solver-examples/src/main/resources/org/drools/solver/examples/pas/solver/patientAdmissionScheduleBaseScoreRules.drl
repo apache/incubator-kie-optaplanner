@@ -82,9 +82,7 @@ end
 
 // Build-in: Departement's mininumAge and maximumAge constraint
 
-// Build-in: RequiredPatientEquipment constraint
-
-// Not yet applicable: Patient's requiredRoomCapacity constraint
+// Not yet applicable: Patient's requiredMaximumRoomCapacity constraint
 
 // Patient preferredMaximumRoomCapacity
 rule "preferredMaximumRoomCapacity"
@@ -131,6 +129,8 @@ rule "roomSpecialismNotFirstPriority"
                 ConstraintType.NEGATIVE_SOFT, 10 * ($priority - 1) * $bedDesignation.getAdmissionPart().getNightCount(),
                 $bedDesignation));
 end
+
+// Build-in: RequiredPatientEquipment constraint
 
 // PreferredPatientEquipment constraint
 rule "preferredPatientEquipment"
