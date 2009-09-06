@@ -1,10 +1,8 @@
 <projectDescription>
   <name>drools-solver-examples</name>
-  <comment>Drools solver examples ... TODO</comment>
+  <comment>Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
+        This is the drools-solver-examples module which contains the examples which show how to use drools-solver.</comment>
   <projects>
-    <project>drools-api</project>
-    <project>drools-compiler</project>
-    <project>drools-core</project>
     <project>drools-solver-core</project>
   </projects>
   <buildSpec>
