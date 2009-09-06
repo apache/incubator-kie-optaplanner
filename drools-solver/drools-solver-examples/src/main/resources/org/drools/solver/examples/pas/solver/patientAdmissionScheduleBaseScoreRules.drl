@@ -37,8 +37,34 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // In seperate drl or build-in: Two patients in the same bed for a number of nights
 
-// Different genders in the same room when the room doesn't allow it.
-// TODO the official spec gives slighly lower scores in big rooms (capacity >= 3) where this constraint is broken
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+// Gender limitation: Female in a male only room
+rule "femaleInMaleRoom"
+    when
+        $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.MALE_ONLY,
+                patientGender == Gender.FEMALE);
+    then
+        insertLogical(new IntConstraintOccurrence("femaleInMaleRoom",
+                ConstraintType.NEGATIVE_SOFT,
+                50 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+// Gender limitation: Male in a female only room
+rule "maleInFemaleRoom"
+    when
+        $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.FEMALE_ONLY,
+                patientGender == Gender.MALE);
+    then
+        insertLogical(new IntConstraintOccurrence("maleInFemaleRoom",
+                ConstraintType.NEGATIVE_SOFT,
+                50 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+// Gender limitation: Different genders in the same room when the room doesn't allow it
+// TODO the official spec gives lower scores in big rooms (capacity >= 6) with minimum 3 males and 3 females
 rule "differentGenderInSameGenderRoomInSameNight"
     when
         $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
@@ -49,24 +75,16 @@ rule "differentGenderInSameGenderRoomInSameNight"
         $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart);
     then
         insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight",
-                // TODO this would be better for the problem, though the official spec does not do it
-                // ConstraintType.NEGATIVE_HARD,
                 ConstraintType.NEGATIVE_SOFT,
                 50 * $admissionPartConflict.getNightSize(),
                 $leftBedDesignation, $rightBedDesignation));
 end
-
-// Build-in: Room's GenderLimitation male only and female only constraint
 
 // Build-in: Departement's mininumAge and maximumAge constraint
 
 // Build-in: RequiredPatientEquipment constraint
 
 // Not yet applicable: Patient's requiredRoomCapacity constraint
-
-// ############################################################################
-// Soft constraints
-// ############################################################################
 
 // Patient preferredMaximumRoomCapacity
 rule "preferredMaximumRoomCapacity"

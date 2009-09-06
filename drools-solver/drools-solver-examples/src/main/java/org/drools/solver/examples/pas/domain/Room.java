@@ -81,25 +81,25 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
 
     public boolean allowsAdmissionPart(AdmissionPart admissionPart) {
         return department.allowsAdmissionPart(admissionPart)
-            && allowsPatientGender(admissionPart.getPatient())
+//            && allowsPatientGender(admissionPart.getPatient())
             && hasRequiredRoomProperties(admissionPart.getPatient());
     }
 
-    public boolean allowsPatientGender(Patient patient) {
-        switch (genderLimitation) {
-            case ANY_GENDER:
-                return true;
-            case MALE_ONLY:
-                return patient.getGender() == Gender.MALE;
-            case FEMALE_ONLY:
-                return patient.getGender() == Gender.FEMALE;
-            case SAME_GENDER:
-                // scoreRules check this
-                return true;
-            default:
-                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented");
-        }
-    }
+//    public boolean allowsPatientGender(Patient patient) {
+//        switch (genderLimitation) {
+//            case ANY_GENDER:
+//                return true;
+//            case MALE_ONLY:
+//                return patient.getGender() == Gender.MALE;
+//            case FEMALE_ONLY:
+//                return patient.getGender() == Gender.FEMALE;
+//            case SAME_GENDER:
+//                // scoreRules check this
+//                return true;
+//            default:
+//                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented");
+//        }
+//    }
 
     public boolean hasRequiredRoomProperties(Patient patient) {
         for (RequiredPatientEquipment requiredPatientEquipment : patient.getRequiredPatientEquipmentList()) {
