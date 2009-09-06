@@ -406,7 +406,6 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + ") different from admissionPartNightListSizeSum(" + admissionPartNightListSizeSum + ")");
                 }
 
-                List<RequiredPatientEquipment> requiredPatientEquipmentOfPatientList = new ArrayList<RequiredPatientEquipment>(equipmentListSize);
                 String[] requiredPatientEquipmentTokens = splitBySpace(lineTokens[4]);
                 if (requiredPatientEquipmentTokens.length != equipmentListSize) {
                     throw new IllegalArgumentException("Read line (" + line
@@ -414,6 +413,8 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + requiredPatientEquipmentTokens.length
                             + ") as equipmentListSize (" + equipmentListSize + ") after 4th pipeline (|).");
                 }
+                List<RequiredPatientEquipment> requiredPatientEquipmentOfPatientList
+                        = new ArrayList<RequiredPatientEquipment>(equipmentListSize);
                 for (int j = 0; j < requiredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(requiredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
@@ -438,6 +439,8 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + preferredPatientEquipmentTokens.length
                             + ") as equipmentListSize (" + equipmentListSize + ") after 5th pipeline (|).");
                 }
+                List<PreferredPatientEquipment> preferredPatientEquipmentOfPatientList
+                        = new ArrayList<PreferredPatientEquipment>(equipmentListSize);
                 for (int j = 0; j < preferredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(preferredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
@@ -449,6 +452,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             preferredPatientEquipment.setId(preferredPatientEquipmentId);
                             preferredPatientEquipment.setPatient(patient);
                             preferredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                            preferredPatientEquipmentOfPatientList.add(preferredPatientEquipment);
                             preferredPatientEquipmentList.add(preferredPatientEquipment);
                             preferredPatientEquipmentId++;
                         }
@@ -457,6 +461,7 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                             + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
                     }
                 }
+                patient.setPreferredPatientEquipmentList(preferredPatientEquipmentOfPatientList);
             }
             patientAdmissionSchedule.setPatientList(patientList);
             patientAdmissionSchedule.setAdmissionPartList(admissionPartList);

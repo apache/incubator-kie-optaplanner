@@ -16,6 +16,7 @@ public class Patient extends AbstractPersistable implements Comparable<Patient> 
     private Integer preferredMaximumRoomCapacity;
 
     private List<RequiredPatientEquipment> requiredPatientEquipmentList;
+    private List<PreferredPatientEquipment> preferredPatientEquipmentList;
 
     public String getName() {
         return name;
@@ -55,6 +56,14 @@ public class Patient extends AbstractPersistable implements Comparable<Patient> 
 
     public void setRequiredPatientEquipmentList(List<RequiredPatientEquipment> requiredPatientEquipmentList) {
         this.requiredPatientEquipmentList = requiredPatientEquipmentList;
+    }
+
+    public List<PreferredPatientEquipment> getPreferredPatientEquipmentList() {
+        return preferredPatientEquipmentList;
+    }
+
+    public void setPreferredPatientEquipmentList(List<PreferredPatientEquipment> preferredPatientEquipmentList) {
+        this.preferredPatientEquipmentList = preferredPatientEquipmentList;
     }
 
     public int compareTo(Patient other) {

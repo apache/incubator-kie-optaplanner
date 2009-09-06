@@ -121,18 +121,18 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
 
     public int countMissingPreferredRoomProperties(Patient patient) {
         int count = 0;
-//        for (PreferredPatientEquipment preferredPatientEquipment : patient.getPreferredPatientEquipmentList()) {
-//            Equipment preferredEquipment = preferredPatientEquipment.getEquipment();
-//            boolean hasPreferredEquipment = false;
-//            for (RoomEquipment roomEquipment : roomEquipmentList) {
-//                if (roomEquipment.getEquipment().equals(preferredEquipment)) {
-//                    hasPreferredEquipment = true;
-//                }
-//            }
-//            if (!hasPreferredEquipment) {
-//                count += 20;
-//            }
-//        }
+        for (PreferredPatientEquipment preferredPatientEquipment : patient.getPreferredPatientEquipmentList()) {
+            Equipment preferredEquipment = preferredPatientEquipment.getEquipment();
+            boolean hasPreferredEquipment = false;
+            for (RoomEquipment roomEquipment : roomEquipmentList) {
+                if (roomEquipment.getEquipment().equals(preferredEquipment)) {
+                    hasPreferredEquipment = true;
+                }
+            }
+            if (!hasPreferredEquipment) {
+                count += 20;
+            }
+        }
         return count;
     }
 
