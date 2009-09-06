@@ -82,7 +82,8 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
     public int countDisallowedAdmissionPart(AdmissionPart admissionPart) {
         return department.countDisallowedAdmissionPart(admissionPart)
             + countDisallowedPatientGender(admissionPart.getPatient())
-            + countMissingRequiredRoomProperties(admissionPart.getPatient());
+            + countMissingRequiredRoomProperties(admissionPart.getPatient())
+            + countMissingPreferredRoomProperties(admissionPart.getPatient());
     }
 
     public int countDisallowedPatientGender(Patient patient) {
@@ -90,12 +91,12 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
             case ANY_GENDER:
                 return 0;
             case MALE_ONLY:
-                return patient.getGender() == Gender.MALE ? 0 : 1;
+                return patient.getGender() == Gender.MALE ? 0 : 50;
             case FEMALE_ONLY:
-                return patient.getGender() == Gender.FEMALE ? 0 : 1;
+                return patient.getGender() == Gender.FEMALE ? 0 : 50;
             case SAME_GENDER:
                 // scoreRules check this
-                return 0;
+                return 25;
             default:
                 throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented");
         }
@@ -112,9 +113,26 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
                 }
             }
             if (!hasRequiredEquipment) {
-                count++;
+                count += 50;
             }
         }
+        return count;
+    }
+
+    public int countMissingPreferredRoomProperties(Patient patient) {
+        int count = 0;
+//        for (PreferredPatientEquipment preferredPatientEquipment : patient.getPreferredPatientEquipmentList()) {
+//            Equipment preferredEquipment = preferredPatientEquipment.getEquipment();
+//            boolean hasPreferredEquipment = false;
+//            for (RoomEquipment roomEquipment : roomEquipmentList) {
+//                if (roomEquipment.getEquipment().equals(preferredEquipment)) {
+//                    hasPreferredEquipment = true;
+//                }
+//            }
+//            if (!hasPreferredEquipment) {
+//                count += 20;
+//            }
+//        }
         return count;
     }
 

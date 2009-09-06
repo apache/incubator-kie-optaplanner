@@ -161,12 +161,12 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
             BedDesignation bedDesignation = new BedDesignation();
             bedDesignation.setId(admissionPart.getId());
             bedDesignation.setAdmissionPart(admissionPart);
-            int disallowedCount = 0; // TODO disallowedCount should maybe be >= room.getCapacity()
+            int disallowedCount = 0;
             for (Room room : patientAdmissionSchedule.getRoomList()) {
                 disallowedCount += (room.getCapacity() * room.countDisallowedAdmissionPart(admissionPart));
             }
             initializationWeightList.add(new BedDesignationInitializationWeight(bedDesignation,
-                    disallowedCount, bedDesignation.getAdmissionPart().getNightCount()));
+                    bedDesignation.getAdmissionPart().getNightCount(), disallowedCount));
         }
         Collections.sort(initializationWeightList);
         List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(
@@ -180,13 +180,13 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
     private class BedDesignationInitializationWeight implements Comparable<BedDesignationInitializationWeight> {
 
         private BedDesignation bedDesignation;
-        private int disallowedCount;
         private int nightCount;
+        private int disallowedCount;
 
-        private BedDesignationInitializationWeight(BedDesignation bedDesignation, int disallowedCount, int nightCount) {
+        private BedDesignationInitializationWeight(BedDesignation bedDesignation, int nightCount, int disallowedCount) {
             this.bedDesignation = bedDesignation;
-            this.disallowedCount = disallowedCount;
             this.nightCount = nightCount;
+            this.disallowedCount = disallowedCount;
         }
 
         public BedDesignation getBedDesignation() {
@@ -194,13 +194,13 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
         }
 
         public int compareTo(BedDesignationInitializationWeight other) {
-            if (disallowedCount < other.disallowedCount) {
-                return 1;
-            } else if (disallowedCount > other.disallowedCount) {
-                return -1;
-            } else if (nightCount < other.nightCount) {
+            if (nightCount < other.nightCount) {
                 return 1;
             } else if (nightCount > other.nightCount) {
+                return -1;
+            } else if (disallowedCount < other.disallowedCount) {
+                return 1;
+            } else if (disallowedCount > other.disallowedCount) {
                 return -1;
             } else {
                 return 0;

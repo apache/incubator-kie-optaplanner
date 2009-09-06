@@ -15,11 +15,7 @@
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata06.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata07.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata08.xml</inheritedUnsolvedSolutionFile>
-    <!--
-      Testdata 09 cannot be handled by the initializer with checkSameBedInSameNight = true.
-      TODO phasing: first a slow solver with sameBedInSameNight constraint, next a fast solver without it
-      <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata09.xml</inheritedUnsolvedSolutionFile>
-    -->
+    <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata09.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata10.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata11.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata12.xml</inheritedUnsolvedSolutionFile>
