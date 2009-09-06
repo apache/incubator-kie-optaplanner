@@ -441,12 +441,17 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
                 for (int j = 0; j < preferredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(preferredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
-                        PreferredPatientEquipment preferredPatientEquipment = new PreferredPatientEquipment();
-                        preferredPatientEquipment.setId(preferredPatientEquipmentId);
-                        preferredPatientEquipment.setPatient(patient);
-                        preferredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
-                        preferredPatientEquipmentList.add(preferredPatientEquipment);
-                        preferredPatientEquipmentId++;
+                        boolean alreadyRequired = (Integer.parseInt(requiredPatientEquipmentTokens[j]) == 1);
+                        // Official spec: if equipment is required
+                        // then a duplicate preffered constraint should be ignored 
+                        if (!alreadyRequired) {
+                            PreferredPatientEquipment preferredPatientEquipment = new PreferredPatientEquipment();
+                            preferredPatientEquipment.setId(preferredPatientEquipmentId);
+                            preferredPatientEquipment.setPatient(patient);
+                            preferredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                            preferredPatientEquipmentList.add(preferredPatientEquipment);
+                            preferredPatientEquipmentId++;
+                        }
                     } else if (hasEquipment != 0) {
                         throw new IllegalArgumentException("Read line (" + line
                             + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
