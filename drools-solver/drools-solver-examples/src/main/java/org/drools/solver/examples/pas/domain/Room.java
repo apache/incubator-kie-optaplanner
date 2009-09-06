@@ -80,9 +80,10 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
     }
 
     public boolean allowsAdmissionPart(AdmissionPart admissionPart) {
-        return department.allowsAdmissionPart(admissionPart)
+return hasRequiredRoomProperties(admissionPart.getPatient());
+//        return department.allowsAdmissionPart(admissionPart)
 //            && allowsPatientGender(admissionPart.getPatient())
-            && hasRequiredRoomProperties(admissionPart.getPatient());
+//            && hasRequiredRoomProperties(admissionPart.getPatient());
     }
 
 //    public boolean allowsPatientGender(Patient patient) {

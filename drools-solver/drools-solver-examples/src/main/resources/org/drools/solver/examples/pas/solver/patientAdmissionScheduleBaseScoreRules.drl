@@ -44,6 +44,7 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Gender limitation: Female in a male only room
 rule "femaleInMaleRoom"
     when
+        // TODO try optimizing joins with $room : Room(genderLimitation == GenderLimitation.MALE_ONLY)
         $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.MALE_ONLY,
                 patientGender == Gender.FEMALE);
     then
@@ -80,7 +81,27 @@ rule "differentGenderInSameGenderRoomInSameNight"
                 $leftBedDesignation, $rightBedDesignation));
 end
 
-// Build-in: Departement's mininumAge and maximumAge constraint
+// Department's mininumAge and maximumAge constraint
+rule "departmentMiminumAge"
+    when
+        $department : Department(minimumAge != null, $minimumAge : minimumAge);
+        $bedDesignation : BedDesignation(department == $department, patientAge < $minimumAge);
+    then
+        insertLogical(new IntConstraintOccurrence("departmentMiminumAge",
+                ConstraintType.NEGATIVE_SOFT,
+                100 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
+rule "departmentMaximumAge"
+    when
+        $department : Department(maximumAge != null, $maximumAge : maximumAge);
+        $bedDesignation : BedDesignation(department == $department, patientAge > $maximumAge);
+    then
+        insertLogical(new IntConstraintOccurrence("departmentMaximumAge",
+                ConstraintType.NEGATIVE_SOFT,
+                100 * $bedDesignation.getAdmissionPartNightCount(),
+                $bedDesignation));
+end
 
 // Not yet applicable: Patient's requiredMaximumRoomCapacity constraint
 
