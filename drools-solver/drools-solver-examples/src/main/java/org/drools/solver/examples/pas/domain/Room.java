@@ -79,45 +79,6 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
         return department + "_" + name;
     }
 
-    public boolean allowsAdmissionPart(AdmissionPart admissionPart) {
-return hasRequiredRoomProperties(admissionPart.getPatient());
-//        return department.allowsAdmissionPart(admissionPart)
-//            && allowsPatientGender(admissionPart.getPatient())
-//            && hasRequiredRoomProperties(admissionPart.getPatient());
-    }
-
-//    public boolean allowsPatientGender(Patient patient) {
-//        switch (genderLimitation) {
-//            case ANY_GENDER:
-//                return true;
-//            case MALE_ONLY:
-//                return patient.getGender() == Gender.MALE;
-//            case FEMALE_ONLY:
-//                return patient.getGender() == Gender.FEMALE;
-//            case SAME_GENDER:
-//                // scoreRules check this
-//                return true;
-//            default:
-//                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented");
-//        }
-//    }
-
-    public boolean hasRequiredRoomProperties(Patient patient) {
-        for (RequiredPatientEquipment requiredPatientEquipment : patient.getRequiredPatientEquipmentList()) {
-            Equipment requiredEquipment = requiredPatientEquipment.getEquipment();
-            boolean hasRequiredEquipment = false;
-            for (RoomEquipment roomEquipment : roomEquipmentList) {
-                if (roomEquipment.getEquipment().equals(requiredEquipment)) {
-                    hasRequiredEquipment = true;
-                }
-            }
-            if (!hasRequiredEquipment) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public int countDisallowedAdmissionPart(AdmissionPart admissionPart) {
         return department.countDisallowedAdmissionPart(admissionPart)
             + countDisallowedPatientGender(admissionPart.getPatient())

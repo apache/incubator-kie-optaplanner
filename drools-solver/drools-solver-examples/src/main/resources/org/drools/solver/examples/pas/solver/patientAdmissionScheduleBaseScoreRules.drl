@@ -81,7 +81,7 @@ rule "differentGenderInSameGenderRoomInSameNight"
                 $leftBedDesignation, $rightBedDesignation));
 end
 
-// Department's mininumAge and maximumAge constraint
+// Department's mininumAge constraint
 rule "departmentMiminumAge"
     when
         $department : Department(minimumAge != null, $minimumAge : minimumAge);
@@ -92,6 +92,7 @@ rule "departmentMiminumAge"
                 100 * $bedDesignation.getAdmissionPartNightCount(),
                 $bedDesignation));
 end
+// Department's maximumAge constraint
 rule "departmentMaximumAge"
     when
         $department : Department(maximumAge != null, $maximumAge : maximumAge);
@@ -151,7 +152,17 @@ rule "roomSpecialismNotFirstPriority"
                 $bedDesignation));
 end
 
-// Build-in: RequiredPatientEquipment constraint
+// RequiredPatientEquipment constraint
+rule "requiredPatientEquipment"
+    when
+        $requiredPatientEquipment : RequiredPatientEquipment($patient : patient, $equipment : equipment);
+        $bedDesignation : BedDesignation(patient == $patient, $room : room);
+        not RoomEquipment(room == $room, equipment == $equipment);
+    then
+        insertLogical(new IntConstraintOccurrence("requiredPatientEquipment",
+                ConstraintType.NEGATIVE_SOFT, 50 * $bedDesignation.getAdmissionPart().getNightCount(),
+                $bedDesignation, $requiredPatientEquipment));
+end
 
 // PreferredPatientEquipment constraint
 rule "preferredPatientEquipment"

@@ -27,9 +27,7 @@ public class BedDesignationSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(leftBedDesignation.getBed(), rightBedDesignation.getBed())
-                && rightBedDesignation.getBed().allowsAdmissionPart(leftBedDesignation.getAdmissionPart())
-                && leftBedDesignation.getBed().allowsAdmissionPart(rightBedDesignation.getAdmissionPart());
+        return !ObjectUtils.equals(leftBedDesignation.getBed(), rightBedDesignation.getBed());
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {

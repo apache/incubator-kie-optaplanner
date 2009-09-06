@@ -70,9 +70,6 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
             // TODO by reordening the beds so index 0 has a different table then index 1 and so on,
             // this will probably be faster because perfectMatch will be true sooner
             for (Bed bed : bedListInPriority) {
-                if (!bed.allowsAdmissionPart(bedDesignation.getAdmissionPart())) {
-                    continue;
-                }
                 if (checkSameBedInSameNight) {
                     boolean taken = false;
                     Set<Integer> takenNightIndexSet = bedToTakenNightIndexSetMap.get(bed);
@@ -164,7 +161,7 @@ System.out.println("Trunk is bugged " + ++stillRunningCounter +"/" + bedDesignat
             BedDesignation bedDesignation = new BedDesignation();
             bedDesignation.setId(admissionPart.getId());
             bedDesignation.setAdmissionPart(admissionPart);
-            int disallowedCount = 0;
+            int disallowedCount = 0; // TODO disallowedCount should maybe be >= room.getCapacity()
             for (Room room : patientAdmissionSchedule.getRoomList()) {
                 disallowedCount += (room.getCapacity() * room.countDisallowedAdmissionPart(admissionPart));
             }

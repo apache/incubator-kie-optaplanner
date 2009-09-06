@@ -22,9 +22,7 @@ public class BedChangeMoveFactory extends CachedMoveFactory {
         List<Move> moveList = new ArrayList<Move>();
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
             for (Bed bed : bedList) {
-                if (bed.allowsAdmissionPart(bedDesignation.getAdmissionPart())) {
-                    moveList.add(new BedChangeMove(bedDesignation, bed));
-                }
+                moveList.add(new BedChangeMove(bedDesignation, bed));
             }
         }
         return moveList;

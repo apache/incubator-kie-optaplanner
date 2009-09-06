@@ -25,8 +25,6 @@ import org.apache.commons.lang.builder.CompareToBuilder;
  */
 public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFactory {
 
-    private boolean checkBedAllowsAdmissionPart = true;
-
     public List<Move> createMoveList(Solution solution) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
 
@@ -93,8 +91,6 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
                         otherBed = leftBed;
                         rightMinimumLastNightIndex = lastNightIndex;
                     }
-                    boolean allBedsAllowAdmissionPart = otherBed.allowsAdmissionPart(
-                            pillarPartBedDesignation.getAdmissionPart());
                     moveListByPillarPartDuo.add(new BedChangeMove(pillarPartBedDesignation, otherBed));
                     // For every BedDesignation in that pillar part duo
                     while (lowestIt.hasNextWithMaximumFirstNightIndexes(
@@ -108,13 +104,9 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
                             otherBed = leftBed;
                             rightMinimumLastNightIndex = Math.max(rightMinimumLastNightIndex, lastNightIndex);
                         }
-                        allBedsAllowAdmissionPart = allBedsAllowAdmissionPart
-                                && otherBed.allowsAdmissionPart(pillarPartBedDesignation.getAdmissionPart());
                         moveListByPillarPartDuo.add(new BedChangeMove(pillarPartBedDesignation, otherBed));
                     }
-                    if (allBedsAllowAdmissionPart || !checkBedAllowsAdmissionPart) {
-                        moveList.add(new CompositeMove(moveListByPillarPartDuo));
-                    }
+                    moveList.add(new CompositeMove(moveListByPillarPartDuo));
                 }
             }
         }
