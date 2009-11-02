@@ -43,23 +43,6 @@
 
     <!-- Uncomment to depend on a stable release of drools-api, drools-core and drools-compiler -->
     <dependencyManagement>
-        <dependencies><!-- comment these out to reproduce JBRULES-2145 -->
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-api</artifactId>
-                <version>5.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-core</artifactId>
-                <version>5.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-compiler</artifactId>
-                <version>5.0.1</version>
-            </dependency>
-        </dependencies>
     </dependencyManagement>
 
 </project>
