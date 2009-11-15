@@ -11,7 +11,7 @@
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         </scoreDefinition>
         <termination>
-            <!--<maximumHouresSpend>2</maximumHouresSpend>-->
+            <!--<maximumHoursSpend>2</maximumHoursSpend>-->
             <maximumMinutesSpend>10</maximumMinutesSpend>
         </termination>
         <selector>

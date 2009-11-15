@@ -76,8 +76,8 @@ After:
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
 
-From 5.0.1 to 5.1.0
--------------------
+From 5.0.1 to 5.1.0.m1
+----------------------
 
 The method Solver.cancel() has been renamed to Solver.terminateEarly()
 because it does not undo the solving but terminates it early and there's a best solution.
@@ -185,3 +185,13 @@ Before:
      solver.getBestScore()
 After:
      solver.getBestSolution().getScore()
+
+
+From 5.1.0.m1 to 5.1.0
+----------------------
+
+TerminationConfig's maximumHouresSpend renamed to maximumHoursSpend
+Before:
+     <maximumHouresSpend>2</maximumHouresSpend>
+After:
+     <maximumHoursSpend>2</maximumHoursSpend>

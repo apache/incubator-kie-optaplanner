@@ -5,7 +5,7 @@
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
     <termination>
-        <maximumHouresSpend>2</maximumHouresSpend>
+        <maximumHoursSpend>2</maximumHoursSpend>
     </termination>
     <selector>
         <moveFactoryClass>org.drools.solver.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveFactoryClass>

@@ -29,7 +29,7 @@ public class TerminationConfig {
     private Long maximumTimeMillisSpend = null;
     private Long maximumSecondsSpend = null;
     private Long maximumMinutesSpend = null;
-    private Long maximumHouresSpend = null;
+    private Long maximumHoursSpend = null;
     private String scoreAttained = null;
     private Integer maximumUnimprovedStepCount = null;
 
@@ -89,12 +89,12 @@ public class TerminationConfig {
         this.maximumMinutesSpend = maximumMinutesSpend;
     }
 
-    public Long getMaximumHouresSpend() {
-        return maximumHouresSpend;
+    public Long getMaximumHoursSpend() {
+        return maximumHoursSpend;
     }
 
-    public void setMaximumHouresSpend(Long maximumHouresSpend) {
-        this.maximumHouresSpend = maximumHouresSpend;
+    public void setMaximumHoursSpend(Long maximumHoursSpend) {
+        this.maximumHoursSpend = maximumHoursSpend;
     }
 
     public String getScoreAttained() {
@@ -153,9 +153,9 @@ public class TerminationConfig {
             termination.setMaximumTimeMillisSpend(maximumMinutesSpend * 60000L);
             terminationList.add(termination);
         }
-        if (maximumHouresSpend != null) {
+        if (maximumHoursSpend != null) {
             TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
-            termination.setMaximumTimeMillisSpend(maximumHouresSpend * 3600000L);
+            termination.setMaximumTimeMillisSpend(maximumHoursSpend * 3600000L);
             terminationList.add(termination);
         }
         if (scoreAttained != null) {
@@ -212,8 +212,8 @@ public class TerminationConfig {
         if (maximumMinutesSpend == null) {
             maximumMinutesSpend = inheritedConfig.getMaximumMinutesSpend();
         }
-        if (maximumHouresSpend == null) {
-            maximumHouresSpend = inheritedConfig.getMaximumHouresSpend();
+        if (maximumHoursSpend == null) {
+            maximumHoursSpend = inheritedConfig.getMaximumHoursSpend();
         }
         if (scoreAttained == null) {
             scoreAttained = inheritedConfig.getScoreAttained();
