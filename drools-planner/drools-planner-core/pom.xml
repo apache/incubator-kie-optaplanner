@@ -4,17 +4,20 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-      <groupId>org.drools.solver</groupId>
-      <artifactId>drools-solver</artifactId>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner</artifactId>
       <version>5.1.0.SNAPSHOT</version>
     </parent>
 
-    <artifactId>drools-solver-core</artifactId>
+    <artifactId>drools-planner-core</artifactId>
     <packaging>jar</packaging>
-    <name>Drools :: Solver core</name>
+    <name>Drools :: Planner core</name>
     <description>
-        Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
-        This is the drools-solver-core module which contains the search algorithms.
+        Drools Planner optimizes automated planning
+        by combining metaheuristic search algorithms
+        with rule engine powered score calculation.
+        This is the drools-planner-core module
+        which contains metaheuristic algorithms.
     </description>
 
     <dependencies>

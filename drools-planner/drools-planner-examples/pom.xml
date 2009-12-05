@@ -4,17 +4,20 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.drools.solver</groupId>
-        <artifactId>drools-solver</artifactId>
+        <groupId>org.drools.planner</groupId>
+        <artifactId>drools-planner</artifactId>
         <version>5.1.0.SNAPSHOT</version>
     </parent>
 
-    <artifactId>drools-solver-examples</artifactId>
+    <artifactId>drools-planner-examples</artifactId>
     <packaging>jar</packaging>
-    <name>Drools :: Solver examples</name>
+    <name>Drools :: Planner examples</name>
     <description>
-        Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
-        This is the drools-solver-examples module which contains the examples which show how to use drools-solver.
+        Drools Planner optimizes automated planning
+        by combining metaheuristic search algorithms
+        with rule engine powered score calculation.
+        This is the drools-planner-examples module
+        which contains examples on how to use Drools Planner.
     </description>
 
     <build>
@@ -60,8 +63,8 @@
     <dependencies>
         <!-- Internal dependencies -->
         <dependency>
-            <groupId>org.drools.solver</groupId>
-            <artifactId>drools-solver-core</artifactId>
+            <groupId>org.drools.planner</groupId>
+            <artifactId>drools-planner-core</artifactId>
         </dependency>
 
         <!-- External dependencies -->
