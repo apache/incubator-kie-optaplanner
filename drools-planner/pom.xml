@@ -9,13 +9,15 @@
         <version>5.1.0.SNAPSHOT</version>
     </parent>
 
-    <groupId>org.drools.solver</groupId>
-    <artifactId>drools-solver</artifactId>
+    <groupId>org.drools.planner</groupId>
+    <artifactId>drools-planner</artifactId>
     <packaging>pom</packaging>
-    <name>Drools :: Solver parent</name>
+    <name>Drools :: Planner parent</name>
     <description>
-        Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
-        This is the drools-solver parent pom.
+        Drools Planner optimizes automated planning
+        by combining metaheuristic search algorithms
+        with rule engine powered score calculation.
+        This is the drools-planner parent pom.
     </description>
 
     <build>
@@ -37,8 +39,8 @@
     </build>
 
     <modules>
-        <module>drools-solver-core</module>
-        <module>drools-solver-examples</module>
+        <module>drools-planner-core</module>
+        <module>drools-planner-examples</module>
     </modules>
 
     <!-- Uncomment to depend on a stable release of drools-api, drools-core and drools-compiler -->
