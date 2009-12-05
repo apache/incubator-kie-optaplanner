@@ -1,7 +1,7 @@
 <projectDescription>
-  <name>drools-solver-core</name>
+  <name>drools-planner-core</name>
   <comment>Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
-        This is the drools-solver-core module which contains the search algorithms.</comment>
+        This is the drools-planner-core module which contains the search algorithms.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>

@@ -13,7 +13,7 @@
   <classpathentry kind="var" path="M2_REPO/org/drools/drools-api/5.0.1/drools-api-5.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.0.1/drools-compiler-5.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.0.1/drools-core-5.0.1.jar"/>
-  <classpathentry kind="src" path="/drools-solver-core"/>
+  <classpathentry kind="src" path="/drools-planner-core"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/janino/janino/2.5.15/janino-2.5.15.jar"/>
