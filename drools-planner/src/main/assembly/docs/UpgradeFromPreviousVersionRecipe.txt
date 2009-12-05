@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Drools solver isn't always backwards compatible at this time.
+Drools Planner isn't always backwards compatible at this time.
 This file describes how can you upgrade from earlier versions to the latest.
 
 From 5.0.0-m2 to 5.0.0
@@ -78,6 +78,26 @@ After:
 
 From 5.0.1 to 5.1.0.m1
 ----------------------
+
+In 5.1.0.m2, Drools Solver has been renamed to Drools Planner,
+but because of that you will want to do this first:
+The maven dependency has been renamed to drools-planner-core.
+Before in pom.xml:
+    <dependency>
+        <groupId>org.drools.solver</groupId>
+        <artifactId>drools-solver-core</artifactId>
+        ...
+    </dependency>
+After in pom.xml:
+    <dependency>
+        <groupId>org.drools.planner</groupId>
+        <artifactId>drools-planner-core</artifactId>
+        ...
+    </dependency>
+And resync your IDE (IntelliJ, Eclipse, Netbeans) from the pom.xml files.
+If you're still using ANT, replace drools-solver-core-?.jar with drools-planner-core-?.jar
+and adjust your ANT script and your IDE's classpath accordingly.
+
 
 The method Solver.cancel() has been renamed to Solver.terminateEarly()
 because it does not undo the solving but terminates it early and there's a best solution.
@@ -187,8 +207,28 @@ After:
      solver.getBestSolution().getScore()
 
 
-From 5.1.0.m1 to 5.1.0
-----------------------
+From 5.1.0.m1 to 5.1.0.m2
+-------------------------
+
+Drools Solver has been renamed to Drools Planner.
+
+The maven dependency has been renamed to drools-planner-core.
+Before in pom.xml:
+    <dependency>
+        <groupId>org.drools.solver</groupId>
+        <artifactId>drools-solver-core</artifactId>
+        ...
+    </dependency>
+After in pom.xml:
+    <dependency>
+        <groupId>org.drools.planner</groupId>
+        <artifactId>drools-planner-core</artifactId>
+        ...
+    </dependency>
+And resync your IDE (IntelliJ, Eclipse, Netbeans) from the pom.xml files.
+If you're still using ANT, replace drools-solver-core-?.jar with drools-planner-core-?.jar
+and adjust your ANT script and your IDE's classpath accordingly.
+
 
 TerminationConfig's maximumHouresSpend renamed to maximumHoursSpend
 Before:
