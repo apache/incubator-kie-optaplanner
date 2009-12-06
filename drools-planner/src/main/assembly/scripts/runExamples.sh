@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mainJar=lib/drools-solver-examples-${project.version}.jar
+mainJar=lib/drools-planner-examples-${project.version}.jar
 mainClass=org.drools.solver.examples.app.ExamplesApp
 
 echo "Usage: ./runExamples.sh"

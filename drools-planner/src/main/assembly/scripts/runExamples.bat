@@ -1,4 +1,4 @@
-set mainJar=lib\drools-solver-examples-${project.version}.jar
+set mainJar=lib\drools-planner-examples-${project.version}.jar
 set mainClass=org.drools.solver.examples.app.ExamplesApp
 
 echo "Usage: runExamples.bat"

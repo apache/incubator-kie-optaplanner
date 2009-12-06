@@ -19,11 +19,11 @@
             <outputDirectory/>
         </fileSet>
         <fileSet>
-            <directory>drools-solver-examples/data/itc2007/examination/input</directory>
+            <directory>drools-planner-examples/data/itc2007/examination/input</directory>
             <outputDirectory>data/itc2007/examination/input</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>drools-solver-examples/data/itc2007/examination/unsolved</directory>
+            <directory>drools-planner-examples/data/itc2007/examination/unsolved</directory>
             <outputDirectory>data/itc2007/examination/unsolved</outputDirectory>
         </fileSet>
         <fileSet>
@@ -39,8 +39,8 @@
     <moduleSets>
         <moduleSet>
             <includes>
-                <include>org.drools.solver:drools-solver-core</include>
-                <include>org.drools.solver:drools-solver-examples</include>
+                <include>org.drools.planner:drools-planner-core</include>
+                <include>org.drools.planner:drools-planner-examples</include>
             </includes>
             <binaries>
                 <outputDirectory>lib</outputDirectory>
