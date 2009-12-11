@@ -1,2125 +1,2125 @@
-<org.drools.solver.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule id="1">
+<org.drools.planner.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule id="1">
   <id>0</id>
   <name>Fis0506-1</name>
   <teacherList id="2">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="3">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="3">
       <id>20</id>
       <code>t020</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="4">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="4">
       <id>2</id>
       <code>t002</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="5">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="5">
       <id>21</id>
       <code>t021</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="6">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="6">
       <id>3</id>
       <code>t003</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="7">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="7">
       <id>0</id>
       <code>t000</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="8">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="8">
       <id>1</id>
       <code>t001</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="9">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="9">
       <id>10</id>
       <code>t010</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="10">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="10">
       <id>11</id>
       <code>t011</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="11">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="11">
       <id>12</id>
       <code>t012</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="12">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="12">
       <id>22</id>
       <code>t022</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="13">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="13">
       <id>13</id>
       <code>t013</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="14">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="14">
       <id>23</id>
       <code>t023</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="15">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="15">
       <id>14</id>
       <code>t014</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="16">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="16">
       <id>18</id>
       <code>t018</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="17">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="17">
       <id>5</id>
       <code>t005</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="18">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="18">
       <id>17</id>
       <code>t017</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="19">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="19">
       <id>4</id>
       <code>t004</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="20">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="20">
       <id>16</id>
       <code>t016</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="21">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="21">
       <id>7</id>
       <code>t007</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="22">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="22">
       <id>15</id>
       <code>t015</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="23">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="23">
       <id>6</id>
       <code>t006</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="24">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="24">
       <id>9</id>
       <code>t009</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="25">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="25">
       <id>8</id>
       <code>t008</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher id="26">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher id="26">
       <id>19</id>
       <code>t019</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Teacher>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Teacher>
   </teacherList>
   <curriculumList id="27">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="28">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="28">
       <id>0</id>
       <code>q000</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="29">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="29">
       <id>1</id>
       <code>q001</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="30">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="30">
       <id>2</id>
       <code>q002</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="31">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="31">
       <id>3</id>
       <code>q003</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="32">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="32">
       <id>4</id>
       <code>q004</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="33">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="33">
       <id>5</id>
       <code>q005</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="34">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="34">
       <id>6</id>
       <code>q006</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="35">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="35">
       <id>7</id>
       <code>q007</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="36">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="36">
       <id>8</id>
       <code>q008</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="37">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="37">
       <id>9</id>
       <code>q009</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="38">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="38">
       <id>10</id>
       <code>q010</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="39">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="39">
       <id>11</id>
       <code>q011</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="40">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="40">
       <id>12</id>
       <code>q012</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum id="41">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum id="41">
       <id>13</id>
       <code>q013</code>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum>
   </curriculumList>
   <courseList id="42">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="43">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="43">
       <id>0</id>
       <code>c0001</code>
       <teacher reference="7"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="44">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="28"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="30"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="28"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="30"/>
       </curriculumList>
       <studentSize>130</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="45">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="45">
       <id>1</id>
       <code>c0002</code>
       <teacher reference="8"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="46">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="28"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="28"/>
       </curriculumList>
       <studentSize>75</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="47">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="47">
       <id>2</id>
       <code>c0004</code>
       <teacher reference="4"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
       <curriculumList id="48">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="28"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="40"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="28"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="40"/>
       </curriculumList>
       <studentSize>117</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="49">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="49">
       <id>3</id>
       <code>c0005</code>
       <teacher reference="6"/>
       <lectureSize>3</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
       <curriculumList id="50">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="28"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="28"/>
       </curriculumList>
       <studentSize>75</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="51">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="51">
       <id>4</id>
       <code>c0014</code>
       <teacher reference="19"/>
       <lectureSize>1</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumList id="52">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="29"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="29"/>
       </curriculumList>
       <studentSize>65</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="53">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="53">
       <id>5</id>
       <code>c0015</code>
       <teacher reference="17"/>
       <lectureSize>8</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
       <curriculumList id="54">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="29"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="29"/>
       </curriculumList>
       <studentSize>65</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="55">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="55">
       <id>6</id>
       <code>c0016</code>
       <teacher reference="23"/>
       <lectureSize>7</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
       <curriculumList id="56">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="29"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="29"/>
       </curriculumList>
       <studentSize>65</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="57">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="57">
       <id>7</id>
       <code>c0017</code>
       <teacher reference="21"/>
       <lectureSize>2</lectureSize>
       <minWorkingDaySize>2</minWorkingDaySize>
       <curriculumList id="58">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="29"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="29"/>
       </curriculumList>
       <studentSize>65</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="59">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="59">
       <id>8</id>
       <code>c0024</code>
       <teacher reference="25"/>
       <lectureSize>4</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
       <curriculumList id="60">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="30"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="30"/>
       </curriculumList>
       <studentSize>55</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="61">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="61">
       <id>9</id>
       <code>c0025</code>
       <teacher reference="24"/>
       <lectureSize>8</lectureSize>
       <minWorkingDaySize>3</minWorkingDaySize>
       <curriculumList id="62">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="30"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="30"/>
       </curriculumList>
       <studentSize>55</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="63">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="63">
       <id>10</id>
       <code>c0078</code>
       <teacher reference="9"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="64">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="30"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="30"/>
       </curriculumList>
       <studentSize>55</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="65">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="65">
       <id>11</id>
       <code>c0030</code>
       <teacher reference="10"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="66">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="31"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="31"/>
       </curriculumList>
       <studentSize>20</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="67">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="67">
       <id>12</id>
       <code>c0031</code>
       <teacher reference="11"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="68">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="32"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="32"/>
       </curriculumList>
       <studentSize>11</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="69">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="69">
       <id>13</id>
       <code>c0032</code>
       <teacher reference="13"/>
       <lectureSize>1</lectureSize>
       <minWorkingDaySize>1</minWorkingDaySize>
       <curriculumList id="70">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="31"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="32"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="31"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="32"/>
       </curriculumList>
       <studentSize>31</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="71">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="71">
       <id>14</id>
       <code>c0033</code>
       <teacher reference="15"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="72">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="31"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="32"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="31"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="32"/>
       </curriculumList>
       <studentSize>31</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="73">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="73">
       <id>15</id>
       <code>c0057</code>
       <teacher reference="22"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="74">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="34"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="34"/>
       </curriculumList>
       <studentSize>2</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="75">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="75">
       <id>16</id>
       <code>c0058</code>
       <teacher reference="20"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="76">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="38"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="38"/>
       </curriculumList>
       <studentSize>2</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="77">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="77">
       <id>17</id>
       <code>c0059</code>
       <teacher reference="18"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="78">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="34"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="36"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="34"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="36"/>
       </curriculumList>
       <studentSize>7</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="79">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="79">
       <id>18</id>
       <code>c0061</code>
       <teacher reference="16"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="80">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="35"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="35"/>
       </curriculumList>
       <studentSize>6</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="81">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="81">
       <id>19</id>
       <code>c0062</code>
       <teacher reference="26"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="82">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="35"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="41"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="35"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="41"/>
       </curriculumList>
       <studentSize>10</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="83">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="83">
       <id>20</id>
       <code>c0063</code>
       <teacher reference="3"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="84">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="37"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="38"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="37"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="38"/>
       </curriculumList>
       <studentSize>8</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="85">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="85">
       <id>21</id>
       <code>c0064</code>
       <teacher reference="3"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="86">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="37"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="37"/>
       </curriculumList>
       <studentSize>6</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="87">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="87">
       <id>22</id>
       <code>c0065</code>
       <teacher reference="5"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="88">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="36"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="36"/>
       </curriculumList>
       <studentSize>5</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="89">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="89">
       <id>23</id>
       <code>c0066</code>
       <teacher reference="25"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="90">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="33"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="37"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="41"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="33"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="37"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="41"/>
       </curriculumList>
       <studentSize>14</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="91">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="91">
       <id>24</id>
       <code>c0067</code>
       <teacher reference="12"/>
       <lectureSize>5</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="92">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="39"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="39"/>
       </curriculumList>
       <studentSize>7</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="93">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="93">
       <id>25</id>
       <code>c0068</code>
       <teacher reference="14"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="94">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="38"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="39"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="38"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="39"/>
       </curriculumList>
       <studentSize>9</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="95">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="95">
       <id>26</id>
       <code>c0069</code>
       <teacher reference="21"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="96">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="39"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="39"/>
       </curriculumList>
       <studentSize>7</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="97">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="97">
       <id>27</id>
       <code>c0070</code>
       <teacher reference="4"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="98">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="33"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="33"/>
       </curriculumList>
       <studentSize>4</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="99">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="99">
       <id>28</id>
       <code>c0071</code>
       <teacher reference="8"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="100">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="37"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="41"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="37"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="41"/>
       </curriculumList>
       <studentSize>10</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Course id="101">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Course id="101">
       <id>29</id>
       <code>c0072</code>
       <teacher reference="6"/>
       <lectureSize>6</lectureSize>
       <minWorkingDaySize>4</minWorkingDaySize>
       <curriculumList id="102">
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="33"/>
-        <org.drools.solver.examples.itc2007.curriculumcourse.domain.Curriculum reference="36"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="33"/>
+        <org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum reference="36"/>
       </curriculumList>
       <studentSize>9</studentSize>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Course>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Course>
   </courseList>
   <dayList id="103">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="104">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Day id="104">
       <id>0</id>
       <dayIndex>0</dayIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="105">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Day>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Day id="105">
       <id>1</id>
       <dayIndex>1</dayIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="106">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Day>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Day id="106">
       <id>2</id>
       <dayIndex>2</dayIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="107">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Day>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Day id="107">
       <id>3</id>
       <dayIndex>3</dayIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Day id="108">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Day>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Day id="108">
       <id>4</id>
       <dayIndex>4</dayIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Day>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Day>
   </dayList>
   <timeslotList id="109">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="110">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot id="110">
       <id>0</id>
       <timeslotIndex>0</timeslotIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="111">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot id="111">
       <id>1</id>
       <timeslotIndex>1</timeslotIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="112">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot id="112">
       <id>2</id>
       <timeslotIndex>2</timeslotIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="113">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot id="113">
       <id>3</id>
       <timeslotIndex>3</timeslotIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="114">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot id="114">
       <id>4</id>
       <timeslotIndex>4</timeslotIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot id="115">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot id="115">
       <id>5</id>
       <timeslotIndex>5</timeslotIndex>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Timeslot>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Timeslot>
   </timeslotList>
   <periodList id="116">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="117">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="117">
       <id>0</id>
       <day reference="104"/>
       <timeslot reference="110"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="118">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="118">
       <id>1</id>
       <day reference="104"/>
       <timeslot reference="111"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="119">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="119">
       <id>2</id>
       <day reference="104"/>
       <timeslot reference="112"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="120">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="120">
       <id>3</id>
       <day reference="104"/>
       <timeslot reference="113"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="121">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="121">
       <id>4</id>
       <day reference="104"/>
       <timeslot reference="114"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="122">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="122">
       <id>5</id>
       <day reference="104"/>
       <timeslot reference="115"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="123">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="123">
       <id>6</id>
       <day reference="105"/>
       <timeslot reference="110"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="124">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="124">
       <id>7</id>
       <day reference="105"/>
       <timeslot reference="111"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="125">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="125">
       <id>8</id>
       <day reference="105"/>
       <timeslot reference="112"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="126">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="126">
       <id>9</id>
       <day reference="105"/>
       <timeslot reference="113"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="127">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="127">
       <id>10</id>
       <day reference="105"/>
       <timeslot reference="114"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="128">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="128">
       <id>11</id>
       <day reference="105"/>
       <timeslot reference="115"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="129">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="129">
       <id>12</id>
       <day reference="106"/>
       <timeslot reference="110"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="130">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="130">
       <id>13</id>
       <day reference="106"/>
       <timeslot reference="111"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="131">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="131">
       <id>14</id>
       <day reference="106"/>
       <timeslot reference="112"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="132">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="132">
       <id>15</id>
       <day reference="106"/>
       <timeslot reference="113"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="133">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="133">
       <id>16</id>
       <day reference="106"/>
       <timeslot reference="114"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="134">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="134">
       <id>17</id>
       <day reference="106"/>
       <timeslot reference="115"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="135">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="135">
       <id>18</id>
       <day reference="107"/>
       <timeslot reference="110"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="136">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="136">
       <id>19</id>
       <day reference="107"/>
       <timeslot reference="111"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="137">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="137">
       <id>20</id>
       <day reference="107"/>
       <timeslot reference="112"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="138">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="138">
       <id>21</id>
       <day reference="107"/>
       <timeslot reference="113"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="139">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="139">
       <id>22</id>
       <day reference="107"/>
       <timeslot reference="114"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="140">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="140">
       <id>23</id>
       <day reference="107"/>
       <timeslot reference="115"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="141">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="141">
       <id>24</id>
       <day reference="108"/>
       <timeslot reference="110"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="142">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="142">
       <id>25</id>
       <day reference="108"/>
       <timeslot reference="111"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="143">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="143">
       <id>26</id>
       <day reference="108"/>
       <timeslot reference="112"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="144">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="144">
       <id>27</id>
       <day reference="108"/>
       <timeslot reference="113"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="145">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="145">
       <id>28</id>
       <day reference="108"/>
       <timeslot reference="114"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Period id="146">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Period id="146">
       <id>29</id>
       <day reference="108"/>
       <timeslot reference="115"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Period>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Period>
   </periodList>
   <roomList id="147">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="148">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Room id="148">
       <id>0</id>
       <code>B</code>
       <capacity>200</capacity>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="149">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Room id="149">
       <id>1</id>
       <code>C</code>
       <capacity>100</capacity>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="150">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Room id="150">
       <id>2</id>
       <code>E</code>
       <capacity>9</capacity>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="151">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Room id="151">
       <id>3</id>
       <code>F</code>
       <capacity>30</capacity>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="152">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Room id="152">
       <id>4</id>
       <code>G</code>
       <capacity>20</capacity>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Room id="153">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Room>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Room id="153">
       <id>5</id>
       <code>S</code>
       <capacity>30</capacity>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Room>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Room>
   </roomList>
   <unavailablePeriodConstraintList id="154">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="155">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="155">
       <id>0</id>
       <course reference="43"/>
       <period reference="141"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="156">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="156">
       <id>1</id>
       <course reference="43"/>
       <period reference="142"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="157">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="157">
       <id>2</id>
       <course reference="43"/>
       <period reference="143"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="158">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="158">
       <id>3</id>
       <course reference="43"/>
       <period reference="144"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="159">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="159">
       <id>4</id>
       <course reference="43"/>
       <period reference="145"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="160">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="160">
       <id>5</id>
       <course reference="43"/>
       <period reference="146"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="161">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="161">
       <id>6</id>
       <course reference="47"/>
       <period reference="117"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="162">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="162">
       <id>7</id>
       <course reference="47"/>
       <period reference="118"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="163">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="163">
       <id>8</id>
       <course reference="47"/>
       <period reference="119"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="164">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="164">
       <id>9</id>
       <course reference="47"/>
       <period reference="120"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="165">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="165">
       <id>10</id>
       <course reference="47"/>
       <period reference="121"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="166">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="166">
       <id>11</id>
       <course reference="47"/>
       <period reference="122"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="167">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="167">
       <id>12</id>
       <course reference="59"/>
       <period reference="135"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="168">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="168">
       <id>13</id>
       <course reference="59"/>
       <period reference="136"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="169">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="169">
       <id>14</id>
       <course reference="59"/>
       <period reference="137"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="170">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="170">
       <id>15</id>
       <course reference="59"/>
       <period reference="138"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="171">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="171">
       <id>16</id>
       <course reference="59"/>
       <period reference="139"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="172">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="172">
       <id>17</id>
       <course reference="59"/>
       <period reference="140"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="173">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="173">
       <id>18</id>
       <course reference="61"/>
       <period reference="131"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="174">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="174">
       <id>19</id>
       <course reference="61"/>
       <period reference="132"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="175">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="175">
       <id>20</id>
       <course reference="61"/>
       <period reference="133"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="176">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="176">
       <id>21</id>
       <course reference="61"/>
       <period reference="134"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="177">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="177">
       <id>22</id>
       <course reference="61"/>
       <period reference="135"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="178">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="178">
       <id>23</id>
       <course reference="61"/>
       <period reference="136"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="179">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="179">
       <id>24</id>
       <course reference="61"/>
       <period reference="137"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="180">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="180">
       <id>25</id>
       <course reference="61"/>
       <period reference="138"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="181">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="181">
       <id>26</id>
       <course reference="61"/>
       <period reference="139"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="182">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="182">
       <id>27</id>
       <course reference="61"/>
       <period reference="140"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="183">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="183">
       <id>28</id>
       <course reference="71"/>
       <period reference="137"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="184">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="184">
       <id>29</id>
       <course reference="71"/>
       <period reference="138"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="185">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="185">
       <id>30</id>
       <course reference="71"/>
       <period reference="139"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="186">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="186">
       <id>31</id>
       <course reference="71"/>
       <period reference="140"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="187">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="187">
       <id>32</id>
       <course reference="71"/>
       <period reference="141"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="188">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="188">
       <id>33</id>
       <course reference="71"/>
       <period reference="142"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="189">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="189">
       <id>34</id>
       <course reference="71"/>
       <period reference="143"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="190">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="190">
       <id>35</id>
       <course reference="71"/>
       <period reference="144"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="191">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="191">
       <id>36</id>
       <course reference="71"/>
       <period reference="145"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="192">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="192">
       <id>37</id>
       <course reference="71"/>
       <period reference="146"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="193">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="193">
       <id>38</id>
       <course reference="99"/>
       <period reference="117"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="194">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="194">
       <id>39</id>
       <course reference="99"/>
       <period reference="118"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="195">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="195">
       <id>40</id>
       <course reference="99"/>
       <period reference="119"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="196">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="196">
       <id>41</id>
       <course reference="99"/>
       <period reference="123"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="197">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="197">
       <id>42</id>
       <course reference="99"/>
       <period reference="124"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="198">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="198">
       <id>43</id>
       <course reference="99"/>
       <period reference="125"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="199">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="199">
       <id>44</id>
       <course reference="99"/>
       <period reference="129"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="200">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="200">
       <id>45</id>
       <course reference="99"/>
       <period reference="130"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="201">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="201">
       <id>46</id>
       <course reference="99"/>
       <period reference="131"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="202">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="202">
       <id>47</id>
       <course reference="99"/>
       <period reference="135"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="203">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="203">
       <id>48</id>
       <course reference="99"/>
       <period reference="136"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="204">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="204">
       <id>49</id>
       <course reference="99"/>
       <period reference="137"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="205">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="205">
       <id>50</id>
       <course reference="99"/>
       <period reference="141"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="206">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="206">
       <id>51</id>
       <course reference="99"/>
       <period reference="142"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="207">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint id="207">
       <id>52</id>
       <course reference="99"/>
       <period reference="143"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.UnavailablePeriodConstraint>
   </unavailablePeriodConstraintList>
   <lectureList id="208">
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="209">
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="209">
       <id>0</id>
       <course reference="89"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="130"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="210">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="210">
       <id>1</id>
       <course reference="89"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="145"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="211">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="211">
       <id>2</id>
       <course reference="89"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="121"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="212">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="212">
       <id>3</id>
       <course reference="89"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="138"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="213">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="213">
       <id>4</id>
       <course reference="89"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="139"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="214">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="214">
       <id>5</id>
       <course reference="89"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="137"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="215">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="215">
       <id>6</id>
       <course reference="99"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="133"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="216">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="216">
       <id>7</id>
       <course reference="99"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="140"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="217">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="217">
       <id>8</id>
       <course reference="99"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="132"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="218">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="218">
       <id>9</id>
       <course reference="99"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="144"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="219">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="219">
       <id>10</id>
       <course reference="99"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="127"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="220">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="220">
       <id>11</id>
       <course reference="99"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="128"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="221">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="221">
       <id>12</id>
       <course reference="71"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="132"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="222">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="222">
       <id>13</id>
       <course reference="71"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="119"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="223">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="223">
       <id>14</id>
       <course reference="71"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="136"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="224">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="224">
       <id>15</id>
       <course reference="71"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="126"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="225">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="225">
       <id>16</id>
       <course reference="71"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="125"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="226">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="226">
       <id>17</id>
       <course reference="71"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="131"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="227">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="227">
       <id>18</id>
       <course reference="47"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="139"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="228">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="228">
       <id>19</id>
       <course reference="47"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="125"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="229">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="229">
       <id>20</id>
       <course reference="47"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="131"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="230">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="230">
       <id>21</id>
       <course reference="47"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="132"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="231">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="231">
       <id>22</id>
       <course reference="47"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="123"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="232">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="232">
       <id>23</id>
       <course reference="47"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="124"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="233">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="233">
       <id>24</id>
       <course reference="47"/>
       <lectureIndexInCourse>6</lectureIndexInCourse>
       <period reference="133"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="234">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="234">
       <id>25</id>
       <course reference="43"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="120"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="235">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="235">
       <id>26</id>
       <course reference="43"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="134"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="236">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="236">
       <id>27</id>
       <course reference="43"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="138"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="237">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="237">
       <id>28</id>
       <course reference="43"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="127"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="238">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="238">
       <id>29</id>
       <course reference="43"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="137"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="239">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="239">
       <id>30</id>
       <course reference="43"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="136"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="240">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="240">
       <id>31</id>
       <course reference="93"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="144"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="241">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="241">
       <id>32</id>
       <course reference="93"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="138"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="242">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="242">
       <id>33</id>
       <course reference="93"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="145"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="243">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="243">
       <id>34</id>
       <course reference="93"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="120"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="244">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="244">
       <id>35</id>
       <course reference="93"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="119"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="245">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="245">
       <id>36</id>
       <course reference="93"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="128"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="246">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="246">
       <id>37</id>
       <course reference="101"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="133"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="247">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="247">
       <id>38</id>
       <course reference="101"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="132"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="248">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="248">
       <id>39</id>
       <course reference="101"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="123"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="249">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="249">
       <id>40</id>
       <course reference="101"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="135"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="250">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="250">
       <id>41</id>
       <course reference="101"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="143"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="251">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="251">
       <id>42</id>
       <course reference="101"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="142"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="252">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="252">
       <id>43</id>
       <course reference="83"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="143"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="253">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="253">
       <id>44</id>
       <course reference="83"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="131"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="254">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="254">
       <id>45</id>
       <course reference="83"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="125"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="255">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="255">
       <id>46</id>
       <course reference="83"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="136"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="256">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="256">
       <id>47</id>
       <course reference="83"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="124"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="257">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="257">
       <id>48</id>
       <course reference="83"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="142"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="258">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="258">
       <id>49</id>
       <course reference="77"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="136"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="259">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="259">
       <id>50</id>
       <course reference="77"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="144"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="260">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="260">
       <id>51</id>
       <course reference="77"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="118"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="261">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="261">
       <id>52</id>
       <course reference="77"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="140"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="262">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="262">
       <id>53</id>
       <course reference="77"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="124"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="263">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="263">
       <id>54</id>
       <course reference="77"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="139"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="264">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="264">
       <id>55</id>
       <course reference="81"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="131"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="265">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="265">
       <id>56</id>
       <course reference="81"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="125"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="266">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="266">
       <id>57</id>
       <course reference="81"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="120"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="267">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="267">
       <id>58</id>
       <course reference="81"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="119"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="268">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="268">
       <id>59</id>
       <course reference="81"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="143"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="269">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="269">
       <id>60</id>
       <course reference="69"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="120"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="270">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="270">
       <id>61</id>
       <course reference="61"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="142"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="271">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="271">
       <id>62</id>
       <course reference="61"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="118"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="272">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="272">
       <id>63</id>
       <course reference="61"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="141"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="273">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="273">
       <id>64</id>
       <course reference="61"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="122"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="274">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="274">
       <id>65</id>
       <course reference="61"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="123"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="275">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="275">
       <id>66</id>
       <course reference="61"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="119"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="276">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="276">
       <id>67</id>
       <course reference="61"/>
       <lectureIndexInCourse>6</lectureIndexInCourse>
       <period reference="128"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="277">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="277">
       <id>68</id>
       <course reference="61"/>
       <lectureIndexInCourse>7</lectureIndexInCourse>
       <period reference="121"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="278">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="278">
       <id>69</id>
       <course reference="59"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="125"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="279">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="279">
       <id>70</id>
       <course reference="59"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="132"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="280">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="280">
       <id>71</id>
       <course reference="59"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="143"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="281">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="281">
       <id>72</id>
       <course reference="59"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="144"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="282">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="282">
       <id>73</id>
       <course reference="53"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="146"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="283">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="283">
       <id>74</id>
       <course reference="53"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="143"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="284">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="284">
       <id>75</id>
       <course reference="53"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="139"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="285">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="285">
       <id>76</id>
       <course reference="53"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="131"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="286">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="286">
       <id>77</id>
       <course reference="53"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="137"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="287">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="287">
       <id>78</id>
       <course reference="53"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="119"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="288">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="288">
       <id>79</id>
       <course reference="53"/>
       <lectureIndexInCourse>6</lectureIndexInCourse>
       <period reference="130"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="289">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="289">
       <id>80</id>
       <course reference="53"/>
       <lectureIndexInCourse>7</lectureIndexInCourse>
       <period reference="129"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="290">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="290">
       <id>81</id>
       <course reference="55"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="126"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="291">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="291">
       <id>82</id>
       <course reference="55"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="118"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="292">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="292">
       <id>83</id>
       <course reference="55"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="140"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="293">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="293">
       <id>84</id>
       <course reference="55"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="134"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="294">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="294">
       <id>85</id>
       <course reference="55"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="117"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="295">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="295">
       <id>86</id>
       <course reference="55"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="127"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="296">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="296">
       <id>87</id>
       <course reference="55"/>
       <lectureIndexInCourse>6</lectureIndexInCourse>
       <period reference="138"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="297">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="297">
       <id>88</id>
       <course reference="45"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="122"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="298">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="298">
       <id>89</id>
       <course reference="45"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="146"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="299">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="299">
       <id>90</id>
       <course reference="45"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="130"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="300">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="300">
       <id>91</id>
       <course reference="45"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="135"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="301">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="301">
       <id>92</id>
       <course reference="45"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="145"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="302">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="302">
       <id>93</id>
       <course reference="45"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="126"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="303">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="303">
       <id>94</id>
       <course reference="95"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="122"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="304">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="304">
       <id>95</id>
       <course reference="95"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="130"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="305">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="305">
       <id>96</id>
       <course reference="95"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="127"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="306">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="306">
       <id>97</id>
       <course reference="95"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="139"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="307">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="307">
       <id>98</id>
       <course reference="95"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="121"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="308">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="308">
       <id>99</id>
       <course reference="95"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="123"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="309">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="309">
       <id>100</id>
       <course reference="79"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="130"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="310">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="310">
       <id>101</id>
       <course reference="79"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="121"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="311">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="311">
       <id>102</id>
       <course reference="79"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="145"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="312">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="312">
       <id>103</id>
       <course reference="79"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="126"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="313">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="313">
       <id>104</id>
       <course reference="79"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="144"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="314">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="314">
       <id>105</id>
       <course reference="79"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="127"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="315">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="315">
       <id>106</id>
       <course reference="85"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="118"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="316">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="316">
       <id>107</id>
       <course reference="85"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="141"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="317">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="317">
       <id>108</id>
       <course reference="85"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="122"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="318">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="318">
       <id>109</id>
       <course reference="85"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="129"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="319">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="319">
       <id>110</id>
       <course reference="85"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="126"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="320">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="320">
       <id>111</id>
       <course reference="85"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="117"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="321">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="321">
       <id>112</id>
       <course reference="87"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="146"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="322">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="322">
       <id>113</id>
       <course reference="87"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="117"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="323">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="323">
       <id>114</id>
       <course reference="87"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="119"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="324">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="324">
       <id>115</id>
       <course reference="87"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="138"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="325">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="325">
       <id>116</id>
       <course reference="87"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="134"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="326">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="326">
       <id>117</id>
       <course reference="87"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="120"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="327">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="327">
       <id>118</id>
       <course reference="97"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="141"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="328">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="328">
       <id>119</id>
       <course reference="97"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="146"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="329">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="329">
       <id>120</id>
       <course reference="97"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="129"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="330">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="330">
       <id>121</id>
       <course reference="97"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="136"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="331">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="331">
       <id>122</id>
       <course reference="97"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="120"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="332">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="332">
       <id>123</id>
       <course reference="97"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
       <period reference="122"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="333">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="333">
       <id>124</id>
       <course reference="63"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="117"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="334">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="334">
       <id>125</id>
       <course reference="63"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="133"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="335">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="335">
       <id>126</id>
       <course reference="63"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="135"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="336">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="336">
       <id>127</id>
       <course reference="63"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="129"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="337">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="337">
       <id>128</id>
       <course reference="63"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="124"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="338">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="338">
       <id>129</id>
       <course reference="65"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="124"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="339">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="339">
       <id>130</id>
       <course reference="65"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="133"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="340">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="340">
       <id>131</id>
       <course reference="65"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="137"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="341">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="341">
       <id>132</id>
       <course reference="65"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="118"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="342">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="342">
       <id>133</id>
       <course reference="65"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="123"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="343">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="343">
       <id>134</id>
       <course reference="67"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="130"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="344">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="344">
       <id>135</id>
       <course reference="67"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="118"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="345">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="345">
       <id>136</id>
       <course reference="67"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="142"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="346">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="346">
       <id>137</id>
       <course reference="67"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="143"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="347">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="347">
       <id>138</id>
       <course reference="67"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="135"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="348">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="348">
       <id>139</id>
       <course reference="91"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="124"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="349">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="349">
       <id>140</id>
       <course reference="91"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="136"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="350">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="350">
       <id>141</id>
       <course reference="91"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="129"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="351">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="351">
       <id>142</id>
       <course reference="91"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="146"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="352">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="352">
       <id>143</id>
       <course reference="91"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="137"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="353">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="353">
       <id>144</id>
       <course reference="73"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="135"/>
       <room reference="151"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="354">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="354">
       <id>145</id>
       <course reference="73"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="125"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="355">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="355">
       <id>146</id>
       <course reference="73"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="142"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="356">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="356">
       <id>147</id>
       <course reference="73"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="117"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="357">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="357">
       <id>148</id>
       <course reference="73"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="141"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="358">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="358">
       <id>149</id>
       <course reference="75"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="141"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="359">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="359">
       <id>150</id>
       <course reference="75"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="134"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="360">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="360">
       <id>151</id>
       <course reference="75"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="137"/>
       <room reference="150"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="361">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="361">
       <id>152</id>
       <course reference="75"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
       <period reference="133"/>
       <room reference="152"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="362">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="362">
       <id>153</id>
       <course reference="75"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
       <period reference="127"/>
       <room reference="153"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="363">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="363">
       <id>154</id>
       <course reference="49"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="121"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="364">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="364">
       <id>155</id>
       <course reference="49"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="140"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="365">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="365">
       <id>156</id>
       <course reference="49"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
       <period reference="144"/>
       <room reference="149"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="366">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="366">
       <id>157</id>
       <course reference="57"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="145"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="367">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="367">
       <id>158</id>
       <course reference="57"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
       <period reference="128"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
-    <org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture id="368">
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
+    <org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture id="368">
       <id>159</id>
       <course reference="51"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
       <period reference="142"/>
       <room reference="148"/>
-    </org.drools.solver.examples.itc2007.curriculumcourse.domain.Lecture>
+    </org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture>
   </lectureList>
-</org.drools.solver.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule>
+</org.drools.planner.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule>
