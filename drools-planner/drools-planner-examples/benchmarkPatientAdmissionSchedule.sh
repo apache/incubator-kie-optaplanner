@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mainClass=org.drools.solver.examples.pas.app.PatientAdmissionScheduleBenchmarkApp
+mainClass=org.drools.planner.examples.pas.app.PatientAdmissionScheduleBenchmarkApp
 if [ $# -ge 1 ];
   then
     mvn exec:exec -Dexec.mainClass="${mainClass}" -Dexec.programArgs="$*"
