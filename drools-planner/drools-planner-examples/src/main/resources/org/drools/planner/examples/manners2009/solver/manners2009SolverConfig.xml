@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/planner/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
+    <scoreDefinition>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    </scoreDefinition>
+    <startingSolutionInitializerClass>org.drools.planner.examples.manners2009.solver.solution.initializer.Manners2009StartingSolutionInitializer</startingSolutionInitializerClass>
+        <termination>
+        <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->
+        <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->
+        <scoreAttained>0</scoreAttained>
+    </termination>
+    <selector>
+        <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
+    </selector>
+    <accepter>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+    </accepter>
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <!--<foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>-->
+    </forager>
+</localSearchSolver>

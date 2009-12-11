@@ -1,0 +1,49 @@
+package rg.drools.solver.examples.lessonschedule.solver;
+
+import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.drools.planner.examples.lessonschedule.domain.LessonSchedule;
+import org.drools.planner.examples.lessonschedule.domain.Timeslot;
+import org.drools.planner.examples.lessonschedule.domain.Teacher;
+import org.drools.planner.examples.lessonschedule.domain.Group;
+import org.drools.planner.examples.lessonschedule.domain.Lesson;
+
+// @author Geoffrey De Smet
+
+global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+rule "multipleLessonsPerTeacherPerTimeslot"
+    when
+        $lesson : Lesson($id : id, $teacher : teacher, $timeslot : timeslot);
+        exists Lesson(id > $id, teacher == $teacher, timeslot == $timeslot);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("multipleLessonsPerTeacherPerTimeslot", $lesson));
+end
+
+rule "multipleLessonsPerGroupPerTimeslot"
+    when
+        $lesson : Lesson($id : id, $group : group, $timeslot : timeslot);
+        exists Lesson(id > $id, group == $group, timeslot == $timeslot);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("multipleLessonsPerGroupPerTimeslot", $lesson));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+rule "hardConstraintsBroken"
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($occurrenceCount.intValue());
+end

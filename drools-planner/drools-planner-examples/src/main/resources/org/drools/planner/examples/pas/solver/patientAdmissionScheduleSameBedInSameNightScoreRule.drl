@@ -1,0 +1,41 @@
+package org.drools.planner.examples.itc2007.examination.solver;
+    dialect "java"
+
+import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.drools.planner.examples.pas.domain.AdmissionPart;
+import org.drools.planner.examples.pas.domain.Bed;
+import org.drools.planner.examples.pas.domain.BedDesignation;
+import org.drools.planner.examples.pas.domain.Department;
+import org.drools.planner.examples.pas.domain.DepartmentSpecialism;
+import org.drools.planner.examples.pas.domain.Equipment;
+import org.drools.planner.examples.pas.domain.Gender;
+import org.drools.planner.examples.pas.domain.GenderLimitation;
+import org.drools.planner.examples.pas.domain.Night;
+import org.drools.planner.examples.pas.domain.Patient;
+import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
+import org.drools.planner.examples.pas.domain.PreferredPatientEquipment;
+import org.drools.planner.examples.pas.domain.RequiredPatientEquipment;
+import org.drools.planner.examples.pas.domain.Room;
+import org.drools.planner.examples.pas.domain.RoomEquipment;
+import org.drools.planner.examples.pas.domain.RoomSpecialism;
+import org.drools.planner.examples.pas.domain.Specialism;
+import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
+import org.drools.planner.examples.pas.domain.solver.AdmissionPartSpecialismMissingInRoom;
+
+// @author Geoffrey De Smet
+
+// Two patients in the same bed for a number of nights.
+rule "sameBedInSameNight"
+    when
+        $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
+                $rightAdmissionPart : rightAdmissionPart);
+        $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed);
+        $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed);
+    then
+        insertLogical(new IntConstraintOccurrence("sameBedInSameNight",
+                ConstraintType.NEGATIVE_HARD, 1000 * $admissionPartConflict.getNightSize(),
+                $leftBedDesignation, $rightBedDesignation));
+end

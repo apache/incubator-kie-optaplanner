@@ -1,0 +1,117 @@
+package org.drools.planner.examples.travelingtournament.smart.solver;
+    dialect "java"
+
+import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.drools.planner.examples.travelingtournament.domain.Match;
+import org.drools.planner.examples.travelingtournament.domain.Day;
+import org.drools.planner.examples.travelingtournament.domain.Team;
+import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
+import org.drools.planner.examples.travelingtournament.domain.solver.Hop;
+
+// @author Geoffrey De Smet
+
+global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+// multipleMatchesPerTeamPerDay is obsolete because it is always 0
+
+rule "fourConsecutiveHomeMatches"
+  when
+    $m : Match($homeTeam : homeTeam, $day1 : day);
+    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1));
+    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 2));
+    Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 3));
+  then
+    insertLogical(new UnweightedConstraintOccurrence("fourConsecutiveHomeMatches", $m));
+end
+
+rule "fourConsecutiveAwayMatches"
+  when
+    $m : Match($awayTeam : awayTeam, $day1 : day);
+    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 1));
+    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 2));
+    Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 3));
+  then
+    insertLogical(new UnweightedConstraintOccurrence("fourConsecutiveAwayMatches", $m));
+end
+
+rule "matchRepeater"
+  when
+    $m : Match($homeTeam : homeTeam, $awayTeam : awayTeam, $day1 : day);
+    Match(homeTeam == $awayTeam, awayTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1));
+  then
+    insertLogical(new UnweightedConstraintOccurrence("matchRepeater", $m));
+end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "startToAwayHop"
+    when
+        Match($toTeam : homeTeam, $team : awayTeam, $day : day);
+        not Day(eval(index == $day.getIndex() - 1));
+    then
+        insertLogical(new Hop($team, $team, $toTeam));
+end
+rule "homeToAwayHop"
+    when
+        Match($team : homeTeam, $day1 : day);
+        Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
+    then
+        insertLogical(new Hop($team, $team, $toTeam));
+end
+rule "awayToAwayHop"
+    when
+        Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day);
+        Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
+    then
+        insertLogical(new Hop($team, $fromTeam, $toTeam));
+end
+rule "awayToHomeHop"
+    when
+        Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day);
+        Match(homeTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1));
+    then
+        insertLogical(new Hop($team, $fromTeam, $team));
+end
+rule "awayToEndHop"
+    when
+        Match($fromTeam : homeTeam, $team : awayTeam, $day : day);
+        not Day(eval(index == $day.getIndex() + 1));
+    then
+        insertLogical(new Hop($team, $fromTeam, $team));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+rule "hardConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($occurrenceCount.intValue());
+end
+
+rule "softConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $totalDistance : Double() from accumulate(
+            Hop($distance : distance),
+            sum($distance)
+        );
+    then
+        scoreCalculator.setSoftConstraintsBroken($totalDistance.intValue());
+end
+

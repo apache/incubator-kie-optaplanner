@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/planner/examples/itc2007/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+    <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    </scoreDefinition>
+    <startingSolutionInitializerClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
+    <termination>
+        <!--
+            Official benchmark maximumSecondsSpend allowed on:
+            ge0ffrey's main pc: 429
+            ge0ffrey's old pc: 1152
+        -->
+        <maximumSecondsSpend>429</maximumSecondsSpend>
+        <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
+        <!--<maximumStepCount>100</maximumStepCount>-->
+    </termination>
+    <selector>
+        <selector>
+            <topSize>10</topSize>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+            <relativeSelection>0.002</relativeSelection>
+        </selector>
+    </selector>
+    <accepter>
+        <completePropertyTabuSize>10</completePropertyTabuSize>
+        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+    </accepter>
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+    </forager>
+    <!-- Great deluge experiments: -->
+    <!--<selector>-->
+    <!--<selector>-->
+    <!--<moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
+    <!--<relativeSelection>0.002</relativeSelection>-->
+    <!--</selector>-->
+    <!--<selector>-->
+    <!--<moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
+    <!--<relativeSelection>0.002</relativeSelection>-->
+    <!--</selector>-->
+    <!--<selector>-->
+    <!--<moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+    <!--<shuffle>true</shuffle>-->
+    <!--</selector>-->
+    <!--</selector>-->
+    <!--<accepter>-->
+    <!--<greatDelugeWaterLevelUpperBoundRate>1.30</greatDelugeWaterLevelUpperBoundRate>-->
+    <!--<greatDelugeWaterRisingRate>0.000000143</greatDelugeWaterRisingRate>-->
+    <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
+    <!--</accepter>-->
+    <!--<forager>-->
+    <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
+    <!--</forager>-->
+</localSearchSolver>
+        
