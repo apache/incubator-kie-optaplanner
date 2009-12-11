@@ -80,7 +80,7 @@ From 5.0.1 to 5.1.0.m1
 ----------------------
 
 In 5.1.0.m2, Drools Solver has been renamed to Drools Planner,
-and it's best to do that first. See "From 5.1.0.mé to 5.1.0.m1".
+and it's best to do that first. See "From 5.1.0.m1 to 5.1.0.m2".
 
 
 The method Solver.cancel() has been renamed to Solver.terminateEarly()
