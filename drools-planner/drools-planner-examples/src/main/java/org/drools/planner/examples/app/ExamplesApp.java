@@ -45,7 +45,7 @@ public class ExamplesApp {
                 new Manners2009App().init();
                 break;
             default :
-                throw new IllegalArgumentException("Unknown example choice");
+                throw new IllegalArgumentException("Unknown example choice(" + choice + ").");
         }
     }
 
