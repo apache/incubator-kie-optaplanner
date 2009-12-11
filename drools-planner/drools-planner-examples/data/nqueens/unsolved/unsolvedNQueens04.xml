@@ -1,25 +1,25 @@
-<org.drools.solver.examples.nqueens.domain.NQueens id="1">
+<org.drools.planner.examples.nqueens.domain.NQueens id="1">
   <queenList id="2">
-    <org.drools.solver.examples.nqueens.domain.Queen id="3">
+    <org.drools.planner.examples.nqueens.domain.Queen id="3">
       <x>0</x>
       <y>0</y>
       <id>0</id>
-    </org.drools.solver.examples.nqueens.domain.Queen>
-    <org.drools.solver.examples.nqueens.domain.Queen id="4">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="4">
       <x>1</x>
       <y>0</y>
       <id>1</id>
-    </org.drools.solver.examples.nqueens.domain.Queen>
-    <org.drools.solver.examples.nqueens.domain.Queen id="5">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="5">
       <x>2</x>
       <y>0</y>
       <id>2</id>
-    </org.drools.solver.examples.nqueens.domain.Queen>
-    <org.drools.solver.examples.nqueens.domain.Queen id="6">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="6">
       <x>3</x>
       <y>0</y>
       <id>3</id>
-    </org.drools.solver.examples.nqueens.domain.Queen>
+    </org.drools.planner.examples.nqueens.domain.Queen>
   </queenList>
   <id>0</id>
-</org.drools.solver.examples.nqueens.domain.NQueens>
+</org.drools.planner.examples.nqueens.domain.NQueens>

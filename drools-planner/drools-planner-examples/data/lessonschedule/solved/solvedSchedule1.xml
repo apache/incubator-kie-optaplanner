@@ -1,168 +1,168 @@
-<org.drools.solver.examples.lessonschedule.domain.LessonSchedule id="1">
+<org.drools.planner.examples.lessonschedule.domain.LessonSchedule id="1">
   <timeslotList id="2">
-    <org.drools.solver.examples.lessonschedule.domain.Timeslot id="3">
+    <org.drools.planner.examples.lessonschedule.domain.Timeslot id="3">
       <index>0</index>
       <id>0</id>
-    </org.drools.solver.examples.lessonschedule.domain.Timeslot>
-    <org.drools.solver.examples.lessonschedule.domain.Timeslot id="4">
+    </org.drools.planner.examples.lessonschedule.domain.Timeslot>
+    <org.drools.planner.examples.lessonschedule.domain.Timeslot id="4">
       <index>1</index>
       <id>1</id>
-    </org.drools.solver.examples.lessonschedule.domain.Timeslot>
-    <org.drools.solver.examples.lessonschedule.domain.Timeslot id="5">
+    </org.drools.planner.examples.lessonschedule.domain.Timeslot>
+    <org.drools.planner.examples.lessonschedule.domain.Timeslot id="5">
       <index>2</index>
       <id>2</id>
-    </org.drools.solver.examples.lessonschedule.domain.Timeslot>
-    <org.drools.solver.examples.lessonschedule.domain.Timeslot id="6">
+    </org.drools.planner.examples.lessonschedule.domain.Timeslot>
+    <org.drools.planner.examples.lessonschedule.domain.Timeslot id="6">
       <index>3</index>
       <id>3</id>
-    </org.drools.solver.examples.lessonschedule.domain.Timeslot>
-    <org.drools.solver.examples.lessonschedule.domain.Timeslot id="7">
+    </org.drools.planner.examples.lessonschedule.domain.Timeslot>
+    <org.drools.planner.examples.lessonschedule.domain.Timeslot id="7">
       <index>4</index>
       <id>4</id>
-    </org.drools.solver.examples.lessonschedule.domain.Timeslot>
+    </org.drools.planner.examples.lessonschedule.domain.Timeslot>
   </timeslotList>
   <teacherList id="8">
-    <org.drools.solver.examples.lessonschedule.domain.Teacher id="9">
+    <org.drools.planner.examples.lessonschedule.domain.Teacher id="9">
       <name>teacher0</name>
       <id>0</id>
-    </org.drools.solver.examples.lessonschedule.domain.Teacher>
-    <org.drools.solver.examples.lessonschedule.domain.Teacher id="10">
+    </org.drools.planner.examples.lessonschedule.domain.Teacher>
+    <org.drools.planner.examples.lessonschedule.domain.Teacher id="10">
       <name>teacher1</name>
       <id>1</id>
-    </org.drools.solver.examples.lessonschedule.domain.Teacher>
-    <org.drools.solver.examples.lessonschedule.domain.Teacher id="11">
+    </org.drools.planner.examples.lessonschedule.domain.Teacher>
+    <org.drools.planner.examples.lessonschedule.domain.Teacher id="11">
       <name>teacher2</name>
       <id>2</id>
-    </org.drools.solver.examples.lessonschedule.domain.Teacher>
-    <org.drools.solver.examples.lessonschedule.domain.Teacher id="12">
+    </org.drools.planner.examples.lessonschedule.domain.Teacher>
+    <org.drools.planner.examples.lessonschedule.domain.Teacher id="12">
       <name>teacher3</name>
       <id>3</id>
-    </org.drools.solver.examples.lessonschedule.domain.Teacher>
-    <org.drools.solver.examples.lessonschedule.domain.Teacher id="13">
+    </org.drools.planner.examples.lessonschedule.domain.Teacher>
+    <org.drools.planner.examples.lessonschedule.domain.Teacher id="13">
       <name>teacher4</name>
       <id>4</id>
-    </org.drools.solver.examples.lessonschedule.domain.Teacher>
+    </org.drools.planner.examples.lessonschedule.domain.Teacher>
   </teacherList>
   <groupList id="14">
-    <org.drools.solver.examples.lessonschedule.domain.Group id="15">
+    <org.drools.planner.examples.lessonschedule.domain.Group id="15">
       <name>group0</name>
       <id>0</id>
-    </org.drools.solver.examples.lessonschedule.domain.Group>
-    <org.drools.solver.examples.lessonschedule.domain.Group id="16">
+    </org.drools.planner.examples.lessonschedule.domain.Group>
+    <org.drools.planner.examples.lessonschedule.domain.Group id="16">
       <name>group1</name>
       <id>1</id>
-    </org.drools.solver.examples.lessonschedule.domain.Group>
-    <org.drools.solver.examples.lessonschedule.domain.Group id="17">
+    </org.drools.planner.examples.lessonschedule.domain.Group>
+    <org.drools.planner.examples.lessonschedule.domain.Group id="17">
       <name>group2</name>
       <id>2</id>
-    </org.drools.solver.examples.lessonschedule.domain.Group>
-    <org.drools.solver.examples.lessonschedule.domain.Group id="18">
+    </org.drools.planner.examples.lessonschedule.domain.Group>
+    <org.drools.planner.examples.lessonschedule.domain.Group id="18">
       <name>group3</name>
       <id>3</id>
-    </org.drools.solver.examples.lessonschedule.domain.Group>
+    </org.drools.planner.examples.lessonschedule.domain.Group>
   </groupList>
   <lessonList id="19">
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="20">
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="20">
       <teacher reference="13"/>
       <group reference="15"/>
       <timeslot reference="3"/>
       <id>15</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="21">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="21">
       <teacher reference="10"/>
       <group reference="15"/>
       <timeslot reference="5"/>
       <id>4</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="22">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="22">
       <teacher reference="11"/>
       <group reference="15"/>
       <timeslot reference="6"/>
       <id>8</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="23">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="23">
       <teacher reference="11"/>
       <group reference="17"/>
       <timeslot reference="3"/>
       <id>11</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="24">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="24">
       <teacher reference="13"/>
       <group reference="18"/>
       <timeslot reference="5"/>
       <id>16</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="25">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="25">
       <teacher reference="9"/>
       <group reference="18"/>
       <timeslot reference="7"/>
       <id>3</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="26">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="26">
       <teacher reference="10"/>
       <group reference="16"/>
       <timeslot reference="3"/>
       <id>7</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="27">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="27">
       <teacher reference="12"/>
       <group reference="15"/>
       <timeslot reference="7"/>
       <id>12</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="28">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="28">
       <teacher reference="9"/>
       <group reference="17"/>
       <timeslot reference="6"/>
       <id>2</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="29">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="29">
       <teacher reference="12"/>
       <group reference="18"/>
       <timeslot reference="4"/>
       <id>13</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="30">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="30">
       <teacher reference="11"/>
       <group reference="17"/>
       <timeslot reference="4"/>
       <id>9</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="31">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="31">
       <teacher reference="10"/>
       <group reference="16"/>
       <timeslot reference="6"/>
       <id>6</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="32">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="32">
       <teacher reference="9"/>
       <group reference="16"/>
       <timeslot reference="5"/>
       <id>1</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="33">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="33">
       <teacher reference="12"/>
       <group reference="18"/>
       <timeslot reference="3"/>
       <id>14</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="34">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="34">
       <teacher reference="11"/>
       <group reference="17"/>
       <timeslot reference="5"/>
       <id>10</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="35">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="35">
       <teacher reference="10"/>
       <group reference="16"/>
       <timeslot reference="4"/>
       <id>5</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
-    <org.drools.solver.examples.lessonschedule.domain.Lesson id="36">
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
+    <org.drools.planner.examples.lessonschedule.domain.Lesson id="36">
       <teacher reference="9"/>
       <group reference="15"/>
       <timeslot reference="4"/>
       <id>0</id>
-    </org.drools.solver.examples.lessonschedule.domain.Lesson>
+    </org.drools.planner.examples.lessonschedule.domain.Lesson>
   </lessonList>
-</org.drools.solver.examples.lessonschedule.domain.LessonSchedule>
+</org.drools.planner.examples.lessonschedule.domain.LessonSchedule>
