@@ -80,23 +80,7 @@ From 5.0.1 to 5.1.0.m1
 ----------------------
 
 In 5.1.0.m2, Drools Solver has been renamed to Drools Planner,
-but because of that you will want to do this first:
-The maven dependency has been renamed to drools-planner-core.
-Before in pom.xml:
-    <dependency>
-        <groupId>org.drools.solver</groupId>
-        <artifactId>drools-solver-core</artifactId>
-        ...
-    </dependency>
-After in pom.xml:
-    <dependency>
-        <groupId>org.drools.planner</groupId>
-        <artifactId>drools-planner-core</artifactId>
-        ...
-    </dependency>
-And resync your IDE (IntelliJ, Eclipse, Netbeans) from the pom.xml files.
-If you're still using ANT, replace drools-solver-core-?.jar with drools-planner-core-?.jar
-and adjust your ANT script and your IDE's classpath accordingly.
+and it's best to do that first. See "From 5.1.0.mé to 5.1.0.m1".
 
 
 The method Solver.cancel() has been renamed to Solver.terminateEarly()
@@ -228,6 +212,12 @@ After in pom.xml:
 And resync your IDE (IntelliJ, Eclipse, Netbeans) from the pom.xml files.
 If you're still using ANT, replace drools-solver-core-?.jar with drools-planner-core-?.jar
 and adjust your ANT script and your IDE's classpath accordingly.
+
+The package has been renamed to org.drools.planner
+Before in *.java, *.drl:
+    import org.drools.solver...
+After in *.java, *.drl:
+    import org.drools.planner...
 
 
 TerminationConfig's maximumHouresSpend renamed to maximumHoursSpend
