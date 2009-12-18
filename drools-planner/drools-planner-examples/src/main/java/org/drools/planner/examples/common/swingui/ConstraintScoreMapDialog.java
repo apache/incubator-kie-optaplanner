@@ -65,7 +65,7 @@ public class ConstraintScoreMapDialog extends JDialog {
                 case 1:
                     return "Constraint type";
                 case 2:
-                    return "# occurences";
+                    return "# occurrences";
                 case 3:
                     return "Score total";
                 default:
@@ -96,7 +96,7 @@ public class ConstraintScoreMapDialog extends JDialog {
                 case 1:
                     return scoreDetail.getConstraintType();
                 case 2:
-                    return scoreDetail.getOccurenceSize();
+                    return scoreDetail.getOccurrenceSize();
                 case 3:
                     return scoreDetail.getScoreTotal();
                 default:

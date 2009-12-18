@@ -113,18 +113,18 @@ public class SolutionBusiness {
                 scoreDetail = new ScoreDetail(occurrence.getRuleId(), occurrence.getConstraintType());
                 scoreDetailMap.put(occurrence.getRuleId(), scoreDetail);
             }
-            double occurenceScore;
+            double occurrenceScore;
             if (occurrence instanceof IntConstraintOccurrence) {
-                occurenceScore = ((IntConstraintOccurrence) occurrence).getWeight();
+                occurrenceScore = ((IntConstraintOccurrence) occurrence).getWeight();
             } else if (occurrence instanceof DoubleConstraintOccurrence) {
-                occurenceScore = ((DoubleConstraintOccurrence) occurrence).getWeight();
+                occurrenceScore = ((DoubleConstraintOccurrence) occurrence).getWeight();
             } else if (occurrence instanceof UnweightedConstraintOccurrence) {
-                occurenceScore = 1.0;
+                occurrenceScore = 1.0;
             } else {
                 throw new IllegalStateException("Cannot determine occurrenceScore of ConstraintOccurrence class: "
                         + occurrence.getClass());
             }
-            scoreDetail.addOccurenceScore(occurenceScore);
+            scoreDetail.addOccurrenceScore(occurrenceScore);
         }
         List<ScoreDetail> scoreDetailList = new ArrayList<ScoreDetail>(scoreDetailMap.values());
         Collections.sort(scoreDetailList);

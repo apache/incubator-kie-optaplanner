@@ -13,7 +13,7 @@ public class ScoreDetail implements Comparable<ScoreDetail> {
     private String ruleId;
     private ConstraintType constraintType;
     private double scoreTotal = 0.0;
-    private int occurenceSize = 0;
+    private int occurrenceSize = 0;
 
     public ScoreDetail(String ruleId, ConstraintType constraintType) {
         this.ruleId = ruleId;
@@ -44,18 +44,18 @@ public class ScoreDetail implements Comparable<ScoreDetail> {
         this.scoreTotal = scoreTotal;
     }
 
-    public int getOccurenceSize() {
-        return occurenceSize;
+    public int getOccurrenceSize() {
+        return occurrenceSize;
     }
 
-    public void setOccurenceSize(int occurenceSize) {
-        this.occurenceSize = occurenceSize;
+    public void setOccurrenceSize(int occurrenceSize) {
+        this.occurrenceSize = occurrenceSize;
     }
 
 
-    public void addOccurenceScore(double occurenceScore) {
-        scoreTotal += occurenceScore;
-        occurenceSize++;
+    public void addOccurrenceScore(double occurrenceScore) {
+        scoreTotal += occurrenceScore;
+        occurrenceSize++;
     }
 
     public boolean equals(Object o) {
@@ -87,7 +87,7 @@ public class ScoreDetail implements Comparable<ScoreDetail> {
     }
 
     public String toString() {
-        return ruleId + "/" + constraintType + "=" + scoreTotal + "(" + occurenceSize + ")";
+        return ruleId + "/" + constraintType + "=" + scoreTotal + "(" + occurrenceSize + ")";
     }
 
 }
