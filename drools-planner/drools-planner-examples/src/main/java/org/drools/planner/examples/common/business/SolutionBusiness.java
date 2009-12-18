@@ -121,7 +121,7 @@ public class SolutionBusiness {
             } else if (occurrence instanceof UnweightedConstraintOccurrence) {
                 occurenceScore = 1.0;
             } else {
-                throw new IllegalStateException("Cannot determine occurenceScore of ConstraintOccurence class: "
+                throw new IllegalStateException("Cannot determine occurrenceScore of ConstraintOccurrence class: "
                         + occurrence.getClass());
             }
             scoreDetail.addOccurenceScore(occurenceScore);
