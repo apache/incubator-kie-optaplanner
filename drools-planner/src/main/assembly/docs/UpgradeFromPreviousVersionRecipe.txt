@@ -7,7 +7,7 @@ This file describes how can you upgrade from earlier versions to the latest.
 From 5.0.0-m2 to 5.0.0
 ----------------------
 
-No backwards imcompatible changes.
+No backwards incompatible changes.
 
 From 5.0.0 to 5.0.1
 -------------------
