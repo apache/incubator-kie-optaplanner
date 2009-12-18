@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.Department;
@@ -36,8 +37,8 @@ public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvert
         new PatientAdmissionScheduleInputConvertor().convertAll();
     }
 
-    protected String getExampleDirName() {
-        return "pas";
+    public PatientAdmissionScheduleInputConvertor() {
+        super(new PatientAdmissionScheduleDaoImpl());
     }
 
     public InputBuilder createInputBuilder() {

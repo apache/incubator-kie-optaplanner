@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.itc2007.curriculumcourse.domain.Course;
 import org.drools.planner.examples.itc2007.curriculumcourse.domain.Curriculum;
 import org.drools.planner.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule;
@@ -31,8 +32,8 @@ public class CurriculumCourseInputConvertor extends AbstractInputConvertor {
         new CurriculumCourseInputConvertor().convertAll();
     }
 
-    protected String getExampleDirName() {
-        return "itc2007/curriculumcourse";
+    public CurriculumCourseInputConvertor() {
+        super(new CurriculumCourseDaoImpl());
     }
 
     @Override

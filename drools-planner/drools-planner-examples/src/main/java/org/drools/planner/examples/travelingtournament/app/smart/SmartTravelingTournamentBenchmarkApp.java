@@ -3,6 +3,7 @@ package org.drools.planner.examples.travelingtournament.app.smart;
 import java.io.File;
 
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
+import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 
 /**
  * @author Geoffrey De Smet
@@ -28,7 +29,7 @@ public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public SmartTravelingTournamentBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
-        super(solverBenchmarkConfig, resultFile);
+        super(solverBenchmarkConfig, resultFile, TravelingTournament.class);
     }
 
 }

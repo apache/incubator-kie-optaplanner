@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.drools.planner.examples.common.persistence.AbstractOutputConvertor;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.Match;
@@ -21,15 +22,8 @@ public class SmartTravelingTournamentOutputConvertor extends AbstractOutputConve
         new SmartTravelingTournamentOutputConvertor().convertAll();
     }
 
-    private final File inputDir = new File("data/travelingtournament/smart/solved/");
-
-    protected String getExampleDirName() {
-        return "travelingtournament/smart";
-    }
-
-    @Override
-    protected File getInputDir() {
-        return inputDir;
+    public SmartTravelingTournamentOutputConvertor() {
+        super(new SmartTravelingTournamentDaoImpl());
     }
 
     @Override

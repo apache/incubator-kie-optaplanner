@@ -3,6 +3,7 @@ package org.drools.planner.examples.travelingtournament.persistence.simple;
 import java.io.File;
 import java.util.List;
 
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
@@ -17,11 +18,8 @@ public class SimpleTravelingTournamentInputConvertor extends TravelingTournament
         new SimpleTravelingTournamentInputConvertor().convertAll();
     }
 
-    private final File outputDir = new File("data/travelingtournament/simple/unsolved/");
-
-    @Override
-    protected File getOutputDir() {
-        return outputDir;
+    public SimpleTravelingTournamentInputConvertor() {
+        super(new SimpleTravelingTournamentDaoImpl());
     }
 
     public InputBuilder createInputBuilder() {

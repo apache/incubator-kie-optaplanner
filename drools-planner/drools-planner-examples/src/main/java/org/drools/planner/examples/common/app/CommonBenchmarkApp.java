@@ -14,10 +14,11 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
     private File resultFile;
     protected XmlSolverBenchmarker solverBenchmarker;
 
-    protected CommonBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
+    protected CommonBenchmarkApp(String solverBenchmarkConfig, File resultFile, Class ... xstreamAnnotations) {
         super(LOGGING_CONFIG);
         this.resultFile = resultFile;
         solverBenchmarker = new XmlSolverBenchmarker().configure(solverBenchmarkConfig);
+        solverBenchmarker.addXstreamAnnotations(xstreamAnnotations);
     }
 
     public void process() {

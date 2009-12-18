@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.manners2009.domain.Gender;
 import org.drools.planner.examples.manners2009.domain.Guest;
 import org.drools.planner.examples.manners2009.domain.Hobby;
@@ -27,8 +28,8 @@ public class Manners2009InputConvertor extends AbstractInputConvertor {
         new Manners2009InputConvertor().convertAll();
     }
 
-    protected String getExampleDirName() {
-        return "manners2009";
+    public Manners2009InputConvertor() {
+        super(new Manners2009DaoImpl());
     }
 
     public InputBuilder createInputBuilder() {

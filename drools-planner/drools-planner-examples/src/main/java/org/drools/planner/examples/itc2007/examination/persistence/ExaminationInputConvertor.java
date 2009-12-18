@@ -16,6 +16,7 @@ import java.util.Map;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.itc2007.examination.domain.Examination;
 import org.drools.planner.examples.itc2007.examination.domain.InstitutionalWeighting;
 import org.drools.planner.examples.itc2007.examination.domain.Period;
@@ -39,8 +40,8 @@ public class ExaminationInputConvertor extends AbstractInputConvertor {
         new ExaminationInputConvertor().convertAll();
     }
 
-    protected String getExampleDirName() {
-        return "itc2007/examination";
+    public ExaminationInputConvertor() {
+        super(new ExaminationDaoImpl());
     }
 
     @Override

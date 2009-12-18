@@ -3,6 +3,7 @@ package org.drools.planner.examples.itc2007.curriculumcourse.persistence;
 import java.io.IOException;
 
 import org.drools.planner.examples.common.persistence.AbstractOutputConvertor;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.itc2007.curriculumcourse.domain.Lecture;
 import org.drools.planner.core.solution.Solution;
@@ -18,8 +19,8 @@ public class CurriculumCourseOutputConvertor extends AbstractOutputConvertor {
         new CurriculumCourseOutputConvertor().convertAll();
     }
 
-    protected String getExampleDirName() {
-        return "itc2007/curriculumcourse";
+    public CurriculumCourseOutputConvertor() {
+        super(new CurriculumCourseDaoImpl());
     }
 
     @Override

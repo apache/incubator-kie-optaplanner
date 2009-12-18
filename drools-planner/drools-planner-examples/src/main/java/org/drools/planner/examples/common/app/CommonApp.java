@@ -15,9 +15,13 @@ import org.drools.planner.examples.common.swingui.WorkflowFrame;
 public abstract class CommonApp extends LoggingMain {
 
     private WorkflowFrame workflowFrame;
+    private SolutionDao solutionDao;
+    private SolutionBusiness solutionBusiness;
 
     public CommonApp() {
-        workflowFrame = new WorkflowFrame(createSolutionBusiness(), createSolutionPanel(), getExampleDirName());
+        solutionDao = createSolutionDao();
+        solutionBusiness = createSolutionBusiness();
+        workflowFrame = new WorkflowFrame(solutionBusiness, createSolutionPanel(), solutionDao.getDirName());
     }
 
     public void init() {
@@ -27,17 +31,13 @@ public abstract class CommonApp extends LoggingMain {
 
     protected SolutionBusiness createSolutionBusiness() {
         SolutionBusiness solutionBusiness = new SolutionBusiness();
-        solutionBusiness.setSolutionDao(createSolutionDao());
-        solutionBusiness.setDataDir(new File("data/" + getExampleDirName()));
+        solutionBusiness.setSolutionDao(solutionDao);
+        solutionBusiness.setDataDir(solutionDao.getDataDir());
         solutionBusiness.setSolver(createSolver());
         return solutionBusiness;
     }
 
-    protected SolutionDao createSolutionDao() {
-        return new XstreamSolutionDaoImpl();
-    }
-
-    protected abstract String getExampleDirName();
+    protected abstract SolutionDao createSolutionDao();
 
     protected abstract Solver createSolver();
 

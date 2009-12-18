@@ -18,8 +18,8 @@ public class PatientAdmissionScheduleOutputConvertor extends AbstractOutputConve
         new PatientAdmissionScheduleOutputConvertor().convertAll();
     }
 
-    protected String getExampleDirName() {
-        return "pas";
+    public PatientAdmissionScheduleOutputConvertor() {
+        super(new PatientAdmissionScheduleDaoImpl());
     }
 
     public OutputBuilder createOutputBuilder() {

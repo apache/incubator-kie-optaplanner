@@ -54,7 +54,7 @@ public class WorkflowFrame extends JFrame {
     private ShowConstraintScoreMapDialogAction showConstraintScoreMapDialogAction;
 
     public WorkflowFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
-        super("Drools solver example " + exampleName);
+        super("Drools planner example " + exampleName);
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
         solutionPanel.setSolutionBusiness(solutionBusiness);
@@ -216,7 +216,7 @@ public class WorkflowFrame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent e) {
-            // This async, so it doesn't stop the solving immediatly
+            // This async, so it doesn't stop the solving immediately
             solutionBusiness.terminateSolvingEarly();
         }
 

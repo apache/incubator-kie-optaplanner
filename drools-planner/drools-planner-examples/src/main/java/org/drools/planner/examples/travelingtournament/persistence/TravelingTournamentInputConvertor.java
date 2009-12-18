@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Team;
@@ -18,8 +19,8 @@ import org.drools.planner.core.solution.Solution;
  */
 public abstract class TravelingTournamentInputConvertor extends AbstractInputConvertor {
 
-    protected String getExampleDirName() {
-        return "travelingtournament";
+    protected TravelingTournamentInputConvertor(SolutionDao solutionDao) {
+        super(solutionDao);
     }
 
     public abstract class TravelingTournamentInputBuilder extends InputBuilder {

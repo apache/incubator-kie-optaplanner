@@ -3,6 +3,7 @@ package org.drools.planner.examples.itc2007.curriculumcourse.app;
 import java.io.File;
 
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
+import org.drools.planner.examples.itc2007.curriculumcourse.domain.CurriculumCourseSchedule;
 
 /**
  * @author Geoffrey De Smet
@@ -27,7 +28,7 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public CurriculumCourseBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
-        super(solverBenchmarkConfig, resultFile);
+        super(solverBenchmarkConfig, resultFile, CurriculumCourseSchedule.class);
     }
 
 }

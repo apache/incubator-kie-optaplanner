@@ -21,16 +21,29 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Geoffrey De Smet
  */
-public class XstreamSolutionDaoImpl implements SolutionDao {
+public abstract class XstreamSolutionDaoImpl implements SolutionDao {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private XStream xStream;
+    private String dirName;
+    private File dataDir;
 
-    public XstreamSolutionDaoImpl() {
+    public XstreamSolutionDaoImpl(String dirName, Class ... xstreamAnnotations) {
+        this.dirName = dirName;
+        dataDir = new File("data/" + dirName);
         // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
         xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
+        xStream.processAnnotations(xstreamAnnotations);
+    }
+
+    public String getDirName() {
+        return dirName;
+    }
+
+    public File getDataDir() {
+        return dataDir;
     }
 
     public Solution readSolution(File file) {

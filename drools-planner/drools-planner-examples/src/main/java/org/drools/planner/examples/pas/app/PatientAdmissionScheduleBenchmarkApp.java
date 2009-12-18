@@ -3,6 +3,7 @@ package org.drools.planner.examples.pas.app;
 import java.io.File;
 
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
+import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 
 /**
  * @author Geoffrey De Smet
@@ -27,7 +28,7 @@ public class PatientAdmissionScheduleBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public PatientAdmissionScheduleBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
-        super(solverBenchmarkConfig, resultFile);
+        super(solverBenchmarkConfig, resultFile, PatientAdmissionSchedule.class);
     }
 
 }

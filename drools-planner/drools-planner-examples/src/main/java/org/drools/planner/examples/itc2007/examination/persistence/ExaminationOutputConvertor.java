@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.common.persistence.AbstractOutputConvertor;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.itc2007.examination.domain.Exam;
 import org.drools.planner.examples.itc2007.examination.domain.Examination;
 import org.drools.planner.core.solution.Solution;
@@ -20,8 +21,8 @@ public class ExaminationOutputConvertor extends AbstractOutputConvertor {
         new ExaminationOutputConvertor().convertAll();
     }
 
-    protected String getExampleDirName() {
-        return "itc2007/examination";
+    public ExaminationOutputConvertor() {
+        super(new ExaminationDaoImpl());
     }
 
     @Override

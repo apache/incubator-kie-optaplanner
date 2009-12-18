@@ -6,8 +6,8 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.config.XmlSolverConfigurer;
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.planner.examples.common.persistence.SolutionDao;
+import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
 
 /**
  * @author Geoffrey De Smet
@@ -24,7 +24,7 @@ public class NQueensSmokeTest extends TestCase {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
         Solver solver = configurer.buildSolver();
-        SolutionDao solutionDao = new XstreamSolutionDaoImpl();
+        SolutionDao solutionDao = new NQueensDaoImpl();
         Solution startingSolution = solutionDao.readSolution(getClass().getResourceAsStream(UNSOLVED_DATA));
         solver.setStartingSolution(startingSolution);
         solver.solve();

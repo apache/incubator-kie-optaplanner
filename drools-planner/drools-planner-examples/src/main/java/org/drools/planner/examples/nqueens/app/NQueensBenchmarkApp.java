@@ -3,6 +3,7 @@ package org.drools.planner.examples.nqueens.app;
 import java.io.File;
 
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
+import org.drools.planner.examples.nqueens.domain.NQueens;
 
 /**
  * @author Geoffrey De Smet
@@ -19,7 +20,7 @@ public class NQueensBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public NQueensBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
-        super(solverBenchmarkConfig, resultFile);
+        super(solverBenchmarkConfig, resultFile, NQueens.class);
     }
 
 }

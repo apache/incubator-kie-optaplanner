@@ -2,7 +2,10 @@ package org.drools.planner.examples.travelingtournament.app.simple;
 
 import org.drools.planner.config.XmlSolverConfigurer;
 import org.drools.planner.core.Solver;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.app.AbstractTravelingTournamentApp;
+import org.drools.planner.examples.travelingtournament.persistence.simple.SimpleTravelingTournamentDaoImpl;
+import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentDaoImpl;
 
 /**
  * @author Geoffrey De Smet
@@ -17,14 +20,15 @@ public class SimpleTravelingTournamentApp extends AbstractTravelingTournamentApp
     }
 
     @Override
+    protected SolutionDao createSolutionDao() {
+        return new SimpleTravelingTournamentDaoImpl();
+    }
+
+    @Override
     protected Solver createSolver() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
         return configurer.buildSolver();
     }
 
-    @Override
-    protected String getExampleDirName() {
-        return "travelingtournament/simple";
-    }
 }

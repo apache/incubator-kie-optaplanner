@@ -18,16 +18,20 @@ public abstract class AbstractInputConvertor extends LoggingMain {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = ".txt";
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";
+    
+    protected SolutionDao solutionDao;
+
+    protected AbstractInputConvertor(SolutionDao solutionDao) {
+        this.solutionDao = solutionDao;
+    }
 
     protected File getInputDir() {
-        return new File("data/" + getExampleDirName() + "/input/");
+        return new File(solutionDao.getDataDir(), "input");
     }
 
     protected File getOutputDir() {
-        return new File("data/" + getExampleDirName() + "/unsolved/");
+        return new File(solutionDao.getDataDir(), "unsolved");
     }
-
-    protected abstract String getExampleDirName();
 
     protected String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;
@@ -40,7 +44,6 @@ public abstract class AbstractInputConvertor extends LoggingMain {
     public void convertAll() {
         File inputDir = getInputDir();
         File outputDir = getOutputDir();
-        XstreamSolutionDaoImpl solutionDao = new XstreamSolutionDaoImpl();
         File[] inputFiles = inputDir.listFiles();
         if (inputFiles == null) {
             throw new IllegalArgumentException(

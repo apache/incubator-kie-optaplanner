@@ -3,7 +3,9 @@ package org.drools.planner.examples.manners2009.app;
 import org.drools.planner.config.XmlSolverConfigurer;
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.app.CommonApp;
+import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.manners2009.persistence.Manners2009DaoImpl;
 import org.drools.planner.examples.manners2009.swingui.Manners2009Panel;
 
 /**
@@ -19,15 +21,15 @@ public class Manners2009App extends CommonApp {
     }
 
     @Override
+    protected SolutionDao createSolutionDao() {
+        return new Manners2009DaoImpl();
+    }
+
+    @Override
     protected Solver createSolver() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
         return configurer.buildSolver();
-    }
-
-    @Override
-    protected String getExampleDirName() {
-        return "manners2009";
     }
 
     @Override
