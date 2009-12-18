@@ -44,7 +44,7 @@ public abstract class AbstractInputConvertor extends LoggingMain {
         File[] inputFiles = inputDir.listFiles();
         if (inputFiles == null) {
             throw new IllegalArgumentException(
-                    "Your working dir should be drools-solver-examples and contain: " + inputDir);
+                    "Your working dir should be drools-planner-examples and contain: " + inputDir);
         }
         Arrays.sort(inputFiles);
         for (File inputFile : inputFiles) {

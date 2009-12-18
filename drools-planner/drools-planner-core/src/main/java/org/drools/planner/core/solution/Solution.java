@@ -11,7 +11,7 @@ import org.drools.planner.core.Solver;
  * A Solution does not even have to be initialized with a possible solution.
  * <p/>
  * A Solution is mutable.
- * Drools-solver will continiously modify the same solution for scalibility reasons
+ * Drools Planner will continuously modify the same solution for scalability reasons
  * and clone it to recall the best solution.
  * @author Geoffrey De Smet
  */
@@ -19,7 +19,7 @@ public interface Solution {
 
     /**
      * Returns the Score of this Solution.
-     * @return null if the Solution is unitialized
+     * @return null if the Solution is uninitialized
      * or the last calculated Score is dirty the new Score has not yet been recalculated
      */
     Score getScore();

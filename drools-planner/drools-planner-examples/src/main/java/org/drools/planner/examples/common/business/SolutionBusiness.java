@@ -51,12 +51,12 @@ public class SolutionBusiness {
         unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
-                    + ") does not exist. The working directory should be set to drools-solver-examples.");
+                    + ") does not exist. The working directory should be set to drools-planner-examples.");
         }
         solvedDataDir = new File(dataDir, "solved");
         if (!solvedDataDir.exists()) {
             throw new IllegalStateException("The directory solvedDataDir (" + solvedDataDir.getAbsolutePath()
-                    + ") does not exist. The working directory should be set to drools-solver-examples.");
+                    + ") does not exist. The working directory should be set to drools-planner-examples.");
         }
     }
 
