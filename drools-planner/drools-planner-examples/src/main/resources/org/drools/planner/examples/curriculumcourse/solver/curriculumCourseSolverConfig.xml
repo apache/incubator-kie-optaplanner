@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
-    <scoreDrl>/org/drools/planner/examples/itc2007/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+    <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
-    <startingSolutionInitializerClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
+    <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
     <termination>
         <!--
             Official benchmark maximumSecondsSpend allowed on:
@@ -20,15 +20,15 @@
             <topSize>10</topSize>
         </selector>
         <selector>
-            <moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
             <relativeSelection>0.002</relativeSelection>
         </selector>
         <selector>
-            <moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
             <relativeSelection>0.002</relativeSelection>
         </selector>
         <selector>
-            <moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
             <relativeSelection>0.002</relativeSelection>
         </selector>
     </selector>
@@ -42,15 +42,15 @@
     <!-- Great deluge experiments: -->
     <!--<selector>-->
     <!--<selector>-->
-    <!--<moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
+    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
     <!--<relativeSelection>0.002</relativeSelection>-->
     <!--</selector>-->
     <!--<selector>-->
-    <!--<moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
+    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
     <!--<relativeSelection>0.002</relativeSelection>-->
     <!--</selector>-->
     <!--<selector>-->
-    <!--<moveFactoryClass>org.drools.planner.examples.itc2007.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
     <!--<shuffle>true</shuffle>-->
     <!--</selector>-->
     <!--</selector>-->
