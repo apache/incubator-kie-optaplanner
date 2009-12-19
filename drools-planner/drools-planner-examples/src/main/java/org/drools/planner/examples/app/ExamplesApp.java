@@ -6,7 +6,7 @@ import org.drools.planner.examples.nqueens.app.NQueensApp;
 import org.drools.planner.examples.lessonschedule.app.LessonScheduleApp;
 import org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp;
 import org.drools.planner.examples.itc2007.examination.app.ExaminationApp;
-import org.drools.planner.examples.itc2007.curriculumcourse.app.CurriculumCourseApp;
+import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.manners2009.app.Manners2009App;
 
 /**
