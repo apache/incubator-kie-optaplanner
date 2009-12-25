@@ -2,12 +2,14 @@ package org.drools.planner.examples.pas.domain;
 
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 /**
  * @author Geoffrey De Smet
  */
+@XStreamAlias("Patient")
 public class Patient extends AbstractPersistable implements Comparable<Patient> {
 
     private String name;

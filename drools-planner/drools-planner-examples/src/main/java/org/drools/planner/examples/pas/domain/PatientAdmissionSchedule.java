@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.Score;
@@ -15,6 +16,7 @@ import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 /**
  * @author Geoffrey De Smet
  */
+@XStreamAlias("PatientAdmissionSchedule")
 public class PatientAdmissionSchedule extends AbstractPersistable implements Solution {
 
     private List<Specialism> specialismList;
