@@ -4,9 +4,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner</artifactId>
-      <version>5.1.0.SNAPSHOT</version>
+        <groupId>org.drools.planner</groupId>
+        <artifactId>drools-planner</artifactId>
+        <version>5.1.0.SNAPSHOT</version>
     </parent>
 
     <artifactId>drools-planner-core</artifactId>

@@ -43,7 +43,6 @@
         <module>drools-planner-examples</module>
     </modules>
 
-    <!-- Uncomment to depend on a stable release of drools-api, drools-core and drools-compiler -->
     <dependencyManagement>
     </dependencyManagement>
 
