@@ -1,44 +1,44 @@
-<NQueens id="1">
+<org.drools.planner.examples.nqueens.domain.NQueens id="1">
   <queenList id="2">
-    <Queen id="3">
+    <org.drools.planner.examples.nqueens.domain.Queen id="3">
       <x>0</x>
       <y>4</y>
       <id>0</id>
-    </Queen>
-    <Queen id="4">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="4">
       <x>1</x>
       <y>6</y>
       <id>1</id>
-    </Queen>
-    <Queen id="5">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="5">
       <x>2</x>
       <y>1</y>
       <id>2</id>
-    </Queen>
-    <Queen id="6">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="6">
       <x>3</x>
       <y>5</y>
       <id>3</id>
-    </Queen>
-    <Queen id="7">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="7">
       <x>4</x>
       <y>2</y>
       <id>4</id>
-    </Queen>
-    <Queen id="8">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="8">
       <x>5</x>
       <y>0</y>
       <id>5</id>
-    </Queen>
-    <Queen id="9">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="9">
       <x>6</x>
       <y>7</y>
       <id>6</id>
-    </Queen>
-    <Queen id="10">
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="10">
       <x>7</x>
       <y>3</y>
       <id>7</id>
-    </Queen>
+    </org.drools.planner.examples.nqueens.domain.Queen>
   </queenList>
-</NQueens>
+</org.drools.planner.examples.nqueens.domain.NQueens>
