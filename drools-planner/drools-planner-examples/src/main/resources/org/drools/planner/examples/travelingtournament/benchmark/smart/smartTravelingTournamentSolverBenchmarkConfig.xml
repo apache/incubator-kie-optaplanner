@@ -17,10 +17,10 @@
         <selector>
             <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
-        <accepter>
+        <acceptor>
             <completeSolutionTabuSize>1500</completeSolutionTabuSize>
             <completeMoveTabuSize>7</completeMoveTabuSize>
-        </accepter>
+        </acceptor>
         <forager>
             <foragerType>MAX_SCORE_OF_ALL</foragerType>
         </forager>
@@ -52,151 +52,151 @@
             <!--<termination>-->
                 <!--<maximumMinutesSpend>2</maximumMinutesSpend>-->
             <!--</termination>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>10</completeSolutionTabuSize>-->
                 <!--<completeMoveTabuSize>10</completeMoveTabuSize>-->
                 <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeMoveTabuSize>20</completeMoveTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeMoveTabuSize>30</completeMoveTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeMoveTabuSize>40</completeMoveTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeUndoMoveTabuSize>30</completeUndoMoveTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completePropertyTabuSize>20</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completePropertyTabuSize>40</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
 
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
                 <!--<completeMoveTabuSize>5</completeMoveTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
                 <!--<completeMoveTabuSize>30</completeMoveTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
                 <!--<completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
                 <!--<completeUndoMoveTabuSize>30</completeUndoMoveTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
                 <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
                 <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
 
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeMoveTabuSize>30</completeMoveTabuSize>-->
                 <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeUndoMoveTabuSize>30</completeUndoMoveTabuSize>-->
                 <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
                 <!--<completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>-->
                 <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
     <!--<solverBenchmark>-->
         <!--<localSearchSolver>-->
-            <!--<accepter>-->
+            <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
                 <!--<completeUndoMoveTabuSize>30</completeUndoMoveTabuSize>-->
                 <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</accepter>-->
+            <!--</acceptor>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
 </solverBenchmarkSuite>

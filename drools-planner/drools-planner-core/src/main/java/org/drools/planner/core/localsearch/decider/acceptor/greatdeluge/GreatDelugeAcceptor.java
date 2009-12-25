@@ -1,16 +1,16 @@
-package org.drools.planner.core.localsearch.decider.accepter.greatdeluge;
+package org.drools.planner.core.localsearch.decider.acceptor.greatdeluge;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
-import org.drools.planner.core.localsearch.decider.accepter.AbstractAccepter;
+import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
 /**
- * TODO Under construction. Feel free to create a patch to improve this accepter!
+ * TODO Under construction. Feel free to create a patch to improve this acceptor!
  * @author Geoffrey De Smet
  */
-public class GreatDelugeAccepter extends AbstractAccepter {
+public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     protected final double waterLevelUpperBoundRate;
     protected final double waterRisingRate;
@@ -19,7 +19,7 @@ public class GreatDelugeAccepter extends AbstractAccepter {
 
     protected Score waterLevelScore = null;
 
-    public GreatDelugeAccepter(double waterLevelUpperBoundRate, double waterRisingRate) {
+    public GreatDelugeAcceptor(double waterLevelUpperBoundRate, double waterRisingRate) {
         this.waterLevelUpperBoundRate = waterLevelUpperBoundRate;
         this.waterRisingRate = waterRisingRate;
     }

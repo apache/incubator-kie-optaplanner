@@ -37,11 +37,11 @@
                     <relativeSelection>0.002</relativeSelection>
                 </selector>
             </selector>
-            <accepter>
+            <acceptor>
                 <completeSolutionTabuSize>1500</completeSolutionTabuSize>
                 <!--<completeSolutionTabuSize>500</completeSolutionTabuSize>-->
                 <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-            </accepter>
+            </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>

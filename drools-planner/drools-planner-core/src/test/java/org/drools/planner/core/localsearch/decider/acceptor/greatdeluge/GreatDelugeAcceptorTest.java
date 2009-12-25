@@ -1,4 +1,4 @@
-package org.drools.planner.core.localsearch.decider.accepter.greatdeluge;
+package org.drools.planner.core.localsearch.decider.acceptor.greatdeluge;
 
 import java.util.Random;
 
@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
-import org.drools.planner.core.localsearch.decider.accepter.Accepter;
+import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.move.DummyMove;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
@@ -15,16 +15,16 @@ import org.drools.planner.core.score.definition.SimpleScoreDefinition;
 /**
  * @author Geoffrey De Smet
  */
-public class GreatDelugeAccepterTest extends TestCase {
+public class GreatDelugeAcceptorTest extends TestCase {
 
     public void testCalculateAcceptChance() {
         // Setup
-        Accepter accepter = new GreatDelugeAccepter(1.20, 0.01);
+        Acceptor acceptor = new GreatDelugeAcceptor(1.20, 0.01);
         LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
-        accepter.solvingStarted(localSearchSolverScope);
+        acceptor.solvingStarted(localSearchSolverScope);
         StepScope stepScope = new StepScope(localSearchSolverScope);
         stepScope.setStepIndex(0);
-        accepter.beforeDeciding(stepScope);
+        acceptor.beforeDeciding(stepScope);
         // Pre conditions
         MoveScope a1 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-2000));
         MoveScope a2 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1300));
@@ -34,20 +34,20 @@ public class GreatDelugeAccepterTest extends TestCase {
         MoveScope c1 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1100));
         MoveScope c2 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-120));
         // Do stuff
-        assertEquals(0.0, accepter.calculateAcceptChance(a1));
-        assertEquals(0.0, accepter.calculateAcceptChance(a2));
-        assertEquals(1.0, accepter.calculateAcceptChance(a3));
+        assertEquals(0.0, acceptor.calculateAcceptChance(a1));
+        assertEquals(0.0, acceptor.calculateAcceptChance(a2));
+        assertEquals(1.0, acceptor.calculateAcceptChance(a3));
         // TODO reable a thorough test of great deluge
-//        accepter.stepTaken(stepScope);
-//        assertEquals(0.0, accepter.calculateAcceptChance(b1));
-//        assertEquals(1.0, accepter.calculateAcceptChance(b2));
-//        accepter.stepTaken(stepScope);
-//        assertEquals(0.0, accepter.calculateAcceptChance(c1));
-//        accepter.stepTaken(stepScope);
-//        assertEquals(1.0, accepter.calculateAcceptChance(c2));
-//        accepter.stepTaken(stepScope);
+//        acceptor.stepTaken(stepScope);
+//        assertEquals(0.0, acceptor.calculateAcceptChance(b1));
+//        assertEquals(1.0, acceptor.calculateAcceptChance(b2));
+//        acceptor.stepTaken(stepScope);
+//        assertEquals(0.0, acceptor.calculateAcceptChance(c1));
+//        acceptor.stepTaken(stepScope);
+//        assertEquals(1.0, acceptor.calculateAcceptChance(c2));
+//        acceptor.stepTaken(stepScope);
 //        // Post conditions
-//        accepter.solvingEnded(localSearchSolverScope);
+//        acceptor.solvingEnded(localSearchSolverScope);
     }
 
     private LocalSearchSolverScope createLocalSearchSolverScope() {

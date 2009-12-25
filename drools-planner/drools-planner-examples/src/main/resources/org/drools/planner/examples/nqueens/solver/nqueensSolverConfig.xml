@@ -14,9 +14,9 @@
         <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
         <!-- Real world problems require to use of <relativeSelection> or <absoluteSelection>. -->
     </selector>
-    <accepter>
+    <acceptor>
         <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-    </accepter>
+    </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>

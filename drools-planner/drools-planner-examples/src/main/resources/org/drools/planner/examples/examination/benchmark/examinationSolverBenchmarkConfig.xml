@@ -52,10 +52,10 @@
                     <relativeSelection>0.002</relativeSelection>
                 </selector>
             </selector>
-            <accepter>
+            <acceptor>
                 <completeSolutionTabuSize>500</completeSolutionTabuSize>
                 <completePropertyTabuSize>10</completePropertyTabuSize>
-            </accepter>
+            </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
@@ -81,10 +81,10 @@
                     <relativeSelection>0.004</relativeSelection>
                 </selector>
             </selector>
-            <accepter>
+            <acceptor>
                 <completeSolutionTabuSize>500</completeSolutionTabuSize>
                 <completePropertyTabuSize>10</completePropertyTabuSize>
-            </accepter>
+            </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
@@ -110,10 +110,10 @@
                     <relativeSelection>0.002</relativeSelection>
                 </selector>
             </selector>
-            <accepter>
+            <acceptor>
                 <completeSolutionTabuSize>500</completeSolutionTabuSize>
                 <completeMoveTabuSize>7</completeMoveTabuSize>
-            </accepter>
+            </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
@@ -136,10 +136,10 @@
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
                 </selector>
             </selector>
-            <accepter>
+            <acceptor>
                 <completeSolutionTabuSize>500</completeSolutionTabuSize>
                 <completePropertyTabuSize>10</completePropertyTabuSize>
-            </accepter>
+            </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
@@ -162,9 +162,9 @@
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
                 </selector>
             </selector>
-            <accepter>
-                <accepterType>SIMULATED_ANNEALING</accepterType>
-            </accepter>
+            <acceptor>
+                <acceptorType>SIMULATED_ANNEALING</acceptorType>
+            </acceptor>
             <forager>
                 <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
             </forager>

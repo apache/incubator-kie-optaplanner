@@ -39,7 +39,7 @@ public interface ScoreDefinition<S extends Score> {
 
     /**
      * @TODO rename because
-     *       org.drools.planner.core.localsearch.decider.accepter.simulatedannealing.SimulatedAnnealingAccepter
+     *       org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor
      *       also uses it
      * @param startScore never null
      * @param endScore never null

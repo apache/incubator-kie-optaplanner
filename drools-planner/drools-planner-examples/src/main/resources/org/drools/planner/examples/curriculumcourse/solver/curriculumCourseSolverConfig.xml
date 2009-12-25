@@ -32,10 +32,10 @@
             <relativeSelection>0.002</relativeSelection>
         </selector>
     </selector>
-    <accepter>
+    <acceptor>
         <completePropertyTabuSize>10</completePropertyTabuSize>
         <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-    </accepter>
+    </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
@@ -54,11 +54,11 @@
     <!--<shuffle>true</shuffle>-->
     <!--</selector>-->
     <!--</selector>-->
-    <!--<accepter>-->
+    <!--<acceptor>-->
     <!--<greatDelugeWaterLevelUpperBoundRate>1.30</greatDelugeWaterLevelUpperBoundRate>-->
     <!--<greatDelugeWaterRisingRate>0.000000143</greatDelugeWaterRisingRate>-->
     <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-    <!--</accepter>-->
+    <!--</acceptor>-->
     <!--<forager>-->
     <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
     <!--</forager>-->

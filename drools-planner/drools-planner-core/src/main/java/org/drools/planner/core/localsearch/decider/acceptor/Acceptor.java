@@ -1,15 +1,15 @@
-package org.drools.planner.core.localsearch.decider.accepter;
+package org.drools.planner.core.localsearch.decider.acceptor;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverLifecycleListener;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 
 /**
- * An Accepter accepts or rejects a selected move for the Decider.
- * Notice that the Forager can still ignore the advice of the Accepter.
- * @see AbstractAccepter
+ * An Acceptor accepts or rejects a selected move for the Decider.
+ * Notice that the Forager can still ignore the advice of the Acceptor.
+ * @see AbstractAcceptor
  * @author Geoffrey De Smet
  */
-public interface Accepter extends LocalSearchSolverLifecycleListener {
+public interface Acceptor extends LocalSearchSolverLifecycleListener {
 
     /**
      * @param moveScope not null

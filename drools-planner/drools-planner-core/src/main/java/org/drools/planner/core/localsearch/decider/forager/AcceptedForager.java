@@ -7,13 +7,14 @@ import java.util.ListIterator;
 
 import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 
 /**
  * An AcceptedForager is a Forager which forages accepted moves and ignores unaccepted moves.
- * @See Forager
- * @See Accepter
+ * @see Forager
+ * @see Acceptor
  * @author Geoffrey De Smet
  */
 public class AcceptedForager extends AbstractForager {

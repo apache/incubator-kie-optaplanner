@@ -13,9 +13,9 @@
     <selector>
         <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
     </selector>
-    <accepter>
+    <acceptor>
         <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-    </accepter>
+    </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
         <!--<foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>-->

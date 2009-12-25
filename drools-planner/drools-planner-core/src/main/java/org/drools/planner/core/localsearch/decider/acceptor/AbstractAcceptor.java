@@ -1,4 +1,4 @@
-package org.drools.planner.core.localsearch.decider.accepter;
+package org.drools.planner.core.localsearch.decider.acceptor;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.StepScope;
@@ -6,11 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract superclass for {@link Accepter}.
- * @see Accepter
+ * Abstract superclass for {@link Acceptor}.
+ * @see Acceptor
  * @author Geoffrey De Smet
  */
-public abstract class AbstractAccepter implements Accepter {
+public abstract class AbstractAcceptor implements Acceptor {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

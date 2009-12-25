@@ -225,3 +225,14 @@ Before:
      <maximumHouresSpend>2</maximumHouresSpend>
 After:
      <maximumHoursSpend>2</maximumHoursSpend>
+
+
+Accepter has been renamed to Acceptor
+Before:
+    <accepter>
+        ...
+    </accepter>
+After:
+    <acceptor>
+        ...
+    </acceptor>

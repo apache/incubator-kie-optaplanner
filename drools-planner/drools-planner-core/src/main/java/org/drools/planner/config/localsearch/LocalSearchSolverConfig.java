@@ -13,7 +13,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.planner.config.localsearch.decider.accepter.AccepterConfig;
+import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.planner.config.localsearch.decider.selector.SelectorConfig;
 import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
@@ -51,8 +51,8 @@ public class LocalSearchSolverConfig {
             = new DeciderScoreComparatorFactoryConfig();
     @XStreamAlias("selector")
     private SelectorConfig selectorConfig = new SelectorConfig();
-    @XStreamAlias("accepter")
-    private AccepterConfig accepterConfig = new AccepterConfig();
+    @XStreamAlias("acceptor")
+    private AcceptorConfig acceptorConfig = new AcceptorConfig();
     @XStreamAlias("forager")
     private ForagerConfig foragerConfig = new ForagerConfig();
 
@@ -121,12 +121,12 @@ public class LocalSearchSolverConfig {
         this.selectorConfig = selectorConfig;
     }
 
-    public AccepterConfig getAccepterConfig() {
-        return accepterConfig;
+    public AcceptorConfig getAcceptorConfig() {
+        return acceptorConfig;
     }
 
-    public void setAccepterConfig(AccepterConfig accepterConfig) {
-        this.accepterConfig = accepterConfig;
+    public void setAcceptorConfig(AcceptorConfig acceptorConfig) {
+        this.acceptorConfig = acceptorConfig;
     }
 
     public ForagerConfig getForagerConfig() {
@@ -211,7 +211,7 @@ public class LocalSearchSolverConfig {
         DefaultDecider decider = new DefaultDecider();
         decider.setDeciderScoreComparator(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
         decider.setSelector(selectorConfig.buildSelector());
-        decider.setAccepter(accepterConfig.buildAccepter());
+        decider.setAcceptor(acceptorConfig.buildAcceptor());
         decider.setForager(foragerConfig.buildForager());
         return decider;
     }
@@ -256,10 +256,10 @@ public class LocalSearchSolverConfig {
         } else if (inheritedConfig.getSelectorConfig() != null) {
             selectorConfig.inherit(inheritedConfig.getSelectorConfig());
         }
-        if (accepterConfig == null) {
-            accepterConfig = inheritedConfig.getAccepterConfig();
-        } else if (inheritedConfig.getAccepterConfig() != null) {
-            accepterConfig.inherit(inheritedConfig.getAccepterConfig());
+        if (acceptorConfig == null) {
+            acceptorConfig = inheritedConfig.getAcceptorConfig();
+        } else if (inheritedConfig.getAcceptorConfig() != null) {
+            acceptorConfig.inherit(inheritedConfig.getAcceptorConfig());
         }
         if (foragerConfig == null) {
             foragerConfig = inheritedConfig.getForagerConfig();

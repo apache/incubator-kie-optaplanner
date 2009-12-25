@@ -1,4 +1,4 @@
-package org.drools.planner.config.localsearch.decider.accepter;
+package org.drools.planner.config.localsearch.decider.acceptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,25 +6,25 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang.ObjectUtils;
-import org.drools.planner.core.localsearch.decider.accepter.Accepter;
-import org.drools.planner.core.localsearch.decider.accepter.CompositeAccepter;
-import org.drools.planner.core.localsearch.decider.accepter.greatdeluge.GreatDelugeAccepter;
-import org.drools.planner.core.localsearch.decider.accepter.simulatedannealing.SimulatedAnnealingAccepter;
-import org.drools.planner.core.localsearch.decider.accepter.tabu.MoveTabuAccepter;
-import org.drools.planner.core.localsearch.decider.accepter.tabu.PropertyTabuAccepter;
-import org.drools.planner.core.localsearch.decider.accepter.tabu.SolutionTabuAccepter;
+import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.tabu.PropertyTabuAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
 
 /**
  * @author Geoffrey De Smet
  */
-@XStreamAlias("accepter")
-public class AccepterConfig {
+@XStreamAlias("acceptor")
+public class AcceptorConfig {
 
-    private Accepter accepter = null; // TODO make into a list
-    private Class<Accepter> accepterClass = null;
+    private Acceptor acceptor = null; // TODO make into a list
+    private Class<Acceptor> acceptorClass = null;
 
-    @XStreamImplicit(itemFieldName = "accepterType")
-    private List<AccepterType> accepterTypeList = null;
+    @XStreamImplicit(itemFieldName = "acceptorType")
+    private List<AcceptorType> acceptorTypeList = null;
 
     protected Integer completeMoveTabuSize = null;
     protected Integer partialMoveTabuSize = null;
@@ -38,28 +38,28 @@ public class AccepterConfig {
     protected Double greatDelugeWaterLevelUpperBoundRate = null;
     protected Double greatDelugeWaterRisingRate = null;
 
-    public Accepter getAccepter() {
-        return accepter;
+    public Acceptor getAcceptor() {
+        return acceptor;
     }
 
-    public void setAccepter(Accepter accepter) {
-        this.accepter = accepter;
+    public void setAcceptor(Acceptor acceptor) {
+        this.acceptor = acceptor;
     }
 
-    public Class<Accepter> getAccepterClass() {
-        return accepterClass;
+    public Class<Acceptor> getAcceptorClass() {
+        return acceptorClass;
     }
 
-    public void setAccepterClass(Class<Accepter> accepterClass) {
-        this.accepterClass = accepterClass;
+    public void setAcceptorClass(Class<Acceptor> acceptorClass) {
+        this.acceptorClass = acceptorClass;
     }
 
-    public List<AccepterType> getAccepterTypeList() {
-        return accepterTypeList;
+    public List<AcceptorType> getAcceptorTypeList() {
+        return acceptorTypeList;
     }
 
-    public void setAccepterTypeList(List<AccepterType> accepterTypeList) {
-        this.accepterTypeList = accepterTypeList;
+    public void setAcceptorTypeList(List<AcceptorType> acceptorTypeList) {
+        this.acceptorTypeList = acceptorTypeList;
     }
 
     public Integer getCompleteMoveTabuSize() {
@@ -138,110 +138,110 @@ public class AccepterConfig {
     // Builder methods
     // ************************************************************************
 
-    public Accepter buildAccepter() {
-        List<Accepter> accepterList = new ArrayList<Accepter>();
-        if (accepter != null) {
-            accepterList.add(accepter);
+    public Acceptor buildAcceptor() {
+        List<Acceptor> acceptorList = new ArrayList<Acceptor>();
+        if (acceptor != null) {
+            acceptorList.add(acceptor);
         }
-        if (accepterClass != null) {
+        if (acceptorClass != null) {
             try {
-                accepterList.add(accepterClass.newInstance());
+                acceptorList.add(acceptorClass.newInstance());
             } catch (InstantiationException e) {
-                throw new IllegalArgumentException("accepterClass (" + accepterClass.getName()
+                throw new IllegalArgumentException("acceptorClass (" + acceptorClass.getName()
                         + ") does not have a public no-arg constructor", e);
             } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("accepterClass (" + accepterClass.getName()
+                throw new IllegalArgumentException("acceptorClass (" + acceptorClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
         }
 
-        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.MOVE_TABU))
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.MOVE_TABU))
                 || completeMoveTabuSize != null || partialMoveTabuSize != null) {
-            MoveTabuAccepter moveTabuAccepter = new MoveTabuAccepter();
-            moveTabuAccepter.setUseUndoMoveAsTabuMove(false);
+            MoveTabuAcceptor moveTabuAcceptor = new MoveTabuAcceptor();
+            moveTabuAcceptor.setUseUndoMoveAsTabuMove(false);
             if (completeMoveTabuSize != null) {
-                moveTabuAccepter.setCompleteTabuSize(completeMoveTabuSize);
+                moveTabuAcceptor.setCompleteTabuSize(completeMoveTabuSize);
             }
             if (partialMoveTabuSize != null) {
-                moveTabuAccepter.setPartialTabuSize(partialMoveTabuSize);
+                moveTabuAcceptor.setPartialTabuSize(partialMoveTabuSize);
             }
-            accepterList.add(moveTabuAccepter);
+            acceptorList.add(moveTabuAcceptor);
         }
-        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.UNDO_MOVE_TABU))
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.UNDO_MOVE_TABU))
                 || completeUndoMoveTabuSize != null || partialUndoMoveTabuSize != null) {
-            MoveTabuAccepter undoMoveTabuAccepter = new MoveTabuAccepter();
-            undoMoveTabuAccepter.setUseUndoMoveAsTabuMove(true);
+            MoveTabuAcceptor undoMoveTabuAcceptor = new MoveTabuAcceptor();
+            undoMoveTabuAcceptor.setUseUndoMoveAsTabuMove(true);
             if (completeUndoMoveTabuSize != null) {
-                undoMoveTabuAccepter.setCompleteTabuSize(completeUndoMoveTabuSize);
+                undoMoveTabuAcceptor.setCompleteTabuSize(completeUndoMoveTabuSize);
             }
             if (partialUndoMoveTabuSize != null) {
-                undoMoveTabuAccepter.setPartialTabuSize(partialUndoMoveTabuSize);
+                undoMoveTabuAcceptor.setPartialTabuSize(partialUndoMoveTabuSize);
             }
-            accepterList.add(undoMoveTabuAccepter);
+            acceptorList.add(undoMoveTabuAcceptor);
         }
-        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.PROPERTY_TABU))
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PROPERTY_TABU))
                 || completePropertyTabuSize != null || partialPropertyTabuSize != null) {
-            PropertyTabuAccepter propertyTabuAccepter = new PropertyTabuAccepter();
+            PropertyTabuAcceptor propertyTabuAcceptor = new PropertyTabuAcceptor();
             if (completePropertyTabuSize != null) {
-                propertyTabuAccepter.setCompleteTabuSize(completePropertyTabuSize);
+                propertyTabuAcceptor.setCompleteTabuSize(completePropertyTabuSize);
             }
             if (partialPropertyTabuSize != null) {
-                propertyTabuAccepter.setPartialTabuSize(partialPropertyTabuSize);
+                propertyTabuAcceptor.setPartialTabuSize(partialPropertyTabuSize);
             }
-            accepterList.add(propertyTabuAccepter);
+            acceptorList.add(propertyTabuAcceptor);
         }
-        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.SOLUTION_TABU))
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SOLUTION_TABU))
                 || completeSolutionTabuSize != null || partialSolutionTabuSize != null) {
-            SolutionTabuAccepter solutionTabuAccepter = new SolutionTabuAccepter();
+            SolutionTabuAcceptor solutionTabuAcceptor = new SolutionTabuAcceptor();
             if (completeSolutionTabuSize != null) {
-                solutionTabuAccepter.setCompleteTabuSize(completeSolutionTabuSize);
+                solutionTabuAcceptor.setCompleteTabuSize(completeSolutionTabuSize);
             }
             if (partialSolutionTabuSize != null) {
-                solutionTabuAccepter.setPartialTabuSize(partialSolutionTabuSize);
+                solutionTabuAcceptor.setPartialTabuSize(partialSolutionTabuSize);
             }
-            accepterList.add(solutionTabuAccepter);
+            acceptorList.add(solutionTabuAcceptor);
         }
-        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.SIMULATED_ANNEALING))) {
-            SimulatedAnnealingAccepter simulatedAnnealingAccepter = new SimulatedAnnealingAccepter();
-            accepterList.add(simulatedAnnealingAccepter);
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))) {
+            SimulatedAnnealingAcceptor simulatedAnnealingAcceptor = new SimulatedAnnealingAcceptor();
+            acceptorList.add(simulatedAnnealingAcceptor);
         }
-        if ((accepterTypeList != null && accepterTypeList.contains(AccepterType.GREAT_DELUGE))
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
                 || greatDelugeWaterLevelUpperBoundRate != null || greatDelugeWaterRisingRate != null) {
             double waterLevelUpperBoundRate = (Double) ObjectUtils.defaultIfNull(
                     greatDelugeWaterLevelUpperBoundRate, 1.20);
             double waterRisingRate = (Double) ObjectUtils.defaultIfNull(
                     greatDelugeWaterRisingRate, 0.0000001);
-            accepterList.add(new GreatDelugeAccepter(waterLevelUpperBoundRate, waterRisingRate));
+            acceptorList.add(new GreatDelugeAcceptor(waterLevelUpperBoundRate, waterRisingRate));
         }
-        if (accepterList.size() == 1) {
-            return accepterList.get(0);
-        } else if (accepterList.size() > 1) {
-            CompositeAccepter compositeAccepter = new CompositeAccepter();
-            compositeAccepter.setAccepterList(accepterList);
-            return compositeAccepter;
+        if (acceptorList.size() == 1) {
+            return acceptorList.get(0);
+        } else if (acceptorList.size() > 1) {
+            CompositeAcceptor compositeAcceptor = new CompositeAcceptor();
+            compositeAcceptor.setAcceptorList(acceptorList);
+            return compositeAcceptor;
         } else {
-            SolutionTabuAccepter solutionTabuAccepter = new SolutionTabuAccepter();
-            solutionTabuAccepter.setCompleteTabuSize(1500); // TODO number pulled out of thin air
-            return solutionTabuAccepter;
+            SolutionTabuAcceptor solutionTabuAcceptor = new SolutionTabuAcceptor();
+            solutionTabuAcceptor.setCompleteTabuSize(1500); // TODO number pulled out of thin air
+            return solutionTabuAcceptor;
         }
     }
 
-    public void inherit(AccepterConfig inheritedConfig) {
-        // inherited accepters get compositely added
-        if (accepter == null) {
-            accepter = inheritedConfig.getAccepter();
+    public void inherit(AcceptorConfig inheritedConfig) {
+        // inherited acceptors get compositely added
+        if (acceptor == null) {
+            acceptor = inheritedConfig.getAcceptor();
         }
-        if (accepterClass == null) {
-            accepterClass = inheritedConfig.getAccepterClass();
+        if (acceptorClass == null) {
+            acceptorClass = inheritedConfig.getAcceptorClass();
         }
-        if (accepterTypeList == null) {
-            accepterTypeList = inheritedConfig.getAccepterTypeList();
+        if (acceptorTypeList == null) {
+            acceptorTypeList = inheritedConfig.getAcceptorTypeList();
         } else {
-            List<AccepterType> inheritedAccepterTypeList = inheritedConfig.getAccepterTypeList();
-            if (inheritedAccepterTypeList != null) {
-                for (AccepterType accepterType : inheritedAccepterTypeList) {
-                    if (!accepterTypeList.contains(accepterType)) {
-                        accepterTypeList.add(accepterType);
+            List<AcceptorType> inheritedAcceptorTypeList = inheritedConfig.getAcceptorTypeList();
+            if (inheritedAcceptorTypeList != null) {
+                for (AcceptorType acceptorType : inheritedAcceptorTypeList) {
+                    if (!acceptorTypeList.contains(acceptorType)) {
+                        acceptorTypeList.add(acceptorType);
                     }
                 }
             }
@@ -272,7 +272,7 @@ public class AccepterConfig {
         }
     }
 
-    public static enum AccepterType {
+    public static enum AcceptorType {
         MOVE_TABU,
         UNDO_MOVE_TABU,
         PROPERTY_TABU,

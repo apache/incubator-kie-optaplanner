@@ -1,4 +1,4 @@
-package org.drools.planner.core.localsearch.decider.accepter.tabu;
+package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
 import java.util.Collection;
 

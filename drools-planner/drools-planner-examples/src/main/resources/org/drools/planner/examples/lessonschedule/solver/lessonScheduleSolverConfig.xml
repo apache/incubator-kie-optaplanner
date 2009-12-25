@@ -10,9 +10,9 @@
     <selector>
         <moveFactoryClass>org.drools.planner.examples.lessonschedule.solver.move.factory.LessonScheduleMoveFactory</moveFactoryClass>
     </selector>
-    <accepter>
+    <acceptor>
         <completeUndoMoveTabuSize>10</completeUndoMoveTabuSize>
-    </accepter>
+    </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>

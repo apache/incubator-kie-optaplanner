@@ -1,4 +1,4 @@
-package org.drools.planner.core.localsearch.decider.accepter.tabu;
+package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -10,7 +10,7 @@ import org.drools.planner.core.move.Move;
 /**
  * @author Geoffrey De Smet
  */
-public class MoveTabuAccepter extends AbstractTabuAccepter {
+public class MoveTabuAcceptor extends AbstractTabuAcceptor {
 
     protected boolean useUndoMoveAsTabuMove = true;
 

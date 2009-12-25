@@ -41,11 +41,11 @@
             <relativeSelection>0.002</relativeSelection>
         </selector>
     </selector>
-    <accepter>
+    <acceptor>
         <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
         <completeSolutionTabuSize>500</completeSolutionTabuSize>
         <completePropertyTabuSize>10</completePropertyTabuSize>
-    </accepter>
+    </acceptor>
     <forager>
         <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
     </forager>
@@ -53,9 +53,9 @@
         <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
         <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
     <!--</selector>-->
-    <!--<accepter>-->
-        <!--<accepterType>SIMULATED_ANNEALING</accepterType>-->
-    <!--</accepter>-->
+    <!--<acceptor>-->
+        <!--<acceptorType>SIMULATED_ANNEALING</acceptorType>-->
+    <!--</acceptor>-->
     <!--<forager>-->
         <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
     <!--</forager>-->

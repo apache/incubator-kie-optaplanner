@@ -1,7 +1,6 @@
-package org.drools.planner.core.localsearch.decider.accepter.tabu;
+package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
@@ -9,12 +8,7 @@ import org.drools.planner.core.localsearch.decider.MoveScope;
 /**
  * @author Geoffrey De Smet
  */
-public class SolutionTabuAccepter extends AbstractTabuAccepter {
-
-    public SolutionTabuAccepter() {
-        // Disable aspiration by default because it's useless on solution tabu
-        aspirationEnabled = false;
-    }
+public class PropertyTabuAcceptor extends AbstractTabuAcceptor {
 
     // ************************************************************************
     // Worker methods
@@ -22,13 +16,14 @@ public class SolutionTabuAccepter extends AbstractTabuAccepter {
 
     @Override
     protected Collection<? extends Object> findTabu(MoveScope moveScope) {
-        return Collections.singletonList(moveScope.getWorkingSolution());
+        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) moveScope.getMove();
+        return tabuPropertyEnabled.getTabuProperties();
     }
 
     @Override
     protected Collection<? extends Object> findNewTabu(StepScope stepScope) {
-        // TODO this should be better done in stepTaken
-        return Collections.singletonList(stepScope.createOrGetClonedSolution());
+        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) stepScope.getStep();
+        return tabuPropertyEnabled.getTabuProperties();
     }
-    
+
 }

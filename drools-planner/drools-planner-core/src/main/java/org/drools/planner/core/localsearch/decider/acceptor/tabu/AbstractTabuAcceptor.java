@@ -1,4 +1,4 @@
-package org.drools.planner.core.localsearch.decider.accepter.tabu;
+package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,15 +10,15 @@ import java.util.Map;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
-import org.drools.planner.core.localsearch.decider.accepter.AbstractAccepter;
-import org.drools.planner.core.localsearch.decider.accepter.Accepter;
+import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 
 /**
- * Abstract superclass for all TabuAccepters.
- * @see Accepter
+ * Abstract superclass for all Tabu Acceptors.
+ * @see Acceptor
  * @author Geoffrey De Smet
  */
-public abstract class AbstractTabuAccepter extends AbstractAccepter {
+public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     protected int completeTabuSize = -1;
     protected int partialTabuSize = 0;

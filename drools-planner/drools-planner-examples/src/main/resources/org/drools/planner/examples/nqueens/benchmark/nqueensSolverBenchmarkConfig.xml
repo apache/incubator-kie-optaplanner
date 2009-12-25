@@ -22,9 +22,9 @@
     <solverBenchmark>
         <name>Move tabu</name>
         <localSearchSolver>
-            <accepter>
+            <acceptor>
                 <completeMoveTabuSize>5</completeMoveTabuSize>
-            </accepter>
+            </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
@@ -33,9 +33,9 @@
     <solverBenchmark>
         <name>Undo move tabu</name>
         <localSearchSolver>
-            <accepter>
+            <acceptor>
                 <completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>
-            </accepter>
+            </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
@@ -44,9 +44,9 @@
     <solverBenchmark>
         <name>Solution tabu</name>
         <localSearchSolver>
-            <accepter>
+            <acceptor>
                 <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-            </accepter>
+            </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>

@@ -12,9 +12,9 @@
     <selector>
         <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
     </selector>
-    <accepter>
+    <acceptor>
         <completeSolutionTabuSize>10</completeSolutionTabuSize>
-    </accepter>
+    </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>

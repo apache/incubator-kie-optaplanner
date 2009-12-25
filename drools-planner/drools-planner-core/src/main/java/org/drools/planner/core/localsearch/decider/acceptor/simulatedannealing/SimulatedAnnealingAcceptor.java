@@ -1,15 +1,15 @@
-package org.drools.planner.core.localsearch.decider.accepter.simulatedannealing;
+package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
 import org.drools.planner.core.localsearch.decider.MoveScope;
-import org.drools.planner.core.localsearch.decider.accepter.AbstractAccepter;
+import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.score.Score;
 
 /**
- * TODO Under construction. Feel free to create a patch to improve this accepter!
+ * TODO Under construction. Feel free to create a patch to improve this acceptor!
  * @author Geoffrey De Smet
  */
-public class SimulatedAnnealingAccepter extends AbstractAccepter {
+public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     protected boolean compareToBestScore = false;
 
