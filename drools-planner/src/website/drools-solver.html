@@ -2,104 +2,10 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>Drools Solver</title>
+        <title>Drools Solver has been renamed to Drools Planner</title>
     </head>
     <body>
-        <h1>Drools Solver solves planning problems</h1>
-        <ul>
-            <li><a href="drools-solver.html#WhatIsDroolsSolver">What is Drools Solver?</a></li>
-            <li><a href="drools-solver.html#Features">Features</a></li>
-            <li><a href="drools-solver.html#LearnMore">Learn more</a></li>
-        </ul>
-        <!-- ############################################################## -->
-        <h2><a name="WhatIsDroolsSolver">What is Drools Solver?</a></h2>
-        <p>
-            Drools Solver automatically assigns the resources of planning problems within a given amount of time.
-            Such planning problems include:
-        </p>
-        <ul>
-            <li>Employee shift rostering</li>
-            <li>Freight routing</li>
-            <li>Supply sorting</li>
-            <li>Lesson scheduling</li>
-            <li>Exam scheduling</li>
-            <li>Bin packaging</li>
-            <li>...</li>
-        </ul>
-        <p>
-            In the screenshot below, Drools Solver assigns beds to hospital patients.
-        </p>
-        <img src="drools-solver-screenshot.png" alt="Drools Solver screenshot"/>
-        <p>
-            Every planning problem has a bunch of custom constraints.
-            In the example above, these constraints include:
-        </p>
-        <ul>
-            <li>Do not assign a male patient to a female only room.</li>
-            <li>If a patient requires specific equipment, assign him/her a room with such equipment.</li>
-            <li>If a patient prefers specific equipment, try to assign him/her a room with such equipment.</li>
-            <li>If a patient prefers a single room, try to assign him/her a single room.</li>
-            <li>...</li>
-        </ul>
-        <!-- ############################################################## -->
-        <h2><a name="Features">Features</a></h2>
-        <ul>
-            <li>
-                <p>Constraints are defined as score rules in DRL (see Drools Expert). For example:</p>
-<pre>// If a patient prefers specific equipment, try to assign him/her a room with such equipment.
-rule "preferredPatientEquipment"
-    when
-        $preferredPatientEquipment : PreferredPatientEquipment($patient : patient, $equipment : equipment);
-        $bedDesignation : BedDesignation(patient == $patient, $room : room);
-        not RoomEquipment(room == $room, equipment == $equipment);
-    then
-        ...
-end</pre>
-                <p>Advantages include:</p>
-                <ul>
-                    <li>Adding more constraints is easy and scalable.</li>
-                    <li>The DRL syntax allows for powerful pattern matching.</li>
-                    <li>Delta based score calculation and other performance optimizations come for free.</li>
-                    <li>Each constraint is defined separately and independently.</li>
-                    <li>Little or no changes to your domain objects: compatible with JPA, Bean Validation, ...</li>
-                    <li>Constraints can be weighted. The weight can even depend on the domain objects involved.</li>
-                    <li>You can use an out of the box Score implementation (SimpleScore, HardAndSoftScore) or implement a custom Score.</li>
-                </ul>
-            </li>
-            <li>
-                <p>
-                    The solver algorithms is configured.
-                    It searches through the solutions within a given amount of time and return the best solution found.
-                </p>
-                <ul>
-                    <li>The tabu search implementation supports solution tabu, move tabu and property tabu.</li>
-                    <li>There is a simulated annealing and a great deluge implementation.</li>
-                    <li>Plain local search (hill climbing) is also possible.</li>
-                    <li>It is easy to switch the solver algorithm, by simply changing the configuration.</li>
-                    <li>The Benchmarker class allows you to play out several configurations against each other and pick the best one.</li>
-                </ul>
-            </li>
-            <li>
-                <p>
-                    Drools Solver is part of the Drools community.
-                </p>
-                <ul>
-                    <li>Drools Solver, like Drools, is open source software under the Apache Software License.</li>
-                    <li>There are many examples included in the download, ranging from easy to advanced.</li>
-                    <li>The reference manual explains everything in detail.</li>
-                </ul>
-            </li>
-        </ul>
-        <p>
-
-        </p>
-        <!-- #################################################### -->
-        <h2><a name="LearnMore">Learn more</a></h2>
-        <p>Continue to learn more about Drools Solver:</p>
-        <ul>
-            <li><a href="http://labs.jboss.com/drools/documentation.html">Read the reference manual.</a></li>
-            <li><a href="http://www.jboss.org/drools/downloads.html">Download it and try the examples yourself.</a></li>
-            <li><a href="http://blog.athico.com/search/label/solver">Read the blog (filtered on Drools Solver).</a></li>
-        </ul>
+        <h1>Drools Solver has been renamed to Drools Planner</h1>
+        <p><a href="drools-planner.html">Click here to go to the Drools Planner website.</a></p>
     </body>
 </html>
