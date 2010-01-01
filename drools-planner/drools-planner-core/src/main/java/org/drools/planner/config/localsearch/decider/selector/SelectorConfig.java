@@ -24,6 +24,7 @@ public class SelectorConfig {
     private Class<MoveFactory> moveFactoryClass = null;
     protected Boolean shuffle = null;
     protected Double relativeSelection = null;
+    protected Integer absoluteSelection = null;
 
     private Integer topSize = null;
 
@@ -67,6 +68,14 @@ public class SelectorConfig {
         this.relativeSelection = relativeSelection;
     }
 
+    public Integer getAbsoluteSelection() {
+        return absoluteSelection;
+    }
+
+    public void setAbsoluteSelection(Integer absoluteSelection) {
+        this.absoluteSelection = absoluteSelection;
+    }
+
     public Integer getTopSize() {
         return topSize;
     }
@@ -108,10 +117,13 @@ public class SelectorConfig {
             if (shuffle != null) {
                 selector.setShuffle(shuffle.booleanValue());
             } else {
-                selector.setShuffle(relativeSelection != null);
+                selector.setShuffle(relativeSelection != null || absoluteSelection != null);
             }
             if (relativeSelection != null) {
                 selector.setRelativeSelection(relativeSelection);
+            }
+            if (absoluteSelection != null) {
+                selector.setAbsoluteSelection(absoluteSelection);
             }
             return selector;
         } else if (topSize != null) {
@@ -143,6 +155,9 @@ public class SelectorConfig {
         }
         if (relativeSelection == null) {
             relativeSelection = inheritedConfig.getRelativeSelection();
+        }
+        if (absoluteSelection == null) {
+            absoluteSelection = inheritedConfig.getAbsoluteSelection();
         }
         if (topSize == null) {
             topSize = inheritedConfig.getTopSize();

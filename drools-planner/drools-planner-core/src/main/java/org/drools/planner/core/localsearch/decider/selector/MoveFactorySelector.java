@@ -18,6 +18,7 @@ public class MoveFactorySelector extends AbstractSelector {
 
     protected boolean shuffle = true;
     protected Double relativeSelection = null;
+    protected Integer absoluteSelection = null;
 
     public void setMoveFactory(MoveFactory moveFactory) {
         this.moveFactory = moveFactory;
@@ -32,6 +33,14 @@ public class MoveFactorySelector extends AbstractSelector {
         if (relativeSelection < 0.0 || relativeSelection > 1.0) {
             throw new IllegalArgumentException( "The selector's relativeSelection (" + relativeSelection
                     + ") is not in the range [0.0,1.0].");
+        }
+    }
+
+    public void setAbsoluteSelection(Integer absoluteSelection) {
+        this.absoluteSelection = absoluteSelection;
+        if (absoluteSelection < 1) {
+            throw new IllegalArgumentException( "The selector's absoluteSelection (" + absoluteSelection
+                    + ") must be at least 1.");
         }
     }
 
@@ -66,6 +75,11 @@ public class MoveFactorySelector extends AbstractSelector {
                 selectionSize = 1;
             }
             moveList = moveList.subList(0, selectionSize);
+        }
+        if (absoluteSelection != null) {
+            if (moveList.size() > absoluteSelection) {
+                moveList = moveList.subList(0, absoluteSelection);
+            }
         }
         return moveList;
     }
