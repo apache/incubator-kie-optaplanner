@@ -25,15 +25,15 @@
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
+                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
+                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
+                    <absoluteSelection>500</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>

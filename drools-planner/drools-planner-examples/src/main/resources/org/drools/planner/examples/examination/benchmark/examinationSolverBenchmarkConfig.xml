@@ -170,4 +170,33 @@
             </forager>
         </localSearchSolver>
     </solverBenchmark>
+    <solverBenchmark>
+        <name>absolute500_solutionTabu500_propertyTabu10</name>
+        <localSearchSolver>
+            <deciderScoreComparatorFactory>
+                <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+            </deciderScoreComparatorFactory>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+                    <absoluteSelection>500</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+                    <absoluteSelection>500</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+                    <absoluteSelection>500</absoluteSelection>
+                </selector>
+            </selector>
+            <acceptor>
+                <completeSolutionTabuSize>500</completeSolutionTabuSize>
+                <completePropertyTabuSize>10</completePropertyTabuSize>
+            </acceptor>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
 </solverBenchmarkSuite>
