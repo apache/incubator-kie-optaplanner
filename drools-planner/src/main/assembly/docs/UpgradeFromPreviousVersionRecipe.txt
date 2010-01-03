@@ -219,6 +219,8 @@ Before in *.java, *.drl:
 After in *.java, *.drl:
     import org.drools.planner...
 
+Note that the Solver interface and several related classes have NOT been renamed to Planner (yet).
+
 
 TerminationConfig's maximumHouresSpend renamed to maximumHoursSpend
 Before:
