@@ -23,7 +23,7 @@ import org.drools.planner.examples.travelingtournament.domain.TravelingTournamen
 import org.drools.planner.examples.travelingtournament.solver.simple.move.DayChangeMove;
 
 /**
- * TODO this code is highly unoptimzed
+ * TODO this code is highly unoptimized
  * @author Geoffrey De Smet
  */
 public class TravelingTournamentPanel extends SolutionPanel {

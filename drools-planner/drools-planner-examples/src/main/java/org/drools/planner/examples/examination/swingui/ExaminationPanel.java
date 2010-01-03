@@ -24,7 +24,7 @@ import org.drools.planner.examples.examination.solver.move.PeriodChangeMove;
 import org.drools.planner.examples.examination.solver.move.RoomChangeMove;
 
 /**
- * TODO this code is highly unoptimzed
+ * TODO this code is highly unoptimized
  * @author Geoffrey De Smet
  */
 public class ExaminationPanel extends SolutionPanel {

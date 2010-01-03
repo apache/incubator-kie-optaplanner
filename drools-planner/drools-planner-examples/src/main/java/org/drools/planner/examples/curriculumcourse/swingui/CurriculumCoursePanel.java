@@ -24,7 +24,7 @@ import org.drools.planner.examples.curriculumcourse.solver.move.PeriodChangeMove
 import org.drools.planner.examples.curriculumcourse.solver.move.RoomChangeMove;
 
 /**
- * TODO this code is highly unoptimzed
+ * TODO this code is highly unoptimized
  * @author Geoffrey De Smet
  */
 public class CurriculumCoursePanel extends SolutionPanel {
