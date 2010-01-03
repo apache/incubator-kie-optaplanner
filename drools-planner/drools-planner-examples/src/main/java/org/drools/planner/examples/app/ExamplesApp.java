@@ -30,7 +30,6 @@ public class ExamplesApp extends JFrame {
     public static void main(String[] args) {
         ExamplesApp examplesApp = new ExamplesApp();
         examplesApp.pack();
-        examplesApp.setLocationRelativeTo(null);
         examplesApp.setVisible(true);
     }
 
