@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,7 +64,7 @@ public class WorkflowFrame extends JFrame {
         registerSolverEventListener();
         constraintScoreMapDialog = new ConstraintScoreMapDialog(this);
         constraintScoreMapDialog.setSolutionBusiness(solutionBusiness);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void registerSolverEventListener() {
@@ -162,7 +164,6 @@ public class WorkflowFrame extends JFrame {
     }
 
     private void setSolvingState(boolean solving) {
-        setDefaultCloseOperation(solving ? JFrame.DO_NOTHING_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
         for (Action action : loadUnsolvedActionList) {
             action.setEnabled(!solving);
         }
