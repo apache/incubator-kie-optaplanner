@@ -30,7 +30,7 @@ public class DefaultDecider implements Decider {
     protected Acceptor acceptor;
     protected Forager forager;
 
-    protected boolean verifyUndoMoveIsUncorrupted = false;
+    protected boolean assertUndoMoveIsUncorrupted = false;
 
     public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
         this.localSearchSolver = localSearchSolver;
@@ -61,8 +61,8 @@ public class DefaultDecider implements Decider {
         this.forager = forager;
     }
 
-    public void setVerifyUndoMoveIsUncorrupted(boolean verifyUndoMoveIsUncorrupted) {
-        this.verifyUndoMoveIsUncorrupted = verifyUndoMoveIsUncorrupted;
+    public void setAssertUndoMoveIsUncorrupted(boolean assertUndoMoveIsUncorrupted) {
+        this.assertUndoMoveIsUncorrupted = assertUndoMoveIsUncorrupted;
     }
 
     // ************************************************************************
@@ -117,7 +117,7 @@ public class DefaultDecider implements Decider {
         move.doMove(workingMemory);
         processMove(moveScope);
         undoMove.doMove(workingMemory);
-        if (verifyUndoMoveIsUncorrupted) {
+        if (assertUndoMoveIsUncorrupted) {
             Score undoScore = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
             if (!undoScore.equals(moveScope.getStepScope().getLocalSearchSolverScope()
                     .getLastCompletedStepScope().getScore())) {

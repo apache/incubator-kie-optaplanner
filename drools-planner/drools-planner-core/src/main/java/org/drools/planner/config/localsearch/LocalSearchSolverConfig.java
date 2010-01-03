@@ -24,6 +24,7 @@ import org.drools.planner.core.localsearch.LocalSearchSolver;
 import org.drools.planner.core.localsearch.bestsolution.BestSolutionRecaller;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.DefaultDecider;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.initializer.StartingSolutionInitializer;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
@@ -33,7 +34,11 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 @XStreamAlias("localSearchSolver")
 public class LocalSearchSolverConfig {
 
-    private Long randomSeed = null;
+    // Warning: all fields are null (and not defaulted) because they can be inherited
+    // and also because the input config file should match the output config file
+
+    private Long randomSeed = null; // TODO remove me, use environmentMode instead
+    private EnvironmentMode environmentMode = null;
 
     @XStreamImplicit(itemFieldName = "scoreDrl")
     private List<String> scoreDrlList = null;
@@ -44,7 +49,9 @@ public class LocalSearchSolverConfig {
     private Class<StartingSolutionInitializer> startingSolutionInitializerClass = null;
 
     @XStreamAlias("termination")
-    private TerminationConfig terminationConfig = new TerminationConfig(); // TODO this new is pointless due to xstream
+    // TODO this new TerminationConfig is pointless due to xstream
+    // TODO but maybe we should be able to use the config API directly too
+    private TerminationConfig terminationConfig = new TerminationConfig();
 
     @XStreamAlias("deciderScoreComparatorFactory")
     private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig
@@ -66,6 +73,14 @@ public class LocalSearchSolverConfig {
 
     public List<String> getScoreDrlList() {
         return scoreDrlList;
+    }
+
+    public EnvironmentMode getEnvironmentMode() {
+        return environmentMode;
+    }
+
+    public void setEnvironmentMode(EnvironmentMode environmentMode) {
+        this.environmentMode = environmentMode;
     }
 
     public void setScoreDrlList(List<String> scoreDrlList) {
@@ -209,6 +224,9 @@ public class LocalSearchSolverConfig {
 
     private Decider buildDecider() {
         DefaultDecider decider = new DefaultDecider();
+        if (environmentMode == EnvironmentMode.DEBUG) {
+            decider.setAssertUndoMoveIsUncorrupted(true);
+        }
         decider.setDeciderScoreComparator(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
         decider.setSelector(selectorConfig.buildSelector());
         decider.setAcceptor(acceptorConfig.buildAcceptor());
@@ -219,6 +237,9 @@ public class LocalSearchSolverConfig {
     public void inherit(LocalSearchSolverConfig inheritedConfig) {
         if (randomSeed == null) {
             randomSeed = inheritedConfig.getRandomSeed();
+        }
+        if (environmentMode == null) {
+            environmentMode = inheritedConfig.getEnvironmentMode();
         }
         if (scoreDrlList == null) {
             scoreDrlList = inheritedConfig.getScoreDrlList();
@@ -266,6 +287,43 @@ public class LocalSearchSolverConfig {
         } else if (inheritedConfig.getForagerConfig() != null) {
             foragerConfig.inherit(inheritedConfig.getForagerConfig());
         }
+    }
+
+    /**
+     * The environment mode is Debug, reproducible (the default) or production.
+     */
+    public enum EnvironmentMode {
+        /**
+         * The debug mode is reproducible (see the reproducible mode)
+         * and also turns on assertions (such as {@link DefaultDecider#assertUndoMoveIsUncorrupted})
+         * to fail-fast on a bug in a {@link Move} implementation, a score rule, ...
+         * <p>
+         * The debug mode is slow.
+         */
+        DEBUG,
+        /**
+         * The reproducible mode is the default mode because it is recommended during development.
+         * In this mode, 2 runs on the same computer will execute the same code in the same order.
+         * They will also yield the same result, except if they use a time based termination
+         * and they have a sufficiently large difference in allocated CPU time.
+         * <p>
+         * The reproducible mode is not much slower than the production mode.
+         * </p>
+         * In practice, this mode uses the default random seed,
+         * and it also disables certain concurrency optimizations (such as work stealing).
+         * TODO: JBRULES-681 Multi-threaded support which implement those concurrency optimizations
+         */
+        REPRODUCIBLE,
+        /**
+         * The production mode is the fastest and the most robust, but not reproducible.
+         * It is recommended for a production environment.
+         * <p>
+         * The random seed is different on every run, which makes it more robust against an unlucky random seed.
+         * An unlucky random seed gives a bad result on a certain data set with a certain solver configuration.
+         * Note that in most use cases the impact of the random seed is relatively low on the result.
+         * An occasional bad result is far more likely caused by another issue (such as a score trap).
+         */
+        PRODUCTION
     }
 
 }

@@ -13,7 +13,7 @@ From 5.0.0 to 5.0.1
 -------------------
 
 A score is no longer a double, now it's a Score instance,
-because a SimpleScore is now just an int and a HardAndSoftScore is now 2 seperated ints.
+because a SimpleScore is now just an int and a HardAndSoftScore is now 2 separated ints.
 
 
 In the Solver interface, the return type of the getBestScore() method changed:
@@ -238,3 +238,18 @@ After:
     <acceptor>
         ...
     </acceptor>
+
+
+The method DefaultDecider.setAssertUndoMoveIsUncorrupted() has been renamed.
+Use the EnvironmentMode debug instead.
+Before in *.java:
+    (DefaultDecider ((DefaultLocalSearchSolver) solver).getDecider()).setVerifyUndoMoveIsUncorrupted(true);
+Before in *.xml:
+    <localSearchSolver>
+        ...
+    </localSearchSolver>
+After in *.xml:
+    <localSearchSolver>
+        <environmentMode>DEBUG</environmentMode>
+        ...
+    </localSearchSolver>
