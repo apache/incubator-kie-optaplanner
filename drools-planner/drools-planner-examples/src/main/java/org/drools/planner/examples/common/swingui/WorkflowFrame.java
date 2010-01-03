@@ -81,6 +81,7 @@ public class WorkflowFrame extends JFrame {
     public void init() {
         setContentPane(createContentPane());
         pack();
+        setLocationRelativeTo(null);
     }
 
     private JPanel createContentPane() {
