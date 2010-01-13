@@ -1,8 +1,15 @@
 <projectDescription>
   <name>drools-planner-core</name>
-  <comment>Drools solver solves planning problems by combining a search algorithm with the power of the drools rule engine.
-        This is the drools-planner-core module which contains the search algorithms.</comment>
-  <projects/>
+  <comment>Drools Planner optimizes automated planning
+        by combining metaheuristic search algorithms
+        with rule engine powered score calculation.
+        This is the drools-planner-core module
+        which contains metaheuristic algorithms.</comment>
+  <projects>
+    <project>drools-api</project>
+    <project>drools-compiler</project>
+    <project>drools-core</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

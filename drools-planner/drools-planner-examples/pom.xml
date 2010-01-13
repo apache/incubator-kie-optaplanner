@@ -70,35 +70,40 @@
         <!-- External dependencies -->
         <!-- Commons -->
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+           <groupId>org.apache.commons</groupId>
+           <artifactId>com.springsource.org.apache.commons.lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
+           <groupId>org.apache.commons</groupId>
+           <artifactId>com.springsource.org.apache.commons.io</artifactId>
         </dependency>
 
         <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <scope>compile</scope>
-            <!-- Because of direct use for the namespaced logging config -->
-        </dependency>
+            <dependency>  
+             <groupId>org.slf4j</groupId>  
+             <artifactId>com.springsource.slf4j.api</artifactId>  
+             <version>1.5.10</version>
+            </dependency>    
+          
+            <dependency>  
+             <groupId>org.slf4j</groupId>  
+             <artifactId>com.springsource.slf4j.log4j</artifactId>  
+             <version>1.5.3</version> 
+             <scope>runtime</scope>
+            </dependency>      
+          
+            <dependency>  
+             <groupId>org.apache.log4j</groupId>  
+             <artifactId>com.springsource.org.apache.log4j</artifactId>  
+             <version>1.2.15</version> 
+             <scope>compile</scope>
+             <!-- Because of direct use for the namespaced logging config -->
+            </dependency>  
 
         <!-- Xstream -->
         <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
+              <groupId>com.thoughtworks.xstream</groupId>  
+              <artifactId>com.springsource.com.thoughtworks.xstream</artifactId> 
         </dependency>
 
         <!-- Benchmarker statistic graphs -->
