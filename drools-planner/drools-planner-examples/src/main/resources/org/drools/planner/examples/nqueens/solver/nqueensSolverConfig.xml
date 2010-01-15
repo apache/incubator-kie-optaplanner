@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
+    <!--<environmentMode>DEBUG</environmentMode>-->
     <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
