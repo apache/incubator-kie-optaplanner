@@ -1,116 +1,100 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.drools.planner</groupId>
-        <artifactId>drools-planner</artifactId>
-        <version>5.1.0.SNAPSHOT</version>
-    </parent>
-
-    <artifactId>drools-planner-examples</artifactId>
-    <packaging>jar</packaging>
-    <name>Drools :: Planner examples</name>
-    <description>
-        Drools Planner optimizes automated planning
-        by combining metaheuristic search algorithms
-        with rule engine powered score calculation.
-        This is the drools-planner-examples module
-        which contains examples on how to use Drools Planner.
-    </description>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addClasspath>true</addClasspath>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <configuration>
-                        <classpathScope>runtime</classpathScope>                        
-                        <executable>${JAVA_HOME}/bin/java</executable>
-                        <arguments>
-                            <argument>-Xms256m</argument>
-                            <argument>-Xmx512m</argument>
-                            <argument>-server</argument>
-                            <argument>-classpath</argument>
-                            <classpath/>
-                            <argument>${exec.mainClass}</argument>
-                            <!-- Program arguments can be set at mvn exec:exec -->
-                            <argument>${exec.programArgs}</argument>
-                        </arguments>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-    <properties>
-        <!-- default is a workaround for http://jira.codehaus.org/browse/MEXEC-35 -->
-        <exec.programArgs>default</exec.programArgs>
-    </properties>
-
-    <dependencies>
-        <!-- Internal dependencies -->
-        <dependency>
-            <groupId>org.drools.planner</groupId>
-            <artifactId>drools-planner-core</artifactId>
-        </dependency>
-
-        <!-- External dependencies -->
-        <!-- Commons -->
-        <dependency>
-           <groupId>org.apache.commons</groupId>
-           <artifactId>com.springsource.org.apache.commons.lang</artifactId>
-        </dependency>
-        <dependency>
-           <groupId>org.apache.commons</groupId>
-           <artifactId>com.springsource.org.apache.commons.io</artifactId>
-        </dependency>
-
-        <!-- Logging -->
-            <dependency>  
-             <groupId>org.slf4j</groupId>  
-             <artifactId>com.springsource.slf4j.api</artifactId>  
-             <version>1.5.10</version>
-            </dependency>    
-          
-            <dependency>  
-             <groupId>org.slf4j</groupId>  
-             <artifactId>com.springsource.slf4j.log4j</artifactId>  
-             <version>1.5.3</version> 
-             <scope>runtime</scope>
-            </dependency>      
-          
-            <dependency>  
-             <groupId>org.apache.log4j</groupId>  
-             <artifactId>com.springsource.org.apache.log4j</artifactId>  
-             <version>1.2.15</version> 
-             <scope>compile</scope>
-             <!-- Because of direct use for the namespaced logging config -->
-            </dependency>  
-
-        <!-- Xstream -->
-        <dependency>
-              <groupId>com.thoughtworks.xstream</groupId>  
-              <artifactId>com.springsource.com.thoughtworks.xstream</artifactId> 
-        </dependency>
-
-        <!-- Benchmarker statistic graphs -->
-        <dependency>
-          <groupId>jfree</groupId>
-          <artifactId>jfreechart</artifactId>
-        </dependency>
-    </dependencies>
-
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner</artifactId>
+      <version>5.1.0.SNAPSHOT</version>
+   </parent>
+   <artifactId>drools-planner-examples</artifactId>
+   <packaging>jar</packaging>
+   <name>Drools :: Planner examples</name>
+   <description>Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
+   engine powered score calculation. This is the drools-planner-examples module which contains examples on how to use
+   Drools Planner.</description>
+   <build>
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <configuration>
+                  <archive>
+                     <manifest>
+                        <addClasspath>true</addClasspath>
+                     </manifest>
+                  </archive>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>exec-maven-plugin</artifactId>
+               <configuration>
+                  <classpathScope>runtime</classpathScope>
+                  <executable>${JAVA_HOME}/bin/java</executable>
+                  <arguments>
+                     <argument>-Xms256m</argument>
+                     <argument>-Xmx512m</argument>
+                     <argument>-server</argument>
+                     <argument>-classpath</argument>
+                     <classpath />
+                     <argument>${exec.mainClass}</argument>
+                     <!-- Program arguments can be set at mvn exec:exec -->
+                     <argument>${exec.programArgs}</argument>
+                  </arguments>
+               </configuration>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+   <properties>
+      <!-- default is a workaround for http://jira.codehaus.org/browse/MEXEC-35 -->
+      <exec.programArgs>default</exec.programArgs>
+   </properties>
+   <dependencies>
+      <!-- Internal dependencies -->
+      <dependency>
+         <groupId>org.drools.planner</groupId>
+         <artifactId>drools-planner-core</artifactId>
+      </dependency>
+      <!-- External dependencies -->
+      <!-- Commons -->
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+      </dependency>
+      <!-- Logging -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>1.5.10</version>
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-log4j12</artifactId>
+         <version>1.5.3</version>
+         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+         <groupId>log4j</groupId>
+         <artifactId>log4j</artifactId>
+         <scope>compile</scope>
+         <!-- Because of direct use for the namespaced logging config -->
+      </dependency>
+      <!-- Xstream -->
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+      </dependency>
+      <!-- Benchmarker statistic graphs -->
+      <dependency>
+         <groupId>jfree</groupId>
+         <artifactId>jfreechart</artifactId>
+      </dependency>
+   </dependencies>
 </project>

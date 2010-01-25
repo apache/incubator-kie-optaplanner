@@ -1,10 +1,8 @@
 <projectDescription>
   <name>drools-planner-core</name>
-  <comment>Drools Planner optimizes automated planning
-        by combining metaheuristic search algorithms
-        with rule engine powered score calculation.
-        This is the drools-planner-core module
-        which contains metaheuristic algorithms.</comment>
+  <comment>Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
+   engine powered score calculation. This is the drools-planner-core module which contains metaheuristic
+   algorithms.</comment>
   <projects>
     <project>drools-api</project>
     <project>drools-compiler</project>

@@ -1,10 +1,8 @@
 <projectDescription>
   <name>drools-planner-examples</name>
-  <comment>Drools Planner optimizes automated planning
-        by combining metaheuristic search algorithms
-        with rule engine powered score calculation.
-        This is the drools-planner-examples module
-        which contains examples on how to use Drools Planner.</comment>
+  <comment>Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
+   engine powered score calculation. This is the drools-planner-examples module which contains examples on how to use
+   Drools Planner.</comment>
   <projects>
     <project>drools-api</project>
     <project>drools-compiler</project>
