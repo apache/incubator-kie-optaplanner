@@ -290,7 +290,12 @@ public class LocalSearchSolverConfig {
     }
 
     /**
-     * The environment mode is Debug, reproducible (the default) or production.
+     * A solver has a single Random instance. Some solver configurations use the Random instance a lot more than others.
+     * For example simulated annealing depends highly on random numbers,
+     * while tabu search only depends on it to deal with score ties.
+     * The environment mode influences the seed of that Random instance.
+     * <p/>
+     * The environment mode also allows you to detect common bugs in your implementation.
      */
     public enum EnvironmentMode {
         /**
@@ -306,6 +311,8 @@ public class LocalSearchSolverConfig {
          * In this mode, 2 runs on the same computer will execute the same code in the same order.
          * They will also yield the same result, except if they use a time based termination
          * and they have a sufficiently large difference in allocated CPU time.
+         * This allows you to benchmark new optimizations (such as a new move implementation
+         * or a different absoluteSelection setting) fairly.
          * <p>
          * The reproducible mode is not much slower than the production mode.
          * </p>
