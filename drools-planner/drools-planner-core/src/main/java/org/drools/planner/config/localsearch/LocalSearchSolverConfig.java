@@ -33,12 +33,14 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
  */
 @XStreamAlias("localSearchSolver")
 public class LocalSearchSolverConfig {
+    
+    private static final long DEFAULT_RANDOM_SEED = 0L;
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    private Long randomSeed = null; // TODO remove me, use environmentMode instead
     private EnvironmentMode environmentMode = null;
+    private Long randomSeed = null;
 
     @XStreamImplicit(itemFieldName = "scoreDrl")
     private List<String> scoreDrlList = null;
@@ -63,6 +65,14 @@ public class LocalSearchSolverConfig {
     @XStreamAlias("forager")
     private ForagerConfig foragerConfig = new ForagerConfig();
 
+    public EnvironmentMode getEnvironmentMode() {
+        return environmentMode;
+    }
+
+    public void setEnvironmentMode(EnvironmentMode environmentMode) {
+        this.environmentMode = environmentMode;
+    }
+
     public Long getRandomSeed() {
         return randomSeed;
     }
@@ -73,14 +83,6 @@ public class LocalSearchSolverConfig {
 
     public List<String> getScoreDrlList() {
         return scoreDrlList;
-    }
-
-    public EnvironmentMode getEnvironmentMode() {
-        return environmentMode;
-    }
-
-    public void setEnvironmentMode(EnvironmentMode environmentMode) {
-        this.environmentMode = environmentMode;
     }
 
     public void setScoreDrlList(List<String> scoreDrlList) {
@@ -158,10 +160,12 @@ public class LocalSearchSolverConfig {
 
     public LocalSearchSolver buildSolver() {
         DefaultLocalSearchSolver localSearchSolver = new DefaultLocalSearchSolver();
-        if (randomSeed != null) {
-            localSearchSolver.setRandomSeed(randomSeed);
-        } else {
-            localSearchSolver.setRandomSeed(0L);
+        if (environmentMode != EnvironmentMode.PRODUCTION) {
+            if (randomSeed != null) {
+                localSearchSolver.setRandomSeed(randomSeed);
+            } else {
+                localSearchSolver.setRandomSeed(DEFAULT_RANDOM_SEED);
+            }
         }
         localSearchSolver.setRuleBase(buildRuleBase());
         ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
@@ -235,11 +239,11 @@ public class LocalSearchSolverConfig {
     }
 
     public void inherit(LocalSearchSolverConfig inheritedConfig) {
-        if (randomSeed == null) {
-            randomSeed = inheritedConfig.getRandomSeed();
-        }
         if (environmentMode == null) {
             environmentMode = inheritedConfig.getEnvironmentMode();
+        }
+        if (randomSeed == null) {
+            randomSeed = inheritedConfig.getRandomSeed();
         }
         if (scoreDrlList == null) {
             scoreDrlList = inheritedConfig.getScoreDrlList();

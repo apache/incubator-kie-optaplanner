@@ -20,7 +20,7 @@ import org.drools.planner.core.AbstractSolver;
 public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSearchSolver,
         LocalSearchSolverLifecycleListener {
 
-    protected long randomSeed; // TODO refactor to AbstractSolver
+    protected Long randomSeed; // TODO refactor to AbstractSolver
 
     protected StartingSolutionInitializer startingSolutionInitializer = null; // TODO refactor to AbstractSolver
     protected BestSolutionRecaller bestSolutionRecaller;
@@ -138,8 +138,13 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
 
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         localSearchSolverScope.resetTimeMillisSpend();
-        logger.info("Solving with random seed ({}).", randomSeed);
-        localSearchSolverScope.setWorkingRandom(new Random(randomSeed));
+        if (randomSeed != null) {
+            logger.info("Solving with random seed ({}).", randomSeed);
+            localSearchSolverScope.setWorkingRandom(new Random(randomSeed));
+        } else {
+            logger.info("Solving without a fixed random seed.");
+            localSearchSolverScope.setWorkingRandom(new Random());
+        }
         if (startingSolutionInitializer != null) {
             if (!startingSolutionInitializer.isSolutionInitialized(localSearchSolverScope)) {
                 logger.info("Initializing solution.");
