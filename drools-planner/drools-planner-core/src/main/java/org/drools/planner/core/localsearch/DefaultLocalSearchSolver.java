@@ -142,7 +142,7 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
             logger.info("Solving with random seed ({}).", randomSeed);
             localSearchSolverScope.setWorkingRandom(new Random(randomSeed));
         } else {
-            logger.info("Solving without a fixed random seed.");
+            logger.info("Solving with a non-fixed random seed.");
             localSearchSolverScope.setWorkingRandom(new Random());
         }
         if (startingSolutionInitializer != null) {
