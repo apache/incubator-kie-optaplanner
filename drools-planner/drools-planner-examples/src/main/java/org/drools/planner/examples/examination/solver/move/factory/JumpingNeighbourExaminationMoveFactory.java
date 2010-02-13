@@ -53,11 +53,6 @@ public class JumpingNeighbourExaminationMoveFactory extends AbstractMoveFactory 
             roomJump = 1;
         }
         return moveList;
-        // TODO re-enable this stuff as it's a lot faster
-//        int maximumMoveSize = 100;
-//        // TODO not fair for first and last moves in move list
-//        int randomStart = localSearchSolver.getRandom().nextInt(moveList.size() - maximumMoveSize);
-//        return moveList.subList(randomStart, randomStart + maximumMoveSize).iterator();
     }
 
     public int calculateShortestDistance(int a, int b, int size) {
