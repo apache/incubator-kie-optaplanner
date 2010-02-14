@@ -64,7 +64,7 @@ public class MoveFactorySelector extends AbstractSelector {
         moveFactory.beforeDeciding(stepScope);
     }
 
-    public final List<Move> selectMoveList(StepScope stepScope) {
+    public List<Move> selectMoveList(StepScope stepScope) {
         List<Move> moveList = moveFactory.createMoveList(stepScope.getWorkingSolution());
         if (shuffle) {
             Collections.shuffle(moveList, stepScope.getWorkingRandom());

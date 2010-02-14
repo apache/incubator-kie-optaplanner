@@ -14,6 +14,10 @@ public abstract class CachedMoveFactory extends AbstractMoveFactory {
 
     protected List<Move> cachedMoveList;
 
+    public List<Move> getCachedMoveList() {
+        return cachedMoveList;
+    }
+
     @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
         cachedMoveList = createCachedMoveList(localSearchSolverScope.getWorkingSolution());
