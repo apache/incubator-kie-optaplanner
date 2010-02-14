@@ -28,7 +28,7 @@
         <!--<selector>-->
             <!--<topSize>10</topSize>-->
         <!--</selector>-->
-        <!--<selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>-->
+        <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
             <absoluteSelection>500</absoluteSelection>
