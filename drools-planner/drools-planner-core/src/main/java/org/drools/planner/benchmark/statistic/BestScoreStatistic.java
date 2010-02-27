@@ -181,6 +181,7 @@ public class BestScoreStatistic implements SolverStatistic {
 
     private Integer extractScoreAlias(Score score) {
         // TODO Plugging in other Score implementations instead of SimpleScore and HardAndSoftScore should be possible
+        // TODO https://jira.jboss.org/jira/browse/JBRULES-2441
         Integer scoreAlias;
         if (score instanceof SimpleScore) {
             SimpleScore simpleScore = (SimpleScore) score;

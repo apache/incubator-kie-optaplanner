@@ -10,7 +10,7 @@
         <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
         <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <termination>
-            <maximumStepCount>100</maximumStepCount>
+            <maximumStepCount>70</maximumStepCount>
         </termination>
     </inheritedLocalSearchSolver>
 
@@ -20,9 +20,6 @@
                 <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
             </scoreDefinition>
             <selector>
-                <selector>
-                    <topSize>10</topSize>
-                </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
                     <absoluteSelection>500</absoluteSelection>
