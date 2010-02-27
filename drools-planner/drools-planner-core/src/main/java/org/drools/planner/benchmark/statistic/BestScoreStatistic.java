@@ -57,9 +57,11 @@ public class BestScoreStatistic implements SolverStatistic {
         solver.removeEventListener(bestScoreStatisticListener);
     }
 
-    public void writeStatistic(File solverStatisticFilesDirectory, String baseName) {
-        writeCsvStatistic(solverStatisticFilesDirectory, baseName);
-        writeGraphStatistic(solverStatisticFilesDirectory, baseName);
+    public CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName) {
+        StringBuilder htmlFragment = new StringBuilder();
+        htmlFragment.append(writeCsvStatistic(solverStatisticFilesDirectory, baseName));
+        htmlFragment.append(writeGraphStatistic(solverStatisticFilesDirectory, baseName));
+        return htmlFragment;
     }
 
     private List<TimeToBestScoresLine> extractTimeToBestScoresLineList() {
@@ -108,7 +110,7 @@ public class BestScoreStatistic implements SolverStatistic {
 
     }
 
-    private void writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
+    private CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
         List<TimeToBestScoresLine> timeToBestScoresLineList = extractTimeToBestScoresLineList();
         File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.csv");
         Writer writer = null;
@@ -138,9 +140,10 @@ public class BestScoreStatistic implements SolverStatistic {
         } finally {
             IOUtils.closeQuietly(writer);
         }
+        return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>";
     }
 
-    private void writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
+    private CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, BestScoreStatisticListener> listenerEntry : bestScoreStatisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
@@ -177,6 +180,7 @@ public class BestScoreStatistic implements SolverStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
+        return "  <img src=\"" + graphStatisticFile.getName() + "\"/>";
     }
 
     private Integer extractScoreAlias(Score score) {

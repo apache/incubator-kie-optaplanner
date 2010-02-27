@@ -14,6 +14,6 @@ public interface SolverStatistic {
 
     void removeListener(Solver solver, String configName);
 
-    void writeStatistic(File solverStatisticFilesDirectory, String baseName);
+    CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName);
 
 }

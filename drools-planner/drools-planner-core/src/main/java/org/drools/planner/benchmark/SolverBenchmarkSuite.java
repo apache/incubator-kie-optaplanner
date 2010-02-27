@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.benchmark.statistic.BestScoreStatistic;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
@@ -203,14 +205,42 @@ public class SolverBenchmarkSuite {
             }
         }
         if (solverStatisticType != SolverStatisticType.NONE) {
+            List<CharSequence> htmlFragments = new ArrayList<CharSequence>(unsolvedSolutionFileToStatisticMap.size());
             for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
                 File unsolvedSolutionFile = entry.getKey();
                 SolverStatistic statistic = entry.getValue();
                 String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
-                statistic.writeStatistic(solverStatisticFilesDirectory, baseName);
+                StringBuilder htmlFragment = new StringBuilder();
+                htmlFragment.append("  <h2>").append(baseName).append("</h2>");
+                htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName));
+                htmlFragments.add(htmlFragment);
             }
+            writeHtmlOverview(htmlFragments);
         }
         benchmarkingEnded();
+    }
+
+    private void writeHtmlOverview(List<CharSequence> htmlFragments) {
+        File htmlOverviewFile = new File(solverStatisticFilesDirectory, "index.html");
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "utf-8");
+            writer.append("<html>\n");
+            writer.append("<head>\n");
+            writer.append("  <title>Statistic</title>\n");
+            writer.append("</head>\n");
+            writer.append("<body>\n");
+            writer.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
+            for (CharSequence htmlFragment : htmlFragments) {
+                writer.append(htmlFragment);
+            }
+            writer.append("</body>\n");
+            writer.append("</html>\n");
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing htmlOverviewFile: " + htmlOverviewFile, e);
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
     }
 
     private Solution readUnsolvedSolution(XStream xStream, File unsolvedSolutionFile) {
