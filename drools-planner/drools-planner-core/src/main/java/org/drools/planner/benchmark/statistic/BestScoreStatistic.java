@@ -22,9 +22,14 @@ import org.drools.planner.core.score.HardAndSoftScore;
 import org.apache.commons.io.IOUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.RectangleInsets;
 
 /**
  * @author Geoffrey De Smet
@@ -120,7 +125,7 @@ public class BestScoreStatistic implements SolverStatistic {
                     writer.append(",");
                     Score score = timeToBestScoresLine.getConfigNameToScoreMap().get(configName);
                     if (score != null) {
-                        Number scoreAlias = extractScoreAlias(score);
+                        Integer scoreAlias = extractScoreAlias(score);
                         if (scoreAlias != null) {
                             writer.append(scoreAlias.toString());
                         }
@@ -136,8 +141,6 @@ public class BestScoreStatistic implements SolverStatistic {
     }
 
     private void writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
-        File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.png");
-
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, BestScoreStatisticListener> listenerEntry : bestScoreStatisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
@@ -147,16 +150,24 @@ public class BestScoreStatistic implements SolverStatistic {
             for (BestScoreStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
                 Score score = statisticPoint.getScore();
-                Number scoreAlias = extractScoreAlias(score);
-                configSeries.add(timeMillisSpend, scoreAlias);
+                Integer scoreAlias = extractScoreAlias(score);
+                if (scoreAlias != null) {
+                    configSeries.add(timeMillisSpend, scoreAlias);
+                }
             }
             seriesCollection.addSeries(configSeries);
         }
-        JFreeChart chart = ChartFactory.createXYLineChart(
-                baseName + " best score statistic", "Time millis spend", "Score",
-                seriesCollection, PlotOrientation.VERTICAL,
-                true, true, false);
+        NumberAxis xAxis = new NumberAxis("Time millis spend");
+        xAxis.setAutoRangeIncludesZero(false);
+        NumberAxis yAxis = new NumberAxis("Score");
+        yAxis.setAutoRangeIncludesZero(false);
+        XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
+        XYPlot plot = new XYPlot(seriesCollection, xAxis, yAxis, renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        JFreeChart chart = new JFreeChart(baseName + " best score statistic",
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(800, 600);
+        File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);
@@ -168,8 +179,9 @@ public class BestScoreStatistic implements SolverStatistic {
         }
     }
 
-    private Number extractScoreAlias(Score score) {
-        Number scoreAlias;
+    private Integer extractScoreAlias(Score score) {
+        // TODO Plugging in other Score implementations instead of SimpleScore and HardAndSoftScore should be possible
+        Integer scoreAlias;
         if (score instanceof SimpleScore) {
             SimpleScore simpleScore = (SimpleScore) score;
             scoreAlias = simpleScore.getScore();
