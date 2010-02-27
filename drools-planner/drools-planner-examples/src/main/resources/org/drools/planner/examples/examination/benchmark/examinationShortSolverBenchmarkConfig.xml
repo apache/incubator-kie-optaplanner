@@ -3,6 +3,8 @@
     <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
     <solvedSolutionFilesDirectory>local/data/examination/solved</solvedSolutionFilesDirectory>
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
+    <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+    <solverStatisticFilesDirectory>local/data/examination/statistic</solverStatisticFilesDirectory>
     <!-- solverBenchmarkResultComparator -->
 
     <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</inheritedUnsolvedSolutionFile>
