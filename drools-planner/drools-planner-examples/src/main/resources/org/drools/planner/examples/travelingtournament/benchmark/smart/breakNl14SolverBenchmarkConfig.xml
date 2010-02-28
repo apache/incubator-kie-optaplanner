@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
     <solvedSolutionFilesDirectory>local/data/travelingtournament/smart/solved</solvedSolutionFilesDirectory>
-    <sortSolverBenchmarks>false</sortSolverBenchmarks>
-    <!-- solverBenchmarkResultComparator -->
+
     <inheritedUnsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>

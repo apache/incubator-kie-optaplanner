@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
     <solvedSolutionFilesDirectory>local/data/travelingtournament/smart/solved</solvedSolutionFilesDirectory>
-    <sortSolverBenchmarks>true</sortSolverBenchmarks>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
     <solverStatisticFilesDirectory>local/data/travelingtournament/smart/statistic</solverStatisticFilesDirectory>
 
