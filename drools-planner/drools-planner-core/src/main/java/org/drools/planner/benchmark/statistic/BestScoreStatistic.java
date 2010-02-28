@@ -27,6 +27,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
@@ -164,7 +165,7 @@ public class BestScoreStatistic implements SolverStatistic {
         xAxis.setAutoRangeIncludesZero(false);
         NumberAxis yAxis = new NumberAxis("Score");
         yAxis.setAutoRangeIncludesZero(false);
-        XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
+        XYItemRenderer renderer = new XYStepRenderer();
         XYPlot plot = new XYPlot(seriesCollection, xAxis, yAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart(baseName + " best score statistic",
