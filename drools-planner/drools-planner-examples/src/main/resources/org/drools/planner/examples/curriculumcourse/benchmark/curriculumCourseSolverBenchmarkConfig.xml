@@ -3,7 +3,8 @@
     <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
     <solvedSolutionFilesDirectory>local/data/curriculumcourse/solved</solvedSolutionFilesDirectory>
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
-    <!-- solverBenchmarkResultComparator -->
+    <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+    <solverStatisticFilesDirectory>local/data/curriculumcourse/statistic</solverStatisticFilesDirectory>
     
     <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp01.xml</inheritedUnsolvedSolutionFile>-->
     <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp02.xml</inheritedUnsolvedSolutionFile>-->
