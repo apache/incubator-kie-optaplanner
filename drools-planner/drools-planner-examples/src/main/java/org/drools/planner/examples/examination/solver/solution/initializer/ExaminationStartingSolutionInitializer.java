@@ -74,9 +74,8 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                             leaderHandle = examToHandle.getExamHandle();
                         }
                     } else {
-                        workingMemory.modifyRetract(examToHandle.getExamHandle());
                         examToHandle.getExam().setPeriod(period);
-                        workingMemory.modifyInsert(examToHandle.getExamHandle(), examToHandle.getExam());
+                        workingMemory.update(examToHandle.getExamHandle(), examToHandle.getExam());
                     }
                 }
                 Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
@@ -115,14 +114,12 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 break;
             }
             for (ExamToHandle examToHandle : examToHandleList) {
-                workingMemory.modifyRetract(examToHandle.getExamHandle());
                 examToHandle.getExam().setPeriod(periodScoring.getPeriod());
-                workingMemory.modifyInsert(examToHandle.getExamHandle(), examToHandle.getExam());
+                workingMemory.update(examToHandle.getExamHandle(), examToHandle.getExam());
             }
             for (Room room : roomList) {
-                workingMemory.modifyRetract(leaderHandle);
                 leader.setRoom(room);
-                workingMemory.modifyInsert(leaderHandle, leader);
+                workingMemory.update(leaderHandle, leader);
                 Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 if (score.compareTo(unscheduledScore) < 0) {
                     if (score.compareTo(bestScore) > 0) {
@@ -147,13 +144,11 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 throw new IllegalStateException("The bestPeriod (" + bestPeriod + ") or the bestRoom ("
                         + bestRoom + ") cannot be null.");
             }
-            workingMemory.modifyRetract(leaderHandle);
             leader.setRoom(bestRoom);
-            workingMemory.modifyInsert(leaderHandle, leader);
+            workingMemory.update(leaderHandle, leader);
             for (ExamToHandle examToHandle : examToHandleList) {
-                workingMemory.modifyRetract(examToHandle.getExamHandle());
                 examToHandle.getExam().setPeriod(bestPeriod);
-                workingMemory.modifyInsert(examToHandle.getExamHandle(), examToHandle.getExam());
+                workingMemory.update(examToHandle.getExamHandle(), examToHandle.getExam());
             }
         }
         logger.debug("    Exam ({}) initialized for starting solution.", leader);
@@ -170,9 +165,8 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
         Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
         Room bestRoom = null;
         for (Room room : roomList) {
-            workingMemory.modifyRetract(examHandle);
             exam.setRoom(room);
-            workingMemory.modifyInsert(examHandle, exam);
+            workingMemory.update(examHandle, exam);
             Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
             if (score.compareTo(unscheduledScore) < 0) {
                 if (score.compareTo(bestScore) > 0) {
@@ -192,9 +186,8 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                 throw new IllegalStateException("The bestRoom ("
                         + bestRoom + ") cannot be null.");
             }
-            workingMemory.modifyRetract(examHandle);
             exam.setRoom(bestRoom);
-            workingMemory.modifyInsert(examHandle, exam);
+            workingMemory.update(examHandle, exam);
         }
         logger.debug("    Exam ({}) initialized for starting solution. *", exam);
     }

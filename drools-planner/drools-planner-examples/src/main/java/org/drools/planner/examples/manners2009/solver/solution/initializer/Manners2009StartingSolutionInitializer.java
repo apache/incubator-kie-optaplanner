@@ -51,9 +51,8 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
                         seatDesignation.setSeat(seat);
                         seatDesignationHandle = workingMemory.insert(seatDesignation);
                     } else {
-                        workingMemory.modifyRetract(seatDesignationHandle);
                         seatDesignation.setSeat(seat);
-                        workingMemory.modifyInsert(seatDesignationHandle, seatDesignation);
+                        workingMemory.update(seatDesignationHandle, seatDesignation);
                     }
                     Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                     if (score.compareTo(bestScore) > 0) {
@@ -65,9 +64,8 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
             if (bestSeat == null) {
                 throw new IllegalStateException("The bestSeat (" + bestSeat + ") cannot be null.");
             }
-            workingMemory.modifyRetract(seatDesignationHandle);
             seatDesignation.setSeat(bestSeat);
-            workingMemory.modifyInsert(seatDesignationHandle, seatDesignation);
+            workingMemory.update(seatDesignationHandle, seatDesignation);
             // There will always be enough allowed seats: ok to do this for this problem, but not ok for most problems
             undesignatedSeatList.remove(bestSeat);
         }

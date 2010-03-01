@@ -83,9 +83,8 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                     bedDesignation.setBed(bed);
                     bedDesignationHandle = workingMemory.insert(bedDesignation);
                 } else {
-                    workingMemory.modifyRetract(bedDesignationHandle);
                     bedDesignation.setBed(bed);
-                    workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
+                    workingMemory.update(bedDesignationHandle, bedDesignation);
                 }
                 Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 if (score.compareTo(unscheduledScore) < 0) {
@@ -134,9 +133,8 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                 }
             }
             if (!perfectMatch) {
-                workingMemory.modifyRetract(bedDesignationHandle);
                 bedDesignation.setBed(bestBed);
-                workingMemory.modifyInsert(bedDesignationHandle, bedDesignation);
+                workingMemory.update(bedDesignationHandle, bedDesignation);
             }
             // put the occupied bed at the end of the list
             bedListInPriority.remove(bestBed);

@@ -36,9 +36,8 @@ public class TimeslotChangeMove implements Move, TabuPropertyEnabled {
 
     public void doMove(WorkingMemory workingMemory) {
         FactHandle lessonHandle = workingMemory.getFactHandle(lesson);
-        workingMemory.modifyRetract(lessonHandle);
         lesson.setTimeslot(toTimeslot);
-        workingMemory.modifyInsert(lessonHandle, lesson);
+        workingMemory.update(lessonHandle, lesson);
     }
 
     public Collection<? extends Object> getTabuProperties() {
