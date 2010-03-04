@@ -254,6 +254,7 @@ After in *.xml:
         ...
     </localSearchSolver>
 
+
 True modify has been implemented.
 Before in *.java:
     workingMemory.modifyRetract(xHandle); // before changes are made
