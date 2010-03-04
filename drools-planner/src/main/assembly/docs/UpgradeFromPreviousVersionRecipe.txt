@@ -253,3 +253,12 @@ After in *.xml:
         <environmentMode>DEBUG</environmentMode>
         ...
     </localSearchSolver>
+
+True modify has been implemented.
+Before in *.java:
+    workingMemory.modifyRetract(xHandle); // before changes are made
+    x.set...;
+    workingMemory.modifyInsert(xHandle, x); // after changes are made
+After in *.java:
+    x.set...;
+    workingMemory.update(queenHandle, queen); // after changes are made
