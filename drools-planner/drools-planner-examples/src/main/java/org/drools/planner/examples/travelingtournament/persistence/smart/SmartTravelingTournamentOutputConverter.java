@@ -1,10 +1,8 @@
 package org.drools.planner.examples.travelingtournament.persistence.smart;
 
-import java.io.File;
 import java.io.IOException;
 
-import org.drools.planner.examples.common.persistence.AbstractOutputConvertor;
-import org.drools.planner.examples.common.persistence.SolutionDao;
+import org.drools.planner.examples.common.persistence.AbstractTxtOutputConverter;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.Match;
@@ -14,15 +12,15 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public class SmartTravelingTournamentOutputConvertor extends AbstractOutputConvertor {
+public class SmartTravelingTournamentOutputConverter extends AbstractTxtOutputConverter {
 
     private static final String OUTPUT_FILE_SUFFIX = ".trick.txt";
 
     public static void main(String[] args) {
-        new SmartTravelingTournamentOutputConvertor().convertAll();
+        new SmartTravelingTournamentOutputConverter().convertAll();
     }
 
-    public SmartTravelingTournamentOutputConvertor() {
+    public SmartTravelingTournamentOutputConverter() {
         super(new SmartTravelingTournamentDaoImpl());
     }
 
@@ -31,11 +29,11 @@ public class SmartTravelingTournamentOutputConvertor extends AbstractOutputConve
         return OUTPUT_FILE_SUFFIX;
     }
 
-    public OutputBuilder createOutputBuilder() {
+    public TxtOutputBuilder createTxtOutputBuilder() {
         return new SmartTravelingTournamentOutputBuilder();
     }
 
-    public class SmartTravelingTournamentOutputBuilder extends OutputBuilder {
+    public class SmartTravelingTournamentOutputBuilder extends TxtOutputBuilder {
 
         private TravelingTournament travelingTournament;
 

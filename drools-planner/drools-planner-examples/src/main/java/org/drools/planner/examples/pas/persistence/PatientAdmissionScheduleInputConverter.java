@@ -8,8 +8,7 @@ import java.util.Map;
 import java.util.Collections;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
-import org.drools.planner.examples.common.persistence.SolutionDao;
+import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.Department;
@@ -31,21 +30,21 @@ import org.drools.planner.examples.pas.domain.Specialism;
  * @author Geoffrey De Smet
  * @author Wim Vancroonenburg
  */
-public class PatientAdmissionScheduleInputConvertor extends AbstractInputConvertor {
+public class PatientAdmissionScheduleInputConverter extends AbstractTxtInputConverter {
 
     public static void main(String[] args) {
-        new PatientAdmissionScheduleInputConvertor().convertAll();
+        new PatientAdmissionScheduleInputConverter().convertAll();
     }
 
-    public PatientAdmissionScheduleInputConvertor() {
+    public PatientAdmissionScheduleInputConverter() {
         super(new PatientAdmissionScheduleDaoImpl());
     }
 
-    public InputBuilder createInputBuilder() {
+    public TxtInputBuilder createTxtInputBuilder() {
         return new PatientAdmissionScheduleInputBuilder();
     }
 
-    public class PatientAdmissionScheduleInputBuilder extends InputBuilder {
+    public class PatientAdmissionScheduleInputBuilder extends TxtInputBuilder {
 
         private PatientAdmissionSchedule patientAdmissionSchedule;
 

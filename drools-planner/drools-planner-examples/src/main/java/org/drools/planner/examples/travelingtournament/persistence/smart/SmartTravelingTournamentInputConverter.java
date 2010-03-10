@@ -1,28 +1,26 @@
 package org.drools.planner.examples.travelingtournament.persistence.smart;
 
-import java.io.File;
 import java.util.List;
 
-import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentInputConvertor;
+import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentInputConverter;
 
 /**
  * @author Geoffrey De Smet
  */
-public class SmartTravelingTournamentInputConvertor extends TravelingTournamentInputConvertor {
+public class SmartTravelingTournamentInputConverter extends TravelingTournamentInputConverter {
 
     public static void main(String[] args) {
-        new SmartTravelingTournamentInputConvertor().convertAll();
+        new SmartTravelingTournamentInputConverter().convertAll();
     }
 
-    public SmartTravelingTournamentInputConvertor() {
+    public SmartTravelingTournamentInputConverter() {
         super(new SmartTravelingTournamentDaoImpl());
     }
 
-    public InputBuilder createInputBuilder() {
+    public TxtInputBuilder createTxtInputBuilder() {
         return new SmartTravelingTournamentInputBuilder();
     }
 

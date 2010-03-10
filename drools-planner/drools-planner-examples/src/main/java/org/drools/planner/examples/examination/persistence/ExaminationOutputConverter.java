@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
-import org.drools.planner.examples.common.persistence.AbstractOutputConvertor;
+import org.drools.planner.examples.common.persistence.AbstractTxtOutputConverter;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.core.solution.Solution;
@@ -12,15 +12,15 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationOutputConvertor extends AbstractOutputConvertor {
+public class ExaminationOutputConverter extends AbstractTxtOutputConverter {
 
     private static final String OUTPUT_FILE_SUFFIX = ".sln";
 
     public static void main(String[] args) {
-        new ExaminationOutputConvertor().convertAll();
+        new ExaminationOutputConverter().convertAll();
     }
 
-    public ExaminationOutputConvertor() {
+    public ExaminationOutputConverter() {
         super(new ExaminationDaoImpl());
     }
 
@@ -29,11 +29,11 @@ public class ExaminationOutputConvertor extends AbstractOutputConvertor {
         return OUTPUT_FILE_SUFFIX;
     }
 
-    public OutputBuilder createOutputBuilder() {
+    public TxtOutputBuilder createTxtOutputBuilder() {
         return new ExaminationOutputBuilder();
     }
 
-    public class ExaminationOutputBuilder extends OutputBuilder {
+    public class ExaminationOutputBuilder extends TxtOutputBuilder {
 
         private Examination examination;
 

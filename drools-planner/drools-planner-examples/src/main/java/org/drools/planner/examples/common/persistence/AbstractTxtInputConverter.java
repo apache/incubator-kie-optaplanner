@@ -4,74 +4,34 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.examples.common.app.LoggingMain;
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.planner.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AbstractInputConvertor extends LoggingMain {
+public abstract class AbstractTxtInputConverter extends AbstractInputConverter {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = ".txt";
-    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";
-    
-    protected SolutionDao solutionDao;
 
-    protected AbstractInputConvertor(SolutionDao solutionDao) {
-        this.solutionDao = solutionDao;
-    }
-
-    protected File getInputDir() {
-        return new File(solutionDao.getDataDir(), "input");
-    }
-
-    protected File getOutputDir() {
-        return new File(solutionDao.getDataDir(), "unsolved");
+    protected AbstractTxtInputConverter(SolutionDao solutionDao) {
+        super(solutionDao);
     }
 
     protected String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
-    protected String getOutputFileSuffix() {
-        return DEFAULT_OUTPUT_FILE_SUFFIX;
-    }
-
-    public void convertAll() {
-        File inputDir = getInputDir();
-        File outputDir = getOutputDir();
-        File[] inputFiles = inputDir.listFiles();
-        if (inputFiles == null) {
-            throw new IllegalArgumentException(
-                    "Your working dir should be drools-planner-examples and contain: " + inputDir);
-        }
-        Arrays.sort(inputFiles);
-        for (File inputFile : inputFiles) {
-            String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(getInputFileSuffix())) {
-                Solution solution = readSolution(inputFile);
-                String outputFileName = inputFileName.substring(0,
-                        inputFileName.length() - getInputFileSuffix().length())
-                        + getOutputFileSuffix();
-                File outputFile = new File(outputDir, outputFileName);
-                solutionDao.writeSolution(solution, outputFile);
-            }
-        }
-    }
-
-    public abstract InputBuilder createInputBuilder();
+    public abstract TxtInputBuilder createTxtInputBuilder();
 
     public Solution readSolution(File inputFile) {
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(inputFile));
-            InputBuilder inputBuilder = createInputBuilder();
-            inputBuilder.setBufferedReader(bufferedReader);
-            return inputBuilder.readSolution();
+            TxtInputBuilder txtInputBuilder = createTxtInputBuilder();
+            txtInputBuilder.setBufferedReader(bufferedReader);
+            return txtInputBuilder.readSolution();
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         } finally {
@@ -79,7 +39,7 @@ public abstract class AbstractInputConvertor extends LoggingMain {
         }
     }
 
-    public abstract class InputBuilder {
+    public abstract class TxtInputBuilder {
 
         protected BufferedReader bufferedReader;
 

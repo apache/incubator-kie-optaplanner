@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
+import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.Curriculum;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
@@ -22,16 +22,16 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public class CurriculumCourseInputConvertor extends AbstractInputConvertor {
+public class CurriculumCourseInputConverter extends AbstractTxtInputConverter {
 
     private static final String INPUT_FILE_SUFFIX = ".ctt";
     private static final String SPLIT_REGEX = "[\\ \\t]+";
 
     public static void main(String[] args) {
-        new CurriculumCourseInputConvertor().convertAll();
+        new CurriculumCourseInputConverter().convertAll();
     }
 
-    public CurriculumCourseInputConvertor() {
+    public CurriculumCourseInputConverter() {
         super(new CurriculumCourseDaoImpl());
     }
 
@@ -40,11 +40,11 @@ public class CurriculumCourseInputConvertor extends AbstractInputConvertor {
         return INPUT_FILE_SUFFIX;
     }
 
-    public InputBuilder createInputBuilder() {
+    public TxtInputBuilder createTxtInputBuilder() {
         return new CurriculumCourseInputBuilder();
     }
 
-    public class CurriculumCourseInputBuilder extends InputBuilder {
+    public class CurriculumCourseInputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
             CurriculumCourseSchedule schedule = new CurriculumCourseSchedule();

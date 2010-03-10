@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
+import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.InstitutionalWeighting;
 import org.drools.planner.examples.examination.domain.Period;
@@ -30,16 +30,16 @@ import org.drools.planner.examples.examination.domain.Topic;
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationInputConvertor extends AbstractInputConvertor {
+public class ExaminationInputConverter extends AbstractTxtInputConverter {
 
     private static final String INPUT_FILE_SUFFIX = ".exam";
     private static final String SPLIT_REGEX = "\\,\\ ?";
 
     public static void main(String[] args) {
-        new ExaminationInputConvertor().convertAll();
+        new ExaminationInputConverter().convertAll();
     }
 
-    public ExaminationInputConvertor() {
+    public ExaminationInputConverter() {
         super(new ExaminationDaoImpl());
     }
 
@@ -48,11 +48,11 @@ public class ExaminationInputConvertor extends AbstractInputConvertor {
         return INPUT_FILE_SUFFIX;
     }
 
-    public InputBuilder createInputBuilder() {
+    public TxtInputBuilder createTxtInputBuilder() {
         return new ExaminationInputBuilder();
     }
 
-    public class ExaminationInputBuilder extends InputBuilder {
+    public class ExaminationInputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
             Examination examination = new Examination();

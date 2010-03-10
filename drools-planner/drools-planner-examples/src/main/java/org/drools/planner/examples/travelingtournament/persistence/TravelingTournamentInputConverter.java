@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.planner.examples.common.persistence.AbstractInputConvertor;
+import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
@@ -17,13 +17,13 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class TravelingTournamentInputConvertor extends AbstractInputConvertor {
+public abstract class TravelingTournamentInputConverter extends AbstractTxtInputConverter {
 
-    protected TravelingTournamentInputConvertor(SolutionDao solutionDao) {
+    protected TravelingTournamentInputConverter(SolutionDao solutionDao) {
         super(solutionDao);
     }
 
-    public abstract class TravelingTournamentInputBuilder extends InputBuilder {
+    public abstract class TravelingTournamentInputBuilder extends TxtInputBuilder {
 
         public Solution readSolution() throws IOException {
             TravelingTournament travelingTournament = new TravelingTournament();
