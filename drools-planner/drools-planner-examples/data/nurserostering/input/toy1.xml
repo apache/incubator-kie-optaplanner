@@ -80,8 +80,8 @@
       <NoNightShiftBeforeFreeWeekend weight="0">true</NoNightShiftBeforeFreeWeekend>
       <AlternativeSkillCategory weight="0">false</AlternativeSkillCategory>
       <UnwantedPatterns>
-        <Pattern>0</Pattern>
-        <Pattern>1</Pattern>
+          <Pattern>0</Pattern>
+		  <Pattern>1</Pattern>
       </UnwantedPatterns>
     </Contract>   
   </Contracts>

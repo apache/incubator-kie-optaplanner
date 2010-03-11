@@ -101,8 +101,8 @@
     <Contract ID="3">
       <Description>night</Description>
       <SingleAssignmentPerDay weight="1">true</SingleAssignmentPerDay>
-      <MaxNumAssignments on="1" weight="1">8</MaxNumAssignments>
-      <MinNumAssignments on="1" weight="1">9</MinNumAssignments>
+      <MaxNumAssignments on="1" weight="1">9</MaxNumAssignments>
+      <MinNumAssignments on="1" weight="1">7</MinNumAssignments>
       <MaxConsecutiveWorkingDays on="1" weight="1">4</MaxConsecutiveWorkingDays>
       <MinConsecutiveWorkingDays on="1" weight="1">2</MinConsecutiveWorkingDays>
       <MaxConsecutiveFreeDays on="1" weight="1">20</MaxConsecutiveFreeDays>
@@ -341,22 +341,18 @@
     <DayOfWeekCover>
       <Day>Monday</Day>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>E</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>L</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>D</Shift>
         <Preferred>3</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>N</Shift>
         <Preferred>3</Preferred>
       </Cover>
@@ -364,22 +360,18 @@
     <DayOfWeekCover>
       <Day>Tuesday</Day>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>E</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>L</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>D</Shift>
         <Preferred>3</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>N</Shift>
         <Preferred>3</Preferred>
       </Cover>
@@ -387,22 +379,18 @@
     <DayOfWeekCover>
       <Day>Wednesday</Day>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>E</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>L</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>D</Shift>
         <Preferred>3</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>N</Shift>
         <Preferred>3</Preferred>
       </Cover>
@@ -410,22 +398,18 @@
     <DayOfWeekCover>
       <Day>Thursday</Day>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>E</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>L</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>D</Shift>
         <Preferred>3</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>N</Shift>
         <Preferred>3</Preferred>
       </Cover>
@@ -433,22 +417,18 @@
     <DayOfWeekCover>
       <Day>Friday</Day>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>E</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>L</Shift>
         <Preferred>9</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>D</Shift>
         <Preferred>3</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>N</Shift>
         <Preferred>3</Preferred>
       </Cover>
@@ -456,22 +436,18 @@
     <DayOfWeekCover>
       <Day>Saturday</Day>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>E</Shift>
         <Preferred>6</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>L</Shift>
         <Preferred>6</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>D</Shift>
         <Preferred>2</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>N</Shift>
         <Preferred>2</Preferred>
       </Cover>
@@ -479,1279 +455,442 @@
     <DayOfWeekCover>
       <Day>Sunday</Day>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>E</Shift>
         <Preferred>6</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>L</Shift>
         <Preferred>6</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>D</Shift>
         <Preferred>2</Preferred>
       </Cover>
       <Cover>
-        <Skill>Nurse</Skill>
         <Shift>N</Shift>
         <Preferred>2</Preferred>
       </Cover>
     </DayOfWeekCover>
   </CoverRequirements>
   <DayOffRequests>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>0</EmployeeID>
-      <Date>2010-01-11</Date>
+      <Date>2010-01-21</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>0</EmployeeID>
-      <Date>2010-01-02</Date>
+      <Date>2010-01-07</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>0</EmployeeID>
-      <Date>2010-01-25</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>0</EmployeeID>
       <Date>2010-01-26</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>0</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>0</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>0</EmployeeID>
-      <Date>2010-01-25</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>0</EmployeeID>
-      <Date>2010-01-11</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>0</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>0</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>1</EmployeeID>
-      <Date>2010-01-04</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>1</EmployeeID>
-      <Date>2010-01-24</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>1</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>1</EmployeeID>
-      <Date>2010-01-04</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>1</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>1</EmployeeID>
-      <Date>2010-01-25</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>1</EmployeeID>
       <Date>2010-01-15</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>1</EmployeeID>
+      <Date>2010-01-26</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>1</EmployeeID>
+      <Date>2010-01-22</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-09</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-01</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-22</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>3</EmployeeID>
+      <Date>2010-01-26</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>3</EmployeeID>
+      <Date>2010-01-06</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>3</EmployeeID>
+      <Date>2010-01-21</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-15</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-10</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-19</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-07</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-26</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-19</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>6</EmployeeID>
       <Date>2010-01-24</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>1</EmployeeID>
-      <Date>2010-01-12</Date>
+    <DayOff weight="1">
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-25</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>1</EmployeeID>
-      <Date>2010-01-24</Date>
+    <DayOff weight="1">
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-22</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
-      <Date>2010-01-04</Date>
+    <DayOff weight="1">
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-23</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-05</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>7</EmployeeID>
       <Date>2010-01-08</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-20</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-12</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-09</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-26</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-25</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-02</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-25</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>10</EmployeeID>
       <Date>2010-01-05</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
-      <Date>2010-01-17</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
-      <Date>2010-01-11</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>10</EmployeeID>
       <Date>2010-01-08</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>2</EmployeeID>
-      <Date>2010-01-19</Date>
+    <DayOff weight="1">
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-28</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-03</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-18</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-22</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>12</EmployeeID>
       <Date>2010-01-12</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>12</EmployeeID>
       <Date>2010-01-25</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>3</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-19</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-25</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-17</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-24</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-24</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-24</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-11</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-17</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-17</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-04</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-06</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-19</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-07</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-07</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>13</EmployeeID>
       <Date>2010-01-28</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>13</EmployeeID>
       <Date>2010-01-12</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-24</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>13</EmployeeID>
       <Date>2010-01-13</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>14</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-17</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-25</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-25</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-24</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-22</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-06</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-11</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-06</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-11</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
       <Date>2010-01-08</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>14</EmployeeID>
       <Date>2010-01-28</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-19</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-04</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>14</EmployeeID>
       <Date>2010-01-18</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-06</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-19</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-07</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-11</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-01</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-07</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>15</EmployeeID>
       <Date>2010-01-09</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-26</Date>
+    <DayOff weight="1">
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-24</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-15</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-17</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-16</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>15</EmployeeID>
       <Date>2010-01-23</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-03</Date>
+    <DayOff weight="1">
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-07</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-16</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-01</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-06</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-28</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-12</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-15</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-02</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-28</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-28</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-22</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-02</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-17</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-01</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-06</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-04</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-20</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-09</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-09</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-11</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-02</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-08</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-05</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-19</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-09</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-15</Date>
+    </DayOff>
+    <DayOff weight="1">
       <EmployeeID>24</EmployeeID>
       <Date>2010-01-04</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-16</Date>
+    </DayOff>
+    <DayOff weight="1">
+      <EmployeeID>25</EmployeeID>
       <Date>2010-01-21</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-11</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>25</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-06</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-25</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>26</EmployeeID>
-      <Date>2010-01-13</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>26</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>26</EmployeeID>
       <Date>2010-01-22</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>26</EmployeeID>
-      <Date>2010-01-01</Date>
+      <Date>2010-01-06</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>26</EmployeeID>
-      <Date>2010-01-19</Date>
+      <Date>2010-01-05</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>26</EmployeeID>
       <Date>2010-01-02</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>26</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>26</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>26</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>26</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>27</EmployeeID>
-      <Date>2010-01-11</Date>
+      <Date>2010-01-14</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>27</EmployeeID>
-      <Date>2010-01-25</Date>
+      <Date>2010-01-09</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>27</EmployeeID>
       <Date>2010-01-06</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>27</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>27</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>27</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>27</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>27</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>27</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>27</EmployeeID>
-      <Date>2010-01-02</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>28</EmployeeID>
       <Date>2010-01-08</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>28</EmployeeID>
-      <Date>2010-01-01</Date>
+      <Date>2010-01-11</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>28</EmployeeID>
-      <Date>2010-01-09</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>28</EmployeeID>
-      <Date>2010-01-21</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>28</EmployeeID>
-      <Date>2010-01-14</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>28</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>28</EmployeeID>
-      <Date>2010-01-04</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>28</EmployeeID>
       <Date>2010-01-26</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>28</EmployeeID>
-      <Date>2010-01-23</Date>
+    <DayOff weight="1">
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-07</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>28</EmployeeID>
-      <Date>2010-01-22</Date>
+    <DayOff weight="1">
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-05</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>29</EmployeeID>
       <Date>2010-01-11</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
-      <Date>2010-01-13</Date>
+    <DayOff weight="1">
+      <EmployeeID>30</EmployeeID>
+      <Date>2010-01-10</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
-      <Date>2010-01-20</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
-      <Date>2010-01-19</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
-      <Date>2010-01-28</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
-      <Date>2010-01-12</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
-      <Date>2010-01-18</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
+    <DayOff weight="1">
+      <EmployeeID>30</EmployeeID>
       <Date>2010-01-21</Date>
     </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
-      <Date>2010-01-23</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>29</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
+    <DayOff weight="1">
       <EmployeeID>30</EmployeeID>
-      <Date>2010-01-17</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-10</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-26</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-03</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-05</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-27</Date>
-    </DayOff>
-    <DayOff weight="1" holiday="true">
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-28</Date>
+      <Date>2010-01-06</Date>
     </DayOff>
   </DayOffRequests>
   <ShiftOffRequests>
     <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>0</EmployeeID>
+      <Date>2010-01-09</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>0</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
       <EmployeeID>0</EmployeeID>
       <Date>2010-01-19</Date>
     </ShiftOff>
     <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>0</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>0</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>0</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>0</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
       <ShiftTypeID>E</ShiftTypeID>
       <EmployeeID>0</EmployeeID>
-      <Date>2010-01-09</Date>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>0</EmployeeID>
+      <Date>2010-01-10</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>N</ShiftTypeID>
@@ -1759,29 +898,74 @@
       <Date>2010-01-24</Date>
     </ShiftOff>
     <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>1</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>1</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
       <ShiftTypeID>D</ShiftTypeID>
       <EmployeeID>1</EmployeeID>
       <Date>2010-01-26</Date>
     </ShiftOff>
     <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>1</EmployeeID>
+      <Date>2010-01-09</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>1</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
       <ShiftTypeID>N</ShiftTypeID>
       <EmployeeID>1</EmployeeID>
-      <Date>2010-01-17</Date>
+      <Date>2010-01-07</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>1</EmployeeID>
+      <Date>2010-01-18</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>E</ShiftTypeID>
       <EmployeeID>1</EmployeeID>
-      <Date>2010-01-15</Date>
+      <Date>2010-01-06</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>2</EmployeeID>
-      <Date>2010-01-14</Date>
+      <EmployeeID>1</EmployeeID>
+      <Date>2010-01-25</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>1</EmployeeID>
+      <Date>2010-01-24</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
       <EmployeeID>2</EmployeeID>
-      <Date>2010-01-19</Date>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-24</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>L</ShiftTypeID>
@@ -1789,14 +973,39 @@
       <Date>2010-01-10</Date>
     </ShiftOff>
     <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
       <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>3</EmployeeID>
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>2</EmployeeID>
       <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>2</EmployeeID>
+      <Date>2010-01-02</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>N</ShiftTypeID>
       <EmployeeID>3</EmployeeID>
-      <Date>2010-01-23</Date>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>3</EmployeeID>
+      <Date>2010-01-09</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>D</ShiftTypeID>
@@ -1804,409 +1013,1389 @@
       <Date>2010-01-01</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-03</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>4</EmployeeID>
-      <Date>2010-01-14</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
       <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>4</EmployeeID>
+      <EmployeeID>3</EmployeeID>
       <Date>2010-01-02</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-14</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>5</EmployeeID>
-      <Date>2010-01-02</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>5</EmployeeID>
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>3</EmployeeID>
       <Date>2010-01-22</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-16</Date>
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>3</EmployeeID>
+      <Date>2010-01-26</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-03</Date>
+      <EmployeeID>3</EmployeeID>
+      <Date>2010-01-17</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>6</EmployeeID>
-      <Date>2010-01-05</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-09</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-06</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>7</EmployeeID>
-      <Date>2010-01-15</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-21</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>8</EmployeeID>
-      <Date>2010-01-15</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>8</EmployeeID>
+      <EmployeeID>3</EmployeeID>
       <Date>2010-01-13</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-15</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
       <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-02</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>9</EmployeeID>
-      <Date>2010-01-15</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-27</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-24</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>10</EmployeeID>
-      <Date>2010-01-12</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-27</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>11</EmployeeID>
-      <Date>2010-01-27</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>11</EmployeeID>
+      <EmployeeID>3</EmployeeID>
       <Date>2010-01-20</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-07</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-06</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>12</EmployeeID>
-      <Date>2010-01-23</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-06</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
       <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-09</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>13</EmployeeID>
-      <Date>2010-01-19</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-07</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>14</EmployeeID>
-      <Date>2010-01-19</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>14</EmployeeID>
+      <EmployeeID>3</EmployeeID>
       <Date>2010-01-11</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-23</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-19</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>15</EmployeeID>
-      <Date>2010-01-22</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-22</Date>
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-04</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-25</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>16</EmployeeID>
-      <Date>2010-01-06</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-12</Date>
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-27</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-20</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>17</EmployeeID>
-      <Date>2010-01-07</Date>
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-17</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>18</EmployeeID>
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>4</EmployeeID>
       <Date>2010-01-14</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-03</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>18</EmployeeID>
-      <Date>2010-01-18</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>19</EmployeeID>
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>4</EmployeeID>
       <Date>2010-01-24</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-27</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>19</EmployeeID>
-      <Date>2010-01-16</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-06</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-13</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>20</EmployeeID>
-      <Date>2010-01-23</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-21</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
       <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-03</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>21</EmployeeID>
-      <Date>2010-01-05</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-17</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-28</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>22</EmployeeID>
-      <Date>2010-01-26</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-19</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-09</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>23</EmployeeID>
-      <Date>2010-01-21</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-16</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-27</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>24</EmployeeID>
-      <Date>2010-01-17</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>E</ShiftTypeID>
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-26</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-27</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>25</EmployeeID>
-      <Date>2010-01-13</Date>
-    </ShiftOff>
-    <ShiftOff weight="1">
-      <ShiftTypeID>N</ShiftTypeID>
-      <EmployeeID>26</EmployeeID>
+      <EmployeeID>4</EmployeeID>
       <Date>2010-01-10</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>26</EmployeeID>
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>4</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-16</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-13</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-04</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>5</EmployeeID>
+      <Date>2010-01-22</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
       <Date>2010-01-28</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-22</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>6</EmployeeID>
+      <Date>2010-01-24</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-09</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-02</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>7</EmployeeID>
+      <Date>2010-01-21</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>8</EmployeeID>
+      <Date>2010-01-08</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-27</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>9</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-08</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-22</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>10</EmployeeID>
+      <Date>2010-01-27</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-04</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-02</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>11</EmployeeID>
+      <Date>2010-01-16</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-16</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-21</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>12</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-21</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>13</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-22</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-27</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>14</EmployeeID>
+      <Date>2010-01-09</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-04</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-09</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-08</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>15</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-22</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>16</EmployeeID>
+      <Date>2010-01-09</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-24</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-07</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-16</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>17</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-04</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-04</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>18</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-21</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-24</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>19</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>20</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-22</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-02</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-07</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-16</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-08</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-08</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>21</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-07</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-24</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-08</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>22</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-24</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-27</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-24</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>23</EmployeeID>
+      <Date>2010-01-27</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-17</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-02</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>24</EmployeeID>
+      <Date>2010-01-08</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-02</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-16</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-08</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-22</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-25</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-09</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-26</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>25</EmployeeID>
+      <Date>2010-01-16</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-22</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
       <EmployeeID>26</EmployeeID>
       <Date>2010-01-11</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>27</EmployeeID>
-      <Date>2010-01-02</Date>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-06</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-03</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-21</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>26</EmployeeID>
+      <Date>2010-01-03</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
       <EmployeeID>27</EmployeeID>
-      <Date>2010-01-13</Date>
+      <Date>2010-01-03</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>L</ShiftTypeID>
       <EmployeeID>27</EmployeeID>
-      <Date>2010-01-01</Date>
+      <Date>2010-01-09</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>28</EmployeeID>
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>27</EmployeeID>
+      <Date>2010-01-27</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>27</EmployeeID>
       <Date>2010-01-18</Date>
     </ShiftOff>
     <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>27</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>27</EmployeeID>
+      <Date>2010-01-05</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>27</EmployeeID>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>27</EmployeeID>
+      <Date>2010-01-12</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>27</EmployeeID>
+      <Date>2010-01-20</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>27</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
       <ShiftTypeID>D</ShiftTypeID>
       <EmployeeID>28</EmployeeID>
-      <Date>2010-01-02</Date>
+      <Date>2010-01-14</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>28</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>28</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>28</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>28</EmployeeID>
+      <Date>2010-01-28</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>N</ShiftTypeID>
       <EmployeeID>28</EmployeeID>
-      <Date>2010-01-25</Date>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>28</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>28</EmployeeID>
+      <Date>2010-01-08</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>L</ShiftTypeID>
-      <EmployeeID>29</EmployeeID>
+      <EmployeeID>28</EmployeeID>
+      <Date>2010-01-04</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>28</EmployeeID>
       <Date>2010-01-23</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>L</ShiftTypeID>
       <EmployeeID>29</EmployeeID>
-      <Date>2010-01-09</Date>
+      <Date>2010-01-02</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-10</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>D</ShiftTypeID>
       <EmployeeID>29</EmployeeID>
+      <Date>2010-01-27</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-04</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-13</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-27</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>29</EmployeeID>
       <Date>2010-01-16</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
-      <EmployeeID>30</EmployeeID>
-      <Date>2010-01-25</Date>
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-05</Date>
     </ShiftOff>
     <ShiftOff weight="1">
-      <ShiftTypeID>D</ShiftTypeID>
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-11</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>N</ShiftTypeID>
+      <EmployeeID>29</EmployeeID>
+      <Date>2010-01-19</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
       <EmployeeID>30</EmployeeID>
-      <Date>2010-01-09</Date>
+      <Date>2010-01-13</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>30</EmployeeID>
+      <Date>2010-01-10</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>30</EmployeeID>
+      <Date>2010-01-27</Date>
     </ShiftOff>
     <ShiftOff weight="1">
       <ShiftTypeID>N</ShiftTypeID>
       <EmployeeID>30</EmployeeID>
+      <Date>2010-01-01</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>30</EmployeeID>
+      <Date>2010-01-18</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>E</ShiftTypeID>
+      <EmployeeID>30</EmployeeID>
+      <Date>2010-01-15</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>D</ShiftTypeID>
+      <EmployeeID>30</EmployeeID>
+      <Date>2010-01-28</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>30</EmployeeID>
+      <Date>2010-01-23</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>30</EmployeeID>
       <Date>2010-01-13</Date>
+    </ShiftOff>
+    <ShiftOff weight="1">
+      <ShiftTypeID>L</ShiftTypeID>
+      <EmployeeID>30</EmployeeID>
+      <Date>2010-01-06</Date>
     </ShiftOff>
   </ShiftOffRequests>
 </SchedulingPeriod>

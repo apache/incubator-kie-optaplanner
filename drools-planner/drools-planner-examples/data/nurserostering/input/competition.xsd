@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2009 (http://www.altova.com) by SSS (SSS) -->
+<!-- edited with XMLSpy v2009 (http://www.altova.com) by SSS (.) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xs:annotation>
 		<xs:documentation>
@@ -102,24 +102,6 @@
 						<xs:element name="NoNightShiftBeforeFreeWeekend" type="WeightOnly" minOccurs="0"/>
 						<xs:element name="TwoFreeDaysAfterNightShifts" type="WeightOnly" minOccurs="0"/>
 						<xs:element name="AlternativeSkillCategory" type="WeightOnly" minOccurs="0"/>
-						<xs:element name="ValidShiftTypeSuccessions" minOccurs="0">
-							<xs:complexType>
-								<xs:complexContent>
-									<xs:extension base="ConstraintAttributes">
-										<xs:sequence>
-											<xs:element name="Succession" minOccurs="0" maxOccurs="unbounded">
-												<xs:complexType>
-													<xs:sequence>
-														<xs:element name="ShiftTypeID1" type="xs:string"/>
-														<xs:element name="ShiftTypeID2" type="xs:string"/>
-													</xs:sequence>
-												</xs:complexType>
-											</xs:element>
-										</xs:sequence>
-									</xs:extension>
-								</xs:complexContent>
-							</xs:complexType>
-						</xs:element>
 						<!-- TODO remove this! -->
 						<xs:element name="UnwantedPatterns" minOccurs="0">
 							<xs:complexType>
@@ -144,8 +126,8 @@
 						<xs:element name="Name" type="xs:string" minOccurs="0"/>
 						<xs:element name="Skills" minOccurs="0">
 							<xs:complexType>
-								<xs:sequence>
-									<xs:element name="Skill" type="xs:string" maxOccurs="unbounded"/>
+								<xs:sequence minOccurs="0" maxOccurs="unbounded">
+									<xs:element name="Skill" type="xs:string"/>
 								</xs:sequence>
 							</xs:complexType>
 						</xs:element>
@@ -196,9 +178,6 @@
 	</xs:complexType>
 	<xs:complexType name="Cover">
 		<xs:sequence>
-			<xs:choice>
-				<xs:element name="Skill" type="ID" minOccurs="0"/>
-			</xs:choice>
 			<xs:choice>
 				<xs:element name="Shift" type="ID"/>
 			</xs:choice>
