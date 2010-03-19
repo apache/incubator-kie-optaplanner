@@ -1,17 +1,14 @@
 package org.drools.planner.examples.nurserostering.persistence;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.AbstractInputConverter;
-import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
 import org.drools.planner.examples.common.persistence.AbstractXmlInputConverter;
+import org.drools.planner.examples.nurserostering.domain.Contract;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.ShiftPattern;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
@@ -56,6 +53,8 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                     schedulingPeriodElement.getChild("ShiftTypes"));
             Map<String, ShiftPattern> shiftPatternMap = readShiftPatternList(nurseRoster, shiftTypeMap,
                     schedulingPeriodElement.getChild("Patterns"));
+            Map<String, Contract> contractMap = readContractList(nurseRoster, shiftPatternMap,
+                    schedulingPeriodElement.getChild("Contracts"));
 
             logger.info("NurseRoster {} with TODO.",
                     new Object[]{nurseRoster.getCode()});
@@ -160,6 +159,18 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                     }
                     // TODO shiftType & day etc
 
+//        <PatternEntry index="0">
+//          <ShiftType>None</ShiftType>
+//          <Day>Friday</Day>
+//        </PatternEntry>
+//        <PatternEntry index="1">
+//          <ShiftType>Any</ShiftType>
+//          <Day>Saturday</Day>
+//        </PatternEntry>
+//        <PatternEntry index="2">
+//          <ShiftType>Any</ShiftType>
+//          <Day>Sunday</Day>
+//        </PatternEntry>
 
                 }
 
@@ -169,6 +180,64 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             }
             nurseRoster.setShiftPatternList(shiftPatternList);
             return shiftPatternMap;
+        }
+
+
+        private Map<String, Contract> readContractList(NurseRoster nurseRoster,
+                Map<String, ShiftPattern> shiftPatternMap, Element contractsElement) throws JDOMException {
+            List<Element> contractElementList = (List<Element>) contractsElement.getChildren();
+            List<Contract> contractList = new ArrayList<Contract>(contractElementList.size());
+            Map<String, Contract> contractMap = new HashMap<String, Contract>(contractElementList.size());
+            long id = 0L;
+            for (Element element : contractElementList) {
+                assertElementName(element, "Contract");
+                Contract contract = new Contract();
+                contract.setId(id);
+                contract.setCode(element.getAttribute("ID").getValue());
+                contract.setDescription(element.getChild("Description").getText());
+                // TODO the rest of the contract
+//      <SingleAssignmentPerDay weight="1">true</SingleAssignmentPerDay>
+//      <MaxNumAssignments on="1" weight="1">16</MaxNumAssignments>
+//      <MinNumAssignments on="1" weight="1">6</MinNumAssignments>
+//      <MaxConsecutiveWorkingDays on="1" weight="1">7</MaxConsecutiveWorkingDays>
+//      <MinConsecutiveWorkingDays on="1" weight="1">1</MinConsecutiveWorkingDays>
+//      <MaxConsecutiveFreeDays on="1" weight="1">5</MaxConsecutiveFreeDays>
+//      <MinConsecutiveFreeDays on="1" weight="1">1</MinConsecutiveFreeDays>
+//      <MaxConsecutiveWorkingWeekends on="0" weight="0">7</MaxConsecutiveWorkingWeekends>
+//      <MinConsecutiveWorkingWeekends on="0" weight="0">1</MinConsecutiveWorkingWeekends>
+//      <MaxWorkingWeekendsInFourWeeks on="0" weight="0">0</MaxWorkingWeekendsInFourWeeks>
+//      <WeekendDefinition>SaturdaySunday</WeekendDefinition>
+//      <CompleteWeekends weight="1">true</CompleteWeekends>
+//      <IdenticalShiftTypesDuringWeekend weight="1">true</IdenticalShiftTypesDuringWeekend>
+//      <NoNightShiftBeforeFreeWeekend weight="0">false</NoNightShiftBeforeFreeWeekend>
+//      <AlternativeSkillCategory weight="0">false</AlternativeSkillCategory>
+
+
+                List<Element> unwantedPatternElementList = (List<Element>) element.getChild("UnwantedPatterns")
+                        .getChildren();
+                for (Element patternElement : unwantedPatternElementList) {
+                    assertElementName(patternElement, "Pattern");
+                    ShiftPattern shiftPattern = shiftPatternMap.get(patternElement.getText());
+                    if (shiftPattern == null) {
+                        throw new IllegalArgumentException("The shiftPattern (" + patternElement.getText()
+                                + ") of contract (" + contract.getCode() + ") does not exist.");
+                    }
+                    // TODO unwanted shiftPattern
+//      <UnwantedPatterns>
+//        <Pattern>0</Pattern>
+//        <Pattern>1</Pattern>
+//        <Pattern>2</Pattern>
+//      </UnwantedPatterns>
+
+
+                }
+
+                contractList.add(contract);
+                contractMap.put(contract.getCode(), contract);
+                id++;
+            }
+            nurseRoster.setContractList(contractList);
+            return contractMap;
         }
 
     }
