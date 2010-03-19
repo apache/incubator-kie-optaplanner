@@ -96,5 +96,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <groupId>jfree</groupId>
          <artifactId>jfreechart</artifactId>
       </dependency>
+
+      <!-- Converters -->
+      <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>1.1</version>
+      </dependency>
    </dependencies>
 </project>

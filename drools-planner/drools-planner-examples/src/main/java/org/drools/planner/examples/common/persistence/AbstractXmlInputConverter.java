@@ -7,15 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.solution.Solution;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 /**
  * @author Geoffrey De Smet
@@ -38,16 +35,14 @@ public abstract class AbstractXmlInputConverter extends AbstractInputConverter {
         InputStream in = null;
         try {
             in = new FileInputStream(inputFile);
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.parse(in);
+            SAXBuilder builder = new SAXBuilder(false);
+            Document document = builder.build(in);
             XmlInputBuilder txtInputBuilder = createXmlInputBuilder();
             txtInputBuilder.setDocument(document);
             return txtInputBuilder.readSolution();
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
-        } catch (ParserConfigurationException e) {
-            throw new IllegalArgumentException(e);
-        } catch (SAXException e) {
+        } catch (JDOMException e) {
             throw new IllegalArgumentException(e);
         } finally {
             IOUtils.closeQuietly(in);
@@ -68,10 +63,10 @@ public abstract class AbstractXmlInputConverter extends AbstractInputConverter {
         // Helper methods
         // ************************************************************************
 
-        protected void assertNodeName(Node node, String nodeName) {
-            if (!node.getNodeName().equals(nodeName)) {
-                throw new IllegalArgumentException("The node name (" + node.getNodeName()
-                        + ") is expected to be " + nodeName + ".");
+        protected void assertElementName(Element element, String name) {
+            if (!element.getName().equals(name)) {
+                throw new IllegalStateException("Element name (" + element.getName()
+                        + ") should be " + name +".");
             }
         }
 

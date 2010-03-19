@@ -15,8 +15,6 @@ public class ShiftType extends AbstractPersistable implements Comparable<ShiftTy
     private String endTimeString;
     private String description;
 
-    // TODO many2many to skill
-
     public String getCode() {
         return code;
     }
