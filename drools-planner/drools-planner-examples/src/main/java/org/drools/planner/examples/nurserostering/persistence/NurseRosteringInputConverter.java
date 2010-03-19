@@ -9,11 +9,13 @@ import java.util.Map;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlInputConverter;
 import org.drools.planner.examples.nurserostering.domain.Contract;
+import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.ShiftPattern;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
 import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
 import org.drools.planner.examples.nurserostering.domain.Skill;
+import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
@@ -55,6 +57,8 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                     schedulingPeriodElement.getChild("Patterns"));
             Map<String, Contract> contractMap = readContractList(nurseRoster, shiftPatternMap,
                     schedulingPeriodElement.getChild("Contracts"));
+            Map<String, Employee> employeeMap = readEmployeeList(nurseRoster, skillMap, contractMap,
+                    schedulingPeriodElement.getChild("Employees"));
 
             logger.info("NurseRoster {} with TODO.",
                     new Object[]{nurseRoster.getCode()});
@@ -182,7 +186,6 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             return shiftPatternMap;
         }
 
-
         private Map<String, Contract> readContractList(NurseRoster nurseRoster,
                 Map<String, ShiftPattern> shiftPatternMap, Element contractsElement) throws JDOMException {
             List<Element> contractElementList = (List<Element>) contractsElement.getChildren();
@@ -238,6 +241,55 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             }
             nurseRoster.setContractList(contractList);
             return contractMap;
+        }
+
+        private Map<String, Employee> readEmployeeList(NurseRoster nurseRoster, Map<String, Skill> skillMap,
+                Map<String, Contract> contractMap, Element employeesElement) throws JDOMException {
+            List<Element> employeeElementList = (List<Element>) employeesElement.getChildren();
+            List<Employee> employeeList = new ArrayList<Employee>(employeeElementList.size());
+            Map<String, Employee> employeeMap = new HashMap<String, Employee>(employeeElementList.size());
+            long id = 0L;
+            List<SkillProficiency> skillProficiencyList
+                    = new ArrayList<SkillProficiency>(employeeElementList.size() * 2);
+            long skillProficiencyId = 0L;
+            for (Element element : employeeElementList) {
+                assertElementName(element, "Employee");
+                Employee employee = new Employee();
+                employee.setId(id);
+                employee.setCode(element.getAttribute("ID").getValue());
+                employee.setName(element.getChild("Name").getText());
+                Element contractElement = element.getChild("ContractID");
+                Contract contract = contractMap.get(contractElement.getText());
+                if (contract == null) {
+                    throw new IllegalArgumentException("The contract (" + contractElement.getText()
+                            + ") of employee (" + employee.getCode() + ") does not exist.");
+                }
+                employee.setContract(contract);
+
+                List<Element> skillElementList = (List<Element>) element.getChild("Skills")
+                        .getChildren();
+                for (Element skillElement : skillElementList) {
+                    assertElementName(skillElement, "Skill");
+                    Skill skill = skillMap.get(skillElement.getText());
+                    if (skill == null) {
+                        throw new IllegalArgumentException("The skill (" + skillElement.getText()
+                                + ") of employee (" + employee.getCode() + ") does not exist.");
+                    }
+                    SkillProficiency skillProficiency = new SkillProficiency();
+                    skillProficiency.setId(skillProficiencyId);
+                    skillProficiency.setEmployee(employee);
+                    skillProficiency.setSkill(skill);
+                    skillProficiencyList.add(skillProficiency);
+                    skillProficiencyId++;
+                }
+
+                employeeList.add(employee);
+                employeeMap.put(employee.getCode(), employee);
+                id++;
+            }
+            nurseRoster.setEmployeeList(employeeList);
+            nurseRoster.setSkillProficiencyList(skillProficiencyList);
+            return employeeMap;
         }
 
     }
