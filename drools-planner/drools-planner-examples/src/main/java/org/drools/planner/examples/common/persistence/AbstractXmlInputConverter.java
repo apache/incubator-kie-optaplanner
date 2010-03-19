@@ -41,9 +41,9 @@ public abstract class AbstractXmlInputConverter extends AbstractInputConverter {
             txtInputBuilder.setDocument(document);
             return txtInputBuilder.readSolution();
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
         } catch (JDOMException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("Could not parse the XML file (" + inputFile.getName() + ").", e);
         } finally {
             IOUtils.closeQuietly(in);
         }
@@ -57,7 +57,7 @@ public abstract class AbstractXmlInputConverter extends AbstractInputConverter {
             this.document = document;
         }
 
-        public abstract Solution readSolution() throws IOException;
+        public abstract Solution readSolution() throws IOException, JDOMException;
 
         // ************************************************************************
         // Helper methods

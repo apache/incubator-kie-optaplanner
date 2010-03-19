@@ -33,7 +33,7 @@ public abstract class AbstractTxtInputConverter extends AbstractInputConverter {
             txtInputBuilder.setBufferedReader(bufferedReader);
             return txtInputBuilder.readSolution();
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
         } finally {
             IOUtils.closeQuietly(bufferedReader);
         }

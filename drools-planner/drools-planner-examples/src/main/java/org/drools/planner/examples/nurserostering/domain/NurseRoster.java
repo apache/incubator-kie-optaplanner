@@ -23,6 +23,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
     private List<Skill> skillList;
     private List<ShiftType> shiftTypeList;
     private List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList;
+    private List<ShiftPattern> shiftPatternList;
 
     private List<NurseAssignment> nurseAssignmentList;
 
@@ -60,6 +61,14 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         this.shiftTypeSkillRequirementList = shiftTypeSkillRequirementList;
     }
 
+    public List<ShiftPattern> getShiftPatternList() {
+        return shiftPatternList;
+    }
+
+    public void setShiftPatternList(List<ShiftPattern> shiftPatternList) {
+        this.shiftPatternList = shiftPatternList;
+    }
+
     public List<NurseAssignment> getNurseAssignmentList() {
         return nurseAssignmentList;
     }
@@ -86,6 +95,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         facts.add(skillList);
         facts.addAll(shiftTypeList);
         facts.addAll(shiftTypeSkillRequirementList);
+        facts.addAll(shiftPatternList);
         // TODO add more properties
 
 
@@ -105,6 +115,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         clone.skillList = skillList;
         clone.shiftTypeList = shiftTypeList;
         clone.shiftTypeSkillRequirementList = shiftTypeSkillRequirementList;
+        clone.shiftPatternList = shiftPatternList;
         // TODO add more properties
 
 

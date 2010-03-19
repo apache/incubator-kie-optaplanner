@@ -34,7 +34,7 @@ public abstract class AbstractTxtOutputConverter extends AbstractOutputConverter
             txtOutputBuilder.setSolution(solution);
             txtOutputBuilder.writeSolution();
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("Could not write the file (" + outputFile.getName() + ").", e);
         } finally {
             IOUtils.closeQuietly(bufferedWriter);
         }
