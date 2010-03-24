@@ -27,6 +27,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
     private List<Contract> contractList;
     private List<Employee> employeeList;
     private List<SkillProficiency> skillProficiencyList;
+    private List<ShiftDate> shiftDateList;
 
     private List<NurseAssignment> nurseAssignmentList;
 
@@ -96,6 +97,14 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         this.skillProficiencyList = skillProficiencyList;
     }
 
+    public List<ShiftDate> getShiftDateList() {
+        return shiftDateList;
+    }
+
+    public void setShiftDateList(List<ShiftDate> shiftDateList) {
+        this.shiftDateList = shiftDateList;
+    }
+
     public List<NurseAssignment> getNurseAssignmentList() {
         return nurseAssignmentList;
     }
@@ -126,6 +135,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         facts.addAll(contractList);
         facts.addAll(employeeList);
         facts.addAll(skillProficiencyList);
+        facts.addAll(shiftDateList);
         // TODO add more properties
 
 
@@ -149,6 +159,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         clone.contractList = contractList;
         clone.employeeList = employeeList;
         clone.skillProficiencyList = skillProficiencyList;
+        clone.shiftDateList = shiftDateList;
         // TODO add more properties
 
 
