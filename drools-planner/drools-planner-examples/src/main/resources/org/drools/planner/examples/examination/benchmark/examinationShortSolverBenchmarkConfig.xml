@@ -4,12 +4,12 @@
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
     <solverStatisticFilesDirectory>local/data/examination/statistic</solverStatisticFilesDirectory>
 
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set1_memory_leak.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
         <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
         <termination>
-            <maximumStepCount>70</maximumStepCount>
+            <maximumStepCount>700</maximumStepCount>
         </termination>
     </inheritedLocalSearchSolver>
 
