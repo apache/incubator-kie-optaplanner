@@ -33,8 +33,8 @@
                 </selector>
             </selector>
             <acceptor>
-                <completeSolutionTabuSize>500</completeSolutionTabuSize>
-                <completePropertyTabuSize>10</completePropertyTabuSize>
+                <!--<completeSolutionTabuSize>500</completeSolutionTabuSize>-->
+                <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
