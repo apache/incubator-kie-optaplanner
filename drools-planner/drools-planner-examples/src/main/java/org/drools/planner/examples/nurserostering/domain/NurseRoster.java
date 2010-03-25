@@ -28,6 +28,11 @@ public class NurseRoster extends AbstractPersistable implements Solution {
     private List<Employee> employeeList;
     private List<SkillProficiency> skillProficiencyList;
     private List<ShiftDate> shiftDateList;
+    private List<Shift> shiftList;
+    private List<DayOffRequest> dayOffRequestList;
+    private List<DayOnRequest> dayOnRequestList;
+    private List<ShiftOffRequest> shiftOffRequestList;
+    private List<ShiftOnRequest> shiftOnRequestList;
 
     private List<NurseAssignment> nurseAssignmentList;
 
@@ -105,6 +110,46 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         this.shiftDateList = shiftDateList;
     }
 
+    public List<Shift> getShiftList() {
+        return shiftList;
+    }
+
+    public void setShiftList(List<Shift> shiftList) {
+        this.shiftList = shiftList;
+    }
+
+    public List<DayOffRequest> getDayOffRequestList() {
+        return dayOffRequestList;
+    }
+
+    public void setDayOffRequestList(List<DayOffRequest> dayOffRequestList) {
+        this.dayOffRequestList = dayOffRequestList;
+    }
+
+    public List<DayOnRequest> getDayOnRequestList() {
+        return dayOnRequestList;
+    }
+
+    public void setDayOnRequestList(List<DayOnRequest> dayOnRequestList) {
+        this.dayOnRequestList = dayOnRequestList;
+    }
+
+    public List<ShiftOffRequest> getShiftOffRequestList() {
+        return shiftOffRequestList;
+    }
+
+    public void setShiftOffRequestList(List<ShiftOffRequest> shiftOffRequestList) {
+        this.shiftOffRequestList = shiftOffRequestList;
+    }
+
+    public List<ShiftOnRequest> getShiftOnRequestList() {
+        return shiftOnRequestList;
+    }
+
+    public void setShiftOnRequestList(List<ShiftOnRequest> shiftOnRequestList) {
+        this.shiftOnRequestList = shiftOnRequestList;
+    }
+
     public List<NurseAssignment> getNurseAssignmentList() {
         return nurseAssignmentList;
     }
@@ -128,7 +173,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
 
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
-        facts.add(skillList);
+        facts.addAll(skillList);
         facts.addAll(shiftTypeList);
         facts.addAll(shiftTypeSkillRequirementList);
         facts.addAll(shiftPatternList);
@@ -136,6 +181,11 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         facts.addAll(employeeList);
         facts.addAll(skillProficiencyList);
         facts.addAll(shiftDateList);
+        facts.addAll(shiftList);
+        facts.addAll(dayOffRequestList);
+        facts.addAll(dayOnRequestList);
+        facts.addAll(shiftOffRequestList);
+        facts.addAll(shiftOnRequestList);
         // TODO add more properties
 
 
@@ -160,6 +210,11 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         clone.employeeList = employeeList;
         clone.skillProficiencyList = skillProficiencyList;
         clone.shiftDateList = shiftDateList;
+        clone.shiftList = shiftList;
+        clone.dayOffRequestList = dayOffRequestList;
+        clone.dayOnRequestList = dayOnRequestList;
+        clone.shiftOffRequestList = shiftOffRequestList;
+        clone.shiftOnRequestList = shiftOnRequestList;
         // TODO add more properties
 
 

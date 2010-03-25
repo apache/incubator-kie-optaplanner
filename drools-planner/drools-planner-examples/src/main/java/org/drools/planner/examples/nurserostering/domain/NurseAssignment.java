@@ -7,11 +7,6 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.curriculumcourse.domain.Course;
-import org.drools.planner.examples.curriculumcourse.domain.Curriculum;
-import org.drools.planner.examples.curriculumcourse.domain.Day;
-import org.drools.planner.examples.curriculumcourse.domain.Period;
-import org.drools.planner.examples.curriculumcourse.domain.Room;
 
 /**
  * @author Geoffrey De Smet
@@ -19,81 +14,43 @@ import org.drools.planner.examples.curriculumcourse.domain.Room;
 @XStreamAlias("NurseAssignment")
 public class NurseAssignment extends AbstractPersistable implements Comparable<NurseAssignment> {
 
-//    private Course course;
-//    private int lectureIndexInCourse;
-//
-//    // Changed by moves, between score calculations.
-//    private Period period;
-//    private Room room;
-//
-//    public Course getCourse() {
-//        return course;
-//    }
-//
-//    public void setCourse(Course course) {
-//        this.course = course;
-//    }
-//
-//    public int getLectureIndexInCourse() {
-//        return lectureIndexInCourse;
-//    }
-//
-//    public void setLectureIndexInCourse(int lectureIndexInCourse) {
-//        this.lectureIndexInCourse = lectureIndexInCourse;
-//    }
-//
-//    public Period getPeriod() {
-//        return period;
-//    }
-//
-//    public void setPeriod(Period period) {
-//        this.period = period;
-//    }
-//
-//    public Room getRoom() {
-//        return room;
-//    }
-//
-//    public void setRoom(Room room) {
-//        this.room = room;
-//    }
-//
-//
-//    public String getLabel() {
-//        return course + "-" + lectureIndexInCourse;
-//    }
-//
-//    public int getStudentSize() {
-//        return course.getStudentSize();
-//    }
-//
-//    public List<Curriculum> getCurriculumList() {
-//        return course.getCurriculumList();
-//    }
-//
-//    public Day getDay() {
-//        return period.getDay();
-//    }
-//
-//    public int getTimeslotIndex() {
-//        return period.getTimeslot().getTimeslotIndex();
-//    }
+    private Shift shift;
+
+    // Changed by moves, between score calculations.
+    private Employee employee;
+
+    public Shift getShift() {
+        return shift;
+    }
+
+    public void setShift(Shift shift) {
+        this.shift = shift;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public String getLabel() {
+        return shift + "_" + employee;
+    }
 
     public int compareTo(NurseAssignment other) {
         return new CompareToBuilder()
-//                .append(period, other.period)
-//                .append(room, other.room)
-//                .append(course, other.course)
+                .append(shift, other.shift)
+                .append(employee, other.employee)
                 .toComparison();
     }
 
     public NurseAssignment clone() {
         NurseAssignment clone = new NurseAssignment();
         clone.id = id;
-//        clone.course = course;
-//        clone.lectureIndexInCourse = lectureIndexInCourse;
-//        clone.period = period;
-//        clone.room = room;
+        clone.shift = shift;
+        clone.employee = employee;
         return clone;
     }
 
@@ -109,9 +66,8 @@ public class NurseAssignment extends AbstractPersistable implements Comparable<N
             NurseAssignment other = (NurseAssignment) o;
             return new EqualsBuilder()
                     .append(id, other.id)
-//                    .append(course, other.course)
-//                    .append(period, other.period)
-//                    .append(room, other.room)
+                    .append(shift, other.shift)
+                    .append(employee, other.employee)
                     .isEquals();
         } else {
             return false;
@@ -126,16 +82,14 @@ public class NurseAssignment extends AbstractPersistable implements Comparable<N
     public int solutionHashCode() {
         return new HashCodeBuilder()
                 .append(id)
-//                .append(course)
-//                .append(period)
-//                .append(room)
+                .append(shift)
+                .append(employee)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return id.toString();
-//        return course + "-" + lectureIndexInCourse + " @ " + period + " + " + room;
+        return shift + "_" + employee;
     }
 
 }
