@@ -119,10 +119,13 @@ public class DefaultDecider implements Decider {
         undoMove.doMove(workingMemory);
         if (assertUndoMoveIsUncorrupted) {
             Score undoScore = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
-            if (!undoScore.equals(moveScope.getStepScope().getLocalSearchSolverScope()
-                    .getLastCompletedStepScope().getScore())) {
+            Score lastCompletedStepScore = moveScope.getStepScope().getLocalSearchSolverScope()
+                    .getLastCompletedStepScope().getScore();
+            if (!undoScore.equals(lastCompletedStepScore)) {
                 throw new IllegalStateException(
-                        "Corrupted undo move (" + undoMove + ") received from move (" + move + ").");
+                        "Corrupted undo move (" + undoMove + ") received from move (" + move + ").\n"
+                        + "Unequal lastCompletedStepScore (" + lastCompletedStepScore + ") and undoScore ("
+                        + undoScore + ").");
             }
         }
         logger.debug("    Move ({}) with score ({}) and acceptChance ({}).",
