@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import org.drools.planner.examples.nurserostering.domain.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
+import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.ShiftPattern;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
@@ -51,6 +53,7 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
         protected Map<String, ShiftDate> shiftDateMap;
         protected Map<String, Skill> skillMap;
         protected Map<String, ShiftType> shiftTypeMap;
+        protected Map<List<String>, Shift> shiftMap;
         protected Map<String, ShiftPattern> shiftPatternMap;
         protected Map<String, Contract> contractMap;
         protected Map<String, Employee> employeeMap;
@@ -175,6 +178,10 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList
                     = new ArrayList<ShiftTypeSkillRequirement>(shiftElementList.size() * 2);
             long shiftTypeSkillRequirementId = 0L;
+            int shiftListSize = shiftDateMap.size() * shiftElementList.size();
+            List<Shift> shiftList = new ArrayList<Shift>(shiftListSize);
+            shiftMap = new HashMap<List<String>, Shift>(shiftListSize);
+            long shiftId = 0L;
             for (Element element : shiftElementList) {
                 assertElementName(element, "Shift");
                 ShiftType shiftType = new ShiftType();
@@ -203,12 +210,23 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                     }
                 }
 
+                for (Map.Entry<String, ShiftDate> shiftDateEntry : shiftDateMap.entrySet()) {
+                    Shift shift = new Shift();
+                    shift.setId(shiftId);
+                    shift.setShiftDate(shiftDateEntry.getValue());
+                    shift.setShiftType(shiftType);
+                    shiftList.add(shift);
+                    shiftMap.put(Arrays.asList(shiftDateEntry.getKey(), shiftType.getCode()), shift);
+                    shiftId++;
+                }
+
                 shiftTypeList.add(shiftType);
                 shiftTypeMap.put(shiftType.getCode(), shiftType);
                 id++;
             }
             nurseRoster.setShiftTypeList(shiftTypeList);
             nurseRoster.setShiftTypeSkillRequirementList(shiftTypeSkillRequirementList);
+            nurseRoster.setShiftList(shiftList);
         }
 
         private void readShiftPatternList(NurseRoster nurseRoster, Element patternsElement) throws JDOMException {
