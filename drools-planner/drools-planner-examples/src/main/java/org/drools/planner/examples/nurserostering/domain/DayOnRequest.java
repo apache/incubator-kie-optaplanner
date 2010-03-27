@@ -12,6 +12,7 @@ public class DayOnRequest extends AbstractPersistable implements Comparable<DayO
 
     private Employee employee;
     private ShiftDate shiftDate;
+    private int weight;
 
     public Employee getEmployee() {
         return employee;
@@ -27,6 +28,14 @@ public class DayOnRequest extends AbstractPersistable implements Comparable<DayO
 
     public void setShiftDate(ShiftDate shiftDate) {
         this.shiftDate = shiftDate;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public int compareTo(DayOnRequest other) {

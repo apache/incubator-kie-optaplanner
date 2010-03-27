@@ -16,6 +16,8 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlInputConverter;
 import org.drools.planner.examples.nurserostering.domain.Contract;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
+import org.drools.planner.examples.nurserostering.domain.DayOffRequest;
+import org.drools.planner.examples.nurserostering.domain.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
@@ -70,6 +72,11 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             readShiftPatternList(nurseRoster, schedulingPeriodElement.getChild("Patterns"));
             readContractList(nurseRoster, schedulingPeriodElement.getChild("Contracts"));
             readEmployeeList(nurseRoster, schedulingPeriodElement.getChild("Employees"));
+//            readTodoList(nurseRoster, schedulingPeriodElement.getChild("CoverRequirements"));
+            readDayOffRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOffRequests"));
+            readDayOnRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOnRequests"));
+//            readShiftOffRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOffRequests"));
+//            readShiftOnRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOnRequests"));
 
             logger.info("NurseRoster {} with TODO.",
                     new Object[]{nurseRoster.getCode()});
@@ -141,6 +148,9 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
         }
 
         private void readSkillList(NurseRoster nurseRoster, Element skillsElement) throws JDOMException {
+            if (skillsElement == null) {
+                return;
+            }
             List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
             List<Skill> skillList = new ArrayList<Skill>(skillElementList.size());
             skillMap = new HashMap<String, Skill>(skillElementList.size());
@@ -174,20 +184,23 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 shiftType.setEndTimeString(element.getChild("EndTime").getText());
                 shiftType.setDescription(element.getChild("Description").getText());
 
-                List<Element> skillElementList = (List<Element>) element.getChild("Skills").getChildren();
-                for (Element skillElement : skillElementList) {
-                    assertElementName(skillElement, "Skill");
-                    ShiftTypeSkillRequirement shiftTypeSkillRequirement = new ShiftTypeSkillRequirement();
-                    shiftTypeSkillRequirement.setId(shiftTypeSkillRequirementId);
-                    shiftTypeSkillRequirement.setShiftType(shiftType);
-                    Skill skill = skillMap.get(skillElement.getText());
-                    if (skill == null) {
-                        throw new IllegalArgumentException("The skill (" + skillElement.getText()
-                                + ") of shiftType (" + shiftType.getCode() + ") does not exist.");
+                Element skillsElement = element.getChild("Skills");
+                if (skillsElement != null) {
+                    List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
+                    for (Element skillElement : skillElementList) {
+                        assertElementName(skillElement, "Skill");
+                        ShiftTypeSkillRequirement shiftTypeSkillRequirement = new ShiftTypeSkillRequirement();
+                        shiftTypeSkillRequirement.setId(shiftTypeSkillRequirementId);
+                        shiftTypeSkillRequirement.setShiftType(shiftType);
+                        Skill skill = skillMap.get(skillElement.getText());
+                        if (skill == null) {
+                            throw new IllegalArgumentException("The skill (" + skillElement.getText()
+                                    + ") of shiftType (" + shiftType.getCode() + ") does not exist.");
+                        }
+                        shiftTypeSkillRequirement.setSkill(skill);
+                        shiftTypeSkillRequirementList.add(shiftTypeSkillRequirement);
+                        shiftTypeSkillRequirementId++;
                     }
-                    shiftTypeSkillRequirement.setSkill(skill);
-                    shiftTypeSkillRequirementList.add(shiftTypeSkillRequirement);
-                    shiftTypeSkillRequirementId++;
                 }
 
                 shiftTypeList.add(shiftType);
@@ -199,6 +212,9 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
         }
 
         private void readShiftPatternList(NurseRoster nurseRoster, Element patternsElement) throws JDOMException {
+            if (patternsElement == null) {
+                return;
+            }
             List<Element> patternElementList = (List<Element>) patternsElement.getChildren();
             List<ShiftPattern> shiftPatternList = new ArrayList<ShiftPattern>(patternElementList.size());
             shiftPatternMap = new HashMap<String, ShiftPattern>(patternElementList.size());
@@ -331,21 +347,23 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 }
                 employee.setContract(contract);
 
-                List<Element> skillElementList = (List<Element>) element.getChild("Skills")
-                        .getChildren();
-                for (Element skillElement : skillElementList) {
-                    assertElementName(skillElement, "Skill");
-                    Skill skill = skillMap.get(skillElement.getText());
-                    if (skill == null) {
-                        throw new IllegalArgumentException("The skill (" + skillElement.getText()
-                                + ") of employee (" + employee.getCode() + ") does not exist.");
+                Element skillsElement = element.getChild("Skills");
+                if (skillsElement != null) {
+                    List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
+                    for (Element skillElement : skillElementList) {
+                        assertElementName(skillElement, "Skill");
+                        Skill skill = skillMap.get(skillElement.getText());
+                        if (skill == null) {
+                            throw new IllegalArgumentException("The skill (" + skillElement.getText()
+                                    + ") of employee (" + employee.getCode() + ") does not exist.");
+                        }
+                        SkillProficiency skillProficiency = new SkillProficiency();
+                        skillProficiency.setId(skillProficiencyId);
+                        skillProficiency.setEmployee(employee);
+                        skillProficiency.setSkill(skill);
+                        skillProficiencyList.add(skillProficiency);
+                        skillProficiencyId++;
                     }
-                    SkillProficiency skillProficiency = new SkillProficiency();
-                    skillProficiency.setId(skillProficiencyId);
-                    skillProficiency.setEmployee(employee);
-                    skillProficiency.setSkill(skill);
-                    skillProficiencyList.add(skillProficiency);
-                    skillProficiencyId++;
                 }
 
                 employeeList.add(employee);
@@ -354,6 +372,78 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             }
             nurseRoster.setEmployeeList(employeeList);
             nurseRoster.setSkillProficiencyList(skillProficiencyList);
+        }
+
+        private void readDayOffRequestList(NurseRoster nurseRoster, Element dayOffRequestsElement) throws JDOMException {
+            if (dayOffRequestsElement == null) {
+                return;
+            }
+            List<Element> dayOffElementList = (List<Element>) dayOffRequestsElement.getChildren();
+            List<DayOffRequest> dayOffRequestList = new ArrayList<DayOffRequest>(dayOffElementList.size());
+            long id = 0L;
+            for (Element element : dayOffElementList) {
+                assertElementName(element, "DayOff");
+                DayOffRequest dayOffRequest = new DayOffRequest();
+                dayOffRequest.setId(id);
+                
+                Element employeeElement = element.getChild("EmployeeID");
+                Employee employee = employeeMap.get(employeeElement.getText());
+                if (employee == null) {
+                    throw new IllegalArgumentException("The shiftDate (" + employeeElement.getText()
+                            + ") of dayOffRequest (" + dayOffRequest + ") does not exist.");
+                }
+                dayOffRequest.setEmployee(employee);
+
+                Element dateElement = element.getChild("Date");
+                ShiftDate shiftDate = shiftDateMap.get(dateElement.getText());
+                if (shiftDate == null) {
+                    throw new IllegalArgumentException("The date (" + dateElement.getText()
+                            + ") of dayOffRequest (" + dayOffRequest + ") does not exist.");
+                }
+                dayOffRequest.setShiftDate(shiftDate);
+
+                dayOffRequest.setWeight(element.getAttribute("weight").getIntValue());
+
+                dayOffRequestList.add(dayOffRequest);
+                id++;
+            }
+            nurseRoster.setDayOffRequestList(dayOffRequestList);
+        }
+
+        private void readDayOnRequestList(NurseRoster nurseRoster, Element dayOnRequestsElement) throws JDOMException {
+            if (dayOnRequestsElement == null) {
+                return;
+            }
+            List<Element> dayOnElementList = (List<Element>) dayOnRequestsElement.getChildren();
+            List<DayOnRequest> dayOnRequestList = new ArrayList<DayOnRequest>(dayOnElementList.size());
+            long id = 0L;
+            for (Element element : dayOnElementList) {
+                assertElementName(element, "DayOn");
+                DayOnRequest dayOnRequest = new DayOnRequest();
+                dayOnRequest.setId(id);
+
+                Element employeeElement = element.getChild("EmployeeID");
+                Employee employee = employeeMap.get(employeeElement.getText());
+                if (employee == null) {
+                    throw new IllegalArgumentException("The shiftDate (" + employeeElement.getText()
+                            + ") of dayOnRequest (" + dayOnRequest + ") does not exist.");
+                }
+                dayOnRequest.setEmployee(employee);
+
+                Element dateElement = element.getChild("Date");
+                ShiftDate shiftDate = shiftDateMap.get(dateElement.getText());
+                if (shiftDate == null) {
+                    throw new IllegalArgumentException("The date (" + dateElement.getText()
+                            + ") of dayOnRequest (" + dayOnRequest + ") does not exist.");
+                }
+                dayOnRequest.setShiftDate(shiftDate);
+
+                dayOnRequest.setWeight(element.getAttribute("weight").getIntValue());
+
+                dayOnRequestList.add(dayOnRequest);
+                id++;
+            }
+            nurseRoster.setDayOnRequestList(dayOnRequestList);
         }
 
     }

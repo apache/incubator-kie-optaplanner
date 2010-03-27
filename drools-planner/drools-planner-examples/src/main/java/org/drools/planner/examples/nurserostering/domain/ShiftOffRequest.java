@@ -12,6 +12,7 @@ public class ShiftOffRequest extends AbstractPersistable implements Comparable<S
 
     private Employee employee;
     private Shift shift;
+    private int weight;
 
     public Employee getEmployee() {
         return employee;
@@ -27,6 +28,14 @@ public class ShiftOffRequest extends AbstractPersistable implements Comparable<S
 
     public void setShift(Shift shift) {
         this.shift = shift;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public int compareTo(ShiftOffRequest other) {
