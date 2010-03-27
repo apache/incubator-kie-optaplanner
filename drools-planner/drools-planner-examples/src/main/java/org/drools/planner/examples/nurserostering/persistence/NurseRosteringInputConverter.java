@@ -46,6 +46,13 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
 
     public class NurseRosteringInputBuilder extends XmlInputBuilder {
 
+        protected Map<String, ShiftDate> shiftDateMap;
+        protected Map<String, Skill> skillMap;
+        protected Map<String, ShiftType> shiftTypeMap;
+        protected Map<String, ShiftPattern> shiftPatternMap;
+        protected Map<String, Contract> contractMap;
+        protected Map<String, Employee> employeeMap;
+
         public Solution readSolution() throws IOException, JDOMException {
             // Note: javax.xml is terrible. JDom is much much easier.
 
@@ -55,19 +62,14 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             nurseRoster.setId(0L);
             nurseRoster.setCode(schedulingPeriodElement.getAttribute("ID").getValue());
 
-            Map<String, ShiftDate> shiftDateMap = generateShiftDateList(nurseRoster,
+            generateShiftDateList(nurseRoster,
                     schedulingPeriodElement.getChild("StartDate"),
                     schedulingPeriodElement.getChild("EndDate"));
-            Map<String, Skill> skillMap = readSkillList(nurseRoster,
-                    schedulingPeriodElement.getChild("Skills"));
-            Map<String, ShiftType> shiftTypeMap = readShiftTypeList(nurseRoster, skillMap,
-                    schedulingPeriodElement.getChild("ShiftTypes"));
-            Map<String, ShiftPattern> shiftPatternMap = readShiftPatternList(nurseRoster, shiftTypeMap,
-                    schedulingPeriodElement.getChild("Patterns"));
-            Map<String, Contract> contractMap = readContractList(nurseRoster, shiftPatternMap,
-                    schedulingPeriodElement.getChild("Contracts"));
-            Map<String, Employee> employeeMap = readEmployeeList(nurseRoster, skillMap, contractMap,
-                    schedulingPeriodElement.getChild("Employees"));
+            readSkillList(nurseRoster, schedulingPeriodElement.getChild("Skills"));
+            readShiftTypeList(nurseRoster, schedulingPeriodElement.getChild("ShiftTypes"));
+            readShiftPatternList(nurseRoster, schedulingPeriodElement.getChild("Patterns"));
+            readContractList(nurseRoster, schedulingPeriodElement.getChild("Contracts"));
+            readEmployeeList(nurseRoster, schedulingPeriodElement.getChild("Employees"));
 
             logger.info("NurseRoster {} with TODO.",
                     new Object[]{nurseRoster.getCode()});
@@ -76,7 +78,7 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             return nurseRoster;
         }
 
-        private Map<String, ShiftDate> generateShiftDateList(NurseRoster nurseRoster,
+        private void generateShiftDateList(NurseRoster nurseRoster,
                 Element startDateElement, Element endDateElement) throws JDOMException {
             // Mimic JSR-310 LocalDate
             TimeZone LOCAL_TIMEZONE = TimeZone.getTimeZone("GMT");
@@ -118,7 +120,7 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             }
             int shiftDateSize = maxDayIndex + 1;
             List<ShiftDate> shiftDateList = new ArrayList<ShiftDate>(shiftDateSize);
-            Map<String, ShiftDate> shiftDateMap = new HashMap<String, ShiftDate>(shiftDateSize);
+            shiftDateMap = new HashMap<String, ShiftDate>(shiftDateSize);
             long id = 0L;
             int dayIndex = 0;
             calendar.setTime(startDate);
@@ -130,19 +132,18 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 shiftDate.setDateString(dateString);
                 shiftDate.setDayOfWeek(DayOfWeek.valueOfCalendar(calendar.get(Calendar.DAY_OF_WEEK)));
                 shiftDateList.add(shiftDate);
-                shiftDateMap.put(dateString, shiftDate);
+                this.shiftDateMap.put(dateString, shiftDate);
                 id++;
                 dayIndex++;
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
             }
             nurseRoster.setShiftDateList(shiftDateList);
-            return shiftDateMap;
         }
 
-        private Map<String, Skill> readSkillList(NurseRoster nurseRoster, Element skillsElement) throws JDOMException {
+        private void readSkillList(NurseRoster nurseRoster, Element skillsElement) throws JDOMException {
             List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
             List<Skill> skillList = new ArrayList<Skill>(skillElementList.size());
-            Map<String, Skill> skillMap = new HashMap<String, Skill>(skillElementList.size());
+            skillMap = new HashMap<String, Skill>(skillElementList.size());
             long id = 0L;
             for (Element element : skillElementList) {
                 assertElementName(element, "Skill");
@@ -154,14 +155,12 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 id++;
             }
             nurseRoster.setSkillList(skillList);
-            return skillMap;
         }
 
-        private Map<String, ShiftType> readShiftTypeList(NurseRoster nurseRoster, Map<String, Skill> skillMap,
-                Element shiftTypesElement) throws JDOMException {
+        private void readShiftTypeList(NurseRoster nurseRoster, Element shiftTypesElement) throws JDOMException {
             List<Element> shiftElementList = (List<Element>) shiftTypesElement.getChildren();
             List<ShiftType> shiftTypeList = new ArrayList<ShiftType>(shiftElementList.size());
-            Map<String, ShiftType> shiftTypeMap = new HashMap<String, ShiftType>(shiftElementList.size());
+            shiftTypeMap = new HashMap<String, ShiftType>(shiftElementList.size());
             long id = 0L;
             List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList
                     = new ArrayList<ShiftTypeSkillRequirement>(shiftElementList.size() * 2);
@@ -197,14 +196,12 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             }
             nurseRoster.setShiftTypeList(shiftTypeList);
             nurseRoster.setShiftTypeSkillRequirementList(shiftTypeSkillRequirementList);
-            return shiftTypeMap;
         }
 
-        private Map<String, ShiftPattern> readShiftPatternList(NurseRoster nurseRoster,
-                Map<String, ShiftType> shiftTypeMap, Element patternsElement) throws JDOMException {
+        private void readShiftPatternList(NurseRoster nurseRoster, Element patternsElement) throws JDOMException {
             List<Element> patternElementList = (List<Element>) patternsElement.getChildren();
             List<ShiftPattern> shiftPatternList = new ArrayList<ShiftPattern>(patternElementList.size());
-            Map<String, ShiftPattern> shiftPatternMap = new HashMap<String, ShiftPattern>(patternElementList.size());
+            shiftPatternMap = new HashMap<String, ShiftPattern>(patternElementList.size());
             long id = 0L;
             for (Element element : patternElementList) {
                 assertElementName(element, "Pattern");
@@ -255,14 +252,12 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 id++;
             }
             nurseRoster.setShiftPatternList(shiftPatternList);
-            return shiftPatternMap;
         }
 
-        private Map<String, Contract> readContractList(NurseRoster nurseRoster,
-                Map<String, ShiftPattern> shiftPatternMap, Element contractsElement) throws JDOMException {
+        private void readContractList(NurseRoster nurseRoster, Element contractsElement) throws JDOMException {
             List<Element> contractElementList = (List<Element>) contractsElement.getChildren();
             List<Contract> contractList = new ArrayList<Contract>(contractElementList.size());
-            Map<String, Contract> contractMap = new HashMap<String, Contract>(contractElementList.size());
+            contractMap = new HashMap<String, Contract>(contractElementList.size());
             long id = 0L;
             for (Element element : contractElementList) {
                 assertElementName(element, "Contract");
@@ -312,14 +307,12 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 id++;
             }
             nurseRoster.setContractList(contractList);
-            return contractMap;
         }
 
-        private Map<String, Employee> readEmployeeList(NurseRoster nurseRoster, Map<String, Skill> skillMap,
-                Map<String, Contract> contractMap, Element employeesElement) throws JDOMException {
+        private void readEmployeeList(NurseRoster nurseRoster, Element employeesElement) throws JDOMException {
             List<Element> employeeElementList = (List<Element>) employeesElement.getChildren();
             List<Employee> employeeList = new ArrayList<Employee>(employeeElementList.size());
-            Map<String, Employee> employeeMap = new HashMap<String, Employee>(employeeElementList.size());
+            employeeMap = new HashMap<String, Employee>(employeeElementList.size());
             long id = 0L;
             List<SkillProficiency> skillProficiencyList
                     = new ArrayList<SkillProficiency>(employeeElementList.size() * 2);
@@ -361,7 +354,6 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             }
             nurseRoster.setEmployeeList(employeeList);
             nurseRoster.setSkillProficiencyList(skillProficiencyList);
-            return employeeMap;
         }
 
     }
