@@ -23,6 +23,8 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
+import org.drools.planner.examples.nurserostering.domain.ShiftOffRequest;
+import org.drools.planner.examples.nurserostering.domain.ShiftOnRequest;
 import org.drools.planner.examples.nurserostering.domain.ShiftPattern;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
 import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
@@ -78,8 +80,8 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
 //            readTodoList(nurseRoster, schedulingPeriodElement.getChild("CoverRequirements"));
             readDayOffRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOffRequests"));
             readDayOnRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOnRequests"));
-//            readShiftOffRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOffRequests"));
-//            readShiftOnRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOnRequests"));
+            readShiftOffRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOffRequests"));
+            readShiftOnRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOnRequests"));
 
             logger.info("NurseRoster {} with TODO.",
                     new Object[]{nurseRoster.getCode()});
@@ -462,6 +464,82 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 id++;
             }
             nurseRoster.setDayOnRequestList(dayOnRequestList);
+        }
+
+        private void readShiftOffRequestList(NurseRoster nurseRoster, Element shiftOffRequestsElement) throws JDOMException {
+            if (shiftOffRequestsElement == null) {
+                return;
+            }
+            List<Element> shiftOffElementList = (List<Element>) shiftOffRequestsElement.getChildren();
+            List<ShiftOffRequest> shiftOffRequestList = new ArrayList<ShiftOffRequest>(shiftOffElementList.size());
+            long id = 0L;
+            for (Element element : shiftOffElementList) {
+                assertElementName(element, "ShiftOff");
+                ShiftOffRequest shiftOffRequest = new ShiftOffRequest();
+                shiftOffRequest.setId(id);
+
+                Element employeeElement = element.getChild("EmployeeID");
+                Employee employee = employeeMap.get(employeeElement.getText());
+                if (employee == null) {
+                    throw new IllegalArgumentException("The shift (" + employeeElement.getText()
+                            + ") of shiftOffRequest (" + shiftOffRequest + ") does not exist.");
+                }
+                shiftOffRequest.setEmployee(employee);
+
+                Element dateElement = element.getChild("Date");
+                Element shiftTypeElement = element.getChild("ShiftTypeID");
+                Shift shift = shiftMap.get(Arrays.asList(dateElement.getText(), shiftTypeElement.getText()));
+                if (shift == null) {
+                    throw new IllegalArgumentException("The date (" + dateElement.getText()
+                            + ") or the shiftType (" + shiftTypeElement.getText()
+                            + ") of shiftOffRequest (" + shiftOffRequest + ") does not exist.");
+                }
+                shiftOffRequest.setShift(shift);
+
+                shiftOffRequest.setWeight(element.getAttribute("weight").getIntValue());
+
+                shiftOffRequestList.add(shiftOffRequest);
+                id++;
+            }
+            nurseRoster.setShiftOffRequestList(shiftOffRequestList);
+        }
+
+        private void readShiftOnRequestList(NurseRoster nurseRoster, Element shiftOnRequestsElement) throws JDOMException {
+            if (shiftOnRequestsElement == null) {
+                return;
+            }
+            List<Element> shiftOnElementList = (List<Element>) shiftOnRequestsElement.getChildren();
+            List<ShiftOnRequest> shiftOnRequestList = new ArrayList<ShiftOnRequest>(shiftOnElementList.size());
+            long id = 0L;
+            for (Element element : shiftOnElementList) {
+                assertElementName(element, "ShiftOn");
+                ShiftOnRequest shiftOnRequest = new ShiftOnRequest();
+                shiftOnRequest.setId(id);
+
+                Element employeeElement = element.getChild("EmployeeID");
+                Employee employee = employeeMap.get(employeeElement.getText());
+                if (employee == null) {
+                    throw new IllegalArgumentException("The shift (" + employeeElement.getText()
+                            + ") of shiftOnRequest (" + shiftOnRequest + ") does not exist.");
+                }
+                shiftOnRequest.setEmployee(employee);
+
+                Element dateElement = element.getChild("Date");
+                Element shiftTypeElement = element.getChild("ShiftTypeID");
+                Shift shift = shiftMap.get(Arrays.asList(dateElement.getText(), shiftTypeElement.getText()));
+                if (shift == null) {
+                    throw new IllegalArgumentException("The date (" + dateElement.getText()
+                            + ") or the shiftType (" + shiftTypeElement.getText()
+                            + ") of shiftOnRequest (" + shiftOnRequest + ") does not exist.");
+                }
+                shiftOnRequest.setShift(shift);
+
+                shiftOnRequest.setWeight(element.getAttribute("weight").getIntValue());
+
+                shiftOnRequestList.add(shiftOnRequest);
+                id++;
+            }
+            nurseRoster.setShiftOnRequestList(shiftOnRequestList);
         }
 
     }
