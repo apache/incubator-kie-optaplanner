@@ -144,7 +144,7 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
     }
 
     /**
-     * Clone will only deep copy the lectureList
+     * Clone will only deep copy the {@link #lectureList}.
      */
     public CurriculumCourseSchedule cloneSolution() {
         CurriculumCourseSchedule clone = new CurriculumCourseSchedule();

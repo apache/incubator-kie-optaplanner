@@ -151,7 +151,7 @@ public class Examination extends AbstractPersistable implements Solution {
     }
 
     /**
-     * Clone will only deep copy the examList
+     * Clone will only deep copy the {@link #examList}.
      */
     public Examination cloneSolution() {
         Examination clone = new Examination();

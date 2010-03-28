@@ -34,7 +34,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
     private List<ShiftOffRequest> shiftOffRequestList;
     private List<ShiftOnRequest> shiftOnRequestList;
 
-    private List<NurseAssignment> nurseAssignmentList;
+    private List<EmployeeAssignment> employeeAssignmentList;
 
     private HardAndSoftScore score;
 
@@ -150,12 +150,12 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         this.shiftOnRequestList = shiftOnRequestList;
     }
 
-    public List<NurseAssignment> getNurseAssignmentList() {
-        return nurseAssignmentList;
+    public List<EmployeeAssignment> getNurseAssignmentList() {
+        return employeeAssignmentList;
     }
 
-    public void setNurseAssignmentList(List<NurseAssignment> nurseAssignmentList) {
-        this.nurseAssignmentList = nurseAssignmentList;
+    public void setNurseAssignmentList(List<EmployeeAssignment> employeeAssignmentList) {
+        this.employeeAssignmentList = employeeAssignmentList;
     }
 
     public HardAndSoftScore getScore() {
@@ -168,7 +168,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
 
 
     public boolean isInitialized() {
-        return (nurseAssignmentList != null);
+        return (employeeAssignmentList != null);
     }
 
     public Collection<? extends Object> getFacts() {
@@ -190,13 +190,13 @@ public class NurseRoster extends AbstractPersistable implements Solution {
 
 
         if (isInitialized()) {
-            facts.addAll(nurseAssignmentList);
+            facts.addAll(employeeAssignmentList);
         }
         return facts;
     }
 
     /**
-     * Clone will only deep copy the nurseAssignmentList
+     * Clone will only deep copy the {@link #employeeAssignmentList}.
      */
     public NurseRoster cloneSolution() {
         NurseRoster clone = new NurseRoster();
@@ -219,12 +219,12 @@ public class NurseRoster extends AbstractPersistable implements Solution {
 
 
         // deep clone lectures
-        List<NurseAssignment> clonedLectureList = new ArrayList<NurseAssignment>(nurseAssignmentList.size());
-        for (NurseAssignment nurseAssignment : nurseAssignmentList) {
-            NurseAssignment clonedNurseAssignment = nurseAssignment.clone();
-            clonedLectureList.add(clonedNurseAssignment);
+        List<EmployeeAssignment> clonedLectureList = new ArrayList<EmployeeAssignment>(employeeAssignmentList.size());
+        for (EmployeeAssignment employeeAssignment : employeeAssignmentList) {
+            EmployeeAssignment clonedEmployeeAssignment = employeeAssignment.clone();
+            clonedLectureList.add(clonedEmployeeAssignment);
         }
-        clone.nurseAssignmentList = clonedLectureList;
+        clone.employeeAssignmentList = clonedLectureList;
         clone.score = score;
         return clone;
     }
@@ -237,14 +237,14 @@ public class NurseRoster extends AbstractPersistable implements Solution {
             return false;
         } else {
             NurseRoster other = (NurseRoster) o;
-            if (nurseAssignmentList.size() != other.nurseAssignmentList.size()) {
+            if (employeeAssignmentList.size() != other.employeeAssignmentList.size()) {
                 return false;
             }
-            for (Iterator<NurseAssignment> it = nurseAssignmentList.iterator(), otherIt = other.nurseAssignmentList.iterator(); it.hasNext();) {
-                NurseAssignment nurseAssignment = it.next();
-                NurseAssignment otherNurseAssignment = otherIt.next();
+            for (Iterator<EmployeeAssignment> it = employeeAssignmentList.iterator(), otherIt = other.employeeAssignmentList.iterator(); it.hasNext();) {
+                EmployeeAssignment employeeAssignment = it.next();
+                EmployeeAssignment otherEmployeeAssignment = otherIt.next();
                 // Notice: we don't use equals()
-                if (!nurseAssignment.solutionEquals(otherNurseAssignment)) {
+                if (!employeeAssignment.solutionEquals(otherEmployeeAssignment)) {
                     return false;
                 }
             }
@@ -254,9 +254,9 @@ public class NurseRoster extends AbstractPersistable implements Solution {
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (NurseAssignment nurseAssignment : nurseAssignmentList) {
+        for (EmployeeAssignment employeeAssignment : employeeAssignmentList) {
             // Notice: we don't use hashCode()
-            hashCodeBuilder.append(nurseAssignment.solutionHashCode());
+            hashCodeBuilder.append(employeeAssignment.solutionHashCode());
         }
         return hashCodeBuilder.toHashCode();
     }

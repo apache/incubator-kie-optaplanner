@@ -225,7 +225,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
 //    }
 
     /**
-     * Clone will only deep copy the bedDesignationList
+     * Clone will only deep copy the {@link #bedDesignationList}.
      */
     public PatientAdmissionSchedule cloneSolution() {
         PatientAdmissionSchedule clone = new PatientAdmissionSchedule();

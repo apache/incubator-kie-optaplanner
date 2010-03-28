@@ -73,7 +73,7 @@ public class LessonSchedule extends AbstractPersistable implements Solution {
     }
 
     /**
-     * Clone will only deep copy the lessonList
+     * Clone will only deep copy the {@link #lessonList}.
      */
     public LessonSchedule cloneSolution() {
         LessonSchedule clone = new LessonSchedule();

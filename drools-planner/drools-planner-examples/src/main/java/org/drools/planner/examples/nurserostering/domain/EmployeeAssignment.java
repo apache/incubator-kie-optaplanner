@@ -1,7 +1,5 @@
 package org.drools.planner.examples.nurserostering.domain;
 
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -11,8 +9,8 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 /**
  * @author Geoffrey De Smet
  */
-@XStreamAlias("NurseAssignment")
-public class NurseAssignment extends AbstractPersistable implements Comparable<NurseAssignment> {
+@XStreamAlias("EmployeeAssignment")
+public class EmployeeAssignment extends AbstractPersistable implements Comparable<EmployeeAssignment> {
 
     private Shift shift;
 
@@ -39,15 +37,15 @@ public class NurseAssignment extends AbstractPersistable implements Comparable<N
         return shift + "_" + employee;
     }
 
-    public int compareTo(NurseAssignment other) {
+    public int compareTo(EmployeeAssignment other) {
         return new CompareToBuilder()
                 .append(shift, other.shift)
                 .append(employee, other.employee)
                 .toComparison();
     }
 
-    public NurseAssignment clone() {
-        NurseAssignment clone = new NurseAssignment();
+    public EmployeeAssignment clone() {
+        EmployeeAssignment clone = new EmployeeAssignment();
         clone.id = id;
         clone.shift = shift;
         clone.employee = employee;
@@ -62,8 +60,8 @@ public class NurseAssignment extends AbstractPersistable implements Comparable<N
     public boolean solutionEquals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof NurseAssignment) {
-            NurseAssignment other = (NurseAssignment) o;
+        } else if (o instanceof EmployeeAssignment) {
+            EmployeeAssignment other = (EmployeeAssignment) o;
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(shift, other.shift)
