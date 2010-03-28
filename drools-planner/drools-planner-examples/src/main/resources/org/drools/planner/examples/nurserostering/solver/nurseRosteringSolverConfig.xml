@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+    <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    </scoreDefinition>
+    <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
+    <termination>
+        <!--
+            Official benchmark maximumSecondsSpend allowed on:
+            ge0ffrey's main pc: TODO
+            ge0ffrey's old pc: TODO
+        -->
+        <maximumSecondsSpend>429</maximumSecondsSpend>
+        <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
+        <!--<maximumStepCount>100</maximumStepCount>-->
+    </termination>
+    <selector>
+        <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftChangeMoveFactory</moveFactoryClass>
+            <absoluteSelection>500</absoluteSelection>
+        </selector>
+        <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftSwitchMoveFactory</moveFactoryClass>-->
+            <!--<absoluteSelection>500</absoluteSelection>-->
+        <!--</selector>-->
+    </selector>
+    <acceptor>
+        <completePropertyTabuSize>7</completePropertyTabuSize>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+    </acceptor>
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+    </forager>
+</localSearchSolver>

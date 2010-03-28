@@ -1,0 +1,77 @@
+package org.drools.planner.examples.nurserostering.solver;
+    dialect "java"
+
+import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.drools.planner.examples.nurserostering.domain.Contract;
+import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
+import org.drools.planner.examples.nurserostering.domain.DayOffRequest;
+import org.drools.planner.examples.nurserostering.domain.DayOnRequest;
+import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
+import org.drools.planner.examples.nurserostering.domain.NurseRoster;
+import org.drools.planner.examples.nurserostering.domain.Pattern;
+import org.drools.planner.examples.nurserostering.domain.Shift;
+import org.drools.planner.examples.nurserostering.domain.ShiftDate;
+import org.drools.planner.examples.nurserostering.domain.ShiftOffRequest;
+import org.drools.planner.examples.nurserostering.domain.ShiftOnRequest;
+import org.drools.planner.examples.nurserostering.domain.ShiftType;
+import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
+import org.drools.planner.examples.nurserostering.domain.Skill;
+import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
+
+// @author Geoffrey De Smet
+
+global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+// All demanded shifts must be assigned to a nurse
+rule "requiredEmployeeSizePerShift"
+    when
+        $shift : Shift(requiredEmployeeSize > 0, $requiredEmployeeSize : requiredEmployeeSize);
+
+        $totalEmployeeSize : Number(intValue < $requiredEmployeeSize) from accumulate(
+            $assignment : EmployeeAssignment(shift == $shift),
+            count($assignment)
+        );
+    then
+        insertLogical(new IntConstraintOccurrence("requiredEmployeeSizePerShift",
+                ConstraintType.NEGATIVE_HARD, $requiredEmployeeSize - $totalEmployeeSize.intValue(), $shift));
+end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+// Accumulate hard constraints
+rule "hardConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        );
+    then
+        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+end
+
+// Accumulate soft constraints
+rule "softConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        );
+    then
+        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
+end
