@@ -158,7 +158,6 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         clone.periodList = periodList;
         clone.roomList = roomList;
         clone.unavailablePeriodConstraintList = unavailablePeriodConstraintList;
-        // deep clone lectures
         List<Lecture> clonedLectureList = new ArrayList<Lecture>(lectureList.size());
         for (Lecture lecture : lectureList) {
             Lecture clonedLecture = lecture.clone();

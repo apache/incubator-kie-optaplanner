@@ -1,6 +1,7 @@
 package org.drools.planner.examples.nurserostering.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -15,6 +16,8 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
     private int dayIndex;
     private String dateString;
     private DayOfWeek dayOfWeek;
+
+    private List<Shift> shiftList;
 
     public int getDayIndex() {
         return dayIndex;
@@ -38,6 +41,14 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
 
     public void setDayOfWeek(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+    }
+
+    public List<Shift> getShiftList() {
+        return shiftList;
+    }
+
+    public void setShiftList(List<Shift> shiftList) {
+        this.shiftList = shiftList;
     }
 
     public int compareTo(ShiftDate other) {

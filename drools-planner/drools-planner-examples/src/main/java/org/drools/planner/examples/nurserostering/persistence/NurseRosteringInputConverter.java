@@ -155,8 +155,9 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 String dateString = dateFormat.format(calendar.getTime());
                 shiftDate.setDateString(dateString);
                 shiftDate.setDayOfWeek(DayOfWeek.valueOfCalendar(calendar.get(Calendar.DAY_OF_WEEK)));
+                shiftDate.setShiftList(new ArrayList<Shift>());
                 shiftDateList.add(shiftDate);
-                this.shiftDateMap.put(dateString, shiftDate);
+                shiftDateMap.put(dateString, shiftDate);
                 id++;
                 dayIndex++;
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
@@ -232,6 +233,7 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                     shift.setId(shiftId);
                     ShiftDate shiftDate = shiftDateEntry.getValue();
                     shift.setShiftDate(shiftDate);
+                    shiftDate.getShiftList().add(shift);
                     shift.setShiftType(shiftType);
                     shift.setRequiredEmployeeSize(0); // Filled in later
                     shiftList.add(shift);

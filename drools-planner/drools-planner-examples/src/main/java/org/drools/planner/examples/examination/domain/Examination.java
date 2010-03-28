@@ -163,7 +163,6 @@ public class Examination extends AbstractPersistable implements Solution {
         clone.roomList = roomList;
         clone.periodHardConstraintList = periodHardConstraintList;
         clone.roomHardConstraintList = roomHardConstraintList;
-        // deep clone exams
         List<Exam> clonedExamList = new ArrayList<Exam>(examList.size());
         for (Exam exam : examList) {
             Exam clonedExam = exam.clone();

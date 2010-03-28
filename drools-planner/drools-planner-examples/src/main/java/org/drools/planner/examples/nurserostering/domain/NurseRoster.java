@@ -150,11 +150,11 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         this.shiftOnRequestList = shiftOnRequestList;
     }
 
-    public List<EmployeeAssignment> getNurseAssignmentList() {
+    public List<EmployeeAssignment> getEmployeeAssignmentList() {
         return employeeAssignmentList;
     }
 
-    public void setNurseAssignmentList(List<EmployeeAssignment> employeeAssignmentList) {
+    public void setEmployeeAssignmentList(List<EmployeeAssignment> employeeAssignmentList) {
         this.employeeAssignmentList = employeeAssignmentList;
     }
 
@@ -215,16 +215,13 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         clone.dayOnRequestList = dayOnRequestList;
         clone.shiftOffRequestList = shiftOffRequestList;
         clone.shiftOnRequestList = shiftOnRequestList;
-        // TODO add more properties
-
-
-        // deep clone lectures
-        List<EmployeeAssignment> clonedLectureList = new ArrayList<EmployeeAssignment>(employeeAssignmentList.size());
+        List<EmployeeAssignment> clonedEmployeeAssignmentList = new ArrayList<EmployeeAssignment>(
+                employeeAssignmentList.size());
         for (EmployeeAssignment employeeAssignment : employeeAssignmentList) {
             EmployeeAssignment clonedEmployeeAssignment = employeeAssignment.clone();
-            clonedLectureList.add(clonedEmployeeAssignment);
+            clonedEmployeeAssignmentList.add(clonedEmployeeAssignment);
         }
-        clone.employeeAssignmentList = clonedLectureList;
+        clone.employeeAssignmentList = clonedEmployeeAssignmentList;
         clone.score = score;
         return clone;
     }
