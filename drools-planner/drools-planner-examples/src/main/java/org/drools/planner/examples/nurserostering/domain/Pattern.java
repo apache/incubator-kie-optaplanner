@@ -7,8 +7,8 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 /**
  * @author Geoffrey De Smet
  */
-@XStreamAlias("ShiftPattern")
-public class ShiftPattern extends AbstractPersistable implements Comparable<ShiftPattern> {
+@XStreamAlias("Pattern")
+public class Pattern extends AbstractPersistable implements Comparable<Pattern> {
 
     private String code;
     private int weight;
@@ -29,7 +29,7 @@ public class ShiftPattern extends AbstractPersistable implements Comparable<Shif
         this.weight = weight;
     }
 
-    public int compareTo(ShiftPattern other) {
+    public int compareTo(Pattern other) {
         return new CompareToBuilder()
                 .append(id, other.id)
                 .toComparison();
