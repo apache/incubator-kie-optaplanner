@@ -12,18 +12,12 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("EmployeeAssignment")
 public class EmployeeAssignment extends AbstractPersistable implements Comparable<EmployeeAssignment> {
 
-    private Shift shift;
+    private Employee employee;
+    private ShiftDate shiftDate;
 
     // Changed by moves, between score calculations.
-    private Employee employee;
-
-    public Shift getShift() {
-        return shift;
-    }
-
-    public void setShift(Shift shift) {
-        this.shift = shift;
-    }
+    // Can be null, if the employee is not working on the shiftDate
+    private Shift shift;
 
     public Employee getEmployee() {
         return employee;
@@ -33,8 +27,28 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
         this.employee = employee;
     }
 
+    public ShiftDate getShiftDate() {
+        return shiftDate;
+    }
+
+    public void setShiftDate(ShiftDate shiftDate) {
+        this.shiftDate = shiftDate;
+    }
+
+    public Shift getShift() {
+        return shift;
+    }
+
+    public void setShift(Shift shift) {
+        if (shift != null && !shift.getShiftDate().equals(shiftDate)) {
+            throw new IllegalArgumentException("The EmployeeAssignment (" + this + ") cannot have a shift (" + shift
+                    + ") with a different shiftDate.");
+        }
+        this.shift = shift;
+    }
+
     public String getLabel() {
-        return shift + "_" + employee;
+        return employee + "(" + shiftDate + ")" + "->" + (shift == null ?  "FREE" : shift.getShiftType());
     }
 
     public int compareTo(EmployeeAssignment other) {
@@ -87,7 +101,7 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
 
     @Override
     public String toString() {
-        return shift + "_" + employee;
+        return employee + "(" + shiftDate + ")" + "->" + shift;
     }
 
 }
