@@ -55,7 +55,8 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
         protected Map<String, ShiftDate> shiftDateMap;
         protected Map<String, Skill> skillMap;
         protected Map<String, ShiftType> shiftTypeMap;
-        protected Map<List<String>, Shift> shiftMap;
+        protected Map<List<String>, Shift> dateAndShiftTypeToShiftMap;
+        protected Map<List<Object>, List<Shift>> dayOfWeekAndShiftTypeToShiftListMap;
         protected Map<String, ShiftPattern> shiftPatternMap;
         protected Map<String, Contract> contractMap;
         protected Map<String, Employee> employeeMap;
@@ -77,7 +78,7 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             readShiftPatternList(nurseRoster, schedulingPeriodElement.getChild("Patterns"));
             readContractList(nurseRoster, schedulingPeriodElement.getChild("Contracts"));
             readEmployeeList(nurseRoster, schedulingPeriodElement.getChild("Employees"));
-//            readTodoList(nurseRoster, schedulingPeriodElement.getChild("CoverRequirements"));
+            readRequiredEmployeeSizes(nurseRoster, schedulingPeriodElement.getChild("CoverRequirements"));
             readDayOffRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOffRequests"));
             readDayOnRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOnRequests"));
             readShiftOffRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOffRequests"));
@@ -182,7 +183,8 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             long shiftTypeSkillRequirementId = 0L;
             int shiftListSize = shiftDateMap.size() * shiftElementList.size();
             List<Shift> shiftList = new ArrayList<Shift>(shiftListSize);
-            shiftMap = new HashMap<List<String>, Shift>(shiftListSize);
+            dateAndShiftTypeToShiftMap = new HashMap<List<String>, Shift>(shiftListSize);
+            dayOfWeekAndShiftTypeToShiftListMap = new HashMap<List<Object>, List<Shift>>(7 * shiftElementList.size());
             long shiftId = 0L;
             for (Element element : shiftElementList) {
                 assertElementName(element, "Shift");
@@ -215,10 +217,13 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
                 for (Map.Entry<String, ShiftDate> shiftDateEntry : shiftDateMap.entrySet()) {
                     Shift shift = new Shift();
                     shift.setId(shiftId);
-                    shift.setShiftDate(shiftDateEntry.getValue());
+                    ShiftDate shiftDate = shiftDateEntry.getValue();
+                    shift.setShiftDate(shiftDate);
                     shift.setShiftType(shiftType);
+                    shift.setRequiredEmployeeSize(0); // Filled in later
                     shiftList.add(shift);
-                    shiftMap.put(Arrays.asList(shiftDateEntry.getKey(), shiftType.getCode()), shift);
+                    dateAndShiftTypeToShiftMap.put(Arrays.asList(shiftDateEntry.getKey(), shiftType.getCode()), shift);
+                    addShiftToDayOfWeekAndShiftTypeToShiftListMap(shiftDate, shiftType, shift);
                     shiftId++;
                 }
 
@@ -229,6 +234,17 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             nurseRoster.setShiftTypeList(shiftTypeList);
             nurseRoster.setShiftTypeSkillRequirementList(shiftTypeSkillRequirementList);
             nurseRoster.setShiftList(shiftList);
+        }
+
+        private void addShiftToDayOfWeekAndShiftTypeToShiftListMap(ShiftDate shiftDate, ShiftType shiftType,
+                Shift shift) {
+            List<Object> key = Arrays.<Object>asList(shiftDate.getDayOfWeek(), shiftType);
+            List<Shift> dayOfWeekAndShiftTypeToShiftList = dayOfWeekAndShiftTypeToShiftListMap.get(key);
+            if (dayOfWeekAndShiftTypeToShiftList == null) {
+                dayOfWeekAndShiftTypeToShiftList = new ArrayList<Shift>((shiftDateMap.size() + 6) / 7);
+                dayOfWeekAndShiftTypeToShiftListMap.put(key, dayOfWeekAndShiftTypeToShiftList);
+            }
+            dayOfWeekAndShiftTypeToShiftList.add(shift);
         }
 
         private void readShiftPatternList(NurseRoster nurseRoster, Element patternsElement) throws JDOMException {
@@ -394,6 +410,87 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
             nurseRoster.setSkillProficiencyList(skillProficiencyList);
         }
 
+//  <CoverRequirements>
+//    <DayOfWeekCover>
+//      <Day>Monday</Day>
+//      <Cover>
+//        <Shift>E</Shift>
+//        <Preferred>8</Preferred>
+//      </Cover>
+//      <Cover>
+//        <Shift>L</Shift>
+//        <Preferred>8</Preferred>
+//      </Cover>
+//      <Cover>
+//        <Shift>D</Shift>
+//        <Preferred>5</Preferred>
+//      </Cover>
+//      <Cover>
+//        <Shift>N</Shift>
+//        <Preferred>6</Preferred>
+//      </Cover>
+//      <Cover>
+//        <Shift>DH</Shift>
+//        <Preferred>2</Preferred>
+//      </Cover>
+//    </DayOfWeekCover>
+        private void readRequiredEmployeeSizes(NurseRoster nurseRoster, Element coverRequirementsElement) {
+            List<Element> coverRequirementElementList = (List<Element>) coverRequirementsElement.getChildren();
+            for (Element element : coverRequirementElementList) {
+                if (element.getName().equals("DayOfWeekCover")) {
+                    Element dayOfWeekElement = element.getChild("Day");
+                    DayOfWeek dayOfWeek = DayOfWeek.valueOfCode(dayOfWeekElement.getText());
+                    if (dayOfWeek == null) {
+                        throw new IllegalArgumentException("The dayOfWeek (" + dayOfWeekElement.getText()
+                                + ") of an entity DayOfWeekCover does not exist.");
+                    }
+
+                    List<Element> coverElementList = (List<Element>) element.getChildren("Cover");
+                    for (Element coverElement : coverElementList) {
+                        Element shiftTypeElement = coverElement.getChild("Shift");
+                        ShiftType shiftType = shiftTypeMap.get(shiftTypeElement.getText());
+                        if (shiftType == null) {
+                            if (shiftTypeElement.getText().equals("Any")) {
+                                throw new IllegalStateException("The shiftType Any is not supported on DayOfWeekCover.");
+                            } else if (shiftTypeElement.getText().equals("None")) {
+                                throw new IllegalStateException("The shiftType None is not supported on DayOfWeekCover.");
+                            } else {
+                                throw new IllegalArgumentException("The shiftType (" + shiftTypeElement.getText()
+                                        + ") of an entity DayOfWeekCover does not exist.");
+                            }
+                        }
+                        List<Object> key = Arrays.<Object>asList(dayOfWeek, shiftType);
+                        List<Shift> shiftList = dayOfWeekAndShiftTypeToShiftListMap.get(key);
+                        if (shiftList == null) {
+                            throw new IllegalArgumentException("The dayOfWeek (" + dayOfWeekElement.getText()
+                                    + ") with the shiftType (" + shiftTypeElement.getText()
+                                    + ") of an entity DayOfWeekCover does not have any shifts.");
+                        }
+                        int requiredEmployeeSize = Integer.parseInt(coverElement.getChild("Preferred").getText());
+                        for (Shift shift : shiftList) {
+                            shift.setRequiredEmployeeSize(shift.getRequiredEmployeeSize() + requiredEmployeeSize);
+                        }
+                    }
+                } else if (element.getName().equals("DateSpecificCover")) {
+                    Element dateElement = element.getChild("Date");
+                    List<Element> coverElementList = (List<Element>) element.getChildren("Cover");
+                    for (Element coverElement : coverElementList) {
+                        Element shiftTypeElement = coverElement.getChild("Shift");
+                        Shift shift = dateAndShiftTypeToShiftMap.get(Arrays.asList(dateElement.getText(), shiftTypeElement.getText()));
+                        if (shift == null) {
+                            throw new IllegalArgumentException("The date (" + dateElement.getText()
+                                    + ") with the shiftType (" + shiftTypeElement.getText()
+                                    + ") of an entity DateSpecificCover does not have a shift.");
+                        }
+                        int requiredEmployeeSize = Integer.parseInt(coverElement.getChild("Preferred").getText());
+                        shift.setRequiredEmployeeSize(shift.getRequiredEmployeeSize() + requiredEmployeeSize);
+                    }
+                } else {
+                    throw new IllegalArgumentException("Unknown cover entity (" + element.getName() + ").");
+                }
+            }
+        }
+
         private void readDayOffRequestList(NurseRoster nurseRoster, Element dayOffRequestsElement) throws JDOMException {
             if (dayOffRequestsElement == null) {
                 return;
@@ -488,7 +585,7 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
 
                 Element dateElement = element.getChild("Date");
                 Element shiftTypeElement = element.getChild("ShiftTypeID");
-                Shift shift = shiftMap.get(Arrays.asList(dateElement.getText(), shiftTypeElement.getText()));
+                Shift shift = dateAndShiftTypeToShiftMap.get(Arrays.asList(dateElement.getText(), shiftTypeElement.getText()));
                 if (shift == null) {
                     throw new IllegalArgumentException("The date (" + dateElement.getText()
                             + ") or the shiftType (" + shiftTypeElement.getText()
@@ -526,7 +623,7 @@ public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
 
                 Element dateElement = element.getChild("Date");
                 Element shiftTypeElement = element.getChild("ShiftTypeID");
-                Shift shift = shiftMap.get(Arrays.asList(dateElement.getText(), shiftTypeElement.getText()));
+                Shift shift = dateAndShiftTypeToShiftMap.get(Arrays.asList(dateElement.getText(), shiftTypeElement.getText()));
                 if (shift == null) {
                     throw new IllegalArgumentException("The date (" + dateElement.getText()
                             + ") or the shiftType (" + shiftTypeElement.getText()
