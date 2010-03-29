@@ -45,7 +45,7 @@ public class NurseRosteringPanel extends SolutionPanel {
         removeAll();
         NurseRoster schedule = getNurseRoster();
         gridLayout.setColumns(schedule.getEmployeeList().size() + 1);
-        JLabel headerCornerLabel = new JLabel("Shift         \\         Employee");
+        JLabel headerCornerLabel = new JLabel("Shift     \\     Employee");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
@@ -99,17 +99,17 @@ public class NurseRosteringPanel extends SolutionPanel {
         }
 
         public void addEmployeeAssignment(EmployeeAssignment employeeAssignment) {
-            JButton button = new JButton(new ExamAction(employeeAssignment));
+            JButton button = new JButton(new EmployeeAssignmentAction(employeeAssignment));
             add(button);
         }
 
     }
 
-    private class ExamAction extends AbstractAction {
+    private class EmployeeAssignmentAction extends AbstractAction {
 
         private EmployeeAssignment employeeAssignment;
 
-        public ExamAction(EmployeeAssignment employeeAssignment) {
+        public EmployeeAssignmentAction(EmployeeAssignment employeeAssignment) {
             super(employeeAssignment.getLabel());
             this.employeeAssignment = employeeAssignment;
         }

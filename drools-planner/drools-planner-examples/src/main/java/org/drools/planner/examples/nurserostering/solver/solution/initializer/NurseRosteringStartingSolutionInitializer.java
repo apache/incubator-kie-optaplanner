@@ -3,6 +3,7 @@ package org.drools.planner.examples.nurserostering.solver.solution.initializer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.WorkingMemory;
@@ -141,6 +142,7 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
         // TODO tmp begin
         List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
         int employeeAssignmentId = 0;
+        Random random = new Random(); // not seeded, tmp!
         for (Employee employee : employeeList) {
             for (ShiftDate shiftDate : shiftDateList) {
                 EmployeeAssignment employeeAssignment = new EmployeeAssignment();
@@ -148,6 +150,9 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
                 employeeAssignmentId++;
                 employeeAssignment.setEmployee(employee);
                 employeeAssignment.setShiftDate(shiftDate);
+                List<Shift> shiftList = shiftDate.getShiftList();
+                int randomInt = random.nextInt(shiftList.size() + 1);
+                employeeAssignment.setShift(randomInt == shiftList.size() ? null : shiftList.get(randomInt));
                 employeeAssignmentList.add(employeeAssignment);
             }
         }

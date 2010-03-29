@@ -54,4 +54,7 @@ public enum DayOfWeek {
         return code;
     }
 
+    public String toString() {
+        return code.substring(0, 3);
+    }
 }

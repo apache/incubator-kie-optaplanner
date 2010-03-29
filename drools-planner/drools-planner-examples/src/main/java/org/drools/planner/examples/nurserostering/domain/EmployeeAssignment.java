@@ -42,27 +42,29 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
     public void setShift(Shift shift) {
         if (shift != null && !shift.getShiftDate().equals(shiftDate)) {
             throw new IllegalArgumentException("The EmployeeAssignment (" + this + ") cannot have a shift (" + shift
-                    + ") with a different shiftDate.");
+                    + ") with a different shiftDate(" + shiftDate + ").");
         }
         this.shift = shift;
     }
 
     public String getLabel() {
-        return employee + "(" + shiftDate + ")" + "->" + (shift == null ?  "FREE" : shift.getShiftType());
+        return employee + "->" + (shift == null ?  "FREE" : shift.getShiftType());
     }
 
     public int compareTo(EmployeeAssignment other) {
         return new CompareToBuilder()
-                .append(shift, other.shift)
                 .append(employee, other.employee)
+                .append(shiftDate, other.shiftDate)
+                .append(shift, other.shift)
                 .toComparison();
     }
 
     public EmployeeAssignment clone() {
         EmployeeAssignment clone = new EmployeeAssignment();
         clone.id = id;
-        clone.shift = shift;
         clone.employee = employee;
+        clone.shiftDate = shiftDate;
+        clone.shift = shift;
         return clone;
     }
 
@@ -78,8 +80,9 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
             EmployeeAssignment other = (EmployeeAssignment) o;
             return new EqualsBuilder()
                     .append(id, other.id)
-                    .append(shift, other.shift)
                     .append(employee, other.employee)
+                    .append(shiftDate, other.shiftDate)
+                    .append(shift, other.shift)
                     .isEquals();
         } else {
             return false;
@@ -94,8 +97,9 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
     public int solutionHashCode() {
         return new HashCodeBuilder()
                 .append(id)
-                .append(shift)
                 .append(employee)
+                .append(shiftDate)
+                .append(shift)
                 .toHashCode();
     }
 
