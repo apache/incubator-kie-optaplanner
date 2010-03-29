@@ -103,6 +103,12 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
 //            }
 //            logger.debug("    EmployeeAssignment ({}) initialized for starting solution.", employeeAssignment);
 //        }
+        
+        // TODO tmp begin
+        for (EmployeeAssignment employeeAssignment : employeeAssignmentList) {
+            workingMemory.insert(employeeAssignment);
+        }
+        // TODO tmp end
 
         Collections.sort(employeeAssignmentList, new PersistableIdComparator());
         nurseRoster.setEmployeeAssignmentList(employeeAssignmentList);
