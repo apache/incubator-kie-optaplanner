@@ -20,10 +20,10 @@
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftChangeMoveFactory</moveFactoryClass>
             <absoluteSelection>500</absoluteSelection>
         </selector>
-        <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftSwitchMoveFactory</moveFactoryClass>-->
-            <!--<absoluteSelection>500</absoluteSelection>-->
-        <!--</selector>-->
+        <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftSwitchMoveFactory</moveFactoryClass>
+            <absoluteSelection>500</absoluteSelection>
+        </selector>
     </selector>
     <acceptor>
         <completePropertyTabuSize>7</completePropertyTabuSize>
