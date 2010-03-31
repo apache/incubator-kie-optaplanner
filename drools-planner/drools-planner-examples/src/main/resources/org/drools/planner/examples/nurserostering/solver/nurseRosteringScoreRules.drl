@@ -35,13 +35,25 @@ rule "requiredEmployeeSizePerShift"
     when
         $shift : Shift(requiredEmployeeSize > 0, $requiredEmployeeSize : requiredEmployeeSize);
 
-        $totalEmployeeSize : Number(intValue < $requiredEmployeeSize) from accumulate(
+        $totalEmployeeSize : Number(intValue != $requiredEmployeeSize) from accumulate(
             $assignment : EmployeeAssignment(shift == $shift),
             count($assignment)
         );
     then
-        insertLogical(new IntConstraintOccurrence("requiredEmployeeSizePerShift",
-                ConstraintType.NEGATIVE_HARD, $requiredEmployeeSize - $totalEmployeeSize.intValue(), $shift));
+        insertLogical(new IntConstraintOccurrence("requiredEmployeeSizePerShift", ConstraintType.NEGATIVE_HARD,
+                Math.abs($requiredEmployeeSize - $totalEmployeeSize.intValue()),
+                $shift));
+end
+
+// a nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
+rule "oneShiftPerDay"
+    when
+        $leftEmployeeAssignment : EmployeeAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate);
+        $rightEmployeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId);
+    then
+        insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.NEGATIVE_HARD,
+                1,
+                $leftEmployeeAssignment, $rightEmployeeAssignment));
 end
 
 // ############################################################################
