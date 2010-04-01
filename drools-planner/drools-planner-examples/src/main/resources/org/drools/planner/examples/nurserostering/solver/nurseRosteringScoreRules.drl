@@ -39,6 +39,16 @@ rule "requiredEmployeeSizePerShift"
             $assignment : EmployeeAssignment(shift == $shift),
             count($assignment)
         );
+
+        // HACK to fix wierd truth maintenance behavior in drools
+        // because making weight part of the equals/hashcode doesn't cut it
+        // Vote for https://jira.jboss.org/jira/browse/JBRULES-1804
+        not IntConstraintOccurrence(
+            ruleId == "requiredEmployeeSizePerShift",
+            constraintType == ConstraintType.NEGATIVE_HARD,
+            causes contains $shift,
+            eval(weight != Math.abs($requiredEmployeeSize - $totalEmployeeSize.intValue()))
+        );
     then
         insertLogical(new IntConstraintOccurrence("requiredEmployeeSizePerShift", ConstraintType.NEGATIVE_HARD,
                 Math.abs($requiredEmployeeSize - $totalEmployeeSize.intValue()),
