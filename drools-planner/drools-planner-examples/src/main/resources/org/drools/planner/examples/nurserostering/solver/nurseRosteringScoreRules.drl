@@ -70,6 +70,70 @@ end
 // Soft constraints
 // ############################################################################
 
+
+// Maximum number of assignments
+// TODO
+
+// Minimum number of assignments
+// TODO
+
+// Maximum number of consecutive working days
+rule "maximumConsecutiveWorkingDays"
+    when
+        $employee : Employee();
+
+        // The first day has no working day before it
+        EmployeeAssignment(employee == $employee, $firstDayIndex : shiftDateDayIndex, shift != null);
+        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1), shift != null);
+
+        // The last day has no working day after it
+        EmployeeAssignment(employee == $employee, shiftDateDayIndex > $firstDayIndex, $lastDayIndex : shiftDateDayIndex);
+        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1), shift != null);
+
+        // There are no free days between the first and last day
+        not EmployeeAssignment(employee == $employee, shiftDateDayIndex > $firstDayIndex, shiftDateDayIndex < $lastDayIndex, shift == null);
+
+        // There are to many 
+        eval(($lastDayIndex - $firstDayIndex) > 7);
+    then
+        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
+                ($lastDayIndex - $firstDayIndex - 7),
+                $employee, $firstDayIndex));
+end
+
+// Minimum number of consecutive working days
+// TODO
+
+// Maximum number of consecutive free days
+// TODO
+
+// Minimum number of consecutive free days
+// TODO
+
+// Maximum number of consecutive working weekends
+// TODO
+
+// Complete weekends
+// TODO
+
+// Single assignment per day
+// TODO
+
+// Two free days after a night shift
+// TODO
+
+// Requested day on/off
+// TODO
+
+// Requested shift on/off
+// TODO
+
+// Alternative skill
+// TODO
+
+// Unwanted patterns
+// TODO
+
 // ############################################################################
 // Calculate score
 // ############################################################################

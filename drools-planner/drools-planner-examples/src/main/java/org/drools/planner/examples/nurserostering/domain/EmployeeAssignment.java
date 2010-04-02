@@ -108,4 +108,8 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
         return employee + "(" + shiftDate + ")" + "->" + shift;
     }
 
+    public int getShiftDateDayIndex() {
+        return getShiftDate().getDayIndex();
+    }
+
 }
