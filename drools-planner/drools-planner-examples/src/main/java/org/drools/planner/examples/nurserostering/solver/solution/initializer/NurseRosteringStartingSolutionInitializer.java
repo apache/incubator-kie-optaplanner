@@ -140,19 +140,17 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
 //        }
 
         // TODO tmp begin
-        List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
+        List<Shift> shiftList = nurseRoster.getShiftList();
         int employeeAssignmentId = 0;
         Random random = new Random(); // not seeded, tmp!
-        for (Employee employee : employeeList) {
-            for (ShiftDate shiftDate : shiftDateList) {
+        for (Shift shift : shiftList) {
+            for (int i = 0; i < shift.getRequiredEmployeeSize(); i++) {
                 EmployeeAssignment employeeAssignment = new EmployeeAssignment();
                 employeeAssignment.setId((long) employeeAssignmentId);
                 employeeAssignmentId++;
-                employeeAssignment.setEmployee(employee);
-                employeeAssignment.setShiftDate(shiftDate);
-                List<Shift> shiftList = shiftDate.getShiftList();
-                int randomInt = random.nextInt(shiftList.size() + 1);
-                employeeAssignment.setShift(randomInt == shiftList.size() ? null : shiftList.get(randomInt));
+                employeeAssignment.setShift(shift);
+                int randomInt = random.nextInt(employeeList.size());
+                employeeAssignment.setEmployee(employeeList.get(randomInt));
                 employeeAssignmentList.add(employeeAssignment);
             }
         }

@@ -17,11 +17,11 @@
     </termination>
     <selector>
         <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftChangeMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
             <absoluteSelection>500</absoluteSelection>
         </selector>
         <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeAssignmentSwitchMoveFactory</moveFactoryClass>
             <absoluteSelection>500</absoluteSelection>
         </selector>
     </selector>

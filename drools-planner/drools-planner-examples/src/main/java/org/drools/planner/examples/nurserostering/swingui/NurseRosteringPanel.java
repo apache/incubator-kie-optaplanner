@@ -20,7 +20,7 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
-import org.drools.planner.examples.nurserostering.solver.move.ShiftChangeMove;
+import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -81,10 +81,8 @@ public class NurseRosteringPanel extends SolutionPanel {
         if (schedule.isInitialized()) {
             for (EmployeeAssignment employeeAssignment : schedule.getEmployeeAssignmentList()) {
                 Shift shift = employeeAssignment.getShift();
-                if (shift != null) {
-                    ShiftEmployeePanel shiftEmployeePanel = shiftEmployeePanelMap.get(shift).get(employeeAssignment.getEmployee());
-                    shiftEmployeePanel.addEmployeeAssignment(employeeAssignment);
-                }
+                ShiftEmployeePanel shiftEmployeePanel = shiftEmployeePanelMap.get(shift).get(employeeAssignment.getEmployee());
+                shiftEmployeePanel.addEmployeeAssignment(employeeAssignment);
             }
         }
     }
@@ -115,14 +113,14 @@ public class NurseRosteringPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<Shift> shiftList = getNurseRoster().getShiftList();
-            JComboBox shiftListField = new JComboBox(shiftList.toArray());
-            shiftListField.setSelectedItem(employeeAssignment.getShift());
-            int result = JOptionPane.showConfirmDialog(NurseRosteringPanel.this.getRootPane(), shiftListField,
-                    "Select shift", JOptionPane.OK_CANCEL_OPTION);
+            List<Employee> employeeList = getNurseRoster().getEmployeeList();
+            JComboBox employeeListField = new JComboBox(employeeList.toArray());
+            employeeListField.setSelectedItem(employeeAssignment.getShift());
+            int result = JOptionPane.showConfirmDialog(NurseRosteringPanel.this.getRootPane(), employeeListField,
+                    "Select employee", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                Shift toShift = (Shift) shiftListField.getSelectedItem();
-                solutionBusiness.doMove(new ShiftChangeMove(employeeAssignment, toShift));
+                Employee toEmployee = (Employee) employeeListField.getSelectedItem();
+                solutionBusiness.doMove(new EmployeeChangeMove(employeeAssignment, toEmployee));
                 workflowFrame.updateScreen();
             }
         }

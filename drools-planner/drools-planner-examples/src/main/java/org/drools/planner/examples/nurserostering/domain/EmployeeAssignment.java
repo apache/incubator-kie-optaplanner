@@ -12,12 +12,18 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("EmployeeAssignment")
 public class EmployeeAssignment extends AbstractPersistable implements Comparable<EmployeeAssignment> {
 
-    private Employee employee;
-    private ShiftDate shiftDate;
+    private Shift shift;
 
     // Changed by moves, between score calculations.
-    // Can be null, if the employee is not working on the shiftDate
-    private Shift shift;
+    private Employee employee;
+
+    public Shift getShift() {
+        return shift;
+    }
+
+    public void setShift(Shift shift) {
+        this.shift = shift;
+    }
 
     public Employee getEmployee() {
         return employee;
@@ -27,44 +33,22 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
         this.employee = employee;
     }
 
-    public ShiftDate getShiftDate() {
-        return shiftDate;
-    }
-
-    public void setShiftDate(ShiftDate shiftDate) {
-        this.shiftDate = shiftDate;
-    }
-
-    public Shift getShift() {
-        return shift;
-    }
-
-    public void setShift(Shift shift) {
-        if (shift != null && !shift.getShiftDate().equals(shiftDate)) {
-            throw new IllegalArgumentException("The EmployeeAssignment (" + this + ") cannot have a shift (" + shift
-                    + ") with a different shiftDate(" + shiftDate + ").");
-        }
-        this.shift = shift;
-    }
-
     public String getLabel() {
-        return employee + "->" + (shift == null ?  "FREE" : shift.getShiftType());
+        return shift + "->" + employee;
     }
 
     public int compareTo(EmployeeAssignment other) {
         return new CompareToBuilder()
-                .append(employee, other.employee)
-                .append(shiftDate, other.shiftDate)
                 .append(shift, other.shift)
+                .append(employee, other.employee)
                 .toComparison();
     }
 
     public EmployeeAssignment clone() {
         EmployeeAssignment clone = new EmployeeAssignment();
         clone.id = id;
-        clone.employee = employee;
-        clone.shiftDate = shiftDate;
         clone.shift = shift;
+        clone.employee = employee;
         return clone;
     }
 
@@ -80,9 +64,8 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
             EmployeeAssignment other = (EmployeeAssignment) o;
             return new EqualsBuilder()
                     .append(id, other.id)
-                    .append(employee, other.employee)
-                    .append(shiftDate, other.shiftDate)
                     .append(shift, other.shift)
+                    .append(employee, other.employee)
                     .isEquals();
         } else {
             return false;
@@ -97,19 +80,22 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
     public int solutionHashCode() {
         return new HashCodeBuilder()
                 .append(id)
-                .append(employee)
-                .append(shiftDate)
+                .append(shift)
                 .append(shift)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return employee + "(" + shiftDate + ")" + "->" + shift;
+        return shift + "->" + employee;
+    }
+
+    public ShiftDate getShiftDate() {
+        return getShift().getShiftDate();
     }
 
     public int getShiftDateDayIndex() {
-        return getShiftDate().getDayIndex();
+        return getShift().getShiftDate().getDayIndex();
     }
 
 }

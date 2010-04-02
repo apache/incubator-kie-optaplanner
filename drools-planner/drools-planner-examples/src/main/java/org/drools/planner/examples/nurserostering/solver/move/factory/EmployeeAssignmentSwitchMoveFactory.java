@@ -9,12 +9,12 @@ import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
-import org.drools.planner.examples.nurserostering.solver.move.ShiftSwitchMove;
+import org.drools.planner.examples.nurserostering.solver.move.EmployeeAssignmentSwitchMove;
 
 /**
  * @author Geoffrey De Smet
  */
-public class ShiftSwitchMoveFactory extends CachedMoveFactory {
+public class EmployeeAssignmentSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
@@ -24,9 +24,7 @@ public class ShiftSwitchMoveFactory extends CachedMoveFactory {
             EmployeeAssignment leftEmployeeAssignment = leftIt.next();
             for (ListIterator<EmployeeAssignment> rightIt = employeeAssignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
                 EmployeeAssignment rightEmployeeAssignment = rightIt.next();
-                if (leftEmployeeAssignment.getShiftDate().equals(rightEmployeeAssignment.getShiftDate())) {
-                    moveList.add(new ShiftSwitchMove(leftEmployeeAssignment, rightEmployeeAssignment));
-                }
+                moveList.add(new EmployeeAssignmentSwitchMove(leftEmployeeAssignment, rightEmployeeAssignment));
             }
         }
         return moveList;
