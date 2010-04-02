@@ -93,7 +93,7 @@ rule "maximumConsecutiveWorkingDays"
         // There are no free days between the first and last day
         not EmployeeAssignment(employee == $employee, shiftDateDayIndex > $firstDayIndex, shiftDateDayIndex < $lastDayIndex, shift == null);
 
-        // There are to many 
+        // There are to many days
         eval(($lastDayIndex - $firstDayIndex) > 7);
     then
         insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
