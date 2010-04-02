@@ -1,9 +1,7 @@
 package org.drools.planner.examples.common.persistence;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -17,11 +15,11 @@ import org.jdom.input.SAXBuilder;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AbstractXmlInputConverter extends AbstractInputConverter {
+public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImporter {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = ".xml";
 
-    protected AbstractXmlInputConverter(SolutionDao solutionDao) {
+    protected AbstractXmlSolutionImporter(SolutionDao solutionDao) {
         super(solutionDao);
     }
 

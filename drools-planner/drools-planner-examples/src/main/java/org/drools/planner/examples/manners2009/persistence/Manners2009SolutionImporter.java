@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.manners2009.domain.Gender;
 import org.drools.planner.examples.manners2009.domain.Guest;
 import org.drools.planner.examples.manners2009.domain.Hobby;
@@ -21,13 +21,13 @@ import org.drools.planner.examples.manners2009.domain.Table;
 /**
  * @author Geoffrey De Smet
  */
-public class Manners2009InputConverter extends AbstractTxtInputConverter {
+public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new Manners2009InputConverter().convertAll();
+        new Manners2009SolutionImporter().convertAll();
     }
 
-    public Manners2009InputConverter() {
+    public Manners2009SolutionImporter() {
         super(new Manners2009DaoImpl());
     }
 

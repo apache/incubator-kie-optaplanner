@@ -3,9 +3,13 @@ package org.drools.planner.examples.curriculumcourse.app;
 import org.drools.planner.config.XmlSolverConfigurer;
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.app.CommonApp;
+import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
+import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseDaoImpl;
+import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseSolutionExporter;
+import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseSolutionImporter;
 import org.drools.planner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
 
 /**
@@ -21,11 +25,6 @@ public class CurriculumCourseApp extends CommonApp {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDaoImpl();
-    }
-
-    @Override
     protected Solver createSolver() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
@@ -35,6 +34,21 @@ public class CurriculumCourseApp extends CommonApp {
     @Override
     protected SolutionPanel createSolutionPanel() {
         return new CurriculumCoursePanel();
+    }
+
+    @Override
+    protected SolutionDao createSolutionDao() {
+        return new CurriculumCourseDaoImpl();
+    }
+
+    @Override
+    protected AbstractSolutionImporter createSolutionImporter() {
+        return new CurriculumCourseSolutionImporter();
+    }
+
+    @Override
+    protected AbstractSolutionExporter createSolutionExporter() {
+        return new CurriculumCourseSolutionExporter();
     }
 
 }

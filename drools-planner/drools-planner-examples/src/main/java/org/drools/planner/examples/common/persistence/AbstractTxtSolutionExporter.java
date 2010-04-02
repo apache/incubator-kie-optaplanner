@@ -11,11 +11,11 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AbstractTxtOutputConverter extends AbstractOutputConverter {
+public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExporter {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".txt";
 
-    protected AbstractTxtOutputConverter(SolutionDao solutionDao) {
+    protected AbstractTxtSolutionExporter(SolutionDao solutionDao) {
         super(solutionDao);
     }
 

@@ -2,7 +2,7 @@ package org.drools.planner.examples.travelingtournament.persistence.smart;
 
 import java.io.IOException;
 
-import org.drools.planner.examples.common.persistence.AbstractTxtOutputConverter;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.Match;
@@ -12,15 +12,15 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public class SmartTravelingTournamentOutputConverter extends AbstractTxtOutputConverter {
+public class SmartTravelingTournamentSolutionExporter extends AbstractTxtSolutionExporter {
 
     private static final String OUTPUT_FILE_SUFFIX = ".trick.txt";
 
     public static void main(String[] args) {
-        new SmartTravelingTournamentOutputConverter().convertAll();
+        new SmartTravelingTournamentSolutionExporter().convertAll();
     }
 
-    public SmartTravelingTournamentOutputConverter() {
+    public SmartTravelingTournamentSolutionExporter() {
         super(new SmartTravelingTournamentDaoImpl());
     }
 

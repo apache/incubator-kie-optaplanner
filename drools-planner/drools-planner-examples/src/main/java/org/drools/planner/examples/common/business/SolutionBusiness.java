@@ -23,6 +23,8 @@ import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
+import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,13 @@ public class SolutionBusiness {
 
     private SolutionDao solutionDao;
 
+    private AbstractSolutionImporter importer;
+    private AbstractSolutionExporter exporter;
+
+    private File importDataDir;
     private File unsolvedDataDir;
     private File solvedDataDir;
+    private File exportDataDir;
 
     // volatile because the solve method doesn't come from the event thread (like every other method call)
     private volatile Solver solver;
@@ -47,7 +54,30 @@ public class SolutionBusiness {
         this.solutionDao = solutionDao;
     }
 
+    public void setImporter(AbstractSolutionImporter importer) {
+        this.importer = importer;
+    }
+
+    public void setExporter(AbstractSolutionExporter exporter) {
+        this.exporter = exporter;
+    }
+
+    public boolean hasImporter() {
+        return importer != null;
+    }
+
+    public boolean hasExporter() {
+        return exporter != null;
+    }
+
     public void setDataDir(File dataDir) {
+        if (hasImporter()) {
+            importDataDir = new File(dataDir, "input");
+            if (!importDataDir.exists()) {
+                throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
+                        + ") does not exist. The working directory should be set to drools-planner-examples.");
+            }
+        }
         unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
@@ -58,6 +88,17 @@ public class SolutionBusiness {
             throw new IllegalStateException("The directory solvedDataDir (" + solvedDataDir.getAbsolutePath()
                     + ") does not exist. The working directory should be set to drools-planner-examples.");
         }
+        if (hasExporter()) {
+            exportDataDir = new File(dataDir, "output");
+            if (!exportDataDir.exists()) {
+                throw new IllegalStateException("The directory exportDataDir (" + exportDataDir.getAbsolutePath()
+                        + ") does not exist. The working directory should be set to drools-planner-examples.");
+            }
+        }
+    }
+
+    public File getImportDataDir() {
+        return importDataDir;
     }
 
     public File getUnsolvedDataDir() {
@@ -66,6 +107,10 @@ public class SolutionBusiness {
 
     public File getSolvedDataDir() {
         return solvedDataDir;
+    }
+
+    public File getExportDataDir() {
+        return exportDataDir;
     }
 
     public void setSolver(Solver solver) {
@@ -131,14 +176,24 @@ public class SolutionBusiness {
         return scoreDetailList;
     }
 
-    public void load(File file) {
+    public void importSolution(File file) {
+        Solution solution = importer.readSolution(file);
+        solver.setStartingSolution(solution);
+    }
+
+    public void loadSolution(File file) {
         Solution solution = solutionDao.readSolution(file);
         solver.setStartingSolution(solution);
     }
 
-    public void save(File file) {
+    public void saveSolution(File file) {
         Solution solution = localSearchSolverScope.getWorkingSolution();
         solutionDao.writeSolution(solution, file);
+    }
+
+    public void exportSolution(File file) {
+        Solution solution = localSearchSolverScope.getWorkingSolution();
+        exporter.writeSolution(solution, file);
     }
 
     public void doMove(Move move) {

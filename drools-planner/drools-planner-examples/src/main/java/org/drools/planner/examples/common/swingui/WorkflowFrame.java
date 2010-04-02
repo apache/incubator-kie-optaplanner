@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,7 +48,9 @@ public class WorkflowFrame extends JFrame {
     private Action cancelSolvingAction;
     private Action solveAction;
     private Action saveAction;
-    
+    private Action importAction;
+    private Action exportAction;
+
     private JProgressBar progressBar;
     private JLabel resultLabel;
     private ShowConstraintScoreMapDialogAction showConstraintScoreMapDialogAction;
@@ -141,10 +141,8 @@ public class WorkflowFrame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent e) {
-            solutionBusiness.load(file);
-            solveAction.setEnabled(true);
-            saveAction.setEnabled(true);
-            updateScreen();
+            solutionBusiness.loadSolution(file);
+            setSolutionLoaded();
         }
 
     }
@@ -160,7 +158,20 @@ public class WorkflowFrame extends JFrame {
         saveAction = new SaveAction();
         saveAction.setEnabled(false);
         panel.add(new JButton(saveAction));
+        importAction = new ImportAction();
+        importAction.setEnabled(solutionBusiness.hasImporter());
+        panel.add(new JButton(importAction));
+        exportAction = new ExportAction();
+        exportAction.setEnabled(false);
+        panel.add(new JButton(exportAction));
         return panel;
+    }
+
+    private void setSolutionLoaded() {
+        solveAction.setEnabled(true);
+        saveAction.setEnabled(true);
+        exportAction.setEnabled(solutionBusiness.hasExporter());
+        updateScreen();
     }
 
     private void setSolvingState(boolean solving) {
@@ -173,6 +184,8 @@ public class WorkflowFrame extends JFrame {
         solveAction.setEnabled(!solving);
         cancelSolvingAction.setEnabled(solving);
         saveAction.setEnabled(!solving);
+        importAction.setEnabled(!solving && solutionBusiness.hasImporter());
+        exportAction.setEnabled(!solving && solutionBusiness.hasExporter());
         solutionPanel.setEnabled(!solving);
         progressBar.setIndeterminate(solving);
         progressBar.setStringPainted(solving);
@@ -243,7 +256,56 @@ public class WorkflowFrame extends JFrame {
             });
             int approved = fileChooser.showSaveDialog(WorkflowFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
-                solutionBusiness.save(fileChooser.getSelectedFile());
+                solutionBusiness.saveSolution(fileChooser.getSelectedFile());
+            }
+        }
+
+    }
+
+    private class ImportAction extends AbstractAction {
+
+        public ImportAction() {
+            super("Import...");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
+            fileChooser.setFileFilter(new FileFilter() {
+                public boolean accept(File file) {
+                    return file.isDirectory() || file.getName().endsWith(".xml"); // TODO
+                }
+                public String getDescription() {
+                    return "Solver xml files"; // TODO
+                }
+            });
+            int approved = fileChooser.showOpenDialog(WorkflowFrame.this);
+            if (approved == JFileChooser.APPROVE_OPTION) {
+                solutionBusiness.importSolution(fileChooser.getSelectedFile());
+                setSolutionLoaded();
+            }
+        }
+
+    }
+
+    private class ExportAction extends AbstractAction {
+
+        public ExportAction() {
+            super("Export as...");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getExportDataDir());
+            fileChooser.setFileFilter(new FileFilter() {
+                public boolean accept(File file) {
+                    return file.isDirectory() || file.getName().endsWith(".xml"); // TODO
+                }
+                public String getDescription() {
+                    return "Solver xml files"; // TODO
+                }
+            });
+            int approved = fileChooser.showSaveDialog(WorkflowFrame.this);
+            if (approved == JFileChooser.APPROVE_OPTION) {
+                solutionBusiness.exportSolution(fileChooser.getSelectedFile());
             }
         }
 

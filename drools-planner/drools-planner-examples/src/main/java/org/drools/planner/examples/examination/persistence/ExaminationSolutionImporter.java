@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.InstitutionalWeighting;
 import org.drools.planner.examples.examination.domain.Period;
@@ -30,16 +30,16 @@ import org.drools.planner.examples.examination.domain.Topic;
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationInputConverter extends AbstractTxtInputConverter {
+public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = ".exam";
     private static final String SPLIT_REGEX = "\\,\\ ?";
 
     public static void main(String[] args) {
-        new ExaminationInputConverter().convertAll();
+        new ExaminationSolutionImporter().convertAll();
     }
 
-    public ExaminationInputConverter() {
+    public ExaminationSolutionImporter() {
         super(new ExaminationDaoImpl());
     }
 

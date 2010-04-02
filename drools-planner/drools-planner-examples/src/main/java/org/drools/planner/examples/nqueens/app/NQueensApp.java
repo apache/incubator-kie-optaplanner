@@ -21,11 +21,6 @@ public class NQueensApp extends CommonApp {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new NQueensDaoImpl();
-    }
-
-    @Override
     protected Solver createSolver() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
@@ -35,6 +30,11 @@ public class NQueensApp extends CommonApp {
     @Override
     protected SolutionPanel createSolutionPanel() {
         return new NQueensPanel();
+    }
+
+    @Override
+    protected SolutionDao createSolutionDao() {
+        return new NQueensDaoImpl();
     }
 
 }

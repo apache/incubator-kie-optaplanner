@@ -2,7 +2,7 @@ package org.drools.planner.examples.curriculumcourse.persistence;
 
 import java.io.IOException;
 
-import org.drools.planner.examples.common.persistence.AbstractTxtOutputConverter;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.core.solution.Solution;
@@ -10,15 +10,15 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public class CurriculumCourseOutputConverter extends AbstractTxtOutputConverter {
+public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporter {
 
     private static final String OUTPUT_FILE_SUFFIX = ".sol";
 
     public static void main(String[] args) {
-        new CurriculumCourseOutputConverter().convertAll();
+        new CurriculumCourseSolutionExporter().convertAll();
     }
 
-    public CurriculumCourseOutputConverter() {
+    public CurriculumCourseSolutionExporter() {
         super(new CurriculumCourseDaoImpl());
     }
 

@@ -3,8 +3,7 @@ package org.drools.planner.examples.nurserostering.persistence;
 import java.io.IOException;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.AbstractTxtOutputConverter;
-import org.drools.planner.examples.common.persistence.AbstractXmlOutputConverter;
+import org.drools.planner.examples.common.persistence.AbstractXmlSolutionExporter;
 import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
@@ -13,13 +12,13 @@ import org.jdom.Element;
 /**
  * @author Geoffrey De Smet
  */
-public class NurseRosteringOutputConverter extends AbstractXmlOutputConverter {
+public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter {
 
     public static void main(String[] args) {
-        new NurseRosteringOutputConverter().convertAll();
+        new NurseRosteringSolutionExporter().convertAll();
     }
 
-    public NurseRosteringOutputConverter() {
+    public NurseRosteringSolutionExporter() {
         super(new NurseRosteringDaoImpl());
     }
 

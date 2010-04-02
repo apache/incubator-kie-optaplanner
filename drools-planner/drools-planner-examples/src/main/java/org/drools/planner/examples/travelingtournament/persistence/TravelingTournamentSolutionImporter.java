@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
@@ -17,9 +17,9 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class TravelingTournamentInputConverter extends AbstractTxtInputConverter {
+public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSolutionImporter {
 
-    protected TravelingTournamentInputConverter(SolutionDao solutionDao) {
+    protected TravelingTournamentSolutionImporter(SolutionDao solutionDao) {
         super(solutionDao);
     }
 

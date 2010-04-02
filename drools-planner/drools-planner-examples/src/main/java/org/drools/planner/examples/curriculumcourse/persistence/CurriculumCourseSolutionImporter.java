@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.planner.examples.common.persistence.AbstractTxtInputConverter;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.Curriculum;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
@@ -22,16 +22,16 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public class CurriculumCourseInputConverter extends AbstractTxtInputConverter {
+public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = ".ctt";
     private static final String SPLIT_REGEX = "[\\ \\t]+";
 
     public static void main(String[] args) {
-        new CurriculumCourseInputConverter().convertAll();
+        new CurriculumCourseSolutionImporter().convertAll();
     }
 
-    public CurriculumCourseInputConverter() {
+    public CurriculumCourseSolutionImporter() {
         super(new CurriculumCourseDaoImpl());
     }
 

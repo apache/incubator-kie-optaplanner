@@ -3,9 +3,13 @@ package org.drools.planner.examples.examination.app;
 import org.drools.planner.config.XmlSolverConfigurer;
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.app.CommonApp;
+import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
+import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
+import org.drools.planner.examples.examination.persistence.ExaminationSolutionExporter;
+import org.drools.planner.examples.examination.persistence.ExaminationSolutionImporter;
 import org.drools.planner.examples.examination.swingui.ExaminationPanel;
 
 /**
@@ -21,11 +25,6 @@ public class ExaminationApp extends CommonApp {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new ExaminationDaoImpl();
-    }
-
-    @Override
     protected Solver createSolver() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
@@ -35,6 +34,21 @@ public class ExaminationApp extends CommonApp {
     @Override
     protected SolutionPanel createSolutionPanel() {
         return new ExaminationPanel();
+    }
+
+    @Override
+    protected SolutionDao createSolutionDao() {
+        return new ExaminationDaoImpl();
+    }
+
+    @Override
+    protected AbstractSolutionImporter createSolutionImporter() {
+        return new ExaminationSolutionImporter();
+    }
+
+    @Override
+    protected AbstractSolutionExporter createSolutionExporter() {
+        return new ExaminationSolutionExporter();
     }
 
 }

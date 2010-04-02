@@ -9,50 +9,52 @@ import org.drools.planner.examples.common.app.LoggingMain;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AbstractOutputConverter extends LoggingMain {
+public abstract class AbstractSolutionImporter extends LoggingMain {
 
-    private static final String DEFAULT_INPUT_FILE_SUFFIX = ".xml";
+    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";
+    
     protected SolutionDao solutionDao;
 
-    public AbstractOutputConverter(SolutionDao solutionDao) {
+    public AbstractSolutionImporter(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;
     }
 
     protected File getInputDir() {
-        return new File(solutionDao.getDataDir(), "solved");
+        return new File(solutionDao.getDataDir(), "input");
     }
+
+    protected abstract String getInputFileSuffix();
 
     protected File getOutputDir() {
-        return new File(solutionDao.getDataDir(), "output");
+        return new File(solutionDao.getDataDir(), "unsolved");
     }
 
-    protected String getInputFileSuffix() {
-        return DEFAULT_INPUT_FILE_SUFFIX;
+    protected String getOutputFileSuffix() {
+        return DEFAULT_OUTPUT_FILE_SUFFIX;
     }
-
-    protected abstract String getOutputFileSuffix();
 
     public void convertAll() {
         File inputDir = getInputDir();
         File outputDir = getOutputDir();
         File[] inputFiles = inputDir.listFiles();
-        Arrays.sort(inputFiles);
         if (inputFiles == null) {
             throw new IllegalArgumentException(
                     "Your working dir should be drools-planner-examples and contain: " + inputDir);
         }
+        Arrays.sort(inputFiles);
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();
             if (inputFileName.endsWith(getInputFileSuffix())) {
-                Solution solution = solutionDao.readSolution(inputFile);
+                Solution solution = readSolution(inputFile);
                 String outputFileName = inputFileName.substring(0,
                         inputFileName.length() - getInputFileSuffix().length())
                         + getOutputFileSuffix();
                 File outputFile = new File(outputDir, outputFileName);
-                writeSolution(solution, outputFile);
+                solutionDao.writeSolution(solution, outputFile);
             }
         }
     }
 
-    public abstract void writeSolution(Solution solution, File outputFile);
+    public abstract Solution readSolution(File inputFile);
+
 }

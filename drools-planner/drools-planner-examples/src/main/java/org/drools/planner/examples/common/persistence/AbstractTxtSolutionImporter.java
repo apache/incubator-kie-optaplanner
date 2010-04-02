@@ -11,11 +11,11 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AbstractTxtInputConverter extends AbstractInputConverter {
+public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImporter {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = ".txt";
 
-    protected AbstractTxtInputConverter(SolutionDao solutionDao) {
+    protected AbstractTxtSolutionImporter(SolutionDao solutionDao) {
         super(solutionDao);
     }
 

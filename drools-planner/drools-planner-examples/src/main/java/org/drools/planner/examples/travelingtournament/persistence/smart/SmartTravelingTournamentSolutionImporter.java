@@ -5,18 +5,18 @@ import java.util.List;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentInputConverter;
+import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentSolutionImporter;
 
 /**
  * @author Geoffrey De Smet
  */
-public class SmartTravelingTournamentInputConverter extends TravelingTournamentInputConverter {
+public class SmartTravelingTournamentSolutionImporter extends TravelingTournamentSolutionImporter {
 
     public static void main(String[] args) {
-        new SmartTravelingTournamentInputConverter().convertAll();
+        new SmartTravelingTournamentSolutionImporter().convertAll();
     }
 
-    public SmartTravelingTournamentInputConverter() {
+    public SmartTravelingTournamentSolutionImporter() {
         super(new SmartTravelingTournamentDaoImpl());
     }
 

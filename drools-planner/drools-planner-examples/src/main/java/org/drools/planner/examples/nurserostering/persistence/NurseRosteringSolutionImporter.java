@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.AbstractXmlInputConverter;
+import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
 import org.drools.planner.examples.nurserostering.domain.Contract;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.DayOffRequest;
@@ -37,13 +37,13 @@ import org.jdom.JDOMException;
 /**
  * @author Geoffrey De Smet
  */
-public class NurseRosteringInputConverter extends AbstractXmlInputConverter {
+public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter {
 
     public static void main(String[] args) {
-        new NurseRosteringInputConverter().convertAll();
+        new NurseRosteringSolutionImporter().convertAll();
     }
 
-    public NurseRosteringInputConverter() {
+    public NurseRosteringSolutionImporter() {
         super(new NurseRosteringDaoImpl());
     }
 

@@ -3,7 +3,7 @@ package org.drools.planner.examples.pas.persistence;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.drools.planner.examples.common.persistence.AbstractTxtOutputConverter;
+import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.domain.Patient;
 import org.drools.planner.examples.pas.domain.BedDesignation;
@@ -12,13 +12,13 @@ import org.drools.planner.core.solution.Solution;
 /**
  * @author Geoffrey De Smet
  */
-public class PatientAdmissionScheduleOutputConverter extends AbstractTxtOutputConverter {
+public class PatientAdmissionScheduleSolutionExporter extends AbstractTxtSolutionExporter {
 
     public static void main(String[] args) {
-        new PatientAdmissionScheduleOutputConverter().convertAll();
+        new PatientAdmissionScheduleSolutionExporter().convertAll();
     }
 
-    public PatientAdmissionScheduleOutputConverter() {
+    public PatientAdmissionScheduleSolutionExporter() {
         super(new PatientAdmissionScheduleDaoImpl());
     }
 

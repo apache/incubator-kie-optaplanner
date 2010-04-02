@@ -20,15 +20,15 @@ public class SimpleTravelingTournamentApp extends AbstractTravelingTournamentApp
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new SimpleTravelingTournamentDaoImpl();
-    }
-
-    @Override
     protected Solver createSolver() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
         return configurer.buildSolver();
+    }
+
+    @Override
+    protected SolutionDao createSolutionDao() {
+        return new SimpleTravelingTournamentDaoImpl();
     }
 
 }

@@ -22,11 +22,6 @@ public class LessonScheduleApp extends CommonApp {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new LessonScheduleDaoImpl();
-    }
-
-    @Override
     protected Solver createSolver() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
@@ -37,5 +32,10 @@ public class LessonScheduleApp extends CommonApp {
     protected SolutionPanel createSolutionPanel() {
         return new LessonSchedulePanel();
     }
-    
+
+    @Override
+    protected SolutionDao createSolutionDao() {
+        return new LessonScheduleDaoImpl();
+    }
+
 }

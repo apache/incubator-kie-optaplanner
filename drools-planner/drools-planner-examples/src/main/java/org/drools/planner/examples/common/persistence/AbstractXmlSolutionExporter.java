@@ -1,9 +1,7 @@
 package org.drools.planner.examples.common.persistence;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -11,18 +9,17 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.solution.Solution;
 import org.jdom.Document;
 import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 /**
  * @author Geoffrey De Smet
  */
-public abstract class AbstractXmlOutputConverter extends AbstractOutputConverter {
+public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExporter {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";
 
-    protected AbstractXmlOutputConverter(SolutionDao solutionDao) {
+    protected AbstractXmlSolutionExporter(SolutionDao solutionDao) {
         super(solutionDao);
     }
 

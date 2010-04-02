@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.business.SolutionBusiness;
+import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
+import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
@@ -32,15 +34,25 @@ public abstract class CommonApp extends LoggingMain {
     protected SolutionBusiness createSolutionBusiness() {
         SolutionBusiness solutionBusiness = new SolutionBusiness();
         solutionBusiness.setSolutionDao(solutionDao);
+        solutionBusiness.setImporter(createSolutionImporter());
+        solutionBusiness.setExporter(createSolutionExporter());
         solutionBusiness.setDataDir(solutionDao.getDataDir());
         solutionBusiness.setSolver(createSolver());
         return solutionBusiness;
     }
 
-    protected abstract SolutionDao createSolutionDao();
-
     protected abstract Solver createSolver();
 
     protected abstract SolutionPanel createSolutionPanel();
+
+    protected abstract SolutionDao createSolutionDao();
+
+    protected AbstractSolutionImporter createSolutionImporter() {
+        return null;
+    }
+
+    protected AbstractSolutionExporter createSolutionExporter() {
+        return null;
+    }
 
 }
