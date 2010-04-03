@@ -13,6 +13,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 public class ShiftType extends AbstractPersistable implements Comparable<ShiftType> {
 
     private String code;
+    private int index;
     private String startTimeString;
     private String endTimeString;
     private String description;
@@ -23,6 +24,14 @@ public class ShiftType extends AbstractPersistable implements Comparable<ShiftTy
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getStartTimeString() {

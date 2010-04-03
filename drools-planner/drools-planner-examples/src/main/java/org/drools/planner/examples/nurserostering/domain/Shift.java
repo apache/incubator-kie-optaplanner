@@ -12,7 +12,8 @@ public class Shift extends AbstractPersistable implements Comparable<Shift> {
 
     private ShiftDate shiftDate;
     private ShiftType shiftType;
-
+    private int index;
+    
     private int requiredEmployeeSize;
 
     public ShiftDate getShiftDate() {
@@ -29,6 +30,14 @@ public class Shift extends AbstractPersistable implements Comparable<Shift> {
 
     public void setShiftType(ShiftType shiftType) {
         this.shiftType = shiftType;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public int getRequiredEmployeeSize() {

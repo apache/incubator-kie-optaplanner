@@ -76,6 +76,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     schedulingPeriodElement.getChild("EndDate"));
             readSkillList(nurseRoster, schedulingPeriodElement.getChild("Skills"));
             readShiftTypeList(nurseRoster, schedulingPeriodElement.getChild("ShiftTypes"));
+            generateShiftList(nurseRoster);
             readPatternList(nurseRoster, schedulingPeriodElement.getChild("Patterns"));
             readContractList(nurseRoster, schedulingPeriodElement.getChild("Contracts"));
             readEmployeeList(nurseRoster, schedulingPeriodElement.getChild("Employees"));
@@ -188,23 +189,20 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
         }
 
         private void readShiftTypeList(NurseRoster nurseRoster, Element shiftTypesElement) throws JDOMException {
-            List<Element> shiftElementList = (List<Element>) shiftTypesElement.getChildren();
-            List<ShiftType> shiftTypeList = new ArrayList<ShiftType>(shiftElementList.size());
-            shiftTypeMap = new HashMap<String, ShiftType>(shiftElementList.size());
+            List<Element> shiftTypeElementList = (List<Element>) shiftTypesElement.getChildren();
+            List<ShiftType> shiftTypeList = new ArrayList<ShiftType>(shiftTypeElementList.size());
+            shiftTypeMap = new HashMap<String, ShiftType>(shiftTypeElementList.size());
             long id = 0L;
+            int index = 0;
             List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList
-                    = new ArrayList<ShiftTypeSkillRequirement>(shiftElementList.size() * 2);
+                    = new ArrayList<ShiftTypeSkillRequirement>(shiftTypeElementList.size() * 2);
             long shiftTypeSkillRequirementId = 0L;
-            int shiftListSize = shiftDateMap.size() * shiftElementList.size();
-            List<Shift> shiftList = new ArrayList<Shift>(shiftListSize);
-            dateAndShiftTypeToShiftMap = new HashMap<List<String>, Shift>(shiftListSize);
-            dayOfWeekAndShiftTypeToShiftListMap = new HashMap<List<Object>, List<Shift>>(7 * shiftElementList.size());
-            long shiftId = 0L;
-            for (Element element : shiftElementList) {
+            for (Element element : shiftTypeElementList) {
                 assertElementName(element, "Shift");
                 ShiftType shiftType = new ShiftType();
                 shiftType.setId(id);
                 shiftType.setCode(element.getAttribute("ID").getValue());
+                shiftType.setIndex(index);
                 shiftType.setStartTimeString(element.getChild("StartTime").getText());
                 shiftType.setEndTimeString(element.getChild("EndTime").getText());
                 shiftType.setDescription(element.getChild("Description").getText());
@@ -228,26 +226,39 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     }
                 }
 
-                for (Map.Entry<String, ShiftDate> shiftDateEntry : shiftDateMap.entrySet()) {
-                    Shift shift = new Shift();
-                    shift.setId(shiftId);
-                    ShiftDate shiftDate = shiftDateEntry.getValue();
-                    shift.setShiftDate(shiftDate);
-                    shiftDate.getShiftList().add(shift);
-                    shift.setShiftType(shiftType);
-                    shift.setRequiredEmployeeSize(0); // Filled in later
-                    shiftList.add(shift);
-                    dateAndShiftTypeToShiftMap.put(Arrays.asList(shiftDateEntry.getKey(), shiftType.getCode()), shift);
-                    addShiftToDayOfWeekAndShiftTypeToShiftListMap(shiftDate, shiftType, shift);
-                    shiftId++;
-                }
-
                 shiftTypeList.add(shiftType);
                 shiftTypeMap.put(shiftType.getCode(), shiftType);
                 id++;
+                index++;
             }
             nurseRoster.setShiftTypeList(shiftTypeList);
             nurseRoster.setShiftTypeSkillRequirementList(shiftTypeSkillRequirementList);
+        }
+
+        private void generateShiftList(NurseRoster nurseRoster) throws JDOMException {
+            List<ShiftType> shiftTypeList = nurseRoster.getShiftTypeList();
+            int shiftListSize = shiftDateMap.size() * shiftTypeList.size();
+            List<Shift> shiftList = new ArrayList<Shift>(shiftListSize);
+            dateAndShiftTypeToShiftMap = new HashMap<List<String>, Shift>(shiftListSize);
+            dayOfWeekAndShiftTypeToShiftListMap = new HashMap<List<Object>, List<Shift>>(7 * shiftTypeList.size());
+            long id = 0L;
+            int index = 0;
+            for (ShiftDate shiftDate : nurseRoster.getShiftDateList()) {
+                for (ShiftType shiftType : shiftTypeList) {
+                    Shift shift = new Shift();
+                    shift.setId(id);
+                    shift.setShiftDate(shiftDate);
+                    shiftDate.getShiftList().add(shift);
+                    shift.setShiftType(shiftType);
+                    shift.setIndex(index);
+                    shift.setRequiredEmployeeSize(0); // Filled in later
+                    shiftList.add(shift);
+                    dateAndShiftTypeToShiftMap.put(Arrays.asList(shiftDate.getDateString(), shiftType.getCode()), shift);
+                    addShiftToDayOfWeekAndShiftTypeToShiftListMap(shiftDate, shiftType, shift);
+                    id++;
+                    index++;
+                }
+            }
             nurseRoster.setShiftList(shiftList);
         }
 
