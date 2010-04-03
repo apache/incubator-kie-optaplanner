@@ -5,22 +5,24 @@ import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalcul
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
-import org.drools.planner.examples.nurserostering.domain.Contract;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
-import org.drools.planner.examples.nurserostering.domain.DayOffRequest;
-import org.drools.planner.examples.nurserostering.domain.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
-import org.drools.planner.examples.nurserostering.domain.ShiftOffRequest;
-import org.drools.planner.examples.nurserostering.domain.ShiftOnRequest;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
 import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
 import org.drools.planner.examples.nurserostering.domain.Skill;
 import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
+import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
+import org.drools.planner.examples.nurserostering.domain.contract.ContractLineType;
+import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 
 // @author Geoffrey De Smet
 
@@ -80,7 +82,9 @@ end
 // Maximum number of consecutive working days
 rule "maximumConsecutiveWorkingDays"
     when
-        $employee : Employee();
+        $contractLine : ContractLine(contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS,
+                maximumEnabled == true, $contract : contract, $maximumValue : maximumValue);
+        $employee : Employee(contract == $contract);
 
         // The first day has no working day before it
         EmployeeAssignment(employee == $employee, $firstDayIndex : shiftDateDayIndex, shift != null);
@@ -97,11 +101,11 @@ rule "maximumConsecutiveWorkingDays"
         );
 
         // There are to many days
-        eval(($lastDayIndex - $firstDayIndex) > 7);
+        eval(($lastDayIndex - $firstDayIndex) > $maximumValue);
     then
         insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-                ($lastDayIndex - $firstDayIndex - 7),
-                $employee, $firstDayIndex));
+                (($lastDayIndex - $firstDayIndex) - $maximumValue) * $contractLine.getMaximumWeight(),
+                $employee, $firstDayIndex, $lastDayIndex));
 end
 
 // Minimum number of consecutive working days

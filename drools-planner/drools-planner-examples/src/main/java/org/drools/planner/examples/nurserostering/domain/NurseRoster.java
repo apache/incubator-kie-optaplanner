@@ -11,6 +11,12 @@ import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
+import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 
 /**
  * @author Geoffrey De Smet
@@ -25,6 +31,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
     private List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList;
     private List<Pattern> patternList;
     private List<Contract> contractList;
+    private List<ContractLine> contractLineList;
     private List<Employee> employeeList;
     private List<SkillProficiency> skillProficiencyList;
     private List<ShiftDate> shiftDateList;
@@ -84,6 +91,14 @@ public class NurseRoster extends AbstractPersistable implements Solution {
 
     public void setContractList(List<Contract> contractList) {
         this.contractList = contractList;
+    }
+
+    public List<ContractLine> getContractLineList() {
+        return contractLineList;
+    }
+
+    public void setContractLineList(List<ContractLine> contractLineList) {
+        this.contractLineList = contractLineList;
     }
 
     public List<Employee> getEmployeeList() {
@@ -178,6 +193,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         facts.addAll(shiftTypeSkillRequirementList);
         facts.addAll(patternList);
         facts.addAll(contractList);
+        facts.addAll(contractLineList);
         facts.addAll(employeeList);
         facts.addAll(skillProficiencyList);
         facts.addAll(shiftDateList);
@@ -207,6 +223,7 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         clone.shiftTypeSkillRequirementList = shiftTypeSkillRequirementList;
         clone.patternList = patternList;
         clone.contractList = contractList;
+        clone.contractLineList = contractLineList;
         clone.employeeList = employeeList;
         clone.skillProficiencyList = skillProficiencyList;
         clone.shiftDateList = shiftDateList;

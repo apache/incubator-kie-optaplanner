@@ -1,14 +1,16 @@
-package org.drools.planner.examples.nurserostering.domain;
+package org.drools.planner.examples.nurserostering.domain.request;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
 /**
  * @author Geoffrey De Smet
  */
-@XStreamAlias("DayOffRequest")
-public class DayOffRequest extends AbstractPersistable implements Comparable<DayOffRequest> {
+@XStreamAlias("DayOnRequest")
+public class DayOnRequest extends AbstractPersistable implements Comparable<DayOnRequest> {
 
     private Employee employee;
     private ShiftDate shiftDate;
@@ -38,7 +40,7 @@ public class DayOffRequest extends AbstractPersistable implements Comparable<Day
         this.weight = weight;
     }
 
-    public int compareTo(DayOffRequest other) {
+    public int compareTo(DayOnRequest other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
                 .append(shiftDate, other.shiftDate)
@@ -47,7 +49,7 @@ public class DayOffRequest extends AbstractPersistable implements Comparable<Day
 
     @Override
     public String toString() {
-        return shiftDate + "_OFF_" + employee;
+        return shiftDate + "_ON_" + employee;
     }
 
 }

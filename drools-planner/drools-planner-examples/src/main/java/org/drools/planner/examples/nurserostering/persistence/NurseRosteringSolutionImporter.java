@@ -16,21 +16,23 @@ import java.util.TimeZone;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
-import org.drools.planner.examples.nurserostering.domain.Contract;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
-import org.drools.planner.examples.nurserostering.domain.DayOffRequest;
-import org.drools.planner.examples.nurserostering.domain.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
-import org.drools.planner.examples.nurserostering.domain.ShiftOffRequest;
-import org.drools.planner.examples.nurserostering.domain.ShiftOnRequest;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
 import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
 import org.drools.planner.examples.nurserostering.domain.Skill;
 import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
+import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
+import org.drools.planner.examples.nurserostering.domain.contract.ContractLineType;
+import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
+import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
@@ -335,32 +337,83 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
         }
 
         private void readContractList(NurseRoster nurseRoster, Element contractsElement) throws JDOMException {
+            int contractLineTypeListSize = ContractLineType.values().length;
             List<Element> contractElementList = (List<Element>) contractsElement.getChildren();
             List<Contract> contractList = new ArrayList<Contract>(contractElementList.size());
             contractMap = new HashMap<String, Contract>(contractElementList.size());
             long id = 0L;
+            List<ContractLine> contractLineList = new ArrayList<ContractLine>(
+                    contractElementList.size() * contractLineTypeListSize);
+            long contractLineId = 0L;
             for (Element element : contractElementList) {
                 assertElementName(element, "Contract");
                 Contract contract = new Contract();
                 contract.setId(id);
                 contract.setCode(element.getAttribute("ID").getValue());
                 contract.setDescription(element.getChild("Description").getText());
-                // TODO the rest of the contract
+// TODO the rest of the contract
 //      <SingleAssignmentPerDay weight="1">true</SingleAssignmentPerDay>
 //      <MaxNumAssignments on="1" weight="1">16</MaxNumAssignments>
 //      <MinNumAssignments on="1" weight="1">6</MinNumAssignments>
-//      <MaxConsecutiveWorkingDays on="1" weight="1">7</MaxConsecutiveWorkingDays>
-//      <MinConsecutiveWorkingDays on="1" weight="1">1</MinConsecutiveWorkingDays>
+                
+                List<ContractLine> contractLineListOfContract = new ArrayList<ContractLine>(contractLineTypeListSize);
+                Element maxElement = element.getChild("MaxConsecutiveWorkingDays");
+                Element minElement = element.getChild("MinConsecutiveWorkingDays");
+
+                boolean minimumEnabled = minElement.getAttribute("on").getBooleanValue();
+                boolean maximumEnabled = maxElement.getAttribute("on").getBooleanValue();
+                ContractLine contractLine = new ContractLine();
+                contractLine.setId(contractLineId);
+                contractLine.setContract(contract);
+                contractLine.setContractLineType(ContractLineType.CONSECUTIVE_WORKING_DAYS);
+                contractLine.setMinimumEnabled(minimumEnabled);
+                if (minimumEnabled) {
+                    int minimumValue = Integer.parseInt(minElement.getText());
+                    if (minimumValue < 1) {
+                        throw new IllegalArgumentException("The minimumValue (" + minimumValue
+                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
+                    }
+                    contractLine.setMinimumValue(minimumValue);
+                    int minimumWeight = minElement.getAttribute("weight").getIntValue();
+                    if (minimumWeight < 1) {
+                        throw new IllegalArgumentException("The minimumWeight (" + minimumWeight
+                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
+                    }
+                    contractLine.setMinimumWeight(minimumWeight);
+                }
+                contractLine.setMaximumEnabled(maximumEnabled);
+                if (maximumEnabled) {
+                    int maximumValue = Integer.parseInt(maxElement.getText());
+                    if (maximumValue < 1) {
+                        throw new IllegalArgumentException("The maximumValue (" + maximumValue
+                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
+                    }
+                    contractLine.setMaximumValue(maximumValue);
+                    int maximumWeight = maxElement.getAttribute("weight").getIntValue();
+                    if (maximumWeight < 1) {
+                        throw new IllegalArgumentException("The maximumWeight (" + maximumWeight
+                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
+                    }
+                    contractLine.setMaximumWeight(maximumWeight);
+                }
+                contractLineList.add(contractLine);
+                contractLineListOfContract.add(contractLine);
+                contractLineId++;
+
+// TODO the rest of the contract
 //      <MaxConsecutiveFreeDays on="1" weight="1">5</MaxConsecutiveFreeDays>
 //      <MinConsecutiveFreeDays on="1" weight="1">1</MinConsecutiveFreeDays>
 //      <MaxConsecutiveWorkingWeekends on="0" weight="0">7</MaxConsecutiveWorkingWeekends>
 //      <MinConsecutiveWorkingWeekends on="0" weight="0">1</MinConsecutiveWorkingWeekends>
 //      <MaxWorkingWeekendsInFourWeeks on="0" weight="0">0</MaxWorkingWeekendsInFourWeeks>
+
 //      <WeekendDefinition>SaturdaySunday</WeekendDefinition>
 //      <CompleteWeekends weight="1">true</CompleteWeekends>
 //      <IdenticalShiftTypesDuringWeekend weight="1">true</IdenticalShiftTypesDuringWeekend>
 //      <NoNightShiftBeforeFreeWeekend weight="0">false</NoNightShiftBeforeFreeWeekend>
 //      <AlternativeSkillCategory weight="0">false</AlternativeSkillCategory>
+
+                contract.setContractLineList(contractLineListOfContract);
 
 
                 List<Element> unwantedPatternElementList = (List<Element>) element.getChild("UnwantedPatterns")
@@ -387,6 +440,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 id++;
             }
             nurseRoster.setContractList(contractList);
+            nurseRoster.setContractLineList(contractLineList);
         }
 
         private void readEmployeeList(NurseRoster nurseRoster, Element employeesElement) throws JDOMException {

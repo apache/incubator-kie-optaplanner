@@ -1,4 +1,6 @@
-package org.drools.planner.examples.nurserostering.domain;
+package org.drools.planner.examples.nurserostering.domain.contract;
+
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -12,6 +14,8 @@ public class Contract extends AbstractPersistable implements Comparable<Contract
 
     private String code;
     private String description;
+
+    private List<ContractLine> contractLineList;
 
     public String getCode() {
         return code;
@@ -27,6 +31,14 @@ public class Contract extends AbstractPersistable implements Comparable<Contract
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<ContractLine> getContractLineList() {
+        return contractLineList;
+    }
+
+    public void setContractLineList(List<ContractLine> contractLineList) {
+        this.contractLineList = contractLineList;
     }
 
     public int compareTo(Contract other) {
