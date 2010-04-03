@@ -47,13 +47,13 @@ public class NurseRosteringEvaluatorHelper {
 
     private static class EvaluatorSummaryFilterOutputStream extends FilterOutputStream {
 
-        private StringBuilder lineBuffer = new StringBuilder(120);
-        private Map<String, Integer> excessMap;
         private static final String EXCESS_PATTERN = "excess = ";
+        
+        private StringBuilder lineBuffer = new StringBuilder(120);
+        private Map<String, int[]> excessMap = new LinkedHashMap<String, int[]>();
 
         private EvaluatorSummaryFilterOutputStream() {
             super(System.out);
-            excessMap = new LinkedHashMap<String, Integer>();
         }
 
         @Override
@@ -72,21 +72,23 @@ public class NurseRosteringEvaluatorHelper {
             if (excessIndex >= 0) {
                 String key = line.substring(0, excessIndex);
                 int value = Integer.parseInt(line.substring(excessIndex).replaceAll("excess = (\\d+) .*", "$1"));
-                Integer count = excessMap.get(key);
-                if (count == null) {
-                    count = value;
+                int[] excess = excessMap.get(key);
+                if (excess == null) {
+                    excess = new int[]{0, value};
+                    excessMap.put(key, excess);
                 } else {
-                    count += value;
+                    excess[0]++;
+                    excess[1] += value;
                 }
-                excessMap.put(key, count);
             }
         }
 
         public void writeResults() {
             System.out.println("EvaluatorHelper results");
             System.out.println("=======================");
-            for (Map.Entry<String, Integer> entry : excessMap.entrySet()) {
-                System.out.println(entry.getKey() + " count = " + entry.getValue());
+            for (Map.Entry<String, int[]> entry : excessMap.entrySet()) {
+                int[] excess = entry.getValue();
+                System.out.println(entry.getKey() + " count = " + excess[0] + " total = " + excess[1]);
             }
         }
     }
