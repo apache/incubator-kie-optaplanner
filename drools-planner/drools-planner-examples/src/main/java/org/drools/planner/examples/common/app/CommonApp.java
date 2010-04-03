@@ -1,13 +1,10 @@
 package org.drools.planner.examples.common.app;
 
-import java.io.File;
-
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.business.SolutionBusiness;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.WorkflowFrame;
 
@@ -17,13 +14,11 @@ import org.drools.planner.examples.common.swingui.WorkflowFrame;
 public abstract class CommonApp extends LoggingMain {
 
     private WorkflowFrame workflowFrame;
-    private SolutionDao solutionDao;
     private SolutionBusiness solutionBusiness;
 
     public CommonApp() {
-        solutionDao = createSolutionDao();
         solutionBusiness = createSolutionBusiness();
-        workflowFrame = new WorkflowFrame(solutionBusiness, createSolutionPanel(), solutionDao.getDirName());
+        workflowFrame = new WorkflowFrame(solutionBusiness, createSolutionPanel(), solutionBusiness.getDirName());
     }
 
     public void init() {
@@ -31,12 +26,13 @@ public abstract class CommonApp extends LoggingMain {
         workflowFrame.setVisible(true);
     }
 
-    protected SolutionBusiness createSolutionBusiness() {
+    public SolutionBusiness createSolutionBusiness() {
+        SolutionDao solutionDao = createSolutionDao();
         SolutionBusiness solutionBusiness = new SolutionBusiness();
         solutionBusiness.setSolutionDao(solutionDao);
         solutionBusiness.setImporter(createSolutionImporter());
         solutionBusiness.setExporter(createSolutionExporter());
-        solutionBusiness.setDataDir(solutionDao.getDataDir());
+        solutionBusiness.updateDataDirs();
         solutionBusiness.setSolver(createSolver());
         return solutionBusiness;
     }

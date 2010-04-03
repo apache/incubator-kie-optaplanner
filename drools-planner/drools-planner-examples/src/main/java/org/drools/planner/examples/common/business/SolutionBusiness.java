@@ -62,6 +62,14 @@ public class SolutionBusiness {
         this.exporter = exporter;
     }
 
+    public File getDataDir() {
+        return solutionDao.getDataDir();
+    }
+
+    public String getDirName() {
+        return solutionDao.getDirName();
+    }
+
     public boolean hasImporter() {
         return importer != null;
     }
@@ -70,26 +78,26 @@ public class SolutionBusiness {
         return exporter != null;
     }
 
-    public void setDataDir(File dataDir) {
+    public void updateDataDirs() {
         if (hasImporter()) {
-            importDataDir = new File(dataDir, "input");
+            importDataDir = new File(getDataDir(), "input");
             if (!importDataDir.exists()) {
                 throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
                         + ") does not exist. The working directory should be set to drools-planner-examples.");
             }
         }
-        unsolvedDataDir = new File(dataDir, "unsolved");
+        unsolvedDataDir = new File(getDataDir(), "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
                     + ") does not exist. The working directory should be set to drools-planner-examples.");
         }
-        solvedDataDir = new File(dataDir, "solved");
+        solvedDataDir = new File(getDataDir(), "solved");
         if (!solvedDataDir.exists()) {
             throw new IllegalStateException("The directory solvedDataDir (" + solvedDataDir.getAbsolutePath()
                     + ") does not exist. The working directory should be set to drools-planner-examples.");
         }
         if (hasExporter()) {
-            exportDataDir = new File(dataDir, "output");
+            exportDataDir = new File(getDataDir(), "output");
             if (!exportDataDir.exists()) {
                 throw new IllegalStateException("The directory exportDataDir (" + exportDataDir.getAbsolutePath()
                         + ") does not exist. The working directory should be set to drools-planner-examples.");
