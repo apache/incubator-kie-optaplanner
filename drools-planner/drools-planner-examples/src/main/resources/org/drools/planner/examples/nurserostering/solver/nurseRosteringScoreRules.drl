@@ -97,7 +97,7 @@ rule "maximumConsecutiveWorkingDays"
 
         // There are no free days between the first and last day
         forall($shiftDate : ShiftDate(dayIndex > $firstDayIndex, dayIndex < $lastDayIndex)
-               EmployeeAssignment(shiftDate == $shiftDate)
+               EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
         );
 
         // There are to many days
