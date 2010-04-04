@@ -82,33 +82,70 @@ end
 // Maximum number of consecutive working days
 rule "maximumConsecutiveWorkingDays"
     when
-        $contractLine : ContractLine(contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS,
-                maximumEnabled == true, $contract : contract, $maximumValue : maximumValue);
+        $contractLine : ContractLine(
+            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, maximumEnabled == true,
+            $contract : contract, $maximumIndexDiff : maximumIndexDiff
+        );
         $employee : Employee(contract == $contract);
 
         // The first day has no working day before it
-        EmployeeAssignment(employee == $employee, $firstDayIndex : shiftDateDayIndex);
+        EmployeeAssignment(
+            employee == $employee,
+            $firstDayIndex : shiftDateDayIndex
+        );
         not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1));
 
         // The last day has no working day after it
-        EmployeeAssignment(employee == $employee, shiftDateDayIndex > $firstDayIndex, $lastDayIndex : shiftDateDayIndex);
+        EmployeeAssignment(
+            employee == $employee,
+            shiftDateDayIndex > ($firstDayIndex + $maximumIndexDiff), // Too many days
+            $lastDayIndex : shiftDateDayIndex
+        );
         not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
 
         // There are no free days between the first and last day
-        forall($shiftDate : ShiftDate(dayIndex > $firstDayIndex, dayIndex < $lastDayIndex)
-               EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
+        forall($shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
+            EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
         );
-
-        // There are to many days
-        eval(($lastDayIndex - $firstDayIndex + 1) > $maximumValue);
     then
         insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-                (($lastDayIndex - $firstDayIndex + 1) - $maximumValue) * $contractLine.getMaximumWeight(),
+                ($lastDayIndex - $firstDayIndex - $maximumIndexDiff) * $contractLine.getMaximumWeight(),
                 $employee, $firstDayIndex, $lastDayIndex));
 end
 
-// Minimum number of consecutive working days
-// TODO
+//// Minimum number of consecutive working days
+//rule "minimumConsecutiveWorkingDays"
+//    when
+//        $contractLine : ContractLine(
+//            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, minimumEnabled == true,
+//            $contract : contract, $minimumIndexDiff : minimumIndexDiff
+//        );
+//        $employee : Employee(contract == $contract);
+//
+//        // The first day has no working day before it
+//        EmployeeAssignment(
+//            employee == $employee,
+//            $firstDayIndex : shiftDateDayIndex
+//        );
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1));
+//
+//        // The last day has no working day after it
+//        EmployeeAssignment(
+//            employee == $employee,
+//            shiftDateDayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
+//            $lastDayIndex : shiftDateDayIndex
+//        );
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
+//
+//        // There are no free days between the first and last day
+//        forall($shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
+//            EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
+//        );
+//    then
+//        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
+//                ($minimumIndexDiff - $lastDayIndex + $firstDayIndex) * $contractLine.getMinimumWeight(),
+//                $employee, $firstDayIndex, $lastDayIndex));
+//end
 
 // Maximum number of consecutive free days
 // TODO

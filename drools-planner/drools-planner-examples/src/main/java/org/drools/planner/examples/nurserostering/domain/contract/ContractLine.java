@@ -53,6 +53,10 @@ public class ContractLine extends AbstractPersistable implements Comparable<Cont
         this.minimumValue = minimumValue;
     }
 
+    public int getMinimumIndexDiff() {
+        return minimumValue - 1;
+    }
+
     public int getMinimumWeight() {
         return minimumWeight;
     }
@@ -75,6 +79,10 @@ public class ContractLine extends AbstractPersistable implements Comparable<Cont
 
     public void setMaximumValue(int maximumValue) {
         this.maximumValue = maximumValue;
+    }
+
+    public int getMaximumIndexDiff() {
+        return maximumValue - 1;
     }
 
     public int getMaximumWeight() {
