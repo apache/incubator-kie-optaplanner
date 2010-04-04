@@ -16,10 +16,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
+import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
-import org.drools.planner.examples.nurserostering.domain.Shift;
+import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
 /**
@@ -44,14 +45,24 @@ public class NurseRosteringPanel extends SolutionPanel {
     public void resetPanel() {
         removeAll();
         NurseRoster schedule = getNurseRoster();
-        gridLayout.setColumns(schedule.getEmployeeList().size() + 1);
-        JLabel headerCornerLabel = new JLabel("Shift     \\     Employee");
+        gridLayout.setColumns(schedule.getShiftDateList().size() + 1);
+        JLabel headerCornerLabel = new JLabel("Employee \\ ShiftDate");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         headerCornerLabel.setBackground(HEADER_COLOR);
         headerCornerLabel.setOpaque(true);
         add(headerCornerLabel);
+        for (ShiftDate shiftDate : schedule.getShiftDateList()) {
+            JLabel shiftDateLabel = new JLabel(shiftDate.toString());
+            shiftDateLabel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.DARK_GRAY),
+                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+            shiftDateLabel.setBackground(HEADER_COLOR);
+            shiftDateLabel.setOpaque(true);
+            add(shiftDateLabel);
+        }
+        Map<Employee, Map<ShiftDate, EmployeeShiftDatePanel>> employeeShiftDatePanelMap = new HashMap<Employee, Map<ShiftDate, EmployeeShiftDatePanel>>();
         for (Employee employee : schedule.getEmployeeList()) {
             JLabel employeeLabel = new JLabel(employee.toString());
             employeeLabel.setBorder(BorderFactory.createCompoundBorder(
@@ -60,36 +71,29 @@ public class NurseRosteringPanel extends SolutionPanel {
             employeeLabel.setBackground(HEADER_COLOR);
             employeeLabel.setOpaque(true);
             add(employeeLabel);
-        }
-        Map<Shift, Map<Employee, ShiftEmployeePanel>> shiftEmployeePanelMap = new HashMap<Shift, Map<Employee, ShiftEmployeePanel>>();
-        for (Shift shift : schedule.getShiftList()) {
-            JLabel shiftLabel = new JLabel(shift.toString());
-            shiftLabel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            shiftLabel.setBackground(HEADER_COLOR);
-            shiftLabel.setOpaque(true);
-            add(shiftLabel);
-            Map<Employee, ShiftEmployeePanel> employeePanelMap = new HashMap<Employee, ShiftEmployeePanel>();
-            shiftEmployeePanelMap.put(shift, employeePanelMap);
-            for (Employee employee : schedule.getEmployeeList()) {
-                ShiftEmployeePanel shiftEmployeePanel = new ShiftEmployeePanel();
-                add(shiftEmployeePanel);
-                employeePanelMap.put(employee, shiftEmployeePanel);
+            Map<ShiftDate, EmployeeShiftDatePanel> shiftDatePanelMap = new HashMap<ShiftDate, EmployeeShiftDatePanel>();
+            employeeShiftDatePanelMap.put(employee, shiftDatePanelMap);
+            for (ShiftDate shiftDate : schedule.getShiftDateList()) {
+                EmployeeShiftDatePanel employeeShiftDatePanel = new EmployeeShiftDatePanel();
+                if (shiftDate.getDayOfWeek() == DayOfWeek.SATURDAY || shiftDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                    employeeShiftDatePanel.setBackground(Color.LIGHT_GRAY);
+                }
+                add(employeeShiftDatePanel);
+                shiftDatePanelMap.put(shiftDate, employeeShiftDatePanel);
             }
         }
         if (schedule.isInitialized()) {
             for (EmployeeAssignment employeeAssignment : schedule.getEmployeeAssignmentList()) {
-                Shift shift = employeeAssignment.getShift();
-                ShiftEmployeePanel shiftEmployeePanel = shiftEmployeePanelMap.get(shift).get(employeeAssignment.getEmployee());
-                shiftEmployeePanel.addEmployeeAssignment(employeeAssignment);
+                Employee employee = employeeAssignment.getEmployee();
+                EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(employeeAssignment.getShiftDate());
+                employeeShiftDatePanel.addEmployeeAssignment(employeeAssignment);
             }
         }
     }
 
-    private class ShiftEmployeePanel extends JPanel {
+    private class EmployeeShiftDatePanel extends JPanel {
 
-        public ShiftEmployeePanel() {
+        public EmployeeShiftDatePanel() {
             super(new GridLayout(0, 1));
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
@@ -115,7 +119,7 @@ public class NurseRosteringPanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             List<Employee> employeeList = getNurseRoster().getEmployeeList();
             JComboBox employeeListField = new JComboBox(employeeList.toArray());
-            employeeListField.setSelectedItem(employeeAssignment.getShift());
+            employeeListField.setSelectedItem(employeeAssignment.getEmployee());
             int result = JOptionPane.showConfirmDialog(NurseRosteringPanel.this.getRootPane(), employeeListField,
                     "Select employee", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {

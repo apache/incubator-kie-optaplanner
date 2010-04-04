@@ -34,7 +34,7 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
     }
 
     public String getLabel() {
-        return shift + "->" + employee;
+        return shift.getShiftType().getCode();
     }
 
     public int compareTo(EmployeeAssignment other) {
