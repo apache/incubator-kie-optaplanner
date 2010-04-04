@@ -2,8 +2,10 @@ package org.drools.planner.examples.nurserostering.persistence;
 
 import java.io.File;
 import java.io.FilterOutputStream;
+import java.io.FilterWriter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -47,28 +49,27 @@ public class NurseRosteringEvaluatorHelper {
 
     private static class EvaluatorSummaryFilterOutputStream extends FilterOutputStream {
 
-        private static final String EXCESS_PATTERN = "excess = ";
-        
         private StringBuilder lineBuffer = new StringBuilder(120);
         private Map<String, int[]> excessMap = new LinkedHashMap<String, int[]>();
+        private String lastEmployeeCode = null;
 
         private EvaluatorSummaryFilterOutputStream() {
             super(System.out);
         }
 
         @Override
-        public void write(int b) throws IOException {
-            super.write(b);
-            if (b == '\n') {
+        public void write(int c) throws IOException {
+            super.write(c);
+            if (c == '\n') {
                 processLine(lineBuffer.toString());
                 lineBuffer.delete(0, lineBuffer.length());
             } else {
-                lineBuffer.append((char) b);
+                lineBuffer.append((char) c);
             }
         }
 
         private void processLine(String line) {
-            int excessIndex = line.indexOf(EXCESS_PATTERN);
+            int excessIndex = line.indexOf("excess = ");
             if (excessIndex >= 0) {
                 String key = line.substring(0, excessIndex);
                 int value = Integer.parseInt(line.substring(excessIndex).replaceAll("excess = (\\d+) .*", "$1"));
@@ -80,6 +81,15 @@ public class NurseRosteringEvaluatorHelper {
                     excess[0]++;
                     excess[1] += value;
                 }
+            }
+            int employeeIndex = line.indexOf("Employee: ");
+            if (employeeIndex >= 0) {
+                lastEmployeeCode = line.substring(employeeIndex).replaceAll("Employee: (.+)", "$1");
+            } else if (line.contains("Penalty:")) {
+                lastEmployeeCode = null;
+            }
+            if (lastEmployeeCode != null) {
+                System.out.print("E(" + lastEmployeeCode + ")  ");
             }
         }
 
