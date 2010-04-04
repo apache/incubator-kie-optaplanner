@@ -94,17 +94,16 @@ rule "maximumConsecutiveWorkingDays"
         EmployeeAssignment(employee == $employee, shiftDateDayIndex > $firstDayIndex, $lastDayIndex : shiftDateDayIndex);
         not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
 
-
         // There are no free days between the first and last day
         forall($shiftDate : ShiftDate(dayIndex > $firstDayIndex, dayIndex < $lastDayIndex)
                EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
         );
 
         // There are to many days
-        eval(($lastDayIndex - $firstDayIndex) > $maximumValue);
+        eval(($lastDayIndex - $firstDayIndex + 1) > $maximumValue);
     then
         insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-                (($lastDayIndex - $firstDayIndex) - $maximumValue) * $contractLine.getMaximumWeight(),
+                (($lastDayIndex - $firstDayIndex + 1) - $maximumValue) * $contractLine.getMaximumWeight(),
                 $employee, $firstDayIndex, $lastDayIndex));
 end
 
