@@ -46,7 +46,7 @@ public class NurseRosteringPanel extends SolutionPanel {
         removeAll();
         NurseRoster schedule = getNurseRoster();
         gridLayout.setColumns(schedule.getShiftDateList().size() + 1);
-        JLabel headerCornerLabel = new JLabel("Employee \\ ShiftDate");
+        JLabel headerCornerLabel = new JLabel("Employee \\ Date");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
