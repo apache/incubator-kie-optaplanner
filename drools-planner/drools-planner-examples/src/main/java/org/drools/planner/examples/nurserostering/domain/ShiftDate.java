@@ -51,6 +51,10 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
         this.shiftList = shiftList;
     }
 
+    public String getLabel() {
+        return dateString.substring(5);
+    }
+
     public int compareTo(ShiftDate other) {
         return new CompareToBuilder()
                 .append(dayIndex, other.dayIndex)
