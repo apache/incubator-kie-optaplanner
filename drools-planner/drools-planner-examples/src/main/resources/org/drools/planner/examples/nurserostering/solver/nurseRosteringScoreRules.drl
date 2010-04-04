@@ -87,7 +87,7 @@ rule "maximumConsecutiveWorkingDays"
         $employee : Employee(contract == $contract);
 
         // The first day has no working day before it
-        EmployeeAssignment(employee == $employee, $firstDayIndex : shiftDateDayIndex, shift != null);
+        EmployeeAssignment(employee == $employee, $firstDayIndex : shiftDateDayIndex);
         not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1));
 
         // The last day has no working day after it
