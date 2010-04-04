@@ -113,7 +113,7 @@ rule "maximumConsecutiveWorkingDays"
                 $employee, $firstDayIndex, $lastDayIndex));
 end
 
-//// Minimum number of consecutive working days
+// Minimum number of consecutive working days
 //rule "minimumConsecutiveWorkingDays"
 //    when
 //        $contractLine : ContractLine(
@@ -132,7 +132,7 @@ end
 //        // The last day has no working day after it
 //        EmployeeAssignment(
 //            employee == $employee,
-//            shiftDateDayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
+//            shiftDateDayIndex > $firstDayIndex, shiftDateDayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
 //            $lastDayIndex : shiftDateDayIndex
 //        );
 //        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
@@ -143,7 +143,7 @@ end
 //        );
 //    then
 //        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-//                ($minimumIndexDiff - $lastDayIndex + $firstDayIndex) * $contractLine.getMinimumWeight(),
+//                ($firstDayIndex + $minimumIndexDiff - $lastDayIndex) * $contractLine.getMinimumWeight(),
 //                $employee, $firstDayIndex, $lastDayIndex));
 //end
 
