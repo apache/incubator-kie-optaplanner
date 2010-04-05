@@ -79,7 +79,7 @@ end
 // Minimum number of assignments
 // TODO
 
-// Maximum number of consecutive working days
+// Maximum number of consecutive working days // TODO too slow!
 rule "maximumConsecutiveWorkingDays"
     when
         $contractLine : ContractLine(
@@ -104,8 +104,9 @@ rule "maximumConsecutiveWorkingDays"
         not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
 
         // There are no free days between the first and last day
-        forall($shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
-            EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
+        not(
+            $shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
+            and not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
         );
     then
         insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
