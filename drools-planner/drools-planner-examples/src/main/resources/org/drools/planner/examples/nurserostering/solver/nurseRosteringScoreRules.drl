@@ -133,7 +133,8 @@ end
 //        // The last day has no working day after it
 //        EmployeeAssignment(
 //            employee == $employee,
-//            shiftDateDayIndex > $firstDayIndex, shiftDateDayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
+//            shiftDateDayIndex > $firstDayIndex,
+//            shiftDateDayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
 //            $lastDayIndex : shiftDateDayIndex
 //        );
 //        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
@@ -152,7 +153,42 @@ end
 // TODO
 
 // Minimum number of consecutive free days
-// TODO
+//rule "minimumConsecutiveFreeDays"
+//    when
+//        $contractLine : ContractLine(
+//            contractLineType == ContractLineType.CONSECUTIVE_FREE_DAYS, minimumEnabled == true,
+//            $contract : contract, $minimumIndexDiff : minimumIndexDiff
+//        )
+//        $employee : Employee(contract == $contract)
+//
+//        // The first day ...
+//        $firstShiftDate : ShiftDate($firstDayIndex : dayIndex)
+//        not EmployeeAssignment(employee == $employee, shiftDate == $firstShiftDate)
+//        // ... has no free day before it
+//        (
+//            exists EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1))
+//            or not ShiftDate(dayIndex == ($firstDayIndex - 1))
+//        )
+//
+//        // The last day ...
+//        $lastShiftDate : ShiftDate(
+//            dayIndex > $firstDayIndex,
+//            dayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
+//            $lastDayIndex : dayIndex)
+//        not EmployeeAssignment(employee == $employee, shiftDate == $lastShiftDate)
+//        // ... has no free day after it
+//        (
+//            exists EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1))
+//            or not ShiftDate(dayIndex == ($lastDayIndex + 1))
+//        )
+//
+//        // There are no working days between the first and last day
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex  > $firstDayIndex && < $lastDayIndex)
+//    then
+//        insertLogical(new IntConstraintOccurrence("minimumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
+//                ($firstDayIndex + $minimumIndexDiff - $lastDayIndex) * $contractLine.getMinimumWeight(),
+//                $employee, $firstDayIndex, $lastDayIndex));
+//end
 
 // Maximum number of consecutive working weekends
 // TODO
