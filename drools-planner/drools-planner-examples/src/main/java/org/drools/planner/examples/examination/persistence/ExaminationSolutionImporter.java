@@ -1,6 +1,7 @@
 package org.drools.planner.examples.examination.persistence;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -73,14 +74,20 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
             tagFrontLoadLargeTopics(examination);
             tagFrontLoadLastPeriods(examination);
 
+            // Note: examList stays null, that's work for the StartingSolutionInitializer
+
             logger.info("Examination with {} students, {} topics/exams, {} periods, {} rooms, {} period constraints" +
                     " and {} room constraints.",
                     new Object[]{examination.getStudentList().size(), examination.getTopicList().size(),
                             examination.getPeriodList().size(), examination.getRoomList().size(),
                             examination.getPeriodHardConstraintList().size(),
                             examination.getRoomHardConstraintList().size()});
-
-            // Note: examList stays null, that's work for the StartingSolutionInitializer
+            int possibleForOneExamSize = examination.getPeriodList().size() * examination.getRoomList().size();
+            BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneExamSize).pow(
+                    examination.getTopicList().size());
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("Examination with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                    flooredPossibleSolutionSize, possibleSolutionSize);
             return examination;
         }
 
