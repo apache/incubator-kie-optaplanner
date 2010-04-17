@@ -203,7 +203,24 @@ end
 // TODO
 
 // Requested day on/off
-// TODO
+rule "dayOffRequest"
+    when
+        $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight);
+        $employeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate);
+    then
+        insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.NEGATIVE_SOFT,
+                $weight,
+                $dayOffRequest, $employeeAssignment));
+end
+rule "dayOnRequest"
+    when
+        $dayOnRequest : DayOnRequest($employee : employee, $shiftDate : shiftDate, $weight : weight);
+        not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate);
+    then
+        insertLogical(new IntConstraintOccurrence("dayOnRequest", ConstraintType.NEGATIVE_SOFT,
+                $weight,
+                $dayOnRequest));
+end
 
 // Requested shift on/off
 // TODO
