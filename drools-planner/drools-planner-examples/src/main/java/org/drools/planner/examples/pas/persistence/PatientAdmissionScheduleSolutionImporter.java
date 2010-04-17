@@ -1,6 +1,7 @@
 package org.drools.planner.examples.pas.persistence;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +94,11 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                             patientAdmissionSchedule.getNightList().size(),
                             patientAdmissionSchedule.getPatientList().size(),
                             patientAdmissionSchedule.getAdmissionPartList().size()});
+            BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size()).pow(
+                    patientAdmissionSchedule.getAdmissionPartList().size());
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("PatientAdmissionSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                    flooredPossibleSolutionSize, possibleSolutionSize);
             return patientAdmissionSchedule;
         }
 
