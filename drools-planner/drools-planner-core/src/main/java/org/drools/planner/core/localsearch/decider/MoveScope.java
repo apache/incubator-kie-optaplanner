@@ -7,7 +7,6 @@ import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.DefaultHardAndSoftScore;
 
 /**
  * @author Geoffrey De Smet
@@ -18,7 +17,7 @@ public class MoveScope {
     private Move move = null;
     private Move undoMove = null;
     private double acceptChance = Double.NaN;
-    private Score score = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
+    private Score score = null;
 
     public MoveScope(StepScope stepScope) {
         this.stepScope = stepScope;
