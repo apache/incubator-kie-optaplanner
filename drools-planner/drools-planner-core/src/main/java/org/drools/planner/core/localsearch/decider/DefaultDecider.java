@@ -125,7 +125,8 @@ public class DefaultDecider implements Decider {
                 throw new IllegalStateException(
                         "Corrupted undo move (" + undoMove + ") received from move (" + move + ").\n"
                         + "Unequal lastCompletedStepScore (" + lastCompletedStepScore + ") and undoScore ("
-                        + undoScore + ").");
+                        + undoScore + ").\n"
+                        + moveScope.getStepScope().getLocalSearchSolverScope().buildConstraintOccurrenceSummary());
             }
         }
         logger.debug("    Move ({}) with score ({}) and acceptChance ({}).",
