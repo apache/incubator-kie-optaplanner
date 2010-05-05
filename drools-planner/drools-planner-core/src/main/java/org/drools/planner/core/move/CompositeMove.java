@@ -1,20 +1,25 @@
 package org.drools.planner.core.move;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.drools.WorkingMemory;
+import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 
 /**
- * A CompositeMove is composided out of multiple other moves.
+ * A CompositeMove is composed out of multiple other moves.
  * <p/>
  * Warning: one of the moveList moves should not rely on the effect on of a previous moveList move
  * to create an uncorrupted undoMove. In other words, 
  * @see Move
  * @author Geoffrey De Smet
  */
-public class CompositeMove implements Move {
+public class CompositeMove implements Move, TabuPropertyEnabled {
 
     protected List<Move> moveList;
 
@@ -54,6 +59,14 @@ public class CompositeMove implements Move {
         for (Move move : moveList) {
             move.doMove(workingMemory);
         }
+    }
+
+    public Collection<? extends Object> getTabuProperties() {
+        Set<Object> tabuProperties = new HashSet<Object>(moveList.size() * 2);
+        for (Move move : moveList) {
+            tabuProperties.addAll(((TabuPropertyEnabled) move).getTabuProperties());
+        }
+        return tabuProperties;
     }
 
     public boolean equals(Object o) {
