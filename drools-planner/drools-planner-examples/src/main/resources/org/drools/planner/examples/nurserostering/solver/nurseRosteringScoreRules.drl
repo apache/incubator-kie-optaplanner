@@ -80,39 +80,39 @@ end
 // TODO
 
 // Maximum number of consecutive working days // TODO too slow!
-rule "maximumConsecutiveWorkingDays"
-    when
-        $contractLine : ContractLine(
-            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, maximumEnabled == true,
-            $contract : contract, $maximumIndexDiff : maximumIndexDiff
-        );
-        $employee : Employee(contract == $contract);
-
-        // The first day has no working day before it
-        EmployeeAssignment(
-            employee == $employee,
-            $firstDayIndex : shiftDateDayIndex
-        );
-        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1));
-
-        // The last day has no working day after it
-        EmployeeAssignment(
-            employee == $employee,
-            shiftDateDayIndex > ($firstDayIndex + $maximumIndexDiff), // Too many days
-            $lastDayIndex : shiftDateDayIndex
-        );
-        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
-
-        // There are no free days between the first and last day
-        not(
-            $shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
-            and not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
-        );
-    then
-        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-                ($lastDayIndex - $firstDayIndex - $maximumIndexDiff) * $contractLine.getMaximumWeight(),
-                $employee, $firstDayIndex, $lastDayIndex));
-end
+//rule "maximumConsecutiveWorkingDays"
+//    when
+//        $contractLine : ContractLine(
+//            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, maximumEnabled == true,
+//            $contract : contract, $maximumIndexDiff : maximumIndexDiff
+//        );
+//        $employee : Employee(contract == $contract);
+//
+//        // The first day has no working day before it
+//        EmployeeAssignment(
+//            employee == $employee,
+//            $firstDayIndex : shiftDateDayIndex
+//        );
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1));
+//
+//        // The last day has no working day after it
+//        EmployeeAssignment(
+//            employee == $employee,
+//            shiftDateDayIndex > ($firstDayIndex + $maximumIndexDiff), // Too many days
+//            $lastDayIndex : shiftDateDayIndex
+//        );
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
+//
+//        // There are no free days between the first and last day
+//        not(
+//            $shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
+//            and not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
+//        );
+//    then
+//        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
+//                ($lastDayIndex - $firstDayIndex - $maximumIndexDiff) * $contractLine.getMaximumWeight(),
+//                $employee, $firstDayIndex, $lastDayIndex));
+//end
 
 // Minimum number of consecutive working days
 //rule "minimumConsecutiveWorkingDays"
@@ -223,7 +223,24 @@ rule "dayOnRequest"
 end
 
 // Requested shift on/off
-// TODO
+rule "shiftOffRequest"
+    when
+        $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight);
+        $employeeAssignment : EmployeeAssignment(employee == $employee, shift == $shift);
+    then
+        insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.NEGATIVE_SOFT,
+                $weight,
+                $shiftOffRequest, $employeeAssignment));
+end
+rule "shiftOnRequest"
+    when
+        $shiftOnRequest : ShiftOnRequest($employee : employee, $shift : shift, $weight : weight);
+        not EmployeeAssignment(employee == $employee, shift == $shift);
+    then
+        insertLogical(new IntConstraintOccurrence("shiftOnRequest", ConstraintType.NEGATIVE_SOFT,
+                $weight,
+                $shiftOnRequest));
+end
 
 // Alternative skill
 // TODO
