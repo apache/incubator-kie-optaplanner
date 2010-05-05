@@ -16,6 +16,8 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringMediumSolverBenchmarkConfig.xml";
     public static final String LONG_SOLVER_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringLongSolverBenchmarkConfig.xml";
+    public static final String STEP_LIMIT_SOLVER_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringStepLimitSolverBenchmarkConfig.xml";
     
     public static final File SOLVER_BENCHMARK_RESULT_FILE
             = new File("local/data/nurserostering/nurseRosteringSolverBenchmarkResult.xml");
@@ -29,6 +31,8 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
                 solverConfig = MEDIUM_SOLVER_BENCHMARK_CONFIG;
             } else if (args[0].equals("long")) {
                 solverConfig = LONG_SOLVER_BENCHMARK_CONFIG;
+            } else if (args[0].equals("stepLimit")) {
+                solverConfig = STEP_LIMIT_SOLVER_BENCHMARK_CONFIG;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
