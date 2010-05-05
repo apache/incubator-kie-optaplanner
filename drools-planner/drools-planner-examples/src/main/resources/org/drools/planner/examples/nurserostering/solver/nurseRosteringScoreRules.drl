@@ -17,8 +17,10 @@ import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequireme
 import org.drools.planner.examples.nurserostering.domain.Skill;
 import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLineType;
+import org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine;
 import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
@@ -82,7 +84,7 @@ end
 // Maximum number of consecutive working days // TODO too slow!
 //rule "maximumConsecutiveWorkingDays"
 //    when
-//        $contractLine : ContractLine(
+//        $contractLine : MinMaxContractLine(
 //            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, maximumEnabled == true,
 //            $contract : contract, $maximumIndexDiff : maximumIndexDiff
 //        );
@@ -117,7 +119,7 @@ end
 // Minimum number of consecutive working days
 //rule "minimumConsecutiveWorkingDays"
 //    when
-//        $contractLine : ContractLine(
+//        $contractLine : MinMaxContractLine(
 //            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, minimumEnabled == true,
 //            $contract : contract, $minimumIndexDiff : minimumIndexDiff
 //        );
@@ -155,7 +157,7 @@ end
 // Minimum number of consecutive free days
 //rule "minimumConsecutiveFreeDays"
 //    when
-//        $contractLine : ContractLine(
+//        $contractLine : MinMaxContractLine(
 //            contractLineType == ContractLineType.CONSECUTIVE_FREE_DAYS, minimumEnabled == true,
 //            $contract : contract, $minimumIndexDiff : minimumIndexDiff
 //        )
@@ -206,11 +208,11 @@ end
 rule "dayOffRequest"
     when
         $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight);
-        $employeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate);
+        exists EmployeeAssignment(employee == $employee, shiftDate == $shiftDate);
     then
         insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
-                $dayOffRequest, $employeeAssignment));
+                $dayOffRequest));
 end
 rule "dayOnRequest"
     when
@@ -226,11 +228,11 @@ end
 rule "shiftOffRequest"
     when
         $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight);
-        $employeeAssignment : EmployeeAssignment(employee == $employee, shift == $shift);
+        exists EmployeeAssignment(employee == $employee, shift == $shift);
     then
         insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
-                $shiftOffRequest, $employeeAssignment));
+                $shiftOffRequest));
 end
 rule "shiftOnRequest"
     when
@@ -243,7 +245,16 @@ rule "shiftOnRequest"
 end
 
 // Alternative skill
-// TODO
+rule "alternativeSkill"
+    when
+        $employeeAssignment : EmployeeAssignment($employee : employee, $shiftType : shiftType);
+        ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill);
+        not SkillProficiency(employee == $employee, skill == $skill);
+    then
+        insertLogical(new IntConstraintOccurrence("alternativeSkill", ConstraintType.NEGATIVE_SOFT,
+                1,
+                $employeeAssignment));
+end
 
 // Unwanted patterns
 // TODO

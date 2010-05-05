@@ -26,13 +26,16 @@ import org.drools.planner.examples.nurserostering.domain.ShiftType;
 import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
 import org.drools.planner.examples.nurserostering.domain.Skill;
 import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
+import org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLineType;
+import org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine;
 import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
+import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
@@ -351,70 +354,46 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 contract.setId(id);
                 contract.setCode(element.getAttribute("ID").getValue());
                 contract.setDescription(element.getChild("Description").getText());
-// TODO the rest of the contract
-//      <SingleAssignmentPerDay weight="1">true</SingleAssignmentPerDay>
-//      <MaxNumAssignments on="1" weight="1">16</MaxNumAssignments>
-//      <MinNumAssignments on="1" weight="1">6</MinNumAssignments>
-                
+
                 List<ContractLine> contractLineListOfContract = new ArrayList<ContractLine>(contractLineTypeListSize);
-                Element maxElement = element.getChild("MaxConsecutiveWorkingDays");
-                Element minElement = element.getChild("MinConsecutiveWorkingDays");
-
-                boolean minimumEnabled = minElement.getAttribute("on").getBooleanValue();
-                boolean maximumEnabled = maxElement.getAttribute("on").getBooleanValue();
-                ContractLine contractLine = new ContractLine();
-                contractLine.setId(contractLineId);
-                contractLine.setContract(contract);
-                contractLine.setContractLineType(ContractLineType.CONSECUTIVE_WORKING_DAYS);
-                contractLine.setMinimumEnabled(minimumEnabled);
-                if (minimumEnabled) {
-                    int minimumValue = Integer.parseInt(minElement.getText());
-                    if (minimumValue < 1) {
-                        throw new IllegalArgumentException("The minimumValue (" + minimumValue
-                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
-                    }
-                    contractLine.setMinimumValue(minimumValue);
-                    int minimumWeight = minElement.getAttribute("weight").getIntValue();
-                    if (minimumWeight < 1) {
-                        throw new IllegalArgumentException("The minimumWeight (" + minimumWeight
-                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
-                    }
-                    contractLine.setMinimumWeight(minimumWeight);
-                }
-                contractLine.setMaximumEnabled(maximumEnabled);
-                if (maximumEnabled) {
-                    int maximumValue = Integer.parseInt(maxElement.getText());
-                    if (maximumValue < 1) {
-                        throw new IllegalArgumentException("The maximumValue (" + maximumValue
-                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
-                    }
-                    contractLine.setMaximumValue(maximumValue);
-                    int maximumWeight = maxElement.getAttribute("weight").getIntValue();
-                    if (maximumWeight < 1) {
-                        throw new IllegalArgumentException("The maximumWeight (" + maximumWeight
-                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
-                    }
-                    contractLine.setMaximumWeight(maximumWeight);
-                }
-                contractLineList.add(contractLine);
-                contractLineListOfContract.add(contractLine);
-                contractLineId++;
-
-// TODO the rest of the contract
-//      <MaxConsecutiveFreeDays on="1" weight="1">5</MaxConsecutiveFreeDays>
-//      <MinConsecutiveFreeDays on="1" weight="1">1</MinConsecutiveFreeDays>
-//      <MaxConsecutiveWorkingWeekends on="0" weight="0">7</MaxConsecutiveWorkingWeekends>
-//      <MinConsecutiveWorkingWeekends on="0" weight="0">1</MinConsecutiveWorkingWeekends>
-//      <MaxWorkingWeekendsInFourWeeks on="0" weight="0">0</MaxWorkingWeekendsInFourWeeks>
-
+                contractLineId = readBooleanContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("SingleAssignmentPerDay"),
+                        ContractLineType.SINGLE_ASSIGNMENT_PER_DAY);
+                contractLineId = readMinMaxContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("MinNumAssignments"),
+                        element.getChild("MaxNumAssignments"),
+                        ContractLineType.TOTAL_ASSIGNMENTS);
+                contractLineId = readMinMaxContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("MinConsecutiveWorkingDays"),
+                        element.getChild("MaxConsecutiveWorkingDays"),
+                        ContractLineType.CONSECUTIVE_WORKING_DAYS);
+                contractLineId = readMinMaxContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("MinConsecutiveFreeDays"),
+                        element.getChild("MaxConsecutiveFreeDays"),
+                        ContractLineType.CONSECUTIVE_FREE_DAYS);
+                contractLineId = readMinMaxContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("MinConsecutiveWorkingWeekends"),
+                        element.getChild("MaxConsecutiveWorkingWeekends"),
+                        ContractLineType.CONSECUTIVE_WORKING_WEEKENDS);
+                contractLineId = readMinMaxContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, null,
+                        element.getChild("MaxWorkingWeekendsInFourWeeks"),
+                        ContractLineType.TOTAL_WORKING_WEEKENDS_IN_FOUR_WEEKS);
+// TODO
 //      <WeekendDefinition>SaturdaySunday</WeekendDefinition>
-//      <CompleteWeekends weight="1">true</CompleteWeekends>
-//      <IdenticalShiftTypesDuringWeekend weight="1">true</IdenticalShiftTypesDuringWeekend>
-//      <NoNightShiftBeforeFreeWeekend weight="0">false</NoNightShiftBeforeFreeWeekend>
-//      <AlternativeSkillCategory weight="0">false</AlternativeSkillCategory>
-
+                contractLineId = readBooleanContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("CompleteWeekends"),
+                        ContractLineType.COMPLETE_WEEKENDS);
+                contractLineId = readBooleanContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("IdenticalShiftTypesDuringWeekend"),
+                        ContractLineType.IDENTICAL_SHIFT_TYPES_DURING_WEEKEND);
+                contractLineId = readBooleanContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("NoNightShiftBeforeFreeWeekend"),
+                        ContractLineType.NO_NIGHT_SHIFT_BEFORE_FREE_WEEKEND);
+                contractLineId = readBooleanContractLine(contract, contractLineList, contractLineListOfContract,
+                        contractLineId, element.getChild("AlternativeSkillCategory"),
+                        ContractLineType.ALTERNATIVE_SKILL_CATEGORY);
                 contract.setContractLineList(contractLineListOfContract);
-
 
                 List<Element> unwantedPatternElementList = (List<Element>) element.getChild("UnwantedPatterns")
                         .getChildren();
@@ -441,6 +420,79 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             }
             nurseRoster.setContractList(contractList);
             nurseRoster.setContractLineList(contractLineList);
+        }
+
+        private long readBooleanContractLine(Contract contract, List<ContractLine> contractLineList,
+                List<ContractLine> contractLineListOfContract, long contractLineId, Element element,
+                ContractLineType contractLineType) throws DataConversionException {
+            boolean enabled = Boolean.valueOf(element.getText());
+            if (enabled) {
+                BooleanContractLine contractLine = new BooleanContractLine();
+                contractLine.setId(contractLineId);
+                contractLine.setContract(contract);
+                contractLine.setContractLineType(contractLineType);
+                int weight = element.getAttribute("weight").getIntValue();
+                if (weight < 1) {
+                    throw new IllegalArgumentException("The weight (" + weight
+                            + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
+                            + ") should be at least 1.");
+                }
+                contractLine.setWeight(weight);
+                contractLineList.add(contractLine);
+                contractLineListOfContract.add(contractLine);
+                contractLineId++;
+            }
+            return contractLineId;
+        }
+
+        private long readMinMaxContractLine(Contract contract, List<ContractLine> contractLineList,
+                List<ContractLine> contractLineListOfContract, long contractLineId,
+                Element minElement, Element maxElement,
+                ContractLineType contractLineType) throws DataConversionException {
+            boolean minimumEnabled = minElement == null ? false : minElement.getAttribute("on").getBooleanValue();
+            boolean maximumEnabled = maxElement == null ? false : maxElement.getAttribute("on").getBooleanValue();
+            if (minimumEnabled || maximumEnabled) {
+                MinMaxContractLine contractLine = new MinMaxContractLine();
+                contractLine.setId(contractLineId);
+                contractLine.setContract(contract);
+                contractLine.setContractLineType(contractLineType);
+                contractLine.setMinimumEnabled(minimumEnabled);
+                if (minimumEnabled) {
+                    int minimumValue = Integer.parseInt(minElement.getText());
+                    if (minimumValue < 1) {
+                        throw new IllegalArgumentException("The minimumValue (" + minimumValue
+                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
+                    }
+                    contractLine.setMinimumValue(minimumValue);
+                    int minimumWeight = minElement.getAttribute("weight").getIntValue();
+                    if (minimumWeight < 1) {
+                        throw new IllegalArgumentException("The minimumWeight (" + minimumWeight
+                                + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
+                                + ") should be at least 1.");
+                    }
+                    contractLine.setMinimumWeight(minimumWeight);
+                }
+                contractLine.setMaximumEnabled(maximumEnabled);
+                if (maximumEnabled) {
+                    int maximumValue = Integer.parseInt(maxElement.getText());
+                    if (maximumValue < 1) {
+                        throw new IllegalArgumentException("The maximumValue (" + maximumValue
+                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
+                    }
+                    contractLine.setMaximumValue(maximumValue);
+                    int maximumWeight = maxElement.getAttribute("weight").getIntValue();
+                    if (maximumWeight < 1) {
+                        throw new IllegalArgumentException("The maximumWeight (" + maximumWeight
+                                + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
+                                + ") should be at least 1.");
+                    }
+                    contractLine.setMaximumWeight(maximumWeight);
+                }
+                contractLineList.add(contractLine);
+                contractLineListOfContract.add(contractLine);
+                contractLineId++;
+            }
+            return contractLineId;
         }
 
         private void readEmployeeList(NurseRoster nurseRoster, Element employeesElement) throws JDOMException {

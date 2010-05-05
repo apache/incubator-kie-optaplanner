@@ -94,6 +94,10 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
         return getShift().getShiftDate();
     }
 
+    public ShiftType getShiftType() {
+        return getShift().getShiftType();
+    }
+
     public int getShiftDateDayIndex() {
         return getShift().getShiftDate().getDayIndex();
     }

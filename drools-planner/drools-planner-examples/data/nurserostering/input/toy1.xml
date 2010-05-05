@@ -77,7 +77,7 @@
       <WeekendDefinition>SaturdaySunday</WeekendDefinition>
       <CompleteWeekends weight="1">true</CompleteWeekends>
       <IdenticalShiftTypesDuringWeekend weight="1">true</IdenticalShiftTypesDuringWeekend>
-      <NoNightShiftBeforeFreeWeekend weight="0">true</NoNightShiftBeforeFreeWeekend>
+      <NoNightShiftBeforeFreeWeekend weight="1">true</NoNightShiftBeforeFreeWeekend>
       <AlternativeSkillCategory weight="0">false</AlternativeSkillCategory>
       <UnwantedPatterns>
           <Pattern>0</Pattern>
