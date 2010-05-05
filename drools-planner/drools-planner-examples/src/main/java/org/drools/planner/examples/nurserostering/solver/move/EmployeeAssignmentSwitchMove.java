@@ -27,7 +27,7 @@ public class EmployeeAssignmentSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(leftEmployeeAssignment.getShift(), rightEmployeeAssignment.getShift());
+        return !ObjectUtils.equals(leftEmployeeAssignment.getEmployee(), rightEmployeeAssignment.getEmployee());
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
