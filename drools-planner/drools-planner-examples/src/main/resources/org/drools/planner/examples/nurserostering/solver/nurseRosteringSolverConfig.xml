@@ -8,10 +8,9 @@
     <termination>
         <!--
             Official benchmark maximumSecondsSpend allowed on:
-            ge0ffrey's main pc: TODO
-            ge0ffrey's old pc: TODO
+            - ge0ffrey's main pc: sprint 11, medium 700, long 42000
         -->
-        <maximumSecondsSpend>429</maximumSecondsSpend>
+        <maximumSecondsSpend>700</maximumSecondsSpend>
         <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
         <!--<maximumStepCount>100</maximumStepCount>-->
     </termination>
@@ -26,8 +25,8 @@
         </selector>
     </selector>
     <acceptor>
-        <completePropertyTabuSize>7</completePropertyTabuSize>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <completePropertyTabuSize>7</completePropertyTabuSize>
     </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>

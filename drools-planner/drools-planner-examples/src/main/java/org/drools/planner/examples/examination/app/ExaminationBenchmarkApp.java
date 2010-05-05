@@ -14,6 +14,7 @@ public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/examination/benchmark/examinationSolverBenchmarkConfig.xml";
     public static final String SHORT_SOLVER_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/examination/benchmark/examinationShortSolverBenchmarkConfig.xml";
+    
     public static final File SOLVER_BENCHMARK_RESULT_FILE
             = new File("local/data/examination/examinationSolverBenchmarkResult.xml");
 

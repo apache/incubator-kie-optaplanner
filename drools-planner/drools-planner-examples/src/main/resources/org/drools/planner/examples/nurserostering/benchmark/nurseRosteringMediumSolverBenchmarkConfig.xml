@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solverBenchmarkSuite>
+    <solvedSolutionFilesDirectory>local/data/nurserostering/solved</solvedSolutionFilesDirectory>
+    <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+    <solverStatisticFilesDirectory>local/data/nurserostering/statistic</solverStatisticFilesDirectory>
+    
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium01.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium02.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium03.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium04.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium05.xml</inheritedUnsolvedSolutionFile>
+
+    <inheritedLocalSearchSolver>
+        <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+        <scoreDefinition>
+            <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        </scoreDefinition>
+        <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
+        <termination>
+            <!--
+                Official benchmark maximumSecondsSpend allowed on:
+                - ge0ffrey's main pc: sprint 11, medium 700, long 42000
+            -->
+            <maximumSecondsSpend>700</maximumSecondsSpend>
+        </termination>
+    </inheritedLocalSearchSolver>
+
+    <solverBenchmark>
+        <name>absolute500_propertyTabu10</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+                    <absoluteSelection>500</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeAssignmentSwitchMoveFactory</moveFactoryClass>
+                    <absoluteSelection>500</absoluteSelection>
+                </selector>
+            </selector>
+            <acceptor>
+              <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+              <completePropertyTabuSize>10</completePropertyTabuSize>
+            </acceptor>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>absolute500_moveTabu7</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+                    <absoluteSelection>500</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeAssignmentSwitchMoveFactory</moveFactoryClass>
+                    <absoluteSelection>500</absoluteSelection>
+                </selector>
+            </selector>
+            <acceptor>
+              <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+              <completeMoveTabuSize>7</completeMoveTabuSize>
+            </acceptor>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+</solverBenchmarkSuite>
