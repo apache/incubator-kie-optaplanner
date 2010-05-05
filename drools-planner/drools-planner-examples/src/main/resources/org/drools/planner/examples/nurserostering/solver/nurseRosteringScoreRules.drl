@@ -247,7 +247,8 @@ end
 // Alternative skill
 rule "alternativeSkill"
     when
-        $employeeAssignment : EmployeeAssignment($employee : employee, $shiftType : shiftType);
+        BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY, $contract : contract);
+        $employeeAssignment : EmployeeAssignment(contract == $contract, $employee : employee, $shiftType : shiftType);
         ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill);
         not SkillProficiency(employee == $employee, skill == $skill);
     then

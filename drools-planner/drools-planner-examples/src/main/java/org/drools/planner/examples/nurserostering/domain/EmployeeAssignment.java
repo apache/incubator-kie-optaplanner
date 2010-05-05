@@ -5,6 +5,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
 /**
  * @author Geoffrey De Smet
@@ -100,6 +101,10 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
 
     public int getShiftDateDayIndex() {
         return getShift().getShiftDate().getDayIndex();
+    }
+
+    public Contract getContract() {
+        return getEmployee().getContract();
     }
 
 }
