@@ -22,8 +22,8 @@
         <termination>
             <!--
                 Official benchmark maximumSecondsSpend allowed on:
-                ge0ffrey's main pc: 429
-                ge0ffrey's old pc: 1152
+                - ge0ffrey's main pc: 429
+                - ge0ffrey's old pc: 1152
             -->
             <maximumSecondsSpend>429</maximumSecondsSpend>
         </termination>
