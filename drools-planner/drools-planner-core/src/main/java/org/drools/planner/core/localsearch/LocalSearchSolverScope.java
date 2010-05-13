@@ -170,6 +170,10 @@ public class LocalSearchSolverScope {
         }
     }
 
+    /**
+     * TODO Refactor this with the ConstraintOccurrenceTotal class: https://jira.jboss.org/jira/browse/JBRULES-2510
+     * @return never null
+     */
     public String buildConstraintOccurrenceSummary() {
         if (workingMemory == null) {
             return "  The workingMemory is null.";
