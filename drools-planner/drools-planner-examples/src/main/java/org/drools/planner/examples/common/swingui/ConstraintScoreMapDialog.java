@@ -1,12 +1,20 @@
 package org.drools.planner.examples.common.swingui;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import org.drools.planner.examples.common.business.ScoreDetail;
 import org.drools.planner.examples.common.business.SolutionBusiness;
@@ -33,11 +41,29 @@ public class ConstraintScoreMapDialog extends JDialog {
     }
 
     public void resetContentPanel() {
-        List<ScoreDetail> scoreDetailList = solutionBusiness.getScoreDetailList();
-        JTable table = new JTable(new ScoreDetailTableModel(scoreDetailList));
-        JScrollPane scrollpane = new JScrollPane(table);
-        scrollpane.setPreferredSize(new Dimension(700, 300));
-        setContentPane(scrollpane);
+        final List<ScoreDetail> scoreDetailList = solutionBusiness.getScoreDetailList();
+        JPanel contentPane = new JPanel(new BorderLayout());
+        final JTable table = new JTable(new ScoreDetailTableModel(scoreDetailList));
+        JScrollPane tableScrollPane = new JScrollPane(table);
+        tableScrollPane.setPreferredSize(new Dimension(700, 300));
+        contentPane.add(tableScrollPane, BorderLayout.CENTER);
+        final JTextArea detailTextArea = new JTextArea(10, 80);
+        JScrollPane detailScrollPane = new JScrollPane(detailTextArea);
+        contentPane.add(detailScrollPane, BorderLayout.SOUTH);
+        table.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
+                    public void valueChanged(ListSelectionEvent event) {
+                        int selectedRow = table.getSelectedRow();
+                        if (selectedRow < 0) {
+                            detailTextArea.setText("");
+                        } else {
+                            ScoreDetail scoreDetail = scoreDetailList.get(selectedRow);
+                            detailTextArea.setText(scoreDetail.buildConstraintOccurrenceListText());
+                        }
+                    }
+                }
+        );
+        setContentPane(contentPane);
         pack();
         setLocationRelativeTo(getParent());
     }
@@ -103,6 +129,15 @@ public class ConstraintScoreMapDialog extends JDialog {
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }
         }
+    }
+
+    private static class ShowButtonTableRenderer implements TableCellRenderer {
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                int row, int column) {
+            return (JButton) value;
+        }
+
     }
 
 }

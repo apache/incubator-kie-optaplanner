@@ -3,13 +3,14 @@ package org.drools.planner.core.score.constraint;
 import java.util.Arrays;
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * @author Geoffrey De Smet
  */
-public abstract class ConstraintOccurrence implements Serializable {
+public abstract class ConstraintOccurrence implements Comparable<ConstraintOccurrence>, Serializable {
 
     protected String ruleId;
     protected ConstraintType constraintType;
@@ -58,6 +59,14 @@ public abstract class ConstraintOccurrence implements Serializable {
                 .append(constraintType)
                 .append(causes)
                 .toHashCode();
+    }
+
+    public int compareTo(ConstraintOccurrence other) {
+        return new CompareToBuilder()
+                .append(ruleId, other.ruleId)
+                .append(constraintType, other.constraintType)
+                .append(causes, other.causes)
+                .toComparison();
     }
 
     public String toString() {
