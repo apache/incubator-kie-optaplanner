@@ -91,7 +91,7 @@ public class NurseRosteringEvaluatorHelper {
                     int value = Integer.parseInt(line.substring(excessIndex).replaceAll("excess = (\\d+) .*", "$1"));
                     int[] excess = excessMap.get(key);
                     if (excess == null) {
-                        excess = new int[]{0, value};
+                        excess = new int[]{1, value};
                         excessMap.put(key, excess);
                     } else {
                         excess[0]++;
