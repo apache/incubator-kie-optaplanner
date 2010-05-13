@@ -2,10 +2,7 @@ package org.drools.planner.examples.nurserostering.persistence;
 
 import java.io.File;
 import java.io.FilterOutputStream;
-import java.io.FilterWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,7 +31,7 @@ public class NurseRosteringEvaluatorHelper {
             String command = "java -jar evaluator.jar " + inputFile.getAbsolutePath()
                     + " " + outputFile.getAbsolutePath();
             process = Runtime.getRuntime().exec(command, null, evaluatorDir);
-            EvaluatorSummaryFilterOutputStream out = new EvaluatorSummaryFilterOutputStream();
+            EvaluatorSummaryFilterOutputStream out = new EvaluatorSummaryFilterOutputStream(outputFile.getName());
             IOUtils.copy(process.getInputStream(), out);
             IOUtils.copy(process.getErrorStream(), System.err);
             out.writeResults();
@@ -49,12 +46,15 @@ public class NurseRosteringEvaluatorHelper {
 
     private static class EvaluatorSummaryFilterOutputStream extends FilterOutputStream {
 
+        private String name;
+
         private StringBuilder lineBuffer = new StringBuilder(120);
         private Map<String, int[]> excessMap = new LinkedHashMap<String, int[]>();
         private String lastEmployeeCode = null;
 
-        private EvaluatorSummaryFilterOutputStream() {
+        private EvaluatorSummaryFilterOutputStream(String name) {
             super(System.out);
+            this.name = name;
         }
 
         @Override
@@ -94,8 +94,7 @@ public class NurseRosteringEvaluatorHelper {
         }
 
         public void writeResults() {
-            System.out.println("EvaluatorHelper results");
-            System.out.println("=======================");
+            System.out.println("EvaluatorHelper results for " + name);
             for (Map.Entry<String, int[]> entry : excessMap.entrySet()) {
                 int[] excess = entry.getValue();
                 System.out.println(entry.getKey() + " count = " + excess[0] + " total = " + excess[1]);
