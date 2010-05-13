@@ -7,6 +7,7 @@
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium01_initialized.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
+        <environmentMode>DEBUG</environmentMode>
         <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
         <scoreDefinition>
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

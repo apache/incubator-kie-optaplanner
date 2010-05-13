@@ -92,19 +92,19 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
     }
 
     public ShiftDate getShiftDate() {
-        return getShift().getShiftDate();
+        return shift.getShiftDate();
     }
 
     public ShiftType getShiftType() {
-        return getShift().getShiftType();
+        return shift.getShiftType();
     }
 
     public int getShiftDateDayIndex() {
-        return getShift().getShiftDate().getDayIndex();
+        return shift.getShiftDate().getDayIndex();
     }
 
     public Contract getContract() {
-        return getEmployee().getContract();
+        return employee.getContract();
     }
 
 }
