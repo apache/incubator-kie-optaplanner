@@ -18,7 +18,7 @@ public class NurseRosteringEvaluatorHelper {
 
     private static final String INPUT_FILE_PREFIX = "long01";
     private static final String OUTPUT_FILE_SUFFIX = "_tmp";
-    private static final String DEFAULT_LINE_CONTAINS_FILTER = null;
+    private static final String DEFAULT_LINE_CONTAINS_FILTER = "Requested shift off";
 
     public static void main(String[] args) {
         String lineContainsFilter;
@@ -78,26 +78,26 @@ public class NurseRosteringEvaluatorHelper {
         }
 
         private void processLine(String line) {
-            int excessIndex = line.indexOf("excess = ");
-            if (excessIndex >= 0) {
-                String key = line.substring(0, excessIndex);
-                int value = Integer.parseInt(line.substring(excessIndex).replaceAll("excess = (\\d+) .*", "$1"));
-                int[] excess = excessMap.get(key);
-                if (excess == null) {
-                    excess = new int[]{0, value};
-                    excessMap.put(key, excess);
-                } else {
-                    excess[0]++;
-                    excess[1] += value;
-                }
-            }
-            int employeeIndex = line.indexOf("Employee: ");
-            if (employeeIndex >= 0) {
-                lastEmployeeCode = line.substring(employeeIndex).replaceAll("Employee: (.+)", "$1");
-            } else if (line.contains("Penalty:")) {
-                lastEmployeeCode = null;
-            }
             if (lineContainsFilter == null || line.contains(lineContainsFilter)) {
+                int excessIndex = line.indexOf("excess = ");
+                if (excessIndex >= 0) {
+                    String key = line.substring(0, excessIndex);
+                    int value = Integer.parseInt(line.substring(excessIndex).replaceAll("excess = (\\d+) .*", "$1"));
+                    int[] excess = excessMap.get(key);
+                    if (excess == null) {
+                        excess = new int[]{0, value};
+                        excessMap.put(key, excess);
+                    } else {
+                        excess[0]++;
+                        excess[1] += value;
+                    }
+                }
+                int employeeIndex = line.indexOf("Employee: ");
+                if (employeeIndex >= 0) {
+                    lastEmployeeCode = line.substring(employeeIndex).replaceAll("Employee: (.+)", "$1");
+                } else if (line.contains("Penalty:")) {
+                    lastEmployeeCode = null;
+                }
                 if (lastEmployeeCode != null) {
                     System.out.print("E(" + lastEmployeeCode + ")  ");
                 }
@@ -107,6 +107,9 @@ public class NurseRosteringEvaluatorHelper {
 
         public void writeResults() {
             System.out.println("EvaluatorHelper results for " + name);
+            if (lineContainsFilter != null) {
+                System.out.println("with lineContainsFilter (" + lineContainsFilter + ")");
+            }
             for (Map.Entry<String, int[]> entry : excessMap.entrySet()) {
                 int[] excess = entry.getValue();
                 System.out.println(entry.getKey() + " count = " + excess[0] + " total = " + excess[1]);
