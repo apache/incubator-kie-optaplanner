@@ -426,17 +426,27 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 List<ContractLine> contractLineListOfContract, long contractLineId, Element element,
                 ContractLineType contractLineType) throws DataConversionException {
             boolean enabled = Boolean.valueOf(element.getText());
+            int weight;
+            if (enabled) {
+                weight = element.getAttribute("weight").getIntValue();
+                if (weight < 0) {
+                    throw new IllegalArgumentException("The weight (" + weight
+                            + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
+                            + ") should be 0 or at least 1.");
+                } else if (weight == 0) {
+                    // If the weight is zero, the constraint should not be considered.
+                    enabled = false;
+                    logger.warn("In contract ({}), the contractLineType ({}) is enabled with weight 0.",
+                            contract.getCode(), contractLineType);
+                }
+            } else {
+                weight = 0;
+            }
             if (enabled) {
                 BooleanContractLine contractLine = new BooleanContractLine();
                 contractLine.setId(contractLineId);
                 contractLine.setContract(contract);
                 contractLine.setContractLineType(contractLineType);
-                int weight = element.getAttribute("weight").getIntValue();
-                if (weight < 1) {
-                    throw new IllegalArgumentException("The weight (" + weight
-                            + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
-                            + ") should be at least 1.");
-                }
                 contractLine.setWeight(weight);
                 contractLineList.add(contractLine);
                 contractLineListOfContract.add(contractLine);
@@ -450,7 +460,39 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 Element minElement, Element maxElement,
                 ContractLineType contractLineType) throws DataConversionException {
             boolean minimumEnabled = minElement == null ? false : minElement.getAttribute("on").getBooleanValue();
+            int minimumWeight;
+            if (minimumEnabled) {
+                minimumWeight = minElement.getAttribute("weight").getIntValue();
+                if (minimumWeight < 0) {
+                    throw new IllegalArgumentException("The minimumWeight (" + minimumWeight
+                            + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
+                            + ") should be 0 or at least 1.");
+                } else if (minimumWeight == 0) {
+                    // If the weight is zero, the constraint should not be considered.
+                    minimumEnabled = false;
+                    logger.warn("In contract ({}), the contractLineType ({}) minimum is enabled with weight 0.",
+                            contract.getCode(), contractLineType);
+                }
+            } else {
+                minimumWeight = 0;
+            }
             boolean maximumEnabled = maxElement == null ? false : maxElement.getAttribute("on").getBooleanValue();
+            int maximumWeight;
+            if (maximumEnabled) {
+                maximumWeight = maxElement.getAttribute("weight").getIntValue();
+                if (maximumWeight < 0) {
+                    throw new IllegalArgumentException("The maximumWeight (" + maximumWeight
+                            + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
+                            + ") should be 0 or at least 1.");
+                } else if (maximumWeight == 0) {
+                    // If the weight is zero, the constraint should not be considered.
+                    maximumEnabled = false;
+                    logger.warn("In contract ({}), the contractLineType ({}) maximum is enabled with weight 0.",
+                            contract.getCode(), contractLineType);
+                }
+            } else {
+                maximumWeight = 0;
+            }
             if (minimumEnabled || maximumEnabled) {
                 MinMaxContractLine contractLine = new MinMaxContractLine();
                 contractLine.setId(contractLineId);
@@ -464,12 +506,6 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                 + ") of contract (" + contract.getCode() + ") should be at least 1.");
                     }
                     contractLine.setMinimumValue(minimumValue);
-                    int minimumWeight = minElement.getAttribute("weight").getIntValue();
-                    if (minimumWeight < 1) {
-                        throw new IllegalArgumentException("The minimumWeight (" + minimumWeight
-                                + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
-                                + ") should be at least 1.");
-                    }
                     contractLine.setMinimumWeight(minimumWeight);
                 }
                 contractLine.setMaximumEnabled(maximumEnabled);
@@ -480,12 +516,6 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                 + ") of contract (" + contract.getCode() + ") should be at least 1.");
                     }
                     contractLine.setMaximumValue(maximumValue);
-                    int maximumWeight = maxElement.getAttribute("weight").getIntValue();
-                    if (maximumWeight < 1) {
-                        throw new IllegalArgumentException("The maximumWeight (" + maximumWeight
-                                + ") of contract (" + contract.getCode() + ") and contractLineType (" + contractLineType
-                                + ") should be at least 1.");
-                    }
                     contractLine.setMaximumWeight(maximumWeight);
                 }
                 contractLineList.add(contractLine);
