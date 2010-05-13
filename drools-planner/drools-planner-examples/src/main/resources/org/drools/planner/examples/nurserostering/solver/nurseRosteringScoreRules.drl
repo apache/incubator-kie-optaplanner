@@ -208,11 +208,11 @@ end
 rule "dayOffRequest"
     when
         $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight);
-        exists EmployeeAssignment(employee == $employee, shiftDate == $shiftDate);
+        $employeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate);
     then
         insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
-                $dayOffRequest));
+                $dayOffRequest, $employeeAssignment));
 end
 rule "dayOnRequest"
     when
@@ -228,11 +228,11 @@ end
 rule "shiftOffRequest"
     when
         $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight);
-        exists EmployeeAssignment(employee == $employee, shift == $shift);
+        $employeeAssignment : EmployeeAssignment(employee == $employee, shift == $shift);
     then
         insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
-                $shiftOffRequest));
+                $shiftOffRequest, $employeeAssignment));
 end
 rule "shiftOnRequest"
     when
