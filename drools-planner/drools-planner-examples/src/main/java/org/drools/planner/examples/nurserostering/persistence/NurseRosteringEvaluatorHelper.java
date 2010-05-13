@@ -78,6 +78,12 @@ public class NurseRosteringEvaluatorHelper {
         }
 
         private void processLine(String line) {
+            int employeeIndex = line.indexOf("Employee: ");
+            if (employeeIndex >= 0) {
+                lastEmployeeCode = line.substring(employeeIndex).replaceAll("Employee: (.+)", "$1");
+            } else if (line.contains("Penalty:")) {
+                lastEmployeeCode = null;
+            }
             if (lineContainsFilter == null || line.contains(lineContainsFilter)) {
                 int excessIndex = line.indexOf("excess = ");
                 if (excessIndex >= 0) {
@@ -91,12 +97,6 @@ public class NurseRosteringEvaluatorHelper {
                         excess[0]++;
                         excess[1] += value;
                     }
-                }
-                int employeeIndex = line.indexOf("Employee: ");
-                if (employeeIndex >= 0) {
-                    lastEmployeeCode = line.substring(employeeIndex).replaceAll("Employee: (.+)", "$1");
-                } else if (line.contains("Penalty:")) {
-                    lastEmployeeCode = null;
                 }
                 if (lastEmployeeCode != null) {
                     System.out.print("E(" + lastEmployeeCode + ")  ");
