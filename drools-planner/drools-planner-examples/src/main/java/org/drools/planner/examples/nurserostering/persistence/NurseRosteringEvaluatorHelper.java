@@ -18,7 +18,7 @@ public class NurseRosteringEvaluatorHelper {
 
     private static final String INPUT_FILE_PREFIX = "long01";
     private static final String OUTPUT_FILE_SUFFIX = "_tmp";
-    private static final String DEFAULT_LINE_CONTAINS_FILTER = "Requested shift off";
+    private static final String DEFAULT_LINE_CONTAINS_FILTER = null;
 
     public static void main(String[] args) {
         String lineContainsFilter;

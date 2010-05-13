@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
@@ -42,14 +43,14 @@ public class ConstraintScoreMapDialog extends JDialog {
 
     public void resetContentPanel() {
         final List<ScoreDetail> scoreDetailList = solutionBusiness.getScoreDetailList();
-        JPanel contentPane = new JPanel(new BorderLayout());
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         final JTable table = new JTable(new ScoreDetailTableModel(scoreDetailList));
         JScrollPane tableScrollPane = new JScrollPane(table);
         tableScrollPane.setPreferredSize(new Dimension(700, 300));
-        contentPane.add(tableScrollPane, BorderLayout.CENTER);
+        splitPane.setTopComponent(tableScrollPane);
         final JTextArea detailTextArea = new JTextArea(10, 80);
         JScrollPane detailScrollPane = new JScrollPane(detailTextArea);
-        contentPane.add(detailScrollPane, BorderLayout.SOUTH);
+        splitPane.setBottomComponent(detailScrollPane);
         table.getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent event) {
@@ -63,7 +64,8 @@ public class ConstraintScoreMapDialog extends JDialog {
                     }
                 }
         );
-        setContentPane(contentPane);
+        splitPane.setResizeWeight(1.0);
+        setContentPane(splitPane);
         pack();
         setLocationRelativeTo(getParent());
     }
