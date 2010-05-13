@@ -3,6 +3,7 @@ package org.drools.planner.examples.nurserostering.persistence;
 import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,8 +18,15 @@ public class NurseRosteringEvaluatorHelper {
 
     private static final String INPUT_FILE_PREFIX = "long01";
     private static final String OUTPUT_FILE_SUFFIX = "_tmp";
+    private static final String DEFAULT_LINE_CONTAINS_FILTER = null;
 
     public static void main(String[] args) {
+        String lineContainsFilter;
+        if (args.length > 0) {
+            lineContainsFilter = args[0];
+        } else {
+            lineContainsFilter = DEFAULT_LINE_CONTAINS_FILTER;
+        }
         NurseRosteringApp nurseRosteringApp = new NurseRosteringApp();
         SolutionBusiness solutionBusiness = nurseRosteringApp.createSolutionBusiness();
         Process process = null;
@@ -31,7 +39,7 @@ public class NurseRosteringEvaluatorHelper {
             String command = "java -jar evaluator.jar " + inputFile.getAbsolutePath()
                     + " " + outputFile.getAbsolutePath();
             process = Runtime.getRuntime().exec(command, null, evaluatorDir);
-            EvaluatorSummaryFilterOutputStream out = new EvaluatorSummaryFilterOutputStream(outputFile.getName());
+            EvaluatorSummaryFilterOutputStream out = new EvaluatorSummaryFilterOutputStream(outputFile.getName(), lineContainsFilter);
             IOUtils.copy(process.getInputStream(), out);
             IOUtils.copy(process.getErrorStream(), System.err);
             out.writeResults();
@@ -44,25 +52,26 @@ public class NurseRosteringEvaluatorHelper {
         }
     }
 
-    private static class EvaluatorSummaryFilterOutputStream extends FilterOutputStream {
+    private static class EvaluatorSummaryFilterOutputStream extends OutputStream {
 
         private String name;
+        private String lineContainsFilter;
 
         private StringBuilder lineBuffer = new StringBuilder(120);
         private Map<String, int[]> excessMap = new LinkedHashMap<String, int[]>();
         private String lastEmployeeCode = null;
 
-        private EvaluatorSummaryFilterOutputStream(String name) {
-            super(System.out);
+        private EvaluatorSummaryFilterOutputStream(String name, String lineContainsFilter) {
+            super();
             this.name = name;
+            this.lineContainsFilter = lineContainsFilter;
         }
 
-        @Override
         public void write(int c) throws IOException {
-            super.write(c);
             if (c == '\n') {
-                processLine(lineBuffer.toString());
+                String line = lineBuffer.toString();
                 lineBuffer.delete(0, lineBuffer.length());
+                processLine(line);
             } else {
                 lineBuffer.append((char) c);
             }
@@ -88,8 +97,11 @@ public class NurseRosteringEvaluatorHelper {
             } else if (line.contains("Penalty:")) {
                 lastEmployeeCode = null;
             }
-            if (lastEmployeeCode != null) {
-                System.out.print("E(" + lastEmployeeCode + ")  ");
+            if (lineContainsFilter == null || line.contains(lineContainsFilter)) {
+                if (lastEmployeeCode != null) {
+                    System.out.print("E(" + lastEmployeeCode + ")  ");
+                }
+                System.out.println(line);
             }
         }
 
