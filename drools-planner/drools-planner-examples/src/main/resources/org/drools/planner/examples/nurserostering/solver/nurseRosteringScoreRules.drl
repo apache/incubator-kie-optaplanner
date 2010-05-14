@@ -40,12 +40,12 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // All demanded shifts must be assigned to a nurse
 rule "requiredEmployeeSizePerShift"
     when
-        $shift : Shift(requiredEmployeeSize > 0, $requiredEmployeeSize : requiredEmployeeSize);
+        $shift : Shift(requiredEmployeeSize > 0, $requiredEmployeeSize : requiredEmployeeSize)
 
         $totalEmployeeSize : Number(intValue != $requiredEmployeeSize) from accumulate(
             $assignment : EmployeeAssignment(shift == $shift),
             count($assignment)
-        );
+        )
 
         // HACK to fix wierd truth maintenance behavior in drools
         // because making weight part of the equals/hashcode doesn't cut it
@@ -55,7 +55,7 @@ rule "requiredEmployeeSizePerShift"
             constraintType == ConstraintType.NEGATIVE_HARD,
             causes contains $shift,
             eval(weight != Math.abs($requiredEmployeeSize - $totalEmployeeSize.intValue()))
-        );
+        )
     then
         insertLogical(new IntConstraintOccurrence("requiredEmployeeSizePerShift", ConstraintType.NEGATIVE_HARD,
                 Math.abs($requiredEmployeeSize - $totalEmployeeSize.intValue()),
@@ -65,8 +65,8 @@ end
 // a nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
 rule "oneShiftPerDay"
     when
-        $leftEmployeeAssignment : EmployeeAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate);
-        $rightEmployeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId);
+        $leftEmployeeAssignment : EmployeeAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate)
+        $rightEmployeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
     then
         insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.NEGATIVE_HARD,
                 1,
@@ -91,9 +91,9 @@ rule "insertEmployeeConsecutiveAssignmentStart"
             $employee : employee,
             $dayIndex : shiftDateDayIndex,
             $shiftDate : shiftDate
-        );
+        )
         // The first day has no working day before it
-        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($dayIndex - 1));
+        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($dayIndex - 1))
     then
         insertLogical(new EmployeeConsecutiveAssignmentStart($employee, $shiftDate));
 end
@@ -104,9 +104,9 @@ rule "insertEmployeeConsecutiveAssignmentEnd"
             $employee : employee,
             $dayIndex : shiftDateDayIndex,
             $shiftDate : shiftDate
-        );
+        )
         // The last day has no working day after it
-        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($dayIndex + 1));
+        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($dayIndex + 1))
     then
         insertLogical(new EmployeeConsecutiveAssignmentEnd($employee, $shiftDate));
 end
@@ -117,20 +117,20 @@ rule "insertEmployeeConsecutiveAssignment"
             $employee : employee,
             $firstShiftDate : shiftDate,
             $firstDayIndex : shiftDateDayIndex
-        );
+        )
 
         EmployeeConsecutiveAssignmentEnd(
             employee == $employee,
             shiftDateDayIndex >= $firstDayIndex,
             $lastShiftDate : shiftDate,
             $lastDayIndex : shiftDateDayIndex
-        );
+        )
 
         // There are no free days between the first and last day
         not EmployeeConsecutiveAssignmentEnd(
             employee == $employee,
             shiftDateDayIndex >= $firstDayIndex && < $lastDayIndex
-        );
+        )
     then
         insertLogical(new EmployeeConsecutiveAssignment($employee, $firstShiftDate, $lastShiftDate));
 end
@@ -141,14 +141,14 @@ rule "maximumConsecutiveWorkingDays"
         $contractLine : MinMaxContractLine(
             contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, maximumEnabled == true,
             $contract : contract, $maximumValue : maximumValue
-        );
-        $employee : Employee(contract == $contract);
+        )
+        $employee : Employee(contract == $contract)
 
         $employeeConsecutiveAssignment : EmployeeConsecutiveAssignment(
             employee == $employee,
             dayLength > $maximumValue,
             $dayLength : dayLength
-        );
+        )
     then
         insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
                 ($dayLength - $maximumValue) * $contractLine.getMaximumWeight(),
@@ -159,29 +159,29 @@ end
 //        $contractLine : MinMaxContractLine(
 //            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, maximumEnabled == true,
 //            $contract : contract, $maximumIndexDiff : maximumIndexDiff
-//        );
-//        $employee : Employee(contract == $contract);
+//        )
+//        $employee : Employee(contract == $contract)
 //
 //        // The first day has no working day before it
 //        EmployeeAssignment(
 //            employee == $employee,
 //            $firstDayIndex : shiftDateDayIndex
-//        );
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1));
+//        )
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1))
 //
 //        // The last day has no working day after it
 //        EmployeeAssignment(
 //            employee == $employee,
 //            shiftDateDayIndex > ($firstDayIndex + $maximumIndexDiff), // Too many days
 //            $lastDayIndex : shiftDateDayIndex
-//        );
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
+//        )
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1))
 //
 //        // There are no free days between the first and last day
 //        not(
 //            $shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
 //            and not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
-//        );
+//        )
 //    then
 //        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
 //                ($lastDayIndex - $firstDayIndex - $maximumIndexDiff) * $contractLine.getMaximumWeight(),
@@ -194,15 +194,15 @@ end
 //        $contractLine : MinMaxContractLine(
 //            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, minimumEnabled == true,
 //            $contract : contract, $minimumIndexDiff : minimumIndexDiff
-//        );
-//        $employee : Employee(contract == $contract);
+//        )
+//        $employee : Employee(contract == $contract)
 //
 //        // The first day has no working day before it
 //        EmployeeAssignment(
 //            employee == $employee,
 //            $firstDayIndex : shiftDateDayIndex
-//        );
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1));
+//        )
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1))
 //
 //        // The last day has no working day after it
 //        EmployeeAssignment(
@@ -210,13 +210,13 @@ end
 //            shiftDateDayIndex > $firstDayIndex,
 //            shiftDateDayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
 //            $lastDayIndex : shiftDateDayIndex
-//        );
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1));
+//        )
+//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1))
 //
 //        // There are no free days between the first and last day
 //        forall($shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
 //            EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
-//        );
+//        )
 //    then
 //        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
 //                ($firstDayIndex + $minimumIndexDiff - $lastDayIndex) * $contractLine.getMinimumWeight(),
@@ -279,8 +279,8 @@ end
 // Requested day on/off
 rule "dayOffRequest"
     when
-        $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight);
-        $employeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate);
+        $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
+        $employeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
     then
         insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -288,8 +288,8 @@ rule "dayOffRequest"
 end
 rule "dayOnRequest"
     when
-        $dayOnRequest : DayOnRequest($employee : employee, $shiftDate : shiftDate, $weight : weight);
-        not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate);
+        $dayOnRequest : DayOnRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
+        not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
     then
         insertLogical(new IntConstraintOccurrence("dayOnRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -299,8 +299,8 @@ end
 // Requested shift on/off
 rule "shiftOffRequest"
     when
-        $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight);
-        $employeeAssignment : EmployeeAssignment(employee == $employee, shift == $shift);
+        $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight)
+        $employeeAssignment : EmployeeAssignment(employee == $employee, shift == $shift)
     then
         insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -308,8 +308,8 @@ rule "shiftOffRequest"
 end
 rule "shiftOnRequest"
     when
-        $shiftOnRequest : ShiftOnRequest($employee : employee, $shift : shift, $weight : weight);
-        not EmployeeAssignment(employee == $employee, shift == $shift);
+        $shiftOnRequest : ShiftOnRequest($employee : employee, $shift : shift, $weight : weight)
+        not EmployeeAssignment(employee == $employee, shift == $shift)
     then
         insertLogical(new IntConstraintOccurrence("shiftOnRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -319,10 +319,10 @@ end
 // Alternative skill
 rule "alternativeSkill"
     when
-        BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY, $contract : contract);
-        $employeeAssignment : EmployeeAssignment(contract == $contract, $employee : employee, $shiftType : shiftType);
-        ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill);
-        not SkillProficiency(employee == $employee, skill == $skill);
+        BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY, $contract : contract)
+        $employeeAssignment : EmployeeAssignment(contract == $contract, $employee : employee, $shiftType : shiftType)
+        ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill)
+        not SkillProficiency(employee == $employee, skill == $skill)
     then
         insertLogical(new IntConstraintOccurrence("alternativeSkill", ConstraintType.NEGATIVE_SOFT,
                 1,
@@ -343,7 +343,7 @@ rule "hardConstraintsBroken"
         $hardTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        );
+        )
     then
         scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
 end
@@ -355,7 +355,7 @@ rule "softConstraintsBroken"
         $softTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        );
+        )
     then
         scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
 end
