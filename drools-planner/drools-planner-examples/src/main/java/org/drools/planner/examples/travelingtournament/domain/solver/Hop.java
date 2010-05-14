@@ -3,6 +3,7 @@ package org.drools.planner.examples.travelingtournament.domain.solver;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.travelingtournament.domain.Team;
@@ -10,7 +11,7 @@ import org.drools.planner.examples.travelingtournament.domain.Team;
 /**
  * @author Geoffrey De Smet
  */
-public class Hop implements Serializable {
+public class Hop implements Comparable<Hop>, Serializable {
 
     private Team team;
     private Team fromTeam;
@@ -73,6 +74,19 @@ public class Hop implements Serializable {
                 .append(fromTeam)
                 .append(toTeam)
                 .toHashCode();
+    }
+
+    public int compareTo(Hop other) {
+        return new CompareToBuilder()
+                .append(team, other.team)
+                .append(fromTeam, other.fromTeam)
+                .append(toTeam, other.toTeam)
+                .toComparison();
+    }
+
+    @Override
+    public String toString() {
+        return team + ": " + fromTeam + " -> " + toTeam;
     }
     
 }

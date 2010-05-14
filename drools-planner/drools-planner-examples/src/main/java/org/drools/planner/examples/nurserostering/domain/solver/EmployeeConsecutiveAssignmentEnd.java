@@ -2,6 +2,7 @@ package org.drools.planner.examples.nurserostering.domain.solver;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.nurserostering.domain.Employee;
@@ -10,7 +11,7 @@ import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 /**
  * @author Geoffrey De Smet
  */
-public class EmployeeConsecutiveAssignmentEnd implements Serializable {
+public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeConsecutiveAssignmentEnd>, Serializable {
 
     private Employee employee;
     private ShiftDate shiftDate;
@@ -57,8 +58,20 @@ public class EmployeeConsecutiveAssignmentEnd implements Serializable {
                 .toHashCode();
     }
 
+    public int compareTo(EmployeeConsecutiveAssignmentEnd other) {
+        return new CompareToBuilder()
+                .append(employee, other.employee)
+                .append(shiftDate, other.shiftDate)
+                .toComparison();
+    }
+
     public int getShiftDateDayIndex() {
         return shiftDate.getDayIndex();
+    }
+
+    @Override
+    public String toString() {
+        return employee + " ... - " + shiftDate;
     }
 
 }
