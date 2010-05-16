@@ -186,6 +186,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     skill.setId(id);
                     skill.setCode(element.getText());
                     skillList.add(skill);
+                    if (skillMap.containsKey(skill.getCode())) {
+                        throw new IllegalArgumentException("There are 2 skills with the same code ("
+                                + skill.getCode() + ").");
+                    }
                     skillMap.put(skill.getCode(), skill);
                     id++;
                 }
@@ -232,6 +236,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 }
 
                 shiftTypeList.add(shiftType);
+                if (shiftTypeMap.containsKey(shiftType.getCode())) {
+                    throw new IllegalArgumentException("There are 2 shiftTypes with the same code ("
+                            + shiftType.getCode() + ").");
+                }
                 shiftTypeMap.put(shiftType.getCode(), shiftType);
                 id++;
                 index++;
@@ -332,6 +340,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     }
 
                     patternList.add(pattern);
+                    if (patternMap.containsKey(pattern.getCode())) {
+                        throw new IllegalArgumentException("There are 2 patterns with the same code ("
+                                + pattern.getCode() + ").");
+                    }
                     patternMap.put(pattern.getCode(), pattern);
                     id++;
                 }
@@ -415,6 +427,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 }
 
                 contractList.add(contract);
+                if (contractMap.containsKey(contract.getCode())) {
+                    throw new IllegalArgumentException("There are 2 contracts with the same code ("
+                            + contract.getCode() + ").");
+                }
                 contractMap.put(contract.getCode(), contract);
                 id++;
             }
@@ -503,7 +519,8 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     int minimumValue = Integer.parseInt(minElement.getText());
                     if (minimumValue < 1) {
                         throw new IllegalArgumentException("The minimumValue (" + minimumValue
-                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
+                                + ") of contract (" + contract.getCode() + ") and contractLineType ("
+                                + contractLineType + ") should be at least 1.");
                     }
                     contractLine.setMinimumValue(minimumValue);
                     contractLine.setMinimumWeight(minimumWeight);
@@ -513,7 +530,8 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     int maximumValue = Integer.parseInt(maxElement.getText());
                     if (maximumValue < 1) {
                         throw new IllegalArgumentException("The maximumValue (" + maximumValue
-                                + ") of contract (" + contract.getCode() + ") should be at least 1.");
+                                + ") of contract (" + contract.getCode() + ") and contractLineType ("
+                                + contractLineType + ") should be at least 1.");
                     }
                     contractLine.setMaximumValue(maximumValue);
                     contractLine.setMaximumWeight(maximumWeight);
@@ -567,6 +585,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 }
 
                 employeeList.add(employee);
+                if (employeeMap.containsKey(employee.getCode())) {
+                    throw new IllegalArgumentException("There are 2 employees with the same code ("
+                            + employee.getCode() + ").");
+                }
                 employeeMap.put(employee.getCode(), employee);
                 id++;
             }
