@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
+    <!--<environmentMode>DEBUG</environmentMode>-->
     <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -28,7 +29,7 @@
         <!--<selector>-->
             <!--<topSize>10</topSize>-->
         <!--</selector>-->
-        <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
+        <!--<selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>-->
         <selector>
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
             <absoluteSelection>500</absoluteSelection>
@@ -43,12 +44,11 @@
         </selector>
     </selector>
     <acceptor>
-        <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-        <completeSolutionTabuSize>500</completeSolutionTabuSize>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
         <completePropertyTabuSize>10</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
     <!--<selector>-->
         <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
