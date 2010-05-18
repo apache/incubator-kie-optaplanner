@@ -179,12 +179,12 @@ public class LocalSearchSolverScope {
             tmpWorkingMemory.insert(fact);
         }
         tmpWorkingMemory.fireAllRules();
-        Score score = tmpScoreCalculator.calculateScore();
+        Score realScore = tmpScoreCalculator.calculateScore();
         tmpWorkingMemory.dispose();
-        if (!presumedScore.equals(score)) {
+        if (!presumedScore.equals(realScore)) {
             throw new IllegalStateException(
-                    "The presumedScore (" + presumedScore + ") is corrupted because it is not the real score  ("
-                            + score + ").\n"
+                    "The presumedScore (" + presumedScore + ") is corrupted because it is not the realScore  ("
+                            + realScore + ").\n"
                     + buildConstraintOccurrenceSummary());
         }
     }
