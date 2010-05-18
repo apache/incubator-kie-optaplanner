@@ -27,6 +27,8 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
     protected Termination termination;
     protected Decider decider;
 
+    protected boolean assertStepScoreIsUncorrupted = false;
+
     protected LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope(); // TODO remove me
 
     public void setRandomSeed(long randomSeed) {
@@ -59,6 +61,11 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         this.bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
     }
 
+    public void setTermination(Termination termination) {
+        this.termination = termination;
+        this.termination.setLocalSearchSolver(this);
+    }
+
     public Decider getDecider() {
         return decider;
     }
@@ -68,9 +75,8 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         this.decider.setLocalSearchSolver(this);
     }
 
-    public void setTermination(Termination termination) {
-        this.termination = termination;
-        this.termination.setLocalSearchSolver(this);
+    public void setAssertStepScoreIsUncorrupted(boolean assertStepScoreIsUncorrupted) {
+        this.assertStepScoreIsUncorrupted = assertStepScoreIsUncorrupted;
     }
 
     public void setStartingSolution(Solution startingSolution) {
@@ -117,6 +123,9 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
             nextStep.doMove(stepScope.getWorkingMemory());
             // there is no need to recalculate the score, but we still need to set it
             localSearchSolverScope.getWorkingSolution().setScore(stepScope.getScore());
+            if (assertStepScoreIsUncorrupted) {
+                localSearchSolverScope.assertWorkingScore(stepScope.getScore());
+            }
             stepTaken(stepScope);
             stepScope = createNextStepScope(localSearchSolverScope, stepScope);
         }

@@ -7,7 +7,7 @@ import org.drools.planner.core.score.Score;
  * @TODO score-in-solution refactor
  * @author Geoffrey De Smet
  */
-public interface ScoreCalculator {
+public interface ScoreCalculator extends Cloneable {
 
     /**
      * Calculates the score: the solution (encountered at a step)
@@ -22,5 +22,7 @@ public interface ScoreCalculator {
      * @return never null, the score of the solution
      */
     Score calculateScore();
+
+    ScoreCalculator clone();
 
 }

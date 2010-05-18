@@ -9,6 +9,7 @@ import org.drools.ClassObjectFilter;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
@@ -167,6 +168,24 @@ public class LocalSearchSolverScope {
 //        }
         for (Object fact : workingSolution.getFacts()) {
             workingMemory.insert(fact);
+        }
+    }
+
+    public void assertWorkingScore(Score presumedScore) {
+        StatefulSession tmpWorkingMemory = ruleBase.newStatefulSession();
+        ScoreCalculator tmpScoreCalculator = workingScoreCalculator.clone();
+        tmpWorkingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, tmpScoreCalculator);
+        for (Object fact : workingSolution.getFacts()) {
+            tmpWorkingMemory.insert(fact);
+        }
+        tmpWorkingMemory.fireAllRules();
+        Score score = tmpScoreCalculator.calculateScore();
+        tmpWorkingMemory.dispose();
+        if (!presumedScore.equals(score)) {
+            throw new IllegalStateException(
+                    "The presumedScore (" + presumedScore + ") is corrupted because it is not the real score  ("
+                            + score + ").\n"
+                    + buildConstraintOccurrenceSummary());
         }
     }
 

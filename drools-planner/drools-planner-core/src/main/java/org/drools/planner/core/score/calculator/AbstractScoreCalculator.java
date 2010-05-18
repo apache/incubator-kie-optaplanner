@@ -12,4 +12,12 @@ public abstract class AbstractScoreCalculator implements ScoreCalculator, Serial
     // Worker methods
     // ************************************************************************
 
+    public ScoreCalculator clone() {
+        try {
+            return (ScoreCalculator) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 }

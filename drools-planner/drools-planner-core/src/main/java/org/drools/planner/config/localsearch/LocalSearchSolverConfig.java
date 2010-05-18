@@ -176,6 +176,9 @@ public class LocalSearchSolverConfig {
         localSearchSolver.setBestSolutionRecaller(new BestSolutionRecaller());
         localSearchSolver.setTermination(terminationConfig.buildTermination(scoreDefinition));
         localSearchSolver.setDecider(buildDecider());
+        if (environmentMode == EnvironmentMode.DEBUG) {
+            localSearchSolver.setAssertStepScoreIsUncorrupted(true);
+        }
         return localSearchSolver;
     }
 
@@ -228,13 +231,13 @@ public class LocalSearchSolverConfig {
 
     private Decider buildDecider() {
         DefaultDecider decider = new DefaultDecider();
-        if (environmentMode == EnvironmentMode.DEBUG) {
-            decider.setAssertUndoMoveIsUncorrupted(true);
-        }
         decider.setDeciderScoreComparator(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
         decider.setSelector(selectorConfig.buildSelector());
         decider.setAcceptor(acceptorConfig.buildAcceptor());
         decider.setForager(foragerConfig.buildForager());
+        if (environmentMode == EnvironmentMode.DEBUG) {
+            decider.setAssertUndoMoveIsUncorrupted(true);
+        }
         return decider;
     }
 
