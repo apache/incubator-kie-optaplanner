@@ -185,7 +185,7 @@ public class LocalSearchSolverScope {
             throw new IllegalStateException(
                     "The presumedScore (" + presumedScore + ") is corrupted because it is not the realScore  ("
                             + realScore + ").\n"
-                    + buildConstraintOccurrenceSummary());
+                    + buildConstraintOccurrenceSummary()); // TODO output buildConstraintOccurrence on tmpWM too
         }
     }
 
