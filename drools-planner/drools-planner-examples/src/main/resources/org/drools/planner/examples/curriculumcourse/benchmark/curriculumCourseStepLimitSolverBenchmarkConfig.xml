@@ -9,7 +9,7 @@
         <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
         <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
         <termination>
-            <maximumStepCount>500</maximumStepCount>
+            <maximumStepCount>2000</maximumStepCount>
         </termination>
     </inheritedLocalSearchSolver>
 
