@@ -149,14 +149,6 @@ rule "roomStability"
             and exists Lecture(course == $course, room == $room),
             count($room)
         );
-        // HACK to fix wierd truth maintance behavior in drools
-        // because making weight part of the equals/hashcode doesn't cut it
-        not IntConstraintOccurrence(
-            ruleId == "roomStability",
-            constraintType == ConstraintType.NEGATIVE_SOFT,
-            causes contains $course,
-            eval(weight != ($roomCount.intValue() - 1))
-        );
     then
         insertLogical(new IntConstraintOccurrence("roomStability", ConstraintType.NEGATIVE_SOFT,
                 ($roomCount.intValue() - 1),

@@ -1,5 +1,8 @@
 package org.drools.planner.core.score.constraint;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * @author Geoffrey De Smet
  */
@@ -28,26 +31,26 @@ public class IntConstraintOccurrence extends ConstraintOccurrence {
         return weight;
     }
 
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        } else if (o instanceof IntConstraintOccurrence) {
-//            IntConstraintOccurrence other = (IntConstraintOccurrence) o;
-//            return new EqualsBuilder()
-//                    .appendSuper(super.equals(other))
-//                    .append(weight, other.weight)
-//                    .isEquals();
-//        } else {
-//            return false;
-//        }
-//    }
-//
-//    public int hashCode() {
-//        return new HashCodeBuilder()
-//                .appendSuper(super.hashCode())
-//                .append(weight)
-//                .toHashCode();
-//    }
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof IntConstraintOccurrence) {
+            IntConstraintOccurrence other = (IntConstraintOccurrence) o;
+            return new EqualsBuilder()
+                    .appendSuper(super.equals(other))
+                    .append(weight, other.weight)
+                    .isEquals();
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .appendSuper(super.hashCode())
+                .append(weight)
+                .toHashCode();
+    }
 
     @Override
     public String toString() {

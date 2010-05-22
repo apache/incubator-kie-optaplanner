@@ -255,7 +255,7 @@ After in *.xml:
     </localSearchSolver>
 
 
-True modify has been implemented.
+True modify has been implemented. This is a great performance boost.
 Before in *.java:
     workingMemory.modifyRetract(xHandle); // before changes are made
     x.set...;
@@ -263,3 +263,21 @@ Before in *.java:
 After in *.java:
     x.set...;
     workingMemory.update(queenHandle, queen); // after changes are made
+
+JBRULES-1804 has been fixed. The HACK to fix wierd truth maintenance behavior is obsolete.
+Before in *.drl:
+        // HACK to fix wierd truth maintenance behavior in drools
+        // because making weight part of the equals/hashcode doesn't cut it
+        // Vote for https://jira.jboss.org/jira/browse/JBRULES-1804
+        not IntConstraintOccurrence(
+            ruleId == "...",
+            constraintType == ConstraintType....,
+            causes contains $..., causes contains $...,
+            eval(weight != (...))
+        );
+    then ...
+After in *.drl:
+    then ...
+
+A custom ConstraintOccurrence implementation should now use the weight in its equals/hashcode methods.
+IntConstraintOccurrence and DoubleConstraintOccurrence have been changed as needed.
