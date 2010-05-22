@@ -9,6 +9,14 @@
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium03.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium04.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium05.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_hint02.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_hint03.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late01.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late02.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late03.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late04.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late05.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
