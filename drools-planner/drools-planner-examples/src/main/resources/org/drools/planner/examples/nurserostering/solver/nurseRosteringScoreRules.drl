@@ -144,74 +144,26 @@ rule "maximumConsecutiveWorkingDays"
                 ($dayLength - $maximumValue) * $contractLine.getMaximumWeight(),
                 $employeeConsecutiveAssignment));
 end
-//rule "maximumConsecutiveWorkingDays"
-//    when
-//        $contractLine : MinMaxContractLine(
-//            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, maximumEnabled == true,
-//            $contract : contract, $maximumIndexDiff : maximumIndexDiff
-//        )
-//        $employee : Employee(contract == $contract)
-//
-//        // The first day has no working day before it
-//        EmployeeAssignment(
-//            employee == $employee,
-//            $firstDayIndex : shiftDateDayIndex
-//        )
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1))
-//
-//        // The last day has no working day after it
-//        EmployeeAssignment(
-//            employee == $employee,
-//            shiftDateDayIndex > ($firstDayIndex + $maximumIndexDiff), // Too many days
-//            $lastDayIndex : shiftDateDayIndex
-//        )
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1))
-//
-//        // There are no free days between the first and last day
-//        not(
-//            $shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
-//            and not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
-//        )
-//    then
-//        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-//                ($lastDayIndex - $firstDayIndex - $maximumIndexDiff) * $contractLine.getMaximumWeight(),
-//                $employee, $firstDayIndex, $lastDayIndex));
-//end
 
 // Minimum number of consecutive working days
-//rule "minimumConsecutiveWorkingDays"
-//    when
-//        $contractLine : MinMaxContractLine(
-//            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, minimumEnabled == true,
-//            $contract : contract, $minimumIndexDiff : minimumIndexDiff
-//        )
-//        $employee : Employee(contract == $contract)
-//
-//        // The first day has no working day before it
-//        EmployeeAssignment(
-//            employee == $employee,
-//            $firstDayIndex : shiftDateDayIndex
-//        )
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1))
-//
-//        // The last day has no working day after it
-//        EmployeeAssignment(
-//            employee == $employee,
-//            shiftDateDayIndex > $firstDayIndex,
-//            shiftDateDayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
-//            $lastDayIndex : shiftDateDayIndex
-//        )
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1))
-//
-//        // There are no free days between the first and last day
-//        forall($shiftDate : ShiftDate(dayIndex > $firstDayIndex && < $lastDayIndex)
-//            EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
-//        )
-//    then
-//        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
-//                ($firstDayIndex + $minimumIndexDiff - $lastDayIndex) * $contractLine.getMinimumWeight(),
-//                $employee, $firstDayIndex, $lastDayIndex));
-//end
+rule "minimumConsecutiveWorkingDays"
+    when
+        $contractLine : MinMaxContractLine(
+            contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, minimumEnabled == true,
+            $contract : contract, $minimumValue : minimumValue
+        )
+        $employee : Employee(contract == $contract)
+
+        $employeeConsecutiveAssignment : EmployeeConsecutiveAssignment(
+            employee == $employee,
+            dayLength < $minimumValue,
+            $dayLength : dayLength
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
+                ($minimumValue - $dayLength) * $contractLine.getMinimumWeight(),
+                $employeeConsecutiveAssignment));
+end
 
 // Maximum number of consecutive free days
 // TODO

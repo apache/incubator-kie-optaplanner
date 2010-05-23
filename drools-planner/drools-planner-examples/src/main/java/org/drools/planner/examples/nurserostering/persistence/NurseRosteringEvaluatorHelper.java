@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.examples.common.business.SolutionBusiness;
@@ -58,7 +59,7 @@ public class NurseRosteringEvaluatorHelper {
         private String lineContainsFilter;
 
         private StringBuilder lineBuffer = new StringBuilder(120);
-        private Map<String, int[]> excessMap = new LinkedHashMap<String, int[]>();
+        private Map<String, int[]> excessMap = new TreeMap<String, int[]>();
         private String lastEmployeeCode = null;
 
         private EvaluatorSummaryFilterOutputStream(String name, String lineContainsFilter) {
