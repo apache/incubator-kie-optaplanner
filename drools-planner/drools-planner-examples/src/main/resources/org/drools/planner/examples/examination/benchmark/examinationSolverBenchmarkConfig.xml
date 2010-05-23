@@ -14,6 +14,7 @@
     <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set8.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
+        <!--<environmentMode>DEBUG</environmentMode>-->
         <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
         <scoreDefinition>
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
