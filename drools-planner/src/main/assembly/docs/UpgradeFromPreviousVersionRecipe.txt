@@ -264,6 +264,10 @@ After in *.java:
     x.set...;
     workingMemory.update(queenHandle, queen); // after changes are made
 
+
+Environment mode DEBUG now checks more and therefor it is slower than before.
+
+
 JBRULES-1804 has been fixed. The HACK to fix wierd truth maintenance behavior is obsolete.
 Before in *.drl:
         // HACK to fix wierd truth maintenance behavior in drools
@@ -278,6 +282,7 @@ Before in *.drl:
     then ...
 After in *.drl:
     then ...
+
 
 A custom ConstraintOccurrence implementation should now use the weight in its equals/hashcode methods.
 IntConstraintOccurrence and DoubleConstraintOccurrence have been changed as needed.
