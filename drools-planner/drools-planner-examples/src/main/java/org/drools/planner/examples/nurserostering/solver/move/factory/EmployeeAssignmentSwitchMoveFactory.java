@@ -7,7 +7,7 @@ import java.util.ListIterator;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeAssignmentSwitchMove;
 
@@ -18,13 +18,13 @@ public class EmployeeAssignmentSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
-        List<EmployeeAssignment> employeeAssignmentList = nurseRoster.getEmployeeAssignmentList();
+        List<Assignment> assignmentList = nurseRoster.getEmployeeAssignmentList();
         List<Move> moveList = new ArrayList<Move>();
-        for (ListIterator<EmployeeAssignment> leftIt = employeeAssignmentList.listIterator(); leftIt.hasNext();) {
-            EmployeeAssignment leftEmployeeAssignment = leftIt.next();
-            for (ListIterator<EmployeeAssignment> rightIt = employeeAssignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
-                EmployeeAssignment rightEmployeeAssignment = rightIt.next();
-                moveList.add(new EmployeeAssignmentSwitchMove(leftEmployeeAssignment, rightEmployeeAssignment));
+        for (ListIterator<Assignment> leftIt = assignmentList.listIterator(); leftIt.hasNext();) {
+            Assignment leftAssignment = leftIt.next();
+            for (ListIterator<Assignment> rightIt = assignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                Assignment rightAssignment = rightIt.next();
+                moveList.add(new EmployeeAssignmentSwitchMove(leftAssignment, rightAssignment));
             }
         }
         return moveList;

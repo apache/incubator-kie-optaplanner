@@ -5,19 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.score.DefaultHardAndSoftScore;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
-import org.drools.planner.examples.nurserostering.domain.ShiftDate;
-import org.drools.runtime.rule.FactHandle;
 
 /**
  * @author Geoffrey De Smet
@@ -40,9 +35,9 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
         List<Shift> shiftList = nurseRoster.getShiftList();
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
 
-        List<EmployeeAssignment> employeeAssignmentList = createEmployeeAssignmentList(nurseRoster);
+        List<Assignment> assignmentList = createEmployeeAssignmentList(nurseRoster);
         // TODO implement this class
-//        for (EmployeeAssignment employeeAssignment : employeeAssignmentList) {
+//        for (Assignment employeeAssignment : assignmentList) {
 //            Score unnurseRosterdScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
 //            FactHandle employeeAssignmentHandle = null;
 //
@@ -102,20 +97,20 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
 //                employeeAssignment.setRoom(bestRoom);
 //                workingMemory.update(employeeAssignmentHandle, employeeAssignment);
 //            }
-//            logger.debug("    EmployeeAssignment ({}) initialized for starting solution.", employeeAssignment);
+//            logger.debug("    Assignment ({}) initialized for starting solution.", employeeAssignment);
 //        }
         
         // TODO tmp begin
-        for (EmployeeAssignment employeeAssignment : employeeAssignmentList) {
-            workingMemory.insert(employeeAssignment);
+        for (Assignment assignment : assignmentList) {
+            workingMemory.insert(assignment);
         }
         // TODO tmp end
 
-        Collections.sort(employeeAssignmentList, new PersistableIdComparator());
-        nurseRoster.setEmployeeAssignmentList(employeeAssignmentList);
+        Collections.sort(assignmentList, new PersistableIdComparator());
+        nurseRoster.setEmployeeAssignmentList(assignmentList);
     }
 
-    public List<EmployeeAssignment> createEmployeeAssignmentList(NurseRoster nurseRoster) {
+    public List<Assignment> createEmployeeAssignmentList(NurseRoster nurseRoster) {
         List<Employee> employeeList = nurseRoster.getEmployeeList();
 
 //        List<EmployeeInitializationWeight> employeeInitializationWeightList
@@ -125,17 +120,17 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
 //        }
 //        Collections.sort(employeeInitializationWeightList);
 //
-        List<EmployeeAssignment> employeeAssignmentList = new ArrayList<EmployeeAssignment>(employeeList.size() * 5);
+        List<Assignment> assignmentList = new ArrayList<Assignment>(employeeList.size() * 5);
 //        int employeeAssignmentId = 0;
 //        for (EmployeeInitializationWeight employeeInitializationWeight : employeeInitializationWeightList) {
 //            Employee employee = employeeInitializationWeight.getEmployee();
 //            for (int i = 0; i < employee.getEmployeeAssignmentSize(); i++) {
-//                EmployeeAssignment employeeAssignment = new EmployeeAssignment();
+//                Assignment employeeAssignment = new Assignment();
 //                employeeAssignment.setId((long) employeeAssignmentId);
 //                employeeAssignmentId++;
 //                employeeAssignment.setEmployee(employee);
 //                employeeAssignment.setEmployeeAssignmentIndexInEmployee(i);
-//                employeeAssignmentList.add(employeeAssignment);
+//                assignmentList.add(employeeAssignment);
 //            }
 //        }
 
@@ -145,18 +140,18 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
         Random random = new Random(); // not seeded, tmp!
         for (Shift shift : shiftList) {
             for (int i = 0; i < shift.getRequiredEmployeeSize(); i++) {
-                EmployeeAssignment employeeAssignment = new EmployeeAssignment();
-                employeeAssignment.setId((long) employeeAssignmentId);
+                Assignment assignment = new Assignment();
+                assignment.setId((long) employeeAssignmentId);
                 employeeAssignmentId++;
-                employeeAssignment.setShift(shift);
+                assignment.setShift(shift);
                 int randomInt = random.nextInt(employeeList.size());
-                employeeAssignment.setEmployee(employeeList.get(randomInt));
-                employeeAssignmentList.add(employeeAssignment);
+                assignment.setEmployee(employeeList.get(randomInt));
+                assignmentList.add(assignment);
             }
         }
         // TODO tmp end
 
-        return employeeAssignmentList;
+        return assignmentList;
     }
 
 //    private class EmployeeInitializationWeight implements Comparable<EmployeeInitializationWeight> {

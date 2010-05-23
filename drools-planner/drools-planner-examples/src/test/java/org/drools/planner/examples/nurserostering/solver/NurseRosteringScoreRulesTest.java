@@ -12,17 +12,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.planner.config.XmlSolverConfigurer;
-import org.drools.planner.core.Solver;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.persistence.NurseRosteringDaoImpl;
 import org.drools.planner.examples.nurserostering.solver.move.NurseRosterMoveHelper;
@@ -45,17 +39,17 @@ public class NurseRosteringScoreRulesTest extends TestCase {
         Score firstScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
         // do EmployeeAssignmentSwitchMove
         Employee leftEmployee = findEmployeeById(nurseRoster, 0L);
-        EmployeeAssignment leftEmployeeAssignment = findEmployeeAssignmentById(nurseRoster, 200204001L);
-        assertEquals(leftEmployee, leftEmployeeAssignment.getEmployee());
+        Assignment leftAssignment = findEmployeeAssignmentById(nurseRoster, 200204001L);
+        assertEquals(leftEmployee, leftAssignment.getEmployee());
         Employee rightEmployee = findEmployeeById(nurseRoster, 12L);
-        EmployeeAssignment rightEmployeeAssignment = findEmployeeAssignmentById(nurseRoster, 200204002L);
-        assertEquals(rightEmployee, rightEmployeeAssignment.getEmployee());
-        NurseRosterMoveHelper.moveEmployee(workingMemory, leftEmployeeAssignment, rightEmployee);
-        NurseRosterMoveHelper.moveEmployee(workingMemory, rightEmployeeAssignment, leftEmployee);
+        Assignment rightAssignment = findEmployeeAssignmentById(nurseRoster, 200204002L);
+        assertEquals(rightEmployee, rightAssignment.getEmployee());
+        NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, rightEmployee);
+        NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, leftEmployee);
         localSearchSolverScope.calculateScoreFromWorkingMemory();
         // undo EmployeeAssignmentSwitchMove;
-        NurseRosterMoveHelper.moveEmployee(workingMemory, rightEmployeeAssignment, rightEmployee);
-        NurseRosterMoveHelper.moveEmployee(workingMemory, leftEmployeeAssignment, leftEmployee);
+        NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, rightEmployee);
+        NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, leftEmployee);
         Score secondScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
         assertEquals(firstScore, secondScore);
     }
@@ -91,10 +85,10 @@ public class NurseRosteringScoreRulesTest extends TestCase {
         throw new IllegalArgumentException("Invalid id (" + id + ")");
     }
 
-    private EmployeeAssignment findEmployeeAssignmentById(NurseRoster nurseRoster, long id) {
-        for (EmployeeAssignment employeeAssignment : nurseRoster.getEmployeeAssignmentList()) {
-            if (employeeAssignment.getId() == id) {
-                return employeeAssignment;
+    private Assignment findEmployeeAssignmentById(NurseRoster nurseRoster, long id) {
+        for (Assignment assignment : nurseRoster.getEmployeeAssignmentList()) {
+            if (assignment.getId() == id) {
+                return assignment;
             }
         }
         throw new IllegalArgumentException("Invalid id (" + id + ")");

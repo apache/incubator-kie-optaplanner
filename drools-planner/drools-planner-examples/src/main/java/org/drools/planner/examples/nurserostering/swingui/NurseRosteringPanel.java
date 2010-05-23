@@ -16,9 +16,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
-import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
@@ -83,10 +83,10 @@ public class NurseRosteringPanel extends SolutionPanel {
             }
         }
         if (schedule.isInitialized()) {
-            for (EmployeeAssignment employeeAssignment : schedule.getEmployeeAssignmentList()) {
-                Employee employee = employeeAssignment.getEmployee();
-                EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(employeeAssignment.getShiftDate());
-                employeeShiftDatePanel.addEmployeeAssignment(employeeAssignment);
+            for (Assignment assignment : schedule.getEmployeeAssignmentList()) {
+                Employee employee = assignment.getEmployee();
+                EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(assignment.getShiftDate());
+                employeeShiftDatePanel.addEmployeeAssignment(assignment);
             }
         }
     }
@@ -100,8 +100,8 @@ public class NurseRosteringPanel extends SolutionPanel {
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         }
 
-        public void addEmployeeAssignment(EmployeeAssignment employeeAssignment) {
-            JButton button = new JButton(new EmployeeAssignmentAction(employeeAssignment));
+        public void addEmployeeAssignment(Assignment assignment) {
+            JButton button = new JButton(new EmployeeAssignmentAction(assignment));
             add(button);
         }
 
@@ -109,22 +109,22 @@ public class NurseRosteringPanel extends SolutionPanel {
 
     private class EmployeeAssignmentAction extends AbstractAction {
 
-        private EmployeeAssignment employeeAssignment;
+        private Assignment assignment;
 
-        public EmployeeAssignmentAction(EmployeeAssignment employeeAssignment) {
-            super(employeeAssignment.getLabel());
-            this.employeeAssignment = employeeAssignment;
+        public EmployeeAssignmentAction(Assignment assignment) {
+            super(assignment.getLabel());
+            this.assignment = assignment;
         }
 
         public void actionPerformed(ActionEvent e) {
             List<Employee> employeeList = getNurseRoster().getEmployeeList();
             JComboBox employeeListField = new JComboBox(employeeList.toArray());
-            employeeListField.setSelectedItem(employeeAssignment.getEmployee());
+            employeeListField.setSelectedItem(assignment.getEmployee());
             int result = JOptionPane.showConfirmDialog(NurseRosteringPanel.this.getRootPane(), employeeListField,
                     "Select employee", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Employee toEmployee = (Employee) employeeListField.getSelectedItem();
-                solutionBusiness.doMove(new EmployeeChangeMove(employeeAssignment, toEmployee));
+                solutionBusiness.doMove(new EmployeeChangeMove(assignment, toEmployee));
                 workflowFrame.updateScreen();
             }
         }

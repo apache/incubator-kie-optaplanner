@@ -787,103 +787,103 @@
   <dayOnRequestList class="java.util.Collections$EmptyList" id="125"/>
   <shiftOffRequestList id="126"/>
   <shiftOnRequestList class="java.util.Collections$EmptyList" reference="125"/>
-  <employeeAssignmentList id="127">
-    <EmployeeAssignment id="128">
+  <assignmentList id="127">
+    <Assignment id="128">
       <id>0</id>
       <shift reference="55"/>
       <employee reference="1010"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="129">
+    </Assignment>
+    <Assignment id="129">
       <id>1</id>
       <shift reference="58"/>
       <employee reference="1011"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="200201001">
+    </Assignment>
+    <Assignment id="200201001">
       <id>200201001</id>
       <shift reference="200201"/>
       <employee reference="1020"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="200204001">
+    </Assignment>
+    <Assignment id="200204001">
       <id>200204001</id>
       <shift reference="200204"/>
       <employee reference="1000"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="200204002">
+    </Assignment>
+    <Assignment id="200204002">
       <id>200204002</id>
       <shift reference="200204"/>
       <employee reference="1012"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="133">
+    </Assignment>
+    <Assignment id="133">
       <id>5</id>
       <shift reference="69"/>
       <employee reference="1000"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="134">
+    </Assignment>
+    <Assignment id="134">
       <id>6</id>
       <shift reference="76"/>
       <employee reference="1000"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="135">
+    </Assignment>
+    <Assignment id="135">
       <id>7</id>
       <shift reference="83"/>
       <employee reference="1011"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="136">
+    </Assignment>
+    <Assignment id="136">
       <id>8</id>
       <shift reference="83"/>
       <employee reference="1020"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="137">
+    </Assignment>
+    <Assignment id="137">
       <id>9</id>
       <shift reference="83"/>
       <employee reference="1000"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="138">
+    </Assignment>
+    <Assignment id="138">
       <id>10</id>
       <shift reference="90"/>
       <employee reference="1012"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="139">
+    </Assignment>
+    <Assignment id="139">
       <id>11</id>
       <shift reference="97"/>
       <employee reference="1010"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="140">
+    </Assignment>
+    <Assignment id="140">
       <id>12</id>
       <shift reference="101"/>
       <employee reference="1012"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="141">
+    </Assignment>
+    <Assignment id="141">
       <id>13</id>
       <shift reference="104"/>
       <employee reference="1010"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="142">
+    </Assignment>
+    <Assignment id="142">
       <id>14</id>
       <shift reference="107"/>
       <employee reference="1012"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="143">
+    </Assignment>
+    <Assignment id="143">
       <id>15</id>
       <shift reference="111"/>
       <employee reference="1010"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="144">
+    </Assignment>
+    <Assignment id="144">
       <id>16</id>
       <shift reference="114"/>
       <employee reference="1000"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="145">
+    </Assignment>
+    <Assignment id="145">
       <id>17</id>
       <shift reference="114"/>
       <employee reference="1020"/>
-    </EmployeeAssignment>
-    <EmployeeAssignment id="146">
+    </Assignment>
+    <Assignment id="146">
       <id>18</id>
       <shift reference="118"/>
       <employee reference="1011"/>
-    </EmployeeAssignment>
-  </employeeAssignmentList>
+    </Assignment>
+  </assignmentList>
   <score class="org.drools.planner.core.score.DefaultHardAndSoftScore" id="147">
     <hardScore>0</hardScore>
     <softScore>0</softScore>

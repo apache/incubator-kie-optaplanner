@@ -7,7 +7,7 @@ import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
 import org.drools.planner.examples.nurserostering.domain.Shift;
@@ -43,7 +43,7 @@ rule "requiredEmployeeSizePerShift"
         $shift : Shift(requiredEmployeeSize > 0, $requiredEmployeeSize : requiredEmployeeSize)
 
         $totalEmployeeSize : Number(intValue != $requiredEmployeeSize) from accumulate(
-            $assignment : EmployeeAssignment(shift == $shift),
+            $assignment : Assignment(shift == $shift),
             count($assignment)
         )
     then
@@ -55,12 +55,12 @@ end
 // a nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
 rule "oneShiftPerDay"
     when
-        $leftEmployeeAssignment : EmployeeAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate)
-        $rightEmployeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
+        $leftAssignment : Assignment($leftId : id, $employee : employee, $shiftDate : shiftDate)
+        $rightAssignment : Assignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
     then
         insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.NEGATIVE_HARD,
                 1,
-                $leftEmployeeAssignment, $rightEmployeeAssignment));
+                $leftAssignment, $rightAssignment));
 end
 
 // ############################################################################
@@ -76,7 +76,7 @@ rule "minimumTotalAssignments"
         )
         $employee : Employee(contract == $contract)
         $totalAssignmentSize : Number(intValue < $minimumValue) from accumulate(
-            $assignment : EmployeeAssignment(employee == $employee),
+            $assignment : Assignment(employee == $employee),
             count($assignment)
         )
     then
@@ -94,7 +94,7 @@ rule "maximumTotalAssignments"
         )
         $employee : Employee(contract == $contract)
         $totalAssignmentSize : Number(intValue > $maximumValue) from accumulate(
-            $assignment : EmployeeAssignment(employee == $employee),
+            $assignment : Assignment(employee == $employee),
             count($assignment)
         )
     then
@@ -106,26 +106,26 @@ end
 rule "insertEmployeeConsecutiveAssignmentStart"
         salience 2 // Do these rules first (optional, for performance)
     when
-        EmployeeAssignment(
+        Assignment(
             $employee : employee,
             $dayIndex : shiftDateDayIndex,
             $shiftDate : shiftDate
         )
         // The first day has no working day before it
-        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($dayIndex - 1))
+        not Assignment(employee == $employee, shiftDateDayIndex == ($dayIndex - 1))
     then
         insertLogical(new EmployeeConsecutiveAssignmentStart($employee, $shiftDate));
 end
 rule "insertEmployeeConsecutiveAssignmentEnd"
         salience 2 // Do these rules first (optional, for performance)
     when
-        EmployeeAssignment(
+        Assignment(
             $employee : employee,
             $dayIndex : shiftDateDayIndex,
             $shiftDate : shiftDate
         )
         // The last day has no working day after it
-        not EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($dayIndex + 1))
+        not Assignment(employee == $employee, shiftDateDayIndex == ($dayIndex + 1))
     then
         insertLogical(new EmployeeConsecutiveAssignmentEnd($employee, $shiftDate));
 end
@@ -205,10 +205,10 @@ end
 //
 //        // The first day ...
 //        $firstShiftDate : ShiftDate($firstDayIndex : dayIndex)
-//        not EmployeeAssignment(employee == $employee, shiftDate == $firstShiftDate)
+//        not Assignment(employee == $employee, shiftDate == $firstShiftDate)
 //        // ... has no free day before it
 //        (
-//            exists EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1))
+//            exists Assignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1))
 //            or not ShiftDate(dayIndex == ($firstDayIndex - 1))
 //        )
 //
@@ -217,15 +217,15 @@ end
 //            dayIndex > $firstDayIndex,
 //            dayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
 //            $lastDayIndex : dayIndex)
-//        not EmployeeAssignment(employee == $employee, shiftDate == $lastShiftDate)
+//        not Assignment(employee == $employee, shiftDate == $lastShiftDate)
 //        // ... has no free day after it
 //        (
-//            exists EmployeeAssignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1))
+//            exists Assignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1))
 //            or not ShiftDate(dayIndex == ($lastDayIndex + 1))
 //        )
 //
 //        // There are no working days between the first and last day
-//        not EmployeeAssignment(employee == $employee, shiftDateDayIndex  > $firstDayIndex && < $lastDayIndex)
+//        not Assignment(employee == $employee, shiftDateDayIndex  > $firstDayIndex && < $lastDayIndex)
 //    then
 //        insertLogical(new IntConstraintOccurrence("minimumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
 //                ($firstDayIndex + $minimumIndexDiff - $lastDayIndex) * $contractLine.getMinimumWeight(),
@@ -251,7 +251,7 @@ end
 rule "dayOffRequest"
     when
         $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
-        $employeeAssignment : EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
+        $employeeAssignment : Assignment(employee == $employee, shiftDate == $shiftDate)
     then
         insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -260,7 +260,7 @@ end
 rule "dayOnRequest"
     when
         $dayOnRequest : DayOnRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
-        not EmployeeAssignment(employee == $employee, shiftDate == $shiftDate)
+        not Assignment(employee == $employee, shiftDate == $shiftDate)
     then
         insertLogical(new IntConstraintOccurrence("dayOnRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -271,7 +271,7 @@ end
 rule "shiftOffRequest"
     when
         $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight)
-        $employeeAssignment : EmployeeAssignment(employee == $employee, shift == $shift)
+        $employeeAssignment : Assignment(employee == $employee, shift == $shift)
     then
         insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -280,7 +280,7 @@ end
 rule "shiftOnRequest"
     when
         $shiftOnRequest : ShiftOnRequest($employee : employee, $shift : shift, $weight : weight)
-        not EmployeeAssignment(employee == $employee, shift == $shift)
+        not Assignment(employee == $employee, shift == $shift)
     then
         insertLogical(new IntConstraintOccurrence("shiftOnRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -291,7 +291,7 @@ end
 rule "alternativeSkill"
     when
         BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY, $contract : contract)
-        $employeeAssignment : EmployeeAssignment(contract == $contract, $employee : employee, $shiftType : shiftType)
+        $employeeAssignment : Assignment(contract == $contract, $employee : employee, $shiftType : shiftType)
         ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill)
         not SkillProficiency(employee == $employee, skill == $skill)
     then

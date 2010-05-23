@@ -10,8 +10,8 @@ import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 /**
  * @author Geoffrey De Smet
  */
-@XStreamAlias("EmployeeAssignment")
-public class EmployeeAssignment extends AbstractPersistable implements Comparable<EmployeeAssignment> {
+@XStreamAlias("Assignment")
+public class Assignment extends AbstractPersistable implements Comparable<Assignment> {
 
     private Shift shift;
 
@@ -38,15 +38,15 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
         return shift.getShiftType().getCode();
     }
 
-    public int compareTo(EmployeeAssignment other) {
+    public int compareTo(Assignment other) {
         return new CompareToBuilder()
                 .append(shift, other.shift)
                 .append(employee, other.employee)
                 .toComparison();
     }
 
-    public EmployeeAssignment clone() {
-        EmployeeAssignment clone = new EmployeeAssignment();
+    public Assignment clone() {
+        Assignment clone = new Assignment();
         clone.id = id;
         clone.shift = shift;
         clone.employee = employee;
@@ -61,8 +61,8 @@ public class EmployeeAssignment extends AbstractPersistable implements Comparabl
     public boolean solutionEquals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeAssignment) {
-            EmployeeAssignment other = (EmployeeAssignment) o;
+        } else if (o instanceof Assignment) {
+            Assignment other = (Assignment) o;
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(shift, other.shift)

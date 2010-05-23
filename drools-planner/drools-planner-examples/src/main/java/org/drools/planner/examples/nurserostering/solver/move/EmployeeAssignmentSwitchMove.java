@@ -9,40 +9,39 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.EmployeeAssignment;
-import org.drools.planner.examples.nurserostering.domain.Shift;
 
 /**
  * @author Geoffrey De Smet
  */
 public class EmployeeAssignmentSwitchMove implements Move, TabuPropertyEnabled {
 
-    private EmployeeAssignment leftEmployeeAssignment;
-    private EmployeeAssignment rightEmployeeAssignment;
+    private Assignment leftAssignment;
+    private Assignment rightAssignment;
 
-    public EmployeeAssignmentSwitchMove(EmployeeAssignment leftEmployeeAssignment, EmployeeAssignment rightEmployeeAssignment) {
-        this.leftEmployeeAssignment = leftEmployeeAssignment;
-        this.rightEmployeeAssignment = rightEmployeeAssignment;
+    public EmployeeAssignmentSwitchMove(Assignment leftAssignment, Assignment rightAssignment) {
+        this.leftAssignment = leftAssignment;
+        this.rightAssignment = rightAssignment;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(leftEmployeeAssignment.getEmployee(), rightEmployeeAssignment.getEmployee());
+        return !ObjectUtils.equals(leftAssignment.getEmployee(), rightAssignment.getEmployee());
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new EmployeeAssignmentSwitchMove(rightEmployeeAssignment, leftEmployeeAssignment);
+        return new EmployeeAssignmentSwitchMove(rightAssignment, leftAssignment);
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        Employee oldLeftEmployee = leftEmployeeAssignment.getEmployee();
-        Employee oldRightEmployee = rightEmployeeAssignment.getEmployee();
-        NurseRosterMoveHelper.moveEmployee(workingMemory, leftEmployeeAssignment, oldRightEmployee);
-        NurseRosterMoveHelper.moveEmployee(workingMemory, rightEmployeeAssignment, oldLeftEmployee);
+        Employee oldLeftEmployee = leftAssignment.getEmployee();
+        Employee oldRightEmployee = rightAssignment.getEmployee();
+        NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, oldRightEmployee);
+        NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, oldLeftEmployee);
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        return Arrays.<EmployeeAssignment>asList(leftEmployeeAssignment, rightEmployeeAssignment);
+        return Arrays.<Assignment>asList(leftAssignment, rightAssignment);
     }
 
     public boolean equals(Object o) {
@@ -51,8 +50,8 @@ public class EmployeeAssignmentSwitchMove implements Move, TabuPropertyEnabled {
         } else if (o instanceof EmployeeAssignmentSwitchMove) {
             EmployeeAssignmentSwitchMove other = (EmployeeAssignmentSwitchMove) o;
             return new EqualsBuilder()
-                    .append(leftEmployeeAssignment, other.leftEmployeeAssignment)
-                    .append(rightEmployeeAssignment, other.rightEmployeeAssignment)
+                    .append(leftAssignment, other.leftAssignment)
+                    .append(rightAssignment, other.rightAssignment)
                     .isEquals();
         } else {
             return false;
@@ -61,13 +60,13 @@ public class EmployeeAssignmentSwitchMove implements Move, TabuPropertyEnabled {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(leftEmployeeAssignment)
-                .append(rightEmployeeAssignment)
+                .append(leftAssignment)
+                .append(rightAssignment)
                 .toHashCode();
     }
 
     public String toString() {
-        return leftEmployeeAssignment + " <=> " + rightEmployeeAssignment;
+        return leftAssignment + " <=> " + rightAssignment;
     }
 
 }
