@@ -11,13 +11,13 @@ import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 /**
  * @author Geoffrey De Smet
  */
-public class EmployeeConsecutiveAssignment implements Comparable<EmployeeConsecutiveAssignment>, Serializable {
+public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequence>, Serializable {
 
     private Employee employee;
     private ShiftDate firstShiftDate;
     private ShiftDate lastShiftDate;
 
-    public EmployeeConsecutiveAssignment(Employee employee, ShiftDate firstShiftDate, ShiftDate lastShiftDate) {
+    public EmployeeFreeDaySequence(Employee employee, ShiftDate firstShiftDate, ShiftDate lastShiftDate) {
         this.employee = employee;
         this.firstShiftDate = firstShiftDate;
         this.lastShiftDate = lastShiftDate;
@@ -50,8 +50,8 @@ public class EmployeeConsecutiveAssignment implements Comparable<EmployeeConsecu
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeConsecutiveAssignment) {
-            EmployeeConsecutiveAssignment other = (EmployeeConsecutiveAssignment) o;
+        } else if (o instanceof EmployeeFreeDaySequence) {
+            EmployeeFreeDaySequence other = (EmployeeFreeDaySequence) o;
             return new EqualsBuilder()
                     .append(employee, other.employee)
                     .append(firstShiftDate, other.firstShiftDate)
@@ -70,7 +70,7 @@ public class EmployeeConsecutiveAssignment implements Comparable<EmployeeConsecu
                 .toHashCode();
     }
 
-    public int compareTo(EmployeeConsecutiveAssignment other) {
+    public int compareTo(EmployeeFreeDaySequence other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
                 .append(firstShiftDate, other.firstShiftDate)
@@ -92,7 +92,7 @@ public class EmployeeConsecutiveAssignment implements Comparable<EmployeeConsecu
 
     @Override
     public String toString() {
-        return employee + " is working between " + firstShiftDate + " - " + lastShiftDate;
+        return employee + " is free between " + firstShiftDate + " - " + lastShiftDate;
     }
 
 }

@@ -27,6 +27,7 @@ import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeAssignmentTotal;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignment;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeDaySequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentEnd;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
 
@@ -112,6 +113,7 @@ rule "maximumTotalAssignments"
                 $employee));
 end
 
+
 rule "insertEmployeeConsecutiveAssignmentStart"
         salience 2 // Do these rules first (optional, for performance)
     when
@@ -138,6 +140,8 @@ rule "insertEmployeeConsecutiveAssignmentEnd"
     then
         insertLogical(new EmployeeConsecutiveAssignmentEnd($employee, $shiftDate));
 end
+
+
 rule "insertEmployeeConsecutiveAssignment"
         salience 1 // Do these rules first (optional, for performance)
     when
@@ -203,46 +207,72 @@ rule "maximumConsecutiveWorkingDays"
                 $employeeConsecutiveAssignment));
 end
 
+
+rule "insertEmployeeFreeDaySequence"
+        salience 1 // Do these rules first (optional, for performance)
+    when
+        EmployeeConsecutiveAssignmentEnd(
+            $employee : employee,
+            $firstShiftDate : shiftDate,
+            $firstDayIndex : shiftDateDayIndex
+        )
+
+        EmployeeConsecutiveAssignmentStart(
+            employee == $employee,
+            shiftDateDayIndex >= $firstDayIndex,
+            $lastShiftDate : shiftDate,
+            $lastDayIndex : shiftDateDayIndex
+        )
+
+        // There are no working days between the first and last day
+        not EmployeeConsecutiveAssignmentStart(
+            employee == $employee,
+            shiftDateDayIndex >= $firstDayIndex && < $lastDayIndex
+        )
+    then
+        insertLogical(new EmployeeFreeDaySequence($employee, $firstShiftDate, $lastShiftDate));
+end
+
 // Minimum number of consecutive free days
-//rule "minimumConsecutiveFreeDays"
-//    when
-//        $contractLine : MinMaxContractLine(
-//            contractLineType == ContractLineType.CONSECUTIVE_FREE_DAYS, minimumEnabled == true,
-//            $contract : contract, $minimumIndexDiff : minimumIndexDiff
-//        )
-//        $employee : Employee(contract == $contract)
-//
-//        // The first day ...
-//        $firstShiftDate : ShiftDate($firstDayIndex : dayIndex)
-//        not Assignment(employee == $employee, shiftDate == $firstShiftDate)
-//        // ... has no free day before it
-//        (
-//            exists Assignment(employee == $employee, shiftDateDayIndex == ($firstDayIndex - 1))
-//            or not ShiftDate(dayIndex == ($firstDayIndex - 1))
-//        )
-//
-//        // The last day ...
-//        $lastShiftDate : ShiftDate(
-//            dayIndex > $firstDayIndex,
-//            dayIndex < ($firstDayIndex + $minimumIndexDiff), // Too few days
-//            $lastDayIndex : dayIndex)
-//        not Assignment(employee == $employee, shiftDate == $lastShiftDate)
-//        // ... has no free day after it
-//        (
-//            exists Assignment(employee == $employee, shiftDateDayIndex == ($lastDayIndex + 1))
-//            or not ShiftDate(dayIndex == ($lastDayIndex + 1))
-//        )
-//
-//        // There are no working days between the first and last day
-//        not Assignment(employee == $employee, shiftDateDayIndex  > $firstDayIndex && < $lastDayIndex)
-//    then
-//        insertLogical(new IntConstraintOccurrence("minimumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
-//                ($firstDayIndex + $minimumIndexDiff - $lastDayIndex) * $contractLine.getMinimumWeight(),
-//                $employee, $firstDayIndex, $lastDayIndex));
-//end
+rule "minimumConsecutiveFreeDays"
+    when
+        $contractLine : MinMaxContractLine(
+            contractLineType == ContractLineType.CONSECUTIVE_FREE_DAYS, minimumEnabled == true,
+            $contract : contract, $minimumValue : minimumValue
+        )
+        $employee : Employee(contract == $contract)
+
+        $employeeFreeDaySequence : EmployeeFreeDaySequence(
+            employee == $employee,
+            dayLength < $minimumValue,
+            $dayLength : dayLength
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("minimumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
+                ($minimumValue - $dayLength) * $contractLine.getMinimumWeight(),
+                $employeeFreeDaySequence));
+end
 
 // Maximum number of consecutive free days
-// TODO
+rule "maximumConsecutiveFreeDays"
+    when
+        $contractLine : MinMaxContractLine(
+            contractLineType == ContractLineType.CONSECUTIVE_FREE_DAYS, maximumEnabled == true,
+            $contract : contract, $maximumValue : maximumValue
+        )
+        $employee : Employee(contract == $contract)
+
+        $employeeFreeDaySequence : EmployeeFreeDaySequence(
+            employee == $employee,
+            dayLength > $maximumValue,
+            $dayLength : dayLength
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("maximumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
+                ($dayLength - $maximumValue) * $contractLine.getMaximumWeight(),
+                $employeeFreeDaySequence));
+end
+
 
 // Maximum number of consecutive working weekends
 // TODO
