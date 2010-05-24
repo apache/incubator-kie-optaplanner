@@ -87,7 +87,7 @@ end
 // Minimum number of assignments
 rule "minimumTotalAssignments"
     when
-        MinMaxContractLine(
+        $contractLine : MinMaxContractLine(
             contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, minimumEnabled == true,
             $contract : contract, $minimumValue : minimumValue
         )
@@ -95,14 +95,14 @@ rule "minimumTotalAssignments"
             $employee : employee, $total : total)
     then
         insertLogical(new IntConstraintOccurrence("minimumTotalAssignments", ConstraintType.NEGATIVE_SOFT,
-                $minimumValue - $total,
+                ($minimumValue - $total) * $contractLine.getMinimumWeight(),
                 $employee));
 end
 
 // Maximum number of assignments
 rule "maximumTotalAssignments"
     when
-        MinMaxContractLine(
+        $contractLine : MinMaxContractLine(
             contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, maximumEnabled == true,
             $contract : contract, $maximumValue : maximumValue
         )
@@ -110,7 +110,7 @@ rule "maximumTotalAssignments"
             $employee : employee, $total : total)
     then
         insertLogical(new IntConstraintOccurrence("maximumTotalAssignments", ConstraintType.NEGATIVE_SOFT,
-                $total - $maximumValue,
+                ($total - $maximumValue) * $contractLine.getMaximumWeight(),
                 $employee));
 end
 
@@ -378,13 +378,14 @@ end
 // Alternative skill
 rule "alternativeSkill"
     when
-        BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY, $contract : contract)
+        $contractLine : BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY,
+            $contract : contract)
         $employeeAssignment : Assignment(contract == $contract, $employee : employee, $shiftType : shiftType)
         ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill)
         not SkillProficiency(employee == $employee, skill == $skill)
     then
         insertLogical(new IntConstraintOccurrence("alternativeSkill", ConstraintType.NEGATIVE_SOFT,
-                1,
+                $contractLine.getWeight(),
                 $employeeAssignment));
 end
 
