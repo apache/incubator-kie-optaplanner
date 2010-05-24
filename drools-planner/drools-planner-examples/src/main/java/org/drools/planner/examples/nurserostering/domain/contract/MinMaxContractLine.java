@@ -64,4 +64,8 @@ public class MinMaxContractLine extends ContractLine {
         this.maximumWeight = maximumWeight;
     }
 
+    public boolean isEnabled() {
+        return minimumEnabled || maximumEnabled;
+    }
+
 }

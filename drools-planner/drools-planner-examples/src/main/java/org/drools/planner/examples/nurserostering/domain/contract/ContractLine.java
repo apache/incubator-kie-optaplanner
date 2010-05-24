@@ -29,6 +29,8 @@ public abstract class ContractLine extends AbstractPersistable implements Compar
         this.contractLineType = contractLineType;
     }
 
+    public abstract boolean isEnabled();
+
     public int compareTo(ContractLine other) {
         return new CompareToBuilder()
                 .append(id, other.id)
