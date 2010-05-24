@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
+    <!--<environmentMode>DEBUG</environmentMode>-->
     <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -27,4 +28,3 @@
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
 </localSearchSolver>
-        
