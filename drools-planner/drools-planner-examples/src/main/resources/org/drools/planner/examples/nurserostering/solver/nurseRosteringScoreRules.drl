@@ -25,6 +25,7 @@ import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeAssignmentTotal;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignment;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentEnd;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
@@ -67,39 +68,47 @@ end
 // Soft constraints
 // ############################################################################
 
-// Minimum number of assignments
-rule "minimumTotalAssignments"
+rule "insertEmployeeAssignmentTotal"
+        salience 1 // Do these rules first (optional, for performance)
     when
-        $contractLine : MinMaxContractLine(
-            contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, minimumEnabled == true,
-            $contract : contract, $minimumValue : minimumValue
-        )
+        MinMaxContractLine(contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, enabled == true,
+            $contract : contract)
         $employee : Employee(contract == $contract)
-        $totalAssignmentSize : Number(intValue < $minimumValue) from accumulate(
+        $totalAssignmentSize : Number() from accumulate(
             $assignment : Assignment(employee == $employee),
             count($assignment)
         )
     then
+        insertLogical(new EmployeeAssignmentTotal($employee, $totalAssignmentSize.intValue()));
+end
+
+// Minimum number of assignments
+rule "minimumTotalAssignments"
+    when
+        MinMaxContractLine(
+            contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, minimumEnabled == true,
+            $contract : contract, $minimumValue : minimumValue
+        )
+        EmployeeAssignmentTotal(employeeContract == $contract, total < $minimumValue,
+            $employee : employee, $total : total)
+    then
         insertLogical(new IntConstraintOccurrence("minimumTotalAssignments", ConstraintType.NEGATIVE_SOFT,
-                Math.abs($minimumValue - $totalAssignmentSize.intValue()),
+                $minimumValue - $total,
                 $employee));
 end
 
 // Maximum number of assignments
 rule "maximumTotalAssignments"
     when
-        $contractLine : MinMaxContractLine(
+        MinMaxContractLine(
             contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, maximumEnabled == true,
             $contract : contract, $maximumValue : maximumValue
         )
-        $employee : Employee(contract == $contract)
-        $totalAssignmentSize : Number(intValue > $maximumValue) from accumulate(
-            $assignment : Assignment(employee == $employee),
-            count($assignment)
-        )
+        EmployeeAssignmentTotal(employeeContract == $contract, total > $maximumValue,
+            $employee : employee, $total : total)
     then
         insertLogical(new IntConstraintOccurrence("maximumTotalAssignments", ConstraintType.NEGATIVE_SOFT,
-                Math.abs($totalAssignmentSize.intValue() - $maximumValue),
+                $total - $maximumValue,
                 $employee));
 end
 
