@@ -1,5 +1,6 @@
 package org.drools.planner.examples.nurserostering.domain;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +65,27 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
     @Override
     public String toString() {
         return dateString + "(" + dayOfWeek + ")";
+    }
+
+    public int getWeekendSundayIndex() {
+        switch (dayOfWeek) {
+            case MONDAY:
+                return dayIndex - 1;
+            case TUESDAY:
+                return dayIndex - 2;
+            case WEDNESDAY:
+                return dayIndex - 3;
+            case THURSDAY:
+                return dayIndex + 3;
+            case FRIDAY:
+                return dayIndex + 2;
+            case SATURDAY:
+                return dayIndex + 1;
+            case SUNDAY:
+                return dayIndex;
+            default:
+                throw new IllegalArgumentException("The dayOfWeek (" + dayOfWeek + ") is not valid.");
+        }
     }
 
 }
