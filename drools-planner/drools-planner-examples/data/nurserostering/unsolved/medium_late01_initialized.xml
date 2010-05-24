@@ -115,7 +115,7 @@
           <id>0</id>
           <contract reference="23"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="26">
@@ -166,21 +166,21 @@
           <id>5</id>
           <contract reference="23"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="31">
           <id>6</id>
           <contract reference="23"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="32">
           <id>7</id>
           <contract reference="23"/>
           <contractLineType>NO_NIGHT_SHIFT_BEFORE_FREE_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>
@@ -195,7 +195,7 @@
           <id>8</id>
           <contract reference="33"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="36">
@@ -246,21 +246,21 @@
           <id>13</id>
           <contract reference="33"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="41">
           <id>14</id>
           <contract reference="33"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="42">
           <id>15</id>
           <contract reference="33"/>
           <contractLineType>NO_NIGHT_SHIFT_BEFORE_FREE_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>
@@ -275,7 +275,7 @@
           <id>16</id>
           <contract reference="43"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="46">
@@ -326,21 +326,21 @@
           <id>21</id>
           <contract reference="43"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="51">
           <id>22</id>
           <contract reference="43"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="52">
           <id>23</id>
           <contract reference="43"/>
           <contractLineType>NO_NIGHT_SHIFT_BEFORE_FREE_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>
@@ -355,7 +355,7 @@
           <id>24</id>
           <contract reference="53"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="56">
@@ -406,21 +406,21 @@
           <id>29</id>
           <contract reference="53"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="61">
           <id>30</id>
           <contract reference="53"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="62">
           <id>31</id>
           <contract reference="53"/>
           <contractLineType>NO_NIGHT_SHIFT_BEFORE_FREE_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>10</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>

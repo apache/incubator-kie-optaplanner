@@ -468,6 +468,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 contractLine.setId(contractLineId);
                 contractLine.setContract(contract);
                 contractLine.setContractLineType(contractLineType);
+                contractLine.setEnabled(enabled);
                 contractLine.setWeight(weight);
                 contractLineList.add(contractLine);
                 contractLineListOfContract.add(contractLine);
