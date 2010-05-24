@@ -16,6 +16,7 @@ public class ShiftType extends AbstractPersistable implements Comparable<ShiftTy
     private int index;
     private String startTimeString;
     private String endTimeString;
+    private boolean night;
     private String description;
 
     public String getCode() {
@@ -48,6 +49,14 @@ public class ShiftType extends AbstractPersistable implements Comparable<ShiftTy
 
     public void setEndTimeString(String endTimeString) {
         this.endTimeString = endTimeString;
+    }
+
+    public boolean isNight() {
+        return night;
+    }
+
+    public void setNight(boolean night) {
+        this.night = night;
     }
 
     public String getDescription() {

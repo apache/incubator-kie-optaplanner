@@ -308,12 +308,28 @@ end
 
 
 // Maximum number of consecutive working weekends
-// TODO
+// TODO do start and end
+//rule "maximumConsecutiveWorkingWeekends"
+//        salience 1 // Do these rules first (optional, for performance)
+//    when
+//        MinMaxContractLine(contractLineType == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS, maximumEnabled == true,
+//            $contract : contract, $maximumValue : maximumValue)
+//        $employee : Employee(contract == $contract)
+//
+//
+//        $totalAssignmentSize : Number() from accumulate(
+//            $assignment : Assignment(employee == $employee),
+//            count($assignment)
+//        )
+//    then
+//        insertLogical(new EmployeeAssignmentTotal($employee, $totalAssignmentSize.intValue()));
+//end
+
 
 // Complete weekends
 // TODO
 
-// Single assignment per day
+// Identical shift types during the weekend
 // TODO
 
 // Two free days after a night shift

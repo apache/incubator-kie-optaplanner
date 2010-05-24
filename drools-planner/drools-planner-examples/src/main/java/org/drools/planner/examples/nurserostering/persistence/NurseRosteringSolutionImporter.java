@@ -213,8 +213,11 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 shiftType.setId(id);
                 shiftType.setCode(element.getAttribute("ID").getValue());
                 shiftType.setIndex(index);
-                shiftType.setStartTimeString(element.getChild("StartTime").getText());
-                shiftType.setEndTimeString(element.getChild("EndTime").getText());
+                String startTimeString = element.getChild("StartTime").getText();
+                shiftType.setStartTimeString(startTimeString);
+                String endTimeString = element.getChild("EndTime").getText();
+                shiftType.setEndTimeString(endTimeString);
+                shiftType.setNight(startTimeString.compareTo(endTimeString) > 0);
                 shiftType.setDescription(element.getChild("Description").getText());
 
                 Element skillsElement = element.getChild("Skills");

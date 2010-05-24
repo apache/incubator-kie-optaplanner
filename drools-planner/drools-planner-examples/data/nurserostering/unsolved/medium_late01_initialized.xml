@@ -14,6 +14,7 @@
       <index>0</index>
       <startTimeString>06:30:00</startTimeString>
       <endTimeString>14:30:00</endTimeString>
+      <night>false</night>
       <description>Early</description>
     </ShiftType>
     <ShiftType id="6">
@@ -22,6 +23,7 @@
       <index>1</index>
       <startTimeString>14:30:00</startTimeString>
       <endTimeString>22:30:00</endTimeString>
+      <night>false</night>
       <description>Late</description>
     </ShiftType>
     <ShiftType id="7">
@@ -30,6 +32,7 @@
       <index>2</index>
       <startTimeString>08:30:00</startTimeString>
       <endTimeString>16:30:00</endTimeString>
+      <night>false</night>
       <description>Day shift</description>
     </ShiftType>
     <ShiftType id="8">
@@ -38,6 +41,7 @@
       <index>3</index>
       <startTimeString>22:30:00</startTimeString>
       <endTimeString>06:30:00</endTimeString>
+      <night>true</night>
       <description>Night</description>
     </ShiftType>
   </shiftTypeList>
