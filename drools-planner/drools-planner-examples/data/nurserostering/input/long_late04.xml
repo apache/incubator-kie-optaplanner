@@ -261,35 +261,6 @@
       <MinNumAssignments on="1" weight="3">4</MinNumAssignments>
       <MaxConsecutiveWorkingDays on="1" weight="4">4</MaxConsecutiveWorkingDays>
       <MinConsecutiveWorkingDays on="1" weight="4">2</MinConsecutiveWorkingDays>
-      <MaxConsecutiveFreeDays on="1" weight="7">5</MaxConsecutiveFreeDays>
-      <MinConsecutiveFreeDays on="1" weight="3">3</MinConsecutiveFreeDays>
-      <MaxConsecutiveWorkingWeekends on="1" weight="5">1</MaxConsecutiveWorkingWeekends>
-      <MinConsecutiveWorkingWeekends on="0" weight="5">0</MinConsecutiveWorkingWeekends>
-      <MaxWorkingWeekendsInFourWeeks on="0" weight="0">0</MaxWorkingWeekendsInFourWeeks>
-      <WeekendDefinition>FridaySaturdaySunday</WeekendDefinition>
-      <CompleteWeekends weight="10">true</CompleteWeekends>
-      <IdenticalShiftTypesDuringWeekend weight="10">true</IdenticalShiftTypesDuringWeekend>
-      <NoNightShiftBeforeFreeWeekend weight="10">true</NoNightShiftBeforeFreeWeekend>
-      <AlternativeSkillCategory weight="10">true</AlternativeSkillCategory>
-      <UnwantedPatterns>
-        <Pattern>0</Pattern>
-        <Pattern>1</Pattern>
-        <Pattern>2</Pattern>
-        <Pattern>3</Pattern>
-        <Pattern>4</Pattern>
-        <Pattern>5</Pattern>
-        <Pattern>6</Pattern>
-        <Pattern>7</Pattern>
-        <Pattern>8</Pattern>
-      </UnwantedPatterns>
-    </Contract>
-    <Contract ID="3">
-      <Description>50_percent</Description>
-      <SingleAssignmentPerDay weight="1">true</SingleAssignmentPerDay>
-      <MaxNumAssignments on="1" weight="3">10</MaxNumAssignments>
-      <MinNumAssignments on="1" weight="3">4</MinNumAssignments>
-      <MaxConsecutiveWorkingDays on="1" weight="4">4</MaxConsecutiveWorkingDays>
-      <MinConsecutiveWorkingDays on="1" weight="4">2</MinConsecutiveWorkingDays>
       <MaxConsecutiveFreeDays on="1" weight="7">6</MaxConsecutiveFreeDays>
       <MinConsecutiveFreeDays on="1" weight="3">4</MinConsecutiveFreeDays>
       <MaxConsecutiveWorkingWeekends on="1" weight="5">0</MaxConsecutiveWorkingWeekends>
