@@ -10,6 +10,7 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
+import org.drools.planner.examples.nurserostering.domain.RosterInfo;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
@@ -219,7 +220,7 @@ rule "insertEmployeeFreeDaySequence"
 
         EmployeeConsecutiveAssignmentStart(
             employee == $employee,
-            shiftDateDayIndex >= $firstDayIndex,
+            shiftDateDayIndex > $firstDayIndex,
             $lastShiftDate : shiftDate,
             $lastDayIndex : shiftDateDayIndex
         )
@@ -227,11 +228,50 @@ rule "insertEmployeeFreeDaySequence"
         // There are no working days between the first and last day
         not EmployeeConsecutiveAssignmentStart(
             employee == $employee,
-            shiftDateDayIndex >= $firstDayIndex && < $lastDayIndex
+            shiftDateDayIndex > $firstDayIndex && < $lastDayIndex
         )
     then
+        // TODO $firstShiftDate + 1 and $lastShiftDate - 1
         insertLogical(new EmployeeFreeDaySequence($employee, $firstShiftDate, $lastShiftDate));
 end
+//rule "insertFirstEmployeeFreeDaySequence"
+//        salience 1 // Do these rules first (optional, for performance)
+//    when
+//        EmployeeConsecutiveAssignmentStart(
+//            $employee : employee,
+//            $lastShiftDate : shiftDate,
+//            $lastDayIndex : shiftDateDayIndex
+//        )
+//
+//        // There are no working days before the first day
+//        not EmployeeConsecutiveAssignmentEnd(
+//            employee == $employee,
+//            shiftDateDayIndex < $lastDayIndex
+//        )
+//        RosterInfo(firstShiftDateDayIndex < $lastDayIndex, $firstShiftDate : firstShiftDate)
+//    then
+//        // TODO $lastShiftDate - 1
+//        insertLogical(new EmployeeFreeDaySequence($employee, $firstShiftDate, $lastShiftDate));
+//end
+//rule "insertLastEmployeeFreeDaySequence"
+//        salience 1 // Do these rules first (optional, for performance)
+//    when
+//        EmployeeConsecutiveAssignmentEnd(
+//            $employee : employee,
+//            $firstShiftDate : shiftDate,
+//            $firstDayIndex : shiftDateDayIndex
+//        )
+//
+//        // There are no working days after the last day
+//        not EmployeeConsecutiveAssignmentStart(
+//            employee == $employee,
+//            shiftDateDayIndex > $firstDayIndex
+//        )
+//        RosterInfo(lastShiftDateDayIndex > $firstDayIndex, $lastShiftDate : lastShiftDate)
+//    then
+//        // TODO $firstShiftDate + 1
+//        insertLogical(new EmployeeFreeDaySequence($employee, $firstShiftDate, $lastShiftDate));
+//end
 
 // Minimum number of consecutive free days
 rule "minimumConsecutiveFreeDays"

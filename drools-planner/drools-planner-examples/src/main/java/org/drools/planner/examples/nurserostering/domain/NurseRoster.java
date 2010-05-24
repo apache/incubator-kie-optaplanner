@@ -188,6 +188,8 @@ public class NurseRoster extends AbstractPersistable implements Solution {
 
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
+        // TODO add RosterInfo as a property on NurseRoster
+        facts.add(new RosterInfo(shiftDateList.get(0), shiftDateList.get(shiftDateList.size() - 1)));
         facts.addAll(skillList);
         facts.addAll(shiftTypeList);
         facts.addAll(shiftTypeSkillRequirementList);

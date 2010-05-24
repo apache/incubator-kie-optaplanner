@@ -65,13 +65,13 @@ public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeCons
                 .toComparison();
     }
 
-    public int getShiftDateDayIndex() {
-        return shiftDate.getDayIndex();
-    }
-
     @Override
     public String toString() {
         return employee + " ... - " + shiftDate;
+    }
+
+    public int getShiftDateDayIndex() {
+        return shiftDate.getDayIndex();
     }
 
 }
