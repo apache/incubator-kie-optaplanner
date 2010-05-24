@@ -6,7 +6,6 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
 /**
  * @author Geoffrey De Smet
@@ -14,13 +13,13 @@ import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequence>, Serializable {
 
     private Employee employee;
-    private ShiftDate firstShiftDate;
-    private ShiftDate lastShiftDate;
+    private int firstDayIndex;
+    private int lastDayIndex;
 
-    public EmployeeFreeDaySequence(Employee employee, ShiftDate firstShiftDate, ShiftDate lastShiftDate) {
+    public EmployeeFreeDaySequence(Employee employee, int firstDayIndex, int lastDayIndex) {
         this.employee = employee;
-        this.firstShiftDate = firstShiftDate;
-        this.lastShiftDate = lastShiftDate;
+        this.firstDayIndex = firstDayIndex;
+        this.lastDayIndex = lastDayIndex;
     }
 
     public Employee getEmployee() {
@@ -31,20 +30,20 @@ public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequen
         this.employee = employee;
     }
 
-    public ShiftDate getFirstShiftDate() {
-        return firstShiftDate;
+    public int getFirstDayIndex() {
+        return firstDayIndex;
     }
 
-    public void setFirstShiftDate(ShiftDate firstShiftDate) {
-        this.firstShiftDate = firstShiftDate;
+    public void setFirstDayIndex(int firstDayIndex) {
+        this.firstDayIndex = firstDayIndex;
     }
 
-    public ShiftDate getLastShiftDate() {
-        return lastShiftDate;
+    public int getLastDayIndex() {
+        return lastDayIndex;
     }
 
-    public void setLastShiftDate(ShiftDate lastShiftDate) {
-        this.lastShiftDate = lastShiftDate;
+    public void setLastDayIndex(int lastDayIndex) {
+        this.lastDayIndex = lastDayIndex;
     }
 
     public boolean equals(Object o) {
@@ -54,8 +53,8 @@ public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequen
             EmployeeFreeDaySequence other = (EmployeeFreeDaySequence) o;
             return new EqualsBuilder()
                     .append(employee, other.employee)
-                    .append(firstShiftDate, other.firstShiftDate)
-                    .append(lastShiftDate, other.lastShiftDate)
+                    .append(firstDayIndex, other.firstDayIndex)
+                    .append(lastDayIndex, other.lastDayIndex)
                     .isEquals();
         } else {
             return false;
@@ -65,34 +64,26 @@ public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequen
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)
-                .append(firstShiftDate)
-                .append(lastShiftDate)
+                .append(firstDayIndex)
+                .append(lastDayIndex)
                 .toHashCode();
     }
 
     public int compareTo(EmployeeFreeDaySequence other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
-                .append(firstShiftDate, other.firstShiftDate)
-                .append(lastShiftDate, other.lastShiftDate)
+                .append(firstDayIndex, other.firstDayIndex)
+                .append(lastDayIndex, other.lastDayIndex)
                 .toComparison();
     }
 
-    public int getFirstShiftDateDayIndex() {
-        return firstShiftDate.getDayIndex();
-    }
-
-    public int getLastShiftDateDayIndex() {
-        return lastShiftDate.getDayIndex();
-    }
-
     public int getDayLength() {
-        return lastShiftDate.getDayIndex() - firstShiftDate.getDayIndex() + 1;
+        return lastDayIndex - firstDayIndex + 1;
     }
 
     @Override
     public String toString() {
-        return employee + " is free between " + firstShiftDate + " - " + lastShiftDate;
+        return employee + " is free between " + firstDayIndex + " - " + lastDayIndex;
     }
 
 }
