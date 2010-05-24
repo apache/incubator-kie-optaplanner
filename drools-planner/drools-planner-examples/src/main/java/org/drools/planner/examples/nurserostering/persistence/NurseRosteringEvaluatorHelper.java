@@ -1,10 +1,8 @@
 package org.drools.planner.examples.nurserostering.persistence;
 
 import java.io.File;
-import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -59,7 +57,7 @@ public class NurseRosteringEvaluatorHelper {
         private String lineContainsFilter;
 
         private StringBuilder lineBuffer = new StringBuilder(120);
-        private Map<String, int[]> excessMap = new TreeMap<String, int[]>();
+        private Map<String, int[]> costMap = new TreeMap<String, int[]>();
         private String lastEmployeeCode = null;
 
         private EvaluatorSummaryFilterOutputStream(String name, String lineContainsFilter) {
@@ -89,14 +87,15 @@ public class NurseRosteringEvaluatorHelper {
                 int excessIndex = line.indexOf("excess = ");
                 if (excessIndex >= 0) {
                     String key = line.substring(0, excessIndex);
-                    int value = Integer.parseInt(line.substring(excessIndex).replaceAll("excess = (\\d+) .*", "$1"));
-                    int[] excess = excessMap.get(key);
-                    if (excess == null) {
-                        excess = new int[]{1, value};
-                        excessMap.put(key, excess);
+                    int costIndex = line.indexOf("cost = ");
+                    int value = Integer.parseInt((line.substring(costIndex) + " ").replaceAll("cost = (\\d+) .*", "$1"));
+                    int[] cost = costMap.get(key);
+                    if (cost == null) {
+                        cost = new int[]{1, value};
+                        costMap.put(key, cost);
                     } else {
-                        excess[0]++;
-                        excess[1] += value;
+                        cost[0]++;
+                        cost[1] += value;
                     }
                 }
                 if (lastEmployeeCode != null) {
@@ -108,13 +107,16 @@ public class NurseRosteringEvaluatorHelper {
 
         public void writeResults() {
             System.out.println("EvaluatorHelper results for " + name);
+            int grandTotal = 0;
             if (lineContainsFilter != null) {
                 System.out.println("with lineContainsFilter (" + lineContainsFilter + ")");
             }
-            for (Map.Entry<String, int[]> entry : excessMap.entrySet()) {
-                int[] excess = entry.getValue();
-                System.out.println(entry.getKey() + " count = " + excess[0] + " total = " + excess[1]);
+            for (Map.Entry<String, int[]> entry : costMap.entrySet()) {
+                int[] cost = entry.getValue();
+                grandTotal += cost[1];
+                System.out.println(entry.getKey() + " count = " + cost[0] + " total = " + cost[1]);
             }
+            System.out.println("Grand total: " + grandTotal);
         }
     }
 
