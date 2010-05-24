@@ -26,6 +26,7 @@ import org.drools.planner.examples.nurserostering.domain.ShiftType;
 import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
 import org.drools.planner.examples.nurserostering.domain.Skill;
 import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
+import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
 import org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
@@ -391,8 +392,9 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                         contractLineId, null,
                         element.getChild("MaxWorkingWeekendsInFourWeeks"),
                         ContractLineType.TOTAL_WORKING_WEEKENDS_IN_FOUR_WEEKS);
-// TODO
-//      <WeekendDefinition>SaturdaySunday</WeekendDefinition>
+                WeekendDefinition weekendDefinition = WeekendDefinition.valueOfCode(
+                        element.getChild("WeekendDefinition").getText());
+                contract.setWeekendDefinition(weekendDefinition);
                 contractLineId = readBooleanContractLine(contract, contractLineList, contractLineListOfContract,
                         contractLineId, element.getChild("CompleteWeekends"),
                         ContractLineType.COMPLETE_WEEKENDS);
@@ -528,10 +530,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 contractLine.setMaximumEnabled(maximumEnabled);
                 if (maximumEnabled) {
                     int maximumValue = Integer.parseInt(maxElement.getText());
-                    if (maximumValue < 1) {
+                    if (maximumValue < 0) {
                         throw new IllegalArgumentException("The maximumValue (" + maximumValue
                                 + ") of contract (" + contract.getCode() + ") and contractLineType ("
-                                + contractLineType + ") should be at least 1.");
+                                + contractLineType + ") should be at least 0.");
                     }
                     contractLine.setMaximumValue(maximumValue);
                     contractLine.setMaximumWeight(maximumWeight);

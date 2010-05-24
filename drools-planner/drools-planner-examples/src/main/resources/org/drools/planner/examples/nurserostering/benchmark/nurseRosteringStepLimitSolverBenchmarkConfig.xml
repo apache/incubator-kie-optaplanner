@@ -4,7 +4,7 @@
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
     <solverStatisticFilesDirectory>local/data/nurserostering/statistic</solverStatisticFilesDirectory>
     
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium01_initialized.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
         <!--<environmentMode>DEBUG</environmentMode>-->

@@ -5,6 +5,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
 
 /**
  * @author Geoffrey De Smet
@@ -14,6 +15,7 @@ public class Contract extends AbstractPersistable implements Comparable<Contract
 
     private String code;
     private String description;
+    private WeekendDefinition weekendDefinition;
 
     private List<ContractLine> contractLineList;
 
@@ -31,6 +33,14 @@ public class Contract extends AbstractPersistable implements Comparable<Contract
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public WeekendDefinition getWeekendDefinition() {
+        return weekendDefinition;
+    }
+
+    public void setWeekendDefinition(WeekendDefinition weekendDefinition) {
+        this.weekendDefinition = weekendDefinition;
     }
 
     public List<ContractLine> getContractLineList() {
