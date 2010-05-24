@@ -7,15 +7,17 @@ import java.util.EnumSet;
  */
 public enum WeekendDefinition {
     SATURDAY_SUNDAY("SaturdaySunday",
-            EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)),
+            DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
     FRIDAY_SATURDAY_SUNDAY("FridaySaturdaySunday",
-            EnumSet.of(DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)),
+            DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
     FRIDAY_SATURDAY_SUNDAY_MONDAY("FridaySaturdaySundayMonday",
-            EnumSet.of(DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY, DayOfWeek.MONDAY)),
+            DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY, DayOfWeek.MONDAY),
     SATURDAY_SUNDAY_MONDAY("SaturdaySundayMonday",
-            EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY, DayOfWeek.MONDAY));
+            DayOfWeek.SATURDAY, DayOfWeek.SUNDAY, DayOfWeek.MONDAY);
 
     private EnumSet<DayOfWeek> dayOfWeekSet;
+    private DayOfWeek firstDayOfWeekend;
+    private DayOfWeek lastDayOfWeekend;
 
     public static WeekendDefinition valueOfCode(String code) {
         for (WeekendDefinition weekendDefinition : values()) {
@@ -28,21 +30,44 @@ public enum WeekendDefinition {
 
     private String code;
 
-    private WeekendDefinition(String code, EnumSet<DayOfWeek> dayOfWeekSet) {
+    private WeekendDefinition(String code, DayOfWeek dayOfWeekend1, DayOfWeek dayOfWeekend2) {
         this.code = code;
-        this.dayOfWeekSet = dayOfWeekSet;
+        this.dayOfWeekSet = EnumSet.of(dayOfWeekend1, dayOfWeekend2);
+        this.firstDayOfWeekend = dayOfWeekend1;
+        this.lastDayOfWeekend = dayOfWeekend2;
+    }
+    private WeekendDefinition(String code, DayOfWeek dayOfWeekend1, DayOfWeek dayOfWeekend2, DayOfWeek dayOfWeekend3) {
+        this.code = code;
+        this.dayOfWeekSet = EnumSet.of(dayOfWeekend1, dayOfWeekend2, dayOfWeekend3);
+        this.firstDayOfWeekend = dayOfWeekend1;
+        this.lastDayOfWeekend = dayOfWeekend3;
+    }
+    private WeekendDefinition(String code, DayOfWeek dayOfWeekend1, DayOfWeek dayOfWeekend2, DayOfWeek dayOfWeekend3,
+            DayOfWeek dayOfWeekend4) {
+        this.code = code;
+        this.dayOfWeekSet = EnumSet.of(dayOfWeekend1, dayOfWeekend2, dayOfWeekend3, dayOfWeekend4);
+        this.firstDayOfWeekend = dayOfWeekend1;
+        this.lastDayOfWeekend = dayOfWeekend4;
     }
 
     public String getCode() {
         return code;
     }
 
-    public boolean isWeekend(DayOfWeek dayOfWeek) {
-        return dayOfWeekSet.contains(dayOfWeek);
+    public DayOfWeek getFirstDayOfWeekend() {
+        return firstDayOfWeekend;
+    }
+
+    public DayOfWeek getLastDayOfWeekend() {
+        return lastDayOfWeekend;
     }
 
     public String toString() {
         return code;
+    }
+
+    public boolean isWeekend(DayOfWeek dayOfWeek) {
+        return dayOfWeekSet.contains(dayOfWeek);
     }
 
 }

@@ -5,8 +5,11 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
+import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
+import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
 /**
  * @author Geoffrey De Smet
@@ -66,13 +69,29 @@ public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeCo
                 .toComparison();
     }
 
+    @Override
+    public String toString() {
+        return employee + " " + shiftDate + " - ...";
+    }
+
+    public Contract getContract() {
+        return employee.getContract();
+    }
+
     public int getShiftDateDayIndex() {
         return shiftDate.getDayIndex();
     }
 
-    @Override
-    public String toString() {
-        return employee + " " + shiftDate + " - ...";
+    public boolean isWeekendAndNotFirstDayOfWeekend() {
+        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
+        DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
+        return weekendDefinition.isWeekend(dayOfWeek) && weekendDefinition.getFirstDayOfWeekend() != dayOfWeek;
+    }
+
+    public int getDistanceToFirstDayOfWeekend() {
+        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
+        DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
+        return weekendDefinition.getFirstDayOfWeekend().getDistanceToNext(dayOfWeek);
     }
 
 }

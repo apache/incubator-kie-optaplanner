@@ -54,7 +54,16 @@ public enum DayOfWeek {
         return code;
     }
 
+    public int getDistanceToNext(DayOfWeek other) {
+        int distance = other.ordinal() - ordinal();
+        if (distance < 0) {
+            distance += 7;
+        }
+        return distance;
+    }
+
     public String toString() {
         return code.substring(0, 3);
     }
+
 }

@@ -78,6 +78,11 @@ public class EmployeeConsecutiveAssignment implements Comparable<EmployeeConsecu
                 .toComparison();
     }
 
+    @Override
+    public String toString() {
+        return employee + " is working between " + firstShiftDate + " - " + lastShiftDate;
+    }
+
     public int getFirstShiftDateDayIndex() {
         return firstShiftDate.getDayIndex();
     }
@@ -88,11 +93,6 @@ public class EmployeeConsecutiveAssignment implements Comparable<EmployeeConsecu
 
     public int getDayLength() {
         return lastShiftDate.getDayIndex() - firstShiftDate.getDayIndex() + 1;
-    }
-
-    @Override
-    public String toString() {
-        return employee + " is working between " + firstShiftDate + " - " + lastShiftDate;
     }
 
 }

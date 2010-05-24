@@ -327,7 +327,38 @@ end
 
 
 // Complete weekends
-// TODO
+rule "startOnNotFirstDayOfWeekend"
+    when
+        $contractLine : BooleanContractLine(
+            contractLineType == ContractLineType.COMPLETE_WEEKENDS, enabled == true,
+            $contract : contract
+        )
+        $employeeConsecutiveAssignmentStart : EmployeeConsecutiveAssignmentStart(
+            weekendAndNotFirstDayOfWeekend == true,
+            contract == $contract,
+            $distanceToFirstDayOfWeekend : distanceToFirstDayOfWeekend
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("startOnNotFirstDayOfWeekend", ConstraintType.NEGATIVE_SOFT,
+                $distanceToFirstDayOfWeekend * $contractLine.getWeight(),
+                $employeeConsecutiveAssignmentStart));
+end
+rule "endOnNotLastDayOfWeekend"
+    when
+        $contractLine : BooleanContractLine(
+            contractLineType == ContractLineType.COMPLETE_WEEKENDS, enabled == true,
+            $contract : contract
+        )
+        $employeeConsecutiveAssignmentEnd : EmployeeConsecutiveAssignmentEnd(
+            weekendAndNotLastDayOfWeekend == true,
+            contract == $contract,
+            $distanceToLastDayOfWeekend : distanceToLastDayOfWeekend
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("endOnNotLastDayOfWeekend", ConstraintType.NEGATIVE_SOFT,
+                $distanceToLastDayOfWeekend * $contractLine.getWeight(),
+                $employeeConsecutiveAssignmentEnd));
+end
 
 // Identical shiftTypes during a weekend
 // TODO

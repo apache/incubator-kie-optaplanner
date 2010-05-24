@@ -77,13 +77,13 @@ public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequen
                 .toComparison();
     }
 
-    public int getDayLength() {
-        return lastDayIndex - firstDayIndex + 1;
-    }
-
     @Override
     public String toString() {
         return employee + " is free between " + firstDayIndex + " - " + lastDayIndex;
+    }
+
+    public int getDayLength() {
+        return lastDayIndex - firstDayIndex + 1;
     }
 
 }
