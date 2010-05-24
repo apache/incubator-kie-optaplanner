@@ -78,6 +78,8 @@ public class NurseRosteringPanel extends SolutionPanel {
                 if (shiftDate.getDayOfWeek() == DayOfWeek.SATURDAY || shiftDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
                     employeeShiftDatePanel.setBackground(Color.LIGHT_GRAY);
                 }
+                employeeShiftDatePanel.setToolTipText("employee " + employee.getCode()
+                        + " on dayIndex " + shiftDate.getDayIndex());
                 add(employeeShiftDatePanel);
                 shiftDatePanelMap.put(shiftDate, employeeShiftDatePanel);
             }
