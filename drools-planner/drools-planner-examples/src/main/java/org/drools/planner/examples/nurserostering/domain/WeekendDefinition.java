@@ -37,7 +37,7 @@ public enum WeekendDefinition {
         return code;
     }
 
-    private boolean isWeekend(DayOfWeek dayOfWeek) {
+    public boolean isWeekend(DayOfWeek dayOfWeek) {
         return dayOfWeekSet.contains(dayOfWeek);
     }
 

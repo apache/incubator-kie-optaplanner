@@ -75,7 +75,7 @@ public class NurseRosteringPanel extends SolutionPanel {
             employeeShiftDatePanelMap.put(employee, shiftDatePanelMap);
             for (ShiftDate shiftDate : schedule.getShiftDateList()) {
                 EmployeeShiftDatePanel employeeShiftDatePanel = new EmployeeShiftDatePanel();
-                if (shiftDate.getDayOfWeek() == DayOfWeek.SATURDAY || shiftDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                if (employee.getContract().getWeekendDefinition().isWeekend(shiftDate.getDayOfWeek())) {
                     employeeShiftDatePanel.setBackground(Color.LIGHT_GRAY);
                 }
                 employeeShiftDatePanel.setToolTipText("employee " + employee.getCode()
