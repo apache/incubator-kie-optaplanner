@@ -27,10 +27,13 @@ import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeAssignmentTotal;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeDaySequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentEnd;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentEnd;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentStart;
 
 // @author Geoffrey De Smet
 
@@ -304,23 +307,82 @@ rule "maximumConsecutiveFreeDays"
 end
 
 
+rule "insertEmployeeConsecutiveWeekendAssignmentStart"
+        salience 2 // Do these rules first (optional, for performance)
+    when
+        Assignment(
+            weekend == true,
+            $employee : employee,
+            $weekendSundayIndex : weekendSundayIndex
+        )
+        // The first working weekend has no working weekend before it
+        not Assignment(
+            weekend == true,
+            employee == $employee,
+            weekendSundayIndex == ($weekendSundayIndex - 7)
+        )
+    then
+        insertLogical(new EmployeeConsecutiveWeekendAssignmentStart($employee, $weekendSundayIndex));
+end
+rule "insertEmployeeConsecutiveWeekendAssignmentEnd"
+        salience 2 // Do these rules first (optional, for performance)
+    when
+        Assignment(
+            weekend == true,
+            $employee : employee,
+            $weekendSundayIndex : weekendSundayIndex
+        )
+        // The last working weekend has no working weekend after it
+        not Assignment(
+            weekend == true,
+            employee == $employee,
+            weekendSundayIndex == ($weekendSundayIndex + 7)
+        )
+    then
+        insertLogical(new EmployeeConsecutiveWeekendAssignmentEnd($employee, $weekendSundayIndex));
+end
+
+rule "insertEmployeeWeekendSequence"
+    when
+        EmployeeConsecutiveWeekendAssignmentStart(
+            $employee : employee,
+            $firstSundayIndex : sundayIndex
+        )
+
+        EmployeeConsecutiveWeekendAssignmentEnd(
+            employee == $employee,
+            sundayIndex >= $firstSundayIndex,
+            $lastSundayIndex : sundayIndex
+        )
+
+        // There are no free weekends between the first and last weekend
+        not EmployeeConsecutiveWeekendAssignmentEnd(
+            employee == $employee,
+            sundayIndex >= $firstSundayIndex && < $lastSundayIndex
+        )
+    then
+        insertLogical(new EmployeeWeekendSequence($employee, $firstSundayIndex, $lastSundayIndex));
+end
+
 // Maximum number of consecutive working weekends
-// TODO do start and end
-//rule "maximumConsecutiveWorkingWeekends"
-//        salience 1 // Do these rules first (optional, for performance)
-//    when
-//        MinMaxContractLine(contractLineType == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS, maximumEnabled == true,
-//            $contract : contract, $maximumValue : maximumValue)
-//        $employee : Employee(contract == $contract)
-//
-//
-//        $totalAssignmentSize : Number() from accumulate(
-//            $assignment : Assignment(employee == $employee),
-//            count($assignment)
-//        )
-//    then
-//        insertLogical(new EmployeeAssignmentTotal($employee, $totalAssignmentSize.intValue()));
-//end
+rule "maximumConsecutiveWorkingWeekends"
+    when
+        $contractLine : MinMaxContractLine(
+            contractLineType == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS, maximumEnabled == true,
+            $contract : contract, $maximumValue : maximumValue
+        )
+        $employee : Employee(contract == $contract)
+
+        $employeeWeekendSequence : EmployeeWeekendSequence(
+            employee == $employee,
+            weekendLength > $maximumValue,
+            $weekendLength : weekendLength
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingWeekends", ConstraintType.NEGATIVE_SOFT,
+                ($weekendLength - $maximumValue) * $contractLine.getMaximumWeight(),
+                $employeeWeekendSequence));
+end
 
 
 // Complete weekends

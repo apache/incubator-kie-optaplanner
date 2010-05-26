@@ -107,4 +107,14 @@ public class Assignment extends AbstractPersistable implements Comparable<Assign
         return employee.getContract();
     }
 
+    public boolean isWeekend() {
+        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
+        DayOfWeek dayOfWeek = shift.getShiftDate().getDayOfWeek();
+        return weekendDefinition.isWeekend(dayOfWeek);
+    }
+
+    public int getWeekendSundayIndex() {
+        return shift.getShiftDate().getWeekendSundayIndex();
+    }
+
 }
