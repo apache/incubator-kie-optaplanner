@@ -27,7 +27,7 @@ import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeAssignmentTotal;
-import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignment;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeDaySequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentEnd;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
@@ -142,20 +142,17 @@ rule "insertEmployeeConsecutiveAssignmentEnd"
         insertLogical(new EmployeeConsecutiveAssignmentEnd($employee, $shiftDate));
 end
 
-// TODO rename EmployeeConsecutiveAssignment and use dayIndex ints
-rule "insertEmployeeConsecutiveAssignment"
+rule "insertEmployeeWorkSequence"
         salience 1 // Do these rules first (optional, for performance)
     when
         EmployeeConsecutiveAssignmentStart(
             $employee : employee,
-            $firstShiftDate : shiftDate,
             $firstDayIndex : shiftDateDayIndex
         )
 
         EmployeeConsecutiveAssignmentEnd(
             employee == $employee,
             shiftDateDayIndex >= $firstDayIndex,
-            $lastShiftDate : shiftDate,
             $lastDayIndex : shiftDateDayIndex
         )
 
@@ -165,7 +162,7 @@ rule "insertEmployeeConsecutiveAssignment"
             shiftDateDayIndex >= $firstDayIndex && < $lastDayIndex
         )
     then
-        insertLogical(new EmployeeConsecutiveAssignment($employee, $firstShiftDate, $lastShiftDate));
+        insertLogical(new EmployeeWorkSequence($employee, $firstDayIndex, $lastDayIndex));
 end
 
 // Minimum number of consecutive working days
@@ -177,7 +174,7 @@ rule "minimumConsecutiveWorkingDays"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeConsecutiveAssignment : EmployeeConsecutiveAssignment(
+        $employeeWorkSequence : EmployeeWorkSequence(
             employee == $employee,
             dayLength < $minimumValue,
             $dayLength : dayLength
@@ -185,7 +182,7 @@ rule "minimumConsecutiveWorkingDays"
     then
         insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
                 ($minimumValue - $dayLength) * $contractLine.getMinimumWeight(),
-                $employeeConsecutiveAssignment));
+                $employeeWorkSequence));
 end
 
 // Maximum number of consecutive working days
@@ -197,7 +194,7 @@ rule "maximumConsecutiveWorkingDays"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeConsecutiveAssignment : EmployeeConsecutiveAssignment(
+        $employeeWorkSequence : EmployeeWorkSequence(
             employee == $employee,
             dayLength > $maximumValue,
             $dayLength : dayLength
@@ -205,7 +202,7 @@ rule "maximumConsecutiveWorkingDays"
     then
         insertLogical(new IntConstraintOccurrence("maximumConsecutiveWorkingDays", ConstraintType.NEGATIVE_SOFT,
                 ($dayLength - $maximumValue) * $contractLine.getMaximumWeight(),
-                $employeeConsecutiveAssignment));
+                $employeeWorkSequence));
 end
 
 
