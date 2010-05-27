@@ -89,15 +89,15 @@ public class SolutionBusiness {
                     + ") does not exist. The working directory should be set to drools-planner-examples.");
         }
         solvedDataDir = new File(getDataDir(), "solved");
-        if (!solvedDataDir.exists()) {
+        if (!solvedDataDir.exists() && !solvedDataDir.mkdir()) {
             throw new IllegalStateException("The directory solvedDataDir (" + solvedDataDir.getAbsolutePath()
-                    + ") does not exist. The working directory should be set to drools-planner-examples.");
+                    + ") does not exist and could not be created.");
         }
         if (hasExporter()) {
             exportDataDir = new File(getDataDir(), "output");
-            if (!exportDataDir.exists()) {
+            if (!exportDataDir.exists() && !exportDataDir.mkdir()) {
                 throw new IllegalStateException("The directory exportDataDir (" + exportDataDir.getAbsolutePath()
-                        + ") does not exist. The working directory should be set to drools-planner-examples.");
+                        + ") does not exist and could not be created.");
             }
         }
     }
