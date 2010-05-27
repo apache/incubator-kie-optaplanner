@@ -70,4 +70,8 @@ public enum WeekendDefinition {
         return dayOfWeekSet.contains(dayOfWeek);
     }
 
+    public int getWeekendLength() {
+        return dayOfWeekSet.size();
+    }
+
 }

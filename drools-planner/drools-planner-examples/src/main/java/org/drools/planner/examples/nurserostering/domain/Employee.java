@@ -50,4 +50,8 @@ public class Employee extends AbstractPersistable implements Comparable<Employee
         return code + "(" + name + ")";
     }
 
+    public int getWeekendLength() {
+        return getContract().getWeekendLength();
+    }
+
 }

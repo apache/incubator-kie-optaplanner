@@ -27,13 +27,13 @@ import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeAssignmentTotal;
-import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
-import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
-import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeDaySequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentEnd;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentEnd;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentStart;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeDaySequence;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 
 // @author Geoffrey De Smet
 
@@ -79,12 +79,12 @@ rule "insertEmployeeAssignmentTotal"
         MinMaxContractLine(contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, enabled == true,
             $contract : contract)
         $employee : Employee(contract == $contract)
-        $totalAssignmentSize : Number() from accumulate(
+        $assignmentTotal : Number() from accumulate(
             $assignment : Assignment(employee == $employee),
             count($assignment)
         )
     then
-        insertLogical(new EmployeeAssignmentTotal($employee, $totalAssignmentSize.intValue()));
+        insertLogical(new EmployeeAssignmentTotal($employee, $assignmentTotal.intValue()));
 end
 
 // Minimum number of assignments
@@ -420,7 +420,26 @@ rule "endOnNotLastDayOfWeekend"
 end
 
 // Identical shiftTypes during a weekend
-// TODO
+rule "identicalShiftTypesDuringWeekend"
+    when
+        $contractLine : BooleanContractLine(contractLineType == ContractLineType.IDENTICAL_SHIFT_TYPES_DURING_WEEKEND,
+            enabled == true, $contract : contract)
+        $employee : Employee(contract == $contract, $weekendLength : weekendLength)
+        ShiftDate(dayOfWeek == DayOfWeek.SUNDAY, $sundayIndex : dayIndex)
+        $shiftType : ShiftType()
+        $weekendAssignmentTotal : Number(intValue > 0 && < $weekendLength) from accumulate(
+            $assignment : Assignment(
+                weekend == true,
+                weekendSundayIndex == $sundayIndex,
+                employee == $employee,
+                shiftType == $shiftType),
+            count($assignment)
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("identicalShiftTypesDuringWeekend", ConstraintType.NEGATIVE_SOFT,
+                ($weekendLength - $weekendAssignmentTotal.intValue()) * $contractLine.getWeight(),
+                $employee, $sundayIndex, $shiftType));
+end
 
 // Two free days after a night shift
 // TODO

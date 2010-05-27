@@ -62,4 +62,8 @@ public class Contract extends AbstractPersistable implements Comparable<Contract
         return code;
     }
 
+    public int getWeekendLength() {
+        return weekendDefinition.getWeekendLength();
+    }
+
 }
