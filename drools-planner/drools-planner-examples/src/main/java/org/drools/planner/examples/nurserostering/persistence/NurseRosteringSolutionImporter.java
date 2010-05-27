@@ -326,6 +326,19 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                         + ") of pattern (" + pattern.getCode() + ") does not exist.");
                             }
                         }
+                        Element dayElement = patternEntryElement.getChild("Day");
+                        DayOfWeek dayOfWeek = DayOfWeek.valueOfCode(dayElement.getText());
+                        if (dayOfWeek == null) {
+                            if (dayElement.getText().equals("Any")) {
+                                // TODO
+
+
+                            } else {
+                                throw new IllegalArgumentException("The dayOfWeek (" + dayElement.getText()
+                                        + ") of pattern (" + pattern.getCode() + ") does not exist.");
+                            }
+                        }
+
                         // TODO shiftType & day etc
 
     //        <PatternEntry index="0">
