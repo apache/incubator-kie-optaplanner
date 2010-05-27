@@ -44,32 +44,32 @@ public class ExamplesApp extends JFrame {
         contentPane.add(new JLabel("Which example do you want to see?"));
         contentPane.add(new JButton(new AbstractAction("N queens"){
             public void actionPerformed(ActionEvent e) {
-                new NQueensApp().init();
+                new NQueensApp().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("Miss Manners 2009"){
             public void actionPerformed(ActionEvent e) {
-                new Manners2009App().init();
+                new Manners2009App().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("Traveling tournament"){
             public void actionPerformed(ActionEvent e) {
-                new SmartTravelingTournamentApp().init();
+                new SmartTravelingTournamentApp().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("ITC2007 Curriculum course timetabling"){
             public void actionPerformed(ActionEvent e) {
-                new CurriculumCourseApp().init();
+                new CurriculumCourseApp().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("ITC2007 Examination timetabling"){
             public void actionPerformed(ActionEvent e) {
-                new ExaminationApp().init();
+                new ExaminationApp().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("Patient admission schedule"){
             public void actionPerformed(ActionEvent e) {
-                new PatientAdmissionScheduleApp().init();
+                new PatientAdmissionScheduleApp().init(false);
             }
         }));
         return contentPane;

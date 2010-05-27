@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,13 +63,12 @@ public class WorkflowFrame extends JFrame {
         this.solutionPanel = solutionPanel;
         solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setWorkflowFrame(this);
-        registerSolverEventListener();
+        registerListeners();
         constraintScoreMapDialog = new ConstraintScoreMapDialog(this);
         constraintScoreMapDialog.setSolutionBusiness(solutionBusiness);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private void registerSolverEventListener() {
+    private void registerListeners() {
         solutionBusiness.addSolverEventLister(new SolverEventListener() {
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
                 final Solution bestSolution = event.getNewBestSolution();
@@ -76,6 +77,12 @@ public class WorkflowFrame extends JFrame {
                         resultLabel.setText("Latest best score: " + bestSolution.getScore());
                     }
                 });
+            }
+        });
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                // This async, so it doesn't stop the solving immediately
+                solutionBusiness.terminateSolvingEarly();
             }
         });
     }

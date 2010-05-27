@@ -1,5 +1,7 @@
 package org.drools.planner.examples.common.app;
 
+import javax.swing.JFrame;
+
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.business.SolutionBusiness;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
@@ -22,6 +24,11 @@ public abstract class CommonApp extends LoggingMain {
     }
 
     public void init() {
+        init(true);
+    }
+
+    public void init(boolean exitOnClose) {
+        workflowFrame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
         workflowFrame.init();
         workflowFrame.setVisible(true);
     }
