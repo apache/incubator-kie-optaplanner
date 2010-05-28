@@ -103,6 +103,10 @@ public class Assignment extends AbstractPersistable implements Comparable<Assign
         return shift.getShiftDate().getDayIndex();
     }
 
+    public DayOfWeek getShiftDateDayOfWeek() {
+        return shift.getShiftDate().getDayOfWeek();
+    }
+
     public Contract getContract() {
         return employee.getContract();
     }

@@ -13,6 +13,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
+import org.drools.planner.examples.nurserostering.domain.contract.PatternContractLine;
 import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
@@ -30,8 +31,10 @@ public class NurseRoster extends AbstractPersistable implements Solution {
     private List<ShiftType> shiftTypeList;
     private List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList;
     private List<Pattern> patternList;
+    private List<PatternEntry> patternEntryList;
     private List<Contract> contractList;
     private List<ContractLine> contractLineList;
+    private List<PatternContractLine> patternContractLineList;
     private List<Employee> employeeList;
     private List<SkillProficiency> skillProficiencyList;
     private List<ShiftDate> shiftDateList;
@@ -85,6 +88,14 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         this.patternList = patternList;
     }
 
+    public List<PatternEntry> getPatternEntryList() {
+        return patternEntryList;
+    }
+
+    public void setPatternEntryList(List<PatternEntry> patternEntryList) {
+        this.patternEntryList = patternEntryList;
+    }
+
     public List<Contract> getContractList() {
         return contractList;
     }
@@ -99,6 +110,14 @@ public class NurseRoster extends AbstractPersistable implements Solution {
 
     public void setContractLineList(List<ContractLine> contractLineList) {
         this.contractLineList = contractLineList;
+    }
+
+    public List<PatternContractLine> getPatternContractLineList() {
+        return patternContractLineList;
+    }
+
+    public void setPatternContractLineList(List<PatternContractLine> patternContractLineList) {
+        this.patternContractLineList = patternContractLineList;
     }
 
     public List<Employee> getEmployeeList() {
@@ -194,8 +213,10 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         facts.addAll(shiftTypeList);
         facts.addAll(shiftTypeSkillRequirementList);
         facts.addAll(patternList);
+        facts.addAll(patternEntryList);
         facts.addAll(contractList);
         facts.addAll(contractLineList);
+        facts.addAll(patternContractLineList);
         facts.addAll(employeeList);
         facts.addAll(skillProficiencyList);
         facts.addAll(shiftDateList);
@@ -224,8 +245,10 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         clone.shiftTypeList = shiftTypeList;
         clone.shiftTypeSkillRequirementList = shiftTypeSkillRequirementList;
         clone.patternList = patternList;
+        clone.patternEntryList = patternEntryList;
         clone.contractList = contractList;
         clone.contractLineList = contractLineList;
+        clone.patternContractLineList = patternContractLineList;
         clone.employeeList = employeeList;
         clone.skillProficiencyList = skillProficiencyList;
         clone.shiftDateList = shiftDateList;

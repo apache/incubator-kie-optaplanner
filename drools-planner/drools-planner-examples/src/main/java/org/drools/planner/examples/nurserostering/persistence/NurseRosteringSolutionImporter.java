@@ -20,6 +20,8 @@ import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
+import org.drools.planner.examples.nurserostering.domain.PatternEntry;
+import org.drools.planner.examples.nurserostering.domain.PatternEntryPropertyWildcard;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
@@ -32,6 +34,7 @@ import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLineType;
 import org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine;
+import org.drools.planner.examples.nurserostering.domain.contract.PatternContractLine;
 import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
@@ -292,13 +295,17 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
 
         private void readPatternList(NurseRoster nurseRoster, Element patternsElement) throws JDOMException {
             List<Pattern> patternList;
+            List<PatternEntry> patternEntryList;
             if (patternsElement == null) {
                 patternList = Collections.emptyList();
+                patternEntryList = Collections.emptyList();
             } else {
                 List<Element> patternElementList = (List<Element>) patternsElement.getChildren();
                 patternList = new ArrayList<Pattern>(patternElementList.size());
                 patternMap = new HashMap<String, Pattern>(patternElementList.size());
                 long id = 0L;
+                patternEntryList = new ArrayList<PatternEntry>(patternElementList.size() * 3);
+                long patternEntryId = 0L;
                 for (Element element : patternElementList) {
                     assertElementName(element, "Pattern");
                     Pattern pattern = new Pattern();
@@ -308,52 +315,48 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
 
                     List<Element> patternEntryElementList = (List<Element>) element.getChild("PatternEntries")
                             .getChildren();
+                    int entryIndex = 0;
                     for (Element patternEntryElement : patternEntryElementList) {
                         assertElementName(patternEntryElement, "PatternEntry");
                         Element shiftTypeElement = patternEntryElement.getChild("ShiftType");
+                        PatternEntryPropertyWildcard shiftTypeWildcard;
                         ShiftType shiftType = shiftTypeMap.get(shiftTypeElement.getText());
                         if (shiftType == null) {
                             if (shiftTypeElement.getText().equals("Any")) {
-                                // TODO
-
-
+                                shiftTypeWildcard = PatternEntryPropertyWildcard.ANY;
                             } else if (shiftTypeElement.getText().equals("None")) {
-                                // TODO
-
-
+                                shiftTypeWildcard = PatternEntryPropertyWildcard.NONE;
                             } else {
                                 throw new IllegalArgumentException("The shiftType (" + shiftTypeElement.getText()
                                         + ") of pattern (" + pattern.getCode() + ") does not exist.");
                             }
+                        } else {
+                            shiftTypeWildcard = PatternEntryPropertyWildcard.SPECIFIC;
                         }
                         Element dayElement = patternEntryElement.getChild("Day");
+                        PatternEntryPropertyWildcard dayOfWeekWildcard;
                         DayOfWeek dayOfWeek = DayOfWeek.valueOfCode(dayElement.getText());
                         if (dayOfWeek == null) {
                             if (dayElement.getText().equals("Any")) {
-                                // TODO
-
-
+                                dayOfWeekWildcard = PatternEntryPropertyWildcard.ANY;
                             } else {
                                 throw new IllegalArgumentException("The dayOfWeek (" + dayElement.getText()
                                         + ") of pattern (" + pattern.getCode() + ") does not exist.");
                             }
+                        } else {
+                            dayOfWeekWildcard = PatternEntryPropertyWildcard.SPECIFIC;
                         }
-
-                        // TODO shiftType & day etc
-
-    //        <PatternEntry index="0">
-    //          <ShiftType>None</ShiftType>
-    //          <Day>Friday</Day>
-    //        </PatternEntry>
-    //        <PatternEntry index="1">
-    //          <ShiftType>Any</ShiftType>
-    //          <Day>Saturday</Day>
-    //        </PatternEntry>
-    //        <PatternEntry index="2">
-    //          <ShiftType>Any</ShiftType>
-    //          <Day>Sunday</Day>
-    //        </PatternEntry>
-
+                        PatternEntry patternEntry = new PatternEntry();
+                        patternEntry.setId(patternEntryId);
+                        patternEntry.setPattern(pattern);
+                        patternEntry.setEntryIndex(entryIndex);
+                        patternEntry.setDayOfWeekWildcard(dayOfWeekWildcard);
+                        patternEntry.setDayOfWeek(dayOfWeek);
+                        patternEntry.setShiftTypeWildcard(shiftTypeWildcard);
+                        patternEntry.setShiftType(shiftType);
+                        patternEntryList.add(patternEntry);
+                        patternEntryId++;
+                        entryIndex++;
                     }
 
                     patternList.add(pattern);
@@ -366,6 +369,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 }
             }
             nurseRoster.setPatternList(patternList);
+            nurseRoster.setPatternEntryList(patternEntryList);
         }
 
         private void readContractList(NurseRoster nurseRoster, Element contractsElement) throws JDOMException {
@@ -377,6 +381,9 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             List<ContractLine> contractLineList = new ArrayList<ContractLine>(
                     contractElementList.size() * contractLineTypeListSize);
             long contractLineId = 0L;
+            List<PatternContractLine> patternContractLineList = new ArrayList<PatternContractLine>(
+                    contractElementList.size() * 3);
+            long patternContractLineId = 0L;
             for (Element element : contractElementList) {
                 assertElementName(element, "Contract");
                 Contract contract = new Contract();
@@ -434,14 +441,12 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                         throw new IllegalArgumentException("The pattern (" + patternElement.getText()
                                 + ") of contract (" + contract.getCode() + ") does not exist.");
                     }
-                    // TODO unwanted pattern
-//      <UnwantedPatterns>
-//        <Pattern>0</Pattern>
-//        <Pattern>1</Pattern>
-//        <Pattern>2</Pattern>
-//      </UnwantedPatterns>
-
-
+                    PatternContractLine patternContractLine = new PatternContractLine();
+                    patternContractLine.setId(patternContractLineId);
+                    patternContractLine.setContract(contract);
+                    patternContractLine.setPattern(pattern);
+                    patternContractLineList.add(patternContractLine);
+                    patternContractLineId++;
                 }
 
                 contractList.add(contract);
@@ -454,6 +459,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             }
             nurseRoster.setContractList(contractList);
             nurseRoster.setContractLineList(contractLineList);
+            nurseRoster.setPatternContractLineList(patternContractLineList);
         }
 
         private long readBooleanContractLine(Contract contract, List<ContractLine> contractLineList,
