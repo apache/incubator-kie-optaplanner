@@ -448,11 +448,11 @@ end
 rule "dayOffRequest"
     when
         $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
-        $employeeAssignment : Assignment(employee == $employee, shiftDate == $shiftDate)
+        $assignment : Assignment(employee == $employee, shiftDate == $shiftDate)
     then
         insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
-                $dayOffRequest, $employeeAssignment));
+                $dayOffRequest, $assignment));
 end
 rule "dayOnRequest"
     when
@@ -468,11 +468,11 @@ end
 rule "shiftOffRequest"
     when
         $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight)
-        $employeeAssignment : Assignment(employee == $employee, shift == $shift)
+        $assignment : Assignment(employee == $employee, shift == $shift)
     then
         insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
-                $shiftOffRequest, $employeeAssignment));
+                $shiftOffRequest, $assignment));
 end
 rule "shiftOnRequest"
     when
@@ -489,13 +489,13 @@ rule "alternativeSkill"
     when
         $contractLine : BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY,
             $contract : contract)
-        $employeeAssignment : Assignment(contract == $contract, $employee : employee, $shiftType : shiftType)
+        $assignment : Assignment(contract == $contract, $employee : employee, $shiftType : shiftType)
         ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill)
         not SkillProficiency(employee == $employee, skill == $skill)
     then
         insertLogical(new IntConstraintOccurrence("alternativeSkill", ConstraintType.NEGATIVE_SOFT,
                 $contractLine.getWeight(),
-                $employeeAssignment));
+                $assignment));
 end
 
 // Unwanted patterns
