@@ -10,13 +10,13 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 /**
  * @author Geoffrey De Smet
  */
-public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequence>, Serializable {
+public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, Serializable {
 
     private Employee employee;
     private int firstDayIndex;
     private int lastDayIndex;
 
-    public EmployeeFreeDaySequence(Employee employee, int firstDayIndex, int lastDayIndex) {
+    public EmployeeFreeSequence(Employee employee, int firstDayIndex, int lastDayIndex) {
         this.employee = employee;
         this.firstDayIndex = firstDayIndex;
         this.lastDayIndex = lastDayIndex;
@@ -49,8 +49,8 @@ public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequen
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeFreeDaySequence) {
-            EmployeeFreeDaySequence other = (EmployeeFreeDaySequence) o;
+        } else if (o instanceof EmployeeFreeSequence) {
+            EmployeeFreeSequence other = (EmployeeFreeSequence) o;
             return new EqualsBuilder()
                     .append(employee, other.employee)
                     .append(firstDayIndex, other.firstDayIndex)
@@ -69,7 +69,7 @@ public class EmployeeFreeDaySequence implements Comparable<EmployeeFreeDaySequen
                 .toHashCode();
     }
 
-    public int compareTo(EmployeeFreeDaySequence other) {
+    public int compareTo(EmployeeFreeSequence other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
                 .append(firstDayIndex, other.firstDayIndex)

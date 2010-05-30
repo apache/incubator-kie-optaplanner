@@ -34,7 +34,7 @@ import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecut
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentEnd;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentStart;
-import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeDaySequence;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.PatternEntryOccurrence;
@@ -213,7 +213,7 @@ rule "maximumConsecutiveWorkingDays"
 end
 
 
-rule "insertEmployeeFreeDaySequence"
+rule "insertEmployeeFreeSequence"
         salience 1 // Do these rules first (optional, for performance)
     when
         EmployeeConsecutiveAssignmentEnd(
@@ -233,9 +233,9 @@ rule "insertEmployeeFreeDaySequence"
             shiftDateDayIndex > $firstDayIndexMinusOne && < $lastDayIndexPlusOne
         )
     then
-        insertLogical(new EmployeeFreeDaySequence($employee, $firstDayIndexMinusOne + 1, $lastDayIndexPlusOne - 1));
+        insertLogical(new EmployeeFreeSequence($employee, $firstDayIndexMinusOne + 1, $lastDayIndexPlusOne - 1));
 end
-rule "insertFirstEmployeeFreeDaySequence"
+rule "insertFirstEmployeeFreeSequence"
         salience 1 // Do these rules first (optional, for performance)
     when
         EmployeeConsecutiveAssignmentStart(
@@ -250,9 +250,9 @@ rule "insertFirstEmployeeFreeDaySequence"
         )
         RosterInfo(firstShiftDateDayIndex < $lastDayIndexPlusOne, $firstDayIndex : firstShiftDateDayIndex)
     then
-        insertLogical(new EmployeeFreeDaySequence($employee, $firstDayIndex, $lastDayIndexPlusOne - 1));
+        insertLogical(new EmployeeFreeSequence($employee, $firstDayIndex, $lastDayIndexPlusOne - 1));
 end
-rule "insertLastEmployeeFreeDaySequence"
+rule "insertLastEmployeeFreeSequence"
         salience 1 // Do these rules first (optional, for performance)
     when
         EmployeeConsecutiveAssignmentEnd(
@@ -267,7 +267,7 @@ rule "insertLastEmployeeFreeDaySequence"
         )
         RosterInfo(lastShiftDateDayIndex > $firstDayIndexMinusOne, $lastDayIndex : lastShiftDateDayIndex)
     then
-        insertLogical(new EmployeeFreeDaySequence($employee, $firstDayIndexMinusOne + 1, $lastDayIndex));
+        insertLogical(new EmployeeFreeSequence($employee, $firstDayIndexMinusOne + 1, $lastDayIndex));
 end
 
 // Minimum number of consecutive free days
@@ -279,7 +279,7 @@ rule "minimumConsecutiveFreeDays"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeFreeDaySequence : EmployeeFreeDaySequence(
+        $employeeFreeSequence : EmployeeFreeSequence(
             employee == $employee,
             dayLength < $minimumValue,
             $dayLength : dayLength
@@ -287,7 +287,7 @@ rule "minimumConsecutiveFreeDays"
     then
         insertLogical(new IntConstraintOccurrence("minimumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
                 ($minimumValue - $dayLength) * $contractLine.getMinimumWeight(),
-                $employeeFreeDaySequence));
+                $employeeFreeSequence));
 end
 
 // Maximum number of consecutive free days
@@ -299,7 +299,7 @@ rule "maximumConsecutiveFreeDays"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeFreeDaySequence : EmployeeFreeDaySequence(
+        $employeeFreeSequence : EmployeeFreeSequence(
             employee == $employee,
             dayLength > $maximumValue,
             $dayLength : dayLength
@@ -307,7 +307,7 @@ rule "maximumConsecutiveFreeDays"
     then
         insertLogical(new IntConstraintOccurrence("maximumConsecutiveFreeDays", ConstraintType.NEGATIVE_SOFT,
                 ($dayLength - $maximumValue) * $contractLine.getMaximumWeight(),
-                $employeeFreeDaySequence));
+                $employeeFreeSequence));
 end
 
 
