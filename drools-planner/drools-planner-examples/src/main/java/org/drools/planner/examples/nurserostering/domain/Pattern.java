@@ -1,5 +1,7 @@
 package org.drools.planner.examples.nurserostering.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
@@ -11,6 +13,9 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 public class Pattern extends AbstractPersistable implements Comparable<Pattern> {
 
     private String code;
+
+    private List<PatternEntry> patternEntryList;
+
     private int weight;
 
     public String getCode() {
@@ -19,6 +24,14 @@ public class Pattern extends AbstractPersistable implements Comparable<Pattern> 
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public List<PatternEntry> getPatternEntryList() {
+        return patternEntryList;
+    }
+
+    public void setPatternEntryList(List<PatternEntry> patternEntryList) {
+        this.patternEntryList = patternEntryList;
     }
 
     public int getWeight() {
@@ -38,6 +51,10 @@ public class Pattern extends AbstractPersistable implements Comparable<Pattern> 
     @Override
     public String toString() {
         return code;
+    }
+
+    public int getPatternEntrySize() {
+        return patternEntryList.size();
     }
 
 }

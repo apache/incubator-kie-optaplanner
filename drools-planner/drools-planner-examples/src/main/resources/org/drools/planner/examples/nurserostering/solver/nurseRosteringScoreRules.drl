@@ -562,9 +562,23 @@ rule "insertPatternEntryOccurrenceNoneShiftType"
     then
         insertLogical(new PatternEntryOccurrence($patternEntry, $employee, $shiftDate));
 end
-rule "unwantedPatterns"
+rule "unwantedPatternsSize2"
     when
-        $pattern : Pattern()
+        $pattern : Pattern(patternEntrySize == 2)
+        PatternEntryOccurrence(
+            pattern == $pattern, entryIndex == 0,
+            $employee : employee, $firstDayIndex : dayIndex)
+        PatternEntryOccurrence(
+            pattern == $pattern, entryIndex == 1,
+            employee == $employee, dayIndex == ($firstDayIndex + 1))
+    then
+        insertLogical(new IntConstraintOccurrence("unwantedPatterns", ConstraintType.NEGATIVE_SOFT,
+                $pattern.getWeight(),
+                $employee, $pattern, $firstDayIndex));
+end
+rule "unwantedPatternsSize3"
+    when
+        $pattern : Pattern(patternEntrySize == 3)
         PatternEntryOccurrence(
             pattern == $pattern, entryIndex == 0,
             $employee : employee, $firstDayIndex : dayIndex)
@@ -577,7 +591,27 @@ rule "unwantedPatterns"
     then
         insertLogical(new IntConstraintOccurrence("unwantedPatterns", ConstraintType.NEGATIVE_SOFT,
                 $pattern.getWeight(),
-                $pattern, $employee, $firstDayIndex));
+                $employee, $pattern, $firstDayIndex));
+end
+rule "unwantedPatternsSize4"
+    when
+        $pattern : Pattern(patternEntrySize == 4)
+        PatternEntryOccurrence(
+            pattern == $pattern, entryIndex == 0,
+            $employee : employee, $firstDayIndex : dayIndex)
+        PatternEntryOccurrence(
+            pattern == $pattern, entryIndex == 1,
+            employee == $employee, dayIndex == ($firstDayIndex + 1))
+        PatternEntryOccurrence(
+            pattern == $pattern, entryIndex == 2,
+            employee == $employee, dayIndex == ($firstDayIndex + 2))
+        PatternEntryOccurrence(
+            pattern == $pattern, entryIndex == 3,
+            employee == $employee, dayIndex == ($firstDayIndex + 3))
+    then
+        insertLogical(new IntConstraintOccurrence("unwantedPatterns", ConstraintType.NEGATIVE_SOFT,
+                $pattern.getWeight(),
+                $employee, $pattern, $firstDayIndex));
 end
 
 // ############################################################################

@@ -315,6 +315,8 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
 
                     List<Element> patternEntryElementList = (List<Element>) element.getChild("PatternEntries")
                             .getChildren();
+                    List<PatternEntry> patternEntryListOfPattern = new ArrayList<PatternEntry>(
+                            patternEntryElementList.size());
                     int entryIndex = 0;
                     for (Element patternEntryElement : patternEntryElementList) {
                         assertElementName(patternEntryElement, "PatternEntry");
@@ -355,9 +357,16 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                         patternEntry.setShiftTypeWildcard(shiftTypeWildcard);
                         patternEntry.setShiftType(shiftType);
                         patternEntryList.add(patternEntry);
+                        patternEntryListOfPattern.add(patternEntry);
                         patternEntryId++;
                         entryIndex++;
                     }
+                    if (patternEntryListOfPattern.size() > 4) {
+                        throw new IllegalArgumentException("The size of the patternEntries ("
+                                + patternEntryListOfPattern.size() + ") of pattern (" + pattern.getCode()
+                                + ") is bigger than 4, which is not supported.");
+                    }
+                    pattern.setPatternEntryList(patternEntryListOfPattern);
 
                     patternList.add(pattern);
                     if (patternMap.containsKey(pattern.getCode())) {

@@ -30,6 +30,7 @@
                 - ge0ffrey's main pc: sprint 11, medium 700, long 42000
             -->
             <maximumSecondsSpend>700</maximumSecondsSpend>
+            <!--<scoreAttained>0hard/-999999999soft</scoreAttained>-->
         </termination>
     </inheritedLocalSearchSolver>
 
