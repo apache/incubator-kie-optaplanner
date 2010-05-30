@@ -526,6 +526,34 @@ rule "alternativeSkill"
 end
 
 // Unwanted patterns
+rule "unwantedPatternWorkBeforeFreeSequencePattern"
+    when
+        $pattern : WorkBeforeFreeSequencePattern(
+            $workDayOfWeek : workDayOfWeek,
+            $workShiftType : workShiftType,
+            $freeDayLength : freeDayLength
+        )
+        PatternContractLine(
+            pattern == $pattern, $contract : contract
+        )
+
+        Assignment(
+            eval($workDayOfWeek == null) || (shiftDateDayOfWeek == $workDayOfWeek),
+            eval($workShiftType == null) || (shiftType == $workShiftType),
+            contract == $contract,
+            $employee : employee, $workDayIndex : shiftDateDayIndex
+        )
+        EmployeeFreeSequence(
+            employee == $employee,
+            firstDayIndex == ($workDayIndex + 1),
+            dayLength >= $freeDayLength
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("unwantedPatternWorkBeforeFreeSequencePattern",
+                ConstraintType.NEGATIVE_SOFT,
+                $pattern.getWeight(),
+                $employee, $pattern, $workDayIndex));
+end
 rule "unwantedPatternShiftType2DaysPattern"
     when
         $pattern : ShiftType2DaysPattern(
@@ -549,7 +577,7 @@ rule "unwantedPatternShiftType2DaysPattern"
             shiftDateDayIndex == ($firstDayIndex + 1)
         )
     then
-        insertLogical(new IntConstraintOccurrence("unwantedPattern", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new IntConstraintOccurrence("unwantedPatternShiftType2DaysPattern", ConstraintType.NEGATIVE_SOFT,
                 $pattern.getWeight(),
                 $employee, $pattern, $firstDayIndex));
 end
@@ -582,7 +610,7 @@ rule "unwantedPatternShiftType3DaysPattern"
             shiftDateDayIndex == ($firstDayIndex + 2)
         )
     then
-        insertLogical(new IntConstraintOccurrence("unwantedPattern", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new IntConstraintOccurrence("unwantedPatternShiftType3DaysPattern", ConstraintType.NEGATIVE_SOFT,
                 $pattern.getWeight(),
                 $employee, $pattern, $firstDayIndex));
 end
@@ -621,7 +649,7 @@ rule "unwantedPatternShiftType4DaysPattern"
             shiftDateDayIndex == ($firstDayIndex + 3)
         )
     then
-        insertLogical(new IntConstraintOccurrence("unwantedPattern", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new IntConstraintOccurrence("unwantedPatternShiftType4DaysPattern", ConstraintType.NEGATIVE_SOFT,
                 $pattern.getWeight(),
                 $employee, $pattern, $firstDayIndex));
 end
