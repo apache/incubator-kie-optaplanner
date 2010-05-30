@@ -50,7 +50,7 @@ public class Pattern extends AbstractPersistable implements Comparable<Pattern> 
 
     @Override
     public String toString() {
-        return code;
+        return code + " " + patternEntryList;
     }
 
     public int getPatternEntrySize() {

@@ -352,10 +352,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                         patternEntry.setId(patternEntryId);
                         patternEntry.setPattern(pattern);
                         patternEntry.setEntryIndex(entryIndex);
-                        patternEntry.setDayOfWeekWildcard(dayOfWeekWildcard);
-                        patternEntry.setDayOfWeek(dayOfWeek);
                         patternEntry.setShiftTypeWildcard(shiftTypeWildcard);
                         patternEntry.setShiftType(shiftType);
+                        patternEntry.setDayOfWeekWildcard(dayOfWeekWildcard);
+                        patternEntry.setDayOfWeek(dayOfWeek);
                         patternEntryList.add(patternEntry);
                         patternEntryListOfPattern.add(patternEntry);
                         patternEntryId++;

@@ -13,10 +13,10 @@ public class PatternEntry extends AbstractPersistable implements Comparable<Patt
     private Pattern pattern;
     private int entryIndex;
 
-    private PatternEntryPropertyWildcard dayOfWeekWildcard;
-    private DayOfWeek dayOfWeek;
     private PatternEntryPropertyWildcard shiftTypeWildcard;
     private ShiftType shiftType;
+    private PatternEntryPropertyWildcard dayOfWeekWildcard;
+    private DayOfWeek dayOfWeek;
 
     public Pattern getPattern() {
         return pattern;
@@ -32,22 +32,6 @@ public class PatternEntry extends AbstractPersistable implements Comparable<Patt
 
     public void setEntryIndex(int entryIndex) {
         this.entryIndex = entryIndex;
-    }
-
-    public PatternEntryPropertyWildcard getDayOfWeekWildcard() {
-        return dayOfWeekWildcard;
-    }
-
-    public void setDayOfWeekWildcard(PatternEntryPropertyWildcard dayOfWeekWildcard) {
-        this.dayOfWeekWildcard = dayOfWeekWildcard;
-    }
-
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
     }
 
     public PatternEntryPropertyWildcard getShiftTypeWildcard() {
@@ -66,6 +50,22 @@ public class PatternEntry extends AbstractPersistable implements Comparable<Patt
         this.shiftType = shiftType;
     }
 
+    public PatternEntryPropertyWildcard getDayOfWeekWildcard() {
+        return dayOfWeekWildcard;
+    }
+
+    public void setDayOfWeekWildcard(PatternEntryPropertyWildcard dayOfWeekWildcard) {
+        this.dayOfWeekWildcard = dayOfWeekWildcard;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
     public int compareTo(PatternEntry other) {
         return new CompareToBuilder()
                 .append(id, other.id)
@@ -74,8 +74,9 @@ public class PatternEntry extends AbstractPersistable implements Comparable<Patt
 
     @Override
     public String toString() {
-        return pattern + "-" + entryIndex + ": "
-                + dayOfWeekWildcard + "(" + dayOfWeek + ") " + shiftTypeWildcard + "(" + shiftType + ")";
+        return pattern.getCode() + "-" + entryIndex + ": "
+                + (shiftTypeWildcard == PatternEntryPropertyWildcard.SPECIFIC ? shiftType : shiftTypeWildcard) + " on "
+                + (dayOfWeekWildcard == PatternEntryPropertyWildcard.SPECIFIC ? dayOfWeek : dayOfWeekWildcard);
     }
 
 }
