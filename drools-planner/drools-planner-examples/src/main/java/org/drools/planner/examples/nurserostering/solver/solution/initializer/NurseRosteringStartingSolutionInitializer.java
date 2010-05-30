@@ -5,8 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.score.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
@@ -27,90 +30,46 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
 
     public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
         NurseRoster schedule = (NurseRoster) localSearchSolverScope.getWorkingSolution();
-        initializeEmployeeAssignmentList(localSearchSolverScope, schedule);
+        initializeAssignmentList(localSearchSolverScope, schedule);
     }
 
-    private void initializeEmployeeAssignmentList(LocalSearchSolverScope localSearchSolverScope,
+    private void initializeAssignmentList(LocalSearchSolverScope localSearchSolverScope,
             NurseRoster nurseRoster) {
         List<Shift> shiftList = nurseRoster.getShiftList();
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
 
-        List<Assignment> assignmentList = createEmployeeAssignmentList(nurseRoster);
-        // TODO implement this class
-//        for (Assignment employeeAssignment : assignmentList) {
-//            Score unnurseRosterdScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
-//            FactHandle employeeAssignmentHandle = null;
-//
-//            List<ShiftScoring> shiftScoringList = new ArrayList<ShiftScoring>(shiftList.size());
-//            for (Shift shift : shiftList) {
-//                if (employeeAssignmentHandle == null) {
-//                    employeeAssignment.setShift(shift);
-//                    employeeAssignmentHandle = workingMemory.insert(employeeAssignment);
-//                } else {
-//                    employeeAssignment.setShift(shift);
-//                    workingMemory.update(employeeAssignmentHandle, employeeAssignment);
-//                }
-//                Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
-//                shiftScoringList.add(new ShiftScoring(shift, score));
-//            }
-//            Collections.sort(shiftScoringList);
-//
-//            boolean almostPerfectMatch = false;
-//            Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
-//            Shift bestShift = null;
-//            Room bestRoom = null;
-//            for (ShiftScoring shiftScoring : shiftScoringList) {
-//                if (bestScore.compareTo(shiftScoring.getScore()) >= 0) {
-//                    // No need to check the rest
-//                    break;
-//                }
-//                employeeAssignment.setShift(shiftScoring.getShift());
-//                workingMemory.update(employeeAssignmentHandle, employeeAssignment);
-//
-//                for (Room room : roomList) {
-//                    employeeAssignment.setRoom(room);
-//                    workingMemory.update(employeeAssignmentHandle, employeeAssignment);
-//                    Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
-//                    if (score.compareTo(unnurseRosterdScore) < 0) {
-//                        if (score.compareTo(bestScore) > 0) {
-//                            bestScore = score;
-//                            bestShift = shiftScoring.getShift();
-//                            bestRoom = room;
-//                        }
-//                    } else if (score.compareTo(unnurseRosterdScore) >= 0) {
-//                        // TODO due to the score rules, the score can unnurseRosterdScore can be higher than the score
-//                        // In theory every possibility should be looked into
-//                        almostPerfectMatch = true;
-//                        break;
-//                    }
-//                }
-//                if (almostPerfectMatch) {
-//                    break;
-//                }
-//            }
-//            if (!almostPerfectMatch) {
-//                if (bestShift == null || bestRoom == null) {
-//                    throw new IllegalStateException("The bestShift (" + bestShift + ") or the bestRoom ("
-//                            + bestRoom + ") cannot be null.");
-//                }
-//                employeeAssignment.setShift(bestShift);
-//                employeeAssignment.setRoom(bestRoom);
-//                workingMemory.update(employeeAssignmentHandle, employeeAssignment);
-//            }
-//            logger.debug("    Assignment ({}) initialized for starting solution.", employeeAssignment);
-//        }
-        
-        // TODO tmp begin
+        List<Assignment> assignmentList = createAssignmentList(nurseRoster);
         for (Assignment assignment : assignmentList) {
-            workingMemory.insert(assignment);
+            FactHandle assignmentHandle = null;
+            Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
+            Shift bestShift = null;
+            for (Shift shift : shiftList) {
+                if (assignmentHandle == null) {
+                    assignment.setShift(shift);
+                    assignmentHandle = workingMemory.insert(assignment);
+                } else {
+                    assignment.setShift(shift);
+                    workingMemory.update(assignmentHandle, assignment);
+                }
+                Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                if (score.compareTo(bestScore) > 0) {
+                    bestScore = score;
+                    bestShift = shift;
+                }
+            }
+            if (bestShift == null || bestShift == null) {
+                throw new IllegalStateException("The bestShift (" + bestShift + ") cannot be null.");
+            }
+            assignment.setShift(bestShift);
+            workingMemory.update(assignmentHandle, assignment);
+            logger.debug("    Assignment ({}) initialized for starting solution.", assignment);
         }
-        // TODO tmp end
 
         Collections.sort(assignmentList, new PersistableIdComparator());
         nurseRoster.setEmployeeAssignmentList(assignmentList);
     }
 
-    public List<Assignment> createEmployeeAssignmentList(NurseRoster nurseRoster) {
+    public List<Assignment> createAssignmentList(NurseRoster nurseRoster) {
         List<Employee> employeeList = nurseRoster.getEmployeeList();
 
 //        List<EmployeeInitializationWeight> employeeInitializationWeightList
