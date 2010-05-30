@@ -322,6 +322,9 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                         pattern = new FreeBeforeWorkSequencePattern();
                     } else if (patternEntryElementList.get(1).getChild("ShiftType").getText().equals("None")) {
                         pattern = new WorkBeforeFreeSequencePattern();
+                        // TODO support this too (not needed for competition)
+                        throw new UnsupportedOperationException("The pattern (" + code + ") is not supported."
+                                + " None of the test data exhibits such a pattern.");
                     } else {
                         switch (patternEntryElementList.size()) {
                             case 2 :
@@ -395,7 +398,21 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                         if (pattern instanceof FreeBeforeWorkSequencePattern) {
                             FreeBeforeWorkSequencePattern castedPattern = (FreeBeforeWorkSequencePattern) pattern;
                             if (patternEntryIndex == 1) {
+                                if (dayOfWeek == null) {
+                                    // TODO Support an any dayOfWeek too (not needed for competition)
+                                    throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
+                                            + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                                            + ") the dayOfWeek should not be (Any)."
+                                            + "\n None of the test data exhibits such a pattern.");
+                                }
                                 castedPattern.setFirstWorkDayOfWeek(dayOfWeek);
+                                if (shiftType != null) {
+                                    // TODO Support a specific shiftType too (not needed for competition)
+                                    throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
+                                            + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                                            + ") the shiftType should be (Any)."
+                                            + "\n None of the test data exhibits such a pattern.");
+                                }
                                 castedPattern.setWorkShiftType(shiftType);
                                 castedPattern.setWorkDayLength(patternEntryElementList.size() - 1);
                             }
@@ -425,7 +442,21 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                         } else if (pattern instanceof ShiftType2DaysPattern) {
                             ShiftType2DaysPattern castedPattern = (ShiftType2DaysPattern) pattern;
                             if (patternEntryIndex == 0) {
+                                if (dayOfWeek != null) {
+                                    // TODO Support a specific dayOfWeek too (not needed for competition)
+                                    throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
+                                            + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                                            + ") the dayOfWeek should be (Any)."
+                                            + "\n None of the test data exhibits such a pattern.");
+                                }
                                 castedPattern.setStartDayOfWeek(dayOfWeek);
+                            }
+                            if (shiftType == null) {
+                                // TODO Support any shiftType too (not needed for competition)
+                                throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
+                                        + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                                        + ") the shiftType should not be (Any)."
+                                        + "\n None of the test data exhibits such a pattern.");
                             }
                             switch (patternEntryIndex) {
                                 case 0 :
@@ -439,6 +470,13 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                             ShiftType3DaysPattern castedPattern = (ShiftType3DaysPattern) pattern;
                             if (patternEntryIndex == 0) {
                                 castedPattern.setStartDayOfWeek(dayOfWeek);
+                            }
+                            if (shiftType == null) {
+                                // TODO Support any shiftType too
+                                throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
+                                        + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                                        + ") the shiftType should not be (Any)."
+                                        + "\n None of the test data exhibits such a pattern.");
                             }
                             switch (patternEntryIndex) {
                                 case 0 :
@@ -455,6 +493,13 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                             ShiftType4DaysPattern castedPattern = (ShiftType4DaysPattern) pattern;
                             if (patternEntryIndex == 0) {
                                 castedPattern.setStartDayOfWeek(dayOfWeek);
+                            }
+                            if (shiftType == null) {
+                                // TODO Support any shiftType too
+                                throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
+                                        + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                                        + ") the shiftType should not be (Any)."
+                                        + "\n None of the test data exhibits such a pattern.");
                             }
                             switch (patternEntryIndex) {
                                 case 0 :

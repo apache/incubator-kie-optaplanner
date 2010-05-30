@@ -526,34 +526,68 @@ rule "alternativeSkill"
 end
 
 // Unwanted patterns
-rule "unwantedPatternWorkBeforeFreeSequencePattern"
-    when
-        $pattern : WorkBeforeFreeSequencePattern(
-            $workDayOfWeek : workDayOfWeek,
-            $workShiftType : workShiftType,
-            $freeDayLength : freeDayLength
-        )
-        PatternContractLine(
-            pattern == $pattern, $contract : contract
-        )
-
-        Assignment(
-            eval($workDayOfWeek == null) || (shiftDateDayOfWeek == $workDayOfWeek),
-            eval($workShiftType == null) || (shiftType == $workShiftType),
-            contract == $contract,
-            $employee : employee, $workDayIndex : shiftDateDayIndex
-        )
-        EmployeeFreeSequence(
-            employee == $employee,
-            firstDayIndex == ($workDayIndex + 1),
-            dayLength >= $freeDayLength
-        )
-    then
-        insertLogical(new IntConstraintOccurrence("unwantedPatternWorkBeforeFreeSequencePattern",
-                ConstraintType.NEGATIVE_SOFT,
-                $pattern.getWeight(),
-                $employee, $pattern, $workDayIndex));
-end
+//rule "unwantedPatternFreeBeforeWorkSequencePattern"
+//    when
+//        $pattern : FreeBeforeWorkSequencePattern(
+//            $firstWorkDayOfWeek : firstWorkDayOfWeek,
+//            $workShiftType : workShiftType,
+//            $workDayLength : workDayLength
+//        )
+//        PatternContractLine(
+//            pattern == $pattern, $contract : contract
+//        )
+//
+//        Assignment(
+//            eval($firstWorkDayOfWeek == null) || (shiftDateDayOfWeek == $firstWorkDayOfWeek),
+//            eval($workShiftType == null) || (shiftType == $workShiftType),
+//            contract == $contract,
+//            $employee : employee, $firstWorkDayIndex : shiftDateDayIndex
+//        )
+//        // A free day before
+//        EmployeeFreeSequence(
+//            employee == $employee,
+//            lastDayIndex == ($firstWorkDayIndex - 1)
+//        )
+//        $employeeWorkSequence(
+//            employee == $employee,
+//            shiftDateDayIndex == $firstWorkDayIndex,
+//            dayLength >= $workDayLength
+//        )
+//    then
+//        insertLogical(new IntConstraintOccurrence("unwantedPatternFreeBeforeWorkSequencePattern",
+//                ConstraintType.NEGATIVE_SOFT,
+//                $pattern.getWeight(),
+//                $employee, $pattern, $firstWorkDayIndex));
+//end
+// TODO support WorkBeforeFreeSequencePattern too (not needed for competition)
+//rule "unwantedPatternWorkBeforeFreeSequencePattern"
+//    when
+//        $pattern : WorkBeforeFreeSequencePattern(
+//            $workDayOfWeek : workDayOfWeek,
+//            $workShiftType : workShiftType,
+//            $freeDayLength : freeDayLength
+//        )
+//        PatternContractLine(
+//            pattern == $pattern, $contract : contract
+//        )
+//
+//        Assignment(
+//            eval($workDayOfWeek == null) || (shiftDateDayOfWeek == $workDayOfWeek),
+//            eval($workShiftType == null) || (shiftType == $workShiftType),
+//            contract == $contract,
+//            $employee : employee, $workDayIndex : shiftDateDayIndex
+//        )
+//        EmployeeFreeSequence(
+//            employee == $employee,
+//            firstDayIndex == ($workDayIndex + 1),
+//            dayLength >= $freeDayLength
+//        )
+//    then
+//        insertLogical(new IntConstraintOccurrence("unwantedPatternWorkBeforeFreeSequencePattern",
+//                ConstraintType.NEGATIVE_SOFT,
+//                $pattern.getWeight(),
+//                $employee, $pattern, $workDayIndex));
+//end
 rule "unwantedPatternShiftType2DaysPattern"
     when
         $pattern : ShiftType2DaysPattern(
