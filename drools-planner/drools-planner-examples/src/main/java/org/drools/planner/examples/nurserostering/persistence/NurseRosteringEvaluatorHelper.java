@@ -3,10 +3,12 @@ package org.drools.planner.examples.nurserostering.persistence;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.examples.common.business.SolutionBusiness;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
 
@@ -15,6 +17,7 @@ import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
  */
 public class NurseRosteringEvaluatorHelper {
 
+    private static final boolean ALL_INPUT_FILES = false;
     private static final String INPUT_FILE_PREFIX = "long_late04";
     private static final String OUTPUT_FILE_SUFFIX = "_feasibleInitialized";
     private static final String DEFAULT_LINE_CONTAINS_FILTER = null;
@@ -26,14 +29,51 @@ public class NurseRosteringEvaluatorHelper {
         } else {
             lineContainsFilter = DEFAULT_LINE_CONTAINS_FILTER;
         }
-        NurseRosteringApp nurseRosteringApp = new NurseRosteringApp();
-        SolutionBusiness solutionBusiness = nurseRosteringApp.createSolutionBusiness();
+        NurseRosteringEvaluatorHelper helper = new NurseRosteringEvaluatorHelper();
+        if (!ALL_INPUT_FILES) {
+            helper.evaluate(INPUT_FILE_PREFIX, OUTPUT_FILE_SUFFIX, lineContainsFilter);
+        } else {
+            File inputDir = helper.getImportDir();
+            File[] inputFiles = inputDir.listFiles();
+            if (inputFiles == null) {
+                throw new IllegalArgumentException(
+                        "Your working dir should be drools-planner-examples and contain: " + inputDir);
+            }
+            Arrays.sort(inputFiles);
+            for (File inputFile : inputFiles) {
+                String inputFileName = inputFile.getName();
+                if (inputFileName.endsWith(".xml")) {
+                    String filePrefix = inputFileName.substring(0, inputFileName.lastIndexOf(".xml"));
+                    helper.evaluate(filePrefix, OUTPUT_FILE_SUFFIX, lineContainsFilter);
+                }
+            }
+        }
+    }
+    
+    protected NurseRosteringApp nurseRosteringApp;
+    protected SolutionBusiness solutionBusiness;
+
+    public NurseRosteringEvaluatorHelper() {
+        nurseRosteringApp = new NurseRosteringApp();
+        solutionBusiness = nurseRosteringApp.createSolutionBusiness();
+    }
+
+    public File getImportDir() {
+        return solutionBusiness.getImportDataDir();
+    }
+
+    public void evaluate(String filePrefix, String fileSuffix, String lineContainsFilter) {
         Process process = null;
         try {
             File inputFile = new File(solutionBusiness.getImportDataDir(),
-                    INPUT_FILE_PREFIX + ".xml").getCanonicalFile();
+                    filePrefix + ".xml").getCanonicalFile();
+            File solvedFile = new File(solutionBusiness.getSolvedDataDir(),
+                    filePrefix + fileSuffix + ".xml").getCanonicalFile();
+            solutionBusiness.loadSolution(solvedFile);
+            HardAndSoftScore score = (HardAndSoftScore) solutionBusiness.getScore();
             File outputFile = new File(solutionBusiness.getExportDataDir(),
-                    INPUT_FILE_PREFIX + OUTPUT_FILE_SUFFIX + ".xml").getCanonicalFile();
+                    filePrefix + fileSuffix + ".xml").getCanonicalFile();
+            solutionBusiness.exportSolution(outputFile);
             File evaluatorDir = new File("local/competition/nurserostering/");
             String command = "java -jar evaluator.jar " + inputFile.getAbsolutePath()
                     + " " + outputFile.getAbsolutePath();
@@ -42,6 +82,16 @@ public class NurseRosteringEvaluatorHelper {
             IOUtils.copy(process.getInputStream(), out);
             IOUtils.copy(process.getErrorStream(), System.err);
             out.writeResults();
+            int penaltyTotal = out.getPenaltyTotal();
+            if (score.getHardScore() == 0) {
+                if (score.getSoftScore() == (-penaltyTotal)) {
+                    System.out.println("The calculated soft score (" + score.getSoftScore()
+                            + ") is the same as the evaluator penalty total (" + penaltyTotal + ").");
+                } else {
+                    throw new IllegalStateException("The calculated soft score (" + score.getSoftScore()
+                            + ") is not the same as the evaluator penalty total (" + penaltyTotal + ").");
+                }
+            }
         } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
@@ -60,10 +110,16 @@ public class NurseRosteringEvaluatorHelper {
         private Map<String, int[]> costMap = new TreeMap<String, int[]>();
         private String lastEmployeeCode = null;
 
+        private int penaltyTotal;
+
         private EvaluatorSummaryFilterOutputStream(String name, String lineContainsFilter) {
             super();
             this.name = name;
             this.lineContainsFilter = lineContainsFilter;
+        }
+
+        public int getPenaltyTotal() {
+            return penaltyTotal;
         }
 
         public void write(int c) throws IOException {
@@ -107,16 +163,16 @@ public class NurseRosteringEvaluatorHelper {
 
         public void writeResults() {
             System.out.println("EvaluatorHelper results for " + name);
-            int grandTotal = 0;
+            penaltyTotal = 0;
             if (lineContainsFilter != null) {
                 System.out.println("with lineContainsFilter (" + lineContainsFilter + ")");
             }
             for (Map.Entry<String, int[]> entry : costMap.entrySet()) {
                 int[] cost = entry.getValue();
-                grandTotal += cost[1];
+                penaltyTotal += cost[1];
                 System.out.println(entry.getKey() + " count = " + cost[0] + " total = " + cost[1]);
             }
-            System.out.println("Grand total: " + grandTotal);
+            System.out.println("The penaltyTotal: " + penaltyTotal);
         }
     }
 
