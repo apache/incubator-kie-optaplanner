@@ -538,14 +538,84 @@ rule "unwantedPatternShiftType2DaysPattern"
         )
 
         Assignment(
-            eval(null == $dayIndex0ShiftType) || (shiftType == $dayIndex0ShiftType),
+            eval($dayIndex0ShiftType == null) || (shiftType == $dayIndex0ShiftType),
             contract == $contract, shiftDateDayOfWeek == $startDayOfWeek,
             $employee : employee, $firstDayIndex : shiftDateDayIndex
         )
         Assignment(
-            eval(null == $dayIndex1ShiftType) || (shiftType == $dayIndex1ShiftType),
+            eval($dayIndex1ShiftType == null) || (shiftType == $dayIndex1ShiftType),
             employee == $employee,
             shiftDateDayIndex == ($firstDayIndex + 1)
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("unwantedPattern", ConstraintType.NEGATIVE_SOFT,
+                $pattern.getWeight(),
+                $employee, $pattern, $firstDayIndex));
+end
+rule "unwantedPatternShiftType3DaysPattern"
+    when
+        $pattern : ShiftType3DaysPattern(
+            $startDayOfWeek : startDayOfWeek,
+            $dayIndex0ShiftType : dayIndex0ShiftType,
+            $dayIndex1ShiftType : dayIndex1ShiftType,
+            $dayIndex2ShiftType : dayIndex2ShiftType
+        )
+        PatternContractLine(
+            pattern == $pattern, $contract : contract
+        )
+
+        Assignment(
+            eval($dayIndex0ShiftType == null) || (shiftType == $dayIndex0ShiftType),
+            contract == $contract, shiftDateDayOfWeek == $startDayOfWeek,
+            $employee : employee, $firstDayIndex : shiftDateDayIndex
+        )
+        Assignment(
+            eval($dayIndex1ShiftType == null) || (shiftType == $dayIndex1ShiftType),
+            employee == $employee,
+            shiftDateDayIndex == ($firstDayIndex + 1)
+        )
+        Assignment(
+            eval($dayIndex2ShiftType == null) || (shiftType == $dayIndex2ShiftType),
+            employee == $employee,
+            shiftDateDayIndex == ($firstDayIndex + 2)
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("unwantedPattern", ConstraintType.NEGATIVE_SOFT,
+                $pattern.getWeight(),
+                $employee, $pattern, $firstDayIndex));
+end
+rule "unwantedPatternShiftType4DaysPattern"
+    when
+        $pattern : ShiftType4DaysPattern(
+            $startDayOfWeek : startDayOfWeek,
+            $dayIndex0ShiftType : dayIndex0ShiftType,
+            $dayIndex1ShiftType : dayIndex1ShiftType,
+            $dayIndex2ShiftType : dayIndex2ShiftType,
+            $dayIndex3ShiftType : dayIndex3ShiftType
+        )
+        PatternContractLine(
+            pattern == $pattern, $contract : contract
+        )
+
+        Assignment(
+            eval($dayIndex0ShiftType == null) || (shiftType == $dayIndex0ShiftType),
+            contract == $contract, shiftDateDayOfWeek == $startDayOfWeek,
+            $employee : employee, $firstDayIndex : shiftDateDayIndex
+        )
+        Assignment(
+            eval($dayIndex1ShiftType == null) || (shiftType == $dayIndex1ShiftType),
+            employee == $employee,
+            shiftDateDayIndex == ($firstDayIndex + 1)
+        )
+        Assignment(
+            eval($dayIndex2ShiftType == null) || (shiftType == $dayIndex2ShiftType),
+            employee == $employee,
+            shiftDateDayIndex == ($firstDayIndex + 2)
+        )
+        Assignment(
+            eval($dayIndex3ShiftType == null) || (shiftType == $dayIndex3ShiftType),
+            employee == $employee,
+            shiftDateDayIndex == ($firstDayIndex + 3)
         )
     then
         insertLogical(new IntConstraintOccurrence("unwantedPattern", ConstraintType.NEGATIVE_SOFT,
