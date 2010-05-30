@@ -8,18 +8,22 @@ import org.drools.planner.core.score.constraint.ConstraintType;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.FreeBeforeWorkSequencePattern;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
-import org.drools.planner.examples.nurserostering.domain.PatternEntry;
-import org.drools.planner.examples.nurserostering.domain.PatternEntryPropertyWildcard;
 import org.drools.planner.examples.nurserostering.domain.contract.PatternContractLine;
 import org.drools.planner.examples.nurserostering.domain.RosterInfo;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
+import org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern;
+import org.drools.planner.examples.nurserostering.domain.ShiftType3DaysPattern;
+import org.drools.planner.examples.nurserostering.domain.ShiftType4DaysPattern;
 import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
 import org.drools.planner.examples.nurserostering.domain.Skill;
 import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
+import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
+import org.drools.planner.examples.nurserostering.domain.WorkBeforeFreeSequencePattern;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 import org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
@@ -37,7 +41,6 @@ import org.drools.planner.examples.nurserostering.domain.solver.EmployeeConsecut
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
-import org.drools.planner.examples.nurserostering.domain.solver.PatternEntryOccurrence;
 
 // @author Geoffrey De Smet
 
@@ -523,93 +526,29 @@ rule "alternativeSkill"
 end
 
 // Unwanted patterns
-rule "insertPatternEntryOccurrenceShiftType"
+rule "unwantedPatternShiftType2DaysPattern"
     when
-        $patternEntry : PatternEntry(shiftTypeWildcard != PatternEntryPropertyWildcard.NONE,
-            $dayOfWeekWildcard : dayOfWeekWildcard, $dayOfWeek : dayOfWeek,
-            $shiftTypeWildcard : shiftTypeWildcard, $shiftType : shiftType,
-            $pattern : pattern
+        $pattern : ShiftType2DaysPattern(
+            $startDayOfWeek : startDayOfWeek,
+            $dayIndex0ShiftType : dayIndex0ShiftType,
+            $dayIndex1ShiftType : dayIndex1ShiftType
+        )
+        PatternContractLine(
+            pattern == $pattern, $contract : contract
+        )
+
+        Assignment(
+            eval(null == $dayIndex0ShiftType) || (shiftType == $dayIndex0ShiftType),
+            contract == $contract, shiftDateDayOfWeek == $startDayOfWeek,
+            $employee : employee, $firstDayIndex : shiftDateDayIndex
         )
         Assignment(
-            (PatternEntryPropertyWildcard.ANY == $dayOfWeekWildcard) || (shiftDateDayOfWeek == $dayOfWeek),
-            (PatternEntryPropertyWildcard.ANY == $shiftTypeWildcard) || (shiftType == $shiftType),
-            $contract : contract, $employee : employee, $shiftDate : shiftDate
-        )
-        PatternContractLine(
-            pattern == $pattern, contract == $contract
+            eval(null == $dayIndex1ShiftType) || (shiftType == $dayIndex1ShiftType),
+            employee == $employee,
+            shiftDateDayIndex == ($firstDayIndex + 1)
         )
     then
-        insertLogical(new PatternEntryOccurrence($patternEntry, $employee, $shiftDate));
-end
-rule "insertPatternEntryOccurrenceNoneShiftType"
-    when
-        $patternEntry : PatternEntry(shiftTypeWildcard == PatternEntryPropertyWildcard.NONE,
-            $dayOfWeekWildcard : dayOfWeekWildcard, $dayOfWeek : dayOfWeek,
-            $pattern : pattern
-        )
-        $employee : Employee(
-            $contract : contract
-        )
-        PatternContractLine(
-            pattern == $pattern, contract == $contract
-        )
-        $shiftDate : ShiftDate(
-            (PatternEntryPropertyWildcard.ANY == $dayOfWeekWildcard) || (dayOfWeek == $dayOfWeek)
-        )
-        not Assignment(
-            employee == $employee, shiftDate == $shiftDate
-        )
-    then
-        insertLogical(new PatternEntryOccurrence($patternEntry, $employee, $shiftDate));
-end
-rule "unwantedPatternsSize2"
-    when
-        $pattern : Pattern(patternEntrySize == 2)
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 0,
-            $employee : employee, $firstDayIndex : dayIndex)
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 1,
-            employee == $employee, dayIndex == ($firstDayIndex + 1))
-    then
-        insertLogical(new IntConstraintOccurrence("unwantedPatterns", ConstraintType.NEGATIVE_SOFT,
-                $pattern.getWeight(),
-                $employee, $pattern, $firstDayIndex));
-end
-rule "unwantedPatternsSize3"
-    when
-        $pattern : Pattern(patternEntrySize == 3)
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 0,
-            $employee : employee, $firstDayIndex : dayIndex)
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 1,
-            employee == $employee, dayIndex == ($firstDayIndex + 1))
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 2,
-            employee == $employee, dayIndex == ($firstDayIndex + 2))
-    then
-        insertLogical(new IntConstraintOccurrence("unwantedPatterns", ConstraintType.NEGATIVE_SOFT,
-                $pattern.getWeight(),
-                $employee, $pattern, $firstDayIndex));
-end
-rule "unwantedPatternsSize4"
-    when
-        $pattern : Pattern(patternEntrySize == 4)
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 0,
-            $employee : employee, $firstDayIndex : dayIndex)
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 1,
-            employee == $employee, dayIndex == ($firstDayIndex + 1))
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 2,
-            employee == $employee, dayIndex == ($firstDayIndex + 2))
-        PatternEntryOccurrence(
-            pattern == $pattern, entryIndex == 3,
-            employee == $employee, dayIndex == ($firstDayIndex + 3))
-    then
-        insertLogical(new IntConstraintOccurrence("unwantedPatterns", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new IntConstraintOccurrence("unwantedPattern", ConstraintType.NEGATIVE_SOFT,
                 $pattern.getWeight(),
                 $employee, $pattern, $firstDayIndex));
 end

@@ -10,13 +10,10 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
  * @author Geoffrey De Smet
  */
 @XStreamAlias("Pattern")
-public class Pattern extends AbstractPersistable implements Comparable<Pattern> {
+public abstract class Pattern extends AbstractPersistable implements Comparable<Pattern> {
 
-    private String code;
-
-    private List<PatternEntry> patternEntryList;
-
-    private int weight;
+    protected String code;
+    protected int weight;
 
     public String getCode() {
         return code;
@@ -24,14 +21,6 @@ public class Pattern extends AbstractPersistable implements Comparable<Pattern> 
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public List<PatternEntry> getPatternEntryList() {
-        return patternEntryList;
-    }
-
-    public void setPatternEntryList(List<PatternEntry> patternEntryList) {
-        this.patternEntryList = patternEntryList;
     }
 
     public int getWeight() {
@@ -50,11 +39,7 @@ public class Pattern extends AbstractPersistable implements Comparable<Pattern> 
 
     @Override
     public String toString() {
-        return code + " " + patternEntryList;
-    }
-
-    public int getPatternEntrySize() {
-        return patternEntryList.size();
+        return code;
     }
 
 }

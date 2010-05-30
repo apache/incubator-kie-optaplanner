@@ -18,17 +18,21 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.nurserostering.domain.FreeBeforeWorkSequencePattern;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
 import org.drools.planner.examples.nurserostering.domain.PatternEntry;
-import org.drools.planner.examples.nurserostering.domain.PatternEntryPropertyWildcard;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
+import org.drools.planner.examples.nurserostering.domain.ShiftType2DaysPattern;
+import org.drools.planner.examples.nurserostering.domain.ShiftType3DaysPattern;
+import org.drools.planner.examples.nurserostering.domain.ShiftType4DaysPattern;
 import org.drools.planner.examples.nurserostering.domain.ShiftTypeSkillRequirement;
 import org.drools.planner.examples.nurserostering.domain.Skill;
 import org.drools.planner.examples.nurserostering.domain.SkillProficiency;
 import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
+import org.drools.planner.examples.nurserostering.domain.WorkBeforeFreeSequencePattern;
 import org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
@@ -308,66 +312,173 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 long patternEntryId = 0L;
                 for (Element element : patternElementList) {
                     assertElementName(element, "Pattern");
-                    Pattern pattern = new Pattern();
-                    pattern.setId(id);
-                    pattern.setCode(element.getAttribute("ID").getValue());
-                    pattern.setWeight(element.getAttribute("weight").getIntValue());
+                    String code = element.getAttribute("ID").getValue();
+                    int weight = element.getAttribute("weight").getIntValue();
 
                     List<Element> patternEntryElementList = (List<Element>) element.getChild("PatternEntries")
                             .getChildren();
-                    List<PatternEntry> patternEntryListOfPattern = new ArrayList<PatternEntry>(
-                            patternEntryElementList.size());
-                    int entryIndex = 0;
+                    if (patternEntryElementList.size() < 2) {
+                        throw new IllegalArgumentException("The size of PatternEntries ("
+                                + patternEntryElementList.size() + ") of pattern (" + code + ") should be at least 2.");
+                    }
+                    Pattern pattern;
+                    if (patternEntryElementList.get(0).getChild("ShiftType").getText().equals("None")) {
+                        pattern = new FreeBeforeWorkSequencePattern();
+                    } else if (patternEntryElementList.get(1).getChild("ShiftType").getText().equals("None")) {
+                        pattern = new WorkBeforeFreeSequencePattern();
+                    } else {
+                        switch (patternEntryElementList.size()) {
+                            case 2 :
+                                pattern = new ShiftType2DaysPattern();
+                                break;
+                            case 3 :
+                                pattern = new ShiftType3DaysPattern();
+                                break;
+                            case 4 :
+                                pattern = new ShiftType4DaysPattern();
+                                break;
+                            default:
+                                throw new IllegalArgumentException("A size of PatternEntries ("
+                                        + patternEntryElementList.size() + ") of pattern (" + code
+                                        + ") above 4 is not supported.");
+                        }
+                    }
+                    pattern.setId(id);
+                    pattern.setCode(code);
+                    pattern.setWeight(weight);
+                    int patternEntryIndex = 0;
+                    DayOfWeek firstDayOfweek = null;
                     for (Element patternEntryElement : patternEntryElementList) {
                         assertElementName(patternEntryElement, "PatternEntry");
                         Element shiftTypeElement = patternEntryElement.getChild("ShiftType");
-                        PatternEntryPropertyWildcard shiftTypeWildcard;
-                        ShiftType shiftType = shiftTypeMap.get(shiftTypeElement.getText());
-                        if (shiftType == null) {
-                            if (shiftTypeElement.getText().equals("Any")) {
-                                shiftTypeWildcard = PatternEntryPropertyWildcard.ANY;
-                            } else if (shiftTypeElement.getText().equals("None")) {
-                                shiftTypeWildcard = PatternEntryPropertyWildcard.NONE;
-                            } else {
+                        boolean shiftTypeIsNone;
+                        ShiftType shiftType;
+                        if (shiftTypeElement.getText().equals("Any")) {
+                            shiftTypeIsNone = false;
+                            shiftType = null;
+                        } else if (shiftTypeElement.getText().equals("None")) {
+                            shiftTypeIsNone = true;
+                            shiftType = null;
+                        } else {
+                            shiftTypeIsNone = false;
+                            shiftType = shiftTypeMap.get(shiftTypeElement.getText());
+                            if (shiftType == null) {
                                 throw new IllegalArgumentException("The shiftType (" + shiftTypeElement.getText()
                                         + ") of pattern (" + pattern.getCode() + ") does not exist.");
                             }
-                        } else {
-                            shiftTypeWildcard = PatternEntryPropertyWildcard.SPECIFIC;
                         }
                         Element dayElement = patternEntryElement.getChild("Day");
-                        PatternEntryPropertyWildcard dayOfWeekWildcard;
-                        DayOfWeek dayOfWeek = DayOfWeek.valueOfCode(dayElement.getText());
-                        if (dayOfWeek == null) {
-                            if (dayElement.getText().equals("Any")) {
-                                dayOfWeekWildcard = PatternEntryPropertyWildcard.ANY;
-                            } else {
+                        DayOfWeek dayOfWeek;
+                        if (dayElement.getText().equals("Any")) {
+                            dayOfWeek = null;
+                        } else {
+                            dayOfWeek = DayOfWeek.valueOfCode(dayElement.getText());
+                            if (dayOfWeek == null) {
                                 throw new IllegalArgumentException("The dayOfWeek (" + dayElement.getText()
                                         + ") of pattern (" + pattern.getCode() + ") does not exist.");
                             }
-                        } else {
-                            dayOfWeekWildcard = PatternEntryPropertyWildcard.SPECIFIC;
                         }
-                        PatternEntry patternEntry = new PatternEntry();
-                        patternEntry.setId(patternEntryId);
-                        patternEntry.setPattern(pattern);
-                        patternEntry.setEntryIndex(entryIndex);
-                        patternEntry.setShiftTypeWildcard(shiftTypeWildcard);
-                        patternEntry.setShiftType(shiftType);
-                        patternEntry.setDayOfWeekWildcard(dayOfWeekWildcard);
-                        patternEntry.setDayOfWeek(dayOfWeek);
-                        patternEntryList.add(patternEntry);
-                        patternEntryListOfPattern.add(patternEntry);
-                        patternEntryId++;
-                        entryIndex++;
+                        if (patternEntryIndex == 0) {
+                            firstDayOfweek = dayOfWeek;
+                        } else {
+                            if (firstDayOfweek != null) {
+                                if (firstDayOfweek.getDistanceToNext(dayOfWeek) != patternEntryIndex) {
+                                    throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
+                                            + ") of pattern (" + pattern.getCode()
+                                            + ") the dayOfWeek (" + dayOfWeek
+                                            + ") is not valid with previous entries.");
+                                }
+                            } else {
+                                if (dayOfWeek != null) {
+                                    throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
+                                            + ") of pattern (" + pattern.getCode()
+                                            + ") the dayOfWeek should be (Any), in line with previous entries.");
+                                }
+                            }
+                        }
+                        if (pattern instanceof FreeBeforeWorkSequencePattern) {
+                            FreeBeforeWorkSequencePattern castedPattern = (FreeBeforeWorkSequencePattern) pattern;
+                            if (patternEntryIndex == 1) {
+                                castedPattern.setFirstWorkDayOfWeek(dayOfWeek);
+                                castedPattern.setWorkShiftType(shiftType);
+                                castedPattern.setWorkDayLength(patternEntryElementList.size() - 1);
+                            }
+                            if (patternEntryIndex > 1 && shiftType != castedPattern.getWorkShiftType()) {
+                                throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
+                                        + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                                        + ") the shiftType (" + shiftType + ") should be ("
+                                        + castedPattern.getWorkShiftType() + ").");
+                            }
+                            if (patternEntryIndex != 0 && shiftTypeIsNone) {
+                                throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
+                                        + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                                        + ") the shiftType can not be (None).");
+                            }
+                        } else if (pattern instanceof WorkBeforeFreeSequencePattern) {
+                            WorkBeforeFreeSequencePattern castedPattern = (WorkBeforeFreeSequencePattern) pattern;
+                            if (patternEntryIndex == 0) {
+                                castedPattern.setWorkDayOfWeek(dayOfWeek);
+                                castedPattern.setWorkShiftType(shiftType);
+                                castedPattern.setFreeDayLength(patternEntryElementList.size() - 1);
+                            }
+                            if (patternEntryIndex != 0 && !shiftTypeIsNone) {
+                                throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
+                                        + ") of WorkBeforeFreeSequence pattern (" + pattern.getCode()
+                                        + ") the shiftType should be (None).");
+                            }
+                        } else if (pattern instanceof ShiftType2DaysPattern) {
+                            ShiftType2DaysPattern castedPattern = (ShiftType2DaysPattern) pattern;
+                            if (patternEntryIndex == 0) {
+                                castedPattern.setStartDayOfWeek(dayOfWeek);
+                            }
+                            switch (patternEntryIndex) {
+                                case 0 :
+                                    castedPattern.setDayIndex0ShiftType(shiftType);
+                                    break;
+                                case 1 :
+                                    castedPattern.setDayIndex1ShiftType(shiftType);
+                                    break;
+                            }
+                        } else if (pattern instanceof ShiftType3DaysPattern) {
+                            ShiftType3DaysPattern castedPattern = (ShiftType3DaysPattern) pattern;
+                            if (patternEntryIndex == 0) {
+                                castedPattern.setStartDayOfWeek(dayOfWeek);
+                            }
+                            switch (patternEntryIndex) {
+                                case 0 :
+                                    castedPattern.setDayIndex0ShiftType(shiftType);
+                                    break;
+                                case 1 :
+                                    castedPattern.setDayIndex1ShiftType(shiftType);
+                                    break;
+                                case 2 :
+                                    castedPattern.setDayIndex2ShiftType(shiftType);
+                                    break;
+                            }
+                        } else if (pattern instanceof ShiftType4DaysPattern) {
+                            ShiftType4DaysPattern castedPattern = (ShiftType4DaysPattern) pattern;
+                            if (patternEntryIndex == 0) {
+                                castedPattern.setStartDayOfWeek(dayOfWeek);
+                            }
+                            switch (patternEntryIndex) {
+                                case 0 :
+                                    castedPattern.setDayIndex0ShiftType(shiftType);
+                                    break;
+                                case 1 :
+                                    castedPattern.setDayIndex1ShiftType(shiftType);
+                                    break;
+                                case 2 :
+                                    castedPattern.setDayIndex1ShiftType(shiftType);
+                                    break;
+                                case 3 :
+                                    castedPattern.setDayIndex1ShiftType(shiftType);
+                                    break;
+                            }
+                        } else {
+                            throw new IllegalStateException("Unsupported patternClass (" + pattern.getClass() + ").");
+                        }
+                        patternEntryIndex++;
                     }
-                    if (patternEntryListOfPattern.size() > 4) {
-                        throw new IllegalArgumentException("The size of the patternEntries ("
-                                + patternEntryListOfPattern.size() + ") of pattern (" + pattern.getCode()
-                                + ") is bigger than 4, which is not supported.");
-                    }
-                    pattern.setPatternEntryList(patternEntryListOfPattern);
-
                     patternList.add(pattern);
                     if (patternMap.containsKey(pattern.getCode())) {
                         throw new IllegalArgumentException("There are 2 patterns with the same code ("
@@ -378,7 +489,6 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 }
             }
             nurseRoster.setPatternList(patternList);
-            nurseRoster.setPatternEntryList(patternEntryList);
         }
 
         private void readContractList(NurseRoster nurseRoster, Element contractsElement) throws JDOMException {
