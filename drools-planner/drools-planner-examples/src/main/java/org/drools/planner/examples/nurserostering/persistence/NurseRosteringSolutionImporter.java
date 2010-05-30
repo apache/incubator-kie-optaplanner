@@ -21,7 +21,6 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.FreeBeforeWorkSequencePattern;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
-import org.drools.planner.examples.nurserostering.domain.PatternEntry;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.ShiftType;
@@ -299,16 +298,13 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
 
         private void readPatternList(NurseRoster nurseRoster, Element patternsElement) throws JDOMException {
             List<Pattern> patternList;
-            List<PatternEntry> patternEntryList;
             if (patternsElement == null) {
                 patternList = Collections.emptyList();
-                patternEntryList = Collections.emptyList();
             } else {
                 List<Element> patternElementList = (List<Element>) patternsElement.getChildren();
                 patternList = new ArrayList<Pattern>(patternElementList.size());
                 patternMap = new HashMap<String, Pattern>(patternElementList.size());
                 long id = 0L;
-                patternEntryList = new ArrayList<PatternEntry>(patternElementList.size() * 3);
                 long patternEntryId = 0L;
                 for (Element element : patternElementList) {
                     assertElementName(element, "Pattern");

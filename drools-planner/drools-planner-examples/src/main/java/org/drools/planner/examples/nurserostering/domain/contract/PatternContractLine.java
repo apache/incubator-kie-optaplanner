@@ -3,10 +3,7 @@ package org.drools.planner.examples.nurserostering.domain.contract;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
-import org.drools.planner.examples.nurserostering.domain.PatternEntryPropertyWildcard;
-import org.drools.planner.examples.nurserostering.domain.ShiftType;
 
 /**
  * @author Geoffrey De Smet
