@@ -8,19 +8,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("ShiftType3DaysPattern")
 public class ShiftType3DaysPattern extends Pattern {
 
-    private DayOfWeek startDayOfWeek; // null means any
-
     private ShiftType dayIndex0ShiftType;
     private ShiftType dayIndex1ShiftType;
     private ShiftType dayIndex2ShiftType;
-
-    public DayOfWeek getStartDayOfWeek() {
-        return startDayOfWeek;
-    }
-
-    public void setStartDayOfWeek(DayOfWeek startDayOfWeek) {
-        this.startDayOfWeek = startDayOfWeek;
-    }
 
     public ShiftType getDayIndex0ShiftType() {
         return dayIndex0ShiftType;
@@ -48,8 +38,7 @@ public class ShiftType3DaysPattern extends Pattern {
 
     @Override
     public String toString() {
-        return "Work starting on " + startDayOfWeek + " in sequence: "
-                + dayIndex0ShiftType + ", " + dayIndex1ShiftType + ", " + dayIndex2ShiftType;
+        return "Work pattern: " + dayIndex0ShiftType + ", " + dayIndex1ShiftType + ", " + dayIndex2ShiftType;
     }
 
 }
