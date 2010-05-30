@@ -8,10 +8,9 @@ import org.drools.planner.core.score.constraint.ConstraintType;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
-import org.drools.planner.examples.nurserostering.domain.FreeBeforeWorkSequencePattern;
+import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
-import org.drools.planner.examples.nurserostering.domain.contract.PatternContractLine;
 import org.drools.planner.examples.nurserostering.domain.RosterInfo;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
@@ -28,6 +27,7 @@ import org.drools.planner.examples.nurserostering.domain.contract.BooleanContrac
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLine;
 import org.drools.planner.examples.nurserostering.domain.contract.ContractLineType;
 import org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine;
+import org.drools.planner.examples.nurserostering.domain.contract.PatternContractLine;
 import org.drools.planner.examples.nurserostering.domain.request.DayOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
@@ -525,39 +525,31 @@ rule "alternativeSkill"
 end
 
 // Unwanted patterns
-//rule "unwantedPatternFreeBeforeWorkSequencePattern"
-//    when
-//        $pattern : FreeBeforeWorkSequencePattern(
-//            $firstWorkDayOfWeek : firstWorkDayOfWeek,
-//            $workShiftType : workShiftType,
-//            $workDayLength : workDayLength
-//        )
-//        PatternContractLine(
-//            pattern == $pattern, $contract : contract
-//        )
-//
-//        Assignment(
-//            eval($firstWorkDayOfWeek == null) || (shiftDateDayOfWeek == $firstWorkDayOfWeek),
-//            eval($workShiftType == null) || (shiftType == $workShiftType),
-//            contract == $contract,
-//            $employee : employee, $firstWorkDayIndex : shiftDateDayIndex
-//        )
-//        // A free day before
-//        EmployeeFreeSequence(
-//            employee == $employee,
-//            lastDayIndex == ($firstWorkDayIndex - 1)
-//        )
-//        $employeeWorkSequence(
-//            employee == $employee,
-//            shiftDateDayIndex == $firstWorkDayIndex,
-//            dayLength >= $workDayLength
-//        )
-//    then
-//        insertLogical(new IntConstraintOccurrence("unwantedPatternFreeBeforeWorkSequencePattern",
-//                ConstraintType.NEGATIVE_SOFT,
-//                $pattern.getWeight(),
-//                $employee, $pattern, $firstWorkDayIndex));
-//end
+rule "unwantedPatternFreeBefore2DaysWithAWorkDayPattern"
+    when
+        $pattern : FreeBefore2DaysWithAWorkDayPattern(
+            $freeDayOfWeek : freeDayOfWeek
+        )
+        PatternContractLine(
+            pattern == $pattern, $contract : contract
+        )
+        ShiftDate(dayOfWeek == $freeDayOfWeek, $freeDayIndex : dayIndex)
+
+        Assignment(
+            contract == $contract,
+            shiftDateDayIndex == ($freeDayIndex + 1) || shiftDateDayIndex == ($freeDayIndex + 2),
+            $employee : employee
+        )
+        not Assignment(
+            employee == $employee,
+            shiftDateDayIndex == $freeDayIndex
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("unwantedPatternFreeBefore2DaysWithAWorkDayPattern",
+                ConstraintType.NEGATIVE_SOFT,
+                $pattern.getWeight(),
+                $employee, $pattern, $freeDayIndex));
+end
 // TODO support WorkBeforeFreeSequencePattern too (not needed for competition)
 //rule "unwantedPatternWorkBeforeFreeSequencePattern"
 //    when

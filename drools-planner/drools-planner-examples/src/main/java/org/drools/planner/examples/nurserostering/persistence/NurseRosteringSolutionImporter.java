@@ -18,7 +18,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.FreeBeforeWorkSequencePattern;
+import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
 import org.drools.planner.examples.nurserostering.domain.Shift;
@@ -318,7 +318,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     }
                     Pattern pattern;
                     if (patternEntryElementList.get(0).getChild("ShiftType").getText().equals("None")) {
-                        pattern = new FreeBeforeWorkSequencePattern();
+                        pattern = new FreeBefore2DaysWithAWorkDayPattern();
+                        if (patternEntryElementList.size() != 3) {
+                            throw new IllegalStateException("boe");
+                        }
                     } else if (patternEntryElementList.get(1).getChild("ShiftType").getText().equals("None")) {
                         pattern = new WorkBeforeFreeSequencePattern();
                         // TODO support this too (not needed for competition)
@@ -391,9 +394,9 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                 }
                             }
                         }
-                        if (pattern instanceof FreeBeforeWorkSequencePattern) {
-                            FreeBeforeWorkSequencePattern castedPattern = (FreeBeforeWorkSequencePattern) pattern;
-                            if (patternEntryIndex == 1) {
+                        if (pattern instanceof FreeBefore2DaysWithAWorkDayPattern) {
+                            FreeBefore2DaysWithAWorkDayPattern castedPattern = (FreeBefore2DaysWithAWorkDayPattern) pattern;
+                            if (patternEntryIndex == 0) {
                                 if (dayOfWeek == null) {
                                     // TODO Support an any dayOfWeek too (not needed for competition)
                                     throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
@@ -401,7 +404,9 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                             + ") the dayOfWeek should not be (Any)."
                                             + "\n None of the test data exhibits such a pattern.");
                                 }
-                                castedPattern.setFirstWorkDayOfWeek(dayOfWeek);
+                                castedPattern.setFreeDayOfWeek(dayOfWeek);
+                            }
+                            if (patternEntryIndex == 1) {
                                 if (shiftType != null) {
                                     // TODO Support a specific shiftType too (not needed for competition)
                                     throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
@@ -409,15 +414,15 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                             + ") the shiftType should be (Any)."
                                             + "\n None of the test data exhibits such a pattern.");
                                 }
-                                castedPattern.setWorkShiftType(shiftType);
-                                castedPattern.setWorkDayLength(patternEntryElementList.size() - 1);
+                                // castedPattern.setWorkShiftType(shiftType);
+                                // castedPattern.setWorkDayLength(patternEntryElementList.size() - 1);
                             }
-                            if (patternEntryIndex > 1 && shiftType != castedPattern.getWorkShiftType()) {
-                                throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
-                                        + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
-                                        + ") the shiftType (" + shiftType + ") should be ("
-                                        + castedPattern.getWorkShiftType() + ").");
-                            }
+                            // if (patternEntryIndex > 1 && shiftType != castedPattern.getWorkShiftType()) {
+                            //     throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
+                            //             + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
+                            //             + ") the shiftType (" + shiftType + ") should be ("
+                            //             + castedPattern.getWorkShiftType() + ").");
+                            // }
                             if (patternEntryIndex != 0 && shiftTypeIsNone) {
                                 throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
                                         + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
