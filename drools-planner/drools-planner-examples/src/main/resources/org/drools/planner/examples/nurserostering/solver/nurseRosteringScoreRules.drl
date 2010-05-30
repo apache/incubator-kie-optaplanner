@@ -368,6 +368,26 @@ rule "insertEmployeeWeekendSequence"
         insertLogical(new EmployeeWeekendSequence($employee, $firstSundayIndex, $lastSundayIndex));
 end
 
+// Minimum number of consecutive working weekends
+rule "minimumConsecutiveWorkingWeekends"
+    when
+        $contractLine : MinMaxContractLine(
+            contractLineType == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS, minimumEnabled == true,
+            $contract : contract, $minimumValue : minimumValue
+        )
+        $employee : Employee(contract == $contract)
+
+        $employeeWeekendSequence : EmployeeWeekendSequence(
+            employee == $employee,
+            weekendLength < $minimumValue,
+            $weekendLength : weekendLength
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("minimumConsecutiveWorkingWeekends", ConstraintType.NEGATIVE_SOFT,
+                ($minimumValue - $weekendLength) * $contractLine.getMinimumWeight(),
+                $employeeWeekendSequence));
+end
+
 // Maximum number of consecutive working weekends
 rule "maximumConsecutiveWorkingWeekends"
     when
