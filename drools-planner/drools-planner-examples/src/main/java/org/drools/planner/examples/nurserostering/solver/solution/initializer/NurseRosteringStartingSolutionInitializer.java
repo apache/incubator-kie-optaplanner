@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
@@ -16,6 +17,7 @@ import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
+import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
 /**
  * @author Geoffrey De Smet
@@ -35,32 +37,32 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
 
     private void initializeAssignmentList(LocalSearchSolverScope localSearchSolverScope,
             NurseRoster nurseRoster) {
-        List<Shift> shiftList = nurseRoster.getShiftList();
+        List<Employee> employeeList = nurseRoster.getEmployeeList();
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
 
         List<Assignment> assignmentList = createAssignmentList(nurseRoster);
         for (Assignment assignment : assignmentList) {
             FactHandle assignmentHandle = null;
             Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
-            Shift bestShift = null;
-            for (Shift shift : shiftList) {
+            Employee bestEmployee = null;
+            for (Employee employee : employeeList) {
                 if (assignmentHandle == null) {
-                    assignment.setShift(shift);
+                    assignment.setEmployee(employee);
                     assignmentHandle = workingMemory.insert(assignment);
                 } else {
-                    assignment.setShift(shift);
+                    assignment.setEmployee(employee);
                     workingMemory.update(assignmentHandle, assignment);
                 }
                 Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
                 if (score.compareTo(bestScore) > 0) {
                     bestScore = score;
-                    bestShift = shift;
+                    bestEmployee = employee;
                 }
             }
-            if (bestShift == null || bestShift == null) {
-                throw new IllegalStateException("The bestShift (" + bestShift + ") cannot be null.");
+            if (bestEmployee == null || bestEmployee == null) {
+                throw new IllegalStateException("The bestEmployee (" + bestEmployee + ") cannot be null.");
             }
-            assignment.setShift(bestShift);
+            assignment.setEmployee(bestEmployee);
             workingMemory.update(assignmentHandle, assignment);
             logger.debug("    Assignment ({}) initialized for starting solution.", assignment);
         }
@@ -70,105 +72,52 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
     }
 
     public List<Assignment> createAssignmentList(NurseRoster nurseRoster) {
-        List<Employee> employeeList = nurseRoster.getEmployeeList();
-
-//        List<EmployeeInitializationWeight> employeeInitializationWeightList
-//                = new ArrayList<EmployeeInitializationWeight>(employeeList.size());
-//        for (Employee employee : employeeList) {
-//            employeeInitializationWeightList.add(new EmployeeInitializationWeight(nurseRoster, employee));
-//        }
-//        Collections.sort(employeeInitializationWeightList);
-//
-        List<Assignment> assignmentList = new ArrayList<Assignment>(employeeList.size() * 5);
-//        int employeeAssignmentId = 0;
-//        for (EmployeeInitializationWeight employeeInitializationWeight : employeeInitializationWeightList) {
-//            Employee employee = employeeInitializationWeight.getEmployee();
-//            for (int i = 0; i < employee.getEmployeeAssignmentSize(); i++) {
-//                Assignment employeeAssignment = new Assignment();
-//                employeeAssignment.setId((long) employeeAssignmentId);
-//                employeeAssignmentId++;
-//                employeeAssignment.setEmployee(employee);
-//                employeeAssignment.setEmployeeAssignmentIndexInEmployee(i);
-//                assignmentList.add(employeeAssignment);
-//            }
-//        }
-
-        // TODO tmp begin
         List<Shift> shiftList = nurseRoster.getShiftList();
-        int employeeAssignmentId = 0;
-        Random random = new Random(); // not seeded, tmp!
+        List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
+
+        List<ShiftInitializationWeight> shiftInitializationWeightList
+                = new ArrayList<ShiftInitializationWeight>(shiftList.size());
         for (Shift shift : shiftList) {
+            shiftInitializationWeightList.add(new ShiftInitializationWeight(nurseRoster, shift));
+        }
+        Collections.sort(shiftInitializationWeightList);
+
+        List<Assignment> assignmentList = new ArrayList<Assignment>(
+                shiftDateList.size() * nurseRoster.getEmployeeList().size());
+        int assignmentId = 0;
+        for (ShiftInitializationWeight shiftInitializationWeight : shiftInitializationWeightList) {
+            Shift shift = shiftInitializationWeight.getShift();
             for (int i = 0; i < shift.getRequiredEmployeeSize(); i++) {
                 Assignment assignment = new Assignment();
-                assignment.setId((long) employeeAssignmentId);
-                employeeAssignmentId++;
+                assignment.setId((long) assignmentId);
                 assignment.setShift(shift);
-                int randomInt = random.nextInt(employeeList.size());
-                assignment.setEmployee(employeeList.get(randomInt));
                 assignmentList.add(assignment);
+                assignmentId++;
             }
         }
-        // TODO tmp end
-
         return assignmentList;
     }
 
-//    private class EmployeeInitializationWeight implements Comparable<EmployeeInitializationWeight> {
-//
-//        private Employee employee;
-//        private int unavailableShiftConstraintCount;
-//
-//        private EmployeeInitializationWeight(NurseRoster nurseRoster, Employee employee) {
-//            this.employee = employee;
-//            unavailableShiftConstraintCount = 0;
-//            // TODO this could be improved by iteration the unavailableShiftConstraintList and using a hashmap
-//            for (UnavailableShiftConstraint constraint : nurseRoster.getUnavailableShiftConstraintList()) {
-//                if (constraint.getEmployee().equals(employee)) {
-//                    unavailableShiftConstraintCount++;
-//                }
-//            }
-//        }
-//
-//        public Employee getEmployee() {
-//            return employee;
-//        }
-//
-//        public int compareTo(EmployeeInitializationWeight other) {
-//
-//            return new CompareToBuilder()
-//                    .append(other.employee.getCurriculumList().size(), employee.getCurriculumList().size()) // Descending
-//                    .append(other.unavailableShiftConstraintCount, unavailableShiftConstraintCount) // Descending
-//                    .append(other.employee.getEmployeeAssignmentSize(), employee.getEmployeeAssignmentSize()) // Descending
-//                    .append(other.employee.getStudentSize(), employee.getStudentSize()) // Descending
-//                    .append(other.employee.getMinWorkingDaySize(), employee.getMinWorkingDaySize()) // Descending
-//                    .append(employee.getId(), other.employee.getId()) // Ascending
-//                    .toComparison();
-//        }
-//
-//    }
-//
-//    private class ShiftScoring implements Comparable<ShiftScoring> {
-//
-//        private Shift shift;
-//        private Score score;
-//
-//        private ShiftScoring(Shift shift, Score score) {
-//            this.shift = shift;
-//            this.score = score;
-//        }
-//
-//        public Shift getShift() {
-//            return shift;
-//        }
-//
-//        public Score getScore() {
-//            return score;
-//        }
-//
-//        public int compareTo(ShiftScoring other) {
-//            return -new CompareToBuilder().append(score, other.score).toComparison();
-//        }
-//
-//    }
+    private class ShiftInitializationWeight implements Comparable<ShiftInitializationWeight> {
+
+        private Shift shift;
+
+        private ShiftInitializationWeight(NurseRoster nurseRoster, Shift shift) {
+            this.shift = shift;
+        }
+
+        public Shift getShift() {
+            return shift;
+        }
+
+        public int compareTo(ShiftInitializationWeight other) {
+            return new CompareToBuilder()
+                    .append(other.shift.getRequiredEmployeeSize(), shift.getRequiredEmployeeSize()) // Descending
+                    .append(shift.getShiftDate(), other.shift.getShiftDate()) // Ascending
+                    .append(shift.getShiftType(), other.shift.getShiftType()) // Ascending
+                    .toComparison();
+        }
+
+    }
 
 }
