@@ -20,6 +20,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -41,6 +42,7 @@ public class BestScoreStatistic implements SolverStatistic {
     // key is the configName
     private Map<String, BestScoreStatisticListener> bestScoreStatisticListenerMap
             = new HashMap<String, BestScoreStatisticListener>();
+    private ScoreDefinition scoreDefinition = null;
 
     public void addListener(Solver solver, String configName) {
         if (configNameList.contains(configName)) {
@@ -51,6 +53,14 @@ public class BestScoreStatistic implements SolverStatistic {
         BestScoreStatisticListener bestScoreStatisticListener = new BestScoreStatisticListener();
         solver.addEventListener(bestScoreStatisticListener);
         bestScoreStatisticListenerMap.put(configName, bestScoreStatisticListener);
+        if (scoreDefinition == null) {
+            scoreDefinition = solver.getScoreDefinition();
+        } else {
+            if (!scoreDefinition.getClass().equals(solver.getScoreDefinition().getClass())) {
+                throw new IllegalStateException("The scoreDefinition (" + solver.getScoreDefinition()
+                        + ") should be of the same class as the other scoreDefinition (" + scoreDefinition + ")");
+            }
+        }
     }
 
     public void removeListener(Solver solver, String configName) {
@@ -128,9 +138,9 @@ public class BestScoreStatistic implements SolverStatistic {
                     writer.append(",");
                     Score score = timeToBestScoresLine.getConfigNameToScoreMap().get(configName);
                     if (score != null) {
-                        Integer scoreAlias = extractScoreAlias(score);
-                        if (scoreAlias != null) {
-                            writer.append(scoreAlias.toString());
+                        Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
+                        if (scoreGraphValue != null) {
+                            writer.append(scoreGraphValue.toString());
                         }
                     }
                 }
@@ -154,9 +164,9 @@ public class BestScoreStatistic implements SolverStatistic {
             for (BestScoreStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
                 Score score = statisticPoint.getScore();
-                Integer scoreAlias = extractScoreAlias(score);
-                if (scoreAlias != null) {
-                    configSeries.add(timeMillisSpend, scoreAlias);
+                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
+                if (scoreGraphValue != null) {
+                    configSeries.add(timeMillisSpend, scoreGraphValue);
                 }
             }
             seriesCollection.addSeries(configSeries);
@@ -182,26 +192,6 @@ public class BestScoreStatistic implements SolverStatistic {
             IOUtils.closeQuietly(out);
         }
         return "  <img src=\"" + graphStatisticFile.getName() + "\"/>";
-    }
-
-    private Integer extractScoreAlias(Score score) {
-        // TODO Plugging in other Score implementations instead of SimpleScore and HardAndSoftScore should be possible
-        // TODO https://jira.jboss.org/jira/browse/JBRULES-2441
-        Integer scoreAlias;
-        if (score instanceof SimpleScore) {
-            SimpleScore simpleScore = (SimpleScore) score;
-            scoreAlias = simpleScore.getScore();
-        } else if (score instanceof HardAndSoftScore) {
-            HardAndSoftScore hardAndSoftScore = (HardAndSoftScore) score;
-            if (hardAndSoftScore.getHardScore() == 0) {
-                scoreAlias = hardAndSoftScore.getSoftScore();
-            } else {
-                scoreAlias = null;
-            }
-        } else {
-            throw new IllegalStateException("Score class (" + score.getClass() + ") not supported.");
-        }
-        return scoreAlias;
     }
 
 }

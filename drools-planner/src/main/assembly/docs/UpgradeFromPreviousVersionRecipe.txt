@@ -286,3 +286,16 @@ After in *.drl:
 
 A custom ConstraintOccurrence implementation should now use the weight in its equals/hashcode methods.
 IntConstraintOccurrence and DoubleConstraintOccurrence have been changed as needed.
+
+From 5.1.0.m2 to 5.1.0.cr1
+--------------------------
+
+Custom ScoreDefinition implementations needs to implement the Double translateScoreToGraphValue(S score) method.
+After in *ScoreDefinition.java:
+    public Double translateScoreToGraphValue(HardAndSoftScore score) {
+        if (score.getHardScore() == 0) {
+            return Double.valueOf(score.getSoftScore());
+        } else {
+            return null;
+        }
+    }

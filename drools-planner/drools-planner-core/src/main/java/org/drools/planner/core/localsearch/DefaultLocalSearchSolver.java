@@ -43,6 +43,10 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         localSearchSolverScope.setScoreDefinition(scoreDefinition);
     }
 
+    public ScoreDefinition getScoreDefinition() {
+        return localSearchSolverScope.getScoreDefinition();
+    }
+
     public void setScoreCalculator(ScoreCalculator scoreCalculator) {
         localSearchSolverScope.setWorkingScoreCalculator(scoreCalculator);
     }

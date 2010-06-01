@@ -2,6 +2,7 @@ package org.drools.planner.core;
 
 import java.util.concurrent.Future;
 
+import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.event.SolverEventListener;
 
@@ -17,7 +18,10 @@ public interface Solver {
      * @param startingSolution never null
      */
     void setStartingSolution(Solution startingSolution);
-    
+
+    /**
+     * @return never null after solving
+     */
     Solution getBestSolution();
 
     /**
@@ -62,5 +66,10 @@ public interface Solver {
      * @param eventListener never null
      */
     void removeEventListener(SolverEventListener eventListener);
+
+    /**
+     * @return never null
+     */
+    ScoreDefinition getScoreDefinition();
 
 }

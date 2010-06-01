@@ -1,10 +1,12 @@
 package org.drools.planner.benchmark;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
@@ -20,6 +22,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -28,9 +32,14 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.benchmark.statistic.BestScoreStatistic;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * @author Geoffrey De Smet
@@ -204,6 +213,7 @@ public class SolverBenchmarkSuite {
                 writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
             }
         }
+        writeGraphSummary();
         if (solverStatisticType != SolverStatisticType.NONE) {
             List<CharSequence> htmlFragments = new ArrayList<CharSequence>(unsolvedSolutionFileToStatisticMap.size());
             for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
@@ -218,6 +228,34 @@ public class SolverBenchmarkSuite {
             writeHtmlOverview(htmlFragments);
         }
         benchmarkingEnded();
+    }
+
+    private void writeGraphSummary() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
+                    .buildScoreDefinition();
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(result.getScore());
+                dataset.addValue(scoreGraphValue, solverBenchmark.getName(), result.getUnsolvedSolutionFile().getName());
+            }
+        }
+        JFreeChart chart = ChartFactory.createBarChart(
+            "Best score summary", "Data", "Score",
+            dataset, PlotOrientation.VERTICAL, true, true, false
+        );
+        BufferedImage chartImage = chart.createBufferedImage(800, 600);
+        File chartSummaryFile = new File(solverStatisticFilesDirectory, "summary.png");
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(chartSummaryFile);
+            ImageIO.write(chartImage, "png", out);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
     }
 
     private void writeHtmlOverview(List<CharSequence> htmlFragments) {

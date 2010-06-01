@@ -83,4 +83,12 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
         return timeGradient;
     }
 
+    public Double translateScoreToGraphValue(HardAndSoftScore score) {
+        if (score.getHardScore() == 0) {
+            return Double.valueOf(score.getSoftScore());
+        } else {
+            return null;
+        }
+    }
+
 }

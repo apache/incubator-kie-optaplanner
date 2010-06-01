@@ -48,4 +48,11 @@ public interface ScoreDefinition<S extends Score> {
      */
     double calculateTimeGradient(S startScore, S endScore, S score);
 
+    /**
+     * 
+     * @param score never null
+     * @return null if should not be shown on the graph
+     */
+    Double translateScoreToGraphValue(S score);
+
 }
