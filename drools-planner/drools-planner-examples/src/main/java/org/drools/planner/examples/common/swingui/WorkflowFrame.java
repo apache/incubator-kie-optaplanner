@@ -218,7 +218,7 @@ public class WorkflowFrame extends JFrame {
                         solutionBusiness.solve();
                     } catch (final Throwable e) {
                         // Otherwise the newFixedThreadPool will eat the exception...
-                        logger.error("Solving failed: " + e.getMessage(), e);
+                        logger.error("Solving failed.", e);
                     }
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {

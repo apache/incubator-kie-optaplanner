@@ -185,20 +185,25 @@ public class LocalSearchSolverScope {
             throw new IllegalStateException(
                     "The presumedScore (" + presumedScore + ") is corrupted because it is not the realScore  ("
                             + realScore + ").\n"
-                    + buildConstraintOccurrenceSummary()); // TODO output buildConstraintOccurrence on tmpWM too
+                    + "Presumed workingMemory:\n" + buildConstraintOccurrenceSummary(workingMemory)
+                    + "Real workingMemory:\n" + buildConstraintOccurrenceSummary(tmpWorkingMemory));
         }
+    }
+
+    public String buildConstraintOccurrenceSummary() {
+        return buildConstraintOccurrenceSummary(workingMemory);
     }
 
     /**
      * TODO Refactor this with the ConstraintOccurrenceTotal class: https://jira.jboss.org/jira/browse/JBRULES-2510
      * @return never null
      */
-    public String buildConstraintOccurrenceSummary() {
-        if (workingMemory == null) {
+    public String buildConstraintOccurrenceSummary(WorkingMemory summaryWorkingMemory) {
+        if (summaryWorkingMemory == null) {
             return "  The workingMemory is null.";
         }
         Map<String, Number> scoreTotalMap = new TreeMap<String, Number>();
-        Iterator<ConstraintOccurrence> it = (Iterator<ConstraintOccurrence>) workingMemory.iterateObjects(
+        Iterator<ConstraintOccurrence> it = (Iterator<ConstraintOccurrence>) summaryWorkingMemory.iterateObjects(
                 new ClassObjectFilter(ConstraintOccurrence.class));
         while (it.hasNext()) {
             ConstraintOccurrence occurrence = it.next();
