@@ -26,10 +26,7 @@ import org.drools.planner.examples.nurserostering.solver.move.NurseRosterMoveHel
  */
 public class NurseRosteringScoreRulesTest extends TestCase {
 
-	public void testEmpty() {
-	}
-
-    public void TODOtestMoveAndUndoMove() {
+    public void testMoveAndUndoMove() {
         LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
         localSearchSolverScope.setRuleBase(buildRuleBase());
         localSearchSolverScope.setWorkingScoreCalculator(new DefaultHardAndSoftConstraintScoreCalculator());

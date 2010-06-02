@@ -18,6 +18,7 @@
       <index>0</index>
       <startTimeString>06:30:00</startTimeString>
       <endTimeString>14:30:00</endTimeString>
+      <night>false</night>
       <description>Early shift type</description>
     </ShiftType>
     <ShiftType id="3002">
@@ -26,6 +27,7 @@
       <index>1</index>
       <startTimeString>14:30:00</startTimeString>
       <endTimeString>22:30:00</endTimeString>
+      <night>false</night>
       <description>Late shift type</description>
     </ShiftType>
     <ShiftType id="3003">
@@ -34,6 +36,7 @@
       <index>2</index>
       <startTimeString>08:30:00</startTimeString>
       <endTimeString>16:30:00</endTimeString>
+      <night>false</night>
       <description>Day shift type</description>
     </ShiftType>
     <ShiftType id="3004">
@@ -42,6 +45,7 @@
       <index>3</index>
       <startTimeString>22:30:00</startTimeString>
       <endTimeString>06:30:00</endTimeString>
+      <night>true</night>
       <description>Night shift</description>
     </ShiftType>
     <ShiftType id="3005">
@@ -50,6 +54,7 @@
       <index>4</index>
       <startTimeString>08:30:00</startTimeString>
       <endTimeString>16:30:00</endTimeString>
+      <night>false</night>
       <description>Head nurse day shift type</description>
     </ShiftType>
   </shiftTypeList>
@@ -81,33 +86,19 @@
     </ShiftTypeSkillRequirement>
   </shiftTypeSkillRequirementList>
   <patternList id="17">
-    <Pattern id="18">
-      <id>0</id>
-      <code>0</code>
-      <weight>1</weight>
-    </Pattern>
-    <Pattern id="19">
-      <id>1</id>
-      <code>1</code>
-      <weight>1</weight>
-    </Pattern>
-    <Pattern id="20">
-      <id>2</id>
-      <code>2</code>
-      <weight>1</weight>
-    </Pattern>
   </patternList>
   <contractList id="21">
     <Contract id="22">
       <id>0</id>
       <code>0</code>
       <description>fulltime</description>
+      <weekendDefinition>SATURDAY_SUNDAY</weekendDefinition>
       <contractLineList id="23">
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="24">
           <id>0</id>
           <contract reference="22"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="25">
@@ -147,14 +138,14 @@
           <id>4</id>
           <contract reference="22"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="29">
           <id>5</id>
           <contract reference="22"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>
@@ -163,12 +154,13 @@
       <id>1</id>
       <code>1</code>
       <description>75_time</description>
+      <weekendDefinition>SATURDAY_SUNDAY</weekendDefinition>
       <contractLineList id="31">
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="32">
           <id>6</id>
           <contract reference="30"/>
           <contractLineType>SINGLE_ASSIGNMENT_PER_DAY</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.MinMaxContractLine id="33">
@@ -208,14 +200,14 @@
           <id>10</id>
           <contract reference="30"/>
           <contractLineType>COMPLETE_WEEKENDS</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
         <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine id="37">
           <id>11</id>
           <contract reference="30"/>
           <contractLineType>IDENTICAL_SHIFT_TYPES_DURING_WEEKEND</contractLineType>
-          <enabled>false</enabled>
+          <enabled>true</enabled>
           <weight>1</weight>
         </org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine>
       </contractLineList>
@@ -235,6 +227,8 @@
     <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="36"/>
     <org.drools.planner.examples.nurserostering.domain.contract.BooleanContractLine reference="37"/>
   </contractLineList>
+  <patternContractLineList id="18">
+  </patternContractLineList>
   <employeeList id="39">
     <Employee id="1000">
       <id>0</id>
