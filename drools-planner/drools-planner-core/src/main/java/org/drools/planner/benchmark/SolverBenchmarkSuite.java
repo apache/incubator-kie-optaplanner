@@ -232,7 +232,6 @@ public class SolverBenchmarkSuite {
 
     private void writeGraphSummary() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
@@ -242,7 +241,7 @@ public class SolverBenchmarkSuite {
             }
         }
         JFreeChart chart = ChartFactory.createBarChart(
-            "Best score summary", "Data", "Score",
+            "Best score summary (higher is better)", "Data", "Score",
             dataset, PlotOrientation.VERTICAL, true, true, false
         );
         BufferedImage chartImage = chart.createBufferedImage(800, 600);
