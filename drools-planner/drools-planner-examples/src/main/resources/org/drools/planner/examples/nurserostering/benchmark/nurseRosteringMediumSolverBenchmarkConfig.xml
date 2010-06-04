@@ -35,16 +35,16 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <name>absolute500_propertyTabu11</name>
+        <name>absolute400_propertyTabu11</name>
         <localSearchSolver>
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
+                    <absoluteSelection>400</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeAssignmentSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
+                    <absoluteSelection>400</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>
@@ -57,16 +57,16 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>absolute500_moveTabu11</name>
+        <name>absolute400_moveTabu11</name>
         <localSearchSolver>
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
+                    <absoluteSelection>400</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeAssignmentSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
+                    <absoluteSelection>400</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>
