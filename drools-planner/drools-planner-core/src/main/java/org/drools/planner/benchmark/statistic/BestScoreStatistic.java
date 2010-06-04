@@ -17,21 +17,16 @@ import javax.imageio.ImageIO;
 
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.SimpleScore;
-import org.drools.planner.core.score.HardAndSoftScore;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.RectangleInsets;
 
 /**
  * @author Geoffrey De Smet
@@ -173,6 +168,7 @@ public class BestScoreStatistic implements SolverStatistic {
         }
         NumberAxis xAxis = new NumberAxis("Time millis spend");
         xAxis.setAutoRangeIncludesZero(false);
+        xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Score");
         yAxis.setAutoRangeIncludesZero(false);
         XYItemRenderer renderer = new XYStepRenderer();
