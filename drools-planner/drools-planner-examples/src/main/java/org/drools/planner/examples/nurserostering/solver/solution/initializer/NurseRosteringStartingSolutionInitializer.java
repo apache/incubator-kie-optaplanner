@@ -112,8 +112,8 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
 
         public int compareTo(ShiftInitializationWeight other) {
             return new CompareToBuilder()
-                    .append(other.shift.getRequiredEmployeeSize(), shift.getRequiredEmployeeSize()) // Descending
                     .append(shift.getShiftDate(), other.shift.getShiftDate()) // Ascending
+                    .append(other.shift.getRequiredEmployeeSize(), shift.getRequiredEmployeeSize()) // Descending
                     .append(shift.getShiftType(), other.shift.getShiftType()) // Ascending
                     .toComparison();
         }
