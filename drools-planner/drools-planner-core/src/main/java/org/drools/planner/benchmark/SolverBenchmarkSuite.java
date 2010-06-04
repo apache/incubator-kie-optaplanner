@@ -215,22 +215,24 @@ public class SolverBenchmarkSuite {
         }
         writeGraphSummary();
         if (solverStatisticType != SolverStatisticType.NONE) {
-            List<CharSequence> htmlFragments = new ArrayList<CharSequence>(unsolvedSolutionFileToStatisticMap.size());
+            // 2 lines at 80 chars per line give a max of 160 per entry
+            StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
+            htmlFragment.append("  <h1>Summary</h1>\n");
+            htmlFragment.append(writeGraphSummary()).append("\n");
+            htmlFragment.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
             for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
                 File unsolvedSolutionFile = entry.getKey();
                 SolverStatistic statistic = entry.getValue();
                 String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
-                StringBuilder htmlFragment = new StringBuilder();
-                htmlFragment.append("  <h2>").append(baseName).append("</h2>");
-                htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName));
-                htmlFragments.add(htmlFragment);
+                htmlFragment.append("  <h2>").append(baseName).append("</h2>\n");
+                htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName)).append("\n");
             }
-            writeHtmlOverview(htmlFragments);
+            writeHtmlOverview(htmlFragment);
         }
         benchmarkingEnded();
     }
 
-    private void writeGraphSummary() {
+    private CharSequence writeGraphSummary() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
@@ -255,9 +257,10 @@ public class SolverBenchmarkSuite {
         } finally {
             IOUtils.closeQuietly(out);
         }
+        return "  <img src=\"" + chartSummaryFile.getName() + "\"/>";
     }
 
-    private void writeHtmlOverview(List<CharSequence> htmlFragments) {
+    private void writeHtmlOverview(CharSequence htmlFragment) {
         File htmlOverviewFile = new File(solverStatisticFilesDirectory, "index.html");
         Writer writer = null;
         try {
@@ -267,10 +270,7 @@ public class SolverBenchmarkSuite {
             writer.append("  <title>Statistic</title>\n");
             writer.append("</head>\n");
             writer.append("<body>\n");
-            writer.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
-            for (CharSequence htmlFragment : htmlFragments) {
-                writer.append(htmlFragment);
-            }
+            writer.append(htmlFragment);
             writer.append("</body>\n");
             writer.append("</html>\n");
         } catch (IOException e) {
