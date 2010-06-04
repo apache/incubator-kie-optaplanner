@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <solvedSolutionFilesDirectory>local/data/pas/solved</solvedSolutionFilesDirectory>
+    <benchmarkDirectory>local/data/pas</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
-    <solverStatisticFilesDirectory>local/data/pas/statistic</solverStatisticFilesDirectory>
-    <!-- solverBenchmarkResultComparator -->
 
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata01.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/pas/unsolved/testdata02.xml</inheritedUnsolvedSolutionFile>

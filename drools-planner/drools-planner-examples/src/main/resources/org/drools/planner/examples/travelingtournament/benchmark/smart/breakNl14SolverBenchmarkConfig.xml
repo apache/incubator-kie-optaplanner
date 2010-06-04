@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <solvedSolutionFilesDirectory>local/data/travelingtournament/smart/solved</solvedSolutionFilesDirectory>
+    <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
 
     <inheritedUnsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>

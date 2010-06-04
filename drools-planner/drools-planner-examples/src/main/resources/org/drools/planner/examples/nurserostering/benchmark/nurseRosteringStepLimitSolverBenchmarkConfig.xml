@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <solvedSolutionFilesDirectory>local/data/nurserostering/solved</solvedSolutionFilesDirectory>
+    <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
-    <solverStatisticFilesDirectory>local/data/nurserostering/statistic</solverStatisticFilesDirectory>
     
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</inheritedUnsolvedSolutionFile>
 

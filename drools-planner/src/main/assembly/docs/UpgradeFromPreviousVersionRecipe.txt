@@ -299,3 +299,20 @@ After in *ScoreDefinition.java:
             return null;
         }
     }
+
+A benchmarker config no longer supports solvedSolutionVerbosity (only ALL was supported anyway).
+Before in *BenchmarkConfig.xml:
+   <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
+
+A benchmarker config now needs a benchmarkDirectory directory
+and solvedSolutionFilesDirectory and solverStatisticFilesDirectory are no longer required.
+Before in *BenchmarkConfig.xml:
+    <solverBenchmarkSuite>
+        <solvedSolutionFilesDirectory>local/data/nurserostering/solved</solvedSolutionFilesDirectory>
+        ...
+        <solverStatisticFilesDirectory>local/data/nurserostering/statistic</solverStatisticFilesDirectory>
+        ...
+After in *BenchmarkConfig.xml:
+    <solverBenchmarkSuite>
+        <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
+        ...

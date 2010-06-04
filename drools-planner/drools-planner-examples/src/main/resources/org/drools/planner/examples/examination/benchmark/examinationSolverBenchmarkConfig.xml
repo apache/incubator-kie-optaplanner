@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <solvedSolutionFilesDirectory>local/data/examination/solved</solvedSolutionFilesDirectory>
+    <benchmarkDirectory>local/data/examination</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
-    <solverStatisticFilesDirectory>local/data/examination/statistic</solverStatisticFilesDirectory>
     
     <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set1.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inheritedUnsolvedSolutionFile>

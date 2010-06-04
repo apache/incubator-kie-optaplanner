@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <solvedSolutionFilesDirectory>local/data/curriculumcourse/solved</solvedSolutionFilesDirectory>
-    <!-- solverBenchmarkResultComparator -->
+    <benchmarkDirectory>local/data/curriculumcourse</benchmarkDirectory>
 
     <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</inheritedUnsolvedSolutionFile>
 

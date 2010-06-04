@@ -49,12 +49,12 @@ public class SolverBenchmarkSuite {
 
     public static final NumberFormat TIME_FORMAT = NumberFormat.getIntegerInstance(Locale.ENGLISH);
 
-    private SolvedSolutionVerbosity solvedSolutionVerbosity = null;
+    private File benchmarkDirectory = null;
     private File solvedSolutionFilesDirectory = null;
+    private File solverStatisticFilesDirectory = null;
+    private SolverStatisticType solverStatisticType = SolverStatisticType.NONE;
     private boolean sortSolverBenchmarks = true;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
-    private SolverStatisticType solverStatisticType = SolverStatisticType.NONE;
-    private File solverStatisticFilesDirectory = null;
 
     @XStreamAlias("inheritedLocalSearchSolver")
     private LocalSearchSolverConfig inheritedLocalSearchSolverConfig = null;
@@ -64,12 +64,13 @@ public class SolverBenchmarkSuite {
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmark> solverBenchmarkList = null;
 
-    public SolvedSolutionVerbosity getSolvedSolutionVerbosity() {
-        return solvedSolutionVerbosity;
+
+    public File getBenchmarkDirectory() {
+        return benchmarkDirectory;
     }
 
-    public void setSolvedSolutionVerbosity(SolvedSolutionVerbosity solvedSolutionVerbosity) {
-        this.solvedSolutionVerbosity = solvedSolutionVerbosity;
+    public void setBenchmarkDirectory(File benchmarkDirectory) {
+        this.benchmarkDirectory = benchmarkDirectory;
     }
 
     public File getSolvedSolutionFilesDirectory() {
@@ -78,6 +79,22 @@ public class SolverBenchmarkSuite {
 
     public void setSolvedSolutionFilesDirectory(File solvedSolutionFilesDirectory) {
         this.solvedSolutionFilesDirectory = solvedSolutionFilesDirectory;
+    }
+
+    public File getSolverStatisticFilesDirectory() {
+        return solverStatisticFilesDirectory;
+    }
+
+    public void setSolverStatisticFilesDirectory(File solverStatisticFilesDirectory) {
+        this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
+    }
+
+    public SolverStatisticType getSolverStatisticType() {
+        return solverStatisticType;
+    }
+
+    public void setSolverStatisticType(SolverStatisticType solverStatisticType) {
+        this.solverStatisticType = solverStatisticType;
     }
 
     public boolean isSortSolverBenchmarks() {
@@ -94,22 +111,6 @@ public class SolverBenchmarkSuite {
 
     public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
         this.solverBenchmarkComparator = solverBenchmarkComparator;
-    }
-
-    public SolverStatisticType getSolverStatisticType() {
-        return solverStatisticType;
-    }
-
-    public void setSolverStatisticType(SolverStatisticType solverStatisticType) {
-        this.solverStatisticType = solverStatisticType;
-    }
-
-    public File getSolverStatisticFilesDirectory() {
-        return solverStatisticFilesDirectory;
-    }
-
-    public void setSolverStatisticFilesDirectory(File solverStatisticFilesDirectory) {
-        this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
     }
 
     public LocalSearchSolverConfig getInheritedLocalSearchSolverConfig() {
@@ -170,24 +171,23 @@ public class SolverBenchmarkSuite {
             solverBenchmark.setName(generatedName);
             generatedNameIndex++;
         }
+        if (benchmarkDirectory == null) {
+            throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
+        }
+        benchmarkDirectory.mkdirs();
+        if (solvedSolutionFilesDirectory == null) {
+            solvedSolutionFilesDirectory = new File(benchmarkDirectory, "solved");
+        }
+        solvedSolutionFilesDirectory.mkdirs();
+        if (solverStatisticFilesDirectory == null) {
+            solverStatisticFilesDirectory = new File(benchmarkDirectory, "statistic");
+        }
+        solverStatisticFilesDirectory.mkdirs();
     }
 
     public void benchmark(XStream xStream) { // TODO refactor out xstream
         benchmarkingStarted();
-        if (solvedSolutionFilesDirectory != null) {
-            solvedSolutionFilesDirectory.mkdirs();
-        }
-        Map<File, SolverStatistic> unsolvedSolutionFileToStatisticMap;
-        if (solverStatisticType != SolverStatisticType.NONE) {
-            unsolvedSolutionFileToStatisticMap = new HashMap<File, SolverStatistic>();
-            if (solverStatisticFilesDirectory == null) {
-                throw new IllegalArgumentException("With solverStatisticType (" + solverStatisticType
-                        + ") the solverStatisticFilesDirectory must not be null.");
-            }
-            solverStatisticFilesDirectory.mkdirs();
-        } else {
-            unsolvedSolutionFileToStatisticMap = null;
-        }
+        Map<File, SolverStatistic> unsolvedSolutionFileToStatisticMap = new HashMap<File, SolverStatistic>();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             Solver solver = solverBenchmark.getLocalSearchSolverConfig().buildSolver();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
@@ -214,21 +214,19 @@ public class SolverBenchmarkSuite {
             }
         }
         writeGraphSummary();
-        if (solverStatisticType != SolverStatisticType.NONE) {
-            // 2 lines at 80 chars per line give a max of 160 per entry
-            StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
-            htmlFragment.append("  <h1>Summary</h1>\n");
-            htmlFragment.append(writeGraphSummary()).append("\n");
-            htmlFragment.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
-            for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
-                File unsolvedSolutionFile = entry.getKey();
-                SolverStatistic statistic = entry.getValue();
-                String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
-                htmlFragment.append("  <h2>").append(baseName).append("</h2>\n");
-                htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName)).append("\n");
-            }
-            writeHtmlOverview(htmlFragment);
+        // 2 lines at 80 chars per line give a max of 160 per entry
+        StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
+        htmlFragment.append("  <h1>Summary</h1>\n");
+        htmlFragment.append(writeGraphSummary()).append("\n");
+        htmlFragment.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
+        for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
+            File unsolvedSolutionFile = entry.getKey();
+            SolverStatistic statistic = entry.getValue();
+            String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
+            htmlFragment.append("  <h2>").append(baseName).append("</h2>\n");
+            htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName)).append("\n");
         }
+        writeHtmlOverview(htmlFragment);
         benchmarkingEnded();
     }
 
@@ -324,10 +322,6 @@ public class SolverBenchmarkSuite {
             }
             Collections.sort(solverBenchmarkList, solverBenchmarkComparator);
         }
-    }
-    
-    public static enum SolvedSolutionVerbosity {
-        ALL
     }
 
     public static enum SolverStatisticType {
