@@ -50,7 +50,7 @@ public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter 
             softConstraintsPenaltyElement.setText(Integer.toString(nurseRoster.getScore().getSoftScore()));
             solutionElement.addContent(softConstraintsPenaltyElement);
 
-            for (Assignment assignment : nurseRoster.getEmployeeAssignmentList()) {
+            for (Assignment assignment : nurseRoster.getAssignmentList()) {
                 Shift shift = assignment.getShift();
                 if (shift != null) {
                     Element assignmentElement = new Element("Assignment");

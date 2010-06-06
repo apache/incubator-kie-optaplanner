@@ -18,7 +18,7 @@ public class AssignmentSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
-        List<Assignment> assignmentList = nurseRoster.getEmployeeAssignmentList();
+        List<Assignment> assignmentList = nurseRoster.getAssignmentList();
         List<Move> moveList = new ArrayList<Move>();
         for (ListIterator<Assignment> leftIt = assignmentList.listIterator(); leftIt.hasNext();) {
             Assignment leftAssignment = leftIt.next();

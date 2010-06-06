@@ -3,7 +3,6 @@ package org.drools.planner.examples.nurserostering.solver.solution.initializer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
@@ -68,7 +67,7 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
         }
 
         Collections.sort(assignmentList, new PersistableIdComparator());
-        nurseRoster.setEmployeeAssignmentList(assignmentList);
+        nurseRoster.setAssignmentList(assignmentList);
     }
 
     public List<Assignment> createAssignmentList(NurseRoster nurseRoster) {
@@ -95,6 +94,7 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
                 assignmentId++;
             }
         }
+        Collections.sort(assignmentList);
         return assignmentList;
     }
 

@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
-import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Employee;
@@ -85,10 +84,10 @@ public class NurseRosteringPanel extends SolutionPanel {
             }
         }
         if (schedule.isInitialized()) {
-            for (Assignment assignment : schedule.getEmployeeAssignmentList()) {
+            for (Assignment assignment : schedule.getAssignmentList()) {
                 Employee employee = assignment.getEmployee();
                 EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(assignment.getShiftDate());
-                employeeShiftDatePanel.addEmployeeAssignment(assignment);
+                employeeShiftDatePanel.addAssignment(assignment);
             }
         }
     }
@@ -102,18 +101,18 @@ public class NurseRosteringPanel extends SolutionPanel {
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         }
 
-        public void addEmployeeAssignment(Assignment assignment) {
-            JButton button = new JButton(new EmployeeAssignmentAction(assignment));
+        public void addAssignment(Assignment assignment) {
+            JButton button = new JButton(new AssignmentAction(assignment));
             add(button);
         }
 
     }
 
-    private class EmployeeAssignmentAction extends AbstractAction {
+    private class AssignmentAction extends AbstractAction {
 
         private Assignment assignment;
 
-        public EmployeeAssignmentAction(Assignment assignment) {
+        public AssignmentAction(Assignment assignment) {
             super(assignment.getLabel());
             this.assignment = assignment;
         }

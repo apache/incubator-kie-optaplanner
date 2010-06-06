@@ -175,11 +175,11 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         this.shiftOnRequestList = shiftOnRequestList;
     }
 
-    public List<Assignment> getEmployeeAssignmentList() {
+    public List<Assignment> getAssignmentList() {
         return assignmentList;
     }
 
-    public void setEmployeeAssignmentList(List<Assignment> assignmentList) {
+    public void setAssignmentList(List<Assignment> assignmentList) {
         this.assignmentList = assignmentList;
     }
 

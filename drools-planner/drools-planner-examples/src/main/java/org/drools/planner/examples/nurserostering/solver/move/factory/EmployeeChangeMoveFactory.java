@@ -20,7 +20,7 @@ public class EmployeeChangeMoveFactory extends CachedMoveFactory {
         NurseRoster nurseRoster = (NurseRoster) solution;
         List<Move> moveList = new ArrayList<Move>();
         List<Employee> employeeList = nurseRoster.getEmployeeList();
-        for (Assignment assignment : nurseRoster.getEmployeeAssignmentList()) {
+        for (Assignment assignment : nurseRoster.getAssignmentList()) {
             for (Employee employee : employeeList) {
                 moveList.add(new EmployeeChangeMove(assignment, employee));
             }

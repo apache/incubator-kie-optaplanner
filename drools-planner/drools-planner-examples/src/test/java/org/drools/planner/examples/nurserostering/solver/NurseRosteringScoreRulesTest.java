@@ -38,10 +38,10 @@ public class NurseRosteringScoreRulesTest extends TestCase {
         Score firstScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
         // do AssignmentSwitchMove
         Employee leftEmployee = findEmployeeById(nurseRoster, 0L);
-        Assignment leftAssignment = findEmployeeAssignmentById(nurseRoster, 200204001L);
+        Assignment leftAssignment = findAssignmentById(nurseRoster, 200204001L);
         assertEquals(leftEmployee, leftAssignment.getEmployee());
         Employee rightEmployee = findEmployeeById(nurseRoster, 12L);
-        Assignment rightAssignment = findEmployeeAssignmentById(nurseRoster, 200204002L);
+        Assignment rightAssignment = findAssignmentById(nurseRoster, 200204002L);
         assertEquals(rightEmployee, rightAssignment.getEmployee());
         NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, rightEmployee);
         NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, leftEmployee);
@@ -84,8 +84,8 @@ public class NurseRosteringScoreRulesTest extends TestCase {
         throw new IllegalArgumentException("Invalid id (" + id + ")");
     }
 
-    private Assignment findEmployeeAssignmentById(NurseRoster nurseRoster, long id) {
-        for (Assignment assignment : nurseRoster.getEmployeeAssignmentList()) {
+    private Assignment findAssignmentById(NurseRoster nurseRoster, long id) {
+        for (Assignment assignment : nurseRoster.getAssignmentList()) {
             if (assignment.getId() == id) {
                 return assignment;
             }
