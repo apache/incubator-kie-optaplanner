@@ -41,7 +41,7 @@
                     <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeAssignmentSwitchMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
                     <absoluteSelection>500</absoluteSelection>
                 </selector>
             </selector>
@@ -63,7 +63,7 @@
                     <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeAssignmentSwitchMoveFactory</moveFactoryClass>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
                     <absoluteSelection>500</absoluteSelection>
                 </selector>
             </selector>

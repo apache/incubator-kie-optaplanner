@@ -36,7 +36,7 @@ public class NurseRosteringScoreRulesTest extends TestCase {
         WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
 
         Score firstScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
-        // do EmployeeAssignmentSwitchMove
+        // do AssignmentSwitchMove
         Employee leftEmployee = findEmployeeById(nurseRoster, 0L);
         Assignment leftAssignment = findEmployeeAssignmentById(nurseRoster, 200204001L);
         assertEquals(leftEmployee, leftAssignment.getEmployee());
@@ -46,7 +46,7 @@ public class NurseRosteringScoreRulesTest extends TestCase {
         NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, rightEmployee);
         NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, leftEmployee);
         localSearchSolverScope.calculateScoreFromWorkingMemory();
-        // undo EmployeeAssignmentSwitchMove;
+        // undo AssignmentSwitchMove;
         NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, rightEmployee);
         NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, leftEmployee);
         Score secondScore = localSearchSolverScope.calculateScoreFromWorkingMemory();

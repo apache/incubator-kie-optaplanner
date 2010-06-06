@@ -15,12 +15,12 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 /**
  * @author Geoffrey De Smet
  */
-public class EmployeeAssignmentSwitchMove implements Move, TabuPropertyEnabled {
+public class AssignmentSwitchMove implements Move, TabuPropertyEnabled {
 
     private Assignment leftAssignment;
     private Assignment rightAssignment;
 
-    public EmployeeAssignmentSwitchMove(Assignment leftAssignment, Assignment rightAssignment) {
+    public AssignmentSwitchMove(Assignment leftAssignment, Assignment rightAssignment) {
         this.leftAssignment = leftAssignment;
         this.rightAssignment = rightAssignment;
     }
@@ -30,7 +30,7 @@ public class EmployeeAssignmentSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new EmployeeAssignmentSwitchMove(rightAssignment, leftAssignment);
+        return new AssignmentSwitchMove(rightAssignment, leftAssignment);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -47,8 +47,8 @@ public class EmployeeAssignmentSwitchMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeAssignmentSwitchMove) {
-            EmployeeAssignmentSwitchMove other = (EmployeeAssignmentSwitchMove) o;
+        } else if (o instanceof AssignmentSwitchMove) {
+            AssignmentSwitchMove other = (AssignmentSwitchMove) o;
             return new EqualsBuilder()
                     .append(leftAssignment, other.leftAssignment)
                     .append(rightAssignment, other.rightAssignment)

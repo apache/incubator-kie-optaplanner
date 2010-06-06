@@ -167,7 +167,6 @@ public class BestScoreStatistic implements SolverStatistic {
             seriesCollection.addSeries(configSeries);
         }
         NumberAxis xAxis = new NumberAxis("Time millis spend");
-        xAxis.setAutoRangeIncludesZero(false);
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Score");
         yAxis.setAutoRangeIncludesZero(false);
