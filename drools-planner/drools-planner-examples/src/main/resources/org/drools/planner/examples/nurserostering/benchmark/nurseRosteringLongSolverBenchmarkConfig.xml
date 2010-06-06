@@ -33,7 +33,7 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <name>absolute500_propertyTabu10</name>
+        <name>absolute500_propertyTabu11</name>
         <localSearchSolver>
             <selector>
                 <selector>
@@ -47,7 +47,7 @@
             </selector>
             <acceptor>
               <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-              <completePropertyTabuSize>10</completePropertyTabuSize>
+              <completePropertyTabuSize>11</completePropertyTabuSize>
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
@@ -55,7 +55,7 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>absolute500_moveTabu7</name>
+        <name>absolute500_moveTabu11</name>
         <localSearchSolver>
             <selector>
                 <selector>
@@ -69,7 +69,7 @@
             </selector>
             <acceptor>
               <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-              <completeMoveTabuSize>7</completeMoveTabuSize>
+              <completeMoveTabuSize>11</completeMoveTabuSize>
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
