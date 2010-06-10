@@ -307,14 +307,14 @@ public class WorkflowFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
-            fileChooser.setFileFilter(new FileFilter() {
-                public boolean accept(File file) {
-                    return file.isDirectory() || file.getName().endsWith(".xml"); // TODO
-                }
-                public String getDescription() {
-                    return "Solver xml files"; // TODO
-                }
-            });
+//            fileChooser.setFileFilter(new FileFilter() {
+//                public boolean accept(File file) {
+//                    return file.isDirectory() || file.getName().endsWith(".xml"); // TODO Not all import files are xml
+//                }
+//                public String getDescription() {
+//                    return "Import files";
+//                }
+//            });
             int approved = fileChooser.showOpenDialog(WorkflowFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 solutionBusiness.importSolution(fileChooser.getSelectedFile());
@@ -332,14 +332,14 @@ public class WorkflowFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser(solutionBusiness.getExportDataDir());
-            fileChooser.setFileFilter(new FileFilter() {
-                public boolean accept(File file) {
-                    return file.isDirectory() || file.getName().endsWith(".xml"); // TODO
-                }
-                public String getDescription() {
-                    return "Solver xml files"; // TODO
-                }
-            });
+//            fileChooser.setFileFilter(new FileFilter() {
+//                public boolean accept(File file) {
+//                    return file.isDirectory() || file.getName().endsWith(".xml"); // TODO Not all export files are xml
+//                }
+//                public String getDescription() {
+//                    return "Export files";
+//                }
+//            });
             int approved = fileChooser.showSaveDialog(WorkflowFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 solutionBusiness.exportSolution(fileChooser.getSelectedFile());
