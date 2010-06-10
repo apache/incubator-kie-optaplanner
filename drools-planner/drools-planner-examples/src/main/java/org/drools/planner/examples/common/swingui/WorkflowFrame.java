@@ -49,6 +49,7 @@ public class WorkflowFrame extends JFrame {
     private List<Action> loadSolvedActionList;
     private Action cancelSolvingAction;
     private Action solveAction;
+    private Action openAction;
     private Action saveAction;
     private Action importAction;
     private Action exportAction;
@@ -148,7 +149,7 @@ public class WorkflowFrame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent e) {
-            solutionBusiness.loadSolution(file);
+            solutionBusiness.openSolution(file);
             setSolutionLoaded();
         }
 
@@ -162,6 +163,9 @@ public class WorkflowFrame extends JFrame {
         cancelSolvingAction = new CancelSolvingAction();
         cancelSolvingAction.setEnabled(false);
         panel.add(new JButton(cancelSolvingAction));
+        openAction = new OpenAction();
+        openAction.setEnabled(true);
+        panel.add(new JButton(openAction));
         saveAction = new SaveAction();
         saveAction.setEnabled(false);
         panel.add(new JButton(saveAction));
@@ -190,6 +194,7 @@ public class WorkflowFrame extends JFrame {
         }
         solveAction.setEnabled(!solving);
         cancelSolvingAction.setEnabled(solving);
+        openAction.setEnabled(!solving);
         saveAction.setEnabled(!solving);
         importAction.setEnabled(!solving && solutionBusiness.hasImporter());
         exportAction.setEnabled(!solving && solutionBusiness.hasExporter());
@@ -241,6 +246,31 @@ public class WorkflowFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             // This async, so it doesn't stop the solving immediately
             solutionBusiness.terminateSolvingEarly();
+        }
+
+    }
+
+    private class OpenAction extends AbstractAction {
+
+        public OpenAction() {
+            super("Open...");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getUnsolvedDataDir());
+            fileChooser.setFileFilter(new FileFilter() {
+                public boolean accept(File file) {
+                    return file.isDirectory() || file.getName().endsWith(".xml");
+                }
+                public String getDescription() {
+                    return "Solver xml files";
+                }
+            });
+            int approved = fileChooser.showOpenDialog(WorkflowFrame.this);
+            if (approved == JFileChooser.APPROVE_OPTION) {
+                solutionBusiness.openSolution(fileChooser.getSelectedFile());
+                setSolutionLoaded();
+            }
         }
 
     }

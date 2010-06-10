@@ -69,7 +69,7 @@ public class NurseRosteringEvaluatorHelper {
                     filePrefix + ".xml").getCanonicalFile();
             File solvedFile = new File(solutionBusiness.getSolvedDataDir(),
                     filePrefix + fileSuffix + ".xml").getCanonicalFile();
-            solutionBusiness.loadSolution(solvedFile);
+            solutionBusiness.openSolution(solvedFile);
             HardAndSoftScore score = (HardAndSoftScore) solutionBusiness.getScore();
             File outputFile = new File(solutionBusiness.getExportDataDir(),
                     filePrefix + fileSuffix + ".xml").getCanonicalFile();

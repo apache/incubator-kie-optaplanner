@@ -175,7 +175,7 @@ public class SolutionBusiness {
         solver.setStartingSolution(solution);
     }
 
-    public void loadSolution(File file) {
+    public void openSolution(File file) {
         Solution solution = solutionDao.readSolution(file);
         solver.setStartingSolution(solution);
     }
