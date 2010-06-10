@@ -11,7 +11,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -31,7 +30,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.benchmark.statistic.BestScoreStatistic;
@@ -203,7 +201,7 @@ public class SolverBenchmarkSuite {
                     statistic.addListener(solver, solverBenchmark.getName());
                 }
                 solver.solve();
-                result.setTimeMillesSpend(solver.getTimeMillisSpend());
+                result.setTimeMillisSpend(solver.getTimeMillisSpend());
                 Solution solvedSolution = solver.getBestSolution();
                 result.setScore(solvedSolution.getScore());
                 if (solverStatisticType != SolverStatisticType.NONE) {
@@ -213,24 +211,24 @@ public class SolverBenchmarkSuite {
                 writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
             }
         }
-        writeGraphSummary();
+        writeBestScoreSummary();
         // 2 lines at 80 chars per line give a max of 160 per entry
         StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
         htmlFragment.append("  <h1>Summary</h1>\n");
-        htmlFragment.append(writeGraphSummary()).append("\n");
+        htmlFragment.append(writeBestScoreSummary());
         htmlFragment.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
         for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
             File unsolvedSolutionFile = entry.getKey();
             SolverStatistic statistic = entry.getValue();
             String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
             htmlFragment.append("  <h2>").append(baseName).append("</h2>\n");
-            htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName)).append("\n");
+            htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName));
         }
         writeHtmlOverview(htmlFragment);
         benchmarkingEnded();
     }
 
-    private CharSequence writeGraphSummary() {
+    private CharSequence writeBestScoreSummary() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
@@ -255,7 +253,7 @@ public class SolverBenchmarkSuite {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <img src=\"" + chartSummaryFile.getName() + "\"/>";
+        return "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
     private void writeHtmlOverview(CharSequence htmlFragment) {
@@ -301,7 +299,7 @@ public class SolverBenchmarkSuite {
         String baseName = FilenameUtils.getBaseName(result.getUnsolvedSolutionFile().getName());
         String solverBenchmarkName = solverBenchmark.getName().replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
         String scoreString = result.getScore().toString().replaceAll("[\\/ ]", "_");
-        String timeString = TIME_FORMAT.format(result.getTimeMillesSpend()) + "ms";
+        String timeString = TIME_FORMAT.format(result.getTimeMillisSpend()) + "ms";
         solvedSolutionFile = new File(solvedSolutionFilesDirectory, baseName + "_" + solverBenchmarkName
                 + "_score" + scoreString + "_time" + timeString + ".xml");
         Writer writer = null;

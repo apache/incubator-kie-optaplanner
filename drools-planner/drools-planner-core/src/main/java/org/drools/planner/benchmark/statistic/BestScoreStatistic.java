@@ -146,7 +146,7 @@ public class BestScoreStatistic implements SolverStatistic {
         } finally {
             IOUtils.closeQuietly(writer);
         }
-        return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>";
+        return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>\n";
     }
 
     private CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
@@ -186,7 +186,7 @@ public class BestScoreStatistic implements SolverStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <img src=\"" + graphStatisticFile.getName() + "\"/>";
+        return "  <img src=\"" + graphStatisticFile.getName() + "\"/>\n";
     }
 
 }

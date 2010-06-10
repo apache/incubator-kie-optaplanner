@@ -104,7 +104,7 @@ public class SolverBenchmark {
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
             if (worstResult == null || solverBenchmarkResult.getScore().compareTo(worstResult.getScore()) < 0
                     || (solverBenchmarkResult.getScore().equals(worstResult.getScore())
-                    && solverBenchmarkResult.getTimeMillesSpend() > worstResult.getTimeMillesSpend())) {
+                    && solverBenchmarkResult.getTimeMillisSpend() > worstResult.getTimeMillisSpend())) {
                 worstResult = solverBenchmarkResult;
             }
         }

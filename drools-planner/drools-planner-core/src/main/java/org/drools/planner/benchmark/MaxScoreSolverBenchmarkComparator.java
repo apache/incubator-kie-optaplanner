@@ -14,7 +14,7 @@ public class MaxScoreSolverBenchmarkComparator implements Comparator<SolverBench
         SolverBenchmarkResult bResult = b.getWorstResult();
         return new CompareToBuilder()
                 .append(aResult.getScore(), bResult.getScore())
-                .append(- aResult.getTimeMillesSpend(), - bResult.getTimeMillesSpend())
+                .append(- aResult.getTimeMillisSpend(), - bResult.getTimeMillisSpend())
                 .toComparison();
     }
 

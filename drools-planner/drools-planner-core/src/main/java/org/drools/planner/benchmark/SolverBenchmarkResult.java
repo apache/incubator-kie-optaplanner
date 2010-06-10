@@ -13,7 +13,7 @@ public class SolverBenchmarkResult {
 
     private File unsolvedSolutionFile = null;
     private Score score = null;
-    private Long timeMillesSpend = null;
+    private Long timeMillisSpend = null;
     private File solvedSolutionFile = null;
 
     public File getUnsolvedSolutionFile() {
@@ -32,12 +32,12 @@ public class SolverBenchmarkResult {
         this.score = score;
     }
 
-    public Long getTimeMillesSpend() {
-        return timeMillesSpend;
+    public Long getTimeMillisSpend() {
+        return timeMillisSpend;
     }
 
-    public void setTimeMillesSpend(Long timeMillesSpend) {
-        this.timeMillesSpend = timeMillesSpend;
+    public void setTimeMillisSpend(Long timeMillisSpend) {
+        this.timeMillisSpend = timeMillisSpend;
     }
 
     public File getSolvedSolutionFile() {
