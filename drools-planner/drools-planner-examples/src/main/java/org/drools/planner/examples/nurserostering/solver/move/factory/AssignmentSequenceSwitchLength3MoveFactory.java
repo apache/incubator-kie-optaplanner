@@ -105,6 +105,7 @@ public class AssignmentSequenceSwitchLength3MoveFactory extends AbstractMoveFact
 
         private AssignmentSequence(Assignment assignment) {
             assignmentList = new ArrayList<Assignment>();
+            assignmentList.add(assignment);
             firstDayIndex = assignment.getShiftDateDayIndex();
             lastDayIndex = firstDayIndex;
         }
