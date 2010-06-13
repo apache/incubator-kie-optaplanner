@@ -1,11 +1,11 @@
 #!/bin/sh
 
 mainJar=lib/drools-planner-examples-${project.version}.jar
-mainClass=org.drools.planner.examples.nurserostering.competition.NurseRosteringCompetitionSprintApp
+mainClass=org.drools.planner.examples.nurserostering.competition.NurseRosteringCompetitionLongApp
 
-echo "Usage: ./nurseRosteringSprint.sh [timeInSeconds]"
-echo "For example: ./nurseRosteringSprint.sh"
-echo "             ./nurseRosteringSprint.sh 10"
+echo "Usage: ./nurseRosteringLong.sh [timeInSeconds]"
+echo "For example: ./nurseRosteringLong.sh"
+echo "             ./nurseRosteringLong.sh 36000"
 echo "All files under the input directory will be solved and placed under the output directory"
 echo ""
 echo "Some notes:"

@@ -13,14 +13,14 @@ import org.drools.planner.examples.nurserostering.persistence.NurseRosteringSolu
 /**
  * @author Geoffrey De Smet
  */
-public class NurseRosteringCompetitionSprintApp extends LoggingMain {
+public class NurseRosteringCompetitionLongApp extends LoggingMain {
 
     public static final String COMPETITION_LOGGING_CONFIG
             = "/org/drools/planner/examples/nurserostering/competition/competition-log4j.xml";
     public static final String SOLVER_CONFIG
-            = "/org/drools/planner/examples/nurserostering/competition/nurseRosteringCompetitionSprintSolverConfig.xml";
-    private static final int DEFAULT_TIME_SECONDS_SPEND = 10;
-    private static final String INPUT_FILE_NAME_PREFIX = "sprint";
+            = "/org/drools/planner/examples/nurserostering/competition/nurseRosteringCompetitionLongSolverConfig.xml";
+    private static final int DEFAULT_TIME_SECONDS_SPEND = 36000;
+    private static final String INPUT_FILE_NAME_PREFIX = "long";
 
     public static void main(String[] args) {
         long maximumSecondsSpend;
@@ -36,7 +36,7 @@ public class NurseRosteringCompetitionSprintApp extends LoggingMain {
         } else {
             maximumSecondsSpend = DEFAULT_TIME_SECONDS_SPEND;
         }
-        new NurseRosteringCompetitionSprintApp(maximumSecondsSpend).solve();
+        new NurseRosteringCompetitionLongApp(maximumSecondsSpend).solve();
     }
 
     protected NurseRosteringSolutionImporter importer;
@@ -45,7 +45,7 @@ public class NurseRosteringCompetitionSprintApp extends LoggingMain {
     protected File inputDir;
     protected File outputDir;
 
-    public NurseRosteringCompetitionSprintApp(long maximumSecondsSpend) {
+    public NurseRosteringCompetitionLongApp(long maximumSecondsSpend) {
         super(COMPETITION_LOGGING_CONFIG);
         inputDir = new File("input");
         if (!inputDir.exists()) {
@@ -57,7 +57,7 @@ public class NurseRosteringCompetitionSprintApp extends LoggingMain {
         }
         importer = new NurseRosteringSolutionImporter();
         exporter = new NurseRosteringSolutionExporter();
-        
+
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
         configurer.getConfig().getTerminationConfig().setMaximumSecondsSpend(maximumSecondsSpend);

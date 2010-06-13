@@ -14,10 +14,6 @@
         <priority value="info" />
     </category>
 
-    <category name="org.drools.planner">
-        <priority value="warn" />
-    </category>
-
     <root>
         <priority value="warn" />
         <appender-ref ref="consoleAppender" />
