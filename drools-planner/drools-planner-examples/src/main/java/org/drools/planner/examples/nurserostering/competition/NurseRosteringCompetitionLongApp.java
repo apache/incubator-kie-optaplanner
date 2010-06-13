@@ -15,8 +15,6 @@ import org.drools.planner.examples.nurserostering.persistence.NurseRosteringSolu
  */
 public class NurseRosteringCompetitionLongApp extends LoggingMain {
 
-    public static final String COMPETITION_LOGGING_CONFIG
-            = "/org/drools/planner/examples/nurserostering/competition/competition-log4j.xml";
     public static final String SOLVER_CONFIG
             = "/org/drools/planner/examples/nurserostering/competition/nurseRosteringCompetitionLongSolverConfig.xml";
     private static final int DEFAULT_TIME_SECONDS_SPEND = 36000;
@@ -46,7 +44,7 @@ public class NurseRosteringCompetitionLongApp extends LoggingMain {
     protected File outputDir;
 
     public NurseRosteringCompetitionLongApp(long maximumSecondsSpend) {
-        super(COMPETITION_LOGGING_CONFIG);
+        super();
         inputDir = new File("input");
         if (!inputDir.exists()) {
             throw new IllegalArgumentException("The input directory  (" + inputDir + ") does not exist.");
