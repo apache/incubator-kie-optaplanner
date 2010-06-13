@@ -62,7 +62,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
         } else {
             Score perfectMaximumScore = stepScope.getLocalSearchSolverScope().getScoreDefinition()
                     .getPerfectMaximumScore();
-            Score waterLevelAugend = perfectMaximumScore.substract(waterLevelScore).multiply(waterRisingRate);
+            Score waterLevelAugend = perfectMaximumScore.subtract(waterLevelScore).multiply(waterRisingRate);
             waterLevelScore = waterLevelScore.add(waterLevelAugend);
             // TODO maybe if waterlevel is higher than bestScore, than ...
         }

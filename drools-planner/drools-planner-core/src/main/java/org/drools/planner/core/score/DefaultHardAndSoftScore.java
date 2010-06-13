@@ -57,12 +57,12 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
     // Worker methods
     // ************************************************************************
 
-    public HardAndSoftScore add(HardAndSoftScore augend) {
-        return new DefaultHardAndSoftScore(this.hardScore + augend.getHardScore(),
-                this.softScore + augend.getSoftScore());
+    public HardAndSoftScore add(HardAndSoftScore augment) {
+        return new DefaultHardAndSoftScore(this.hardScore + augment.getHardScore(),
+                this.softScore + augment.getSoftScore());
     }
 
-    public HardAndSoftScore substract(HardAndSoftScore subtrahend) {
+    public HardAndSoftScore subtract(HardAndSoftScore subtrahend) {
         return new DefaultHardAndSoftScore(this.hardScore - subtrahend.getHardScore(),
                 this.softScore - subtrahend.getSoftScore());
     }

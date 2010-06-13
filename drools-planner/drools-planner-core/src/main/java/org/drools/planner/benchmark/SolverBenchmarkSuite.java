@@ -316,7 +316,7 @@ public class SolverBenchmarkSuite {
     public void benchmarkingEnded() {
         if (sortSolverBenchmarks) {
             if (solverBenchmarkComparator == null) {
-                solverBenchmarkComparator = new MaxScoreSolverBenchmarkComparator();
+                solverBenchmarkComparator = new AverageScoreSolverBenchmarkComparator();
             }
             Collections.sort(solverBenchmarkList, solverBenchmarkComparator);
         }

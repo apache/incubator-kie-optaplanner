@@ -300,6 +300,7 @@ After in *ScoreDefinition.java:
         }
     }
 
+
 A benchmarker config no longer supports solvedSolutionVerbosity (only ALL was supported anyway).
 Before in *BenchmarkConfig.xml:
    <solvedSolutionVerbosity>ALL</solvedSolutionVerbosity>
@@ -316,3 +317,15 @@ After in *BenchmarkConfig.xml:
     <solverBenchmarkSuite>
         <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
         ...
+
+Benchmarker: the class MaxScoreSolverBenchmarkComparator has been renamed to WorstScoreSolverBenchmarkComparator.
+
+A benchmarker no longer uses WorstScoreSolverBenchmarkComparator by default.
+It now uses AverageScoreSolverBenchmarkComparator by default.
+
+
+The method Score.substract has been renamed to Score.subtract
+Before in *Score.java:
+    public ...Score substract(...Score subtrahend) {
+After in *Score.java:
+    public ...Score subtract(...Score subtrahend) {

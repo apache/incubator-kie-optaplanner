@@ -7,6 +7,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
+import org.drools.planner.core.score.Score;
 
 /**
  * @author Geoffrey De Smet
@@ -99,16 +100,28 @@ public class SolverBenchmark {
         }
     }
 
-    public SolverBenchmarkResult getWorstResult() {
-        SolverBenchmarkResult worstResult = null;
+    public List<Score> getScoreList() {
+        List<Score> scoreList = new ArrayList<Score>(solverBenchmarkResultList.size());
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
-            if (worstResult == null || solverBenchmarkResult.getScore().compareTo(worstResult.getScore()) < 0
-                    || (solverBenchmarkResult.getScore().equals(worstResult.getScore())
-                    && solverBenchmarkResult.getTimeMillisSpend() > worstResult.getTimeMillisSpend())) {
-                worstResult = solverBenchmarkResult;
+            scoreList.add(solverBenchmarkResult.getScore());
+        }
+        return scoreList;
+    }
+
+    /**
+     * Note that the average score
+     * @return the average score
+     */
+    public Score getAverageScore() {
+        Score totalScore = null;
+        for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
+            if (totalScore == null) {
+                totalScore = solverBenchmarkResult.getScore();
+            } else {
+                totalScore.add(solverBenchmarkResult.getScore());
             }
         }
-        return worstResult;
+        return totalScore.divide(solverBenchmarkResultList.size());
     }
 
 }

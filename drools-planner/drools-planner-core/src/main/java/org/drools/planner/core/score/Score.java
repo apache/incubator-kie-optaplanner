@@ -12,17 +12,17 @@ public interface Score<S extends Score> extends Comparable<S> {
 
     /**
      * Returns a Score whose value is (this + augend).
-     * @param augend value to be added to this Score
+     * @param augment value to be added to this Score
      * @return this + augend
      */
-    S add(S augend);
+    S add(S augment);
 
     /**
      * Returns a Score whose value is (this - subtrahend).
      * @param subtrahend value to be subtracted from this Score
      * @return this - subtrahend, rounded as necessary
      */
-    S substract(S subtrahend);
+    S subtract(S subtrahend);
 
     /**
      * Returns a Score whose value is (this × multiplicand).

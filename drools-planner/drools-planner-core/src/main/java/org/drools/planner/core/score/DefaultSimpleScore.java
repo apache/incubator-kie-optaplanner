@@ -32,11 +32,11 @@ public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
     // Worker methods
     // ************************************************************************
 
-    public SimpleScore add(SimpleScore augend) {
-        return new DefaultSimpleScore(this.score + augend.getScore());
+    public SimpleScore add(SimpleScore augment) {
+        return new DefaultSimpleScore(this.score + augment.getScore());
     }
 
-    public SimpleScore substract(SimpleScore subtrahend) {
+    public SimpleScore subtract(SimpleScore subtrahend) {
         return new DefaultSimpleScore(this.score - subtrahend.getScore());
     }
 
