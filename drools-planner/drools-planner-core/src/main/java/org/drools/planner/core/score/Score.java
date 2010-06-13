@@ -11,9 +11,9 @@ package org.drools.planner.core.score;
 public interface Score<S extends Score> extends Comparable<S> {
 
     /**
-     * Returns a Score whose value is (this + augend).
+     * Returns a Score whose value is (this + augment).
      * @param augment value to be added to this Score
-     * @return this + augend
+     * @return this + augment
      */
     S add(S augment);
 
@@ -26,7 +26,7 @@ public interface Score<S extends Score> extends Comparable<S> {
 
     /**
      * Returns a Score whose value is (this × multiplicand).
-     * Rounding will be applied as needed.
+     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
      * @param multiplicand value to be multiplied by this Score.
      * @return this * multiplicand
      */
@@ -34,7 +34,7 @@ public interface Score<S extends Score> extends Comparable<S> {
 
     /**
      * Returns a Score whose value is (this / divisor).
-     * Rounding will be applied as needed.
+     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
      * @param divisor value by which this Score is to be divided
      * @return this / divisor
      */

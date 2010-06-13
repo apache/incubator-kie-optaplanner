@@ -68,13 +68,13 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
     }
 
     public HardAndSoftScore multiply(double multiplicand) {
-        return new DefaultHardAndSoftScore((int) Math.round(this.hardScore * multiplicand),
-                (int) Math.round(this.softScore * multiplicand));
+        return new DefaultHardAndSoftScore((int) Math.floor(this.hardScore * multiplicand),
+                (int) Math.floor(this.softScore * multiplicand));
     }
 
     public HardAndSoftScore divide(double divisor) {
-        return new DefaultHardAndSoftScore((int) Math.round(this.hardScore / divisor),
-                (int) Math.round(this.softScore / divisor));
+        return new DefaultHardAndSoftScore((int) Math.floor(this.hardScore / divisor),
+                (int) Math.floor(this.softScore / divisor));
     }
 
     public boolean equals(Object o) {

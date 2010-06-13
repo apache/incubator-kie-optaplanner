@@ -41,11 +41,11 @@ public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
     }
 
     public SimpleScore multiply(double multiplicand) {
-        return new DefaultSimpleScore((int) Math.round(this.score * multiplicand));
+        return new DefaultSimpleScore((int) Math.floor(this.score * multiplicand));
     }
 
     public SimpleScore divide(double divisor) {
-        return new DefaultSimpleScore((int) Math.round(this.score / divisor));
+        return new DefaultSimpleScore((int) Math.floor(this.score / divisor));
     }
 
     public boolean equals(Object o) {
