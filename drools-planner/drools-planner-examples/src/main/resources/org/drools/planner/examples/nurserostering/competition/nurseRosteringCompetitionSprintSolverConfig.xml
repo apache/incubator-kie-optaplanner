@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+    <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    </scoreDefinition>
+    <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
+    <termination>
+        <!-- The main method set the maximumSecondsSpend parameter -->
+    </termination>
+    <selector>
+        <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+            <absoluteSelection>100</absoluteSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+            <absoluteSelection>100</absoluteSelection>
+        </selector>
+    </selector>
+    <acceptor>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <completePropertyTabuSize>10</completePropertyTabuSize>
+    </acceptor>
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+    </forager>
+</localSearchSolver>
