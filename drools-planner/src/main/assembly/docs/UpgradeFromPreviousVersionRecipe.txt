@@ -335,3 +335,5 @@ Before in *Score.java:
     public ...Score substract(...Score subtrahend) {
 After in *Score.java:
     public ...Score subtract(...Score subtrahend) {
+
+Custom Score implementation: When rounding is needed, it should now be floored (as defined by Math.floor(double)).
