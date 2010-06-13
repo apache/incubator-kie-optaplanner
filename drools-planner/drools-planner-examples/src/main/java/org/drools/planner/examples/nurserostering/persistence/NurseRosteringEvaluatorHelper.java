@@ -9,17 +9,18 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.score.HardAndSoftScore;
+import org.drools.planner.examples.common.app.LoggingMain;
 import org.drools.planner.examples.common.business.SolutionBusiness;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
 
 /**
  * @author Geoffrey De Smet
  */
-public class NurseRosteringEvaluatorHelper {
+public class NurseRosteringEvaluatorHelper extends LoggingMain {
 
-    private static final boolean ALL_INPUT_FILES = false;
+    private static final boolean ALL_INPUT_FILES = true;
     private static final String INPUT_FILE_PREFIX = "long_late04";
-    private static final String OUTPUT_FILE_SUFFIX = "_feasibleInitialized";
+    private static final String OUTPUT_FILE_SUFFIX = "_geoffrey_de_smet";
     private static final String DEFAULT_LINE_CONTAINS_FILTER = null;
 
     public static void main(String[] args) {
@@ -69,6 +70,10 @@ public class NurseRosteringEvaluatorHelper {
                     filePrefix + ".xml").getCanonicalFile();
             File solvedFile = new File(solutionBusiness.getSolvedDataDir(),
                     filePrefix + fileSuffix + ".xml").getCanonicalFile();
+            if (!solvedFile.exists()) {
+                logger.info("Skipping inputFile ({}) because no solvedFile found.", inputFile);
+                return;
+            }
             solutionBusiness.openSolution(solvedFile);
             HardAndSoftScore score = (HardAndSoftScore) solutionBusiness.getScore();
             File outputFile = new File(solutionBusiness.getExportDataDir(),
