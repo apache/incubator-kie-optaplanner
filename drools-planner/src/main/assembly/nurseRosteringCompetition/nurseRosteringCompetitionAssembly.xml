@@ -10,15 +10,25 @@
 
     <fileSets>
         <fileSet>
-            <directory>src/main/assembly/nurseRosteringCompetition</directory>
+            <directory>src/main/assembly/nurseRosteringCompetition/scripts</directory>
+            <lineEnding>unix</lineEnding>
+            <filtered>true</filtered>
+            <outputDirectory/>
+            <includes>
+                <include>**/*.sh</include>
+            </includes>
+            <fileMode>755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/assembly/nurseRosteringCompetition/docs</directory>
             <outputDirectory/>
         </fileSet>
         <fileSet>
-            <directory>data/nurserostering/input</directory>
+            <directory>drools-planner-examples/data/nurserostering/input</directory>
             <outputDirectory>input</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>data/nurserostering/output</directory>
+            <directory>drools-planner-examples/data/nurserostering/output</directory>
             <outputDirectory>output</outputDirectory>
         </fileSet>
     </fileSets>
