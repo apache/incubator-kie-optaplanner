@@ -4,17 +4,17 @@
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
     
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long01.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long02.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long03.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long04.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long05.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint01.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint02.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint03.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late01.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late02.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late03.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late04.xml</inheritedUnsolvedSolutionFile>
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long02.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long03.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long04.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long05.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint01.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint02.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint03.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late01.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late02.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late03.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late04.xml</inheritedUnsolvedSolutionFile>-->
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late05.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
@@ -28,48 +28,38 @@
                 Official benchmark maximumSecondsSpend allowed on:
                 - ge0ffrey's main pc: sprint 11, medium 700, long 42000
             -->
-            <maximumSecondsSpend>42000</maximumSecondsSpend>
+            <maximumSecondsSpend>4200</maximumSecondsSpend>
         </termination>
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <name>absolute500_propertyTabu11</name>
+        <name>absolute300SeqLength2and3PillarPart</name>
         <localSearchSolver>
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
+                    <absoluteSelection>300</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
+                    <absoluteSelection>300</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>
+                    <absoluteSelection>150</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>
+                    <absoluteSelection>150</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+                    <absoluteSelection>300</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>
               <completeSolutionTabuSize>1000</completeSolutionTabuSize>
               <completePropertyTabuSize>11</completePropertyTabuSize>
-            </acceptor>
-            <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <name>absolute500_moveTabu11</name>
-        <localSearchSolver>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
-                </selector>
-            </selector>
-            <acceptor>
-              <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-              <completeMoveTabuSize>11</completeMoveTabuSize>
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>

@@ -5,16 +5,16 @@
 
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium01.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium02.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium03.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium04.xml</inheritedUnsolvedSolutionFile>
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium03.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium04.xml</inheritedUnsolvedSolutionFile>-->
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium05.xml</inheritedUnsolvedSolutionFile>
     <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inheritedUnsolvedSolutionFile>-->
     <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_hint02.xml</inheritedUnsolvedSolutionFile>-->
     <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_hint03.xml</inheritedUnsolvedSolutionFile>-->
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late01.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late02.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late03.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late04.xml</inheritedUnsolvedSolutionFile>
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late03.xml</inheritedUnsolvedSolutionFile>-->
+    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late04.xml</inheritedUnsolvedSolutionFile>-->
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/medium_late05.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
@@ -34,29 +34,7 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <name>absolute400_propertyTabu11</name>
-        <localSearchSolver>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>400</absoluteSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>400</absoluteSelection>
-                </selector>
-            </selector>
-            <acceptor>
-              <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-              <completePropertyTabuSize>11</completePropertyTabuSize>
-            </acceptor>
-            <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <name>absolute300SeqLength2and3</name>
+        <name>absolute300PillarPart</name>
         <localSearchSolver>
             <selector>
                 <selector>
@@ -68,12 +46,8 @@
                     <absoluteSelection>300</absoluteSelection>
                 </selector>
                 <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>
-                    <absoluteSelection>150</absoluteSelection>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>
-                    <absoluteSelection>150</absoluteSelection>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+                    <absoluteSelection>300</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>
@@ -85,4 +59,38 @@
             </forager>
         </localSearchSolver>
     </solverBenchmark>
+    <!--<solverBenchmark>-->
+        <!--<name>absolute300SeqLength2and3PillarPart</name>-->
+        <!--<localSearchSolver>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
+                    <!--<absoluteSelection>300</absoluteSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>-->
+                    <!--<absoluteSelection>300</absoluteSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>-->
+                    <!--<absoluteSelection>150</absoluteSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>-->
+                    <!--<absoluteSelection>150</absoluteSelection>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
+                    <!--<absoluteSelection>300</absoluteSelection>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<acceptor>-->
+              <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+              <!--<completePropertyTabuSize>11</completePropertyTabuSize>-->
+            <!--</acceptor>-->
+            <!--<forager>-->
+                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
 </solverBenchmarkSuite>

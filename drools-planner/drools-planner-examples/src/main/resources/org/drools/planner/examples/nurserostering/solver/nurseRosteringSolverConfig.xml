@@ -24,13 +24,17 @@
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
             <absoluteSelection>300</absoluteSelection>
         </selector>
+        <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>-->
+            <!--<absoluteSelection>150</absoluteSelection>-->
+        <!--</selector>-->
+        <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>-->
+            <!--<absoluteSelection>150</absoluteSelection>-->
+        <!--</selector>-->
         <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>
-            <absoluteSelection>150</absoluteSelection>
-        </selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>
-            <absoluteSelection>150</absoluteSelection>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+            <absoluteSelection>300</absoluteSelection>
         </selector>
     </selector>
     <acceptor>
