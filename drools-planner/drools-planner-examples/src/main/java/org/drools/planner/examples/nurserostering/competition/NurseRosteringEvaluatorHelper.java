@@ -1,4 +1,4 @@
-package org.drools.planner.examples.nurserostering.persistence;
+package org.drools.planner.examples.nurserostering.competition;
 
 import java.io.File;
 import java.io.IOException;
