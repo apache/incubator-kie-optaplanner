@@ -3,12 +3,14 @@ package org.drools.planner.benchmark;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.text.NumberFormat;
 import java.util.Collections;
@@ -211,69 +213,7 @@ public class SolverBenchmarkSuite {
                 writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
             }
         }
-        writeBestScoreSummary();
-        // 2 lines at 80 chars per line give a max of 160 per entry
-        StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
-        htmlFragment.append("  <h1>Summary</h1>\n");
-        htmlFragment.append(writeBestScoreSummary());
-        htmlFragment.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
-        for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
-            File unsolvedSolutionFile = entry.getKey();
-            SolverStatistic statistic = entry.getValue();
-            String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
-            htmlFragment.append("  <h2>").append(baseName).append("</h2>\n");
-            htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName));
-        }
-        writeHtmlOverview(htmlFragment);
-        benchmarkingEnded();
-    }
-
-    private CharSequence writeBestScoreSummary() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
-                    .buildScoreDefinition();
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
-                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(result.getScore());
-                dataset.addValue(scoreGraphValue, solverBenchmark.getName(), result.getUnsolvedSolutionFile().getName());
-            }
-        }
-        JFreeChart chart = ChartFactory.createBarChart(
-            "Best score summary (higher score is better)", "Data", "Score",
-            dataset, PlotOrientation.VERTICAL, true, true, false
-        );
-        BufferedImage chartImage = chart.createBufferedImage(800, 600);
-        File chartSummaryFile = new File(solverStatisticFilesDirectory, "summary.png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(chartSummaryFile);
-            ImageIO.write(chartImage, "png", out);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
-        return "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
-    }
-
-    private void writeHtmlOverview(CharSequence htmlFragment) {
-        File htmlOverviewFile = new File(solverStatisticFilesDirectory, "index.html");
-        Writer writer = null;
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "utf-8");
-            writer.append("<html>\n");
-            writer.append("<head>\n");
-            writer.append("  <title>Statistic</title>\n");
-            writer.append("</head>\n");
-            writer.append("<body>\n");
-            writer.append(htmlFragment);
-            writer.append("</body>\n");
-            writer.append("</html>\n");
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing htmlOverviewFile: " + htmlOverviewFile, e);
-        } finally {
-            IOUtils.closeQuietly(writer);
-        }
+        benchmarkingEnded(xStream, unsolvedSolutionFileToStatisticMap);
     }
 
     private Solution readUnsolvedSolution(XStream xStream, File unsolvedSolutionFile) {
@@ -313,12 +253,91 @@ public class SolverBenchmarkSuite {
         }
     }
 
-    public void benchmarkingEnded() {
+    public void benchmarkingEnded(XStream xStream, Map<File, SolverStatistic> unsolvedSolutionFileToStatisticMap) {
         if (sortSolverBenchmarks) {
             if (solverBenchmarkComparator == null) {
                 solverBenchmarkComparator = new AverageScoreSolverBenchmarkComparator();
             }
             Collections.sort(solverBenchmarkList, solverBenchmarkComparator);
+        }
+        writeBestScoreSummary();
+        // 2 lines at 80 chars per line give a max of 160 per entry
+        StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
+        htmlFragment.append("  <h1>Summary</h1>\n");
+        htmlFragment.append(writeBestScoreSummary());
+        htmlFragment.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
+        for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
+            File unsolvedSolutionFile = entry.getKey();
+            SolverStatistic statistic = entry.getValue();
+            String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
+            htmlFragment.append("  <h2>").append(baseName).append("</h2>\n");
+            htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName));
+        }
+        writeHtmlOverview(htmlFragment);
+        writeBenchmarkResult(xStream);
+    }
+
+    private CharSequence writeBestScoreSummary() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
+                    .buildScoreDefinition();
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(result.getScore());
+                dataset.addValue(scoreGraphValue, solverBenchmark.getName(), result.getUnsolvedSolutionFile().getName());
+            }
+        }
+        JFreeChart chart = ChartFactory.createBarChart(
+            "Best score summary (higher score is better)", "Data", "Score",
+            dataset, PlotOrientation.VERTICAL, true, true, false
+        );
+        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
+        File chartSummaryFile = new File(solverStatisticFilesDirectory, "summary.png");
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(chartSummaryFile);
+            ImageIO.write(chartImage, "png", out);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
+        return "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
+    }
+
+    private void writeHtmlOverview(CharSequence htmlFragment) {
+        File htmlOverviewFile = new File(solverStatisticFilesDirectory, "index.html");
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "utf-8");
+            writer.append("<html>\n");
+            writer.append("<head>\n");
+            writer.append("  <title>Statistic</title>\n");
+            writer.append("</head>\n");
+            writer.append("<body>\n");
+            writer.append(htmlFragment);
+            writer.append("</body>\n");
+            writer.append("</html>\n");
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing htmlOverviewFile: " + htmlOverviewFile, e);
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
+    }
+
+    public void writeBenchmarkResult(XStream xStream) {
+        File benchmarkResultFile = new File(benchmarkDirectory, "benchmarkResult.xml");
+        OutputStreamWriter writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "utf-8");
+            xStream.toXML(this, writer);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException("This JVM does not support utf-8 encoding.", e);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(
+                    "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);
+        } finally {
+            IOUtils.closeQuietly(writer);
         }
     }
 

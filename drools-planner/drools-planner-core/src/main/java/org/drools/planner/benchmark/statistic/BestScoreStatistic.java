@@ -175,7 +175,7 @@ public class BestScoreStatistic implements SolverStatistic {
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart(baseName + " best score statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        BufferedImage chartImage = chart.createBufferedImage(800, 600);
+        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
         File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.png");
         OutputStream out = null;
         try {

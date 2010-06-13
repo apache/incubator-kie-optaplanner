@@ -18,9 +18,6 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringLongSolverBenchmarkConfig.xml";
     public static final String STEP_LIMIT_SOLVER_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringStepLimitSolverBenchmarkConfig.xml";
-    
-    public static final File SOLVER_BENCHMARK_RESULT_FILE
-            = new File("local/data/nurserostering/nurseRosteringSolverBenchmarkResult.xml");
 
     public static void main(String[] args) {
         String solverConfig;
@@ -39,11 +36,11 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
         } else {
             solverConfig = MEDIUM_SOLVER_BENCHMARK_CONFIG;
         }
-        new NurseRosteringBenchmarkApp(solverConfig, SOLVER_BENCHMARK_RESULT_FILE).process();
+        new NurseRosteringBenchmarkApp(solverConfig).process();
     }
 
-    public NurseRosteringBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
-        super(solverBenchmarkConfig, resultFile, NurseRoster.class);
+    public NurseRosteringBenchmarkApp(String solverBenchmarkConfig) {
+        super(solverBenchmarkConfig, NurseRoster.class);
     }
 
 }

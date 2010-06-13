@@ -323,8 +323,14 @@ Benchmarker: the class MaxScoreSolverBenchmarkComparator has been renamed to Wor
 A benchmarker no longer uses WorstScoreSolverBenchmarkComparator by default.
 It now uses AverageScoreSolverBenchmarkComparator by default.
 
+The benchmarker method writeResults(resultFile) has been removed.
+The result is now always written at the end of the benchmark() method
+in the benchmarkDirectory directory in a file called benchmarkResult.xml.
+Before in *.java:
+    solverBenchmarker.writeResults(...);
 
-The method Score.substract has been renamed to Score.subtract
+
+The method Score.substract(subtrahend) has been renamed to Score.subtract
 Before in *Score.java:
     public ...Score substract(...Score subtrahend) {
 After in *Score.java:

@@ -72,19 +72,4 @@ public class XmlSolverBenchmarker {
         suite.benchmark(xStream);
     }
 
-    public void writeResults(File resultFile) {
-        resultFile.getParentFile().mkdirs();
-        OutputStreamWriter writer = null;
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(resultFile), "utf-8");
-            xStream.toXML(suite, writer);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("This vm does not support utf-8 encoding.", e);
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Could not create file: " + resultFile, e);
-        } finally {
-            IOUtils.closeQuietly(writer);
-        }
-    }
-
 }

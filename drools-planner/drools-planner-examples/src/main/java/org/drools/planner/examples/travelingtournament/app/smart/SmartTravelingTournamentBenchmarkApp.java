@@ -14,8 +14,6 @@ public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/travelingtournament/benchmark/smart/";
     public static final String SOLVER_BENCHMARK_CONFIG
             = SOLVER_BENCHMARK_CONFIG_PREFIX + "smartTravelingTournamentSolverBenchmarkConfig.xml";
-    public static final File SOLVER_BENCHMARK_RESULT_FILE
-            = new File("local/data/travelingtournament/smart/smartTravelingTournamentSolverBenchmarkResult.xml");
 
     public static void main(String[] args) {
         String solverBenchmarkConfig;
@@ -25,11 +23,11 @@ public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
         } else {
             solverBenchmarkConfig = SOLVER_BENCHMARK_CONFIG;
         }
-        new SmartTravelingTournamentBenchmarkApp(solverBenchmarkConfig, SOLVER_BENCHMARK_RESULT_FILE).process();
+        new SmartTravelingTournamentBenchmarkApp(solverBenchmarkConfig).process();
     }
 
-    public SmartTravelingTournamentBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
-        super(solverBenchmarkConfig, resultFile, TravelingTournament.class);
+    public SmartTravelingTournamentBenchmarkApp(String solverBenchmarkConfig) {
+        super(solverBenchmarkConfig, TravelingTournament.class);
     }
 
 }

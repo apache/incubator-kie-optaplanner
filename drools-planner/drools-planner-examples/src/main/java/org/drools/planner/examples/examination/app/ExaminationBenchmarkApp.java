@@ -15,9 +15,6 @@ public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
     public static final String STEP_LIMIT_SOLVER_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/examination/benchmark/examinationStepLimitSolverBenchmarkConfig.xml";
     
-    public static final File SOLVER_BENCHMARK_RESULT_FILE
-            = new File("local/data/examination/examinationSolverBenchmarkResult.xml");
-
     public static void main(String[] args) {
         String solverConfig;
         if (args.length > 0) {
@@ -31,11 +28,11 @@ public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
         } else {
             solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
         }
-        new ExaminationBenchmarkApp(solverConfig, SOLVER_BENCHMARK_RESULT_FILE).process();
+        new ExaminationBenchmarkApp(solverConfig).process();
     }
 
-    public ExaminationBenchmarkApp(String solverBenchmarkConfig, File resultFile) {
-        super(solverBenchmarkConfig, resultFile, Examination.class);
+    public ExaminationBenchmarkApp(String solverBenchmarkConfig) {
+        super(solverBenchmarkConfig, Examination.class);
     }
 
 }
