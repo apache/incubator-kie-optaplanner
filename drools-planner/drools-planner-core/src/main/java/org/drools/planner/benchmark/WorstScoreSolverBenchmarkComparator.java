@@ -14,11 +14,11 @@ public class WorstScoreSolverBenchmarkComparator implements Comparator<SolverBen
 
     public int compare(SolverBenchmark a, SolverBenchmark b) {
         List<Score> aScoreList = a.getScoreList();
-        Collections.sort(aScoreList);
+        Collections.sort(aScoreList); // Worst scores become first in the list
         List<Score> bScoreList = b.getScoreList();
-        Collections.sort(bScoreList);
+        Collections.sort(bScoreList); // Worst scores become first in the list
         return new CompareToBuilder()
-                .append(bScoreList.toArray(), aScoreList.toArray()) // Descending (start with the worst scores)
+                .append(aScoreList.toArray(), bScoreList.toArray())
                 .toComparison();
     }
 

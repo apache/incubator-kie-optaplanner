@@ -259,6 +259,7 @@ public class SolverBenchmarkSuite {
                 solverBenchmarkComparator = new AverageScoreSolverBenchmarkComparator();
             }
             Collections.sort(solverBenchmarkList, solverBenchmarkComparator);
+            Collections.reverse(solverBenchmarkList); // Best results first, worst results last
         }
         writeBestScoreSummary();
         // 2 lines at 80 chars per line give a max of 160 per entry
