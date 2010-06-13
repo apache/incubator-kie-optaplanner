@@ -4,17 +4,17 @@
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
     
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long01.xml</inheritedUnsolvedSolutionFile>
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long02.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long04.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long05.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint01.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint02.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late01.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late02.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late04.xml</inheritedUnsolvedSolutionFile>-->
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long02.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long03.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long04.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long05.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint01.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint02.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint03.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late01.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late02.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late03.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late04.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late05.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
@@ -28,7 +28,7 @@
                 Official benchmark maximumSecondsSpend allowed on:
                 - ge0ffrey's main pc: sprint 11, medium 700, long 42000
             -->
-            <maximumSecondsSpend>4200</maximumSecondsSpend>
+            <maximumSecondsSpend>42000</maximumSecondsSpend>
         </termination>
     </inheritedLocalSearchSolver>
 
