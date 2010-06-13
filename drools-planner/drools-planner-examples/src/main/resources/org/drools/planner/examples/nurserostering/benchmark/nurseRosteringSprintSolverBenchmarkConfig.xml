@@ -43,7 +43,7 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <name>absolute100_propertyTabu10</name>
+        <name>absolute100_propertyTabu11</name>
         <localSearchSolver>
             <selector>
                 <selector>
@@ -57,63 +57,37 @@
             </selector>
             <acceptor>
               <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-              <completePropertyTabuSize>10</completePropertyTabuSize>
+              <completePropertyTabuSize>11</completePropertyTabuSize>
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
             </forager>
         </localSearchSolver>
     </solverBenchmark>
-    <!--<solverBenchmark>-->
-        <!--<name>pillarPart70</name>-->
-        <!--<localSearchSolver>-->
-            <!--<selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
-                    <!--<absoluteSelection>70</absoluteSelection>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>-->
-                    <!--<absoluteSelection>70</absoluteSelection>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
-                    <!--<absoluteSelection>70</absoluteSelection>-->
-                <!--</selector>-->
-            <!--</selector>-->
-            <!--<acceptor>-->
-              <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
-              <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-            <!--<forager>-->
-                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
-            <!--</forager>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<name>pillarPart100</name>-->
-        <!--<localSearchSolver>-->
-            <!--<selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
-                    <!--<absoluteSelection>100</absoluteSelection>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>-->
-                    <!--<absoluteSelection>100</absoluteSelection>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
-                    <!--<absoluteSelection>100</absoluteSelection>-->
-                <!--</selector>-->
-            <!--</selector>-->
-            <!--<acceptor>-->
-              <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
-              <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-            <!--<forager>-->
-                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
-            <!--</forager>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
+    <solverBenchmark>
+        <name>pillarPart70</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+                    <absoluteSelection>70</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+                    <absoluteSelection>70</absoluteSelection>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+                    <absoluteSelection>70</absoluteSelection>
+                </selector>
+            </selector>
+            <acceptor>
+              <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+              <completePropertyTabuSize>11</completePropertyTabuSize>
+            </acceptor>
+            <forager>
+                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
 </solverBenchmarkSuite>
