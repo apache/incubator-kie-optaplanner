@@ -145,17 +145,17 @@ public class LocalSearchSolverScope {
     // Calculated methods
     // ************************************************************************
 
+    public void reset() {
+        startingSystemTimeMillis = System.currentTimeMillis();
+        calculateCount = 0L;
+    }
+
     public Score calculateScoreFromWorkingMemory() {
         workingMemory.fireAllRules();
         Score score = workingScoreCalculator.calculateScore();
         workingSolution.setScore(score);
         calculateCount++;
         return score;
-    }
-
-    public void reset() {
-        startingSystemTimeMillis = System.currentTimeMillis();
-        calculateCount = 0L;
     }
 
     public long calculateTimeMillisSpend() {
