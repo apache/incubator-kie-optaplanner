@@ -150,7 +150,7 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
     }
 
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        localSearchSolverScope.resetTimeMillisSpend();
+        localSearchSolverScope.reset();
         if (randomSeed != null) {
             logger.info("Solving with random seed ({}).", randomSeed);
             localSearchSolverScope.setWorkingRandom(new Random(randomSeed));
@@ -194,10 +194,15 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         bestSolutionRecaller.solvingEnded(localSearchSolverScope);
         termination.solvingEnded(localSearchSolverScope);
         decider.solvingEnded(localSearchSolverScope);
-        logger.info("Solved at step index ({}) with time spend ({}) for best score ({}).", new Object[] {
+        long timeMillisSpend = localSearchSolverScope.calculateTimeMillisSpend();
+        long averageCalculateCountPerSecond = localSearchSolverScope.getCalculateCount() * 1000L / timeMillisSpend;
+        logger.info("Solved at step index ({}) with time spend ({}) for best score ({})"
+                + " with average calculate count per second ({}).",
+                new Object[] {
                 localSearchSolverScope.getLastCompletedStepScope().getStepIndex(),
-                localSearchSolverScope.calculateTimeMillisSpend(),
-                localSearchSolverScope.getBestScore()
+                timeMillisSpend,
+                localSearchSolverScope.getBestScore(),
+                averageCalculateCountPerSecond
         });
     }
 

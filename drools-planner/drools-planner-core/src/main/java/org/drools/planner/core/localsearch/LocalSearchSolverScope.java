@@ -9,7 +9,6 @@ import org.drools.ClassObjectFilter;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
@@ -37,6 +36,7 @@ public class LocalSearchSolverScope {
     private Random workingRandom;
 
     private Score startingScore;
+    private long calculateCount;
 
     private int bestSolutionStepIndex;
     private Solution bestSolution;
@@ -105,6 +105,10 @@ public class LocalSearchSolverScope {
         this.startingScore = startingScore;
     }
 
+    public long getCalculateCount() {
+        return calculateCount;
+    }
+
     public int getBestSolutionStepIndex() {
         return bestSolutionStepIndex;
     }
@@ -145,11 +149,13 @@ public class LocalSearchSolverScope {
         workingMemory.fireAllRules();
         Score score = workingScoreCalculator.calculateScore();
         workingSolution.setScore(score);
+        calculateCount++;
         return score;
     }
 
-    public void resetTimeMillisSpend() {
+    public void reset() {
         startingSystemTimeMillis = System.currentTimeMillis();
+        calculateCount = 0L;
     }
 
     public long calculateTimeMillisSpend() {
