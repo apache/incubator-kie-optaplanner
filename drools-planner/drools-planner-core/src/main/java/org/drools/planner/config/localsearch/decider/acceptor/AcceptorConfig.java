@@ -10,6 +10,7 @@ import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.TimeGradientBasedSimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.PropertyTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
@@ -36,6 +37,7 @@ public class AcceptorConfig {
     protected Integer partialSolutionTabuSize = null;
 
     protected Double simulatedAnnealingStartingTemperature = null;
+    protected Double simulatedAnnealingTemperatureSurvival = null;
 
     protected Double greatDelugeWaterLevelUpperBoundRate = null;
     protected Double greatDelugeWaterRisingRate = null;
@@ -224,6 +226,9 @@ public class AcceptorConfig {
             SimulatedAnnealingAcceptor simulatedAnnealingAcceptor = new SimulatedAnnealingAcceptor();
             if (simulatedAnnealingStartingTemperature != null) {
                 simulatedAnnealingAcceptor.setStartingTemperature(simulatedAnnealingStartingTemperature);
+            }
+            if (simulatedAnnealingTemperatureSurvival != null) {
+                simulatedAnnealingAcceptor.setTemperatureSurvival(simulatedAnnealingTemperatureSurvival);
             }
             acceptorList.add(simulatedAnnealingAcceptor);
         }

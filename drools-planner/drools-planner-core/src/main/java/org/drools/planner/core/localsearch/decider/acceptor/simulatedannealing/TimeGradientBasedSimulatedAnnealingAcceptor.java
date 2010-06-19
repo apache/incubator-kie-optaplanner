@@ -1,43 +1,64 @@
 package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
 /**
- * TODO Under construction. Feel free to create a patch to improve this acceptor!
  * @author Geoffrey De Smet
  */
 public class TimeGradientBasedSimulatedAnnealingAcceptor extends AbstractAcceptor {
 
-    protected boolean compareToBestScore = false;
+    protected double startingTemperature = -1.0;
 
-    public void setCompareToBestScore(boolean compareToBestScore) {
-        this.compareToBestScore = compareToBestScore;
+    protected double temperature;
+
+    public void setStartingTemperature(double startingTemperature) {
+        this.startingTemperature = startingTemperature;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
+    @Override
+    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+        if (startingTemperature < 0.0) {
+            throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
+                    + ") cannot be negative.");
+        }
+        temperature = startingTemperature;
+    }
+
     public double calculateAcceptChance(MoveScope moveScope) {
-        Score compareScore = compareToBestScore
-                ? moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()
-                : moveScope.getStepScope().getLocalSearchSolverScope().getLastCompletedStepScope().getScore();
-        // TODO Support for decision score
+        LocalSearchSolverScope localSearchSolverScope = moveScope.getStepScope().getLocalSearchSolverScope();
+        Score lastStepScore = localSearchSolverScope.getLastCompletedStepScope().getScore();
         Score moveScore = moveScope.getScore();
-        if (moveScore.compareTo(compareScore) > 0) {
-            // It's better so accept it.
+        if (moveScore.compareTo(lastStepScore) > 0) {
             return 1.0;
         }
-        double timeGradient = moveScope.getStepScope().getTimeGradient();
-        LocalSearchSolverScope localSearchSolverScope = moveScope.getStepScope().getLocalSearchSolverScope();
-        // TODO This algorithm might be nice, but the normal temperature based algorithm should also be possible
-        double scoreDelta = 1.0 - localSearchSolverScope.getScoreDefinition().calculateTimeGradient(
-                localSearchSolverScope.getStartingScore(), compareScore, moveScore);
-        double acceptChance = Math.exp(timeGradient * scoreDelta);
-        return acceptChance;
+        Score scoreDifference = lastStepScore.subtract(moveScore);
+        // TODO don't abuse translateScoreToGraphValue
+        Double diff = localSearchSolverScope.getScoreDefinition().translateScoreToGraphValue(scoreDifference);
+        if (diff == null) {
+            // more hard constraints broken, ignore it for now
+            return 0.0;
+        }
+        double acceptChance = Math.exp(-diff / temperature);
+        if (moveScope.getWorkingRandom().nextDouble() < acceptChance) {
+            return 1.0;
+        } else {
+            return 0.0;
+        }
+    }
+
+    @Override
+    public void stepTaken(StepScope stepScope) {
+        super.stepTaken(stepScope);
+        double timeGradient = stepScope.getTimeGradient();
+        temperature = startingTemperature * timeGradient;
     }
 
 }

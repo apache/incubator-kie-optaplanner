@@ -24,15 +24,23 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         this.startingTemperature = startingTemperature;
     }
 
+    public void setTemperatureSurvival(double temperatureSurvival) {
+        this.temperatureSurvival = temperatureSurvival;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        if (startingTemperature < 0.0) {
+        if (startingTemperature <= 0.0) {
             throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
-                    + ") cannot be negative.");
+                    + ") cannot be negative or zero.");
+        }
+        if (temperatureSurvival <= 0.0) {
+            throw new IllegalArgumentException("The temperatureSurvival (" + temperatureSurvival
+                    + ") cannot be negative or zero.");
         }
         temperature = startingTemperature;
     }
@@ -63,7 +71,6 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     public void stepTaken(StepScope stepScope) {
         super.stepTaken(stepScope);
         temperature *= temperatureSurvival;
-//        System.out.println("temp: " + temperature);
     }
 
 }

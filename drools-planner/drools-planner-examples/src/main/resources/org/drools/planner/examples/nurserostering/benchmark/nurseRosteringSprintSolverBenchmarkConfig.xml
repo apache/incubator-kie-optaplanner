@@ -3,29 +3,29 @@
     <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
     
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint01.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint02.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint04.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint05.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint06.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint07.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint08.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint09.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint10.xml</inheritedUnsolvedSolutionFile>-->
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint01.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint02.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint03.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint04.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint05.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint06.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint07.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint08.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint09.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint10.xml</inheritedUnsolvedSolutionFile>
     <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_hint01.xml</inheritedUnsolvedSolutionFile>-->
     <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_hint02.xml</inheritedUnsolvedSolutionFile>-->
     <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_hint03.xml</inheritedUnsolvedSolutionFile>-->
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late01.xml</inheritedUnsolvedSolutionFile>
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late02.xml</inheritedUnsolvedSolutionFile>-->
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late02.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late03.xml</inheritedUnsolvedSolutionFile>
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late04.xml</inheritedUnsolvedSolutionFile>-->
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late04.xml</inheritedUnsolvedSolutionFile>
     <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late05.xml</inheritedUnsolvedSolutionFile>
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late06.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late07.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late08.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late09.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late10.xml</inheritedUnsolvedSolutionFile>-->
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late06.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late07.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late08.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late09.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/sprint_late10.xml</inheritedUnsolvedSolutionFile>
 
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
@@ -43,7 +43,7 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <name>pillarPart200</name>
+        <name>pillarPart210</name>
         <localSearchSolver>
             <selector>
                 <selector>
@@ -62,31 +62,7 @@
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
-                <minimalAcceptedSelection>200</minimalAcceptedSelection>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <name>simAnn</name>
-        <localSearchSolver>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-                </selector>
-            </selector>
-            <acceptor>
-              <simulatedAnnealingStartingTemperature>10.0</simulatedAnnealingStartingTemperature>
-              <completePropertyTabuSize>5</completePropertyTabuSize>
-            </acceptor>
-            <forager>
-                <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
-                <minimalAcceptedSelection>4</minimalAcceptedSelection>
+                <minimalAcceptedSelection>210</minimalAcceptedSelection>
             </forager>
         </localSearchSolver>
     </solverBenchmark>

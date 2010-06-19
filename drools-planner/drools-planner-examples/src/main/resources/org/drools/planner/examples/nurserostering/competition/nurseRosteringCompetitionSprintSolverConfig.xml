@@ -15,6 +15,9 @@
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
         </selector>
+        <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+        </selector>
     </selector>
     <acceptor>
       <completeSolutionTabuSize>1000</completeSolutionTabuSize>
@@ -22,6 +25,6 @@
     </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
-        <minimalAcceptedSelection>180</minimalAcceptedSelection>
+        <minimalAcceptedSelection>210</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>
