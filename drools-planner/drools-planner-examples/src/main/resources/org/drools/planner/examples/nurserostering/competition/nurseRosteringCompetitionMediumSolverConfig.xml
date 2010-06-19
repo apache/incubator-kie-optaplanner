@@ -21,6 +21,7 @@
     </selector>
     <acceptor>
       <simulatedAnnealingStartingTemperature>10.0</simulatedAnnealingStartingTemperature>
+      <simulatedAnnealingTemperatureSurvival>0.997</simulatedAnnealingTemperatureSurvival>
       <completePropertyTabuSize>5</completePropertyTabuSize>
     </acceptor>
     <forager>
