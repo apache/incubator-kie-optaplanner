@@ -38,9 +38,6 @@ public interface ScoreDefinition<S extends Score> {
     Score parseScore(String scoreString);
 
     /**
-     * @TODO rename because
-     *       org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor
-     *       also uses it
      * @param startScore never null
      * @param endScore never null
      * @param score never null
