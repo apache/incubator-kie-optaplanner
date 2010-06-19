@@ -53,7 +53,7 @@ public class AcceptedForager extends AbstractForager {
     @Override
     public void beforeDeciding(StepScope stepScope) {
         acceptedMoveScopeComparator.setDeciderScoreComparator(stepScope.getDeciderScoreComparator());
-        acceptedList = new ArrayList<MoveScope>(); // TODO use size of moveList in decider
+        acceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
         listSorted = false;
         maxScore = stepScope.getLocalSearchSolverScope().getScoreDefinition().getPerfectMinimumScore();
         acceptChanceMaxScoreTotal = 0.0;
