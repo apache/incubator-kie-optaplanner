@@ -38,15 +38,12 @@
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>
@@ -55,6 +52,7 @@
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
             </forager>
         </localSearchSolver>
     </solverBenchmark>
@@ -67,15 +65,12 @@
             <selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>
@@ -84,6 +79,7 @@
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
             </forager>
         </localSearchSolver>
     </solverBenchmark>
@@ -97,15 +93,12 @@
                 <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>
@@ -114,6 +107,7 @@
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
             </forager>
         </localSearchSolver>
     </solverBenchmark>
@@ -127,15 +121,12 @@
                 <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                    <absoluteSelection>500</absoluteSelection>
                 </selector>
             </selector>
             <acceptor>
@@ -144,61 +135,8 @@
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
             </forager>
         </localSearchSolver>
     </solverBenchmark>
-    <!--<solverBenchmark>-->
-        <!--<name>relative0.002_moveTabu7</name>-->
-        <!--<localSearchSolver>-->
-            <!--<deciderScoreComparatorFactory>-->
-                <!--<deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>-->
-            <!--</deciderScoreComparatorFactory>-->
-            <!--<selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
-                    <!--<relativeSelection>0.002</relativeSelection>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
-                    <!--<relativeSelection>0.002</relativeSelection>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>-->
-                    <!--<relativeSelection>0.002</relativeSelection>-->
-                <!--</selector>-->
-            <!--</selector>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
-                <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
-            <!--</acceptor>-->
-            <!--<forager>-->
-                <!--<foragerType>MAX_SCORE_OF_ALL</foragerType>-->
-            <!--</forager>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<name>simulatedAnnealing</name>-->
-        <!--<localSearchSolver>-->
-            <!--<deciderScoreComparatorFactory>-->
-                <!--<deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>-->
-            <!--</deciderScoreComparatorFactory>-->
-            <!--<selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
-                <!--</selector>-->
-                <!--<selector>-->
-                    <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>-->
-                <!--</selector>-->
-            <!--</selector>-->
-            <!--<acceptor>-->
-                <!--<acceptorType>SIMULATED_ANNEALING</acceptorType>-->
-            <!--</acceptor>-->
-            <!--<forager>-->
-                <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
-            <!--</forager>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
 </solverBenchmarkSuite>

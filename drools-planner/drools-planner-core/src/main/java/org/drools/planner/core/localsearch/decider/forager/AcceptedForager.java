@@ -21,9 +21,11 @@ public class AcceptedForager extends AbstractForager {
 
     // final to allow better hotspot optimization. TODO prove that it indeed makes a difference
     protected final PickEarlyByScore pickEarlyByScore;
-    protected final boolean pickEarlyRandomly;
-    protected final AcceptedMoveScopeComparator acceptedMoveScopeComparator;
+    protected final int minimalAcceptedSelection;
 
+    protected AcceptedMoveScopeComparator acceptedMoveScopeComparator;
+
+    protected int selectedCount;
     protected List<MoveScope> acceptedList;
     protected boolean listSorted;
     protected Score maxScore;
@@ -31,19 +33,9 @@ public class AcceptedForager extends AbstractForager {
 
     protected MoveScope earlyPickedMoveScope = null;
 
-    public AcceptedForager() {
-        this(PickEarlyByScore.NONE, false);
-    }
-
-    public AcceptedForager(PickEarlyByScore pickEarlyByScore, boolean pickEarlyRandomly) {
-        this(pickEarlyByScore, pickEarlyRandomly, new AcceptedMoveScopeComparator());
-    }
-
-    public AcceptedForager(PickEarlyByScore pickEarlyByScore, boolean pickEarlyRandomly,
-            AcceptedMoveScopeComparator acceptedMoveScopeComparator) {
+    public AcceptedForager(PickEarlyByScore pickEarlyByScore, int minimalAcceptedSelection) {
         this.pickEarlyByScore = pickEarlyByScore;
-        this.pickEarlyRandomly = pickEarlyRandomly;
-        this.acceptedMoveScopeComparator = acceptedMoveScopeComparator;
+        this.minimalAcceptedSelection = minimalAcceptedSelection;
     }
 
     // ************************************************************************
@@ -52,7 +44,8 @@ public class AcceptedForager extends AbstractForager {
 
     @Override
     public void beforeDeciding(StepScope stepScope) {
-        acceptedMoveScopeComparator.setDeciderScoreComparator(stepScope.getDeciderScoreComparator());
+        acceptedMoveScopeComparator = new AcceptedMoveScopeComparator(stepScope.getDeciderScoreComparator());
+        selectedCount = 0;
         acceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
         listSorted = false;
         maxScore = stepScope.getLocalSearchSolverScope().getScoreDefinition().getPerfectMinimumScore();
@@ -61,6 +54,7 @@ public class AcceptedForager extends AbstractForager {
     }
 
     public void addMove(MoveScope moveScope) {
+        selectedCount++;
         if (moveScope.getAcceptChance() > 0.0) {
             checkPickEarly(moveScope);
             addMoveScopeToAcceptedList(moveScope);
@@ -87,16 +81,6 @@ public class AcceptedForager extends AbstractForager {
             default:
                 throw new IllegalStateException("The pickEarlyByScore (" + pickEarlyByScore + ") is not implemented");
         }
-        if (pickEarlyRandomly) {
-            if (moveScope.getAcceptChance() >= 1.0) {
-                earlyPickedMoveScope = moveScope;
-            } else {
-                double randomChance = moveScope.getWorkingRandom().nextDouble();
-                if (randomChance <= moveScope.getAcceptChance()) {
-                    earlyPickedMoveScope = moveScope;
-                }
-            }
-        }
     }
 
     protected void addMoveScopeToAcceptedList(MoveScope moveScope) {
@@ -111,7 +95,7 @@ public class AcceptedForager extends AbstractForager {
     }
 
     public boolean isQuitEarly() {
-        return earlyPickedMoveScope != null;
+        return earlyPickedMoveScope != null || acceptedList.size() >= minimalAcceptedSelection;
     }
 
     public MoveScope pickMove(StepScope stepScope) {
@@ -133,8 +117,8 @@ public class AcceptedForager extends AbstractForager {
         for (ListIterator<MoveScope> it = acceptedList.listIterator(acceptedList.size()); it.hasPrevious();) {
             MoveScope moveScope = it.previous();
             acceptMark -= moveScope.getAcceptChance();
-            // TODO That underflow warn is nonsence. randomChance can be 0.0 and the last acceptMark can end up 0.0
-            // TODO so < is nonsence (do a testcase though)
+            // TODO That underflow warn is nonsense. randomChance can be 0.0 and the last acceptMark can end up 0.0
+            // TODO so < is nonsense (do a testcase though)
             if (acceptMark < 0.0) {
                 pickedMoveScope = moveScope;
                 break;
@@ -142,7 +126,7 @@ public class AcceptedForager extends AbstractForager {
         }
         if (pickedMoveScope == null) {
             // TODO This isn't really underflow when an forager accepts only moves with acceptChance 0.0
-            logger.warn("Underflow occured with acceptChanceMaxScoreTotal ({}) " +
+            logger.warn("Underflow occurred with acceptChanceMaxScoreTotal ({}) " +
                     "and randomChance ({}).", acceptChanceMaxScoreTotal, randomChance);
             // Deal with it anyway (no fail-fast here)
             pickedMoveScope = acceptedList.get(acceptedList.size() - 1);

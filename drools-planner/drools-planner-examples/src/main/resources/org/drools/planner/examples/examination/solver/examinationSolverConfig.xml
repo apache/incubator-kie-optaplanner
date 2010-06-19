@@ -32,15 +32,12 @@
         <!--<selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>-->
         <selector>
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-            <absoluteSelection>500</absoluteSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-            <absoluteSelection>500</absoluteSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-            <absoluteSelection>500</absoluteSelection>
         </selector>
     </selector>
     <acceptor>
@@ -49,6 +46,7 @@
     </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>
     <!--<selector>-->
         <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->

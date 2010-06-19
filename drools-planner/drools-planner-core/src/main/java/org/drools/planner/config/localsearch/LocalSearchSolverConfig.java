@@ -318,8 +318,7 @@ public class LocalSearchSolverConfig {
          * In this mode, 2 runs on the same computer will execute the same code in the same order.
          * They will also yield the same result, except if they use a time based termination
          * and they have a sufficiently large difference in allocated CPU time.
-         * This allows you to benchmark new optimizations (such as a new move implementation
-         * or a different absoluteSelection setting) fairly.
+         * This allows you to benchmark new optimizations (such as a new move implementation) fairly.
          * <p>
          * The reproducible mode is not much slower than the production mode.
          * </p>

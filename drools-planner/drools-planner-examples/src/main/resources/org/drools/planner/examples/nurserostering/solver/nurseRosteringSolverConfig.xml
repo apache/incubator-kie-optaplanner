@@ -18,23 +18,18 @@
     <selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-            <absoluteSelection>300</absoluteSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-            <absoluteSelection>300</absoluteSelection>
         </selector>
         <!--<selector>-->
             <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>-->
-            <!--<absoluteSelection>150</absoluteSelection>-->
         <!--</selector>-->
         <!--<selector>-->
             <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>-->
-            <!--<absoluteSelection>150</absoluteSelection>-->
         <!--</selector>-->
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-            <absoluteSelection>300</absoluteSelection>
         </selector>
     </selector>
     <acceptor>
@@ -43,5 +38,6 @@
     </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <minimalAcceptedSelection>800</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>

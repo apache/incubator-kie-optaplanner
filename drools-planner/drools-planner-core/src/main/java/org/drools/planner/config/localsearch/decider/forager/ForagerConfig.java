@@ -15,6 +15,8 @@ public class ForagerConfig {
     private Class<Forager> foragerClass = null;
     private ForagerType foragerType = null;
 
+    protected Integer minimalAcceptedSelection = null;
+
     public Forager getForager() {
         return forager;
     }
@@ -39,6 +41,14 @@ public class ForagerConfig {
         this.foragerType = foragerType;
     }
 
+    public Integer getMinimalAcceptedSelection() {
+        return minimalAcceptedSelection;
+    }
+
+    public void setMinimalAcceptedSelection(Integer minimalAcceptedSelection) {
+        this.minimalAcceptedSelection = minimalAcceptedSelection;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -56,29 +66,40 @@ public class ForagerConfig {
                 throw new IllegalArgumentException("foragerClass (" + foragerClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
-        } else if (foragerType != null) {
+        }
+        PickEarlyByScore pickEarlyByScore;
+        if (foragerType != null) {
             switch (foragerType) {
                 case MAX_SCORE_OF_ALL:
-                    return new AcceptedForager(PickEarlyByScore.NONE, false);
+                    pickEarlyByScore = PickEarlyByScore.NONE;
+                    break;
                 case FIRST_BEST_SCORE_IMPROVING:
-                    return new AcceptedForager(PickEarlyByScore.FIRST_BEST_SCORE_IMPROVING, false);
+                    pickEarlyByScore = PickEarlyByScore.FIRST_BEST_SCORE_IMPROVING;
+                    break;
                 case FIRST_LAST_STEP_SCORE_IMPROVING:
-                    return new AcceptedForager(PickEarlyByScore.FIRST_LAST_STEP_SCORE_IMPROVING, false);
+                    pickEarlyByScore = PickEarlyByScore.FIRST_LAST_STEP_SCORE_IMPROVING;
+                    break;
                 case FIRST_RANDOMLY_ACCEPTED:
-                    return new AcceptedForager(PickEarlyByScore.NONE, true);
+                    pickEarlyByScore = PickEarlyByScore.NONE;
+                    break;
                 default:
                     throw new IllegalStateException("The foragerType (" + foragerType + ") is not implemented");
             }
         } else {
-            return new AcceptedForager(PickEarlyByScore.NONE, false);
+            pickEarlyByScore = PickEarlyByScore.NONE;
         }
+        int minimalAcceptedSelection = (this.minimalAcceptedSelection == null)
+                ? Integer.MAX_VALUE : this.minimalAcceptedSelection;
+
+        return new AcceptedForager(pickEarlyByScore, minimalAcceptedSelection);
     }
 
     public void inherit(ForagerConfig inheritedConfig) {
-        if (forager == null && foragerClass == null && foragerType == null) {
+        if (forager == null && foragerClass == null && foragerType == null && minimalAcceptedSelection == null) {
             forager = inheritedConfig.getForager();
             foragerClass = inheritedConfig.getForagerClass();
             foragerType = inheritedConfig.getForagerType();
+            minimalAcceptedSelection = inheritedConfig.getMinimalAcceptedSelection();
         }
     }
 

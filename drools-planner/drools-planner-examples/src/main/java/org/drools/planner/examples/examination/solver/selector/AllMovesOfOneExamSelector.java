@@ -3,6 +3,7 @@ package org.drools.planner.examples.examination.solver.selector;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -91,7 +92,7 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
         examSwitchMoveFactory.beforeDeciding(stepScope);
     }
 
-    public List<Move> selectMoveList(StepScope stepScope) {
+    public Iterator<Move> moveIterator(StepScope stepScope) {
         if (nextShuffledExamListIndex >= shuffledExamList.size()) {
             // Just in time shuffling
             Collections.shuffle(shuffledExamList, stepScope.getWorkingRandom());
@@ -100,7 +101,7 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
         Exam exam = shuffledExamList.get(nextShuffledExamListIndex);
         List<Move> moveList = cachedExamToMoveMap.get(exam);
         nextShuffledExamListIndex++;
-        return moveList;
+        return moveList.iterator();
     }
 
     @Override

@@ -11,11 +11,9 @@
     <selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-            <absoluteSelection>100</absoluteSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-            <absoluteSelection>100</absoluteSelection>
         </selector>
     </selector>
     <acceptor>
@@ -24,5 +22,6 @@
     </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <minimalAcceptedSelection>180</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>

@@ -1,5 +1,6 @@
 package org.drools.planner.core.localsearch.decider.selector;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverLifecycleListener;
@@ -14,6 +15,6 @@ import org.drools.planner.core.move.Move;
  */
 public interface Selector extends DeciderAware, LocalSearchSolverLifecycleListener {
 
-    List<Move> selectMoveList(StepScope stepScope);
-
+    Iterator<Move> moveIterator(StepScope stepScope);
+    
 }

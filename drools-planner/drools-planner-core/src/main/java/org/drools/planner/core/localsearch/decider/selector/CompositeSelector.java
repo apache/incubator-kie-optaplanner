@@ -1,7 +1,9 @@
 package org.drools.planner.core.localsearch.decider.selector;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.StepScope;
@@ -46,20 +48,15 @@ public class CompositeSelector extends AbstractSelector {
         }
     }
 
-    public List<Move> selectMoveList(StepScope stepScope) {
-        int totalSize = 0;
-        List<List<Move>> subMoveLists = new ArrayList<List<Move>>(selectorList.size());
+    public Iterator<Move> moveIterator(StepScope stepScope) {
+        List<Iterator<Move>> moveIteratorList = new ArrayList<Iterator<Move>>(selectorList.size());
         for (Selector selector : selectorList) {
-            List<Move> subMoveList = selector.selectMoveList(stepScope);
-            totalSize += subMoveList.size();
-            subMoveLists.add(subMoveList);
+            Iterator<Move> moveIterator = selector.moveIterator(stepScope);
+            if (moveIterator.hasNext()) {
+                moveIteratorList.add(moveIterator);
+            }
         }
-        List<Move> moveList = new ArrayList<Move>(totalSize);
-        for (List<Move> subMoveList : subMoveLists) {
-            moveList.addAll(subMoveList);
-        }
-        // TODO support overal shuffling
-        return moveList;
+        return new CompositeSelectorMoveIterator(stepScope.getWorkingRandom(), moveIteratorList);
     }
 
     @Override
@@ -81,6 +78,37 @@ public class CompositeSelector extends AbstractSelector {
         for (Selector selector : selectorList) {
             selector.solvingEnded(localSearchSolverScope);
         }
+    }
+
+    private static class CompositeSelectorMoveIterator implements Iterator<Move> {
+
+        private final List<Iterator<Move>> moveIteratorList;
+        private final Random workingRandom;
+
+        public CompositeSelectorMoveIterator(Random workingRandom, List<Iterator<Move>> moveIteratorList) {
+            this.moveIteratorList = moveIteratorList;
+            this.workingRandom = workingRandom;
+        }
+
+        public boolean hasNext() {
+            return !moveIteratorList.isEmpty();
+        }
+
+        public Move next() {
+            int moveIteratorIndex = workingRandom.nextInt(moveIteratorList.size());
+            Iterator<Move> moveIterator = moveIteratorList.get(moveIteratorIndex);
+            Move next = moveIterator.next();
+            if (!moveIterator.hasNext()) {
+                moveIteratorList.remove(moveIteratorIndex);
+            }
+            return next;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException(
+                    "The remove method is not supported on CompositeSelectorMoveIterator");
+        }
+
     }
 
 }

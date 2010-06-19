@@ -38,19 +38,13 @@
             </scoreDefinition>
             <selector>
                 <selector>
-                    <topSize>10</topSize>
-                </selector>
-                <selector>
                     <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
                 </selector>
                 <selector>
                     <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-                    <relativeSelection>0.002</relativeSelection>
                 </selector>
             </selector>
             <acceptor>
@@ -59,6 +53,7 @@
             </acceptor>
             <forager>
                 <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
             </forager>
         </localSearchSolver>
     </solverBenchmark>

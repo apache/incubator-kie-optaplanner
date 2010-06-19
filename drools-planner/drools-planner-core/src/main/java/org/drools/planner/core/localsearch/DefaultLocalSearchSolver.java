@@ -115,7 +115,7 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
             decider.decideNextStep(stepScope);
             Move nextStep = stepScope.getStep();
             if (nextStep == null) {
-                // TODO JBRULES-2213 do not terminate, but warn and try again (especially with relativeSelection)
+                // TODO JBRULES-2213 do not terminate, but warn and try again
                 logger.warn("No move accepted for step index ({}) out of {} accepted moves. Terminating by exception.",
                         stepScope.getStepIndex(), decider.getForager().getAcceptedMovesSize());
                 break;

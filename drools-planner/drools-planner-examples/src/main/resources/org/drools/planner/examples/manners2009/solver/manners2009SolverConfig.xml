@@ -19,6 +19,5 @@
     </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
-        <!--<foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>-->
     </forager>
 </localSearchSolver>

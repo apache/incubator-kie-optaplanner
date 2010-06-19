@@ -11,22 +11,20 @@
     <selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-            <absoluteSelection>300</absoluteSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-            <absoluteSelection>300</absoluteSelection>
         </selector>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-            <absoluteSelection>300</absoluteSelection>
         </selector>
     </selector>
     <acceptor>
-      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-      <completePropertyTabuSize>11</completePropertyTabuSize>
+      <simulatedAnnealingStartingTemperature>10.0</simulatedAnnealingStartingTemperature>
+      <completePropertyTabuSize>5</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
+        <minimalAcceptedSelection>4</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>

@@ -23,8 +23,6 @@ public class SelectorConfig {
     private MoveFactory moveFactory = null;
     private Class<MoveFactory> moveFactoryClass = null;
     protected Boolean shuffle = null;
-    protected Double relativeSelection = null;
-    protected Integer absoluteSelection = null;
 
     private Integer topSize = null;
 
@@ -58,22 +56,6 @@ public class SelectorConfig {
 
     public void setShuffle(Boolean shuffle) {
         this.shuffle = shuffle;
-    }
-
-    public Double getRelativeSelection() {
-        return relativeSelection;
-    }
-
-    public void setRelativeSelection(Double relativeSelection) {
-        this.relativeSelection = relativeSelection;
-    }
-
-    public Integer getAbsoluteSelection() {
-        return absoluteSelection;
-    }
-
-    public void setAbsoluteSelection(Integer absoluteSelection) {
-        this.absoluteSelection = absoluteSelection;
     }
 
     public Integer getTopSize() {
@@ -117,13 +99,7 @@ public class SelectorConfig {
             if (shuffle != null) {
                 selector.setShuffle(shuffle.booleanValue());
             } else {
-                selector.setShuffle(relativeSelection != null || absoluteSelection != null);
-            }
-            if (relativeSelection != null) {
-                selector.setRelativeSelection(relativeSelection);
-            }
-            if (absoluteSelection != null) {
-                selector.setAbsoluteSelection(absoluteSelection);
+                selector.setShuffle(true);
             }
             return selector;
         } else if (topSize != null) {
@@ -152,12 +128,6 @@ public class SelectorConfig {
         }
         if (shuffle == null) {
             shuffle = inheritedConfig.getShuffle();
-        }
-        if (relativeSelection == null) {
-            relativeSelection = inheritedConfig.getRelativeSelection();
-        }
-        if (absoluteSelection == null) {
-            absoluteSelection = inheritedConfig.getAbsoluteSelection();
         }
         if (topSize == null) {
             topSize = inheritedConfig.getTopSize();

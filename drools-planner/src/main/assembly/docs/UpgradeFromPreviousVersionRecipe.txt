@@ -268,7 +268,8 @@ After in *.java:
 Environment mode DEBUG now checks more and therefor it is slower than before.
 
 
-JBRULES-1804 has been fixed. The HACK to fix wierd truth maintenance behavior is obsolete.
+JBRULES-1804 has been fixed. The HACK to fix wierd truth maintenance behavior is now obsolete.
+Delete any instances of that hack to make your rules easier to read and faster.
 Before in *.drl:
         // HACK to fix wierd truth maintenance behavior in drools
         // because making weight part of the equals/hashcode doesn't cut it
@@ -287,8 +288,10 @@ After in *.drl:
 A custom ConstraintOccurrence implementation should now use the weight in its equals/hashcode methods.
 IntConstraintOccurrence and DoubleConstraintOccurrence have been changed as needed.
 
+
 From 5.1.0.m2 to 5.1.0.cr1
 --------------------------
+
 
 Custom ScoreDefinition implementations needs to implement the Double translateScoreToGraphValue(S score) method.
 After in *ScoreDefinition.java:
@@ -337,3 +340,58 @@ After in *Score.java:
     public ...Score subtract(...Score subtrahend) {
 
 Custom Score implementation: When rounding is needed, it should now be floored (as defined by Math.floor(double)).
+
+
+A selector no longer supports absoluteSelection and relativeSelection, because it was inefficient.
+Instead, the forager now supports minimalAcceptedSelection, which only counts doable, accepted moves
+(instead of all the selected moves).
+As a guideline, set your minimalAcceptedSelection to the sum of all your absoluteSelection and subtract 10%.
+Before in *Config.xml:
+    <selector>
+        <selector>
+            <moveFactoryClass>...ChangeMoveFactory</moveFactoryClass>
+            <absoluteSelection>500</absoluteSelection>
+        </selector>
+        <selector>
+            <moveFactoryClass>...SwitchMoveFactory</moveFactoryClass>
+            <absoluteSelection>500</absoluteSelection>
+        </selector>
+    </selector>
+    ...
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+    </forager>
+After in *Config.xml:
+    <selector>
+        <selector>
+            <moveFactoryClass>...ChangeMoveFactory</moveFactoryClass>
+        </selector>
+        <selector>
+            <moveFactoryClass>...SwitchMoveFactory</moveFactoryClass>
+        </selector>
+    </selector>
+    ...
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <minimalAcceptedSelection>900</minimalAcceptedSelection>
+    </forager>
+If you weighted some MoveFactory heavier than another, vote for https://jira.jboss.org/browse/JBRULES-2553.
+
+If you use a custom selector: the Selector interface method
+  List<Move> selectMoveList(StepScope stepScope)
+has been replaced by the more efficient method
+  Iterator<Move> moveIterator(StepScope stepScope)
+Before in *Selector.java:
+    public List<Move> selectMoveList(StepScope stepScope) {
+        ...
+        return moveList;
+    }
+After in *Selector.java:
+    public Iterator<Move> moveIterator(StepScope stepScope) {
+        ...
+        return moveList.iterator();
+    }
+
+There's now a decent simulated annealing implementation.
+In many cases it clearly beats the tabu search implementation.
+See the reference manual and the nurse rostering example for more info.

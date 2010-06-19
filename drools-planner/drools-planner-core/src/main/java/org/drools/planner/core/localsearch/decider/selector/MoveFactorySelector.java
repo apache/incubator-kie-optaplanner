@@ -1,6 +1,7 @@
 package org.drools.planner.core.localsearch.decider.selector;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
@@ -17,8 +18,6 @@ public class MoveFactorySelector extends AbstractSelector {
     protected MoveFactory moveFactory;
 
     protected boolean shuffle = true;
-    protected Double relativeSelection = null;
-    protected Integer absoluteSelection = null;
 
     public void setMoveFactory(MoveFactory moveFactory) {
         this.moveFactory = moveFactory;
@@ -26,22 +25,6 @@ public class MoveFactorySelector extends AbstractSelector {
 
     public void setShuffle(boolean shuffle) {
         this.shuffle = shuffle;
-    }
-
-    public void setRelativeSelection(Double relativeSelection) {
-        this.relativeSelection = relativeSelection;
-        if (relativeSelection < 0.0 || relativeSelection > 1.0) {
-            throw new IllegalArgumentException( "The selector's relativeSelection (" + relativeSelection
-                    + ") is not in the range [0.0,1.0].");
-        }
-    }
-
-    public void setAbsoluteSelection(Integer absoluteSelection) {
-        this.absoluteSelection = absoluteSelection;
-        if (absoluteSelection < 1) {
-            throw new IllegalArgumentException( "The selector's absoluteSelection (" + absoluteSelection
-                    + ") must be at least 1.");
-        }
     }
 
     @Override
@@ -64,22 +47,14 @@ public class MoveFactorySelector extends AbstractSelector {
         moveFactory.beforeDeciding(stepScope);
     }
 
+    public Iterator<Move> moveIterator(StepScope stepScope) {
+        return selectMoveList(stepScope).iterator();
+    }
+
     public List<Move> selectMoveList(StepScope stepScope) {
         List<Move> moveList = moveFactory.createMoveList(stepScope.getWorkingSolution());
         if (shuffle) {
             Collections.shuffle(moveList, stepScope.getWorkingRandom());
-        }
-        if (relativeSelection != null) {
-            int selectionSize = (int) Math.ceil(relativeSelection * moveList.size());
-            if (selectionSize == 0 && !moveList.isEmpty()) {
-                selectionSize = 1;
-            }
-            moveList = moveList.subList(0, selectionSize);
-        }
-        if (absoluteSelection != null) {
-            if (moveList.size() > absoluteSelection) {
-                moveList = moveList.subList(0, absoluteSelection);
-            }
         }
         return moveList;
     }

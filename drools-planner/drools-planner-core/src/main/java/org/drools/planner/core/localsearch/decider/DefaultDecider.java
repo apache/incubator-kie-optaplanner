@@ -1,5 +1,6 @@
 package org.drools.planner.core.localsearch.decider;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.WorkingMemory;
@@ -86,8 +87,9 @@ public class DefaultDecider implements Decider {
 
     public void decideNextStep(StepScope stepScope) {
         WorkingMemory workingMemory = stepScope.getWorkingMemory();
-        List<Move> moveList = selector.selectMoveList(stepScope);
-        for (Move move : moveList) {
+        Iterator<Move> moveIterator = selector.moveIterator(stepScope);
+        while (moveIterator.hasNext()) {
+            Move move = moveIterator.next();
             MoveScope moveScope = new MoveScope(stepScope);
             moveScope.setMove(move);
             // Filter out not doable moves

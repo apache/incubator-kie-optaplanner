@@ -35,6 +35,8 @@ public class AcceptorConfig {
     protected Integer completeSolutionTabuSize = null;
     protected Integer partialSolutionTabuSize = null;
 
+    protected Double simulatedAnnealingStartingTemperature = null;
+
     protected Double greatDelugeWaterLevelUpperBoundRate = null;
     protected Double greatDelugeWaterRisingRate = null;
 
@@ -126,8 +128,24 @@ public class AcceptorConfig {
         this.partialSolutionTabuSize = partialSolutionTabuSize;
     }
 
+    public Double getSimulatedAnnealingStartingTemperature() {
+        return simulatedAnnealingStartingTemperature;
+    }
+
+    public void setSimulatedAnnealingStartingTemperature(Double simulatedAnnealingStartingTemperature) {
+        this.simulatedAnnealingStartingTemperature = simulatedAnnealingStartingTemperature;
+    }
+
+    public Double getGreatDelugeWaterLevelUpperBoundRate() {
+        return greatDelugeWaterLevelUpperBoundRate;
+    }
+
     public void setGreatDelugeWaterLevelUpperBoundRate(Double greatDelugeWaterLevelUpperBoundRate) {
         this.greatDelugeWaterLevelUpperBoundRate = greatDelugeWaterLevelUpperBoundRate;
+    }
+
+    public Double getGreatDelugeWaterRisingRate() {
+        return greatDelugeWaterRisingRate;
     }
 
     public void setGreatDelugeWaterRisingRate(Double greatDelugeWaterRisingRate) {
@@ -201,8 +219,12 @@ public class AcceptorConfig {
             }
             acceptorList.add(solutionTabuAcceptor);
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))) {
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))
+                || simulatedAnnealingStartingTemperature != null) {
             SimulatedAnnealingAcceptor simulatedAnnealingAcceptor = new SimulatedAnnealingAcceptor();
+            if (simulatedAnnealingStartingTemperature != null) {
+                simulatedAnnealingAcceptor.setStartingTemperature(simulatedAnnealingStartingTemperature);
+            }
             acceptorList.add(simulatedAnnealingAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
@@ -269,6 +291,15 @@ public class AcceptorConfig {
         }
         if (partialSolutionTabuSize == null) {
             partialSolutionTabuSize = inheritedConfig.getPartialSolutionTabuSize();
+        }
+        if (simulatedAnnealingStartingTemperature == null) {
+            simulatedAnnealingStartingTemperature = inheritedConfig.getSimulatedAnnealingStartingTemperature();
+        }
+        if (greatDelugeWaterLevelUpperBoundRate == null) {
+            greatDelugeWaterLevelUpperBoundRate = inheritedConfig.getGreatDelugeWaterLevelUpperBoundRate();
+        }
+        if (greatDelugeWaterRisingRate == null) {
+            greatDelugeWaterRisingRate = inheritedConfig.getGreatDelugeWaterRisingRate();
         }
     }
 

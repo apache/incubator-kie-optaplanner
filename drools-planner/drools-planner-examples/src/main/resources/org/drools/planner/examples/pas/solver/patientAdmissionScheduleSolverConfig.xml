@@ -16,15 +16,12 @@
     <selector>
         <!--<selector>-->
             <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
-            <!--<relativeSelection>0.0008</relativeSelection>-->
         <!--</selector>-->
         <!--<selector>-->
             <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
-            <!--<relativeSelection>0.0008</relativeSelection>-->
         <!--</selector>-->
         <selector>
             <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
-            <relativeSelection>0.0010</relativeSelection>
         </selector>
     </selector>
     <acceptor>
@@ -33,5 +30,6 @@
     </acceptor>
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>
 </localSearchSolver>

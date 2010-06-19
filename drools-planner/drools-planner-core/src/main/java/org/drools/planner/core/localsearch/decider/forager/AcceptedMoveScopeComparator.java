@@ -11,9 +11,9 @@ import org.drools.planner.core.score.Score;
  */
 public class AcceptedMoveScopeComparator implements Comparator<MoveScope> {
 
-    private Comparator<? extends Score> deciderScoreComparator;
+    private final Comparator<? extends Score> deciderScoreComparator;
 
-    public void setDeciderScoreComparator(Comparator<? extends Score> deciderScoreComparator) {
+    public AcceptedMoveScopeComparator(Comparator<? extends Score> deciderScoreComparator) {
         this.deciderScoreComparator = deciderScoreComparator;
     }
     
