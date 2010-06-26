@@ -56,6 +56,6 @@
         <!--<acceptorType>SIMULATED_ANNEALING</acceptorType>-->
     <!--</acceptor>-->
     <!--<forager>-->
-        <!--<foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>-->
+        <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
     <!--</forager>-->
 </localSearchSolver>

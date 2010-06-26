@@ -25,7 +25,6 @@
       <completePropertyTabuSize>5</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
         <minimalAcceptedSelection>4</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>
