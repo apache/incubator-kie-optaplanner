@@ -45,7 +45,7 @@
         <completePropertyTabuSize>10</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <pickEarlyType>NEVER</pickEarlyType>
         <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>
     <!--<selector>-->

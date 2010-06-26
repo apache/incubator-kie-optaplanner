@@ -25,7 +25,7 @@ public class AcceptedForagerTest extends TestCase {
     
     public void testPickMoveMaxScoreOfAll() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyByScore.NONE, Integer.MAX_VALUE);
+        Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);
         LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
         forager.solvingStarted(localSearchSolverScope);
         StepScope stepScope = createStepScope(localSearchSolverScope);
@@ -61,7 +61,7 @@ public class AcceptedForagerTest extends TestCase {
 
     public void testPickMoveFirstBestScoreImproving() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyByScore.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
+        Forager forager = new AcceptedForager(PickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
         LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
         forager.solvingStarted(localSearchSolverScope);
         StepScope stepScope = createStepScope(localSearchSolverScope);
@@ -91,7 +91,7 @@ public class AcceptedForagerTest extends TestCase {
 
     public void testPickMoveFirstLastStepScoreImproving() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyByScore.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
+        Forager forager = new AcceptedForager(PickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
         LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
         forager.solvingStarted(localSearchSolverScope);
         StepScope stepScope = createStepScope(localSearchSolverScope);
@@ -121,7 +121,7 @@ public class AcceptedForagerTest extends TestCase {
 
 //    public void testPickMoveRandomly() {
 //        // Setup
-//        Forager forager = new AcceptedForager(PickEarlyByScore.NONE, 1);
+//        Forager forager = new AcceptedForager(PickEarlyType.NONE, 1);
 //        LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
 //        forager.solvingStarted(localSearchSolverScope);
 //        StepScope stepScope = createStepScope(localSearchSolverScope);

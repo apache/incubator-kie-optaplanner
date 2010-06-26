@@ -395,3 +395,47 @@ After in *Selector.java:
 There's now a decent simulated annealing implementation.
 In many cases it clearly beats the tabu search implementation.
 See the reference manual and the nurse rostering example for more info.
+
+The ForagerType has been renamed to the PickEarlyType.
+The ForagerType MAX_SCORE_OF_ALL is now the PickEarlyType NEVER. It is also the default.
+Before in *Config.xml:
+    <forager>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        ...
+    </forager>
+After in *Config.xml:
+    <forager>
+        ...
+    </forager>
+The ForagerType FIRST_BEST_SCORE_IMPROVING is the PickEarlyType FIRST_BEST_SCORE_IMPROVING.
+Before in *Config.xml:
+    <forager>
+        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
+        ...
+    </forager>
+After in *Config.xml:
+    <forager>
+        <pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>
+        ...
+    </forager>
+The ForagerType FIRST_LAST_STEP_SCORE_IMPROVING is now the PickEarlyType FIRST_LAST_STEP_SCORE_IMPROVING.
+Before in *Config.xml:
+    <forager>
+        <foragerType>FIRST_LAST_STEP_SCORE_IMPROVING</foragerType>
+        ...
+    </forager>
+After in *Config.xml:
+    <forager>
+        <pickEarlyType>FIRST_LAST_STEP_SCORE_IMPROVING</pickEarlyType>
+        ...
+    </forager>
+The ForagerType FIRST_RANDOMLY_ACCEPTED has been removed, use the PickEarlyType NEVER with minimalAcceptedSelection 1.
+Before in *Config.xml:
+    <forager>
+        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType>
+    </forager>
+After in *Config.xml:
+    <forager>
+        <pickEarlyType>NEVER</pickEarlyType>
+        <minimalAcceptedSelection>1</minimalAcceptedSelection>
+    </forager>

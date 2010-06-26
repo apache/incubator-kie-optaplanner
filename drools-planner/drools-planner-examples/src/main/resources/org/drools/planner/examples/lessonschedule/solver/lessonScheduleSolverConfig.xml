@@ -14,6 +14,6 @@
         <completeUndoMoveTabuSize>10</completeUndoMoveTabuSize>
     </acceptor>
     <forager>
-        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <pickEarlyType>NEVER</pickEarlyType>
     </forager>
 </localSearchSolver>

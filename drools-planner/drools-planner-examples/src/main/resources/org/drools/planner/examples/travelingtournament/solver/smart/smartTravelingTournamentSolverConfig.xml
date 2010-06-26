@@ -25,6 +25,6 @@
         <completeMoveTabuSize>7</completeMoveTabuSize>
     </acceptor>
     <forager>
-        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <pickEarlyType>NEVER</pickEarlyType>
     </forager>
 </localSearchSolver>

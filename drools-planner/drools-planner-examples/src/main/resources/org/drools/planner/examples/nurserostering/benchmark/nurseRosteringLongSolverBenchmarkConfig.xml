@@ -57,7 +57,7 @@
               <completePropertyTabuSize>11</completePropertyTabuSize>
             </acceptor>
             <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <pickEarlyType>NEVER</pickEarlyType>
                 <minimalAcceptedSelection>1100</minimalAcceptedSelection>
             </forager>
         </localSearchSolver>

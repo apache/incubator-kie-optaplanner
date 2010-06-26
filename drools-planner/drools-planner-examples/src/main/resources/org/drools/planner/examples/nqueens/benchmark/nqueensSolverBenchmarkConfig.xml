@@ -27,7 +27,7 @@
                 <completeMoveTabuSize>5</completeMoveTabuSize>
             </acceptor>
             <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <pickEarlyType>NEVER</pickEarlyType>
             </forager>
         </localSearchSolver>
     </solverBenchmark>
@@ -38,7 +38,7 @@
                 <completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>
             </acceptor>
             <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <pickEarlyType>NEVER</pickEarlyType>
             </forager>
         </localSearchSolver>
     </solverBenchmark>
@@ -49,7 +49,7 @@
                 <completeSolutionTabuSize>1000</completeSolutionTabuSize>
             </acceptor>
             <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <pickEarlyType>NEVER</pickEarlyType>
             </forager>
         </localSearchSolver>
     </solverBenchmark>

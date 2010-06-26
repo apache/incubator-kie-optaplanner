@@ -3,7 +3,7 @@ package org.drools.planner.config.localsearch.decider.forager;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.core.localsearch.decider.forager.AcceptedForager;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
-import org.drools.planner.core.localsearch.decider.forager.PickEarlyByScore;
+import org.drools.planner.core.localsearch.decider.forager.PickEarlyType;
 
 /**
  * @author Geoffrey De Smet
@@ -13,7 +13,7 @@ public class ForagerConfig {
 
     private Forager forager = null; // TODO remove this and document extending ForagerConfig
     private Class<Forager> foragerClass = null;
-    private ForagerType foragerType = null;
+    private PickEarlyType pickEarlyType = null;
 
     protected Integer minimalAcceptedSelection = null;
 
@@ -33,12 +33,12 @@ public class ForagerConfig {
         this.foragerClass = foragerClass;
     }
 
-    public ForagerType getForagerType() {
-        return foragerType;
+    public PickEarlyType getPickEarlyType() {
+        return pickEarlyType;
     }
 
-    public void setForagerType(ForagerType foragerType) {
-        this.foragerType = foragerType;
+    public void setPickEarlyType(PickEarlyType pickEarlyType) {
+        this.pickEarlyType = pickEarlyType;
     }
 
     public Integer getMinimalAcceptedSelection() {
@@ -67,47 +67,20 @@ public class ForagerConfig {
                         + ") does not have a public no-arg constructor", e);
             }
         }
-        PickEarlyByScore pickEarlyByScore;
-        if (foragerType != null) {
-            switch (foragerType) {
-                case MAX_SCORE_OF_ALL:
-                    pickEarlyByScore = PickEarlyByScore.NONE;
-                    break;
-                case FIRST_BEST_SCORE_IMPROVING:
-                    pickEarlyByScore = PickEarlyByScore.FIRST_BEST_SCORE_IMPROVING;
-                    break;
-                case FIRST_LAST_STEP_SCORE_IMPROVING:
-                    pickEarlyByScore = PickEarlyByScore.FIRST_LAST_STEP_SCORE_IMPROVING;
-                    break;
-                case FIRST_RANDOMLY_ACCEPTED:
-                    pickEarlyByScore = PickEarlyByScore.NONE;
-                    break;
-                default:
-                    throw new IllegalStateException("The foragerType (" + foragerType + ") is not implemented");
-            }
-        } else {
-            pickEarlyByScore = PickEarlyByScore.NONE;
-        }
+        PickEarlyType pickEarlyType = (this.pickEarlyType == null) ? PickEarlyType.NEVER : this.pickEarlyType;
         int minimalAcceptedSelection = (this.minimalAcceptedSelection == null)
                 ? Integer.MAX_VALUE : this.minimalAcceptedSelection;
 
-        return new AcceptedForager(pickEarlyByScore, minimalAcceptedSelection);
+        return new AcceptedForager(pickEarlyType, minimalAcceptedSelection);
     }
 
     public void inherit(ForagerConfig inheritedConfig) {
-        if (forager == null && foragerClass == null && foragerType == null && minimalAcceptedSelection == null) {
+        if (forager == null && foragerClass == null && pickEarlyType == null && minimalAcceptedSelection == null) {
             forager = inheritedConfig.getForager();
             foragerClass = inheritedConfig.getForagerClass();
-            foragerType = inheritedConfig.getForagerType();
+            pickEarlyType = inheritedConfig.getPickEarlyType();
             minimalAcceptedSelection = inheritedConfig.getMinimalAcceptedSelection();
         }
-    }
-
-    public static enum ForagerType {
-        MAX_SCORE_OF_ALL,
-        FIRST_BEST_SCORE_IMPROVING,
-        FIRST_LAST_STEP_SCORE_IMPROVING,
-        FIRST_RANDOMLY_ACCEPTED
     }
 
 }

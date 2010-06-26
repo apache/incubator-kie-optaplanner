@@ -45,7 +45,7 @@
                 <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
             </acceptor>
             <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <pickEarlyType>NEVER</pickEarlyType>
                 <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
             </forager>
         </localSearchSolver>

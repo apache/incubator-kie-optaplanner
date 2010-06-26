@@ -29,14 +29,6 @@ public class DeciderScoreComparatorFactoryConfig {
         this.deciderScoreComparatorClass = deciderScoreComparatorClass;
     }
 
-    public DeciderScoreComparatorFactoryType getForagerType() {
-        return deciderScoreComparatorFactoryType;
-    }
-
-    public void setForagerType(DeciderScoreComparatorFactoryType deciderScoreComparatorFactoryType) {
-        this.deciderScoreComparatorFactoryType = deciderScoreComparatorFactoryType;
-    }
-
     public DeciderScoreComparatorFactoryType getDeciderScoreComparatorFactoryType() {
         return deciderScoreComparatorFactoryType;
     }
@@ -147,7 +139,7 @@ public class DeciderScoreComparatorFactoryConfig {
     public void inherit(DeciderScoreComparatorFactoryConfig inheritedConfig) {
         if (deciderScoreComparatorClass == null && deciderScoreComparatorFactoryType == null) {
             deciderScoreComparatorClass = inheritedConfig.getDeciderScoreComparatorClass();
-            deciderScoreComparatorFactoryType = inheritedConfig.getForagerType();
+            deciderScoreComparatorFactoryType = inheritedConfig.getDeciderScoreComparatorFactoryType();
         }
         if (hardScoreActivationThreshold == null) {
             hardScoreActivationThreshold = inheritedConfig.getHardScoreActivationThreshold();

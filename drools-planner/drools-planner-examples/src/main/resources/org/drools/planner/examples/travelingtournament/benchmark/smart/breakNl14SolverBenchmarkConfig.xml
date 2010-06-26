@@ -15,7 +15,7 @@
             <completeSolutionTabuSize>3000</completeSolutionTabuSize>
         </acceptor>
         <forager>
-            <foragerType>MAX_SCORE_OF_ALL</foragerType>
+            <pickEarlyType>NEVER</pickEarlyType>
         </forager>
     </inheritedLocalSearchSolver>
 

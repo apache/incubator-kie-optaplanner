@@ -52,7 +52,7 @@
                 <completeSolutionTabuSize>1500</completeSolutionTabuSize>
             </acceptor>
             <forager>
-                <foragerType>MAX_SCORE_OF_ALL</foragerType>
+                <pickEarlyType>NEVER</pickEarlyType>
                 <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
             </forager>
         </localSearchSolver>

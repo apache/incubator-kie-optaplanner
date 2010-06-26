@@ -20,7 +20,7 @@ import org.drools.planner.core.score.Score;
 public class AcceptedForager extends AbstractForager {
 
     // final to allow better hotspot optimization. TODO prove that it indeed makes a difference
-    protected final PickEarlyByScore pickEarlyByScore;
+    protected final PickEarlyType pickEarlyType;
     protected final int minimalAcceptedSelection;
 
     protected AcceptedMoveScopeComparator acceptedMoveScopeComparator;
@@ -33,8 +33,8 @@ public class AcceptedForager extends AbstractForager {
 
     protected MoveScope earlyPickedMoveScope = null;
 
-    public AcceptedForager(PickEarlyByScore pickEarlyByScore, int minimalAcceptedSelection) {
-        this.pickEarlyByScore = pickEarlyByScore;
+    public AcceptedForager(PickEarlyType pickEarlyType, int minimalAcceptedSelection) {
+        this.pickEarlyType = pickEarlyType;
         this.minimalAcceptedSelection = minimalAcceptedSelection;
     }
 
@@ -62,8 +62,8 @@ public class AcceptedForager extends AbstractForager {
     }
 
     protected void checkPickEarly(MoveScope moveScope) {
-        switch (pickEarlyByScore) {
-            case NONE:
+        switch (pickEarlyType) {
+            case NEVER:
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
                 if (moveScope.getStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
@@ -79,7 +79,7 @@ public class AcceptedForager extends AbstractForager {
                 }
                 break;
             default:
-                throw new IllegalStateException("The pickEarlyByScore (" + pickEarlyByScore + ") is not implemented");
+                throw new IllegalStateException("The pickEarlyType (" + pickEarlyType + ") is not implemented");
         }
     }
 

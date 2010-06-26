@@ -18,7 +18,7 @@
         <completeSolutionTabuSize>1000</completeSolutionTabuSize>
     </acceptor>
     <forager>
-        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <pickEarlyType>NEVER</pickEarlyType>
         <!-- Real world problems require to use of <minimalAcceptedSelection> -->
     </forager>
 </localSearchSolver>
