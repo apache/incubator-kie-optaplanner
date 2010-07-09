@@ -11,9 +11,10 @@ import org.drools.planner.core.score.Score;
  */
 public class TimeGradientBasedSimulatedAnnealingAcceptor extends AbstractAcceptor {
 
-    protected double startingTemperature = -1.0;
+    protected double startingTemperature = 1.0;
 
     protected double temperature;
+    protected double temperatureMinimum = Double.MIN_NORMAL;
 
     public void setStartingTemperature(double startingTemperature) {
         this.startingTemperature = startingTemperature;
@@ -58,7 +59,10 @@ public class TimeGradientBasedSimulatedAnnealingAcceptor extends AbstractAccepto
     public void stepTaken(StepScope stepScope) {
         super.stepTaken(stepScope);
         double timeGradient = stepScope.getTimeGradient();
-        temperature = startingTemperature * timeGradient;
+        temperature = startingTemperature * (1.0 - timeGradient);
+        if (temperature < temperatureMinimum) {
+            temperature = temperatureMinimum;
+        }
     }
 
 }
