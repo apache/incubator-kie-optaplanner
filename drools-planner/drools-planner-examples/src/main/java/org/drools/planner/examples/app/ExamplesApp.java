@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.examples.nqueens.app.NQueensApp;
-import org.drools.planner.examples.lessonschedule.app.LessonScheduleApp;
 import org.drools.planner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp;
 import org.drools.planner.examples.examination.app.ExaminationApp;
