@@ -40,7 +40,11 @@ import org.drools.planner.benchmark.statistic.BestScoreStatistic;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
@@ -296,6 +300,10 @@ public class SolverBenchmarkSuite {
             "Best score summary (higher score is better)", "Data", "Score",
             dataset, PlotOrientation.VERTICAL, true, true, false
         );
+        CategoryItemRenderer renderer = ((CategoryPlot) chart.getPlot()).getRenderer();
+        CategoryItemLabelGenerator generator = new StandardCategoryItemLabelGenerator();
+        renderer.setBaseItemLabelGenerator(generator);
+        renderer.setBaseItemLabelsVisible(true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
         File chartSummaryFile = new File(solverStatisticFilesDirectory, "summary.png");
         OutputStream out = null;
