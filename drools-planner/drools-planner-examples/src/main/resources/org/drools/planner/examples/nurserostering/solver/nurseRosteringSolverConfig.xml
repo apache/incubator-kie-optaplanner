@@ -37,7 +37,6 @@
       <completePropertyTabuSize>7</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
         <minimalAcceptedSelection>800</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>

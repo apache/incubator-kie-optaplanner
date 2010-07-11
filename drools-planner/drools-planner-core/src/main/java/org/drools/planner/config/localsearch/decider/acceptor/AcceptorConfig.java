@@ -9,8 +9,8 @@ import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.LegacySimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.TimeGradientBasedSimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.PropertyTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
@@ -227,9 +227,6 @@ public class AcceptorConfig {
             if (simulatedAnnealingStartingTemperature != null) {
                 simulatedAnnealingAcceptor.setStartingTemperature(simulatedAnnealingStartingTemperature);
             }
-            if (simulatedAnnealingTemperatureSurvival != null) {
-                simulatedAnnealingAcceptor.setTemperatureSurvival(simulatedAnnealingTemperatureSurvival);
-            }
             acceptorList.add(simulatedAnnealingAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
@@ -239,6 +236,10 @@ public class AcceptorConfig {
             double waterRisingRate = (Double) ObjectUtils.defaultIfNull(
                     greatDelugeWaterRisingRate, 0.0000001);
             acceptorList.add(new GreatDelugeAcceptor(waterLevelUpperBoundRate, waterRisingRate));
+        }
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ACCEPTANCE))) {
+            // TODO implement LATE_ACCEPTANCE
+            throw new UnsupportedOperationException("LATE_ACCEPTANCE not yet supported.");
         }
         if (acceptorList.size() == 1) {
             return acceptorList.get(0);
@@ -314,6 +315,7 @@ public class AcceptorConfig {
         PROPERTY_TABU,
         SOLUTION_TABU,
         SIMULATED_ANNEALING,
+        LATE_ACCEPTANCE,
         GREAT_DELUGE,
     }
 

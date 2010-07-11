@@ -1,31 +1,24 @@
 package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Random;
-
+import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.score.Score;
 
 /**
+ * The time gradient implementation of simulated annealing.
  * @author Geoffrey De Smet
  */
 public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
-    protected double startingTemperature = -1.0;
-    protected double temperatureSurvival = 0.997;
+    protected double startingTemperature = 1.0;
 
     protected double temperature;
+    protected double temperatureMinimum = Double.MIN_NORMAL;
 
     public void setStartingTemperature(double startingTemperature) {
         this.startingTemperature = startingTemperature;
-    }
-
-    public void setTemperatureSurvival(double temperatureSurvival) {
-        this.temperatureSurvival = temperatureSurvival;
     }
 
     // ************************************************************************
@@ -34,13 +27,13 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        if (startingTemperature <= 0.0) {
+        if (startingTemperature < 0.0) {
             throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
-                    + ") cannot be negative or zero.");
+                    + ") cannot be negative.");
         }
-        if (temperatureSurvival <= 0.0) {
-            throw new IllegalArgumentException("The temperatureSurvival (" + temperatureSurvival
-                    + ") cannot be negative or zero.");
+        if (startingTemperature < temperatureMinimum) {
+            throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
+                    + ") cannot be less than the temperatureMinimum (" + temperatureMinimum + ").");
         }
         temperature = startingTemperature;
     }
@@ -70,7 +63,12 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     @Override
     public void stepTaken(StepScope stepScope) {
         super.stepTaken(stepScope);
-        temperature *= temperatureSurvival;
+        double timeGradient = stepScope.getTimeGradient();
+        temperature = startingTemperature * (1.0 - timeGradient);
+        if (temperature < temperatureMinimum) {
+            temperature = temperatureMinimum;
+        }
+        // TODO implement reheating
     }
 
 }
