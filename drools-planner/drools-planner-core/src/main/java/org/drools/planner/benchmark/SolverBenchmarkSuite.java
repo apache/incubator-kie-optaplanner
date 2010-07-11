@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -54,7 +55,6 @@ public class SolverBenchmarkSuite {
     private File solvedSolutionFilesDirectory = null;
     private File solverStatisticFilesDirectory = null;
     private SolverStatisticType solverStatisticType = SolverStatisticType.NONE;
-    private boolean sortSolverBenchmarks = true;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
     @XStreamAlias("inheritedLocalSearchSolver")
@@ -96,14 +96,6 @@ public class SolverBenchmarkSuite {
 
     public void setSolverStatisticType(SolverStatisticType solverStatisticType) {
         this.solverStatisticType = solverStatisticType;
-    }
-
-    public boolean isSortSolverBenchmarks() {
-        return sortSolverBenchmarks;
-    }
-
-    public void setSortSolverBenchmarks(boolean sortSolverBenchmarks) {
-        this.sortSolverBenchmarks = sortSolverBenchmarks;
     }
 
     public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
@@ -184,6 +176,9 @@ public class SolverBenchmarkSuite {
             solverStatisticFilesDirectory = new File(benchmarkDirectory, "statistic");
         }
         solverStatisticFilesDirectory.mkdirs();
+        if (solverBenchmarkComparator == null) {
+            solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
+        }
     }
 
     public void benchmark(XStream xStream) { // TODO refactor out xstream
@@ -256,13 +251,7 @@ public class SolverBenchmarkSuite {
     }
 
     public void benchmarkingEnded(XStream xStream, Map<File, SolverStatistic> unsolvedSolutionFileToStatisticMap) {
-        if (sortSolverBenchmarks) {
-            if (solverBenchmarkComparator == null) {
-                solverBenchmarkComparator = new AverageScoreSolverBenchmarkComparator();
-            }
-            Collections.sort(solverBenchmarkList, solverBenchmarkComparator);
-            Collections.reverse(solverBenchmarkList); // Best results first, worst results last
-        }
+        determineRankings();
         writeBestScoreSummaryChart();
         // 2 lines at 80 chars per line give a max of 160 per entry
         StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
@@ -281,6 +270,15 @@ public class SolverBenchmarkSuite {
         }
         writeHtmlOverview(htmlFragment);
         writeBenchmarkResult(xStream);
+    }
+
+    private void determineRankings() {
+        List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
+        Collections.sort(sortedSolverBenchmarkList, solverBenchmarkComparator);
+        Collections.reverse(sortedSolverBenchmarkList); // Best results first, worst results last
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            solverBenchmark.setRanking(sortedSolverBenchmarkList.indexOf(solverBenchmark));
+        }
     }
 
     private CharSequence writeBestScoreSummaryChart() {
@@ -313,21 +311,27 @@ public class SolverBenchmarkSuite {
     }
 
     private CharSequence writeBestScoreSummaryTable() {
+
         StringBuilder htmlFragment = new StringBuilder(solverBenchmarkList.size() * 160);
         htmlFragment.append("  <table border=\"1\">\n");
         htmlFragment.append("    <tr><th/>");
         for (File unsolvedSolutionFile : inheritedUnsolvedSolutionFileList) {
             htmlFragment.append("<th>").append(unsolvedSolutionFile.getName()).append("</th>");
         }
-        htmlFragment.append("<th>Average</th></tr>\n");
+        htmlFragment.append("<th>Average</th><th>Ranking</th></tr>\n");
+        boolean oddLine = true;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            htmlFragment.append("    <tr><th>").append(solverBenchmark.getName()).append("</th>");
+            String backgroundColor = solverBenchmark.getRanking() == 0 ? "Yellow" : oddLine ? "White" : "Gray";
+            htmlFragment.append("    <tr style=\"background-color: ").append(backgroundColor).append("\"><th>")
+                    .append(solverBenchmark.getName()).append("</th>");
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
                 Score score = result.getScore();
                 htmlFragment.append("<td>").append(score.toString()).append("</td>");
             }
-            htmlFragment.append("<td>").append(solverBenchmark.getAverageScore().toString()).append("</td>");
+            htmlFragment.append("<td>").append(solverBenchmark.getAverageScore().toString())
+                    .append("</td><td>").append(solverBenchmark.getRanking()).append("</td>");
             htmlFragment.append("</tr>\n");
+            oddLine = !oddLine;
         }
         htmlFragment.append("  </table>\n");
         return htmlFragment.toString();

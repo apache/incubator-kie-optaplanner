@@ -324,7 +324,7 @@ After in *BenchmarkConfig.xml:
 Benchmarker: the class MaxScoreSolverBenchmarkComparator has been renamed to WorstScoreSolverBenchmarkComparator.
 
 A benchmarker no longer uses WorstScoreSolverBenchmarkComparator by default.
-It now uses AverageScoreSolverBenchmarkComparator by default.
+It now uses TotalScoreSolverBenchmarkComparator by default.
 
 The benchmarker method writeResults(resultFile) has been removed.
 The result is now always written at the end of the benchmark() method
@@ -439,3 +439,10 @@ After in *Config.xml:
         <pickEarlyType>NEVER</pickEarlyType>
         <minimalAcceptedSelection>1</minimalAcceptedSelection>
     </forager>
+
+
+The benchmarker no longer sorts the solvers, because that was confusing to read.
+Instead outputs a table with a ranking column.
+You can still set a custom solverBenchmarkComparator to influence that ranking.
+Before in *BenchmarkConfig.xml:
+    <sortSolverBenchmarks>true</sortSolverBenchmarks>

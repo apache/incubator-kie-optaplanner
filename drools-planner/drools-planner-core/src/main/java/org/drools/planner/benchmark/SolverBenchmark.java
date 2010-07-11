@@ -25,6 +25,9 @@ public class SolverBenchmark {
     @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
 
+    // Ranking starts from 0
+    private Integer ranking = null;
+
     public String getName() {
         return name;
     }
@@ -55,6 +58,14 @@ public class SolverBenchmark {
 
     public void setSolverBenchmarkResultList(List<SolverBenchmarkResult> solverBenchmarkResultList) {
         this.solverBenchmarkResultList = solverBenchmarkResultList;
+    }
+
+    public Integer getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(Integer ranking) {
+        this.ranking = ranking;
     }
 
     // ************************************************************************
@@ -109,9 +120,9 @@ public class SolverBenchmark {
     }
 
     /**
-     * @return the average score
+     * @return the total score
      */
-    public Score getAverageScore() {
+    public Score getTotalScore() {
         Score totalScore = null;
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
             if (totalScore == null) {
@@ -120,7 +131,14 @@ public class SolverBenchmark {
                 totalScore = totalScore.add(solverBenchmarkResult.getScore());
             }
         }
-        return totalScore.divide(solverBenchmarkResultList.size());
+        return totalScore;
+    }
+
+    /**
+     * @return the average score
+     */
+    public Score getAverageScore() {
+        return getTotalScore().divide(solverBenchmarkResultList.size());
     }
 
 }
