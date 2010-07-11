@@ -293,7 +293,11 @@ public class SolverBenchmarkSuite {
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
                 Score score = result.getScore();
                 Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
-                dataset.addValue(scoreGraphValue, solverBenchmark.getName(), result.getUnsolvedSolutionFile().getName());
+                String solverLabel = solverBenchmark.getName();
+                if (solverBenchmark.getRanking() == 0) {
+                    solverLabel += " (winner)";
+                }
+                dataset.addValue(scoreGraphValue, solverLabel, result.getUnsolvedSolutionFile().getName());
             }
         }
         JFreeChart chart = ChartFactory.createBarChart(
