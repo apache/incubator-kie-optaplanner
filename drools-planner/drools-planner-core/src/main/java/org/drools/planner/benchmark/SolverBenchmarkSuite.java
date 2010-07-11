@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -187,7 +188,8 @@ public class SolverBenchmarkSuite {
 
     public void benchmark(XStream xStream) { // TODO refactor out xstream
         benchmarkingStarted();
-        Map<File, SolverStatistic> unsolvedSolutionFileToStatisticMap = new HashMap<File, SolverStatistic>();
+        // LinkedHashMap because order of unsolvedSolutionFile should be respected in output
+        Map<File, SolverStatistic> unsolvedSolutionFileToStatisticMap = new LinkedHashMap<File, SolverStatistic>();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             Solver solver = solverBenchmark.getLocalSearchSolverConfig().buildSolver();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
