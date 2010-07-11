@@ -109,7 +109,6 @@ public class SolverBenchmark {
     }
 
     /**
-     * Note that the average score
      * @return the average score
      */
     public Score getAverageScore() {
@@ -118,7 +117,7 @@ public class SolverBenchmark {
             if (totalScore == null) {
                 totalScore = solverBenchmarkResult.getScore();
             } else {
-                totalScore.add(solverBenchmarkResult.getScore());
+                totalScore = totalScore.add(solverBenchmarkResult.getScore());
             }
         }
         return totalScore.divide(solverBenchmarkResultList.size());

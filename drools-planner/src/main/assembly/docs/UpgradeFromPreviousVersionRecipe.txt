@@ -393,7 +393,7 @@ After in *Selector.java:
     }
 
 There's now a decent simulated annealing implementation.
-In many cases it clearly beats the tabu search implementation.
+In many use cases it clearly beats the tabu search implementation.
 See the reference manual and the nurse rostering example for more info.
 
 The ForagerType has been renamed to the PickEarlyType.

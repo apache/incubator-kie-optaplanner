@@ -267,7 +267,9 @@ public class SolverBenchmarkSuite {
         // 2 lines at 80 chars per line give a max of 160 per entry
         StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
         htmlFragment.append("  <h1>Summary</h1>\n");
+        htmlFragment.append("  <h2>Summary chart</h2>\n");
         htmlFragment.append(writeBestScoreSummaryChart());
+        htmlFragment.append("  <h2>Summary table</h2>\n");
         htmlFragment.append(writeBestScoreSummaryTable());
         htmlFragment.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
         for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
