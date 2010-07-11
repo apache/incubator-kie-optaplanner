@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
@@ -33,6 +32,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.benchmark.statistic.BestScoreStatistic;
@@ -263,11 +263,12 @@ public class SolverBenchmarkSuite {
             Collections.sort(solverBenchmarkList, solverBenchmarkComparator);
             Collections.reverse(solverBenchmarkList); // Best results first, worst results last
         }
-        writeBestScoreSummary();
+        writeBestScoreSummaryChart();
         // 2 lines at 80 chars per line give a max of 160 per entry
         StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
         htmlFragment.append("  <h1>Summary</h1>\n");
-        htmlFragment.append(writeBestScoreSummary());
+        htmlFragment.append(writeBestScoreSummaryChart());
+        htmlFragment.append(writeBestScoreSummaryTable());
         htmlFragment.append("  <h1>Statistic ").append(solverStatisticType.toString()).append("</h1>\n");
         for (Map.Entry<File, SolverStatistic> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
             File unsolvedSolutionFile = entry.getKey();
@@ -280,13 +281,14 @@ public class SolverBenchmarkSuite {
         writeBenchmarkResult(xStream);
     }
 
-    private CharSequence writeBestScoreSummary() {
+    private CharSequence writeBestScoreSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
-                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(result.getScore());
+                Score score = result.getScore();
+                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                 dataset.addValue(scoreGraphValue, solverBenchmark.getName(), result.getUnsolvedSolutionFile().getName());
             }
         }
@@ -306,6 +308,27 @@ public class SolverBenchmarkSuite {
             IOUtils.closeQuietly(out);
         }
         return "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
+    }
+
+    private CharSequence writeBestScoreSummaryTable() {
+        StringBuilder htmlFragment = new StringBuilder(solverBenchmarkList.size() * 160);
+        htmlFragment.append("  <table border=\"1\">\n");
+        htmlFragment.append("    <tr><th/>");
+        for (File unsolvedSolutionFile : inheritedUnsolvedSolutionFileList) {
+            htmlFragment.append("<th>").append(unsolvedSolutionFile.getName()).append("</th>");
+        }
+        htmlFragment.append("<th>Average</th></tr>\n");
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            htmlFragment.append("    <tr><th>").append(solverBenchmark.getName()).append("</th>");
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                Score score = result.getScore();
+                htmlFragment.append("<td>").append(score.toString()).append("</td>");
+            }
+            htmlFragment.append("<td>").append(solverBenchmark.getAverageScore().toString()).append("</td>");
+            htmlFragment.append("</tr>\n");
+        }
+        htmlFragment.append("  </table>\n");
+        return htmlFragment.toString();
     }
 
     private void writeHtmlOverview(CharSequence htmlFragment) {
