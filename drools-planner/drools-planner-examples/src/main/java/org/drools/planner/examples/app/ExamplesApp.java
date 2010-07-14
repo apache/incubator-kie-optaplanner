@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.examples.nqueens.app.NQueensApp;
+import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
 import org.drools.planner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp;
 import org.drools.planner.examples.examination.app.ExaminationApp;
@@ -56,12 +57,12 @@ public class ExamplesApp extends JFrame {
                 new SmartTravelingTournamentApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("ITC2007 Curriculum course timetabling"){
+        contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007"){
             public void actionPerformed(ActionEvent e) {
                 new CurriculumCourseApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("ITC2007 Examination timetabling"){
+        contentPane.add(new JButton(new AbstractAction("Examination timetabling (ITC2007)"){
             public void actionPerformed(ActionEvent e) {
                 new ExaminationApp().init(false);
             }
@@ -69,6 +70,11 @@ public class ExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("Patient admission schedule"){
             public void actionPerformed(ActionEvent e) {
                 new PatientAdmissionScheduleApp().init(false);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("Nurse rostering (INRC2010)"){
+            public void actionPerformed(ActionEvent e) {
+                new NurseRosteringApp().init(false);
             }
         }));
         return contentPane;
