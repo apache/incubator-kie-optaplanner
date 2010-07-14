@@ -15,7 +15,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     protected double startingTemperature = 1.0;
 
     protected double temperature;
-    protected double temperatureMinimum = Double.MIN_NORMAL;
+    protected double temperatureMinimum = Double.MIN_VALUE;//Double.MIN_NORMAL;
 
     public void setStartingTemperature(double startingTemperature) {
         this.startingTemperature = startingTemperature;
