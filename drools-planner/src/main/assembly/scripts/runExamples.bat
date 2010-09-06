@@ -11,5 +11,6 @@ echo "  For example: set JAVA_HOME="C:\Program Files\Java\jdk1.6.0"
 echo
 echo "Starting examples app..."
 
-# -Xmx128M or less works too, but it might be slower
+rem You can use -Xmx128M or less too, but it might be slower
+rem You can remove -server to run it on a JRE without a JDK, but it will be slower
 "%JAVA_HOME%\bin\java" -Xms256m -Xmx512m -server -cp %mainJar% %mainClass%

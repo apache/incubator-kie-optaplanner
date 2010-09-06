@@ -13,5 +13,6 @@ echo "  For example: export JAVA_HOME=/usr/lib/jvm/java-6-sun"
 echo
 echo "Starting examples app..."
 
-# -Xmx128M or less works too, but it might be slower
+# You can use -Xmx128M or less too, but it might be slower
+# You can remove -server to run it on a JRE without a JDK, but it will be slower
 $JAVA_HOME/bin/java -Xms256m -Xmx512m -server -cp ${mainJar} ${mainClass} $*
