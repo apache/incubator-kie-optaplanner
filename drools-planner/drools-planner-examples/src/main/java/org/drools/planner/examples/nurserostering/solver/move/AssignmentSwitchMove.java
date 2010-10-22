@@ -52,8 +52,8 @@ public class AssignmentSwitchMove implements Move, TabuPropertyEnabled {
     public void doMove(WorkingMemory workingMemory) {
         Employee oldLeftEmployee = leftAssignment.getEmployee();
         Employee oldRightEmployee = rightAssignment.getEmployee();
-        NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, oldRightEmployee);
-        NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, oldLeftEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, leftAssignment, oldRightEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, rightAssignment, oldLeftEmployee);
     }
 
     public Collection<? extends Object> getTabuProperties() {

@@ -58,7 +58,7 @@ public class EmployeeMultipleChangeMove implements Move, TabuPropertyEnabled {
                 throw new IllegalStateException("The assignment (" + assignment + ") should have the same employee ("
                         + fromEmployee + ") as the fromEmployee (" + fromEmployee + ").");
             }
-            NurseRosterMoveHelper.moveEmployee(workingMemory, assignment, toEmployee);
+            NurseRosteringMoveHelper.moveEmployee(workingMemory, assignment, toEmployee);
         }
     }
 

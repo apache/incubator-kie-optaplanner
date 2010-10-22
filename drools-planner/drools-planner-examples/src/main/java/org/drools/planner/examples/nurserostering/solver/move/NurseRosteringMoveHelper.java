@@ -25,7 +25,7 @@ import org.drools.runtime.rule.FactHandle;
 /**
  * @author Geoffrey De Smet
  */
-public class NurseRosterMoveHelper {
+public class NurseRosteringMoveHelper {
 
     public static void moveEmployee(WorkingMemory workingMemory, Assignment assignment, Employee toEmployee) {
         FactHandle factHandle = workingMemory.getFactHandle(assignment);
@@ -33,7 +33,7 @@ public class NurseRosterMoveHelper {
         workingMemory.update(factHandle, assignment);
     }
 
-    private NurseRosterMoveHelper() {
+    private NurseRosteringMoveHelper() {
     }
 
 }

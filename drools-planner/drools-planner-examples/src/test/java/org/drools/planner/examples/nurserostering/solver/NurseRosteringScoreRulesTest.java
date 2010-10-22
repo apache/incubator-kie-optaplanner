@@ -35,7 +35,7 @@ import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.persistence.NurseRosteringDaoImpl;
-import org.drools.planner.examples.nurserostering.solver.move.NurseRosterMoveHelper;
+import org.drools.planner.examples.nurserostering.solver.move.NurseRosteringMoveHelper;
 
 /**
  * @author Geoffrey De Smet
@@ -59,12 +59,12 @@ public class NurseRosteringScoreRulesTest extends TestCase {
         Employee rightEmployee = findEmployeeById(nurseRoster, 12L);
         Assignment rightAssignment = findAssignmentById(nurseRoster, 200204002L);
         assertEquals(rightEmployee, rightAssignment.getEmployee());
-        NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, rightEmployee);
-        NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, leftEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, leftAssignment, rightEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, rightAssignment, leftEmployee);
         localSearchSolverScope.calculateScoreFromWorkingMemory();
         // undo AssignmentSwitchMove;
-        NurseRosterMoveHelper.moveEmployee(workingMemory, rightAssignment, rightEmployee);
-        NurseRosterMoveHelper.moveEmployee(workingMemory, leftAssignment, leftEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, rightAssignment, rightEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, leftAssignment, leftEmployee);
         Score secondScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
         assertEquals(firstScore, secondScore);
     }

@@ -50,7 +50,7 @@ public class EmployeeChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        NurseRosterMoveHelper.moveEmployee(workingMemory, assignment, toEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, assignment, toEmployee);
     }
 
     public Collection<? extends Object> getTabuProperties() {
