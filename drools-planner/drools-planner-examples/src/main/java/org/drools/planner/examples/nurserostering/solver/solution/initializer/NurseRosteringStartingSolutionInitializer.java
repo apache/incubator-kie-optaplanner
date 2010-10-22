@@ -46,8 +46,8 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
     }
 
     public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
-        NurseRoster schedule = (NurseRoster) localSearchSolverScope.getWorkingSolution();
-        initializeAssignmentList(localSearchSolverScope, schedule);
+        NurseRoster nurseRoster = (NurseRoster) localSearchSolverScope.getWorkingSolution();
+        initializeAssignmentList(localSearchSolverScope, nurseRoster);
     }
 
     private void initializeAssignmentList(LocalSearchSolverScope localSearchSolverScope,
