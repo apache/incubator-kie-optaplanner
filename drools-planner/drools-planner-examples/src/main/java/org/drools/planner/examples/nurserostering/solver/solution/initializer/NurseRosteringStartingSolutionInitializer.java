@@ -41,8 +41,8 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
 
     @Override
     public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
-        NurseRoster schedule = (NurseRoster) localSearchSolverScope.getWorkingSolution();
-        return schedule.isInitialized();
+        NurseRoster nurseRoster = (NurseRoster) localSearchSolverScope.getWorkingSolution();
+        return nurseRoster.isInitialized();
     }
 
     public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
