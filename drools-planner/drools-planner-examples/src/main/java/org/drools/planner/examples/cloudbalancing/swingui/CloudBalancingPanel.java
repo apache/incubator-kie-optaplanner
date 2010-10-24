@@ -17,6 +17,7 @@
 package org.drools.planner.examples.cloudbalancing.swingui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class CloudBalancingPanel extends SolutionPanel {
     public void resetPanel() {
         removeAll();
         CloudBalance cloudBalance = getCloudBalance();
+        add(createHeaderPanel());
         List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();
         Map<CloudComputer, CloudComputerPanel> computerToPanelMap
                 = new HashMap<CloudComputer, CloudComputerPanel>(cloudComputerList.size());
@@ -79,6 +81,24 @@ public class CloudBalancingPanel extends SolutionPanel {
                 cloudComputerPanel.addCloudAssignment(cloudAssignment);
             }
         }
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new GridLayout(1, 0));
+        JLabel cloudComputerLabel = new JLabel("CloudComputer");
+        cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        cloudComputerLabel.setBackground(HEADER_COLOR);
+        cloudComputerLabel.setOpaque(true);
+        headerPanel.add(cloudComputerLabel);
+        JLabel cloudProcessLabel = new JLabel("CloudProcess");
+        cloudProcessLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        cloudProcessLabel.setOpaque(true);
+        headerPanel.add(cloudProcessLabel);
+        return headerPanel;
     }
 
     private class CloudComputerPanel extends JPanel {
