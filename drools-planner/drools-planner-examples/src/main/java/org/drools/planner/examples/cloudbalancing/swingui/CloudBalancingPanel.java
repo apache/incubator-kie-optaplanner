@@ -122,15 +122,15 @@ public class CloudBalancingPanel extends SolutionPanel {
         }
 
         public void addCloudAssignment(CloudAssignment cloudAssignment) {
-            JPanel cloudAssignmentPanel = new JPanel(new GridLayout(0, 1));
+            JPanel cloudAssignmentPanel = new JPanel(new GridLayout(1, 0));
+            JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
+            cloudAssignmentPanel.add(button);
             cloudAssignmentPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
             JTextArea cloudAssignmentLabel = new JTextArea(cloudAssignment.getLabel());
             cloudAssignmentLabel.setEditable(false);
             cloudAssignmentPanel.add(cloudAssignmentLabel);
-            JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
-            cloudAssignmentPanel.add(button);
             add(cloudAssignmentPanel);
         }
 
@@ -141,7 +141,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         private CloudAssignment cloudAssignment;
 
         public CloudAssignmentAction(CloudAssignment cloudAssignment) {
-            super(Long.toString(cloudAssignment.getId()));
+            super("Id " + cloudAssignment.getId());
             this.cloudAssignment = cloudAssignment;
         }
 
