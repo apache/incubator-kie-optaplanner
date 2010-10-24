@@ -27,9 +27,9 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 public class CloudComputer extends AbstractPersistable implements Comparable<CloudComputer> {
 
     private String name;
-    private int cpuPower; // in megahertz
-    private int memory; // in megabyte RAM
-    private int networkBandwidth; // in megabyte per hour
+    private int cpuPower; // in gigahertz
+    private int memory; // in gigabyte RAM
+    private int networkBandwidth; // in gigabyte per hour
     private int cost; // in euro per hour
 
     public String getName() {

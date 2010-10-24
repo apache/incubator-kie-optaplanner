@@ -27,9 +27,9 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 public class CloudProcess extends AbstractPersistable implements Comparable<CloudProcess> {
 
     private String name;
-    private int minimalCpuPower; // in megahertz
-    private int minimalMemory; // in megabyte RAM
-    private int minimalNetworkBandwidth; // in megabyte per hour
+    private int minimalCpuPower; // in gigahertz
+    private int minimalMemory; // in gigabyte RAM
+    private int minimalNetworkBandwidth; // in gigabyte per hour
 
     public String getName() {
         return name;
