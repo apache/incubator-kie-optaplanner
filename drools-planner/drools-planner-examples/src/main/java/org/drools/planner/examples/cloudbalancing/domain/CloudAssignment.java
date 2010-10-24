@@ -53,6 +53,18 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
         return cloudProcess.getName();
     }
 
+    public int getMinimalCpuPower() {
+        return cloudProcess.getMinimalCpuPower();
+    }
+
+    public int getMinimalMemory() {
+        return cloudProcess.getMinimalMemory();
+    }
+
+    public int getMinimalNetworkBandwidth() {
+        return cloudProcess.getMinimalNetworkBandwidth();
+    }
+
     public int compareTo(CloudAssignment other) {
         return new CompareToBuilder()
                 .append(cloudProcess, other.cloudProcess)

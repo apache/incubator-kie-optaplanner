@@ -63,6 +63,10 @@ public class CloudProcess extends AbstractPersistable implements Comparable<Clou
         this.minimalNetworkBandwidth = minimalNetworkBandwidth;
     }
 
+    public int getMinimalMultiplicand() {
+        return minimalCpuPower * minimalMemory * minimalNetworkBandwidth;
+    }
+
     public int compareTo(CloudProcess other) {
         return new CompareToBuilder()
                 .append(name, other.name)
