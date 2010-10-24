@@ -18,6 +18,7 @@ package org.drools.planner.examples.cloudbalancing.swingui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -53,6 +54,8 @@ import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove
 public class CloudBalancingPanel extends SolutionPanel {
 
     private static final Color HEADER_COLOR = Color.YELLOW;
+    private static final int TEXT_AREA_ROWS = 4;
+    private static final int TEXT_AREA_COLUMNS = 14;
 
 
     public CloudBalancingPanel() {
@@ -85,19 +88,22 @@ public class CloudBalancingPanel extends SolutionPanel {
     }
 
     private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new GridLayout(1, 0));
-        JLabel cloudComputerLabel = new JLabel("CloudComputer");
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        headerPanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        JTextArea cloudComputerLabel = new JTextArea("CloudComputer", TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
         cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         cloudComputerLabel.setBackground(HEADER_COLOR);
-        cloudComputerLabel.setOpaque(true);
+        cloudComputerLabel.setEditable(false);
         headerPanel.add(cloudComputerLabel);
-        JLabel cloudProcessLabel = new JLabel("CloudProcess");
+        JTextArea cloudProcessLabel = new JTextArea("CloudProcess", TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
         cloudProcessLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        cloudProcessLabel.setOpaque(true);
+        cloudProcessLabel.setEditable(false);
         headerPanel.add(cloudProcessLabel);
         return headerPanel;
     }
@@ -107,12 +113,12 @@ public class CloudBalancingPanel extends SolutionPanel {
         private final CloudComputer cloudComputer;
 
         public CloudComputerPanel(CloudComputer cloudComputer) {
-            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+            setLayout(new FlowLayout(FlowLayout.LEFT));
             this.cloudComputer = cloudComputer;
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JTextArea cloudComputerLabel = new JTextArea(cloudComputer.getLabel(), 4, 14);
+            JTextArea cloudComputerLabel = new JTextArea(cloudComputer.getLabel(), TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
             cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
@@ -124,14 +130,14 @@ public class CloudBalancingPanel extends SolutionPanel {
         public void addCloudAssignment(CloudAssignment cloudAssignment) {
             JPanel cloudAssignmentPanel = new JPanel();
             cloudAssignmentPanel.setLayout(new BoxLayout(cloudAssignmentPanel, BoxLayout.X_AXIS));
-            JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
-            cloudAssignmentPanel.add(button);
             cloudAssignmentPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JTextArea cloudAssignmentLabel = new JTextArea(cloudAssignment.getLabel(), 4, 14);
+            JTextArea cloudAssignmentLabel = new JTextArea(cloudAssignment.getLabel(), TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
             cloudAssignmentLabel.setEditable(false);
             cloudAssignmentPanel.add(cloudAssignmentLabel);
+            JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
+            cloudAssignmentPanel.add(button);
             add(cloudAssignmentPanel);
         }
 
@@ -142,7 +148,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         private CloudAssignment cloudAssignment;
 
         public CloudAssignmentAction(CloudAssignment cloudAssignment) {
-            super("Id " + cloudAssignment.getId());
+            super("=>");
             this.cloudAssignment = cloudAssignment;
         }
 
