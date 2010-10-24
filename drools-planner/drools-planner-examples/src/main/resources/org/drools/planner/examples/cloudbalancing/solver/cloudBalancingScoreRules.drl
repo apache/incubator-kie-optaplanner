@@ -83,6 +83,16 @@ end
 // Soft constraints
 // ############################################################################
 
+rule "cloudComputerCost"
+    when
+        $cloudComputer : CloudComputer($cost : cost)
+        exists CloudAssignment(cloudComputer == $cloudComputer)
+    then
+        insertLogical(new IntConstraintOccurrence("cloudComputerCost", ConstraintType.NEGATIVE_SOFT,
+                $cost,
+                $cloudComputer));
+end
+
 
 // ############################################################################
 // Calculate score
