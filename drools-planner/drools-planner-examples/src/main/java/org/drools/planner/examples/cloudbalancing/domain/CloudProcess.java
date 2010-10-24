@@ -59,7 +59,7 @@ public class CloudProcess extends AbstractPersistable implements Comparable<Clou
     }
 
     public String getLabel() {
-        return "Minimal: CPU " + minimalCpuPower + " GHz / RAM " + minimalMemory + " GB / Network "
+        return "Minimal: CPU " + minimalCpuPower + " GHz\nRAM " + minimalMemory + " GB\nNetwork "
                 + minimalNetworkBandwidth + " GB";
     }
 

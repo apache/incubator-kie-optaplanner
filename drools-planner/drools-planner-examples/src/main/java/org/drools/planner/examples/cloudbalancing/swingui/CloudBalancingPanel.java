@@ -33,6 +33,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
@@ -111,18 +112,26 @@ public class CloudBalancingPanel extends SolutionPanel {
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JLabel cloudComputerLabel = new JLabel(cloudComputer.getLabel());
+            JTextArea cloudComputerLabel = new JTextArea(cloudComputer.getLabel());
             cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
             cloudComputerLabel.setBackground(HEADER_COLOR);
-            cloudComputerLabel.setOpaque(true);
+            cloudComputerLabel.setEditable(false);
             add(cloudComputerLabel);
         }
 
         public void addCloudAssignment(CloudAssignment cloudAssignment) {
+            JPanel cloudAssignmentPanel = new JPanel(new GridLayout(0, 1));
+            cloudAssignmentPanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.DARK_GRAY),
+                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+            JTextArea cloudAssignmentLabel = new JTextArea(cloudAssignment.getLabel());
+            cloudAssignmentLabel.setEditable(false);
+            cloudAssignmentPanel.add(cloudAssignmentLabel);
             JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
-            add(button);
+            cloudAssignmentPanel.add(button);
+            add(cloudAssignmentPanel);
         }
 
     }
@@ -132,7 +141,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         private CloudAssignment cloudAssignment;
 
         public CloudAssignmentAction(CloudAssignment cloudAssignment) {
-            super(cloudAssignment.getLabel());
+            super(Long.toString(cloudAssignment.getId()));
             this.cloudAssignment = cloudAssignment;
         }
 
