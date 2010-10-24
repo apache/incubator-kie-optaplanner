@@ -100,13 +100,13 @@ public class CloudBalancingGenerator extends LoggingMain {
     public CloudBalancingGenerator() {
         checkConfiguration();
         solutionDao = new CloudBalancingDaoImpl();
-        random = new Random(1981);
     }
 
     public void generate() {
-        writeCloudBalance(10, 10);
-        writeCloudBalance(10, 20);
+        writeCloudBalance(10, 15);
+        writeCloudBalance(100, 100);
         writeCloudBalance(100, 200);
+        writeCloudBalance(100, 250);
     }
 
     private void checkConfiguration() {
@@ -123,6 +123,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private CloudBalance createCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
+        random = new Random(37);
         CloudBalance cloudBalance = new CloudBalance();
         cloudBalance.setId(0L);
         cloudBalance.setCloudComputerList(createCloudComputerList(cloudComputerListSize));
@@ -190,11 +191,14 @@ public class CloudBalancingGenerator extends LoggingMain {
 
     private int generateRandom(int maximumValue) {
         double randomDouble = random.nextDouble();
-        double expRandomDouble = Math.expm1(randomDouble) / (Math.E - 1.0);
-        // TODO expRandomDouble should aim to a lower number even more
-        int value = ((int) Math.floor(expRandomDouble * ((double) maximumValue))) + 1;
+        double parabolaBase = 2000.0;
+        double parabolaRandomDouble = (Math.pow(parabolaBase, randomDouble) - 1.0) / (parabolaBase - 1.0);
+        if (parabolaRandomDouble < 0.0 || parabolaRandomDouble >= 1.0) {
+            throw new IllegalArgumentException("Invalid generated parabolaRandomDouble (" + parabolaRandomDouble + ")");
+        }
+        int value = ((int) Math.floor(parabolaRandomDouble * ((double) maximumValue))) + 1;
         if (value < 1 || value > maximumValue) {
-            throw new IllegalArgumentException("Invalid generated valid (" + value + ")");
+            throw new IllegalArgumentException("Invalid generated value (" + value + ")");
         }
         return value;
     }

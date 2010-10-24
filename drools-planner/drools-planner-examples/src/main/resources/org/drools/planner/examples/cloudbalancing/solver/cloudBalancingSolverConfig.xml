@@ -38,6 +38,6 @@
       <completePropertyTabuSize>7</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <minimalAcceptedSelection>800</minimalAcceptedSelection>
+        <minimalAcceptedSelection>1000</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>
