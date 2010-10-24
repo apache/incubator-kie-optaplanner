@@ -54,7 +54,7 @@ public class CloudBalancingPanel extends SolutionPanel {
 
 
     public CloudBalancingPanel() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new GridLayout(0, 1));
     }
 
     private CloudBalance getCloudBalance() {
@@ -86,12 +86,12 @@ public class CloudBalancingPanel extends SolutionPanel {
         private final CloudComputer cloudComputer;
 
         public CloudComputerPanel(CloudComputer cloudComputer) {
-            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+            setLayout(new GridLayout(1, 0));
             this.cloudComputer = cloudComputer;
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JLabel cloudComputerLabel = new JLabel(cloudComputer.getName());
+            JLabel cloudComputerLabel = new JLabel(cloudComputer.getLabel());
             cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));

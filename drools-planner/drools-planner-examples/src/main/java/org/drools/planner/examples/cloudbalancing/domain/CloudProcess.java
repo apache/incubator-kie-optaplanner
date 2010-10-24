@@ -26,18 +26,9 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("CloudProcess")
 public class CloudProcess extends AbstractPersistable implements Comparable<CloudProcess> {
 
-    private String name;
     private int minimalCpuPower; // in gigahertz
     private int minimalMemory; // in gigabyte RAM
     private int minimalNetworkBandwidth; // in gigabyte per hour
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public int getMinimalCpuPower() {
         return minimalCpuPower;
@@ -67,15 +58,17 @@ public class CloudProcess extends AbstractPersistable implements Comparable<Clou
         return minimalCpuPower * minimalMemory * minimalNetworkBandwidth;
     }
 
-    public int compareTo(CloudProcess other) {
-        return new CompareToBuilder()
-                .append(name, other.name)
-                .toComparison();
+    public String getLabel() {
+        return "Minimal: CPU " + minimalCpuPower + " GHz / RAM " + minimalMemory + " GB / Network "
+                + minimalNetworkBandwidth + " GB";
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public int compareTo(CloudProcess other) {
+        return new CompareToBuilder()
+                .append(minimalCpuPower, other.minimalCpuPower)
+                .append(minimalMemory, other.minimalMemory)
+                .append(minimalNetworkBandwidth, other.minimalNetworkBandwidth)
+                .toComparison();
     }
 
 }

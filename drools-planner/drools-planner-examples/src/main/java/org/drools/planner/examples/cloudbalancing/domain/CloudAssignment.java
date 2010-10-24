@@ -50,7 +50,7 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
     }
 
     public String getLabel() {
-        return cloudProcess.getName();
+        return cloudProcess.getLabel();
     }
 
     public int getMinimalCpuPower() {
