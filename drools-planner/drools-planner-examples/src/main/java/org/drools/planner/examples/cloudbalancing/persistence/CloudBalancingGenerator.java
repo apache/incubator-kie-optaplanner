@@ -21,15 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.JOptionPane;
-
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.common.app.LoggingMain;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.nqueens.domain.NQueens;
-import org.drools.planner.examples.nqueens.domain.Queen;
 
 /**
  * @author Geoffrey De Smet
@@ -60,7 +56,7 @@ public class CloudBalancingGenerator extends LoggingMain {
         }
     }
 
-    private static final Price[] cpuPowerPrices = { // in gigahertz
+    private static final Price[] CPU_POWER_PRICES = { // in gigahertz
         new Price(2, "single core 2ghz", 100),
         new Price(3, "single core 3ghz", 110),
         new Price(4, "dual core 2ghz", 140),
@@ -69,7 +65,7 @@ public class CloudBalancingGenerator extends LoggingMain {
         new Price(12, "quad core 3ghz", 400),
         new Price(16, "quad core 4ghz", 1000),
     };
-    private static final Price[] memoryPrices = { // in gigabyte RAM
+    private static final Price[] MEMORY_PRICES = { // in gigabyte RAM
         new Price(1, "1 gigabyte", 100),
         new Price(2, "2 gigabyte", 140),
         new Price(4, "4 gigabyte", 180),
@@ -78,7 +74,7 @@ public class CloudBalancingGenerator extends LoggingMain {
         new Price(32, "32 gigabyte", 400),
         new Price(64, "64 gigabyte", 500),
     };
-    private static final Price[] networkBandwidthPrices = { // in gigabyte per hour
+    private static final Price[] NETWORK_BANDWIDTH_PRICES = { // in gigabyte per hour
         new Price(1, "1 gigabyte", 50),
         new Price(2, "2 gigabyte", 100),
         new Price(4, "4 gigabyte", 200),
@@ -88,12 +84,15 @@ public class CloudBalancingGenerator extends LoggingMain {
         new Price(16, "16 gigabyte", 800),
     };
 
+    private static final int MAXIMUM_MINIMAL_CPU_POWER = 12; // in gigahertz
+    private static final int MAXIMUM_MINIMAL_MEMORY = 32; // in gigabyte RAM
+    private static final int MAXIMUM_MINIMAL_NETWORK_BANDWIDTH = 12; // in gigabyte per hour
+
     private static final File outputDir = new File("data/cloudbalancing/unsolved/");
 
     public static void main(String[] args) {
         new CloudBalancingGenerator().generate();
     }
-
 
     protected SolutionDao solutionDao;
     private Random random;
@@ -111,7 +110,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private void checkConfiguration() {
-        if (cpuPowerPrices.length != memoryPrices.length || cpuPowerPrices.length != networkBandwidthPrices.length) {
+        if (CPU_POWER_PRICES.length != MEMORY_PRICES.length || CPU_POWER_PRICES.length != NETWORK_BANDWIDTH_PRICES.length) {
             throw new IllegalStateException("All price arrays must be equal in length.");
         }
     }
@@ -136,15 +135,15 @@ public class CloudBalancingGenerator extends LoggingMain {
         for (int i = 0; i < cloudComputerListSize; i++) {
             CloudComputer cloudComputer = new CloudComputer();
             cloudComputer.setId((long) i);
-            int cpuPowerPricesIndex = random.nextInt(cpuPowerPrices.length);
-            cloudComputer.setCpuPower(cpuPowerPrices[cpuPowerPricesIndex].getHardwareValue());
-            int memoryPricesIndex = distortIndex(cpuPowerPricesIndex, memoryPrices.length);
-            cloudComputer.setMemory(memoryPrices[memoryPricesIndex].getHardwareValue());
-            int networkBandwidthPricesIndex = distortIndex(cpuPowerPricesIndex, networkBandwidthPrices.length);
-            cloudComputer.setNetworkBandwidth(networkBandwidthPrices[networkBandwidthPricesIndex].getHardwareValue());
-            int cost = cpuPowerPrices[cpuPowerPricesIndex].getCost()
-                    + memoryPrices[memoryPricesIndex].getCost()
-                    + networkBandwidthPrices[networkBandwidthPricesIndex].getCost();
+            int cpuPowerPricesIndex = random.nextInt(CPU_POWER_PRICES.length);
+            cloudComputer.setCpuPower(CPU_POWER_PRICES[cpuPowerPricesIndex].getHardwareValue());
+            int memoryPricesIndex = distortIndex(cpuPowerPricesIndex, MEMORY_PRICES.length);
+            cloudComputer.setMemory(MEMORY_PRICES[memoryPricesIndex].getHardwareValue());
+            int networkBandwidthPricesIndex = distortIndex(cpuPowerPricesIndex, NETWORK_BANDWIDTH_PRICES.length);
+            cloudComputer.setNetworkBandwidth(NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getHardwareValue());
+            int cost = CPU_POWER_PRICES[cpuPowerPricesIndex].getCost()
+                    + MEMORY_PRICES[memoryPricesIndex].getCost()
+                    + NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getCost();
             logger.info("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
                     + " networkBandwidthPricesIndex({}).",
                     new Object[]{cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex});
@@ -175,10 +174,29 @@ public class CloudBalancingGenerator extends LoggingMain {
         for (int i = 0; i < cloudProcessListSize; i++) {
             CloudProcess cloudProcess = new CloudProcess();
             cloudProcess.setId((long) i);
-            // TODO
+            int minimalCpuPower = generateRandom(MAXIMUM_MINIMAL_CPU_POWER);
+            cloudProcess.setMinimalCpuPower(minimalCpuPower);
+            int minimalMemory = generateRandom(MAXIMUM_MINIMAL_MEMORY);;
+            cloudProcess.setMinimalMemory(minimalMemory);
+            int minimalNetworkBandwidth = generateRandom(MAXIMUM_MINIMAL_NETWORK_BANDWIDTH);
+            cloudProcess.setMinimalNetworkBandwidth(minimalNetworkBandwidth);
+            logger.info("Created CloudProcess with minimalCpuPower ({}), minimalMemory({}),"
+                    + " minimalNetworkBandwidth({}).",
+                    new Object[]{minimalCpuPower, minimalMemory, minimalNetworkBandwidth});
             cloudProcessList.add(cloudProcess);
         }
         return cloudProcessList;
+    }
+
+    private int generateRandom(int maximumValue) {
+        double randomDouble = random.nextDouble();
+        double expRandomDouble = Math.expm1(randomDouble) / (Math.E - 1.0);
+        // TODO expRandomDouble should aim to a lower number even more
+        int value = ((int) Math.floor(expRandomDouble * ((double) maximumValue))) + 1;
+        if (value < 1 || value > maximumValue) {
+            throw new IllegalArgumentException("Invalid generated valid (" + value + ")");
+        }
+        return value;
     }
 
 }
