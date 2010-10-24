@@ -43,7 +43,7 @@ public class NQueensGenerator extends LoggingMain {
         String nString = JOptionPane.showInputDialog("For what n?");
         int n = Integer.parseInt(nString.trim());
         SolutionDao solutionDao = new NQueensDaoImpl();
-        String outputFileName =  "unsolvedNQueens" + n +  ".xml";
+        String outputFileName = "unsolvedNQueens" + n + ".xml";
         File outputFile = new File(outputDir, outputFileName);
         NQueens nQueens = createNQueens(n);
         solutionDao.writeSolution(nQueens, outputFile);
