@@ -107,12 +107,12 @@ public class CloudBalancingPanel extends SolutionPanel {
         private final CloudComputer cloudComputer;
 
         public CloudComputerPanel(CloudComputer cloudComputer) {
-            setLayout(new GridLayout(1, 0));
+            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             this.cloudComputer = cloudComputer;
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JTextArea cloudComputerLabel = new JTextArea(cloudComputer.getLabel());
+            JTextArea cloudComputerLabel = new JTextArea(cloudComputer.getLabel(), 4, 14);
             cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
@@ -122,13 +122,14 @@ public class CloudBalancingPanel extends SolutionPanel {
         }
 
         public void addCloudAssignment(CloudAssignment cloudAssignment) {
-            JPanel cloudAssignmentPanel = new JPanel(new GridLayout(1, 0));
+            JPanel cloudAssignmentPanel = new JPanel();
+            cloudAssignmentPanel.setLayout(new BoxLayout(cloudAssignmentPanel, BoxLayout.X_AXIS));
             JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
             cloudAssignmentPanel.add(button);
             cloudAssignmentPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JTextArea cloudAssignmentLabel = new JTextArea(cloudAssignment.getLabel());
+            JTextArea cloudAssignmentLabel = new JTextArea(cloudAssignment.getLabel(), 4, 14);
             cloudAssignmentLabel.setEditable(false);
             cloudAssignmentPanel.add(cloudAssignmentLabel);
             add(cloudAssignmentPanel);
