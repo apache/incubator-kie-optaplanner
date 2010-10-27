@@ -24,6 +24,7 @@
           <configuration>
             <archive>
               <manifest>
+                <!-- Needed for runExamples.sh and runExamples.bat -->
                 <addClasspath>true</addClasspath>
               </manifest>
             </archive>
