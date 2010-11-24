@@ -166,6 +166,10 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
     }
 
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+        if (localSearchSolverScope.getWorkingSolution() == null) {
+            throw new IllegalStateException("The startingSolution must not be null." +
+                    " Use Solver.setStartingSolution(Solution).");
+        }
         localSearchSolverScope.reset();
         if (randomSeed != null) {
             logger.info("Solving with random seed ({}).", randomSeed);
