@@ -115,14 +115,6 @@ rule "minimumWorkingDays"
             and exists Lecture(course == $course, day == $day),
             count($day)
         )
-        // HACK to fix wierd truth maintance behavior in drools
-        // because making weight part of the equals/hashcode doesn't cut it
-        not IntConstraintOccurrence(
-            ruleId == "minimumWorkingDays",
-            constraintType == ConstraintType.NEGATIVE_SOFT,
-            causes contains $course,
-            eval(weight != (($minWorkingDaySize - $dayCount.intValue()) * 5))
-        )
         // An uninitialized schedule should have no constraints broken
         exists Lecture(course == $course)
     then
