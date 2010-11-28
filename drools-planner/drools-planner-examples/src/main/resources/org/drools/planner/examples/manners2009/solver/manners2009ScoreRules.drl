@@ -50,13 +50,13 @@ global SimpleScoreCalculator scoreCalculator;
 // 2 teachers at each table
 rule "twoSameJobTypePerTable"
     when
-        $jobType : JobType();
-        $table : Table();
+        $jobType : JobType()
+        $table : Table()
         not (
             SeatDesignation(guestJobType == $jobType, seatTable == $table, $firstJob : guestJob)
             and SeatDesignation(guestJobType == $jobType, seatTable == $table, $secondJob : guestJob)
             and (eval($jobType == JobType.SOCIALITE) or eval($jobType == JobType.TEACHER) or eval($firstJob != $secondJob))
-        );
+        )
     then
         insertLogical(new UnweightedConstraintOccurrence("twoSameJobTypePerTable",
                 $jobType, $table));
@@ -67,9 +67,9 @@ end
 // This extra rule can be avoided by weighting the broken constrainst of the other rule
 rule "atLeastOneJobTypePerTableScoreGuider"
     when
-        $table : Table();
-        $jobType : JobType();
-        not SeatDesignation(guestJobType == $jobType, seatTable == $table);
+        $table : Table()
+        $jobType : JobType()
+        not SeatDesignation(guestJobType == $jobType, seatTable == $table)
     then
         insertLogical(new UnweightedConstraintOccurrence("tableWithoutJobTypeShouldBePunishedExtra",
                 $jobType, $table));
@@ -80,14 +80,14 @@ end
 // (so also the same or another hobby with his/her right neighbour)
 rule "leftHasHobbyInCommon"
     when
-        $leftSeat : Seat();
-        $rightSeat : Seat(leftSeat == $leftSeat);
-        $leftDesignation : SeatDesignation($leftGuest : guest, seat == $leftSeat);
-        $rightDesignation : SeatDesignation($rightGuest : guest, seat == $rightSeat);
+        $leftSeat : Seat()
+        $rightSeat : Seat(leftSeat == $leftSeat)
+        $leftDesignation : SeatDesignation($leftGuest : guest, seat == $leftSeat)
+        $rightDesignation : SeatDesignation($rightGuest : guest, seat == $rightSeat)
         not (
             HobbyPractician(guest == $leftGuest, $leftHobby : hobby)
             and HobbyPractician(guest == $rightGuest, hobby == $leftHobby)
-        );
+        )
     then
         insertLogical(new UnweightedConstraintOccurrence("leftHasHobbyInCommon",
                 $leftDesignation, $rightDesignation));
@@ -102,7 +102,7 @@ rule "hardConstraintsBroken"
         $occurrenceCount : Number() from accumulate(
             $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
             count($unweightedConstraintOccurrence)
-        );
+        )
     then
         scoreCalculator.setScore(- $occurrenceCount.intValue());
 end

@@ -31,8 +31,8 @@ global SimpleScoreCalculator scoreCalculator;
 
 rule "multipleQueensHorizontal"
     when
-        $q1 : Queen($id : id, $y : y);
-        $q2 : Queen(id > $id, y == $y);
+        $q1 : Queen($id : id, $y : y)
+        $q2 : Queen(id > $id, y == $y)
     then
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end
@@ -41,16 +41,16 @@ end
 
 rule "multipleQueensAscendingDiagonal"
     when
-        $q1 : Queen($id : id, $ascendingD : ascendingD);
-        $q2 : Queen(id > $id, ascendingD == $ascendingD);
+        $q1 : Queen($id : id, $ascendingD : ascendingD)
+        $q2 : Queen(id > $id, ascendingD == $ascendingD)
     then
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
 end
 
 rule "multipleQueensDescendingDiagonal"
     when
-        $q1 : Queen($id : id, $descendingD : descendingD);
-        $q2 : Queen(id > $id, descendingD == $descendingD);
+        $q1 : Queen($id : id, $descendingD : descendingD)
+        $q2 : Queen(id > $id, descendingD == $descendingD)
     then
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
 end
@@ -64,12 +64,12 @@ rule "hardConstraintsBroken"
         $occurrenceCount : Number() from accumulate(
             $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
             count($unweightedConstraintOccurrence)
-        );
+        )
     then
         scoreCalculator.setScore(- $occurrenceCount.intValue());
 end
 
-// Don't do this. It breaks performance and scalability!
+// Don't do this. It breaks performance and scalability! Will be fixed with set based propagation
 //rule "hardConstraintsBroken"
 //    when
 //        $multipleQueensHorizontal : Number()
@@ -77,19 +77,19 @@ end
 //            $q1 : Queen($id : id, $y : y)
 //            and Queen(id > $id, y == $y),
 //            count($q1)
-//        );
+//        )
 //        $multipleQueensAscendingDiagonal : Number()
 //        from accumulate(
 //            $q1 : Queen($id : id, $ascendingD : ascendingD)
 //            and Queen(id > $id, ascendingD == $ascendingD),
 //            count($q1)
-//        );
+//        )
 //        $multipleQueensDescendingDiagonal : Number()
 //        from accumulate(
 //            $q1 : Queen($id : id, $descendingD : descendingD)
 //            and Queen(id > $id, descendingD == $descendingD),
 //            count($q1)
-//        );
+//        )
 //    then
 //        scoreCalculator.setScore(- $multipleQueensHorizontal.intValue()
 //                - $multipleQueensAscendingDiagonal.intValue() - $multipleQueensDescendingDiagonal.intValue());

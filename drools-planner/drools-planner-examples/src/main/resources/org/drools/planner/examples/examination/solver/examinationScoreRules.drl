@@ -45,9 +45,9 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Two exams in the same period which share students.
 rule "conflictingExamsInSamePeriod"
     when
-        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
-        $leftExam : Exam(topic == $leftTopic, $period : period);
-        $rightExam : Exam(topic == $rightTopic, period == $period);
+        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
+        $leftExam : Exam(topic == $leftTopic, $period : period)
+        $rightExam : Exam(topic == $rightTopic, period == $period)
     then
         insertLogical(new IntConstraintOccurrence("conflictingExamsInSamePeriod", ConstraintType.NEGATIVE_HARD,
                 $topicConflict.getStudentSize(),
@@ -57,7 +57,7 @@ end
 // More time required during a period than available in that period.
 rule "periodDurationTooShort"
     when
-        $exam : Exam(topicDuration > periodDuration);
+        $exam : Exam(topicDuration > periodDuration)
     then
         insertLogical(new IntConstraintOccurrence("periodDurationTooShort", ConstraintType.NEGATIVE_HARD,
                 $exam.getTopicStudentSize(),
@@ -67,12 +67,12 @@ end
 // More seating required during a period in a room than available in that room.
 rule "roomCapacityTooSmall" // TODO improve performance, as it takes 50% of the performance
     when
-        $period : Period();
-        $room : Room($capacity : capacity);
+        $period : Period()
+        $room : Room($capacity : capacity)
         $totalStudentSize : Number(intValue > $capacity) from accumulate(
             Exam(period == $period, room == $room, $studentSize : topicStudentSize),
             sum($studentSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        );
+        )
     then
         insertLogical(new IntConstraintOccurrence("roomCapacityTooSmall", ConstraintType.NEGATIVE_HARD,
                 ($totalStudentSize.intValue() - $capacity),
@@ -86,9 +86,9 @@ rule "periodHardConstraintExamCoincidence"
             periodHardConstraintType == PeriodHardConstraintType.EXAM_COINCIDENCE,
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
-        );
-        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-        $rightExam : Exam(topic == $rightSideTopic, period != $leftSidePeriod);
+        )
+        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period)
+        $rightExam : Exam(topic == $rightSideTopic, period != $leftSidePeriod)
         // LeftSide and rightSide don't share a student because those are filtered out in the InputConvertor
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintExamCoincidence", ConstraintType.NEGATIVE_HARD,
@@ -101,9 +101,9 @@ rule "periodHardConstraintExclusion"
             periodHardConstraintType == PeriodHardConstraintType.EXCLUSION,
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
-        );
-        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period);
-        $rightExam : Exam(topic == $rightSideTopic, period == $leftSidePeriod);
+        )
+        $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period)
+        $rightExam : Exam(topic == $rightSideTopic, period == $leftSidePeriod)
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintExclusion", ConstraintType.NEGATIVE_HARD,
                 ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
@@ -115,11 +115,11 @@ rule "periodHardConstraintAfter"
             periodHardConstraintType == PeriodHardConstraintType.AFTER,
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
-        );
-        $leftExam : Exam(topic == $leftSideTopic, $afterSidePeriod : period);
+        )
+        $leftExam : Exam(topic == $leftSideTopic, $afterSidePeriod : period)
         $rightExam : Exam(topic == $rightSideTopic, eval($afterSidePeriod.getPeriodIndex() <= period.getPeriodIndex()),
             $beforeSidePeriod : period
-        );
+        )
     then
         insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
                 ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
@@ -132,9 +132,9 @@ rule "roomHardConstraintExclusive"
         $roomHardConstraint : RoomHardConstraint(
             roomHardConstraintType == RoomHardConstraintType.ROOM_EXCLUSIVE,
             $topic : topic
-        );
-        $leftExam : Exam(topic == $topic, $room : room);
-        $rightExam : Exam(room == $room, topic != $topic, $otherTopic : topic);
+        )
+        $leftExam : Exam(topic == $topic, $room : room)
+        $rightExam : Exam(room == $room, topic != $topic, $otherTopic : topic)
     then
         insertLogical(new IntConstraintOccurrence("roomHardConstraintExclusive", ConstraintType.NEGATIVE_HARD,
                 ($topic.getStudentSize() + $otherTopic.getStudentSize()),
@@ -148,12 +148,12 @@ end
 // Two exams in a row which share students
 rule "twoExamsInARow"
     when
-        $institutionalWeighting : InstitutionalWeighting(twoInARowPenality != 0);
-        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
-        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
-        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
-        eval($leftPeriod.getDayIndex() == $rightPeriod.getDayIndex());
-        eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex()) == 1);
+        $institutionalWeighting : InstitutionalWeighting(twoInARowPenality != 0)
+        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
+        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
+        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
+        eval($leftPeriod.getDayIndex() == $rightPeriod.getDayIndex())
+        eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex()) == 1)
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInARow", ConstraintType.NEGATIVE_SOFT,
                 $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInARowPenality(),
@@ -164,12 +164,12 @@ end
 // Two exams in a day which share students
 rule "twoExamsInADay"
     when
-        $institutionalWeighting : InstitutionalWeighting(twoInADayPenality != 0);
-        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
-        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
-        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
-        eval($leftPeriod.getDayIndex() == $rightPeriod.getDayIndex());
-        eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex()) > 1);
+        $institutionalWeighting : InstitutionalWeighting(twoInADayPenality != 0)
+        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
+        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
+        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
+        eval($leftPeriod.getDayIndex() == $rightPeriod.getDayIndex())
+        eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex()) > 1)
     then
         insertLogical(new IntConstraintOccurrence("twoExamsInADay", ConstraintType.NEGATIVE_SOFT,
                 $topicConflict.getStudentSize() * $institutionalWeighting.getTwoInADayPenality(),
@@ -179,12 +179,12 @@ end
 // Exams which share students have to few periods between them
 rule "periodSpread"
     when
-        $institutionalWeighting : InstitutionalWeighting(periodSpreadPenality != 0);
-        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic);
-        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period);
-        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period);
+        $institutionalWeighting : InstitutionalWeighting(periodSpreadPenality != 0)
+        $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
+        $leftExam : Exam(topic == $leftTopic, $leftPeriod : period)
+        $rightExam : Exam(topic == $rightTopic, $rightPeriod : period)
         eval(Math.abs($leftPeriod.getPeriodIndex() - $rightPeriod.getPeriodIndex())
-            < ($institutionalWeighting.getPeriodSpreadLength() + 1));
+            < ($institutionalWeighting.getPeriodSpreadLength() + 1))
     then
         insertLogical(new IntConstraintOccurrence("periodSpread", ConstraintType.NEGATIVE_SOFT,
                 $topicConflict.getStudentSize() * $institutionalWeighting.getPeriodSpreadPenality(),
@@ -194,20 +194,20 @@ end
 // Several exams in the same room and period have different durations
 rule "mixedDurations"
     when
-        $institutionalWeighting : InstitutionalWeighting(mixedDurationPenality != 0);
-        $leftExam : Exam($leftId : id, $period : period, room != null, $room : room, $leftTopic : topic);
+        $institutionalWeighting : InstitutionalWeighting(mixedDurationPenality != 0)
+        $leftExam : Exam($leftId : id, $period : period, room != null, $room : room, $leftTopic : topic)
         // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalty's (for 100&150 and 100&200)
         // leftExam has lowest id of the period+room combo
-        not Exam(period == $period, room == $room, id < $leftId);
+        not Exam(period == $period, room == $room, id < $leftId)
         // rightExam has a different duration
         $rightExam : Exam(period == $period, room == $room, id > $leftId,
             eval(topic.getDuration() != $leftTopic.getDuration()),
             $rightId : id, $rightTopic : topic
-        );
+        )
         // rightExam has the lowest id of the period+room+rightDuration combo
         not Exam(period == $period, room == $room, id < $rightId,
             eval(topic.getDuration() == $rightTopic.getDuration())
-        );
+        )
     then
         insertLogical(new IntConstraintOccurrence("mixedDurations", ConstraintType.NEGATIVE_SOFT,
                 $institutionalWeighting.getMixedDurationPenality(),
@@ -217,10 +217,10 @@ end
 // Larger Exams towards the beginning of the examination session
 rule "frontLoad"
     when
-        $institutionalWeighting : InstitutionalWeighting(frontLoadPenality != 0);
-        $topic : Topic(frontLoadLarge == true);
-        $period : Period(frontLoadLast == true);
-        $exam : Exam(topic == $topic, period == $period);
+        $institutionalWeighting : InstitutionalWeighting(frontLoadPenality != 0)
+        $topic : Topic(frontLoadLarge == true)
+        $period : Period(frontLoadLast == true)
+        $exam : Exam(topic == $topic, period == $period)
     then
         insertLogical(new IntConstraintOccurrence("frontLoad", ConstraintType.NEGATIVE_SOFT,
                 $institutionalWeighting.getFrontLoadPenality(),
@@ -230,8 +230,8 @@ end
 // Period Penalty
 rule "periodPenalty"
     when
-        $period : Period(penalty != 0);
-        $exam: Exam(period == $period);
+        $period : Period(penalty != 0)
+        $exam: Exam(period == $period)
     then
         insertLogical(new IntConstraintOccurrence("periodPenalty", ConstraintType.NEGATIVE_SOFT,
                 $period.getPenalty(),
@@ -241,8 +241,8 @@ end
 // Room Penalty
 rule "roomPenalty"
     when
-        $room : Room(penalty != 0);
-        $exam: Exam(room == $room);
+        $room : Room(penalty != 0)
+        $exam: Exam(room == $room)
     then
         insertLogical(new IntConstraintOccurrence("roomPenalty", ConstraintType.NEGATIVE_SOFT,
                 $room.getPenalty(),
@@ -260,7 +260,7 @@ rule "hardConstraintsBroken"
         $hardTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        );
+        )
     then
         scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
 end
@@ -272,7 +272,7 @@ rule "softConstraintsBroken"
         $softTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        );
+        )
     then
         scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
 end

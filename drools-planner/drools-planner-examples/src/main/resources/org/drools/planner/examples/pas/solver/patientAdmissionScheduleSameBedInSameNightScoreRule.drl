@@ -47,9 +47,9 @@ import org.drools.planner.examples.pas.domain.solver.AdmissionPartSpecialismMiss
 rule "sameBedInSameNight"
     when
         $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
-                $rightAdmissionPart : rightAdmissionPart);
-        $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed);
-        $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed);
+                $rightAdmissionPart : rightAdmissionPart)
+        $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed)
+        $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed)
     then
         insertLogical(new IntConstraintOccurrence("sameBedInSameNight",
                 ConstraintType.NEGATIVE_HARD, 1000 * $admissionPartConflict.getNightSize(),
