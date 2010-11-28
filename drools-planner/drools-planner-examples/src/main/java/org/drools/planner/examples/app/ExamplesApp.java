@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.drools.planner.examples.nqueens.app.NQueensApp;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
 import org.drools.planner.examples.pas.app.PatientAdmissionScheduleApp;
@@ -68,22 +69,22 @@ public class ExamplesApp extends JFrame {
                 new Manners2009App().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Traveling tournament"){
+        contentPane.add(new JButton(new AbstractAction("Traveling tournament problem (TTP)"){
             public void actionPerformed(ActionEvent e) {
                 new SmartTravelingTournamentApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007"){
+        contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007 track1)"){
             public void actionPerformed(ActionEvent e) {
                 new CurriculumCourseApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Examination timetabling (ITC2007)"){
+        contentPane.add(new JButton(new AbstractAction("Examination timetabling (ITC2007 track3)"){
             public void actionPerformed(ActionEvent e) {
                 new ExaminationApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Patient admission schedule"){
+        contentPane.add(new JButton(new AbstractAction("Patient admission schedule (hospital bed planning)"){
             public void actionPerformed(ActionEvent e) {
                 new PatientAdmissionScheduleApp().init(false);
             }
@@ -91,6 +92,11 @@ public class ExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("Nurse rostering (INRC2010)"){
             public void actionPerformed(ActionEvent e) {
                 new NurseRosteringApp().init(false);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("Cloud balancing"){
+            public void actionPerformed(ActionEvent e) {
+                new CloudBalancingApp().init(false);
             }
         }));
         return contentPane;
