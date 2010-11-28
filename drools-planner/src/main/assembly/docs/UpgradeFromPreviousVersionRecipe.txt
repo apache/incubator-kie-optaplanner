@@ -442,7 +442,14 @@ After in *Config.xml:
 
 
 The benchmarker no longer sorts the solvers, because that was confusing to read.
-Instead outputs a table with a ranking column.
+Instead it outputs a table with a ranking column.
 You can still set a custom solverBenchmarkComparator to influence that ranking.
 Before in *BenchmarkConfig.xml:
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
+
+
+From 5.1.0 to 5.2.0.m1
+----------------------
+
+The example DRL's no longer use the optional character ';' at the end of lines in the LHS.
+If you copied that practice from the examples, it's recommended to remove them from your DRL's too.
