@@ -74,12 +74,12 @@ public class ExamplesApp extends JFrame {
                 new SmartTravelingTournamentApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007 track1)"){
+        contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007 track3)"){
             public void actionPerformed(ActionEvent e) {
                 new CurriculumCourseApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Examination timetabling (ITC2007 track3)"){
+        contentPane.add(new JButton(new AbstractAction("Examination timetabling (ITC2007 track1)"){
             public void actionPerformed(ActionEvent e) {
                 new ExaminationApp().init(false);
             }
