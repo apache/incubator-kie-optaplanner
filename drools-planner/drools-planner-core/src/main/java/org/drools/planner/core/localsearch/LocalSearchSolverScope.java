@@ -33,6 +33,8 @@ import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Geoffrey De Smet
@@ -40,6 +42,8 @@ import org.drools.planner.core.solution.Solution;
 public class LocalSearchSolverScope {
 
     public static final String GLOBAL_SCORE_CALCULATOR_KEY = "scoreCalculator";
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected RuleBase ruleBase;
     private ScoreDefinition scoreDefinition;
@@ -221,6 +225,7 @@ public class LocalSearchSolverScope {
      * @return never null
      */
     public String buildConstraintOccurrenceSummary(WorkingMemory summaryWorkingMemory) {
+        logger.trace("Building ConstraintOccurrence summary");
         if (summaryWorkingMemory == null) {
             return "  The workingMemory is null.";
         }
@@ -229,6 +234,7 @@ public class LocalSearchSolverScope {
                 new ClassObjectFilter(ConstraintOccurrence.class));
         while (it.hasNext()) {
             ConstraintOccurrence occurrence = it.next();
+            logger.trace("Adding ConstraintOccurrence ({})", occurrence);
             Number scoreTotalNumber = scoreTotalMap.get(occurrence.getRuleId());
             if (occurrence instanceof IntConstraintOccurrence) {
                 int scoreTotal = scoreTotalNumber == null ? 0 : (Integer) scoreTotalNumber;
