@@ -60,10 +60,8 @@ public class ExaminationScoreRulesTest extends LoggingTest {
         Exam exam = findExamById(examination, 123L);
         Room room = findRoomById(examination, 0L);
         ExaminationMoveHelper.moveRoom(workingMemory, exam, room);
-        Score statefulScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
-        localSearchSolverScope.setWorkingSolution(examination);
-        Score statelessScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
-        assertEquals(statelessScore, statefulScore);
+        Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+        localSearchSolverScope.assertWorkingScore(score);
     }
 
     private RuleBase buildRuleBase() {
