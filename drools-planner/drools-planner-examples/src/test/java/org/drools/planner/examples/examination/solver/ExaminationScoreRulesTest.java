@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -38,7 +37,7 @@ import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
 import org.drools.planner.examples.examination.solver.move.ExaminationMoveHelper;
 import org.junit.Test;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.*;
 
 /**
  * @author Geoffrey De Smet

@@ -16,14 +16,17 @@
 
 package org.drools.planner.core.score.definition;
 
-import junit.framework.TestCase;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Geoffrey De Smet
  */
-public class HardAndSoftScoreDefinitionTest extends TestCase {
+public class HardAndSoftScoreDefinitionTest {
 
+    @Test
     public void testCalculateTimeGradient() {
         HardAndSoftScoreDefinition scoreDefinition = new HardAndSoftScoreDefinition();
         scoreDefinition.setHardScoreTimeGradientWeight(0.75);

@@ -16,13 +16,16 @@
 
 package org.drools.planner.core.score;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Geoffrey De Smet
  */
-public class DefaultHardAndSoftScoreTest extends TestCase {
+public class DefaultHardAndSoftScoreTest {
 
+    @Test
     public void testCompareTo() {
         Score a = new DefaultHardAndSoftScore(-1, -300);
         Score b = new DefaultHardAndSoftScore(-20, -20);

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.nqueens;
+package org.drools.planner.examples.curriculumcourse;
 
 import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
+import org.drools.planner.config.localsearch.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.SolutionDao;
+import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseDaoImpl;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -30,26 +35,31 @@ import static org.junit.Assert.*;
 /**
  * @author Geoffrey De Smet
  */
-public class NQueensSmokeTest {
+public class CurriculumCourseSmokeTest {
 
     public static final String SOLVER_CONFIG
-            = "/org/drools/planner/examples/nqueens/solver/nqueensSmokeSolverConfig.xml";
+            = "/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
     public static final String UNSOLVED_DATA
-            = "/org/drools/planner/examples/nqueens/data/unsolvedNQueensSmoke.xml";
+            = "/org/drools/planner/examples/curriculumcourse/data/testComp01.xml";
 
-    @Test
-    public void solve4Queens() {
+    @Test @Ignore
+    public void solveComp01() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
+        configurer.getConfig().setEnvironmentMode(LocalSearchSolverConfig.EnvironmentMode.DEBUG);
+        TerminationConfig terminationConfig = new TerminationConfig();
+        terminationConfig.setMaximumStepCount(50);
+        configurer.getConfig().setTerminationConfig(terminationConfig);
+
         Solver solver = configurer.buildSolver();
-        SolutionDao solutionDao = new NQueensDaoImpl();
+        SolutionDao solutionDao = new CurriculumCourseDaoImpl();
         Solution startingSolution = solutionDao.readSolution(getClass().getResourceAsStream(UNSOLVED_DATA));
         solver.setStartingSolution(startingSolution);
         solver.solve();
         Solution bestSolution = solver.getBestSolution();
         assertNotNull(bestSolution);
         Score bestScore = solver.getBestSolution().getScore();
-        assertEquals(DefaultSimpleScore.valueOf(0), bestScore);
+        assertTrue(bestScore.compareTo(DefaultHardAndSoftScore.valueOf(0, -500)) > 0);
     }
 
 }

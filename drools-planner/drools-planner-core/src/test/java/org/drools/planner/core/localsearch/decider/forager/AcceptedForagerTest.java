@@ -19,7 +19,6 @@ package org.drools.planner.core.localsearch.decider.forager;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.TestCase;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
@@ -29,16 +28,20 @@ import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 import org.drools.planner.core.score.definition.SimpleScoreDefinition;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Geoffrey De Smet
  */
-public class AcceptedForagerTest extends TestCase {
+public class AcceptedForagerTest {
 
     public void testDummy() {
         
     }
-    
+
+    @Test
     public void testPickMoveMaxScoreOfAll() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);

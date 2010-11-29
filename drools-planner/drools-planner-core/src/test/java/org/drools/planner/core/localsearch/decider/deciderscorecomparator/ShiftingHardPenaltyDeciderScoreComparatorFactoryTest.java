@@ -16,18 +16,21 @@
 
 package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 
-import junit.framework.TestCase;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Geoffrey De Smet
  */
-public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest extends TestCase {
+public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
 
+    @Test
     public void testShiftingPenaltyActiveAndHardWeight() {
         // Setup
         ShiftingHardPenaltyDeciderScoreComparatorFactory deciderScoreComparatorFactory
