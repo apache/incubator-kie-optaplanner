@@ -17,6 +17,7 @@
 package org.drools.planner.examples.curriculumcourse;
 
 import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.localsearch.EnvironmentMode;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.config.localsearch.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
@@ -47,7 +48,7 @@ public class CurriculumCourseSmokeTest extends LoggingTest {
     public void solveComp01() {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
-        configurer.getConfig().setEnvironmentMode(LocalSearchSolverConfig.EnvironmentMode.DEBUG);
+        configurer.getConfig().setEnvironmentMode(EnvironmentMode.DEBUG);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setMaximumStepCount(50);
         configurer.getConfig().setTerminationConfig(terminationConfig);
