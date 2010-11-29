@@ -21,6 +21,7 @@ import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.common.app.LoggingTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import static org.junit.Assert.*;
 /**
  * @author Geoffrey De Smet
  */
-public class NQueensSmokeTest {
+public class NQueensSmokeTest extends LoggingTest {
 
     public static final String SOLVER_CONFIG
             = "/org/drools/planner/examples/nqueens/solver/nqueensSmokeSolverConfig.xml";

@@ -30,6 +30,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
+import org.drools.planner.examples.common.app.LoggingTest;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.Room;
@@ -42,7 +43,7 @@ import static org.junit.Assert.*;
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationScoreRulesTest {
+public class ExaminationScoreRulesTest extends LoggingTest {
 
     @Test
     public void moveRoom() {
