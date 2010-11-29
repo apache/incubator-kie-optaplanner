@@ -36,14 +36,17 @@ import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.Room;
 import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
 import org.drools.planner.examples.examination.solver.move.ExaminationMoveHelper;
+import org.junit.Test;
+
+import static org.junit.Assert.* ;
 
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationScoreRulesTest extends TestCase {
+public class ExaminationScoreRulesTest {
 
-
-    public void testMove() {
+    @Test
+    public void moveRoom() {
         LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
         localSearchSolverScope.setRuleBase(buildRuleBase());
         localSearchSolverScope.setWorkingScoreCalculator(new DefaultHardAndSoftConstraintScoreCalculator());

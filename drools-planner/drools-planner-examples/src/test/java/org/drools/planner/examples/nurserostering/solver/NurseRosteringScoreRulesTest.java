@@ -36,13 +36,17 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.persistence.NurseRosteringDaoImpl;
 import org.drools.planner.examples.nurserostering.solver.move.NurseRosteringMoveHelper;
+import org.junit.Test;
+
+import static org.junit.Assert.* ;
 
 /**
  * @author Geoffrey De Smet
  */
-public class NurseRosteringScoreRulesTest extends TestCase {
+public class NurseRosteringScoreRulesTest {
 
-    public void testMoveAndUndoMove() {
+    @Test
+    public void switchEmployeeAndUndo() {
         LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
         localSearchSolverScope.setRuleBase(buildRuleBase());
         localSearchSolverScope.setWorkingScoreCalculator(new DefaultHardAndSoftConstraintScoreCalculator());
