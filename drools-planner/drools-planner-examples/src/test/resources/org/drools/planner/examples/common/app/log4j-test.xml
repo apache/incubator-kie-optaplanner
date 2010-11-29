@@ -11,7 +11,7 @@
     </appender>
 
     <category name="org.drools.planner">
-        <priority value="trace" />
+        <priority value="info" />
     </category>
 
     <root>
