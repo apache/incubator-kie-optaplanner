@@ -53,9 +53,9 @@ public class GreatDelugeAcceptorTest {
         MoveScope c1 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1100));
         MoveScope c2 = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-120));
         // Do stuff
-        assertEquals(0.0, acceptor.calculateAcceptChance(a1));
-        assertEquals(0.0, acceptor.calculateAcceptChance(a2));
-        assertEquals(1.0, acceptor.calculateAcceptChance(a3));
+        assertEquals(0.0, acceptor.calculateAcceptChance(a1), 0.0);
+        assertEquals(0.0, acceptor.calculateAcceptChance(a2), 0.0);
+        assertEquals(1.0, acceptor.calculateAcceptChance(a3), 0.0);
         // TODO reable a thorough test of great deluge
 //        acceptor.stepTaken(stepScope);
 //        assertEquals(0.0, acceptor.calculateAcceptChance(b1));
