@@ -18,17 +18,14 @@ package org.drools.planner.examples.curriculumcourse;
 
 import org.drools.planner.config.XmlSolverConfigurer;
 import org.drools.planner.config.localsearch.EnvironmentMode;
-import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.config.localsearch.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
-import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.app.LoggingTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseDaoImpl;
-import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 
