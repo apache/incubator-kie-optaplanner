@@ -37,10 +37,6 @@ import static org.junit.Assert.*;
  */
 public class AcceptedForagerTest {
 
-    public void testDummy() {
-        
-    }
-
     @Test
     public void testPickMoveMaxScoreOfAll() {
         // Setup
@@ -77,7 +73,7 @@ public class AcceptedForagerTest {
         assertTrue(topList.contains(e.getMove()));
         forager.solvingEnded(localSearchSolverScope);
     }
-
+    @Test
     public void testPickMoveFirstBestScoreImproving() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
@@ -107,7 +103,7 @@ public class AcceptedForagerTest {
         assertTrue(topList.contains(d.getMove()));
         forager.solvingEnded(localSearchSolverScope);
     }
-
+    @Test
     public void testPickMoveFirstLastStepScoreImproving() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
