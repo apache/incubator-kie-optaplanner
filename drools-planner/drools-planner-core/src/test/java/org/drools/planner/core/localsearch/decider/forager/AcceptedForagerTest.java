@@ -28,6 +28,7 @@ import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 import org.drools.planner.core.score.definition.SimpleScoreDefinition;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -134,35 +135,36 @@ public class AcceptedForagerTest {
         forager.solvingEnded(localSearchSolverScope);
     }
 
-//    public void testPickMoveRandomly() {
-//        // Setup
-//        Forager forager = new AcceptedForager(PickEarlyType.NONE, 1);
-//        LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
-//        forager.solvingStarted(localSearchSolverScope);
-//        StepScope stepScope = createStepScope(localSearchSolverScope);
-//        forager.beforeDeciding(stepScope);
-//        // Pre conditions
-//        MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 0.0);
-//        MoveScope b = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.1);
-//        MoveScope c = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.0);
-//        MoveScope d = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 0.3);
-//        // Do stuff
-//        forager.addMove(a);
-//        assertFalse(forager.isQuitEarly());
-//        forager.addMove(b);
-//        assertFalse(forager.isQuitEarly());
-//        forager.addMove(c);
-//        assertFalse(forager.isQuitEarly());
-//        forager.addMove(d);
-//        assertTrue(forager.isQuitEarly());
-//        // Post conditions
-//        MoveScope pickedScope = forager.pickMove(stepScope);
-//        assertSame(d, pickedScope);
-//        List<Move> topList = forager.getTopList(2);
-//        assertTrue(topList.contains(b.getMove()));
-//        assertTrue(topList.contains(d.getMove()));
-//        forager.solvingEnded(localSearchSolverScope);
-//    }
+    @Test @Ignore
+    public void testPickMoveRandomly() {
+        // Setup
+        Forager forager = new AcceptedForager(PickEarlyType.NEVER, 1);
+        LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
+        forager.solvingStarted(localSearchSolverScope);
+        StepScope stepScope = createStepScope(localSearchSolverScope);
+        forager.beforeDeciding(stepScope);
+        // Pre conditions
+        MoveScope a = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 0.0);
+        MoveScope b = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.1);
+        MoveScope c = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-1), 0.0);
+        MoveScope d = createMoveScope(stepScope, DefaultSimpleScore.valueOf(-20), 0.3);
+        // Do stuff
+        forager.addMove(a);
+        assertFalse(forager.isQuitEarly());
+        forager.addMove(b);
+        assertFalse(forager.isQuitEarly());
+        forager.addMove(c);
+        assertFalse(forager.isQuitEarly());
+        forager.addMove(d);
+        assertTrue(forager.isQuitEarly());
+        // Post conditions
+        MoveScope pickedScope = forager.pickMove(stepScope);
+        assertSame(d, pickedScope);
+        List<Move> topList = forager.getTopList(2);
+        assertTrue(topList.contains(b.getMove()));
+        assertTrue(topList.contains(d.getMove()));
+        forager.solvingEnded(localSearchSolverScope);
+    }
 
     private LocalSearchSolverScope createLocalSearchSolverScope() {
         LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
