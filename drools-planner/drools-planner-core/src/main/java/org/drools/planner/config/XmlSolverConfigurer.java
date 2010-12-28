@@ -45,7 +45,7 @@ public class XmlSolverConfigurer {
         // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
         xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
-        Annotations.configureAliases(xStream, LocalSearchSolverConfig.class);
+        xStream.processAnnotations(LocalSearchSolverConfig.class);
     }
 
     public XmlSolverConfigurer(String resource) {
@@ -54,7 +54,7 @@ public class XmlSolverConfigurer {
     }
 
     public void addXstreamAlias(Class aliasClass) {
-		Annotations.configureAliases(xStream, aliasClass);
+        xStream.processAnnotations(aliasClass);
     }
 
     public LocalSearchSolverConfig getConfig() {
