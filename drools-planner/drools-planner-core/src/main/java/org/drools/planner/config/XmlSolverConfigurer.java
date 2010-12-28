@@ -28,10 +28,11 @@ import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
+import org.drools.planner.core.Solver;
 import org.drools.planner.core.localsearch.LocalSearchSolver;
 
 /**
- * XML based configuration that builds a Solver.
+ * XML based configuration that builds a {@link Solver}.
  *
  * @author Geoffrey De Smet
  */
@@ -89,7 +90,7 @@ public class XmlSolverConfigurer {
         return this;
     }
 
-    public LocalSearchSolver buildSolver() {
+    public Solver buildSolver() {
         return config.buildSolver();
     }
 
