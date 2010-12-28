@@ -16,13 +16,17 @@
 
 package org.drools.planner.examples.nqueens;
 
+import java.io.File;
+
 import org.drools.planner.config.XmlSolverConfigurer;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.app.LoggingTest;
+import org.drools.planner.examples.common.app.SolverSpeedTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
+import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
 import org.junit.Test;
 
@@ -31,26 +35,30 @@ import static org.junit.Assert.*;
 /**
  * @author Geoffrey De Smet
  */
-public class NQueensSmokeTest extends LoggingTest {
+public class NQueensSpeedTest extends SolverSpeedTest {
 
-    public static final String SOLVER_CONFIG
-            = "/org/drools/planner/examples/nqueens/solver/nqueensSmokeSolverConfig.xml";
-    public static final String UNSOLVED_DATA
-            = "/org/drools/planner/examples/nqueens/data/unsolvedNQueensSmoke.xml";
+    @Override
+    protected String createSolverConfigResource() {
+        return "/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml";
+    }
 
-    @Test
+    @Override
+    protected SolutionDao createSolutionDao() {
+        return new NQueensDaoImpl();
+    }
+
+    // ************************************************************************
+    // Tests
+    // ************************************************************************
+
+    @Test(timeout = 10000)
     public void solve4Queens() {
-        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-        configurer.configure(SOLVER_CONFIG);
-        Solver solver = configurer.buildSolver();
-        SolutionDao solutionDao = new NQueensDaoImpl();
-        Solution startingSolution = solutionDao.readSolution(getClass().getResourceAsStream(UNSOLVED_DATA));
-        solver.setStartingSolution(startingSolution);
-        solver.solve();
-        Solution bestSolution = solver.getBestSolution();
-        assertNotNull(bestSolution);
-        Score bestScore = solver.getBestSolution().getScore();
-        assertEquals(DefaultSimpleScore.valueOf(0), bestScore);
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0");
+    }
+
+    @Test(timeout = 10000)
+    public void solve8Queens() {
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"), "0");
     }
 
 }
