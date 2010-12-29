@@ -18,8 +18,7 @@ package org.drools.planner.examples.examination;
 
 import java.io.File;
 
-import org.drools.planner.config.XmlSolverConfigurer;
-import org.drools.planner.examples.common.app.SolverSpeedTest;
+import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
 import org.junit.Test;
@@ -27,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Geoffrey De Smet
  */
-public class ExaminationSpeedTest extends SolverSpeedTest {
+public class ExaminationPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {

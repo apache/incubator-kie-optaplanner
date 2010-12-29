@@ -18,24 +18,15 @@ package org.drools.planner.examples.nqueens;
 
 import java.io.File;
 
-import org.drools.planner.config.XmlSolverConfigurer;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.score.DefaultSimpleScore;
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.app.LoggingTest;
-import org.drools.planner.examples.common.app.SolverSpeedTest;
+import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Geoffrey De Smet
  */
-public class NQueensSpeedTest extends SolverSpeedTest {
+public class NQueensPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {

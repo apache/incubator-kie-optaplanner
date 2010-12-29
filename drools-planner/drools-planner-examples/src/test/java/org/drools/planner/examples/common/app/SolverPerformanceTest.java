@@ -30,10 +30,11 @@ import static org.junit.Assert.*;
 
 /**
  * Runs an example solver.
- * Speed tests are reported on by hudson in graphs which show the execution time over builds.
+ * All tests ending with the suffix <code>PerformanceTest</code> are reported on by hudson
+ * in graphs which show the execution time over builds.
  * @author Geoffrey De Smet
  */
-public abstract class SolverSpeedTest extends LoggingTest {
+public abstract class SolverPerformanceTest extends LoggingTest {
 
     protected abstract String createSolverConfigResource();
 
