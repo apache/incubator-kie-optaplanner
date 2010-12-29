@@ -32,6 +32,12 @@ import static org.junit.Assert.*;
  * Runs an example solver.
  * All tests ending with the suffix <code>PerformanceTest</code> are reported on by hudson
  * in graphs which show the execution time over builds.
+ * <p/>
+ * Recommended courtesy notes: Always use a timeout value on @Test.
+ * The timeout should be the double of the timeout on a normal 3 year old desktop computer,
+ * because some of the hudson machines are old.
+ * For example, on a normal 3 year old desktop computer it always finishes in less than 1 minute,
+ * then specify a timeout of 2 minutes.
  * @author Geoffrey De Smet
  */
 public abstract class SolverPerformanceTest extends LoggingTest {
@@ -41,15 +47,19 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     protected abstract SolutionDao createSolutionDao();
 
     protected void runSpeedTest(File unsolvedDataFile, String scoreAttainedString) {
-        XmlSolverConfigurer configurer = buildConfigurer(scoreAttainedString);
+        runSpeedTest(unsolvedDataFile, scoreAttainedString, EnvironmentMode.PRODUCTION);
+    }
+
+    protected void runSpeedTest(File unsolvedDataFile, String scoreAttainedString, EnvironmentMode environmentMode) {
+        XmlSolverConfigurer configurer = buildConfigurer(scoreAttainedString, environmentMode);
         Solver solver = solve(configurer, unsolvedDataFile);
         assertBestSolution(solver, scoreAttainedString);
     }
 
-    private XmlSolverConfigurer buildConfigurer(String scoreAttainedString) {
+    private XmlSolverConfigurer buildConfigurer(String scoreAttainedString, EnvironmentMode environmentMode) {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(createSolverConfigResource());
-        configurer.getConfig().setEnvironmentMode(EnvironmentMode.DEBUG);
+        configurer.getConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setScoreAttained(scoreAttainedString);
         configurer.getConfig().setTerminationConfig(terminationConfig);

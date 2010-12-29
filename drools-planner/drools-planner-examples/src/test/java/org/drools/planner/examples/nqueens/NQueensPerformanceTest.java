@@ -18,6 +18,7 @@ package org.drools.planner.examples.nqueens;
 
 import java.io.File;
 
+import org.drools.planner.config.localsearch.EnvironmentMode;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
@@ -43,13 +44,13 @@ public class NQueensPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 10000)
-    public void solve4Queens() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0");
+    public void solveDebug4QueensScore0() {
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0", EnvironmentMode.DEBUG);
     }
 
     @Test(timeout = 10000)
-    public void solve8Queens() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"), "0");
+    public void solveDebug8QueensScore0() {
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"), "0", EnvironmentMode.DEBUG);
     }
 
 }

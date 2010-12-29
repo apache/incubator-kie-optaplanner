@@ -18,6 +18,7 @@ package org.drools.planner.examples.examination;
 
 import java.io.File;
 
+import org.drools.planner.config.localsearch.EnvironmentMode;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
@@ -43,8 +44,15 @@ public class ExaminationPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 60000)
-    public void solveComp_set1_initialized() {
-        runSpeedTest(new File("data/examination/unsolved/exam_comp_set1_initialized.xml"), "0hard/-7925soft");
+    public void solveComp_set1_initializedScore7925soft() {
+        File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set1_initialized.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-7925soft");
+    }
+
+    @Test(timeout = 60000)
+    public void solveDebugComp_set1_initializedScore8072soft() {
+        File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set1_initialized.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-8072soft", EnvironmentMode.DEBUG);
     }
 
 }
