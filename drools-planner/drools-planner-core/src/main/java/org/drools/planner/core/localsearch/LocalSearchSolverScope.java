@@ -222,6 +222,7 @@ public class LocalSearchSolverScope {
 
     /**
      * TODO Refactor this with the ConstraintOccurrenceTotal class: https://jira.jboss.org/jira/browse/JBRULES-2510
+     * @param summaryWorkingMemory sometimes null
      * @return never null
      */
     public String buildConstraintOccurrenceSummary(WorkingMemory summaryWorkingMemory) {
