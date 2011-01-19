@@ -136,9 +136,10 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
                         stepScope.getStepIndex(), decider.getForager().getAcceptedMovesSize());
                 break;
             }
-            logger.info("Step index ({}), time spend ({}) taking step ({}) out of {} accepted moves.",
-                    new Object[]{stepScope.getStepIndex(), localSearchSolverScope.calculateTimeMillisSpend(),
-                            nextStep, decider.getForager().getAcceptedMovesSize()});
+            String nextStepString = null;
+            if (logger.isInfoEnabled()) {
+                nextStepString = nextStep.toString();
+            }
             stepDecided(stepScope);
             nextStep.doMove(stepScope.getWorkingMemory());
             // there is no need to recalculate the score, but we still need to set it
@@ -147,6 +148,11 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
                 localSearchSolverScope.assertWorkingScore(stepScope.getScore());
             }
             stepTaken(stepScope);
+            logger.info("Step index ({}), time spend ({}), score ({}), {} best score ({}), accepted move size ({}) for picked step ({}).",
+                    new Object[]{stepScope.getStepIndex(), localSearchSolverScope.calculateTimeMillisSpend(),
+                            stepScope.getScore(), (stepScope.getBestScoreImproved() ? "new" : "   "),
+                            localSearchSolverScope.getBestScore(),
+                            decider.getForager().getAcceptedMovesSize(), nextStepString});
             stepScope = createNextStepScope(localSearchSolverScope, stepScope);
         }
         solvingEnded(localSearchSolverScope);

@@ -37,6 +37,7 @@ public class StepScope {
     private Move step = null;
     private Move undoStep = null;
     private Score score = null;
+    private Boolean bestScoreImproved;
     // Stays null if there is no need to clone it
     private Solution clonedSolution = null;
 
@@ -94,6 +95,14 @@ public class StepScope {
 
     public void setScore(Score score) {
         this.score = score;
+    }
+
+    public Boolean getBestScoreImproved() {
+        return bestScoreImproved;
+    }
+
+    public void setBestScoreImproved(Boolean bestScoreImproved) {
+        this.bestScoreImproved = bestScoreImproved;
     }
 
     public Solution getClonedSolution() {

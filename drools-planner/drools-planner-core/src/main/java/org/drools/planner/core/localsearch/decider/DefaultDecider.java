@@ -120,7 +120,7 @@ public class DefaultDecider implements Decider {
                     break;
                 }
             } else {
-                logger.debug("    Move ({}) ignored because it is not doable.", move);
+                logger.debug("    Ignoring not doable move ({}).", move);
             }
         }
         MoveScope pickedMoveScope = forager.pickMove(stepScope);
@@ -152,8 +152,8 @@ public class DefaultDecider implements Decider {
                         + moveScope.getStepScope().getLocalSearchSolverScope().buildConstraintOccurrenceSummary());
             }
         }
-        logger.debug("    Move ({}) with score ({}) and acceptChance ({}).",
-                new Object[]{moveScope.getMove(), moveScope.getScore(), moveScope.getAcceptChance()});
+        logger.debug("    Move score ({}), accept chance ({}) for move ({}).",
+                new Object[]{moveScope.getScore(), moveScope.getAcceptChance(), moveScope.getMove()});
     }
 
     private void processMove(MoveScope moveScope) {
