@@ -41,7 +41,7 @@ public interface Score<S extends Score> extends Comparable<S> {
     S subtract(S subtrahend);
 
     /**
-     * Returns a Score whose value is (this × multiplicand).
+     * Returns a Score whose value is (this * multiplicand).
      * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
      * @param multiplicand value to be multiplied by this Score.
      * @return this * multiplicand
