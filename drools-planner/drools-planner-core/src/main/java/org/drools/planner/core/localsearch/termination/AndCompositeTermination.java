@@ -29,7 +29,7 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
 
     /**
      * @return true if all the Terminations are terminated.
-     * @param stepScope
+     * @param stepScope never null
      */
     public boolean isTerminated(StepScope stepScope) {
         for (Termination termination : terminationList) {
@@ -44,7 +44,7 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
      * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored. 
      * @return the minimum timeGradient of the Terminations.
-     * @param stepScope
+     * @param stepScope never null
      */
     public double calculateTimeGradient(StepScope stepScope) {
         double timeGradient = 1.0;
