@@ -22,11 +22,10 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.WorkingMemory;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
+import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
@@ -34,6 +33,7 @@ import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
+import org.drools.runtime.rule.FactHandle;
 
 /**
  * @author Geoffrey De Smet
@@ -41,25 +41,25 @@ import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodCons
 public class CurriculumCourseStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override
-    public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
-        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) localSearchSolverScope.getWorkingSolution();
+    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
+        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) abstractSolverScope.getWorkingSolution();
         return schedule.isInitialized();
     }
 
-    public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
-        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) localSearchSolverScope.getWorkingSolution();
-        initializeLectureList(localSearchSolverScope, schedule);
+    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
+        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) abstractSolverScope.getWorkingSolution();
+        initializeLectureList(abstractSolverScope, schedule);
     }
 
-    private void initializeLectureList(LocalSearchSolverScope localSearchSolverScope,
+    private void initializeLectureList(AbstractSolverScope abstractSolverScope,
             CurriculumCourseSchedule schedule) {
         List<Period> periodList = schedule.getPeriodList();
         List<Room> roomList = schedule.getRoomList();
-        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
 
         List<Lecture> lectureList = createLectureList(schedule);
         for (Lecture lecture : lectureList) {
-            Score unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = abstractSolverScope.calculateScoreFromWorkingMemory();
             FactHandle lectureHandle = null;
 
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
@@ -71,7 +71,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                     lecture.setPeriod(period);
                     workingMemory.update(lectureHandle, lecture);
                 }
-                Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
                 periodScoringList.add(new PeriodScoring(period, score));
             }
             Collections.sort(periodScoringList);
@@ -91,7 +91,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                 for (Room room : roomList) {
                     lecture.setRoom(room);
                     workingMemory.update(lectureHandle, lecture);
-                    Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                    Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
                     if (score.compareTo(unscheduledScore) < 0) {
                         if (score.compareTo(bestScore) > 0) {
                             bestScore = score;

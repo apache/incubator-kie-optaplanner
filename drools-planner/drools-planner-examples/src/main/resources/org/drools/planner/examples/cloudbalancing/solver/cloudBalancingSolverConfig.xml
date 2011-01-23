@@ -41,3 +41,11 @@
         <minimalAcceptedSelection>1000</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>
+<!--<bruteForceSolver>-->
+    <!--<environmentMode>DEBUG</environmentMode>-->
+    <!--<scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+    <!--<scoreDefinition>-->
+        <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
+    <!--</scoreDefinition>-->
+    <!--<startingSolutionInitializerClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingStartingSolutionInitializer</startingSolutionInitializerClass>-->
+<!--</bruteForceSolver>-->

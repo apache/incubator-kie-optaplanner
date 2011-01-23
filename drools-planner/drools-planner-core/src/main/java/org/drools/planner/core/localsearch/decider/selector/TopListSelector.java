@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
 
 /**
@@ -46,12 +46,12 @@ public class TopListSelector extends AbstractSelector {
         topList = Collections.emptyList();
     }
 
-    public Iterator<Move> moveIterator(StepScope stepScope) {
+    public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
         return topList.iterator();
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         topList = decider.getForager().getTopList(topSize);
     }
 

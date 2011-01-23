@@ -19,7 +19,7 @@ package org.drools.planner.core.localsearch.decider.acceptor;
 import java.util.List;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 
 /**
@@ -48,9 +48,9 @@ public class CompositeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void beforeDeciding(StepScope stepScope) {
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.beforeDeciding(stepScope);
+            acceptor.beforeDeciding(localSearchStepScope);
         }
     }
 
@@ -63,16 +63,16 @@ public class CompositeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepDecided(StepScope stepScope) {
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.stepDecided(stepScope);
+            acceptor.stepDecided(localSearchStepScope);
         }
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptor.stepTaken(stepScope);
+            acceptor.stepTaken(localSearchStepScope);
         }
     }
 

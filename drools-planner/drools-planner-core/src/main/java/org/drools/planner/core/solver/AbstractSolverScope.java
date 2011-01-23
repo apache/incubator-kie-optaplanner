@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core;
+package org.drools.planner.core.solver;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -58,6 +58,7 @@ public abstract class AbstractSolverScope {
     protected Score startingScore;
     protected long calculateCount;
 
+    protected int bestSolutionStepIndex;
     protected Solution bestSolution;
     protected Score bestScore; // TODO remove me
 
@@ -124,6 +125,14 @@ public abstract class AbstractSolverScope {
 
     public long getCalculateCount() {
         return calculateCount;
+    }
+
+    public int getBestSolutionStepIndex() {
+        return bestSolutionStepIndex;
+    }
+
+    public void setBestSolutionStepIndex(int bestSolutionStepIndex) {
+        this.bestSolutionStepIndex = bestSolutionStepIndex;
     }
 
     public Solution getBestSolution() {

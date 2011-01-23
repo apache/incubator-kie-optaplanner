@@ -23,10 +23,10 @@ import java.util.List;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
+import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -39,20 +39,20 @@ import org.drools.planner.examples.common.domain.PersistableIdComparator;
 public class CloudBalancingStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override
-    public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
-        CloudBalance cloudBalance = (CloudBalance) localSearchSolverScope.getWorkingSolution();
+    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
+        CloudBalance cloudBalance = (CloudBalance) abstractSolverScope.getWorkingSolution();
         return cloudBalance.isInitialized();
     }
 
-    public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
-        CloudBalance cloudBalance = (CloudBalance) localSearchSolverScope.getWorkingSolution();
-        initializeCloudAssignmentList(localSearchSolverScope, cloudBalance);
+    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
+        CloudBalance cloudBalance = (CloudBalance) abstractSolverScope.getWorkingSolution();
+        initializeCloudAssignmentList(abstractSolverScope, cloudBalance);
     }
 
-    private void initializeCloudAssignmentList(LocalSearchSolverScope localSearchSolverScope,
+    private void initializeCloudAssignmentList(AbstractSolverScope abstractSolverScope,
             CloudBalance cloudBalance) {
         List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();
-        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
 
         List<CloudAssignment> cloudAssignmentList = createCloudAssignmentList(cloudBalance);
         for (CloudAssignment cloudAssignment : cloudAssignmentList) {
@@ -67,7 +67,7 @@ public class CloudBalancingStartingSolutionInitializer extends AbstractStartingS
                     cloudAssignment.setCloudComputer(cloudComputer);
                     workingMemory.update(cloudAssignmentHandle, cloudAssignment);
                 }
-                Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
                 if (score.compareTo(bestScore) > 0) {
                     bestScore = score;
                     bestCloudComputer = cloudComputer;

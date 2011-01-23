@@ -1,11 +1,11 @@
-/**
- * Copyright 2010 JBoss Inc
+/*
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,40 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch;
+package org.drools.planner.core.solver;
 
 import java.util.Random;
-import java.util.Comparator;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.core.move.Move;
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet
  */
-public class StepScope {
+public abstract class AbstractStepScope {
 
-    private final LocalSearchSolverScope localSearchSolverScope;
+    protected int stepIndex = -1;
 
-    private int stepIndex = -1;
-    private double timeGradient = Double.NaN;
-    private Comparator<Score> deciderScoreComparator;
-    private Move step = null;
-    private Move undoStep = null;
-    private Score score = null;
-    private Boolean bestScoreImproved;
+    protected Score score = null;
+    protected Boolean bestScoreImproved;
     // Stays null if there is no need to clone it
-    private Solution clonedSolution = null;
+    protected Solution clonedSolution = null;
 
-    public StepScope(LocalSearchSolverScope localSearchSolverScope) {
-        this.localSearchSolverScope = localSearchSolverScope;
-    }
-
-    public LocalSearchSolverScope getLocalSearchSolverScope() {
-        return localSearchSolverScope;
-    }
+    public abstract AbstractSolverScope getAbstractSolverScope();
 
     public int getStepIndex() {
         return stepIndex;
@@ -55,38 +42,6 @@ public class StepScope {
 
     public void setStepIndex(int stepIndex) {
         this.stepIndex = stepIndex;
-    }
-
-    public double getTimeGradient() {
-        return timeGradient;
-    }
-
-    public void setTimeGradient(double timeGradient) {
-        this.timeGradient = timeGradient;
-    }
-
-    public Comparator<Score> getDeciderScoreComparator() {
-        return deciderScoreComparator;
-    }
-
-    public void setDeciderScoreComparator(Comparator<Score> deciderScoreComparator) {
-        this.deciderScoreComparator = deciderScoreComparator;
-    }
-
-    public Move getStep() {
-        return step;
-    }
-
-    public void setStep(Move step) {
-        this.step = step;
-    }
-
-    public Move getUndoStep() {
-        return undoStep;
-    }
-
-    public void setUndoStep(Move undoStep) {
-        this.undoStep = undoStep;
     }
 
     public Score getScore() {
@@ -118,15 +73,15 @@ public class StepScope {
     // ************************************************************************
 
     public Solution getWorkingSolution() {
-        return localSearchSolverScope.getWorkingSolution();
+        return getAbstractSolverScope().getWorkingSolution();
     }
 
     public WorkingMemory getWorkingMemory() {
-        return localSearchSolverScope.getWorkingMemory();
+        return getAbstractSolverScope().getWorkingMemory();
     }
 
     public Random getWorkingRandom() {
-        return localSearchSolverScope.getWorkingRandom();
+        return getAbstractSolverScope().getWorkingRandom();
     }
 
     public Solution createOrGetClonedSolution() {

@@ -19,28 +19,28 @@ package org.drools.planner.core.localsearch.decider;
 import java.util.Random;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solution.Solution;
 
 /**
  * @author Geoffrey De Smet
  */
 public class MoveScope {
 
-    private final StepScope stepScope;
+    private final LocalSearchStepScope localSearchStepScope;
     private Move move = null;
     private Move undoMove = null;
     private double acceptChance = Double.NaN;
     private Score score = null;
 
-    public MoveScope(StepScope stepScope) {
-        this.stepScope = stepScope;
+    public MoveScope(LocalSearchStepScope localSearchStepScope) {
+        this.localSearchStepScope = localSearchStepScope;
     }
 
-    public StepScope getStepScope() {
-        return stepScope;
+    public LocalSearchStepScope getLocalSearchStepScope() {
+        return localSearchStepScope;
     }
 
     public Move getMove() {
@@ -80,15 +80,15 @@ public class MoveScope {
     // ************************************************************************
 
     public Solution getWorkingSolution() {
-        return stepScope.getWorkingSolution();
+        return localSearchStepScope.getWorkingSolution();
     }
 
     public WorkingMemory getWorkingMemory() {
-        return stepScope.getWorkingMemory();
+        return localSearchStepScope.getWorkingMemory();
     }
 
     public Random getWorkingRandom() {
-        return stepScope.getWorkingRandom();
+        return localSearchStepScope.getWorkingRandom();
     }
 
 }

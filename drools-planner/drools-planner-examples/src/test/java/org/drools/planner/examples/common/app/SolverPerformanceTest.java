@@ -18,8 +18,9 @@ package org.drools.planner.examples.common.app;
 
 import java.io.File;
 
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.XmlSolverConfigurer;
-import org.drools.planner.config.localsearch.EnvironmentMode;
+import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.config.localsearch.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
@@ -62,7 +63,7 @@ public abstract class SolverPerformanceTest extends LoggingTest {
         configurer.getConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setScoreAttained(scoreAttainedString);
-        configurer.getConfig().setTerminationConfig(terminationConfig);
+        ((LocalSearchSolverConfig) configurer.getConfig()).setTerminationConfig(terminationConfig);
         return configurer;
     }
 

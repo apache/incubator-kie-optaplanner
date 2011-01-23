@@ -16,14 +16,10 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Random;
-
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.score.Score;
 
 /**
@@ -63,8 +59,8 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
-        LocalSearchSolverScope localSearchSolverScope = moveScope.getStepScope().getLocalSearchSolverScope();
-        Score lastStepScore = localSearchSolverScope.getLastCompletedStepScope().getScore();
+        LocalSearchSolverScope localSearchSolverScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope();
+        Score lastStepScore = localSearchSolverScope.getLastCompletedLocalSearchStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) > 0) {
             return 1.0;
@@ -85,8 +81,8 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
-        super.stepTaken(stepScope);
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        super.stepTaken(localSearchStepScope);
         temperature *= temperatureSurvival;
     }
 
