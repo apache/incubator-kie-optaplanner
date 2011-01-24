@@ -18,8 +18,8 @@ package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 
 import java.util.Comparator;
 
-import org.drools.planner.core.localsearch.StepScope;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
@@ -81,14 +81,14 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
-        if (stepScope.getStepIndex() == stepScope.getLocalSearchSolverScope().getBestSolutionStepIndex()) {
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        if (localSearchStepScope.getStepIndex() == localSearchStepScope.getLocalSearchSolverScope().getBestSolutionStepIndex()) {
             successiveNoHardScoreChange = 0;
             shiftingPenaltyActive = false;
         } else {
-            HardAndSoftScore lastStepScore = (HardAndSoftScore) stepScope.getLocalSearchSolverScope()
-                    .getLastCompletedStepScope().getScore();
-            HardAndSoftScore stepScore = (HardAndSoftScore) stepScope.getScore();
+            HardAndSoftScore lastStepScore = (HardAndSoftScore) localSearchStepScope.getLocalSearchSolverScope()
+                    .getLastCompletedLocalSearchStepScope().getScore();
+            HardAndSoftScore stepScore = (HardAndSoftScore) localSearchStepScope.getScore();
             if (stepScore.getHardScore() >= hardScoreActivationThreshold
                     && lastStepScore.getHardScore() == stepScore.getHardScore()) {
                 successiveNoHardScoreChange++;

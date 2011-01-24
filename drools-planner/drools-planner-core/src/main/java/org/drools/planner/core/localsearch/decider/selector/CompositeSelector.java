@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.move.Move;
 
@@ -58,34 +58,34 @@ public class CompositeSelector extends AbstractSelector {
     }
 
     @Override
-    public void beforeDeciding(StepScope stepScope) {
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
         for (Selector selector : selectorList) {
-            selector.beforeDeciding(stepScope);
+            selector.beforeDeciding(localSearchStepScope);
         }
     }
 
-    public Iterator<Move> moveIterator(StepScope stepScope) {
+    public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
         List<Iterator<Move>> moveIteratorList = new ArrayList<Iterator<Move>>(selectorList.size());
         for (Selector selector : selectorList) {
-            Iterator<Move> moveIterator = selector.moveIterator(stepScope);
+            Iterator<Move> moveIterator = selector.moveIterator(localSearchStepScope);
             if (moveIterator.hasNext()) {
                 moveIteratorList.add(moveIterator);
             }
         }
-        return new CompositeSelectorMoveIterator(stepScope.getWorkingRandom(), moveIteratorList);
+        return new CompositeSelectorMoveIterator(localSearchStepScope.getWorkingRandom(), moveIteratorList);
     }
 
     @Override
-    public void stepDecided(StepScope stepScope) {
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
         for (Selector selector : selectorList) {
-            selector.stepDecided(stepScope);
+            selector.stepDecided(localSearchStepScope);
         }
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         for (Selector selector : selectorList) {
-            selector.stepTaken(stepScope);
+            selector.stepTaken(localSearchStepScope);
         }
     }
 

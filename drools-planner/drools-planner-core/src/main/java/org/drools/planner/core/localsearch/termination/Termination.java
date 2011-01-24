@@ -18,7 +18,7 @@ package org.drools.planner.core.localsearch.termination;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverAware;
 import org.drools.planner.core.localsearch.LocalSearchSolverLifecycleListener;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
 /**
  * A Termination determines when the LocalSearchSolver should stop.
@@ -28,10 +28,10 @@ public interface Termination extends LocalSearchSolverAware, LocalSearchSolverLi
 
     /**
      * Called by the LocalSearchSolver after every step to determine if the search should stop.
-     * @param stepScope never null
+     * @param localSearchStepScope never null
      * @return true if the search should terminate.
      */
-    boolean isTerminated(StepScope stepScope);
+    boolean isTerminated(LocalSearchStepScope localSearchStepScope);
 
     /**
      * A timeGradient is a relative estimate of how long the search will continue.
@@ -44,10 +44,10 @@ public interface Termination extends LocalSearchSolverAware, LocalSearchSolverLi
      * <p/>
      * A Termination's timeGradient can be requested after they are terminated, so implementations
      * should be carefull not to return a tempature above 1.0.
-     * @param stepScope never null
+     * @param localSearchStepScope never null
      * @return timeGradient t for which 0.0 &lt;= t &lt;= 1.0 or -1.0 when it is not supported.
      * At the start of a search t is 0.0 and at the end of a search t would be 1.0.
      */
-    double calculateTimeGradient(StepScope stepScope);
+    double calculateTimeGradient(LocalSearchStepScope localSearchStepScope);
 
 }

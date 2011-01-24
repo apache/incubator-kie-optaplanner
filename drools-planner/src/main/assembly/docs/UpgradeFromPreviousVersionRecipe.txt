@@ -4,6 +4,12 @@ Introduction
 Drools Planner isn't always backwards compatible at this time.
 This file describes how can you upgrade from earlier versions to the latest.
 
+Starting from 5.1.0, every migration change has an indication
+on how likely your code is going to be affected by this change:
+- [MAJOR] Very likely affects your code.
+- [MINOR] Probably does not affect your code (especially if you followed the examples), unless you have hacks.
+- [RECOMMENDED] Not a backward incompatible change, but you probably want to do this.
+
 From 5.0.0-m2 to 5.0.0
 ----------------------
 
@@ -458,9 +464,56 @@ If you copied that practice from the examples, it's recommended to remove them f
 From 5.2.0.m1 to 5.2.0.m2
 -------------------------
 
-[minor] XmlSolverConfigurer.buildSolver() no longer returns a LocalSearchSolver, now it returns just a Solver.
+[MINOR] XmlSolverConfigurer.buildSolver() no longer returns a LocalSearchSolver, now it returns just a Solver.
 Since LocalSearchSolver is just an empty interface which extends the Solver interface, the impact should be small.
 Before in *.java:
     LocalSearchSolver solver = xmlSolverConfigurer.buildSolver();
 After in *.java:
     Solver solver = xmlSolverConfigurer.buildSolver();
+
+
+[MAJOR] EnvironmentMode has been moved to another package.
+Before in *.java:
+    import org.drools.planner.config.localsearch.EnvironmentMode;
+After in *.java:
+    import org.drools.planner.config.EnvironmentMode;
+
+
+[MINOR] XmlSolverConfigurer's getConfig() method now returns an AbstractSolverConfig instead of a LocalSearchSolverConfig.
+If you used anything LocalSearchSolverConfig specific, such as a TerminationConfig, then you have to cast it...
+Before in *.java:
+    configurer.getConfig().getTerminationConfig().setMaximumSecondsSpend(maximumSecondsSpend);
+After in *.java:
+    ((LocalSearchSolverConfig) configurer.getConfig()).getTerminationConfig()
+            .setMaximumSecondsSpend(maximumSecondsSpend);
+
+
+[MAJOR] The StartingSolutionInitializer methods no longer have a LocalSearchSolverScope argument,
+but now have a AbstractSolverScope argument.
+Before in *.java:
+    public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
+        ...
+    }
+    public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
+        ...
+    }
+After in *.java:
+    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
+        ...
+    }
+    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
+        ...
+    }
+
+[MINOR] StepScope has been renamed to LocalSearchStepScope.
+This only impacts you if you use a custom Selector.
+Before in *Selector.java:
+    @Override
+    public void ...(StepScope stepScope) {
+        ...
+    }
+After in *Selector.java:
+    @Override
+    public void ...(LocalSearchStepScope localSearchStepScope) {
+        ...
+    }

@@ -20,11 +20,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.annotations.PlanningValueProperty;
+import org.drools.planner.core.annotations.PlanningVariableClass;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 /**
  * @author Geoffrey De Smet
  */
+@PlanningVariableClass
 @XStreamAlias("CloudAssignment")
 public class CloudAssignment extends AbstractPersistable implements Comparable<CloudAssignment> {
 
@@ -45,6 +48,7 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
         return cloudComputer;
     }
 
+    @PlanningValueProperty // TODO move to getter
     public void setCloudComputer(CloudComputer cloudComputer) {
         this.cloudComputer = cloudComputer;
     }

@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.move.Move;
@@ -59,12 +59,12 @@ public class AcceptedForager extends AbstractForager {
     // ************************************************************************
 
     @Override
-    public void beforeDeciding(StepScope stepScope) {
-        acceptedMoveScopeComparator = new AcceptedMoveScopeComparator(stepScope.getDeciderScoreComparator());
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+        acceptedMoveScopeComparator = new AcceptedMoveScopeComparator(localSearchStepScope.getDeciderScoreComparator());
         selectedCount = 0;
         acceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
         listSorted = false;
-        maxScore = stepScope.getLocalSearchSolverScope().getScoreDefinition().getPerfectMinimumScore();
+        maxScore = localSearchStepScope.getLocalSearchSolverScope().getScoreDefinition().getPerfectMinimumScore();
         acceptChanceMaxScoreTotal = 0.0;
         earlyPickedMoveScope = null;
     }
@@ -82,14 +82,14 @@ public class AcceptedForager extends AbstractForager {
             case NEVER:
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
-                if (moveScope.getStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
-                        moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
+                if (moveScope.getLocalSearchStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
+                        moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_LAST_STEP_SCORE_IMPROVING:
-                if (moveScope.getStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
-                        moveScope.getStepScope().getLocalSearchSolverScope().getLastCompletedStepScope().getScore())
+                if (moveScope.getLocalSearchStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
+                        moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().getLastCompletedLocalSearchStepScope().getScore())
                         > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
@@ -102,7 +102,7 @@ public class AcceptedForager extends AbstractForager {
     protected void addMoveScopeToAcceptedList(MoveScope moveScope) {
         acceptedList.add(moveScope);
         listSorted = false;
-        if (moveScope.getStepScope().getDeciderScoreComparator().compare(moveScope.getScore(), maxScore) > 0) {
+        if (moveScope.getLocalSearchStepScope().getDeciderScoreComparator().compare(moveScope.getScore(), maxScore) > 0) {
             acceptChanceMaxScoreTotal = moveScope.getAcceptChance();
             maxScore = moveScope.getScore();
         } else if (moveScope.getScore().equals(maxScore)) {
@@ -114,21 +114,21 @@ public class AcceptedForager extends AbstractForager {
         return earlyPickedMoveScope != null || acceptedList.size() >= minimalAcceptedSelection;
     }
 
-    public MoveScope pickMove(StepScope stepScope) {
+    public MoveScope pickMove(LocalSearchStepScope localSearchStepScope) {
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;
         } else {
-            return pickMaxScoreMoveScopeFromAcceptedList(stepScope);
+            return pickMaxScoreMoveScopeFromAcceptedList(localSearchStepScope);
         }
     }
 
-    protected MoveScope pickMaxScoreMoveScopeFromAcceptedList(StepScope stepScope) {
+    protected MoveScope pickMaxScoreMoveScopeFromAcceptedList(LocalSearchStepScope localSearchStepScope) {
         if (acceptedList.isEmpty()) {
             return null;
         }
         sortAcceptedList();
         MoveScope pickedMoveScope = null;
-        double randomChance = stepScope.getWorkingRandom().nextDouble();
+        double randomChance = localSearchStepScope.getWorkingRandom().nextDouble();
         double acceptMark = acceptChanceMaxScoreTotal * randomChance;
         for (ListIterator<MoveScope> it = acceptedList.listIterator(acceptedList.size()); it.hasPrevious();) {
             MoveScope moveScope = it.previous();

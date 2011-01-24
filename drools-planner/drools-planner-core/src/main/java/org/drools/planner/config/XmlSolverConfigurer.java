@@ -22,14 +22,13 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.annotations.Annotations;
 import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
 import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.config.bruteforce.BruteForceSolverConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.localsearch.LocalSearchSolver;
 
 /**
  * XML based configuration that builds a {@link Solver}.
@@ -39,12 +38,13 @@ import org.drools.planner.core.localsearch.LocalSearchSolver;
 public class XmlSolverConfigurer {
 
     private XStream xStream;
-    private LocalSearchSolverConfig config = null;
+    private AbstractSolverConfig config = null;
 
     public XmlSolverConfigurer() {
         // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
         xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
+        xStream.processAnnotations(BruteForceSolverConfig.class);
         xStream.processAnnotations(LocalSearchSolverConfig.class);
     }
 
@@ -57,7 +57,7 @@ public class XmlSolverConfigurer {
         xStream.processAnnotations(aliasClass);
     }
 
-    public LocalSearchSolverConfig getConfig() {
+    public AbstractSolverConfig getConfig() {
         return config;
     }
 
@@ -86,7 +86,7 @@ public class XmlSolverConfigurer {
     }
 
     public XmlSolverConfigurer configure(Reader reader) {
-        config = (LocalSearchSolverConfig) xStream.fromXML(reader);
+        config = (AbstractSolverConfig) xStream.fromXML(reader);
         return this;
     }
 

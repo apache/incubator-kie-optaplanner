@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.planner.core.localsearch.LocalSearchSolver;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
 /**
  * Abstract superclass for CompositeTermination classes that combine multiple Terminations.
@@ -54,23 +54,23 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     }
 
     @Override
-    public void beforeDeciding(StepScope stepScope) {
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
         for (Termination termination : terminationList) {
-            termination.beforeDeciding(stepScope);
+            termination.beforeDeciding(localSearchStepScope);
         }
     }
 
     @Override
-    public void stepDecided(StepScope stepScope) {
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
         for (Termination termination : terminationList) {
-            termination.stepDecided(stepScope);
+            termination.stepDecided(localSearchStepScope);
         }
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         for (Termination termination : terminationList) {
-            termination.stepTaken(stepScope);
+            termination.stepTaken(localSearchStepScope);
         }
     }
 
