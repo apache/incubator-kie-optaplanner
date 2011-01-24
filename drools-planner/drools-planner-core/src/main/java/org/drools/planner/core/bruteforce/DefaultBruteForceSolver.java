@@ -83,7 +83,7 @@ public class DefaultBruteForceSolver extends AbstractSolver implements BruteForc
         solvingStarted(bruteForceSolverScope);
 
         BruteForceSolutionIterator bruteForceSolutionIterator
-                = new BruteForceSolutionIterator(bruteForceSolverScope.getWorkingSolution());
+                = new BruteForceSolutionIterator(bruteForceSolverScope);
 
         BruteForceStepScope bruteForceStepScope = createNextStepScope(bruteForceSolverScope, null);
         for (; bruteForceSolutionIterator.hasNext(); bruteForceSolutionIterator.next()) {

@@ -23,8 +23,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.WorkingMemory;
 import org.drools.planner.core.annotations.PlanningValueProperty;
 import org.drools.planner.core.annotations.PlanningVariableClass;
+import org.drools.runtime.rule.FactHandle;
 
 /**
  * @author Geoffrey De Smet
@@ -47,7 +49,8 @@ public class PlanningVariableHandler {
             PlanningValueProperty planningValueProperty = method.getAnnotation(PlanningValueProperty.class);
             if (planningValueProperty != null) {
                 valueMethod = method;
-                Class<?> planningValueClass = valueMethod.getReturnType();
+                // TODO use when refactored to getter valueMethod.getReturnType();
+                Class<?> planningValueClass = valueMethod.getParameterTypes()[0];
                 planningValueList = new ArrayList<Object>();
                 for (Object fact : facts) {
                     if (planningValueClass.isInstance(fact)) {
@@ -65,26 +68,27 @@ public class PlanningVariableHandler {
         return planningValueListIterator.hasNext();
     }
 
-    public void next() {
+    public void next(WorkingMemory workingMemory) {
         Object value = planningValueListIterator.next();
-        doValue(value);
+        doValue(workingMemory, value);
     }
 
-    public void reset() {
+    public void reset(WorkingMemory workingMemory) {
         planningValueListIterator = planningValueList.iterator();
         Object value = planningValueListIterator.next();
-        doValue(value);
+        doValue(workingMemory, value);
     }
 
-    private void doValue(Object value) {
+    private void doValue(WorkingMemory workingMemory, Object value) {
+        FactHandle factHandle = workingMemory.getFactHandle(planningVariable);
         try {
-            valueMethod.invoke(planningVariableClass, value);
+            valueMethod.invoke(planningVariable, value);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Could not call method to set planningValue", e);
         } catch (InvocationTargetException e) {
             throw new IllegalStateException("Could not call method to set planningValue", e);
         }
-
+        workingMemory.update(factHandle, planningVariable);
     }
 
 }

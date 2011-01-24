@@ -28,10 +28,13 @@ import org.drools.planner.core.solution.Solution;
  */
 public class BruteForceSolutionIterator {
 
+    private BruteForceSolverScope bruteForceSolverScope;
+
     private List<PlanningVariableHandler> list = new ArrayList<PlanningVariableHandler>();
 
-    public BruteForceSolutionIterator(Solution startingSolution) { // TODO move startingSolution etc out of here
-        Collection<? extends Object> facts = startingSolution.getFacts();
+    public BruteForceSolutionIterator(BruteForceSolverScope bruteForceSolverScope) {
+        this.bruteForceSolverScope = bruteForceSolverScope; // TODO move startingSolution etc out of here
+        Collection<? extends Object> facts = bruteForceSolverScope.getWorkingSolution().getFacts();
         for (Object fact : facts) {
             PlanningVariableClass planningVariableClass = fact.getClass().getAnnotation(PlanningVariableClass.class);
             if (planningVariableClass != null) {
@@ -56,12 +59,12 @@ public class BruteForceSolutionIterator {
         for (PlanningVariableHandler planningVariableHandler : list) {
             if (planningVariableHandler.hasNext()) {
                 // Increment that level (for example 5 in 115999)
-                planningVariableHandler.next();
+                planningVariableHandler.next(bruteForceSolverScope.getWorkingMemory());
                 // Do not touch the higher levels (for example each 1 in 115999)
                 break;
             } else {
                 // Reset the lower levels (for example each 9 in 115999)
-                planningVariableHandler.reset();
+                planningVariableHandler.reset(bruteForceSolverScope.getWorkingMemory());
             }
         }
     }
