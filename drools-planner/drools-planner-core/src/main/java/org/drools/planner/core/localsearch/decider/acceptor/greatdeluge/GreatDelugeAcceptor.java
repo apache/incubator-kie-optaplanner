@@ -17,7 +17,7 @@
 package org.drools.planner.core.localsearch.decider.acceptor.greatdeluge;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
@@ -71,12 +71,12 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
-        if (stepScope.getStepIndex() == stepScope.getLocalSearchSolverScope().getBestSolutionStepIndex()) {
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        if (localSearchStepScope.getStepIndex() == localSearchStepScope.getLocalSearchSolverScope().getBestSolutionStepIndex()) {
             // New best score
-            waterLevelScore = stepScope.getLocalSearchSolverScope().getBestScore().multiply(waterLevelUpperBoundRate);
+            waterLevelScore = localSearchStepScope.getLocalSearchSolverScope().getBestScore().multiply(waterLevelUpperBoundRate);
         } else {
-            Score perfectMaximumScore = stepScope.getLocalSearchSolverScope().getScoreDefinition()
+            Score perfectMaximumScore = localSearchStepScope.getLocalSearchSolverScope().getScoreDefinition()
                     .getPerfectMaximumScore();
             Score waterLevelAugend = perfectMaximumScore.subtract(waterLevelScore).multiply(waterRisingRate);
             waterLevelScore = waterLevelScore.add(waterLevelAugend);

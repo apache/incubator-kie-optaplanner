@@ -16,31 +16,26 @@
 
 package org.drools.planner.core.localsearch;
 
-import java.util.Random;
 import java.util.Comparator;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractStepScope;
 
 /**
  * @author Geoffrey De Smet
  */
-public class StepScope {
+public class LocalSearchStepScope extends AbstractStepScope {
 
     private final LocalSearchSolverScope localSearchSolverScope;
 
-    private int stepIndex = -1;
     private double timeGradient = Double.NaN;
     private Comparator<Score> deciderScoreComparator;
     private Move step = null;
     private Move undoStep = null;
-    private Score score = null;
-    // Stays null if there is no need to clone it
-    private Solution clonedSolution = null;
 
-    public StepScope(LocalSearchSolverScope localSearchSolverScope) {
+    public LocalSearchStepScope(LocalSearchSolverScope localSearchSolverScope) {
         this.localSearchSolverScope = localSearchSolverScope;
     }
 
@@ -48,12 +43,9 @@ public class StepScope {
         return localSearchSolverScope;
     }
 
-    public int getStepIndex() {
-        return stepIndex;
-    }
-
-    public void setStepIndex(int stepIndex) {
-        this.stepIndex = stepIndex;
+    @Override
+    public AbstractSolverScope getAbstractSolverScope() {
+        return localSearchSolverScope;
     }
 
     public double getTimeGradient() {
@@ -88,43 +80,8 @@ public class StepScope {
         this.undoStep = undoStep;
     }
 
-    public Score getScore() {
-        return score;
-    }
-
-    public void setScore(Score score) {
-        this.score = score;
-    }
-
-    public Solution getClonedSolution() {
-        return clonedSolution;
-    }
-
-    public void setClonedSolution(Solution clonedSolution) {
-        this.clonedSolution = clonedSolution;
-    }
-
     // ************************************************************************
     // Calculated methods
     // ************************************************************************
-
-    public Solution getWorkingSolution() {
-        return localSearchSolverScope.getWorkingSolution();
-    }
-
-    public WorkingMemory getWorkingMemory() {
-        return localSearchSolverScope.getWorkingMemory();
-    }
-
-    public Random getWorkingRandom() {
-        return localSearchSolverScope.getWorkingRandom();
-    }
-
-    public Solution createOrGetClonedSolution() {
-        if (clonedSolution == null) {
-            clonedSolution = getWorkingSolution().cloneSolution();
-        }
-        return clonedSolution;
-    }
 
 }

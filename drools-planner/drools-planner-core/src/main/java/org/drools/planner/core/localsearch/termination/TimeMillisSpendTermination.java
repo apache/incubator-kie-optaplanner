@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.localsearch.termination;
 
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
 /**
  * @author Geoffrey De Smet
@@ -37,13 +37,13 @@ public class TimeMillisSpendTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
 
-    public boolean isTerminated(StepScope stepScope) {
-        long timeMillisSpend = stepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
+    public boolean isTerminated(LocalSearchStepScope localSearchStepScope) {
+        long timeMillisSpend = localSearchStepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
         return timeMillisSpend >= maximumTimeMillisSpend;
     }
 
-    public double calculateTimeGradient(StepScope stepScope) {
-        long timeMillisSpend = stepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
+    public double calculateTimeGradient(LocalSearchStepScope localSearchStepScope) {
+        long timeMillisSpend = localSearchStepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
         double timeGradient = ((double) timeMillisSpend) / ((double) maximumTimeMillisSpend);
         return Math.min(timeGradient, 1.0);
     }

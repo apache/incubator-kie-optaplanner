@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.config.localsearch;
+package org.drools.planner.config;
 
 import org.drools.planner.core.localsearch.decider.DefaultDecider;
 import org.drools.planner.core.move.Move;

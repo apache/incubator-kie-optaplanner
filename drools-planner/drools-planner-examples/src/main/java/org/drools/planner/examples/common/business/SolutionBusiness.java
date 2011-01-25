@@ -30,12 +30,12 @@ import org.drools.ClassObjectFilter;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.event.SolverEventListener;
-import org.drools.planner.core.localsearch.DefaultLocalSearchSolver;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solver.AbstractSolver;
+import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
@@ -61,7 +61,7 @@ public class SolutionBusiness {
 
     // volatile because the solve method doesn't come from the event thread (like every other method call)
     private volatile Solver solver;
-    private LocalSearchSolverScope localSearchSolverScope;
+    private AbstractSolverScope abstractSolverScope;
 
     public void setSolutionDao(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;
@@ -136,7 +136,7 @@ public class SolutionBusiness {
 
     public void setSolver(Solver solver) {
         this.solver = solver;
-        this.localSearchSolverScope = ((DefaultLocalSearchSolver) solver).getLocalSearchSolverScope();
+        this.abstractSolverScope = ((AbstractSolver) solver).getAbstractSolverScope();
     }
 
 
@@ -153,11 +153,11 @@ public class SolutionBusiness {
     }
 
     public Solution getSolution() {
-        return localSearchSolverScope.getWorkingSolution();
+        return abstractSolverScope.getWorkingSolution();
     }
 
     public Score getScore() {
-        return localSearchSolverScope.calculateScoreFromWorkingMemory();
+        return abstractSolverScope.calculateScoreFromWorkingMemory();
     }
 
     public void addSolverEventLister(SolverEventListener eventListener) {
@@ -166,7 +166,7 @@ public class SolutionBusiness {
 
     public List<ScoreDetail> getScoreDetailList() {
         Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
-        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
         if (workingMemory == null) {
             return Collections.emptyList();
         }
@@ -197,22 +197,22 @@ public class SolutionBusiness {
     }
 
     public void saveSolution(File file) {
-        Solution solution = localSearchSolverScope.getWorkingSolution();
+        Solution solution = abstractSolverScope.getWorkingSolution();
         solutionDao.writeSolution(solution, file);
     }
 
     public void exportSolution(File file) {
-        Solution solution = localSearchSolverScope.getWorkingSolution();
+        Solution solution = abstractSolverScope.getWorkingSolution();
         exporter.writeSolution(solution, file);
     }
 
     public void doMove(Move move) {
-        if (!move.isMoveDoable(localSearchSolverScope.getWorkingMemory())) {
+        if (!move.isMoveDoable(abstractSolverScope.getWorkingMemory())) {
             logger.info("Not doing user move ({}) because it is not doable.", move);
             return;
         }
         logger.info("Doing user move ({}).", move);
-        move.doMove(localSearchSolverScope.getWorkingMemory());
+        move.doMove(abstractSolverScope.getWorkingMemory());
     }
 
     public void solve() {

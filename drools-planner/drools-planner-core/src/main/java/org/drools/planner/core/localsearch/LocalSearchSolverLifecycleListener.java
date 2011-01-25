@@ -23,11 +23,11 @@ public interface LocalSearchSolverLifecycleListener {
 
     void solvingStarted(LocalSearchSolverScope localSearchSolverScope);
 
-    void beforeDeciding(StepScope stepScope);
+    void beforeDeciding(LocalSearchStepScope localSearchStepScope);
 
-    void stepDecided(StepScope stepScope);
+    void stepDecided(LocalSearchStepScope localSearchStepScope);
 
-    void stepTaken(StepScope stepScope);
+    void stepTaken(LocalSearchStepScope localSearchStepScope);
 
     void solvingEnded(LocalSearchSolverScope localSearchSolverScope);
 

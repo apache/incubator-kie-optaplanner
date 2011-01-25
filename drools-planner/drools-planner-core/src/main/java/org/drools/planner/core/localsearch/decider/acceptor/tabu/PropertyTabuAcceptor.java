@@ -18,7 +18,7 @@ package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
 import java.util.Collection;
 
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 
 /**
@@ -37,8 +37,8 @@ public class PropertyTabuAcceptor extends AbstractTabuAcceptor {
     }
 
     @Override
-    protected Collection<? extends Object> findNewTabu(StepScope stepScope) {
-        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) stepScope.getStep();
+    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope) {
+        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) localSearchStepScope.getStep();
         return tabuPropertyEnabled.getTabuProperties();
     }
 

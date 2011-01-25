@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.app.LoggingMain;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
@@ -74,7 +75,8 @@ public class NurseRosteringCompetitionMediumApp extends LoggingMain {
 
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
-        configurer.getConfig().getTerminationConfig().setMaximumSecondsSpend(maximumSecondsSpend);
+        ((LocalSearchSolverConfig) configurer.getConfig()).getTerminationConfig()
+                .setMaximumSecondsSpend(maximumSecondsSpend);
         solver = configurer.buildSolver();
     }
 

@@ -17,7 +17,7 @@
 package org.drools.planner.core.localsearch.termination;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.score.Score;
 
 /**
@@ -35,15 +35,15 @@ public class ScoreAttainedTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
 
-    public boolean isTerminated(StepScope stepScope) {
-        Score bestScore = stepScope.getLocalSearchSolverScope().getBestScore();
+    public boolean isTerminated(LocalSearchStepScope localSearchStepScope) {
+        Score bestScore = localSearchStepScope.getLocalSearchSolverScope().getBestScore();
         return bestScore.compareTo(scoreAttained) >= 0;
     }
 
-    public double calculateTimeGradient(StepScope stepScope) {
-        LocalSearchSolverScope localSearchSolverScope = stepScope.getLocalSearchSolverScope();
+    public double calculateTimeGradient(LocalSearchStepScope localSearchStepScope) {
+        LocalSearchSolverScope localSearchSolverScope = localSearchStepScope.getLocalSearchSolverScope();
         Score startingScore = localSearchSolverScope.getStartingScore();
-        Score stepScore = localSearchSolverScope.getLastCompletedStepScope().getScore();
+        Score stepScore = localSearchSolverScope.getLastCompletedLocalSearchStepScope().getScore();
         return localSearchSolverScope.getScoreDefinition()
                 .calculateTimeGradient(startingScore, scoreAttained, stepScore);
     }

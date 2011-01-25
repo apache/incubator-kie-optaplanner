@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.MoveFactory;
@@ -59,30 +59,30 @@ public class MoveFactorySelector extends AbstractSelector {
     }
 
     @Override
-    public void beforeDeciding(StepScope stepScope) {
-        moveFactory.beforeDeciding(stepScope);
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+        moveFactory.beforeDeciding(localSearchStepScope);
     }
 
-    public Iterator<Move> moveIterator(StepScope stepScope) {
-        return selectMoveList(stepScope).iterator();
+    public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
+        return selectMoveList(localSearchStepScope).iterator();
     }
 
-    public List<Move> selectMoveList(StepScope stepScope) {
-        List<Move> moveList = moveFactory.createMoveList(stepScope.getWorkingSolution());
+    public List<Move> selectMoveList(LocalSearchStepScope localSearchStepScope) {
+        List<Move> moveList = moveFactory.createMoveList(localSearchStepScope.getWorkingSolution());
         if (shuffle) {
-            Collections.shuffle(moveList, stepScope.getWorkingRandom());
+            Collections.shuffle(moveList, localSearchStepScope.getWorkingRandom());
         }
         return moveList;
     }
 
     @Override
-    public void stepDecided(StepScope stepScope) {
-        moveFactory.stepDecided(stepScope);
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
+        moveFactory.stepDecided(localSearchStepScope);
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
-        moveFactory.stepTaken(stepScope);
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        moveFactory.stepTaken(localSearchStepScope);
     }
 
     @Override

@@ -24,12 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.localsearch.decider.selector.AbstractSelector;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.factory.MoveFactory;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory;
@@ -102,16 +101,16 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     }
 
     @Override
-    public void beforeDeciding(StepScope stepScope) {
-        periodChangeMoveFactory.beforeDeciding(stepScope);
-        roomChangeMoveFactory.beforeDeciding(stepScope);
-        examSwitchMoveFactory.beforeDeciding(stepScope);
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+        periodChangeMoveFactory.beforeDeciding(localSearchStepScope);
+        roomChangeMoveFactory.beforeDeciding(localSearchStepScope);
+        examSwitchMoveFactory.beforeDeciding(localSearchStepScope);
     }
 
-    public Iterator<Move> moveIterator(StepScope stepScope) {
+    public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
         if (nextShuffledExamListIndex >= shuffledExamList.size()) {
             // Just in time shuffling
-            Collections.shuffle(shuffledExamList, stepScope.getWorkingRandom());
+            Collections.shuffle(shuffledExamList, localSearchStepScope.getWorkingRandom());
             nextShuffledExamListIndex = 0;
         }
         Exam exam = shuffledExamList.get(nextShuffledExamListIndex);
@@ -121,17 +120,17 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     }
 
     @Override
-    public void stepDecided(StepScope stepScope) {
-        periodChangeMoveFactory.stepDecided(stepScope);
-        roomChangeMoveFactory.stepDecided(stepScope);
-        examSwitchMoveFactory.stepDecided(stepScope);
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
+        periodChangeMoveFactory.stepDecided(localSearchStepScope);
+        roomChangeMoveFactory.stepDecided(localSearchStepScope);
+        examSwitchMoveFactory.stepDecided(localSearchStepScope);
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
-        periodChangeMoveFactory.stepTaken(stepScope);
-        roomChangeMoveFactory.stepTaken(stepScope);
-        examSwitchMoveFactory.stepTaken(stepScope);
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        periodChangeMoveFactory.stepTaken(localSearchStepScope);
+        roomChangeMoveFactory.stepTaken(localSearchStepScope);
+        examSwitchMoveFactory.stepTaken(localSearchStepScope);
     }
 
     @Override

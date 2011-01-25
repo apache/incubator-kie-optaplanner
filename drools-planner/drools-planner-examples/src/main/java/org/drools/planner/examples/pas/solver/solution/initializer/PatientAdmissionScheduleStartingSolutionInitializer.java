@@ -18,18 +18,18 @@ package org.drools.planner.examples.pas.solver.solution.initializer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Set;
-import java.util.HashSet;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
+import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
 import org.drools.planner.examples.pas.domain.Bed;
@@ -45,20 +45,20 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
     private boolean checkSameBedInSameNight = true;
 
     @Override
-    public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
-        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) localSearchSolverScope.getWorkingSolution();
+    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
+        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) abstractSolverScope.getWorkingSolution();
         return patientAdmissionSchedule.isInitialized();
     }
 
-    public void initializeSolution(LocalSearchSolverScope localSearchSolverScope) {
+    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule)
-                localSearchSolverScope.getWorkingSolution();
-        initializeBedDesignationList(localSearchSolverScope, patientAdmissionSchedule);
+                abstractSolverScope.getWorkingSolution();
+        initializeBedDesignationList(abstractSolverScope, patientAdmissionSchedule);
     }
 
-    private void initializeBedDesignationList(LocalSearchSolverScope localSearchSolverScope,
+    private void initializeBedDesignationList(AbstractSolverScope abstractSolverScope,
             PatientAdmissionSchedule patientAdmissionSchedule) {
-        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
         List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
         Map<Bed, Set<Integer>> bedToTakenNightIndexSetMap = null;
         if (checkSameBedInSameNight) {
@@ -68,7 +68,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
         // Assign one admissionPart at a time
         List<Bed> bedListInPriority = new ArrayList(patientAdmissionSchedule.getBedList());
         for (BedDesignation bedDesignation : bedDesignationList) {
-            Score unscheduledScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = abstractSolverScope.calculateScoreFromWorkingMemory();
             int firstNightIndex = bedDesignation.getAdmissionPart().getFirstNight().getIndex();
             int lastNightIndex = bedDesignation.getAdmissionPart().getLastNight().getIndex();
             boolean perfectMatch = false;
@@ -102,7 +102,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                     bedDesignation.setBed(bed);
                     workingMemory.update(bedDesignationHandle, bedDesignation);
                 }
-                Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
+                Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
                 if (score.compareTo(unscheduledScore) < 0) {
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;

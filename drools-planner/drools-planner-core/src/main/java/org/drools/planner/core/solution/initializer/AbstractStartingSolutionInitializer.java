@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.solution.initializer;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.solver.AbstractSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public abstract class AbstractStartingSolutionInitializer implements StartingSol
     // Worker methods
     // ************************************************************************
 
-    public boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope) {
+    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
         return false;
     }
 

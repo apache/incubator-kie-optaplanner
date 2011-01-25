@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.localsearch.termination;
 
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
 /**
  * @author Geoffrey De Smet
@@ -37,19 +37,19 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
     
-    private int calculateUnimprovedStepCount(StepScope stepScope) {
-        int bestStepIndex = stepScope.getLocalSearchSolverScope().getBestSolutionStepIndex();
-        int stepIndex = stepScope.getStepIndex();
+    private int calculateUnimprovedStepCount(LocalSearchStepScope localSearchStepScope) {
+        int bestStepIndex = localSearchStepScope.getLocalSearchSolverScope().getBestSolutionStepIndex();
+        int stepIndex = localSearchStepScope.getStepIndex();
         return stepIndex - bestStepIndex;
     }
 
-    public boolean isTerminated(StepScope stepScope) {
-        int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
+    public boolean isTerminated(LocalSearchStepScope localSearchStepScope) {
+        int unimprovedStepCount = calculateUnimprovedStepCount(localSearchStepScope);
         return unimprovedStepCount >= maximumUnimprovedStepCount;
     }
 
-    public double calculateTimeGradient(StepScope stepScope) {
-        int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
+    public double calculateTimeGradient(LocalSearchStepScope localSearchStepScope) {
+        int unimprovedStepCount = calculateUnimprovedStepCount(localSearchStepScope);
         double timeGradient = ((double) unimprovedStepCount) / ((double) maximumUnimprovedStepCount);
         return Math.min(timeGradient, 1.0);
     }

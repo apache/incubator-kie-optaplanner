@@ -16,15 +16,15 @@
 
 package org.drools.planner.core.solution.initializer;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.solver.AbstractSolverScope;
 
 /**
  * @author Geoffrey De Smet
  */
 public interface StartingSolutionInitializer {
 
-    boolean isSolutionInitialized(LocalSearchSolverScope localSearchSolverScope);
+    boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope);
 
-    void initializeSolution(LocalSearchSolverScope localSearchSolverScope);
+    void initializeSolution(AbstractSolverScope abstractSolverScope);
 
 }

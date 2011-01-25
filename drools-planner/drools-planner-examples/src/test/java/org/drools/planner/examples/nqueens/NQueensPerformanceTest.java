@@ -18,7 +18,7 @@ package org.drools.planner.examples.nqueens;
 
 import java.io.File;
 
-import org.drools.planner.config.localsearch.EnvironmentMode;
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;

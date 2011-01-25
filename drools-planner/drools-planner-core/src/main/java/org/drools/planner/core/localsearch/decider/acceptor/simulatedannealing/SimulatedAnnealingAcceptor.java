@@ -17,7 +17,7 @@
 package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
@@ -55,8 +55,8 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
-        LocalSearchSolverScope localSearchSolverScope = moveScope.getStepScope().getLocalSearchSolverScope();
-        Score lastStepScore = localSearchSolverScope.getLastCompletedStepScope().getScore();
+        LocalSearchSolverScope localSearchSolverScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope();
+        Score lastStepScore = localSearchSolverScope.getLastCompletedLocalSearchStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) > 0) {
             return 1.0;
@@ -77,9 +77,9 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
-        super.stepTaken(stepScope);
-        double timeGradient = stepScope.getTimeGradient();
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        super.stepTaken(localSearchStepScope);
+        double timeGradient = localSearchStepScope.getTimeGradient();
         temperature = startingTemperature * (1.0 - timeGradient);
         if (temperature < temperatureMinimum) {
             temperature = temperatureMinimum;
