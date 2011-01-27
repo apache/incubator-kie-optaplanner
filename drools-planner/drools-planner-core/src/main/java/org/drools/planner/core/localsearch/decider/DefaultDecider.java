@@ -17,16 +17,15 @@
 package org.drools.planner.core.localsearch.decider;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.LocalSearchSolver;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
+import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.decider.selector.Selector;
-import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.slf4j.Logger;
@@ -98,20 +97,20 @@ public class DefaultDecider implements Decider {
         forager.solvingStarted(localSearchSolverScope);
     }
 
-    public void beforeDeciding(StepScope stepScope) {
-        deciderScoreComparatorFactory.beforeDeciding(stepScope);
-        stepScope.setDeciderScoreComparator(deciderScoreComparatorFactory.createDeciderScoreComparator());
-        selector.beforeDeciding(stepScope);
-        acceptor.beforeDeciding(stepScope);
-        forager.beforeDeciding(stepScope);
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+        deciderScoreComparatorFactory.beforeDeciding(localSearchStepScope);
+        localSearchStepScope.setDeciderScoreComparator(deciderScoreComparatorFactory.createDeciderScoreComparator());
+        selector.beforeDeciding(localSearchStepScope);
+        acceptor.beforeDeciding(localSearchStepScope);
+        forager.beforeDeciding(localSearchStepScope);
     }
 
-    public void decideNextStep(StepScope stepScope) {
-        WorkingMemory workingMemory = stepScope.getWorkingMemory();
-        Iterator<Move> moveIterator = selector.moveIterator(stepScope);
+    public void decideNextStep(LocalSearchStepScope localSearchStepScope) {
+        WorkingMemory workingMemory = localSearchStepScope.getWorkingMemory();
+        Iterator<Move> moveIterator = selector.moveIterator(localSearchStepScope);
         while (moveIterator.hasNext()) {
             Move move = moveIterator.next();
-            MoveScope moveScope = new MoveScope(stepScope);
+            MoveScope moveScope = new MoveScope(localSearchStepScope);
             moveScope.setMove(move);
             // Filter out not doable moves
             if (move.isMoveDoable(workingMemory)) {
@@ -123,12 +122,12 @@ public class DefaultDecider implements Decider {
                 logger.debug("    Ignoring not doable move ({}).", move);
             }
         }
-        MoveScope pickedMoveScope = forager.pickMove(stepScope);
+        MoveScope pickedMoveScope = forager.pickMove(localSearchStepScope);
         if (pickedMoveScope != null) {
             Move step = pickedMoveScope.getMove();
-            stepScope.setStep(step);
-            stepScope.setUndoStep(step.createUndoMove(workingMemory));
-            stepScope.setScore(pickedMoveScope.getScore());
+            localSearchStepScope.setStep(step);
+            localSearchStepScope.setUndoStep(step.createUndoMove(workingMemory));
+            localSearchStepScope.setScore(pickedMoveScope.getScore());
         }
     }
 
@@ -141,15 +140,15 @@ public class DefaultDecider implements Decider {
         processMove(moveScope);
         undoMove.doMove(workingMemory);
         if (assertUndoMoveIsUncorrupted) {
-            Score undoScore = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
-            Score lastCompletedStepScore = moveScope.getStepScope().getLocalSearchSolverScope()
-                    .getLastCompletedStepScope().getScore();
+            Score undoScore = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
+            Score lastCompletedStepScore = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope()
+                    .getLastCompletedLocalSearchStepScope().getScore();
             if (!undoScore.equals(lastCompletedStepScore)) {
                 throw new IllegalStateException(
                         "Corrupted undo move (" + undoMove + ") received from move (" + move + ").\n"
                         + "Unequal lastCompletedStepScore (" + lastCompletedStepScore + ") and undoScore ("
                         + undoScore + ").\n"
-                        + moveScope.getStepScope().getLocalSearchSolverScope().buildConstraintOccurrenceSummary());
+                        + moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().buildConstraintOccurrenceSummary());
             }
         }
         logger.debug("    Move score ({}), accept chance ({}) for move ({}).",
@@ -157,9 +156,9 @@ public class DefaultDecider implements Decider {
     }
 
     private void processMove(MoveScope moveScope) {
-        Score score = moveScope.getStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
+        Score score = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
         if (assertMoveScoreIsUncorrupted) {
-            moveScope.getStepScope().getLocalSearchSolverScope().assertWorkingScore(score);
+            moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().assertWorkingScore(score);
         }
         moveScope.setScore(score);
         double acceptChance = acceptor.calculateAcceptChance(moveScope);
@@ -167,18 +166,18 @@ public class DefaultDecider implements Decider {
         forager.addMove(moveScope);
     }
 
-    public void stepDecided(StepScope stepScope) {
-        deciderScoreComparatorFactory.stepDecided(stepScope);
-        selector.stepDecided(stepScope);
-        acceptor.stepDecided(stepScope);
-        forager.stepDecided(stepScope);
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
+        deciderScoreComparatorFactory.stepDecided(localSearchStepScope);
+        selector.stepDecided(localSearchStepScope);
+        acceptor.stepDecided(localSearchStepScope);
+        forager.stepDecided(localSearchStepScope);
     }
 
-    public void stepTaken(StepScope stepScope) {
-        deciderScoreComparatorFactory.stepTaken(stepScope);
-        selector.stepTaken(stepScope);
-        acceptor.stepTaken(stepScope);
-        forager.stepTaken(stepScope);
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        deciderScoreComparatorFactory.stepTaken(localSearchStepScope);
+        selector.stepTaken(localSearchStepScope);
+        acceptor.stepTaken(localSearchStepScope);
+        forager.stepTaken(localSearchStepScope);
     }
 
     public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {

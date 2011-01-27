@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.localsearch.termination;
 
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
 /**
  * @author Geoffrey De Smet
@@ -37,13 +37,13 @@ public class StepCountTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
 
-    public boolean isTerminated(StepScope stepScope) {
-        int stepIndex = stepScope.getStepIndex();
+    public boolean isTerminated(LocalSearchStepScope localSearchStepScope) {
+        int stepIndex = localSearchStepScope.getStepIndex();
         return stepIndex >= maximumStepCount;
     }
 
-    public double calculateTimeGradient(StepScope stepScope) {
-        int stepIndex = stepScope.getStepIndex();
+    public double calculateTimeGradient(LocalSearchStepScope localSearchStepScope) {
+        int stepIndex = localSearchStepScope.getStepIndex();
         double timeGradient = ((double) stepIndex) / ((double) maximumStepCount);
         return Math.min(timeGradient, 1.0);
     }

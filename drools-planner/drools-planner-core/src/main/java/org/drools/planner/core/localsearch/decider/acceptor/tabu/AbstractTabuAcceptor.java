@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
@@ -96,12 +96,12 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         if (aspirationEnabled) {
             // Doesn't use the deciderScoreComparator because shifting penalties don't apply
             if (moveScope.getScore().compareTo(
-                    moveScope.getStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
+                    moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
                 logger.debug("    Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
                 return 1.0;
             }
         }
-        int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex - 1;
+        int tabuStepCount = moveScope.getLocalSearchStepScope().getStepIndex() - maximumTabuStepIndex - 1;
         if (tabuStepCount < completeTabuSize) {
             logger.debug("    Proposed move ({}) is complete tabu.", moveScope.getMove());
             return 0.0;
@@ -119,8 +119,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepTaken(StepScope stepScope) {
-        Collection<? extends Object> tabus = findNewTabu(stepScope);
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        Collection<? extends Object> tabus = findNewTabu(localSearchStepScope);
         for (Object tabu : tabus) {
             // required to push tabu to the end of the line
             if (tabuToStepIndexMap.containsKey(tabu)) {
@@ -134,13 +134,13 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 it.remove();
                 tabuToStepIndexMap.remove(removeTabu);
             }
-            tabuToStepIndexMap.put(tabu, stepScope.getStepIndex());
+            tabuToStepIndexMap.put(tabu, localSearchStepScope.getStepIndex());
             tabuSequenceList.add(tabu);
         }
     }
 
     protected abstract Collection<? extends Object> findTabu(MoveScope moveScope);
 
-    protected abstract Collection<? extends Object> findNewTabu(StepScope stepScope);
+    protected abstract Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope);
 
 }

@@ -18,7 +18,7 @@ package org.drools.planner.core.localsearch.termination;
 
 import org.drools.planner.core.localsearch.LocalSearchSolver;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.StepScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,15 +44,15 @@ public abstract class AbstractTermination implements Termination {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void beforeDeciding(StepScope stepScope) {
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepDecided(StepScope stepScope) {
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepTaken(StepScope stepScope) {
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 

@@ -16,8 +16,9 @@
 
 package org.drools.planner.examples.curriculumcourse;
 
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.XmlSolverConfigurer;
-import org.drools.planner.config.localsearch.EnvironmentMode;
+import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.config.localsearch.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
@@ -48,7 +49,7 @@ public class CurriculumCourseSmokeTest extends LoggingTest {
         configurer.getConfig().setEnvironmentMode(EnvironmentMode.DEBUG);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setMaximumStepCount(50);
-        configurer.getConfig().setTerminationConfig(terminationConfig);
+        ((LocalSearchSolverConfig) configurer.getConfig()).setTerminationConfig(terminationConfig);
 
         Solver solver = configurer.buildSolver();
         SolutionDao solutionDao = new CurriculumCourseDaoImpl();
