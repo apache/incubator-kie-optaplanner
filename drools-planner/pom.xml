@@ -21,21 +21,8 @@
   </description>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <!-- Building -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>1.5</source>
-            <target>1.5</target>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
-      <!-- TODO temporarly added for the nurse rostering competition-->
+      <!-- TODO temporarily added for the nurse rostering competition-->
       <!-- Run command: mvn clean package assembly:assembly -DskipTests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
