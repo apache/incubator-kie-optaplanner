@@ -30,12 +30,20 @@ public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/travelingtournament/benchmark/smart/";
     public static final String SOLVER_BENCHMARK_CONFIG
             = SOLVER_BENCHMARK_CONFIG_PREFIX + "smartTravelingTournamentSolverBenchmarkConfig.xml";
+    public static final String STEP_LIMIT_SOLVER_BENCHMARK_CONFIG
+            = SOLVER_BENCHMARK_CONFIG_PREFIX + "smartTravelingTournamentStepLimitSolverBenchmarkConfig.xml";
 
     public static void main(String[] args) {
         String solverBenchmarkConfig;
-        // default is a workaround for http://jira.codehaus.org/browse/MEXEC-35
-        if (args.length > 0 && !args[0].equals("default")) {
-            solverBenchmarkConfig = SOLVER_BENCHMARK_CONFIG_PREFIX + args[0] + "SolverBenchmarkConfig.xml";
+        if (args.length > 0) {
+            // default is a workaround for http://jira.codehaus.org/browse/MEXEC-35
+            if (args[0].equals("default")) {
+                solverBenchmarkConfig = SOLVER_BENCHMARK_CONFIG;
+            } else if (args[0].equals("stepLimit")) {
+                solverBenchmarkConfig = STEP_LIMIT_SOLVER_BENCHMARK_CONFIG;
+            } else {
+                solverBenchmarkConfig = SOLVER_BENCHMARK_CONFIG_PREFIX + args[0] + "SolverBenchmarkConfig.xml";
+            }
         } else {
             solverBenchmarkConfig = SOLVER_BENCHMARK_CONFIG;
         }
