@@ -91,11 +91,16 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
         private List<Day> constructDayList(int n) {
             List<Day> dayList = new ArrayList<Day>();
             int daySize = (n - 1) * 2; // Play vs each team (except itself) twice (home and away)
+            Day previousDay = null;
             for (int i = 0; i < daySize; i++) {
                 Day day = new Day();
                 day.setId((long) i);
                 day.setIndex(i);
                 dayList.add(day);
+                if (previousDay != null) {
+                    previousDay.setNextDay(day);
+                }
+                previousDay = day;
             }
             return dayList;
         }

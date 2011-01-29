@@ -4,27 +4,32 @@
     <org.drools.planner.examples.travelingtournament.domain.Day id="3">
       <id>0</id>
       <index>0</index>
+      <nextDay id="4">
+        <id>1</id>
+        <index>1</index>
+        <nextDay id="5">
+          <id>2</id>
+          <index>2</index>
+          <nextDay id="6">
+            <id>3</id>
+            <index>3</index>
+            <nextDay id="7">
+              <id>4</id>
+              <index>4</index>
+              <nextDay id="8">
+                <id>5</id>
+                <index>5</index>
+              </nextDay>
+            </nextDay>
+          </nextDay>
+        </nextDay>
+      </nextDay>
     </org.drools.planner.examples.travelingtournament.domain.Day>
-    <org.drools.planner.examples.travelingtournament.domain.Day id="4">
-      <id>1</id>
-      <index>1</index>
-    </org.drools.planner.examples.travelingtournament.domain.Day>
-    <org.drools.planner.examples.travelingtournament.domain.Day id="5">
-      <id>2</id>
-      <index>2</index>
-    </org.drools.planner.examples.travelingtournament.domain.Day>
-    <org.drools.planner.examples.travelingtournament.domain.Day id="6">
-      <id>3</id>
-      <index>3</index>
-    </org.drools.planner.examples.travelingtournament.domain.Day>
-    <org.drools.planner.examples.travelingtournament.domain.Day id="7">
-      <id>4</id>
-      <index>4</index>
-    </org.drools.planner.examples.travelingtournament.domain.Day>
-    <org.drools.planner.examples.travelingtournament.domain.Day id="8">
-      <id>5</id>
-      <index>5</index>
-    </org.drools.planner.examples.travelingtournament.domain.Day>
+    <org.drools.planner.examples.travelingtournament.domain.Day reference="4"/>
+    <org.drools.planner.examples.travelingtournament.domain.Day reference="5"/>
+    <org.drools.planner.examples.travelingtournament.domain.Day reference="6"/>
+    <org.drools.planner.examples.travelingtournament.domain.Day reference="7"/>
+    <org.drools.planner.examples.travelingtournament.domain.Day reference="8"/>
   </dayList>
   <teamList id="9">
     <org.drools.planner.examples.travelingtournament.domain.Team id="10">
@@ -41,13 +46,21 @@
                 <int>0</int>
               </entry>
               <entry>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="10"/>
+                <int>665</int>
+              </entry>
+              <entry>
                 <org.drools.planner.examples.travelingtournament.domain.Team id="14">
-                  <id>1</id>
-                  <name>NYM</name>
+                  <id>3</id>
+                  <name>MON</name>
                   <distanceToTeamMap id="15">
                     <entry>
                       <org.drools.planner.examples.travelingtournament.domain.Team reference="12"/>
-                      <int>80</int>
+                      <int>380</int>
+                    </entry>
+                    <entry>
+                      <org.drools.planner.examples.travelingtournament.domain.Team reference="10"/>
+                      <int>929</int>
                     </entry>
                     <entry>
                       <org.drools.planner.examples.travelingtournament.domain.Team reference="14"/>
@@ -55,12 +68,16 @@
                     </entry>
                     <entry>
                       <org.drools.planner.examples.travelingtournament.domain.Team id="16">
-                        <id>3</id>
-                        <name>MON</name>
+                        <id>1</id>
+                        <name>NYM</name>
                         <distanceToTeamMap id="17">
                           <entry>
                             <org.drools.planner.examples.travelingtournament.domain.Team reference="12"/>
-                            <int>380</int>
+                            <int>80</int>
+                          </entry>
+                          <entry>
+                            <org.drools.planner.examples.travelingtournament.domain.Team reference="10"/>
+                            <int>745</int>
                           </entry>
                           <entry>
                             <org.drools.planner.examples.travelingtournament.domain.Team reference="14"/>
@@ -70,57 +87,45 @@
                             <org.drools.planner.examples.travelingtournament.domain.Team reference="16"/>
                             <int>0</int>
                           </entry>
-                          <entry>
-                            <org.drools.planner.examples.travelingtournament.domain.Team reference="10"/>
-                            <int>929</int>
-                          </entry>
                         </distanceToTeamMap>
                       </org.drools.planner.examples.travelingtournament.domain.Team>
                       <int>337</int>
                     </entry>
-                    <entry>
-                      <org.drools.planner.examples.travelingtournament.domain.Team reference="10"/>
-                      <int>745</int>
-                    </entry>
                   </distanceToTeamMap>
                 </org.drools.planner.examples.travelingtournament.domain.Team>
-                <int>80</int>
-              </entry>
-              <entry>
-                <org.drools.planner.examples.travelingtournament.domain.Team reference="16"/>
                 <int>380</int>
               </entry>
               <entry>
-                <org.drools.planner.examples.travelingtournament.domain.Team reference="10"/>
-                <int>665</int>
+                <org.drools.planner.examples.travelingtournament.domain.Team reference="16"/>
+                <int>80</int>
               </entry>
             </distanceToTeamMap>
           </org.drools.planner.examples.travelingtournament.domain.Team>
           <int>665</int>
         </entry>
         <entry>
-          <org.drools.planner.examples.travelingtournament.domain.Team reference="14"/>
-          <int>745</int>
-        </entry>
-        <entry>
-          <org.drools.planner.examples.travelingtournament.domain.Team reference="16"/>
-          <int>929</int>
-        </entry>
-        <entry>
           <org.drools.planner.examples.travelingtournament.domain.Team reference="10"/>
           <int>0</int>
         </entry>
+        <entry>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="14"/>
+          <int>929</int>
+        </entry>
+        <entry>
+          <org.drools.planner.examples.travelingtournament.domain.Team reference="16"/>
+          <int>745</int>
+        </entry>
       </distanceToTeamMap>
     </org.drools.planner.examples.travelingtournament.domain.Team>
-    <org.drools.planner.examples.travelingtournament.domain.Team reference="14"/>
-    <org.drools.planner.examples.travelingtournament.domain.Team reference="12"/>
     <org.drools.planner.examples.travelingtournament.domain.Team reference="16"/>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="12"/>
+    <org.drools.planner.examples.travelingtournament.domain.Team reference="14"/>
   </teamList>
   <matchList id="18">
     <org.drools.planner.examples.travelingtournament.domain.Match id="19">
       <id>0</id>
       <homeTeam reference="10"/>
-      <awayTeam reference="14"/>
+      <awayTeam reference="16"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="20">
@@ -132,25 +137,25 @@
     <org.drools.planner.examples.travelingtournament.domain.Match id="21">
       <id>2</id>
       <homeTeam reference="10"/>
-      <awayTeam reference="16"/>
+      <awayTeam reference="14"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="22">
       <id>3</id>
-      <homeTeam reference="14"/>
+      <homeTeam reference="16"/>
       <awayTeam reference="10"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="23">
       <id>4</id>
-      <homeTeam reference="14"/>
+      <homeTeam reference="16"/>
       <awayTeam reference="12"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="24">
       <id>5</id>
-      <homeTeam reference="14"/>
-      <awayTeam reference="16"/>
+      <homeTeam reference="16"/>
+      <awayTeam reference="14"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="25">
@@ -162,30 +167,30 @@
     <org.drools.planner.examples.travelingtournament.domain.Match id="26">
       <id>7</id>
       <homeTeam reference="12"/>
-      <awayTeam reference="14"/>
+      <awayTeam reference="16"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="27">
       <id>8</id>
       <homeTeam reference="12"/>
-      <awayTeam reference="16"/>
+      <awayTeam reference="14"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="28">
       <id>9</id>
-      <homeTeam reference="16"/>
+      <homeTeam reference="14"/>
       <awayTeam reference="10"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="29">
       <id>10</id>
-      <homeTeam reference="16"/>
-      <awayTeam reference="14"/>
+      <homeTeam reference="14"/>
+      <awayTeam reference="16"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
     <org.drools.planner.examples.travelingtournament.domain.Match id="30">
       <id>11</id>
-      <homeTeam reference="16"/>
+      <homeTeam reference="14"/>
       <awayTeam reference="12"/>
       <day reference="3"/>
     </org.drools.planner.examples.travelingtournament.domain.Match>
