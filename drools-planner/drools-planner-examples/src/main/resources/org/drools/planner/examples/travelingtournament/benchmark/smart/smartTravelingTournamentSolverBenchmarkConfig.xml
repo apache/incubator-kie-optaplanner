@@ -3,7 +3,7 @@
     <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
-    <inheritedUnsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl10.xml</inheritedUnsolvedSolutionFile>
+    <inheritedUnsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inheritedUnsolvedSolutionFile>
     <inheritedLocalSearchSolver>
         <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
         <scoreDefinition>
@@ -16,186 +16,81 @@
         <selector>
             <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
-        <acceptor>
-            <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-            <completeMoveTabuSize>7</completeMoveTabuSize>
-        </acceptor>
-        <forager>
-            <pickEarlyType>NEVER</pickEarlyType>
-        </forager>
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
+        <name>simulatedAnnealing-5</name>
+        <localSearchSolver>
+            <acceptor>
+                <simulatedAnnealingStartingTemperature>5.0</simulatedAnnealingStartingTemperature>
+                <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+            </acceptor>
+            <forager>
+                <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+                <minimalAcceptedSelection>4</minimalAcceptedSelection>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>simulatedAnnealing-10</name>
+        <localSearchSolver>
+            <acceptor>
+                <simulatedAnnealingStartingTemperature>5.0</simulatedAnnealingStartingTemperature>
+                <completePropertyTabuSize>5</completePropertyTabuSize>
+            </acceptor>
+            <forager>
+                <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+                <minimalAcceptedSelection>4</minimalAcceptedSelection>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>simulatedAnnealing-20</name>
+        <localSearchSolver>
+            <acceptor>
+                <simulatedAnnealingStartingTemperature>20.0</simulatedAnnealingStartingTemperature>
+                <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+            </acceptor>
+            <forager>
+                <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+                <minimalAcceptedSelection>4</minimalAcceptedSelection>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>deciderScoreComparatorFactory-natural</name>
         <localSearchSolver>
             <deciderScoreComparatorFactory>
                 <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
             </deciderScoreComparatorFactory>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <localSearchSolver>
-            <deciderScoreComparatorFactory>
-                <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-                <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
-                <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
-                <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
-                <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-                <hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>
-                <startingHardWeight>1000</startingHardWeight>
-            </deciderScoreComparatorFactory>
+            <acceptor>
+                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+                <completeMoveTabuSize>7</completeMoveTabuSize>
+            </acceptor>
+            <forager>
+                <pickEarlyType>NEVER</pickEarlyType>
+            </forager>
         </localSearchSolver>
     </solverBenchmark>
     <!--<solverBenchmark>-->
+        <!--<name>deciderScoreComparatorFactory-SHIFTING_HARD_PENALTY</name>-->
         <!--<localSearchSolver>-->
-            <!-- Warmup JIT -->
-            <!--<termination>-->
-                <!--<maximumMinutesSpend>2</maximumMinutesSpend>-->
-            <!--</termination>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>10</completeSolutionTabuSize>-->
-                <!--<completeMoveTabuSize>10</completeMoveTabuSize>-->
-                <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
+            <!--<deciderScoreComparatorFactory>-->
+                <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
+                <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
+                <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
+                <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
+                <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
+                <!--<hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>-->
+                <!--<startingHardWeight>1000</startingHardWeight>-->
+            <!--</deciderScoreComparatorFactory>-->
             <!--<acceptor>-->
                 <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+                <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
             <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeMoveTabuSize>20</completeMoveTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeMoveTabuSize>30</completeMoveTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeMoveTabuSize>40</completeMoveTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeUndoMoveTabuSize>30</completeUndoMoveTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completePropertyTabuSize>20</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completePropertyTabuSize>40</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-                <!--<completeMoveTabuSize>5</completeMoveTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-                <!--<completeMoveTabuSize>30</completeMoveTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-                <!--<completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-                <!--<completeUndoMoveTabuSize>30</completeUndoMoveTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-                <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-                <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeMoveTabuSize>30</completeMoveTabuSize>-->
-                <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeUndoMoveTabuSize>30</completeUndoMoveTabuSize>-->
-                <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-                <!--<completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>-->
-                <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
-            <!--</acceptor>-->
-        <!--</localSearchSolver>-->
-    <!--</solverBenchmark>-->
-    <!--<solverBenchmark>-->
-        <!--<localSearchSolver>-->
-            <!--<acceptor>-->
-                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-                <!--<completeUndoMoveTabuSize>30</completeUndoMoveTabuSize>-->
-                <!--<completePropertyTabuSize>30</completePropertyTabuSize>-->
-            <!--</acceptor>-->
+            <!--<forager>-->
+                <!--<pickEarlyType>NEVER</pickEarlyType>-->
+            <!--</forager>-->
         <!--</localSearchSolver>-->
     <!--</solverBenchmark>-->
 </solverBenchmarkSuite>
