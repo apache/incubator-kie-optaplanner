@@ -123,7 +123,7 @@ end
 rule "softConstraintsBroken"
         salience -1 // Do the other rules first (optional, for performance)
     when
-        $totalDistance : Double() from accumulate(
+        $totalDistance : Number() from accumulate(
             Hop($distance : distance),
             sum($distance)
         )
