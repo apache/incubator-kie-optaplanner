@@ -63,6 +63,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
         // TODO don't abuse translateScoreToGraphValue
+        // TODO do hard and soft separately and then average their acceptChance
         Double diff = localSearchSolverScope.getScoreDefinition().translateScoreToGraphValue(scoreDifference);
         if (diff == null) {
             // more hard constraints broken, ignore it for now
