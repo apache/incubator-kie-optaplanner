@@ -42,7 +42,18 @@
     <module>drools-planner-examples</module>
   </modules>
 
-  <dependencyManagement>
-  </dependencyManagement>
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>drools-docs-planner</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
