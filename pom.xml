@@ -12,6 +12,7 @@
   <groupId>org.drools.planner</groupId>
   <artifactId>drools-planner</artifactId>
   <packaging>pom</packaging>
+
   <name>Drools :: Planner parent</name>
   <description>
     Drools Planner optimizes automated planning
@@ -51,7 +52,7 @@
         </property>
       </activation>
       <modules>
-        <module>drools-docs-planner</module>
+        <module>drools-planner-docs</module>
       </modules>
     </profile>
   </profiles>
