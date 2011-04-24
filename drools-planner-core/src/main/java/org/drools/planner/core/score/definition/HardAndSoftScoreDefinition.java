@@ -78,8 +78,8 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
             timeGradient = 0.0;
         } else {
             softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight;
-            int hardScoreTotal = endScore.getHardScore() - startScore.getHardScore();
-            int hardScoreDelta = score.getHardScore() - startScore.getHardScore();
+            long hardScoreTotal = endScore.getHardScore() - startScore.getHardScore();
+            long hardScoreDelta = score.getHardScore() - startScore.getHardScore();
             double hardTimeGradient = (double) hardScoreDelta / (double) hardScoreTotal;
             timeGradient = hardTimeGradient * hardScoreTimeGradientWeight;
         }
@@ -88,8 +88,8 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
         } else if (startScore.getSoftScore() >= score.getSoftScore()) {
             // No change: timeGradient += 0.0
         } else {
-            int softScoreTotal = endScore.getSoftScore() - startScore.getSoftScore();
-            int softScoreDelta = score.getSoftScore() - startScore.getSoftScore();
+            long softScoreTotal = endScore.getSoftScore() - startScore.getSoftScore();
+            long softScoreDelta = score.getSoftScore() - startScore.getSoftScore();
             double softTimeGradient = (double) softScoreDelta / (double) softScoreTotal;
             timeGradient += softTimeGradient * softScoreTimeGradientWeight;
         }

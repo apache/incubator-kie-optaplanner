@@ -47,24 +47,24 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
         return new DefaultHardAndSoftScore(hardScore, softScore);
     }
 
-    private final int hardScore;
-    private final int softScore;
+    private final long hardScore;
+    private final long softScore;
 
-    public DefaultHardAndSoftScore(int hardScore) {
+    public DefaultHardAndSoftScore(long hardScore) {
         // Any other softScore is better
         this(hardScore, Integer.MIN_VALUE);
     }
 
-    public DefaultHardAndSoftScore(int hardScore, int softScore) {
+    public DefaultHardAndSoftScore(long hardScore, long softScore) {
         this.hardScore = hardScore;
         this.softScore = softScore;
     }
 
-    public int getHardScore() {
+    public long getHardScore() {
         return hardScore;
     }
 
-    public int getSoftScore() {
+    public long getSoftScore() {
         return softScore;
     }
 
@@ -111,7 +111,7 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37) + hardScore)) * 37 + softScore;
+        return (((17 * 37) + (int)hardScore)) * 37 + (int)softScore;
     }
 
     public int compareTo(HardAndSoftScore other) {
