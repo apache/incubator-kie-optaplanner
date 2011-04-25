@@ -60,7 +60,7 @@ public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter 
             solutionElement.addContent(competitorElement);
 
             Element softConstraintsPenaltyElement = new Element("SoftConstraintsPenalty");
-            softConstraintsPenaltyElement.setText(Integer.toString(nurseRoster.getScore().getSoftScore()));
+            softConstraintsPenaltyElement.setText(Long.toString(nurseRoster.getScore().getSoftScore()));
             solutionElement.addContent(softConstraintsPenaltyElement);
 
             for (Assignment assignment : nurseRoster.getAssignmentList()) {
