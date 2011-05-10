@@ -34,7 +34,6 @@ import org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingT
 import org.drools.planner.examples.examination.app.ExaminationApp;
 import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.manners2009.app.Manners2009App;
-import org.drools.planner.examples.tsp.app.TspApp;
 
 public class DroolsPlannerExamplesApp extends JFrame {
 
@@ -63,11 +62,12 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new Manners2009App().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Traveling salesman problem (TSP)") {
-            public void actionPerformed(ActionEvent e) {
-                new TspApp().init(false);
-            }
-        }));
+        // TSP example is still in alpha state. Look on master for the latest code.
+//        contentPane.add(new JButton(new AbstractAction("Traveling salesman problem (TSP)") {
+//            public void actionPerformed(ActionEvent e) {
+//                new TspApp().init(false);
+//            }
+//        }));
         contentPane.add(new JButton(new AbstractAction("Traveling tournament problem (TTP)") {
             public void actionPerformed(ActionEvent e) {
                 new SmartTravelingTournamentApp().init(false);
