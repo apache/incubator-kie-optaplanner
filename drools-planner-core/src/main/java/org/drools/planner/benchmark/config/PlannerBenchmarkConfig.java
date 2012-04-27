@@ -23,16 +23,23 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
+    
+    private final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
     private File benchmarkDirectory = null;
     private File benchmarkInstanceDirectory = null;
@@ -44,6 +51,8 @@ public class PlannerBenchmarkConfig {
     private Long warmUpSecondsSpend = null;
     private Long warmUpMinutesSpend = null;
     private Long warmUpHoursSpend = null;
+
+    private String threadsUse = null;
 
     @XStreamAlias("inheritedSolverBenchmark")
     private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
@@ -139,6 +148,14 @@ public class PlannerBenchmarkConfig {
         this.solverBenchmarkConfigList = solverBenchmarkConfigList;
     }
 
+    public String getThreadsUse() {
+        return threadsUse;
+    }
+
+    public void setThreadsUse(String threads) {
+        threadsUse = threads;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -149,11 +166,54 @@ public class PlannerBenchmarkConfig {
                     "Configure at least 1 <solverBenchmark> in the <plannerBenchmark> configuration.");
         }
     }
+    
+    private ExecutorService getExecutor() {
+        int threadCount = this.getRequestedThreadCount();
+        if (threadCount > Runtime.getRuntime().availableProcessors()) {
+            logger.warn("Benchmarker will use more threads than there are CPUs. Results may be compromised.");
+        } else if (threadCount < 1) {
+            logger.warn("Requested number of threads (" + threadCount + ") is invalid.");
+            threadCount = 1;
+        }
+        logger.info("Benchmarking will use (" + threadCount + ") threads.");
+        return Executors.newFixedThreadPool(threadCount);
+    }
+    
+    private int parseThreadCount(String num) {
+        try {
+            int numThreads = Integer.valueOf(num);
+            if (numThreads < 1) {
+                throw new IllegalStateException("Number of threads must not be smaller than 1.");
+            }
+            return numThreads;
+        } catch (Exception ex) {
+            throw new IllegalStateException("Requested (" + num + ") threads. Please use a positive integer, +/- positive integer or 'AUTO'.");
+        }
+    }
+
+    private int getRequestedThreadCount() {
+        int cpuCount = Runtime.getRuntime().availableProcessors();
+        String request = this.getThreadsUse();
+        if (request == null) {
+            // no threads are requested; use just one
+            return 1;
+        } else if (request.equals("AUTO")) {
+            // "AUTO" threads are requested; use everything possible, leave some for the operating system
+            return Math.max(1, cpuCount - 2);
+        } else if (request.startsWith("-")) {
+            int num = parseThreadCount(request.substring(1));
+            return cpuCount - num;
+        } else if (request.startsWith("+")) {
+            int num = parseThreadCount(request.substring(1));
+            return cpuCount + num;
+        } else {
+            return parseThreadCount(request);
+        }
+    }
 
     private void generateSolverBenchmarkConfigNames() {
         Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
-        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet
-                = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
+        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
             if (solverBenchmarkConfig.getName() != null) {
                 boolean unique = nameSet.add(solverBenchmarkConfig.getName());
@@ -189,7 +249,7 @@ public class PlannerBenchmarkConfig {
         validate();
         generateSolverBenchmarkConfigNames();
         inherit();
-        
+
         DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
         plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
@@ -198,11 +258,12 @@ public class PlannerBenchmarkConfig {
         plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
 
+        ExecutorService executor = getExecutor();
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
         List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
             SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(
-                    unifiedProblemBenchmarkList);
+                    unifiedProblemBenchmarkList, executor);
             solverBenchmarkList.add(solverBenchmark);
         }
         plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
