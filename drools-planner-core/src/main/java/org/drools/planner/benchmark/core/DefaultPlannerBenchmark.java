@@ -25,8 +25,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.planner.benchmark.api.SolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
+import org.drools.planner.benchmark.core.comparator.SimpleSolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
     private List<ProblemStatisticType> problemStatisticTypeList = null;
-    private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
+    private SolverBenchmarkComparatorFactory solverBenchmarkComparatorFactory = null;
 
     private Long warmUpTimeMillisSpend = null;
 
@@ -90,12 +91,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.problemStatisticTypeList = problemStatisticTypeList;
     }
 
-    public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
-        return solverBenchmarkComparator;
+    public SolverBenchmarkComparatorFactory getSolverBenchmarkComparatorFactory() {
+        return solverBenchmarkComparatorFactory;
     }
 
-    public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
-        this.solverBenchmarkComparator = solverBenchmarkComparator;
+    public void setSolverBenchmarkComparatorFactory(SolverBenchmarkComparatorFactory solverBenchmarkComparatorFactory) {
+        this.solverBenchmarkComparatorFactory = solverBenchmarkComparatorFactory;
     }
 
     public Long getWarmUpTimeMillisSpend() {
@@ -141,8 +142,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
         }
         initBenchmarkDirectoryAndSubdirs();
-        if (solverBenchmarkComparator == null) {
-            solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
+        if (solverBenchmarkComparatorFactory == null) {
+            solverBenchmarkComparatorFactory = new SimpleSolverBenchmarkComparatorFactory();
         }
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingStarted();
@@ -213,32 +214,33 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private void determineRanking() {
         List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
-        Collections.sort(sortedSolverBenchmarkList, solverBenchmarkComparator);
-        Collections.reverse(sortedSolverBenchmarkList); // Best results first, worst results last
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            int ranking = sortedSolverBenchmarkList.indexOf(solverBenchmark);
+        Comparator<SolverBenchmark> comparator = solverBenchmarkComparatorFactory.createSolverBenchmarkComparator(sortedSolverBenchmarkList);
+        Collections.sort(sortedSolverBenchmarkList, Collections.reverseOrder(comparator));
+        int ranking = 0;
+        for (SolverBenchmark solverBenchmark : sortedSolverBenchmarkList) {
             solverBenchmark.setRanking(ranking);
             if (ranking == 0) {
                 winningSolverBenchmark = solverBenchmark;
             }
+            ranking++;
         }
     }
 
     // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666
-//    public void writeBenchmarkResult(XStream xStream) {
-//        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
-//        OutputStreamWriter writer = null;
-//        try {
-//            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "UTF-8");
-//            xStream.toXML(this, writer);
-//        } catch (UnsupportedEncodingException e) {
-//            throw new IllegalStateException("This JVM does not support UTF-8 encoding.", e);
-//        } catch (FileNotFoundException e) {
-//            throw new IllegalArgumentException(
-//                    "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);
-//        } finally {
-//            IOUtils.closeQuietly(writer);
-//        }
-//    }
+    //    public void writeBenchmarkResult(XStream xStream) {
+    //        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
+    //        OutputStreamWriter writer = null;
+    //        try {
+    //            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "UTF-8");
+    //            xStream.toXML(this, writer);
+    //        } catch (UnsupportedEncodingException e) {
+    //            throw new IllegalStateException("This JVM does not support UTF-8 encoding.", e);
+    //        } catch (FileNotFoundException e) {
+    //            throw new IllegalArgumentException(
+    //                    "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);
+    //        } finally {
+    //            IOUtils.closeQuietly(writer);
+    //        }
+    //    }
 
 }
