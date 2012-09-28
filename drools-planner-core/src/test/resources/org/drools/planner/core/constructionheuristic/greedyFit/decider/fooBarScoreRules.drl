@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2011 Reinis Vicups (http://www.orbit-x.de)
- */
-
-package de.orbitx.retena.solver;
+package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 	dialect "java"
 
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
