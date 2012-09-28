@@ -1,0 +1,55 @@
+/*
+ * Copyright (c) 2011 Reinis Vicups (http://www.orbit-x.de)
+ */
+
+package de.orbitx.retena.solver;
+	dialect "java"
+
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.Foo;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.Bar;
+
+global HardAndSoftScoreHolder scoreHolder;
+
+rule "no foo without bar"
+    when
+        $foo : Foo(bar == null)
+    then
+        insertLogical( new IntConstraintOccurrence("foo without bar", ConstraintType.NEGATIVE_HARD, 1, $foo) );
+end
+
+//############################################################################
+//Calculate score
+//############################################################################
+
+//Accumulate hard constraints
+rule "hardConstraintsBroken"
+		salience -1 //Do the other rules first (optional, for performance)
+	when
+		$hardTotal : Number() from accumulate(
+			IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+			sum($weight) //Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+		)
+	then
+		scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
+end
+
+//Accumulate soft constraints
+rule "softConstraintsBroken"
+		salience -1 //Do the other rules first (optional, for performance)
+	when
+		$softTotal : Number() from accumulate(
+			IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+			sum($weight) //Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+		)
+		$positiveSoftTotal : Number() from accumulate(
+			IntConstraintOccurrence(constraintType == ConstraintType.POSITIVE, $weight : weight),
+			sum($weight) //Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+		)
+		eval($softTotal.intValue() > $positiveSoftTotal.intValue())
+	then
+		scoreHolder.setSoftConstraintsBroken($softTotal.intValue() - $positiveSoftTotal.intValue());
+end
