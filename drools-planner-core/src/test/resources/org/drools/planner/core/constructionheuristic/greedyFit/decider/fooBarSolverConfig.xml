@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+	<environmentMode>DEBUG</environmentMode>
+	<solutionClass>org.drools.planner.core.constructionheuristic.greedyFit.decider.FooBarSolution</solutionClass>
+	<planningEntityClass>org.drools.planner.core.constructionheuristic.greedyFit.decider.Foo</planningEntityClass>
+	<scoreDirectorFactory>
+		<scoreDrl>/org/drools/planner/core/constructionheuristic/greedyFit/decider/fooBarScoreRules.drl</scoreDrl>
+		<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+	</scoreDirectorFactory>
+	<constructionHeuristic>
+			<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+	</constructionHeuristic>
+</solver>
