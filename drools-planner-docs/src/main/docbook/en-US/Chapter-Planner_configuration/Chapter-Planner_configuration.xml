@@ -455,6 +455,10 @@ public class Queen {
       <section xml:id="nullablePlanningVariable">
         <title>Nullable planning variable</title>
 
+        <warning>
+          <para>Nullable planning variables are not supported for construction heuristics in 5.5.x or lower.</para>
+        </warning>
+
         <para>By default, an initialized planning variable cannot be <literal>null</literal>, so an initialized solution
         will never use <literal>null</literal> for any of its planning variables. In over-constrained use case, this can
         be contra productive. For example: in task assignment with too many tasks for the workforce, we would rather

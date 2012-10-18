@@ -58,8 +58,8 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     protected ConstructionHeuristicType constructionHeuristicType = null;
     protected ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = null;
 
-    @XStreamImplicit
-    protected List<EntityPlacerConfig> entityPlacerConfigList = null;
+//    @XStreamImplicit
+//    protected List<EntityPlacerConfig> entityPlacerConfigList = null;
 
     public ConstructionHeuristicType getConstructionHeuristicType() {
         return constructionHeuristicType;
@@ -77,13 +77,13 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         this.constructionHeuristicPickEarlyType = constructionHeuristicPickEarlyType;
     }
 
-    public List<EntityPlacerConfig> getEntityPlacerConfigList() {
-        return entityPlacerConfigList;
-    }
-
-    public void setEntityPlacerConfigList(List<EntityPlacerConfig> entityPlacerConfigList) {
-        this.entityPlacerConfigList = entityPlacerConfigList;
-    }
+//    public List<EntityPlacerConfig> getEntityPlacerConfigList() {
+//        return entityPlacerConfigList;
+//    }
+//
+//    public void setEntityPlacerConfigList(List<EntityPlacerConfig> entityPlacerConfigList) {
+//        this.entityPlacerConfigList = entityPlacerConfigList;
+//    }
 
     // ************************************************************************
     // Builder methods
@@ -103,27 +103,27 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                 greedySolverPhase.setAssertStepScoreIsUncorrupted(true);
             }
             return greedySolverPhase;
-        } else if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
-            if (constructionHeuristicPickEarlyType != null) {
-                // TODO throw decent exception
-                throw new UnsupportedOperationException();
-            }
-
-
-            DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
-            configureSolverPhase(phase, environmentMode, scoreDefinition, solverTermination);
-
-            List<EntityPlacer> entityPlacerList = new ArrayList<EntityPlacer>(entityPlacerConfigList.size());
-            for (EntityPlacerConfig entityPlacerConfig : entityPlacerConfigList) {
-                EntityPlacer entityPlacer = entityPlacerConfig.buildEntityPlacer(
-                        environmentMode, solutionDescriptor, phase.getTermination());
-                entityPlacerList.add(entityPlacer);
-            }
-            phase.setEntityPlacerList(entityPlacerList);
-            if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
-                phase.setAssertStepScoreIsUncorrupted(true);
-            }
-            return phase;
+//        } else if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
+//            if (constructionHeuristicPickEarlyType != null) {
+//                // TODO throw decent exception
+//                throw new UnsupportedOperationException();
+//            }
+//
+//
+//            DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
+//            configureSolverPhase(phase, environmentMode, scoreDefinition, solverTermination);
+//
+//            List<EntityPlacer> entityPlacerList = new ArrayList<EntityPlacer>(entityPlacerConfigList.size());
+//            for (EntityPlacerConfig entityPlacerConfig : entityPlacerConfigList) {
+//                EntityPlacer entityPlacer = entityPlacerConfig.buildEntityPlacer(
+//                        environmentMode, solutionDescriptor, phase.getTermination());
+//                entityPlacerList.add(entityPlacer);
+//            }
+//            phase.setEntityPlacerList(entityPlacerList);
+//            if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+//                phase.setAssertStepScoreIsUncorrupted(true);
+//            }
+//            return phase;
         } else {
             throw new IllegalArgumentException("A constructionHeuristic requires configuration, " +
                     "for example a constructionHeuristicType.");
