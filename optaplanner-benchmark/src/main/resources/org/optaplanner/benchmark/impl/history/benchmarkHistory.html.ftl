@@ -51,6 +51,9 @@
                                 <a href="#summary_bestScore" data-toggle="tab">Best score</a>
                             </li>
                             <li>
+                            	<a href="#summary_bestScorePerTime" data-toggle="tab">Best score per time</a>
+                            </li>
+                            <li>
                                 <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>
                             </li>
                             <li>
@@ -94,6 +97,10 @@
                                 <#--</#list>-->
                                 <#--</table>-->
                             </div>
+                            <div class="tab-pane" id="summary_bestScorePerTime">
+                                <h3>Best score per time summary</h3>
+                                <p>TODO</p><#-- TODO -->
+                            </div>
                             <div class="tab-pane" id="summary_bestScoreScalability">
                                 <h3>Best score scalability summary</h3>
                                 <p>TODO</p><#-- TODO -->
@@ -111,6 +118,9 @@
                         <ul class="nav nav-pills">
                             <li class="active">
                                 <a href="#summary_bestScore" data-toggle="tab">Best score</a>
+                            </li>
+                            <li>
+                                <a href="#summary_bestScorePerTime" data-toggle="tab">Best score per time</a>
                             </li>
                             <li>
                                 <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>

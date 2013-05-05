@@ -97,6 +97,9 @@
                                 <a href="#summary_bestScore" data-toggle="tab">Best score</a>
                             </li>
                             <li>
+                                <a href="#summary_bestScorePerTime" data-toggle="tab">Best score per time</a>
+                            </li>
+                            <li>
                                 <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>
                             </li>
                             <li>
@@ -160,6 +163,31 @@
                                     </tr>
                                 </#list>
                                 </table>
+                            </div>
+                            <div class="tab-pane" id="summary_bestScorePerTime">
+                                <h3>Best score per time</h3>
+                                <div class="tabbable tabs-right">
+                                    <ul class="nav nav-tabs">
+                                        <#assign scoreLevelIndex = 0>
+                                        <#list benchmarkReport.bestScorePerTimeChartFileList as bestScorePerTimeChartFile>
+                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
+                                                <a href="#summary_bestScorePerTime_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                            </li>
+                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                        </#list>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <#assign scoreLevelIndex = 0>
+                                        <#list benchmarkReport.bestScorePerTimeChartFileList as bestScorePerTimeChartFile>
+                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScorePerTime_chart_${scoreLevelIndex}">
+                                                <div class="benchmark-chart">
+                                                    <img src="summary/${bestScorePerTimeChartFile.name}"/>
+                                                </div>
+                                            </div>
+                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                        </#list>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane" id="summary_bestScoreScalability">
                                 <h3>Best score scalability summary</h3>
@@ -299,6 +327,9 @@
                         <ul class="nav nav-pills">
                             <li class="active">
                                 <a href="#summary_bestScore" data-toggle="tab">Best score</a>
+                            </li>
+                            <li>
+                                <a href="#summary_bestScorePerTime" data-toggle="tab">Best score per time</a>
                             </li>
                             <li>
                                 <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>
