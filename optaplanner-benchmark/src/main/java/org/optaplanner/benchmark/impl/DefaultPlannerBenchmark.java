@@ -39,6 +39,7 @@ import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +76,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private Long averageProblemScale = null;
     private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
+    private Score averageSolverScore;
 
     public String getName() {
         return name;
@@ -175,6 +177,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     public long getBenchmarkTimeMillisSpend() {
         return benchmarkTimeMillisSpend;
     }
+    
+    public Score getAverageSolverScore() {
+		return averageSolverScore;
+	}
+
+	public void setAverageSolverScore(Score averageSolverScore) {
+		this.averageSolverScore = averageSolverScore;
+	}
 
     // ************************************************************************
     // Benchmark methods
@@ -310,6 +320,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         determineTotalsAndAverages();
         determineSolverBenchmarkRanking();
+        determineAverageSolverScore();
         benchmarkTimeMillisSpend = calculateTimeMillisSpend();
         benchmarkReport.writeReport();
         if (benchmarkHistoryReportEnabled) {
@@ -330,6 +341,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
     }
 
+    private void determineAverageSolverScore() {
+    	Score result = null;
+    	for (SolverBenchmark sb : solverBenchmarkList) {
+    		result = (result == null) ? sb.getAverageScore() : result.add(sb.getAverageScore());
+    	}
+    	averageSolverScore = result.divide(solverBenchmarkList.size());
+    }
+    
     private void determineTotalsAndAverages() {
         long totalProblemScale = 0L;
         int problemScaleCount = 0;
