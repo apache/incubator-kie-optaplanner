@@ -269,7 +269,7 @@ public class BenchmarkReport {
                         if (i >= datasetList.size()) {
                             datasetList.add(new XYSeriesCollection());
                         }	
-                        double relativeScore = (levelValues[i] == 0d) ? 0 : levelValues[i] / Math.abs(plannerBenchmark.getAverageSolverScore().toDoubleLevels()[i]);
+                        double relativeScore = (levelValues[i] == 0d) ? 0 : -(levelValues[i] / plannerBenchmark.getAverageSolverScore().toDoubleLevels()[i]);
                         if (datasetList.get(i).getSeriesIndex(solverLabel) == -1) {
                         	XYSeries series = new XYSeries(solverLabel, false);
                         	series.add(singleBenchmark.getTimeMillisSpend(), relativeScore);
@@ -342,7 +342,7 @@ public class BenchmarkReport {
 			renderer.setBasePositiveItemLabelPosition(position);
     	return renderer;
     }
-
+    
     private void writeBestScoreScalabilitySummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
         List<List<XYSeries>> seriesListList = new ArrayList<List<XYSeries>>(
