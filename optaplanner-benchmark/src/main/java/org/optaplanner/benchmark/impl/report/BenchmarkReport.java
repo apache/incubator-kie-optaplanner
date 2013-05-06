@@ -262,7 +262,6 @@ public class BenchmarkReport {
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
-            	String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 if (singleBenchmark.isSuccess()) {
                     double[] levelValues = singleBenchmark.getScore().toDoubleLevels();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
