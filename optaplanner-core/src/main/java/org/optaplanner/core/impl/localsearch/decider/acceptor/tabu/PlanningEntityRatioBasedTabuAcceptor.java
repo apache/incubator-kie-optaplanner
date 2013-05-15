@@ -21,7 +21,7 @@ import java.util.Collection;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class PlanningValueTabuAcceptor extends AbstractAbsoluteSizeTabuAcceptor {
+public class PlanningEntityRatioBasedTabuAcceptor extends AbstractRelativeSizeTabuAcceptor {
 
     // ************************************************************************
     // Worker methods
@@ -29,12 +29,12 @@ public class PlanningValueTabuAcceptor extends AbstractAbsoluteSizeTabuAcceptor 
 
     @Override
     protected Collection<? extends Object> findTabu(LocalSearchMoveScope moveScope) {
-        return moveScope.getMove().getPlanningValues();
+        return moveScope.getMove().getPlanningEntities();
     }
 
     @Override
     protected Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope) {
-        return stepScope.getStep().getPlanningValues();
+        return stepScope.getStep().getPlanningEntities();
     }
 
 }
