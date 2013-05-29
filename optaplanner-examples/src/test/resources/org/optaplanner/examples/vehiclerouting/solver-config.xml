@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <environmentMode>PRODUCTION</environmentMode>
+
+  <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
+  <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
+
+  <customSolverPhase>
+    <!-- this could be one condition for the issue - we have only 1 chain of entities -->  
+    <customSolverPhaseCommandClass>org.optaplanner.examples.vehiclerouting.tools.VehicleRoutingOneChainSolutionInitializer</customSolverPhaseCommandClass>
+    <forceUpdateBestSolution>true</forceUpdateBestSolution>
+  </customSolverPhase>
+  
+  <localSearch>
+    <subChainSwapMoveSelector>     
+      <subChainSelector> 
+        <minimumSubChainSize>10</minimumSubChainSize>
+        <maximumSubChainSize>10</maximumSubChainSize>
+      </subChainSelector>     
+      <secondarySubChainSelector>
+        <minimumSubChainSize>2</minimumSubChainSize>
+        <maximumSubChainSize>2</maximumSubChainSize>
+      </secondarySubChainSelector> 
+      <selectReversingMoveToo>false</selectReversingMoveToo>  
+    </subChainSwapMoveSelector>
+      
+    <forager>
+      <pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+    <termination>
+      <maximumStepCount>1</maximumStepCount>
+    </termination>
+  </localSearch>
+</solver>
