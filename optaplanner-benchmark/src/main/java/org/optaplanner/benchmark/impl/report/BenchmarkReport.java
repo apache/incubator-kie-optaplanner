@@ -119,10 +119,10 @@ public class BenchmarkReport {
     public List<File> getBestScoreSummaryChartFileList() {
         return bestScoreSummaryChartFileList;
     }
-    
+
     public List<File> getBestScorePerTimeChartFileList() {
-		return bestScorePerTimeChartFileList;
-	}
+        return bestScorePerTimeChartFileList;
+    }
 
     public List<File> getBestScoreScalabilitySummaryChartFileList() {
         return bestScoreScalabilitySummaryChartFileList;
@@ -255,9 +255,9 @@ public class BenchmarkReport {
             scoreLevelIndex++;
         }
     }
-    
+
     private void writeBestScorePerTimeSummaryChart() {
-    	// Each scoreLevel has it's own dataset and chartFile
+        // Each scoreLevel has it's own dataset and chartFile
         List<XYSeriesCollection> datasetList = new ArrayList<XYSeriesCollection>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
@@ -267,12 +267,13 @@ public class BenchmarkReport {
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= datasetList.size()) {
                             datasetList.add(new XYSeriesCollection());
-                        }	
-                        double relativeScore = (levelValues[i] == 0d) ? 0 : -(levelValues[i] / plannerBenchmark.getAverageSolverScore().toDoubleLevels()[i]);
+                        }    
+                        double relativeScore = (levelValues[i] == 0d) ? 0 :
+                            -(levelValues[i] / plannerBenchmark.getAverageSolverScore().toDoubleLevels()[i]);
                         if (datasetList.get(i).getSeriesIndex(solverLabel) == -1) {
-                        	XYSeries series = new XYSeries(solverLabel, false);
-                        	series.add(singleBenchmark.getTimeMillisSpend(), relativeScore);
-                        	datasetList.get(i).addSeries(series);
+                            XYSeries series = new XYSeries(solverLabel, false);
+                            series.add(singleBenchmark.getTimeMillisSpend(), relativeScore);
+                            datasetList.get(i).addSeries(series);
                         } else {
                             datasetList.get(i).getSeries(solverLabel).add(singleBenchmark.getTimeMillisSpend(), relativeScore);
                         }
@@ -283,65 +284,64 @@ public class BenchmarkReport {
         bestScorePerTimeChartFileList = new ArrayList<File>(datasetList.size());
         int scoreLevelIndex = 0;
         for (XYSeriesCollection dataset : datasetList) {
-        	XYPlot plot = createBestScorePerTimePlot(dataset, "Time spent", "Best score (relative to average)", NumberFormat.getInstance(locale));
+            XYPlot plot = createBestScorePerTimePlot(dataset, "Time spent", "Best score (relative to average)", NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart("Best score per time level " + scoreLevelIndex + " (lower is better)", plot);
-            addBestScorePerTimeLegend(chart);        
+            addBestScorePerTimeLegend(chart);
             bestScorePerTimeChartFileList.add(writeChartToImageFile(chart, "bestScorePerTimeLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
     }
 
-	private void addBestScorePerTimeLegend(JFreeChart chart) {
-		LegendTitle legend = new LegendTitle(new LegendItemSource() {
-		    @Override
-		    public LegendItemCollection getLegendItems() {
-		        LegendItemCollection coll = new LegendItemCollection();
-		        int i = 1;
-		        for (ProblemBenchmark pb : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-		            coll.add(new LegendItem("(" + i++ +") " + pb.getName()));
+    private void addBestScorePerTimeLegend(JFreeChart chart) {
+        LegendTitle legend = new LegendTitle(new LegendItemSource() {
+            @Override
+            public LegendItemCollection getLegendItems() {
+                LegendItemCollection coll = new LegendItemCollection();
+                int i = 1;
+                for (ProblemBenchmark pb : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
+                    coll.add(new LegendItem("(" + i++ +") " + pb.getName()));
+                }
+                return coll;
+            }
+        });
+        legend.setBorder(1, 1, 1, 1);
+        legend.setBackgroundPaint(Color.WHITE);
+        chart.addLegend(legend);
+    }
 
-		        }
-		        return coll;
-		    }
-		});
-		legend.setBorder(1, 1, 1, 1);
-		legend.setBackgroundPaint(Color.WHITE);
-		chart.addLegend(legend);
-	}
-    
     private XYPlot createBestScorePerTimePlot(XYSeriesCollection dataset, String xAxisLabel,
-    		String yAxisLabel, NumberFormat numberFormat) {
-    	NumberAxis xAxis = new NumberAxis(xAxisLabel);
-    	xAxis.setNumberFormatOverride(numberFormat);
-    	NumberAxis yAxis = new NumberAxis(yAxisLabel);
-    	yAxis.setNumberFormatOverride(numberFormat);
-    	double minimum = DatasetUtilities.findMinimumRangeValue(dataset).doubleValue();
-    	if (minimum != 0d) {
-    		yAxis.setUpperBound(0.02);
-        	yAxis.setLowerBound(minimum - 0.2);
-    	}
-    	XYPlot plot = new XYPlot(dataset, xAxis, yAxis, createBestScorePerTimeRenderer());
-    	plot.setOrientation(PlotOrientation.VERTICAL);
-    	return plot;
+            String yAxisLabel, NumberFormat numberFormat) {
+        NumberAxis xAxis = new NumberAxis(xAxisLabel);
+        xAxis.setNumberFormatOverride(numberFormat);
+        NumberAxis yAxis = new NumberAxis(yAxisLabel);
+        yAxis.setNumberFormatOverride(numberFormat);
+        double minimum = DatasetUtilities.findMinimumRangeValue(dataset).doubleValue();
+        if (minimum != 0d) {
+            yAxis.setUpperBound(0.02);
+            yAxis.setLowerBound(minimum - 0.2);
+        }
+        XYPlot plot = new XYPlot(dataset, xAxis, yAxis, createBestScorePerTimeRenderer());
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        return plot;
     }
-    
+
     private XYItemRenderer createBestScorePerTimeRenderer() {
-    	XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(false, true);
-    	renderer.setAutoPopulateSeriesShape(false);
-    	renderer.setBaseSeriesVisible(true);
-			renderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
-				@Override
-				public String generateLabel(XYDataset xyd, int i, int i1) {
-					return String.valueOf(i1 + 1);
-				}
-			});
-			renderer.setBaseItemLabelsVisible(true);
-			ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER);
-			renderer.setBaseNegativeItemLabelPosition(position);
-			renderer.setBasePositiveItemLabelPosition(position);
-    	return renderer;
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(false, true);
+        renderer.setAutoPopulateSeriesShape(false);
+        renderer.setBaseSeriesVisible(true);
+        renderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
+            @Override
+            public String generateLabel(XYDataset xyd, int i, int i1) {
+                return String.valueOf(i1 + 1);
+            }
+        });
+        renderer.setBaseItemLabelsVisible(true);
+        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER);
+        renderer.setBaseNegativeItemLabelPosition(position);
+        renderer.setBasePositiveItemLabelPosition(position);
+        return renderer;
     }
-    
+
     private void writeBestScoreScalabilitySummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
         List<List<XYSeries>> seriesListList = new ArrayList<List<XYSeries>>(

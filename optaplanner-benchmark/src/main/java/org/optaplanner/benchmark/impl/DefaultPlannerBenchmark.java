@@ -177,14 +177,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     public long getBenchmarkTimeMillisSpend() {
         return benchmarkTimeMillisSpend;
     }
-    
-    public Score getAverageSolverScore() {
-		return averageSolverScore;
-	}
 
-	public void setAverageSolverScore(Score averageSolverScore) {
-		this.averageSolverScore = averageSolverScore;
-	}
+    public Score getAverageSolverScore() {
+        return averageSolverScore;
+    }
+
+    public void setAverageSolverScore(Score averageSolverScore) {
+        this.averageSolverScore = averageSolverScore;
+    }
 
     // ************************************************************************
     // Benchmark methods
@@ -342,13 +342,13 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     private void determineAverageSolverScore() {
-    	Score result = null;
-    	for (SolverBenchmark sb : solverBenchmarkList) {
-    		result = (result == null) ? sb.getAverageScore() : result.add(sb.getAverageScore());
-    	}
-    	averageSolverScore = result.divide(solverBenchmarkList.size());
+        Score result = null;
+        for (SolverBenchmark sb : solverBenchmarkList) {
+            result = (result == null) ? sb.getAverageScore() : result.add(sb.getAverageScore());
+        }
+        averageSolverScore = result.divide(solverBenchmarkList.size());
     }
-    
+
     private void determineTotalsAndAverages() {
         long totalProblemScale = 0L;
         int problemScaleCount = 0;
