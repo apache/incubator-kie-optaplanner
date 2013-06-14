@@ -14,7 +14,7 @@
       <inputSolutionFile>data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/cb-0400comp-1200proc.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/cb-0800comp-2400proc.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>
@@ -34,10 +34,10 @@
     </solver>
   </inheritedSolverBenchmark>
 
-<#list [5, 7, 11, 13] as planningEntityTabuSize>
+<#list [5, 7, 11, 13] as entityTabuSize>
 <#list [500, 1000, 2000] as acceptedCountLimit>
   <solverBenchmark>
-    <name>planningEntityTabuSize ${planningEntityTabuSize} acceptedCountLimit ${acceptedCountLimit}</name>
+    <name>entityTabuSize ${entityTabuSize} acceptedCountLimit ${acceptedCountLimit}</name>
     <solver>
       <localSearch>
         <unionMoveSelector>
@@ -45,7 +45,7 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
+          <entityTabuSize>${entityTabuSize}</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>

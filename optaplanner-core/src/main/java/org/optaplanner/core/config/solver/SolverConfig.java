@@ -170,7 +170,7 @@ public class SolverConfig {
 
     protected BestSolutionRecaller buildBestSolutionRecaller(EnvironmentMode environmentMode) {
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
             bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
         }
         return bestSolutionRecaller;
@@ -187,11 +187,12 @@ public class SolverConfig {
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
         }
         for (Class<?> planningEntityClass : planningEntityClassSet) {
-            PlanningEntityDescriptor planningEntityDescriptor = new PlanningEntityDescriptor(
+            PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
                     solutionDescriptor, planningEntityClass);
-            solutionDescriptor.addPlanningEntityDescriptor(planningEntityDescriptor);
-            planningEntityDescriptor.processAnnotations();
+            solutionDescriptor.addPlanningEntityDescriptor(entityDescriptor);
+            entityDescriptor.processAnnotations();
         }
+        solutionDescriptor.afterAnnotationsProcessed();
         return solutionDescriptor;
     }
 

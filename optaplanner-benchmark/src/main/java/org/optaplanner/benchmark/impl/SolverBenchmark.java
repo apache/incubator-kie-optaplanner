@@ -26,6 +26,7 @@ import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +48,13 @@ public class SolverBenchmark {
 
     private int failureCount = -1;
     private Score totalScore = null;
+    private Score averageScore = null;
+
+    // Not a Score because
+    // - the squaring would cause overflow for relatively small int and long scores.
+    // - standard deviation should not be rounded to integer numbers
+    private double[] standardDeviationDoubles = null;
+
     private Score totalWinningScoreDifference = null;
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
     // The average of the average is not just the overall average if the SingleBenchmark's timeMillisSpend differ
@@ -137,6 +145,7 @@ public class SolverBenchmark {
 
     public void benchmarkingEnded() {
         determineTotalsAndAverages();
+        determineStandardDeviation();
     }
 
     protected void determineTotalsAndAverages() {
@@ -168,8 +177,35 @@ public class SolverBenchmark {
         }
         if (!firstNonFailure) {
             int successCount = getSuccessCount();
+            averageScore = totalScore.divide(successCount);
             averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
             averageAverageCalculateCountPerSecond = totalAverageCalculateCountPerSecond / (long) successCount;
+        }
+    }
+
+    protected void determineStandardDeviation() {
+        int successCount = getSuccessCount();
+        if (successCount <= 0) {
+            return;
+        }
+        // averageScore can no longer be null
+        double[] differenceSquaredTotalDoubles = null;
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            if (!singleBenchmark.isFailure()) {
+                Score difference = singleBenchmark.getScore().subtract(averageScore);
+                // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
+                double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
+                if (differenceSquaredTotalDoubles == null) {
+                    differenceSquaredTotalDoubles = new double[differenceDoubles.length];
+                }
+                for (int i = 0; i < differenceDoubles.length; i++) {
+                    differenceSquaredTotalDoubles[i] += Math.pow(differenceDoubles[i], 2.0);
+                }
+            }
+        }
+        standardDeviationDoubles = new double[differenceSquaredTotalDoubles.length];
+        for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
+            standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
         }
     }
 
@@ -190,10 +226,32 @@ public class SolverBenchmark {
     }
 
     public Score getAverageScore() {
-        if (totalScore == null) {
+        return averageScore;
+    }
+
+    // TODO Do the locale formatting in benchmarkReport.html.ftl - https://issues.jboss.org/browse/PLANNER-169
+    public String getStandardDeviationString() {
+        if (standardDeviationDoubles == null) {
             return null;
         }
-        return totalScore.divide(getSuccessCount());
+        StringBuilder standardDeviationString = new StringBuilder(standardDeviationDoubles.length * 9);
+        boolean first = true;
+        for (double standardDeviationDouble : standardDeviationDoubles) {
+            if (first) {
+                first = false;
+            } else {
+                standardDeviationString.append("/");
+            }
+            String abbreviated = Double.toString(standardDeviationDouble);
+            // Abbreviate to 2 decimals
+            // We don't use DecimalFormat to abbreviate because it's written locale insensitive (like java literals)
+            int dotIndex = abbreviated.lastIndexOf('.');
+            if (dotIndex >= 0 && dotIndex + 3 < abbreviated.length()) {
+                abbreviated = abbreviated.substring(0, dotIndex + 3);
+            }
+            standardDeviationString.append(abbreviated);
+        }
+        return standardDeviationString.toString();
     }
 
     public Score getAverageWinningScoreDifference() {

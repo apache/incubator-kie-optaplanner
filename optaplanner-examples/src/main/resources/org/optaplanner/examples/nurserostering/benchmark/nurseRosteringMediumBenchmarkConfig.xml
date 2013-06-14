@@ -21,7 +21,8 @@
       <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late03.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late04.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late05.xml</inputSolutionFile>-->
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
       <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
     </problemBenchmarks>
@@ -96,7 +97,7 @@
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
+          <entityTabuSize>7</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>800</acceptedCountLimit>
@@ -124,7 +125,7 @@
         </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
+          <entityTabuSize>5</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>4</acceptedCountLimit>

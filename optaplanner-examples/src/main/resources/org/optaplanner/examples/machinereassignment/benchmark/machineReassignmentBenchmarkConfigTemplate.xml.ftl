@@ -27,7 +27,7 @@
       <inputSolutionFile>data/machinereassignment/input/model_b_8.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_b_9.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_b_10.txt</inputSolutionFile>
-      <!--<problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
       <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
     </problemBenchmarks>
@@ -57,9 +57,9 @@
     </solver>
   </solverBenchmark>
 <#list [500, 1000, 2000, 4000] as acceptedCountLimit>
-<#list [5, 7, 9, 11] as planningEntityTabuSize>
+<#list [5, 7, 9, 11] as entityTabuSize>
     <solverBenchmark>
-    <name>entityTabu${planningEntityTabuSize}-mas${acceptedCountLimit}</name>
+    <name>entityTabu${entityTabuSize}-mas${acceptedCountLimit}</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
@@ -70,7 +70,7 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
+          <entityTabuSize>${entityTabuSize}</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>

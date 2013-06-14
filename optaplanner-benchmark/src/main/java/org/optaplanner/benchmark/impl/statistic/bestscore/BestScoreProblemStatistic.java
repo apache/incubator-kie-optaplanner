@@ -48,7 +48,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     protected List<File> graphStatisticFileList = null;
 
     public BestScoreProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.BEST_SOLUTION_CHANGED);
+        super(problemBenchmark, ProblemStatisticType.BEST_SCORE);
     }
 
     public SingleStatistic createSingleStatistic() {
@@ -157,7 +157,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Score level " + scoreLevelIndex);
+        NumberAxis yAxis = new NumberAxis("Best score level " + scoreLevelIndex);
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(false);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);

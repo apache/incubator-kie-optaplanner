@@ -17,7 +17,7 @@
       <inputSolutionFile>data/machinereassignment/input/model_a2_4.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_a2_5.txt</inputSolutionFile>
       <!--<inputSolutionFile>data/machinereassignment/input/model_b_1.txt</inputSolutionFile>-->
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>
@@ -39,7 +39,7 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
+          <entityTabuSize>5</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>1000</acceptedCountLimit>

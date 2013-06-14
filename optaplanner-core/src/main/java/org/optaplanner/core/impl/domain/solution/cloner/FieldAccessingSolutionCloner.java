@@ -44,9 +44,9 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
 
-    protected SolutionDescriptor solutionDescriptor;
-    protected Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
-    protected Map<Class, Field[]> fieldsCache = new HashMap<Class, Field[]>();
+    protected final SolutionDescriptor solutionDescriptor;
+    protected final Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
+    protected final Map<Class, Field[]> fieldsCache = new HashMap<Class, Field[]>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -91,7 +91,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         protected SolutionG cloneSolution(SolutionG originalSolution) {
             unprocessedQueue = new LinkedList<Unprocessed>();
             originalToCloneMap = new IdentityHashMap<Object, Object>(
-                    solutionDescriptor.getEntityListSize(originalSolution) + 1);
+                    solutionDescriptor.getEntityCount(originalSolution) + 1);
             SolutionG cloneSolution = clone(originalSolution);
             processQueue();
             validateCloneSolution(originalSolution, cloneSolution);
@@ -157,7 +157,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             if (isFieldAnEntityPropertyOnSolution(field)) {
                 return true;
             }
-            if (isValueAnEntity(originalValue)) {
+            if (isValueAnEntityOrSolution(originalValue)) {
                 return true;
             }
             return false;
@@ -181,9 +181,9 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             return false;
         }
 
-        protected boolean isValueAnEntity(Object originalValue) {
+        protected boolean isValueAnEntityOrSolution(Object originalValue) {
             Class valueClass = originalValue.getClass();
-            if (solutionDescriptor.getPlanningEntityClassSet().contains(valueClass)
+            if (solutionDescriptor.hasEntityDescriptor(valueClass)
                     || valueClass == ((Class) solutionDescriptor.getSolutionClass())) {
                 return true;
             }

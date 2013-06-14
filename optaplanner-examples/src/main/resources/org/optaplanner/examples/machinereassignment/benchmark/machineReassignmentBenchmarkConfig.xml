@@ -27,7 +27,7 @@
       <inputSolutionFile>data/machinereassignment/input/model_b_8.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_b_9.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_b_10.txt</inputSolutionFile>
-      <!--<problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
       <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
     </problemBenchmarks>
@@ -68,7 +68,7 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
+          <entityTabuSize>7</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>2000</acceptedCountLimit>
@@ -88,8 +88,8 @@
           <!--<swapMoveSelector/>-->
         <!--</unionMoveSelector>-->
         <!--<acceptor>-->
-          <!--<planningEntityTabuSize>7</planningEntityTabuSize>-->
-          <!--<fadingPlanningEntityTabuSize>7</fadingPlanningEntityTabuSize>-->
+          <!--<entityTabuSize>7</entityTabuSize>-->
+          <!--<fadingEntityTabuSize>7</fadingEntityTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<acceptedCountLimit>2000</acceptedCountLimit>-->
@@ -109,8 +109,8 @@
           <!--<swapMoveSelector/>-->
         <!--</unionMoveSelector>-->
         <!--<acceptor>-->
-          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
-          <!--<fadingPlanningEntityTabuSize>10</fadingPlanningEntityTabuSize>-->
+          <!--<entityTabuSize>5</entityTabuSize>-->
+          <!--<fadingEntityTabuSize>10</fadingEntityTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<acceptedCountLimit>2000</acceptedCountLimit>-->

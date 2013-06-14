@@ -67,11 +67,11 @@ public class ValuePlacerConfig extends PlacerConfig {
                 selectedCountLimit == null ? SelectionOrder.ORIGINAL : SelectionOrder.RANDOM);
         ValuePlacer valuePlacer = new ValuePlacer(phaseTermination, valueSelector,
                 selectedCountLimit == null ? Integer.MAX_VALUE : selectedCountLimit);
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
-            valuePlacer.setAssertMoveScoreIsUncorrupted(true);
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
+            valuePlacer.setAssertMoveScoreFromScratch(true);
         }
-        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
-            valuePlacer.setAssertUndoMoveIsUncorrupted(true);
+        if (environmentMode.isIntrusiveFastAsserted()) {
+            valuePlacer.setAssertExpectedUndoMoveScore(true);
         }
         return valuePlacer;
     }

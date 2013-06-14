@@ -16,7 +16,7 @@
 </head>
 <#macro addSolverRankingBadge solverBenchmark>
     <#if !solverBenchmark.ranking??>
-    <span class="badge badge-warning">F</span>
+    <span class="badge badge-important">F</span>
     <#elseif solverBenchmark.favorite>
     <span class="badge badge-success">${solverBenchmark.ranking}</span>
     <#else>
@@ -25,11 +25,16 @@
 </#macro>
 <#macro addSingleRankingBadge singleBenchmark>
     <#if !singleBenchmark.ranking??>
-    <span class="badge badge-warning">F</span>
-    <#elseif singleBenchmark.winner>
-    <span class="badge badge-success">${singleBenchmark.ranking}</span>
+    <span class="badge badge-important">F</span>
     <#else>
-    <span class="badge">${singleBenchmark.ranking}</span>
+        <#if singleBenchmark.winner>
+        <span class="badge badge-success">${singleBenchmark.ranking}</span>
+        <#else>
+        <span class="badge">${singleBenchmark.ranking}</span>
+        </#if>
+        <#if !singleBenchmark.scoreFeasible>
+        <span class="badge badge-warning">!</span>
+        </#if>
     </#if>
 </#macro>
 <body onload="prettyPrint()">
@@ -138,6 +143,7 @@
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
+                                        <th>Standard Deviation</th>
                                         <th>Ranking</th>
                                     </tr>
                                 <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
@@ -149,13 +155,14 @@
                                             <#else>
                                                 <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
                                                 <#if !singleBenchmark.success>
-                                                    <td><span class="label warning">Failed</span></td>
+                                                    <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmark.score}&nbsp;<@addSingleRankingBadge singleBenchmark=singleBenchmark/></td>
                                                 </#if>
                                             </#if>
                                         </#list>
                                         <td>${solverBenchmark.averageScore!""}</td>
+                                        <td>${solverBenchmark.standardDeviationString!""}</td>
                                         <td><@addSolverRankingBadge solverBenchmark=solverBenchmark/></td>
                                     </tr>
                                 </#list>
@@ -227,7 +234,7 @@
                                             <#else>
                                                 <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
                                                 <#if !singleBenchmark.success>
-                                                    <td><span class="label warning">Failed</span></td>
+                                                    <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmark.winningScoreDifference}&nbsp;<@addSingleRankingBadge singleBenchmark=singleBenchmark/></td>
                                                 </#if>
@@ -279,7 +286,7 @@
                                             <#else>
                                                 <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
                                                 <#if !singleBenchmark.success>
-                                                    <td><span class="label warning">Failed</span></td>
+                                                    <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmark.worstScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSingleRankingBadge singleBenchmark=singleBenchmark/></td>
                                                 </#if>
@@ -355,7 +362,7 @@
                                             <#else>
                                                 <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
                                                 <#if !singleBenchmark.success>
-                                                    <td><span class="label warning">Failed</span></td>
+                                                    <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmark.timeMillisSpend}</td>
                                                 </#if>
@@ -400,7 +407,7 @@
                                             <#else>
                                                 <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
                                                 <#if !singleBenchmark.success>
-                                                    <td><span class="label warning">Failed</span></td>
+                                                    <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmark.averageCalculateCountPerSecond}/s</td>
                                                 </#if>
@@ -463,7 +470,7 @@
                                                 <p>${warning}</p>
                                             </div>
                                         </#list>
-                                        <#if problemStatistic.problemStatisticType.name() == "BEST_SOLUTION_CHANGED">
+                                        <#if problemStatistic.problemStatisticType.name() == "BEST_SCORE" || problemStatistic.problemStatisticType.name() == "STEP_SCORE" >
                                             <div class="tabbable tabs-right">
                                                 <ul class="nav nav-tabs">
                                                     <#assign scoreLevelIndex = 0>

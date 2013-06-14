@@ -17,6 +17,7 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -26,16 +27,21 @@ import org.optaplanner.core.api.domain.value.ValueRanges;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 
 @PlanningEntity(difficultyComparatorClass = VrpCustomerDifficultyComparator.class)
 @XStreamAlias("VrpCustomer")
-public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
+@XStreamInclude({
+        VrpTimeWindowedCustomer.class
+})
+public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
 
-    private VrpLocation location;
-    private int demand;
-    
+    protected VrpLocation location;
+    protected int demand;
+
     // Planning variables: changes during planning, between score calculations.
-    private VrpAppearance previousAppearance;
+    protected VrpStandstill previousStandstill;
+    protected VrpCustomer nextCustomer;
 
     public VrpLocation getLocation() {
         return location;
@@ -58,12 +64,21 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "vehicleList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList",
                     excludeUninitializedPlanningEntity = true)})
-    public VrpAppearance getPreviousAppearance() {
-        return previousAppearance;
+    public VrpStandstill getPreviousStandstill() {
+        return previousStandstill;
     }
 
-    public void setPreviousAppearance(VrpAppearance previousAppearance) {
-        this.previousAppearance = previousAppearance;
+    public void setPreviousStandstill(VrpStandstill previousStandstill) {
+        this.previousStandstill = previousStandstill;
+    }
+
+    @PlanningVariable(mappedBy = "previousStandstill")
+    public VrpCustomer getNextCustomer() {
+        return nextCustomer;
+    }
+
+    public void setNextCustomer(VrpCustomer nextCustomer) {
+        this.nextCustomer = nextCustomer;
     }
 
     // ************************************************************************
@@ -72,25 +87,25 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
 
     public VrpVehicle getVehicle() {
         // HACK TODO Invent a system like DependentPlanningVariable or PlanningVariableListener to cope with this
-        VrpAppearance firstAppearance = getPreviousAppearance();
-        while (firstAppearance instanceof VrpCustomer) {
-            if (firstAppearance == this) {
+        VrpStandstill firstStandstill = getPreviousStandstill();
+        while (firstStandstill instanceof VrpCustomer) {
+            if (firstStandstill == this) {
                 throw new IllegalStateException("Impossible state"); // fail fast during infinite loop
             }
-            firstAppearance = ((VrpCustomer) firstAppearance).getPreviousAppearance();
+            firstStandstill = ((VrpCustomer) firstStandstill).getPreviousStandstill();
         }
-        return (VrpVehicle) firstAppearance;
+        return (VrpVehicle) firstStandstill;
     }
 
-    public int getDistanceToPreviousAppearance() {
-        if (previousAppearance == null) {
+    public int getDistanceToPreviousStandstill() {
+        if (previousStandstill == null) {
             return 0;
         }
-        return getDistanceTo(previousAppearance);
+        return getDistanceTo(previousStandstill);
     }
 
-    public int getDistanceTo(VrpAppearance appearance) {
-        return location.getDistance(appearance.getLocation());
+    public int getDistanceTo(VrpStandstill standstill) {
+        return location.getDistance(standstill.getLocation());
     }
 
     /**
@@ -106,7 +121,7 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(location, other.location) // TODO performance leak: not needed?
-                    .append(previousAppearance, other.previousAppearance) // TODO performance leak: not needed?
+                    .append(previousStandstill, other.previousStandstill) // TODO performance leak: not needed?
                     .isEquals();
         } else {
             return false;
@@ -122,13 +137,13 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
         return new HashCodeBuilder()
                 .append(id)
                 .append(location) // TODO performance leak: not needed?
-                .append(previousAppearance) // TODO performance leak: not needed?
+                .append(previousStandstill) // TODO performance leak: not needed?
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return location + "(after " + (previousAppearance == null ? "null" : previousAppearance.getLocation()) + ")";
+        return location + "(after " + (previousStandstill == null ? "null" : previousStandstill.getLocation()) + ")";
     }
 
 }

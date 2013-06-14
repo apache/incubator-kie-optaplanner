@@ -79,8 +79,11 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
         greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
         greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
-        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
-            greedySolverPhase.setAssertStepScoreIsUncorrupted(true);
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
+            greedySolverPhase.setAssertStepScoreFromScratch(true);
+        }
+        if (environmentMode.isIntrusiveFastAsserted()) {
+            greedySolverPhase.setAssertExpectedStepScore(true);
         }
         return greedySolverPhase;
     }
@@ -107,23 +110,23 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
                     "1 planningEntityClass.");
         }
         Class<?> planningEntityClass = planningEntityClassSet.iterator().next();
-        PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
-        PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(planningEntityDescriptor);
+        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(planningEntityClass);
+        PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(entityDescriptor);
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>();
-        for (PlanningVariableDescriptor planningVariableDescriptor
-                : planningEntityDescriptor.getPlanningVariableDescriptors()) {
-            PlanningValueSelector planningValueSelector = new PlanningValueSelector(planningVariableDescriptor);
+        for (PlanningVariableDescriptor variableDescriptor
+                : entityDescriptor.getVariableDescriptors()) {
+            PlanningValueSelector planningValueSelector = new PlanningValueSelector(variableDescriptor);
             // TODO should be configured to do BEST etc.
             PlanningValueWalker planningValueWalker = new PlanningValueWalker(
-                    planningVariableDescriptor, planningValueSelector);
+                    variableDescriptor, planningValueSelector);
             planningValueWalkerList.add(planningValueWalker);
         }
         planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
         greedyDecider.setPlanningVariableWalker(planningVariableWalker);
         
         // TODO greedyDecider.setConstructionHeuristicPickEarlyType(constructionHeuristicPickEarlyType);
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
-            greedyDecider.setAssertMoveScoreIsUncorrupted(true);
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
+            greedyDecider.setAssertMoveScoreFromScratch(true);
         }
         return greedyDecider;
     }

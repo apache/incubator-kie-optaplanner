@@ -48,7 +48,7 @@ public class GreedyFitPlanningEntityConfig {
     // ************************************************************************
 
     public PlanningEntitySelector buildPlanningEntitySelector(SolutionDescriptor solutionDescriptor) {
-        PlanningEntityDescriptor planningEntityDescriptor;
+        PlanningEntityDescriptor entityDescriptor;
         Class<?> resolvedEntityClass;
         if (planningEntityClass != null) {
             resolvedEntityClass = planningEntityClass;
@@ -62,12 +62,12 @@ public class GreedyFitPlanningEntityConfig {
             }
             resolvedEntityClass = planningEntityClassSet.iterator().next();
         }
-        if (!solutionDescriptor.hasPlanningEntityDescriptor(planningEntityClass)) {
+        if (!solutionDescriptor.hasEntityDescriptor(planningEntityClass)) {
             throw new IllegalArgumentException("The greedyFitPlanningEntity has a planningEntityClass ("
                     + planningEntityClass + ") that has not been configured as a planningEntity.");
         }
-        planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
-        PlanningEntitySelector planningEntitySelector = new PlanningEntitySelector(planningEntityDescriptor);
+        entityDescriptor = solutionDescriptor.getEntityDescriptor(planningEntityClass);
+        PlanningEntitySelector planningEntitySelector = new PlanningEntitySelector(entityDescriptor);
         planningEntitySelector.setSelectionOrder(selectionOrder != null ? selectionOrder
                 : PlanningEntitySelectionOrder.ORIGINAL);
         return planningEntitySelector;

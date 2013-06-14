@@ -66,7 +66,7 @@ public class DefaultSolverScope {
     }
 
     public void setScoreDirector(ScoreDirector scoreDirector) {
-        // TODO remove HACK to fix memory leak of https://issues.jboss.org/browse/JBRULES-3692
+        // TODO remove HACK to fix memory leak of https://issues.jboss.org/browse/PLANNER-19
         if (this.scoreDirector != null) {
             this.scoreDirector.dispose();
         }
@@ -85,27 +85,31 @@ public class DefaultSolverScope {
         return scoreDirector.getWorkingSolution();
     }
 
-    public int getWorkingEntityListSize() {
-        return scoreDirector.getWorkingEntityListSize();
+    public int getWorkingEntityCount() {
+        return scoreDirector.getWorkingEntityCount();
     }
 
     public List<Object> getWorkingEntityList() {
         return scoreDirector.getWorkingEntityList();
     }
 
+    public int getWorkingValueCount() {
+        return scoreDirector.getWorkingValueCount();
+    }
+
     public Score calculateScore() {
         return scoreDirector.calculateScore();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore) {
-        scoreDirector.assertExpectedWorkingScore(expectedWorkingScore);
+    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
+        scoreDirector.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore) {
-        scoreDirector.assertWorkingScoreFromScratch(workingScore);
+    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
+        scoreDirector.assertWorkingScoreFromScratch(workingScore, completedAction);
     }
 
-    public void assertScore(Solution solution) {
+    public void assertScoreFromScratch(Solution solution) {
         scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
     }
 

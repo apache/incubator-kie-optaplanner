@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class FixedTabuSizeStrategy implements TabuSizeStrategy {
+public class FixedTabuSizeStrategy extends AbstractTabuSizeStrategy {
 
     protected final int tabuSize;
 

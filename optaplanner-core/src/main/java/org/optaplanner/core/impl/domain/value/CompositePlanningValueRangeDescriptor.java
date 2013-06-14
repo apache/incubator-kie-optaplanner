@@ -38,7 +38,7 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
             if (valueRangeDescriptor instanceof UndefinedPlanningValueRangeDescriptor) {
                 throw new IllegalArgumentException("The planningEntityClass ("
-                        + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                        + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                         + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                         + ") with multiple " + ValueRange.class.getSimpleName() + " annotations,"
                         + " including one of type (" + ValueRangeType.UNDEFINED + ").");
@@ -71,10 +71,10 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
         return values;
     }
 
-    public long getProblemScale(Solution solution, Object planningEntity) {
+    public long getValueCount(Solution solution, Object planningEntity) {
         long problemScale = 0L;
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            problemScale += valueRangeDescriptor.getProblemScale(solution, planningEntity);
+            problemScale += valueRangeDescriptor.getValueCount(solution, planningEntity);
         }
         return problemScale;
     }

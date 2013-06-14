@@ -21,7 +21,7 @@
       <inputSolutionFile>data/curriculumcourse/unsolved/comp12.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp13.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp14.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>
@@ -67,7 +67,7 @@
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
+          <entityTabuSize>10</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
@@ -95,7 +95,7 @@
           </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
+          <entityTabuSize>10</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
@@ -126,7 +126,7 @@
           </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
+          <entityTabuSize>10</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->

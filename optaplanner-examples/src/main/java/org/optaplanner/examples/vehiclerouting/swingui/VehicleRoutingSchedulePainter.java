@@ -32,11 +32,15 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
 
 public class VehicleRoutingSchedulePainter {
 
     private static final int TEXT_SIZE = 12;
+    private static final int TEXT_SPACING_SIZE = 4;
 
     private static final String IMAGE_PATH_PREFIX = "/org/optaplanner/examples/vehiclerouting/swingui/";
 
@@ -90,6 +94,10 @@ public class VehicleRoutingSchedulePainter {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
             g.drawString(Integer.toString(customer.getDemand()), x + 3, y - 3);
+            if (customer instanceof VrpTimeWindowedCustomer) {
+                VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
+                g.drawString(timeWindowedCustomer.getTimeWindowLabel(), x + 3, y - 3 + TEXT_SIZE + TEXT_SPACING_SIZE);
+            }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         for (VrpDepot depot : schedule.getDepotList()) {
@@ -98,6 +106,10 @@ public class VehicleRoutingSchedulePainter {
             g.fillRect(x - 2, y - 2, 5, 5);
             g.drawImage(depotImageIcon.getImage(),
                     x - depotImageIcon.getIconWidth() / 2, y - 2 - depotImageIcon.getIconHeight(), imageObserver);
+            if (depot instanceof VrpTimeWindowedDepot) {
+                VrpTimeWindowedDepot timeWindowedDepot = (VrpTimeWindowedDepot) depot;
+                g.drawString(timeWindowedDepot.getTimeWindowLabel(), x + 3, y - 3 + TEXT_SIZE + TEXT_SPACING_SIZE);
+            }
         }
         int colorIndex = 0;
         // TODO Too many nested for loops
@@ -107,9 +119,9 @@ public class VehicleRoutingSchedulePainter {
             int longestNonDepotDistance = -1;
             int load = 0;
             for (VrpCustomer customer : schedule.getCustomerList()) {
-                if (customer.getPreviousAppearance() != null && customer.getVehicle() == vehicle) {
+                if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
                     load += customer.getDemand();
-                    VrpLocation previousLocation = customer.getPreviousAppearance().getLocation();
+                    VrpLocation previousLocation = customer.getPreviousStandstill().getLocation();
                     int previousX = translator.translateLongitudeToX(previousLocation.getLongitude());
                     int previousY = translator.translateLatitudeToY(previousLocation.getLatitude());
                     VrpLocation location = customer.getLocation();
@@ -117,8 +129,8 @@ public class VehicleRoutingSchedulePainter {
                     int y = translator.translateLatitudeToY(location.getLatitude());
                     g.drawLine(previousX, previousY, x, y);
                     // Determine where to draw the vehicle info
-                    int distance = customer.getDistanceToPreviousAppearance();
-                    if (customer.getPreviousAppearance() instanceof VrpCustomer) {
+                    int distance = customer.getDistanceToPreviousStandstill();
+                    if (customer.getPreviousStandstill() instanceof VrpCustomer) {
                         if (longestNonDepotDistance < distance) {
                             longestNonDepotDistance = distance;
                             vehicleInfoCustomer = customer;
@@ -130,7 +142,7 @@ public class VehicleRoutingSchedulePainter {
                     // Line back to the vehicle depot
                     boolean needsBackToVehicleLineDraw = true;
                     for (VrpCustomer trailingCustomer : schedule.getCustomerList()) {
-                        if (trailingCustomer.getPreviousAppearance() == customer) {
+                        if (trailingCustomer.getPreviousStandstill() == customer) {
                             needsBackToVehicleLineDraw = false;
                             break;
                         }
@@ -148,7 +160,7 @@ public class VehicleRoutingSchedulePainter {
                 if (load > vehicle.getCapacity()) {
                     g.setColor(TangoColorFactory.SCARLET_2);
                 }
-                VrpLocation previousLocation = vehicleInfoCustomer.getPreviousAppearance().getLocation();
+                VrpLocation previousLocation = vehicleInfoCustomer.getPreviousStandstill().getLocation();
                 VrpLocation location = vehicleInfoCustomer.getLocation();
                 double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
                 int x = translator.translateLongitudeToX(longitude);
@@ -168,10 +180,12 @@ public class VehicleRoutingSchedulePainter {
         // Legend
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(5, (int) height - 12 - TEXT_SIZE - (TEXT_SIZE / 2), 5, 5);
-        g.drawString("Depot", 15, (int) height - 10 - TEXT_SIZE);
+        g.drawString((schedule instanceof VrpTimeWindowedSchedule)
+                ? "Depot: time window" : "Depot", 15, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.ORANGE_2);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
-        g.drawString("Customer demand", 15, (int) height - 5);
+        g.drawString((schedule instanceof VrpTimeWindowedSchedule)
+                ? "Customer: demand and time window" : "Customer: demand", 15, (int) height - 5);
         // Show soft score
         g.setColor(TangoColorFactory.SCARLET_2);
         HardSoftScore score = schedule.getScore();

@@ -45,8 +45,8 @@ public class DefaultDecider implements Decider {
     protected Acceptor acceptor;
     protected Forager forager;
 
-    protected boolean assertMoveScoreIsUncorrupted = false;
-    protected boolean assertUndoMoveIsUncorrupted = false;
+    protected boolean assertMoveScoreFromScratch = false;
+    protected boolean assertExpectedUndoMoveScore = false;
 
     public void setLocalSearchSolverPhase(LocalSearchSolverPhase localSearchSolverPhase) {
         this.localSearchSolverPhase = localSearchSolverPhase;
@@ -72,12 +72,12 @@ public class DefaultDecider implements Decider {
         this.forager = forager;
     }
 
-    public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
-        this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
+    public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
+        this.assertMoveScoreFromScratch = assertMoveScoreFromScratch;
     }
 
-    public void setAssertUndoMoveIsUncorrupted(boolean assertUndoMoveIsUncorrupted) {
-        this.assertUndoMoveIsUncorrupted = assertUndoMoveIsUncorrupted;
+    public void setAssertExpectedUndoMoveScore(boolean assertExpectedUndoMoveScore) {
+        this.assertExpectedUndoMoveScore = assertExpectedUndoMoveScore;
     }
 
     // ************************************************************************
@@ -90,16 +90,16 @@ public class DefaultDecider implements Decider {
         forager.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        moveSelector.phaseStarted(localSearchSolverPhaseScope);
-        acceptor.phaseStarted(localSearchSolverPhaseScope);
-        forager.phaseStarted(localSearchSolverPhaseScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+        moveSelector.phaseStarted(phaseScope);
+        acceptor.phaseStarted(phaseScope);
+        forager.phaseStarted(phaseScope);
     }
 
-    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
-        moveSelector.stepStarted(localSearchStepScope);
-        acceptor.stepStarted(localSearchStepScope);
-        forager.stepStarted(localSearchStepScope);
+    public void stepStarted(LocalSearchStepScope stepScope) {
+        moveSelector.stepStarted(stepScope);
+        acceptor.stepStarted(stepScope);
+        forager.stepStarted(stepScope);
     }
 
     public void decideNextStep(LocalSearchStepScope stepScope) {
@@ -143,10 +143,10 @@ public class DefaultDecider implements Decider {
         move.doMove(scoreDirector);
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
-        if (assertUndoMoveIsUncorrupted) {
+        if (assertExpectedUndoMoveScore) {
             LocalSearchSolverPhaseScope phaseScope = moveScope.getStepScope()
                     .getPhaseScope();
-            phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
+            phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}), accepted ({}) for move ({}).",
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getAccepted(),
@@ -155,8 +155,8 @@ public class DefaultDecider implements Decider {
 
     private void processMove(LocalSearchMoveScope moveScope) {
         Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
-        if (assertMoveScoreIsUncorrupted) {
-            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
+        if (assertMoveScoreFromScratch) {
+            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
         }
         moveScope.setScore(score);
         boolean accepted = acceptor.isAccepted(moveScope);
@@ -164,16 +164,16 @@ public class DefaultDecider implements Decider {
         forager.addMove(moveScope);
     }
 
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
-        moveSelector.stepEnded(localSearchStepScope);
-        acceptor.stepEnded(localSearchStepScope);
-        forager.stepEnded(localSearchStepScope);
+    public void stepEnded(LocalSearchStepScope stepScope) {
+        moveSelector.stepEnded(stepScope);
+        acceptor.stepEnded(stepScope);
+        forager.stepEnded(stepScope);
     }
 
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        moveSelector.phaseEnded(localSearchSolverPhaseScope);
-        acceptor.phaseEnded(localSearchSolverPhaseScope);
-        forager.phaseEnded(localSearchSolverPhaseScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+        moveSelector.phaseEnded(phaseScope);
+        acceptor.phaseEnded(phaseScope);
+        forager.phaseEnded(phaseScope);
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {

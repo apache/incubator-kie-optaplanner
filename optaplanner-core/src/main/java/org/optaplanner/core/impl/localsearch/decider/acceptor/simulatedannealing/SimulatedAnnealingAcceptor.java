@@ -68,24 +68,24 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
-        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getStepScope().getPhaseScope();
-        Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedStepScope().getScore();
+        LocalSearchSolverPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
+        Score lastStepScore = phaseScope.getLastCompletedStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) >= 0) {
             return true;
         }
-        Score scoreDifference = lastStepScore.subtract(moveScore);
+        Score moveScoreDifference = lastStepScore.subtract(moveScore);
+        double[] moveScoreDifferenceLevels = ScoreUtils.extractLevelDoubles(moveScoreDifference);
         double acceptChance = 1.0;
-        double[] scoreDifferenceLevels = ScoreUtils.extractLevelDoubles(scoreDifference);
         for (int i = 0; i < levelsLength; i++) {
-            double scoreDifferenceLevel = scoreDifferenceLevels[i];
+            double moveScoreDifferenceLevel = moveScoreDifferenceLevels[i];
             double temperatureLevel = temperatureLevels[i];
             double acceptChanceLevel;
-            if (scoreDifferenceLevel <= 0.0) {
-                // In this level moveScore is better than the lastStepScore, so do not disrupt the acceptChance
+            if (moveScoreDifferenceLevel <= 0.0) {
+                // In this level, moveScore is better than the lastStepScore, so do not disrupt the acceptChance
                 acceptChanceLevel = 1.0;
             } else {
-                acceptChanceLevel = Math.exp(-scoreDifferenceLevel / temperatureLevel);
+                acceptChanceLevel = Math.exp(-moveScoreDifferenceLevel / temperatureLevel);
             }
             acceptChance *= acceptChanceLevel;
         }

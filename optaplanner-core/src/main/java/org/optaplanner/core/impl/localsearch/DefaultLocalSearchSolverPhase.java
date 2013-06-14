@@ -32,7 +32,8 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
 
     protected Decider decider;
 
-    protected boolean assertStepScoreIsUncorrupted = false;
+    protected boolean assertStepScoreFromScratch = false;
+    protected boolean assertExpectedStepScore = false;
     
     public Decider getDecider() {
         return this.decider;
@@ -43,8 +44,12 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         this.decider.setLocalSearchSolverPhase(this);
     }
 
-    public void setAssertStepScoreIsUncorrupted(boolean assertStepScoreIsUncorrupted) {
-        this.assertStepScoreIsUncorrupted = assertStepScoreIsUncorrupted;
+    public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
+        this.assertStepScoreFromScratch = assertStepScoreFromScratch;
+    }
+
+    public void setAssertExpectedStepScore(boolean assertExpectedStepScore) {
+        this.assertExpectedStepScore = assertExpectedStepScore;
     }
 
     // ************************************************************************
@@ -82,9 +87,11 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             nextStep.doMove(stepScope.getScoreDirector());
             // there is no need to recalculate the score, but we still need to set it
             phaseScope.getWorkingSolution().setScore(stepScope.getScore());
-            if (assertStepScoreIsUncorrupted) {
-                phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
-                phaseScope.assertExpectedWorkingScore(stepScope.getScore());
+            if (assertStepScoreFromScratch) {
+                phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), nextStep);
+            }
+            if (assertExpectedStepScore) {
+                phaseScope.assertExpectedWorkingScore(stepScope.getScore(), nextStep);
             }
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
@@ -117,15 +124,15 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     public void stepEnded(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
         decider.stepEnded(stepScope);
-        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = stepScope.getPhaseScope();
+        LocalSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
-            long timeMillisSpend = localSearchSolverPhaseScope.calculateSolverTimeMillisSpend();
+            long timeMillisSpend = phaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({})," +
                     " accepted/selected move count ({}/{}) for picked step ({}).",
                     stepScope.getStepIndex(), timeMillisSpend,
                     stepScope.getScore(),
                     (stepScope.getBestScoreImproved() ? "new" : "   "),
-                    localSearchSolverPhaseScope.getBestScore(),
+                    phaseScope.getBestScore(),
                     stepScope.getAcceptedMoveCount(),
                     stepScope.getSelectedMoveCount(),
                     stepScope.getStepString());

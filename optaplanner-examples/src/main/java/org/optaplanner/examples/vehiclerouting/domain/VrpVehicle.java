@@ -17,13 +17,16 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("VrpVehicle")
-public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
+public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
 
-    private int capacity;
-    private VrpDepot depot;
+    protected int capacity;
+    protected VrpDepot depot;
+
+    protected VrpCustomer nextCustomer;
 
     public int getCapacity() {
         return capacity;
@@ -39,6 +42,15 @@ public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
 
     public void setDepot(VrpDepot depot) {
         this.depot = depot;
+    }
+
+    @PlanningVariable(mappedBy = "previousStandstill")
+    public VrpCustomer getNextCustomer() {
+        return nextCustomer;
+    }
+
+    public void setNextCustomer(VrpCustomer nextCustomer) {
+        this.nextCustomer = nextCustomer;
     }
 
     // ************************************************************************

@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
@@ -43,7 +41,7 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         excludeUninitializedPlanningEntity = valueRangeAnnotation.excludeUninitializedPlanningEntity();
         if (excludeUninitializedPlanningEntity) {
             Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
-            Set<Class<?>> entityClassSet = variableDescriptor.getPlanningEntityDescriptor().getSolutionDescriptor()
+            Set<Class<?>> entityClassSet = variableDescriptor.getEntityDescriptor().getSolutionDescriptor()
                     .getPlanningEntityClassSet();
             boolean assignableFrom = false;
             for (Class<?> entityClass : entityClassSet) {
@@ -54,7 +52,7 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
             }
             if (!assignableFrom) {
                 throw new IllegalArgumentException("The planningEntityClass ("
-                        + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                        + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                         + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                         + ") with excludeUninitializedPlanningEntity (true), but there is no planning entity class"
                         + " that extends the variablePropertyType (" + variablePropertyType + ").");
@@ -69,21 +67,10 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         // TODO HACK remove me and replace by SelectionFilter
         Collection<Object> filteredValues = new ArrayList<Object>(values.size());
         for (Object value : values) {
-            if (value.getClass().isAnnotationPresent(PlanningEntity.class)) {
-                PlanningEntityDescriptor entityDescriptor = variableDescriptor.getPlanningEntityDescriptor()
-                        .getSolutionDescriptor().getPlanningEntityDescriptor(value.getClass());
-                if (entityDescriptor == null) {
-                    throw new IllegalArgumentException("The planningEntityClass ("
-                            + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                            + ") has a PlanningVariable annotated property ("
-                            + variableDescriptor.getVariableName()
-                            + ") with excludeUninitializedPlanningEntity (true),"
-                            + " but a planning value class (" + value.getClass()
-                            + ") annotated with PlanningEntity is a non configured as a planning entity.");
-                }
-                if (variableDescriptor.isInitialized(value)) {
-                    filteredValues.add(value);
-                }
+            Class<?> entityClass = variableDescriptor.getEntityDescriptor().getPlanningEntityClass();
+            if (!entityClass.isAssignableFrom(value.getClass())
+                    || variableDescriptor.isInitialized(value)) {
+                filteredValues.add(value);
             }
         }
         return filteredValues;

@@ -16,17 +16,16 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
-import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.score.Score;
 
 public class BestScoreSingleStatisticPoint {
 
-    private long timeMillisSpend;
-    private Score score;
+    private final long timeMillisSpend;
+    private final Score score;
 
-    public BestScoreSingleStatisticPoint(BestSolutionChangedEvent event) {
-        timeMillisSpend = event.getTimeMillisSpend();
-        score = event.getNewBestSolution().getScore();
+    public BestScoreSingleStatisticPoint(long timeMillisSpend, Score score) {
+        this.timeMillisSpend = timeMillisSpend;
+        this.score = score;
     }
 
     public long getTimeMillisSpend() {

@@ -49,7 +49,8 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
     private class BestScoreSingleStatisticListener implements SolverEventListener {
 
         public void bestSolutionChanged(BestSolutionChangedEvent event) {
-            pointList.add(new BestScoreSingleStatisticPoint(event));
+            pointList.add(new BestScoreSingleStatisticPoint(
+                    event.getTimeMillisSpend(), event.getNewBestSolution().getScore()));
         }
 
     }

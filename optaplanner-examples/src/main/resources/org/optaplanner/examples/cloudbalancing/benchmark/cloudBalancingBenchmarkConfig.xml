@@ -15,7 +15,11 @@
       <inputSolutionFile>data/cloudbalancing/unsolved/cb-0400comp-1200proc.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/cb-0800comp-2400proc.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/cb-1600comp-4800proc.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
     </problemBenchmarks>
 
     <solver>
@@ -71,7 +75,7 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>7</planningEntityTabuSize>
+          <entityTabuSize>7</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>1000</acceptedCountLimit>
@@ -113,7 +117,28 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <lateAcceptanceSize>2000</lateAcceptanceSize>
+          <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Simulated Annealing</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <lateSimulatedAnnealingSize>100</lateSimulatedAnnealingSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>4</acceptedCountLimit>

@@ -383,6 +383,18 @@
       output a <literal>HardSoftScore</literal>.</para>
 
       <para>All score calculation types are Object Orientated and can reuse existing Java code.</para>
+
+      <important>
+        <para>The score calculation should be read-only: it should not change the planning entities or the problem facts
+        in any way. For example, it must not call a setter method on a planning entity in a Drools score rule's RHS.
+        This does not apply to <emphasis>logically inserted</emphasis> objects, which can be changed by the score rules
+        who logically inserted them in the first place.</para>
+
+        <para>OptaPlanner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless
+        an <link linkend="environmentMode">environmentMode assertion</link> is enabled). For example, after a winning
+        step is done, there is no need to calculate the score because that move was done and undone earlier. As a
+        result, there's no guarantee that such changes applied during score calculation are actually done.</para>
+      </important>
     </section>
 
     <section>
@@ -814,15 +826,16 @@
 
         <programlisting>rule "multipleQueensHorizontal"
     when
-        $q1 : Queen($id : id, $y : y);
-        $q2 : Queen(id &gt; $id, y == $y);
+        Queen($id : id, row != null, $i : rowIndex)
+        Queen(id &gt; $id, rowIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end</programlisting>
 
-        <para>This score rule will fire once for every 2 queens with the same <literal>y</literal>. The <literal>(id
-        &gt; $id)</literal> condition is needed to assure that for 2 queens A and B, it can only fire for (A, B) and not
-        for (B, A), (A, A) or (B, B). Let's take a closer look at this score rule on this solution of 4 queens:</para>
+        <para>This score rule will fire once for every 2 queens with the same <literal>rowIndex</literal>. The
+        <literal>(id &gt; $id)</literal> condition is needed to assure that for 2 queens A and B, it can only fire for
+        (A, B) and not for (B, A), (A, A) or (B, B). Let's take a closer look at this score rule on this solution of 4
+        queens:</para>
 
         <mediaobject>
           <imageobject>
@@ -861,8 +874,8 @@ end</programlisting>
 
 rule "multipleQueensHorizontal"
     when
-        $q1 : Queen($id : id, $y : y);
-        $q2 : Queen(id &gt; $id, y == $y);
+        Queen($id : id, row != null, $i : rowIndex)
+        Queen(id &gt; $id, rowIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
@@ -871,16 +884,16 @@ end
 
 rule "multipleQueensAscendingDiagonal"
     when
-        $q1 : Queen($id : id, $ascendingD : ascendingD);
-        $q2 : Queen(id &gt; $id, ascendingD == $ascendingD);
+        Queen($id : id, row != null, $i : ascendingDiagonalIndex)
+        Queen(id &gt; $id, ascendingDiagonalIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
 rule "multipleQueensDescendingDiagonal"
     when
-        $q1 : Queen($id : id, $descendingD : descendingD);
-        $q2 : Queen(id &gt; $id, descendingD == $descendingD);
+        Queen($id : id, row != null, $i : descendingDiagonalIndex)
+        Queen(id &gt; $id, descendingDiagonalIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end</programlisting>

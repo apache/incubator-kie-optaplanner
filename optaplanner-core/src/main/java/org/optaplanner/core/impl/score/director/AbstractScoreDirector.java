@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.director;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -67,7 +66,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         Collection<PlanningVariableDescriptor> chainedVariableDescriptors = getSolutionDescriptor()
                 .getChainedVariableDescriptors();
         hasChainedVariables = !chainedVariableDescriptors.isEmpty();
-        chainedVariableToTrailingEntitiesMap = new HashMap<PlanningVariableDescriptor, Map<Object, Set<Object>>>(
+        chainedVariableToTrailingEntitiesMap = new LinkedHashMap<PlanningVariableDescriptor, Map<Object, Set<Object>>>(
                 chainedVariableDescriptors.size());
         for (PlanningVariableDescriptor chainedVariableDescriptor : chainedVariableDescriptors) {
             chainedVariableToTrailingEntitiesMap.put(chainedVariableDescriptor, null);
@@ -126,7 +125,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity)) {
+                if (variableDescriptor.getEntityDescriptor().appliesToPlanningEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
                     Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
                     Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
@@ -151,7 +150,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity)) {
+                if (variableDescriptor.getEntityDescriptor().appliesToPlanningEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
                     Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
                     Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
@@ -226,12 +225,16 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         resetTrailingEntityMap(); // TODO do not nuke it
     }
 
-    public int getWorkingEntityListSize() {
-        return getSolutionDescriptor().getEntityListSize(workingSolution);
+    public int getWorkingEntityCount() {
+        return getSolutionDescriptor().getEntityCount(workingSolution);
     }
 
     public List<Object> getWorkingEntityList() {
         return getSolutionDescriptor().getEntityList(workingSolution);
+    }
+
+    public int getWorkingValueCount() {
+        return getSolutionDescriptor().getValueCount(workingSolution);
     }
 
     public int countWorkingSolutionUninitializedVariables() {
@@ -286,17 +289,17 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return trailingEntities.iterator().next();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore) {
+    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
         Score workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
             throw new IllegalStateException(
                     "Score corruption: the expectedWorkingScore (" + expectedWorkingScore
-                            + ") is not the workingScore (" + workingScore + ")");
-
+                            + ") is not the workingScore  (" + workingScore
+                            + ") after completedAction (" + completedAction + ").");
         }
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore) {
+    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
         ScoreDirectorFactory assertionScoreDirectorFactory
                 = scoreDirectorFactory.getAssertionScoreDirectorFactory();
         if (assertionScoreDirectorFactory == null) {
@@ -310,7 +313,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             uncorruptedScoreDirector.dispose();
             throw new IllegalStateException(
                     "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
-                            + uncorruptedScore + "):\n" + scoreCorruptionAnalysis);
+                            + uncorruptedScore + ") after completedAction (" + completedAction
+                            + "):\n" + scoreCorruptionAnalysis);
         } else {
             uncorruptedScoreDirector.dispose();
         }

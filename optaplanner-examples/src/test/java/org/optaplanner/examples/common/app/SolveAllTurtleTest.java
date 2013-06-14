@@ -30,7 +30,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.termination.TerminationConfig;
 import org.optaplanner.core.impl.solution.Solution;
@@ -96,26 +98,44 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         checkRunTurtleTests();
         SolverFactory solverFactory = buildSolverFactory();
         Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
-        Solution bestSolution = buildAndSolve(solverFactory, EnvironmentMode.FAST_ASSERT, planningProblem);
+        // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
+        // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
+        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 2L);
+        // 2) FAST_ASSERT to run past CH into LS to find easy bugs (but covers much ground)
+        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.FAST_ASSERT, planningProblem, 5L);
+        // 3) NON_INTRUSIVE_FULL_ASSERT ASSERT to find LS bugs (but covers little ground)
+        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 3L);
+    }
+
+    protected Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode,
+            Solution planningProblem, long maximumMinutesSpend) {
+        solverFactory.getSolverConfig().getTerminationConfig().setMaximumMinutesSpend(maximumMinutesSpend);
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        solverConfig.setEnvironmentMode(environmentMode);
+        ScoreDirectorFactoryConfig assertionScoreDirectorFactory = createOverwritingAssertionScoreDirectorFactory();
+        if (assertionScoreDirectorFactory != null && environmentMode.isAsserted()) {
+            solverConfig.getScoreDirectorFactoryConfig().setAssertionScoreDirectorFactory(
+                    assertionScoreDirectorFactory);
+        }
+        Solver solver = solverFactory.buildSolver();
+        solver.setPlanningProblem(planningProblem);
+        solver.solve();
+        Solution bestSolution = solver.getBestSolution();
         if (bestSolution == null) {
             // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null
             bestSolution = planningProblem;
         }
-        bestSolution = buildAndSolve(solverFactory, EnvironmentMode.FULL_ASSERT, bestSolution);
+        return bestSolution;
     }
 
-    private Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode, Solution solution) {
-        solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
-        Solver solver = solverFactory.buildSolver();
-        solver.setPlanningProblem(solution);
-        solver.solve();
-        return solver.getBestSolution();
+    protected ScoreDirectorFactoryConfig createOverwritingAssertionScoreDirectorFactory()  {
+        return null;
     }
 
     protected SolverFactory buildSolverFactory() {
         SolverFactory solverFactory = new XmlSolverFactory(createSolverConfigResource());
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMaximumMinutesSpend(5L);
+        // buildAndSolve() fills in maximumMinutesSpend
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
         return solverFactory;
     }

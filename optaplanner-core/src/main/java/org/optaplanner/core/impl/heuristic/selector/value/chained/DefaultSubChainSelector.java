@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,9 +96,9 @@ public class DefaultSubChainSelector extends AbstractSelector
     public void constructCache(DefaultSolverScope solverScope) {
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
-        Class<?> entityClass = variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass();
+        Class<?> entityClass = variableDescriptor.getEntityDescriptor().getPlanningEntityClass();
         long valueSize = valueSelector.getSize();
-        // Fail-fast when anchorTrailingChainSize could ever be too big
+        // Fail-fast when anchorTrailingChainList.size() could ever be too big
         if (valueSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a valueSelector (" + valueSelector
@@ -143,13 +144,19 @@ public class DefaultSubChainSelector extends AbstractSelector
     }
 
     public long getSize() {
-        long size = 0L;
+        long selectionSize = 0L;
         for (SubChain anchorTrailingChain : anchorTrailingChainList) {
-            long n = (long) Math.min(maximumSubChainSize, anchorTrailingChain.getEntityList().size())
-                    - (long) minimumSubChainSize + 1L;
-            size += n * (n + 1L) / 2L;
+            selectionSize += calculateSubChainSelectionSize(anchorTrailingChain);
         }
-        return size;
+        return selectionSize;
+    }
+
+    private long calculateSubChainSelectionSize(SubChain anchorTrailingChain) {
+        long anchorTrailingChainSize = (long) anchorTrailingChain.getSize();
+        long n = anchorTrailingChainSize - (long) minimumSubChainSize + 1L;
+        long m = (maximumSubChainSize >= anchorTrailingChainSize)
+                ? 0L : anchorTrailingChainSize - (long) maximumSubChainSize;
+        return (n * (n + 1L) / 2L) - (m * (m + 1L) / 2L);
     }
 
     public Iterator<SubChain> iterator() {
@@ -162,12 +169,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public ListIterator<SubChain> listIterator() {
         if (!randomSelection) {
-            // TODO refactor OriginalSubChainIterator to implement ListIterator
-            // https://issues.jboss.org/browse/JBRULES-3586
-            throw new UnsupportedOperationException("This class ("
-                    + getClass() + ") does not support the listIterator() methods yet. "
-                    + "As a result you can only use SubChain based swap moves with randomSelection true. "
-                    + " https://issues.jboss.org/browse/JBRULES-3586");
+            return new OriginalSubChainIterator(anchorTrailingChainList.iterator());
         } else {
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
@@ -176,47 +178,50 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public ListIterator<SubChain> listIterator(int index) {
         if (!randomSelection) {
-            // TODO refactor OriginalSubChainIterator to implement ListIterator
-            // https://issues.jboss.org/browse/JBRULES-3586
-            throw new UnsupportedOperationException("This class ("
-                    + getClass() + ") does not support the listIterator() methods yet. "
-                    + "As a result you can only use SubChain based swap moves with randomSelection true. "
-                    + " https://issues.jboss.org/browse/JBRULES-3586");
+            // TODO Implement more efficient ListIterator https://issues.jboss.org/browse/PLANNER-37
+            OriginalSubChainIterator it = new OriginalSubChainIterator(anchorTrailingChainList.iterator());
+            for (int i = 0; i < index; i++) {
+                it.next();
+            }
+            return it;
         } else {
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 
-    private class OriginalSubChainIterator extends UpcomingSelectionIterator<SubChain> {
+    private class OriginalSubChainIterator extends UpcomingSelectionIterator<SubChain>
+            implements ListIterator<SubChain> {
 
         private final Iterator<SubChain> anchorTrailingChainIterator;
         private List<Object> anchorTrailingChain;
-        private int anchorTrailingChainSize;
         private int fromIndex; // Inclusive
         private int toIndex; // Exclusive
 
+        private int nextListIteratorIndex;
+
         public OriginalSubChainIterator(Iterator<SubChain> anchorTrailingChainIterator) {
             this.anchorTrailingChainIterator = anchorTrailingChainIterator;
-            anchorTrailingChainSize = -1;
-            fromIndex = -1;
-            toIndex = -1;
+            fromIndex = 0;
+            toIndex = 1;
+            anchorTrailingChain = Collections.emptyList();
+            nextListIteratorIndex = 0;
             createUpcomingSelection();
         }
 
         @Override
         protected void createUpcomingSelection() {
             toIndex++;
-            if (toIndex > anchorTrailingChainSize) {
+            if (toIndex - fromIndex > maximumSubChainSize || toIndex > anchorTrailingChain.size()) {
                 fromIndex++;
                 toIndex = fromIndex + minimumSubChainSize;
-                while (toIndex > anchorTrailingChainSize) {
+                // minimumSubChainSize <= maximumSubChainSize so (toIndex - fromIndex > maximumSubChainSize) is true
+                while (toIndex > anchorTrailingChain.size()) {
                     if (!anchorTrailingChainIterator.hasNext()) {
                         upcomingSelection = null;
                         return;
                     }
                     anchorTrailingChain = anchorTrailingChainIterator.next().getEntityList();
-                    anchorTrailingChainSize = Math.min(maximumSubChainSize, anchorTrailingChain.size());
                     fromIndex = 0;
                     toIndex = fromIndex + minimumSubChainSize;
                 }
@@ -224,6 +229,38 @@ public class DefaultSubChainSelector extends AbstractSelector
             upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
         }
 
+        @Override
+        public SubChain next() {
+            nextListIteratorIndex++;
+            return super.next();
+        }
+
+        public int nextIndex() {
+            return nextListIteratorIndex;
+        }
+
+        public boolean hasPrevious() {
+            throw new UnsupportedOperationException("The operation hasPrevious() is not supported."
+                    + " See https://issues.jboss.org/browse/PLANNER-37");
+        }
+
+        public SubChain previous() {
+            throw new UnsupportedOperationException("The operation previous() is not supported."
+                    + " See https://issues.jboss.org/browse/PLANNER-37");
+        }
+
+        public int previousIndex() {
+            throw new UnsupportedOperationException("The operation previousIndex() is not supported."
+                    + " See https://issues.jboss.org/browse/PLANNER-37");
+        }
+
+        public void set(SubChain subChain) {
+            throw new UnsupportedOperationException("The optional operation set() is not supported.");
+        }
+
+        public void add(SubChain subChain) {
+            throw new UnsupportedOperationException("The optional operation add() is not supported.");
+        }
     }
 
     private class RandomSubChainIterator extends UpcomingSelectionIterator<SubChain> {
@@ -238,24 +275,29 @@ public class DefaultSubChainSelector extends AbstractSelector
 
         @Override
         protected void createUpcomingSelection() {
+            SubChain anchorTrailingChain = selectAnchorTrailingChain();
+            // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
+            long selectionSize = calculateSubChainSelectionSize(anchorTrailingChain);
+            long selectionIndex = RandomUtils.nextLong(workingRandom, selectionSize);
+            // Black magic to translate selectionIndex into fromIndex and toIndex
+            long fromIndex = selectionIndex;
+            long subChainSize = minimumSubChainSize;
+            long countInThatSize = anchorTrailingChain.getSize() - subChainSize + 1;
+            while (fromIndex >= countInThatSize) {
+                fromIndex -= countInThatSize;
+                subChainSize++;
+                countInThatSize--;
+                if (countInThatSize <= 0) {
+                    throw new IllegalStateException("Impossible if calculateSubChainSelectionSize() works correctly.");
+                }
+            }
+            upcomingSelection = anchorTrailingChain.subChain((int) fromIndex, (int) (fromIndex + subChainSize));
+        }
+
+        private SubChain selectAnchorTrailingChain() {
             // TODO support SelectionProbabilityWeightFactory, such as FairSelectorProbabilityWeightFactory too
             int anchorTrailingChainListIndex = workingRandom.nextInt(anchorTrailingChainList.size());
-            List<Object> anchorTrailingChain = anchorTrailingChainList.get(anchorTrailingChainListIndex).getEntityList();
-            // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
-            int n = Math.min(maximumSubChainSize, anchorTrailingChain.size()) - minimumSubChainSize + 1;
-            long size = ((long) n) * (((long) n) + 1L) / 2L;
-            long sizeIndex = RandomUtils.nextLong(workingRandom, size);
-            // Black magic to translate sizeIndex into fromIndex and toIndex
-            int fromIndex = 0;
-            long subChainSize = sizeIndex;
-            long maxSize = (long) n;
-            while (subChainSize >= maxSize) {
-                subChainSize -= maxSize;
-                fromIndex++;
-                maxSize--;
-            }
-            int toIndex = fromIndex + ((int) subChainSize) + minimumSubChainSize;
-            upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
+            return anchorTrailingChainList.get(anchorTrailingChainListIndex);
         }
 
     }

@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.constructionheuristic.greedyFit.decider;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
@@ -36,8 +35,8 @@ public class DefaultGreedyDecider implements GreedyDecider {
     private PlanningVariableWalker planningVariableWalker;
     private GreedyForager forager;
 
-    protected boolean assertMoveScoreIsUncorrupted = false;
-    protected boolean assertUndoMoveIsUncorrupted = false;
+    protected boolean assertMoveScoreFromScratch = false;
+    protected boolean assertExpectedUndoMoveScore = false;
 
     public void setPlanningVariableWalker(PlanningVariableWalker planningVariableWalker) {
         this.planningVariableWalker = planningVariableWalker;
@@ -47,26 +46,26 @@ public class DefaultGreedyDecider implements GreedyDecider {
         this.forager = forager;
     }
 
-    public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
-        this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
+    public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
+        this.assertMoveScoreFromScratch = assertMoveScoreFromScratch;
     }
 
-    public void setAssertUndoMoveIsUncorrupted(boolean assertUndoMoveIsUncorrupted) {
-        this.assertUndoMoveIsUncorrupted = assertUndoMoveIsUncorrupted;
+    public void setAssertExpectedUndoMoveScore(boolean assertExpectedUndoMoveScore) {
+        this.assertExpectedUndoMoveScore = assertExpectedUndoMoveScore;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
-        planningVariableWalker.phaseStarted(greedyFitSolverPhaseScope);
-        forager.phaseStarted(greedyFitSolverPhaseScope);
+    public void phaseStarted(GreedyFitSolverPhaseScope phaseScope) {
+        planningVariableWalker.phaseStarted(phaseScope);
+        forager.phaseStarted(phaseScope);
     }
 
-    public void stepStarted(GreedyFitStepScope greedyFitStepScope) {
-        planningVariableWalker.stepStarted(greedyFitStepScope);
-        forager.stepStarted(greedyFitStepScope);
+    public void stepStarted(GreedyFitStepScope stepScope) {
+        planningVariableWalker.stepStarted(stepScope);
+        forager.stepStarted(stepScope);
     }
 
     public void decideNextStep(GreedyFitStepScope stepScope) {
@@ -110,47 +109,32 @@ public class DefaultGreedyDecider implements GreedyDecider {
         move.doMove(scoreDirector);
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
-        if (assertUndoMoveIsUncorrupted) {
-            GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = moveScope.getGreedyFitStepScope()
+        if (assertExpectedUndoMoveScore) {
+            GreedyFitSolverPhaseScope phaseScope = moveScope.getStepScope()
                     .getPhaseScope();
-            Score undoScore = greedyFitSolverPhaseScope.calculateScore();
-            Score lastCompletedStepScore = greedyFitSolverPhaseScope.getLastCompletedStepScope().getScore();
-            if (!undoScore.equals(lastCompletedStepScore)) {
-                // First assert that are probably no corrupted score rules.
-                greedyFitSolverPhaseScope.getSolverScope().getScoreDirector()
-                        .assertWorkingScoreFromScratch(undoScore);
-                throw new IllegalStateException(
-                        "The moveClass (" + move.getClass() + ")'s move (" + move
-                                + ") probably has a corrupted undoMove (" + undoMove + ")." +
-                                " Or maybe there are corrupted score rules.\n"
-                                + "Check the Move.createUndoMove(...) method of that Move class" +
-                                " and enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
-                                + " to fail-faster on corrupted score rules.\n"
-                                + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
-                                + ") is not the undoScore (" + undoScore + ").");
-            }
+            phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}) for move ({}).",
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove());
     }
 
     private void processMove(GreedyMoveScope moveScope) {
-        Score score = moveScope.getGreedyFitStepScope().getPhaseScope().calculateScore();
-        if (assertMoveScoreIsUncorrupted) {
-            moveScope.getGreedyFitStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
+        Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
+        if (assertMoveScoreFromScratch) {
+            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
         }
         moveScope.setScore(score);
         forager.addMove(moveScope);
     }
 
-    public void stepEnded(GreedyFitStepScope greedyFitStepScope) {
-        planningVariableWalker.stepEnded(greedyFitStepScope);
-        forager.stepEnded(greedyFitStepScope);
+    public void stepEnded(GreedyFitStepScope stepScope) {
+        planningVariableWalker.stepEnded(stepScope);
+        forager.stepEnded(stepScope);
     }
 
-    public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
-        planningVariableWalker.phaseEnded(greedyFitSolverPhaseScope);
-        forager.phaseEnded(greedyFitSolverPhaseScope);
+    public void phaseEnded(GreedyFitSolverPhaseScope phaseScope) {
+        planningVariableWalker.phaseEnded(phaseScope);
+        forager.phaseEnded(phaseScope);
     }
 
 }

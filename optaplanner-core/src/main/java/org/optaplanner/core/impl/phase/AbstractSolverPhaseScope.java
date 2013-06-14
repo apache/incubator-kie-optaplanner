@@ -112,32 +112,36 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getWorkingSolution();
     }
 
-    public int getWorkingEntityListSize() {
-        return solverScope.getWorkingEntityListSize();
+    public int getWorkingEntityCount() {
+        return solverScope.getWorkingEntityCount();
     }
 
     public List<Object> getWorkingEntityList() {
         return solverScope.getWorkingEntityList();
     }
 
+    public int getWorkingValueCount() {
+        return solverScope.getWorkingValueCount();
+    }
+
     public Score calculateScore() {
         return solverScope.calculateScore();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore) {
-        solverScope.assertExpectedWorkingScore(expectedWorkingScore);
+    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
+        solverScope.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore) {
-        solverScope.assertWorkingScoreFromScratch(workingScore);
+    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
+        solverScope.assertWorkingScoreFromScratch(workingScore, completedAction);
     }
 
-    public void assertUndoMoveIsUncorrupted(Move move, Move undoMove) {
+    public void assertExpectedUndoMoveScore(Move move, Move undoMove) {
         Score undoScore = calculateScore();
         Score lastCompletedStepScore = getLastCompletedStepScope().getScore();
         if (!undoScore.equals(lastCompletedStepScore)) {
             // First assert that are probably no corrupted score rules.
-            getScoreDirector().assertWorkingScoreFromScratch(undoScore);
+            getScoreDirector().assertWorkingScoreFromScratch(undoScore, undoMove);
             throw new IllegalStateException(
                     "The moveClass (" + move.getClass() + ")'s move (" + move
                             + ") probably has a corrupted undoMove (" + undoMove + ")." +

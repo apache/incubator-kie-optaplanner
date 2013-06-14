@@ -3201,18 +3201,18 @@ After in *.java:
             benchmarkConfigTemplate);
 
 [MAJOR] The forager property minimalAcceptedSelection has been renamed to acceptedCountLimit.
-Before in *.xml:
+Before in *Config.xml:
     <forager>
       <minimalAcceptedSelection>1000</minimalAcceptedSelection>
     </forager>
-After in *.xml:
+After in *Config.xml:
     <forager>
       <acceptedCountLimit>1000</acceptedCountLimit>
     </forager>
 
 
-From 6.0.0.Beta2 to 6.0.0.CR1
------------------------------
+From 6.0.0.Beta2 to 6.0.0.Beta3
+-------------------------------
 
 [MINOR] If you have a custom ScoreDefinition implementation: the interface Score has a new method power(double).
 After in *Score.java:
@@ -3233,4 +3233,48 @@ After in *Score.java:
     }
 
 [MINOR] The LateAcceptanceAcceptor now also accepts any move that improves the current solution.
-If you use <lateAcceptanceSize> in your config, this will impact your results (on average in a good way).
+If you use <lateAcceptanceSize> in your config, this will impact your results (normally in a good way).
+
+[MAJOR] The tabu search acceptor properties planningEntityTabuSize and planningValueTabuSize have been renamed
+to entityTabuSize and valueTabuSize.
+Before in *Config.xml:
+    <acceptor>
+      <planningEntityTabuSize>...</planningEntityTabuSize>
+      <fadingPlanningEntityTabuSize>...</fadingPlanningEntityTabuSize>
+      <planningValueTabuSize>...</planningValueTabuSize>
+      <fadingPlanningValueTabuSize>...</fadingPlanningValueTabuSize>
+    </acceptor>
+After in *Config.xml:
+    <acceptor>
+      <entityTabuSize>...</entityTabuSize>
+      <fadingEntityTabuSize>...</fadingEntityTabuSize>
+      <valueTabuSize>...</valueTabuSize>
+      <fadingValueTabuSize>...</fadingValueTabuSize>
+    </acceptor>
+
+[MINOR] The implementation classes PlanningEntityTabuAcceptor and PlanningValueTabuAcceptor have been renamed
+to EntityTabuAcceptor and ValueTabuAcceptor
+
+[MINOR] <subChainChangeMoveSelector> and <subChainSwapMoveSelector> combined with a <maximumSubChainSize> value
+did not select all possible moves previously. If you use this, you might want to rerun benchmarks.
+
+
+From 6.0.0.Beta3 to 6.0.0.Beta4
+-------------------------------
+
+[MINOR] *Descriptor classes's methods have dropped the Planning prefix verbosity:
+Methods like getPlanningEntityDescriptor() have been renamed to getEntityDescriptor()
+Methods like getPlanningVariableDescriptor() have been renamed to getVariableDescriptor()
+Normally, your code should not be using those classes/methods.
+
+[MAJOR] Benchmarker: the <problemStatisticType> BEST_SOLUTION_CHANGED has been renamed to BEST_SCORE
+Before in *BenchmarkConfig.xml:
+    <problemBenchmarks>
+       ...
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
+After in *BenchmarkConfig.xml:
+    <problemBenchmarks>
+       ...
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+    </problemBenchmarks>

@@ -8,7 +8,7 @@
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
       <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
@@ -67,7 +67,7 @@
         </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/8000soft</simulatedAnnealingStartingTemperature>
-          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
+          <!--<entityTabuSize>5</entityTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
@@ -94,7 +94,7 @@
         </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/10000soft</simulatedAnnealingStartingTemperature>
-          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
+          <!--<entityTabuSize>5</entityTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
@@ -121,7 +121,7 @@
         </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
+          <!--<entityTabuSize>5</entityTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
