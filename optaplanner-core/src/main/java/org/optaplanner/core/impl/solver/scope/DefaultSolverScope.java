@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
@@ -44,6 +44,7 @@ public class DefaultSolverScope {
     protected Solution bestSolution;
     protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore()
     protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore()
+    protected long bestScoreTimeMillis;
 
     public boolean isRestartSolver() {
         return restartSolver;
@@ -139,10 +140,21 @@ public class DefaultSolverScope {
 
     /**
      * The bestSolution must never be the same instance as the workingSolution, it should be a (un)changed clone.
-     * @param bestSolution never null
+     * 
+     * @param bestSolution
+     *            never null
      */
     public void setBestSolution(Solution bestSolution) {
         this.bestSolution = bestSolution;
+        setBestScoreSystenTimeMillis(System.currentTimeMillis());
+    }
+
+    public long getBestScoreSystemTimeMillis() {
+        return bestScoreTimeMillis;
+    }
+
+    protected void setBestScoreSystenTimeMillis(long bestScoreTimeMillis) {
+        this.bestScoreTimeMillis = bestScoreTimeMillis;
     }
 
     public int getBestUninitializedVariableCount() {
@@ -151,8 +163,8 @@ public class DefaultSolverScope {
 
     public void setBestUninitializedVariableCount(int bestUninitializedVariableCount) {
         if (bestUninitializedVariableCount < 0) {
-            throw new IllegalArgumentException("The bestUninitializedVariableCount ("
-                    + bestUninitializedVariableCount + ") cannot be negative.");
+            throw new IllegalArgumentException("The bestUninitializedVariableCount (" + bestUninitializedVariableCount
+                    + ") cannot be negative.");
         }
         this.bestUninitializedVariableCount = bestUninitializedVariableCount;
     }
