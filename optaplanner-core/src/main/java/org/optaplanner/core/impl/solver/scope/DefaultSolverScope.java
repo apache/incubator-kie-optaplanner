@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
@@ -50,156 +50,154 @@ public class DefaultSolverScope {
         return restartSolver;
     }
 
-	public long getStartingSystemTimeMillis() {
-		return startingSystemTimeMillis;
-	}
+    public long getStartingSystemTimeMillis() {
+        return startingSystemTimeMillis;
+    }
 
-	public void setStartingSystemTimeMillis(long startingSystemTimeMillis) {
-		this.startingSystemTimeMillis = startingSystemTimeMillis;
-	}
+    public void setStartingSystemTimeMillis(long startingSystemTimeMillis) {
+        this.startingSystemTimeMillis = startingSystemTimeMillis;
+    }
 
-	public void setRestartSolver(boolean restartSolver) {
-		this.restartSolver = restartSolver;
-	}
+    public void setRestartSolver(boolean restartSolver) {
+        this.restartSolver = restartSolver;
+    }
 
-	public ScoreDirector getScoreDirector() {
-		return scoreDirector;
-	}
+    public ScoreDirector getScoreDirector() {
+        return scoreDirector;
+    }
 
-	public void setScoreDirector(ScoreDirector scoreDirector) {
-		// TODO remove HACK to fix memory leak of
-		// https://issues.jboss.org/browse/PLANNER-19
-		if (this.scoreDirector != null) {
-			this.scoreDirector.dispose();
-		}
-		this.scoreDirector = scoreDirector;
-	}
+    public void setScoreDirector(ScoreDirector scoreDirector) {
+        // TODO remove HACK to fix memory leak of https://issues.jboss.org/browse/PLANNER-19
+        if (this.scoreDirector != null) {
+            this.scoreDirector.dispose();
+        }
+        this.scoreDirector = scoreDirector;
+    }
 
-	public SolutionDescriptor getSolutionDescriptor() {
-		return scoreDirector.getSolutionDescriptor();
-	}
+    public SolutionDescriptor getSolutionDescriptor() {
+        return scoreDirector.getSolutionDescriptor();
+    }
 
-	public ScoreDefinition getScoreDefinition() {
-		return scoreDirector.getScoreDefinition();
-	}
+    public ScoreDefinition getScoreDefinition() {
+        return scoreDirector.getScoreDefinition();
+    }
 
-	public Solution getWorkingSolution() {
-		return scoreDirector.getWorkingSolution();
-	}
+    public Solution getWorkingSolution() {
+        return scoreDirector.getWorkingSolution();
+    }
 
-	public int getWorkingEntityCount() {
-		return scoreDirector.getWorkingEntityCount();
-	}
+    public int getWorkingEntityCount() {
+        return scoreDirector.getWorkingEntityCount();
+    }
 
-	public List<Object> getWorkingEntityList() {
-		return scoreDirector.getWorkingEntityList();
-	}
+    public List<Object> getWorkingEntityList() {
+        return scoreDirector.getWorkingEntityList();
+    }
 
-	public int getWorkingValueCount() {
-		return scoreDirector.getWorkingValueCount();
-	}
+    public int getWorkingValueCount() {
+        return scoreDirector.getWorkingValueCount();
+    }
 
-	public Score calculateScore() {
-		return scoreDirector.calculateScore();
-	}
+    public Score calculateScore() {
+        return scoreDirector.calculateScore();
+    }
 
-	public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
-		scoreDirector.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
-	}
+    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
+        scoreDirector.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
+    }
 
-	public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
-		scoreDirector.assertWorkingScoreFromScratch(workingScore, completedAction);
-	}
+    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
+        scoreDirector.assertWorkingScoreFromScratch(workingScore, completedAction);
+    }
 
-	public void assertScoreFromScratch(Solution solution) {
-		scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
-	}
+    public void assertScoreFromScratch(Solution solution) {
+        scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
+    }
 
-	public Random getWorkingRandom() {
-		return workingRandom;
-	}
+    public Random getWorkingRandom() {
+        return workingRandom;
+    }
 
-	public void setWorkingRandom(Random workingRandom) {
-		this.workingRandom = workingRandom;
-	}
+    public void setWorkingRandom(Random workingRandom) {
+        this.workingRandom = workingRandom;
+    }
 
-	public Score getStartingInitializedScore() {
-		return startingInitializedScore;
-	}
+    public Score getStartingInitializedScore() {
+        return startingInitializedScore;
+    }
 
-	public void setStartingInitializedScore(Score startingInitializedScore) {
-		this.startingInitializedScore = startingInitializedScore;
-	}
+    public void setStartingInitializedScore(Score startingInitializedScore) {
+        this.startingInitializedScore = startingInitializedScore;
+    }
 
-	public long getCalculateCount() {
-		return scoreDirector.getCalculateCount();
-	}
+    public long getCalculateCount() {
+        return scoreDirector.getCalculateCount();
+    }
 
-	public Solution getBestSolution() {
-		return bestSolution;
-	}
+    public Solution getBestSolution() {
+        return bestSolution;
+    }
 
-	/**
-	 * The bestSolution must never be the same instance as the workingSolution, it should be a (un)changed clone.
-	 * 
-	 * @param bestSolution
-	 *            never null
-	 */
-	public void setBestSolution(Solution bestSolution) {
-		this.bestSolution = bestSolution;
-		setBestScoreSystenTimeMillis(System.currentTimeMillis());
-	}
+    /**
+     * The bestSolution must never be the same instance as the workingSolution, it should be a (un)changed clone.
+     * 
+     * @param bestSolution
+     *            never null
+     */
+    public void setBestSolution(Solution bestSolution) {
+        this.bestSolution = bestSolution;
+        setBestScoreSystenTimeMillis(System.currentTimeMillis());
+    }
 
-	public long getBestScoreSystemTimeMillis() {
-		return bestScoreTimeMillis;
-	}
+    public long getBestScoreSystemTimeMillis() {
+        return bestScoreTimeMillis;
+    }
 
-	protected void setBestScoreSystenTimeMillis(long bestScoreTimeMillis) {
-		this.bestScoreTimeMillis = bestScoreTimeMillis;
-	}
+    protected void setBestScoreSystenTimeMillis(long bestScoreTimeMillis) {
+        this.bestScoreTimeMillis = bestScoreTimeMillis;
+    }
 
-	public int getBestUninitializedVariableCount() {
-		return bestUninitializedVariableCount;
-	}
+    public int getBestUninitializedVariableCount() {
+        return bestUninitializedVariableCount;
+    }
 
-	public void setBestUninitializedVariableCount(int bestUninitializedVariableCount) {
-		if (bestUninitializedVariableCount < 0) {
-			throw new IllegalArgumentException("The bestUninitializedVariableCount (" + bestUninitializedVariableCount
-					+ ") cannot be negative.");
-		}
-		this.bestUninitializedVariableCount = bestUninitializedVariableCount;
-	}
+    public void setBestUninitializedVariableCount(int bestUninitializedVariableCount) {
+        if (bestUninitializedVariableCount < 0) {
+            throw new IllegalArgumentException("The bestUninitializedVariableCount (" + bestUninitializedVariableCount
+                    + ") cannot be negative.");
+        }
+        this.bestUninitializedVariableCount = bestUninitializedVariableCount;
+    }
 
-	public Score getBestScore() {
-		return bestScore;
-	}
+    public Score getBestScore() {
+        return bestScore;
+    }
 
-	public void setBestScore(Score bestScore) {
-		this.bestScore = bestScore;
-	}
+    public void setBestScore(Score bestScore) {
+        this.bestScore = bestScore;
+    }
 
-	// ************************************************************************
-	// Calculated methods
-	// ************************************************************************
+    // ************************************************************************
+    // Calculated methods
+    // ************************************************************************
 
-	public boolean isBestSolutionInitialized() {
-		return bestUninitializedVariableCount == 0;
-	}
+    public boolean isBestSolutionInitialized() {
+        return bestUninitializedVariableCount == 0;
+    }
 
-	public long calculateTimeMillisSpend() {
-		long now = System.currentTimeMillis();
-		return now - startingSystemTimeMillis;
-	}
+    public long calculateTimeMillisSpend() {
+        long now = System.currentTimeMillis();
+        return now - startingSystemTimeMillis;
+    }
 
-	public void setWorkingSolutionFromBestSolution() {
-		// The workingSolution must never be the same instance as the
-		// bestSolution.
-		SolutionCloner cloner = scoreDirector.getSolutionDescriptor().getSolutionCloner();
-		scoreDirector.setWorkingSolution(cloner.cloneSolution(getBestSolution()));
-	}
+    public void setWorkingSolutionFromBestSolution() {
+        // The workingSolution must never be the same instance as the bestSolution.
+        SolutionCloner cloner = scoreDirector.getSolutionDescriptor().getSolutionCloner();
+        scoreDirector.setWorkingSolution(cloner.cloneSolution(getBestSolution()));
+    }
 
-	public String getBestScoreWithUninitializedPrefix() {
-		return isBestSolutionInitialized() ? bestScore.toString() : "uninitialized/" + bestScore;
-	}
+    public String getBestScoreWithUninitializedPrefix() {
+        return isBestSolutionInitialized() ? bestScore.toString() : "uninitialized/" + bestScore;
+    }
 
 }
