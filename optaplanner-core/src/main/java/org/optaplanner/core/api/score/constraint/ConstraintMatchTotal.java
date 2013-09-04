@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -30,11 +31,13 @@ public abstract class ConstraintMatchTotal implements Serializable, Comparable<C
     protected final String constraintPackage;
     protected final String constraintName;
     protected final int scoreLevel;
+    protected final Map<String, Object> metaData;
 
-    protected ConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
+    protected ConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel, Map<String, Object> metaData) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.scoreLevel = scoreLevel;
+        this.metaData = metaData;
     }
 
     public String getConstraintPackage() {
@@ -47,6 +50,10 @@ public abstract class ConstraintMatchTotal implements Serializable, Comparable<C
 
     public int getScoreLevel() {
         return scoreLevel;
+    }
+
+    public Map<String, Object> getMetaData() {
+        return metaData;
     }
 
     public abstract Set<? extends ConstraintMatch> getConstraintMatchSet();

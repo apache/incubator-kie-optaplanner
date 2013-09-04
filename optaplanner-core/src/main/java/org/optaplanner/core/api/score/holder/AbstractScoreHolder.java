@@ -94,10 +94,11 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
+        Map<String, Object> metaData = rule.getMetaData();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
         IntConstraintMatchTotal matchTotal = (IntConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
-            matchTotal = new IntConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotal = new IntConstraintMatchTotal(constraintPackage, constraintName, scoreLevel, metaData);
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
@@ -130,10 +131,11 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
+        Map<String, Object> metaData = rule.getMetaData();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
         LongConstraintMatchTotal matchTotal = (LongConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
-            matchTotal = new LongConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotal = new LongConstraintMatchTotal(constraintPackage, constraintName, scoreLevel, metaData);
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
@@ -166,10 +168,11 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
+        Map<String, Object> metaData = rule.getMetaData();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
         DoubleConstraintMatchTotal matchTotal = (DoubleConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
-            matchTotal = new DoubleConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotal = new DoubleConstraintMatchTotal(constraintPackage, constraintName, scoreLevel, metaData);
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
@@ -202,10 +205,11 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
+        Map<String, Object> metaData = rule.getMetaData();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
         BigDecimalConstraintMatchTotal matchTotal = (BigDecimalConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
-            matchTotal = new BigDecimalConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotal = new BigDecimalConstraintMatchTotal(constraintPackage, constraintName, scoreLevel, metaData);
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
