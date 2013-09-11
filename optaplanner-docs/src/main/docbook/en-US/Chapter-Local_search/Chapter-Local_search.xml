@@ -386,12 +386,6 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         &lt;valueTabuSize&gt;7&lt;/valueTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
 
-            <para>To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of values, for
-            example 2%:</para>
-
-            <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;valueTabuRatio&gt;0.02&lt;/valueTabuRatio&gt;
-    &lt;/acceptor&gt;</programlisting>
           </listitem>
         </itemizedlist>
 
