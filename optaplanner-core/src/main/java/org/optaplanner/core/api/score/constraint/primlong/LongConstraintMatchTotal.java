@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.constraint.primlong;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.kie.api.runtime.rule.RuleContext;
@@ -28,8 +29,8 @@ public class LongConstraintMatchTotal extends ConstraintMatchTotal {
     protected final Set<LongConstraintMatch> constraintMatchSet;
     protected long weightTotal;
 
-    public LongConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
-        super(constraintPackage, constraintName, scoreLevel);
+    public LongConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel, Map<String, Object> metaData) {
+        super(constraintPackage, constraintName, scoreLevel, metaData);
         constraintMatchSet = new HashSet<LongConstraintMatch>();
         weightTotal = 0;
     }
