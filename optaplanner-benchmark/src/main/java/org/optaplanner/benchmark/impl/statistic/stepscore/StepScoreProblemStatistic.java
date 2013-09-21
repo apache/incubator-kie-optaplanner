@@ -40,6 +40,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
@@ -53,6 +54,10 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
 
     public SingleStatistic createSingleStatistic() {
         return new StepScoreSingleStatistic();
+    }
+    
+    public SingleStatistic createSingleStatistic(SingleStatisticState state) {
+        return new StepScoreSingleStatistic((StepScoreSingleStatisticState) state);
     }
 
     /**
@@ -75,9 +80,9 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
-                StepScoreSingleStatistic singleStatistic = (StepScoreSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (StepScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
+                StepScoreSingleStatisticState singleStatisticState = (StepScoreSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (StepScoreSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     Score score = point.getScore();
                     if (score != null) {
@@ -101,9 +106,9 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmark.isSuccess()) {
-                StepScoreSingleStatistic singleStatistic = (StepScoreSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (StepScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
+                StepScoreSingleStatisticState singleStatisticState = (StepScoreSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (StepScoreSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
@@ -114,7 +119,7 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
                         seriesList.get(i).add(timeMillisSpend, levelValues[i]);
                     }
                 }
-                if (singleStatistic.getPointList().size() <= 1) {
+                if (singleStatisticState.getPointList().size() <= 1) {
                     // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
                     renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
                 }

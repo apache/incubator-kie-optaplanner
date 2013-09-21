@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
@@ -30,10 +31,20 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic {
 
     private MoveCountPerStepSingleStatisticListener listener = new MoveCountPerStepSingleStatisticListener();
 
-    private List<MoveCountPerStepSingleStatisticPoint> pointList = new ArrayList<MoveCountPerStepSingleStatisticPoint>();
+//    private List<MoveCountPerStepSingleStatisticPoint> pointList = new ArrayList<MoveCountPerStepSingleStatisticPoint>();
+    
+    private MoveCountPerStepSingleStatisticState state;
 
+    public MoveCountPerStepSingleStatistic() {
+        state = new MoveCountPerStepSingleStatisticState();
+    }
+
+    public MoveCountPerStepSingleStatistic(MoveCountPerStepSingleStatisticState state) {
+        this.state = state;
+    }
+    
     public List<MoveCountPerStepSingleStatisticPoint> getPointList() {
-        return pointList;
+        return state.getPointList();
     }
 
     // ************************************************************************
@@ -47,6 +58,11 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic {
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
+
+    @Override
+    public SingleStatisticState getSingleStatisticState() {
+        return state;
+    }
     
     private class MoveCountPerStepSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
@@ -59,7 +75,7 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic {
         
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            pointList.add(new MoveCountPerStepSingleStatisticPoint(timeMillisSpend,
+            getPointList().add(new MoveCountPerStepSingleStatisticPoint(timeMillisSpend,
                     new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())
             ));
         }

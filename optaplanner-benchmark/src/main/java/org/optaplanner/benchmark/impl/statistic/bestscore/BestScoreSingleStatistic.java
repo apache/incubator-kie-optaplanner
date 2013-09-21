@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
@@ -30,8 +31,19 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
 
     private List<BestScoreSingleStatisticPoint> pointList = new ArrayList<BestScoreSingleStatisticPoint>();
 
+    private BestScoreSingleStatisticState state;
+
+    public BestScoreSingleStatistic() {
+        this.state = new BestScoreSingleStatisticState();
+    }
+
+    public BestScoreSingleStatistic(BestScoreSingleStatisticState bestScoreSingleStatisticState) {
+        this.state = bestScoreSingleStatisticState;
+    }
+    
     public List<BestScoreSingleStatisticPoint> getPointList() {
-        return pointList;
+        //return pointList;
+        return state.getPointList();
     }
 
     // ************************************************************************
@@ -46,11 +58,18 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
         solver.removeEventListener(listener);
     }
 
+    @Override
+    public SingleStatisticState getSingleStatisticState() {
+        return state;
+    }
+    
     private class BestScoreSingleStatisticListener implements SolverEventListener {
 
         public void bestSolutionChanged(BestSolutionChangedEvent event) {
-            pointList.add(new BestScoreSingleStatisticPoint(
-                    event.getTimeMillisSpend(), event.getNewBestSolution().getScore()));
+//            pointList.add(new BestScoreSingleStatisticPoint(
+//                    event.getTimeMillisSpend(), event.getNewBestSolution().getScore()));
+              getPointList().add(new BestScoreSingleStatisticPoint(
+                      event.getTimeMillisSpend(), event.getNewBestSolution().getScore()));
         }
 
     }

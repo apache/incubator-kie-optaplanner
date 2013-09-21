@@ -41,6 +41,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.impl.move.Move;
 
 public class ImprovingStepPercentageProblemStatistic extends AbstractProblemStatistic {
@@ -51,6 +52,10 @@ public class ImprovingStepPercentageProblemStatistic extends AbstractProblemStat
         super(problemBenchmark, ProblemStatisticType.IMPROVING_STEP_PERCENTAGE);
     }
 
+    public SingleStatistic createSingleStatistic(SingleStatisticState state) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public SingleStatistic createSingleStatistic() {
         return new ImprovingStepPercentageSingleStatistic();

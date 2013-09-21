@@ -33,5 +33,7 @@ public interface SingleStatistic {
      * @param solver never null
      */
     void close(Solver solver);
+    
+    SingleStatisticState getSingleStatisticState();
 
 }

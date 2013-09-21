@@ -36,6 +36,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 
 public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
 
@@ -49,6 +50,10 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         return new CalculateCountSingleStatistic();
     }
 
+    public SingleStatistic createSingleStatistic(SingleStatisticState state) {
+        return new CalculateCountSingleStatistic((CalculateCountSingleStatisticState) state);
+    }
+    
     /**
      * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
      * (not {@link ProblemBenchmark#problemReportDirectory})
@@ -65,9 +70,9 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
-                CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (CalculateCountSingleStatisticPoint point : singleStatistic.getPointList()) {
+                CalculateCountSingleStatisticState singleStatisticState = (CalculateCountSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (CalculateCountSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     csv.addPoint(singleBenchmark, timeMillisSpend, point.getCalculateCountPerSecond());
                 }
@@ -94,9 +99,9 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
             XYSeries series = new XYSeries(singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmark.isSuccess()) {
-                CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (CalculateCountSingleStatisticPoint point : singleStatistic.getPointList()) {
+                CalculateCountSingleStatisticState singleStatisticState = (CalculateCountSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (CalculateCountSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long calculateCountPerSecond = point.getCalculateCountPerSecond();
                     series.add(timeMillisSpend, calculateCountPerSecond);

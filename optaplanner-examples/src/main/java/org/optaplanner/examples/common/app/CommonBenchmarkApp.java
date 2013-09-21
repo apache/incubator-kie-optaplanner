@@ -36,4 +36,9 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
         plannerBenchmark.benchmark();
     }
 
+    public void buildAndResumeBenchmark(String benchmarkConfig, String resumeFilePath) {
+        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(benchmarkConfig);
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildResumableBenchmark(resumeFilePath);
+        plannerBenchmark.benchmark();
+    }
 }
