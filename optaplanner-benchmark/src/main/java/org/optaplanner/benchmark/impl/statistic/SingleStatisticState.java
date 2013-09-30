@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2013 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.optaplanner.benchmark.impl.statistic;
 
-package org.optaplanner.benchmark.api;
-
-import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
-
-public interface PlannerBenchmarkFactory {
-
-    PlannerBenchmarkConfig getPlannerBenchmarkConfig();
-
-    PlannerBenchmark buildPlannerBenchmark();
+/**
+ *
+ * @author matej
+ */
+public interface SingleStatisticState {
     
-    PlannerBenchmark buildResumableBenchmark(String resumeFilePath);
-
 }

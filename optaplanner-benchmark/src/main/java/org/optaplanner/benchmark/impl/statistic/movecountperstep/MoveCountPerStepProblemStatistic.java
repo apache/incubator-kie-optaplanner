@@ -39,6 +39,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 
 public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
 
@@ -50,6 +51,10 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
 
     public SingleStatistic createSingleStatistic() {
         return new MoveCountPerStepSingleStatistic();
+    }
+
+    public SingleStatistic createSingleStatistic(SingleStatisticState state) {
+        return new MoveCountPerStepSingleStatistic((MoveCountPerStepSingleStatisticState) state);
     }
 
     /**
@@ -68,9 +73,9 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
-                MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (MoveCountPerStepSingleStatisticPoint point : singleStatistic.getPointList()) {
+                MoveCountPerStepSingleStatisticState singleStatisticState = (MoveCountPerStepSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (MoveCountPerStepSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     MoveCountPerStepMeasurement moveCountPerStepMeasurement = point.getMoveCountPerStepMeasurement();
                     csv.addPoint(singleBenchmark, timeMillisSpend,
@@ -104,9 +109,9 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
                     singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " selected");            
             XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
             if (singleBenchmark.isSuccess()) {
-                MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (MoveCountPerStepSingleStatisticPoint point : singleStatistic.getPointList()) {
+                MoveCountPerStepSingleStatisticState singleStatisticState = (MoveCountPerStepSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (MoveCountPerStepSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
                     long selectedMoveCount = point.getMoveCountPerStepMeasurement().getSelectedMoveCount();

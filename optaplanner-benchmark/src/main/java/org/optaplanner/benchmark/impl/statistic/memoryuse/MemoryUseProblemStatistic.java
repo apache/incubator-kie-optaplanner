@@ -36,6 +36,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 
 public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 
@@ -47,6 +48,10 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 
     public SingleStatistic createSingleStatistic() {
         return new MemoryUseSingleStatistic();
+    }
+
+    public SingleStatistic createSingleStatistic(SingleStatisticState state) {
+        return new MemoryUseSingleStatistic((MemoryUseSingleStatisticState) state);
     }
 
     /**
@@ -65,9 +70,9 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
-                MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
+                MemoryUseSingleStatisticState singleStatisticState = (MemoryUseSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (MemoryUseSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
                     csv.addPoint(singleBenchmark, timeMillisSpend,
@@ -100,9 +105,9 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 //                    singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " max");
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmark.isSuccess()) {
-                MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (MemoryUseSingleStatisticPoint point : singleStatistic.getPointList()) {
+                MemoryUseSingleStatisticState singleStatisticState = (MemoryUseSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (MemoryUseSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
                     usedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());

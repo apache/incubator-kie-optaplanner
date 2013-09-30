@@ -96,4 +96,11 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
         return plannerBenchmarkConfig.buildPlannerBenchmark();
     }
 
+    public PlannerBenchmark buildResumableBenchmark(String resumeFilePath) {
+        if (plannerBenchmarkConfig == null) {
+            throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
+                    " call configure(...) first.");
+        }
+        return plannerBenchmarkConfig.buildResumablePlannerBenchmark(resumeFilePath);
+    }
 }

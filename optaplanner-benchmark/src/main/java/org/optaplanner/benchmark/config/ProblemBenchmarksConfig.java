@@ -26,6 +26,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmarkState;
+import org.optaplanner.benchmark.impl.SingleBenchmarkStateHolder;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -112,7 +114,7 @@ public class ProblemBenchmarksConfig {
             } else {
                 problemBenchmark = unifiedProblemBenchmarkList.get(index);
             }
-            addSingleBenchmark(solverBenchmark, problemBenchmark);
+            addSingleBenchmark(solverBenchmark, problemBenchmark, plannerBenchmark.getSingleBenchmarkStateHolder());
             problemBenchmarkList.add(problemBenchmark);
         }
         return problemBenchmarkList;
@@ -167,10 +169,17 @@ public class ProblemBenchmarksConfig {
     }
 
     private void addSingleBenchmark(
-            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
-        SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark);
+            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark, SingleBenchmarkStateHolder singleBenchmarkStateHolder) {
+        SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark, IdGenerator.generateId());
         solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
         problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
+        for (SingleBenchmarkState state : singleBenchmarkStateHolder.getSingleBenchmarkStateList()) {
+            if (state.getSingleBenchmarkStateId().equals(singleBenchmark.getSingleBenchmarkId())) {
+                singleBenchmark.setSingleBenchmarkState(state);
+                singleBenchmark.setRecovered(true);
+                break;
+            }
+        }
     }
 
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {
@@ -186,4 +195,12 @@ public class ProblemBenchmarksConfig {
                 inheritedConfig.getProblemStatisticTypeList());
     }
 
+    private static class IdGenerator {
+        
+        static long id;
+        
+        static long generateId() {
+            return id++;
+        }
+    }
 }

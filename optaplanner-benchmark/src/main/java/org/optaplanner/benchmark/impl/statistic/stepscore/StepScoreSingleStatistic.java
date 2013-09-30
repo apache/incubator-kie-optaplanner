@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -29,10 +30,20 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic {
 
     private final StepScoreSingleStatisticListener listener = new StepScoreSingleStatisticListener();
 
-    private List<StepScoreSingleStatisticPoint> pointList = new ArrayList<StepScoreSingleStatisticPoint>();
+//    private List<StepScoreSingleStatisticPoint> pointList = new ArrayList<StepScoreSingleStatisticPoint>();
+    
+    private StepScoreSingleStatisticState state;
+
+    public StepScoreSingleStatistic() {
+        this.state = new StepScoreSingleStatisticState();
+    }
+
+    public StepScoreSingleStatistic(StepScoreSingleStatisticState state) {
+        this.state = state;
+    }
 
     public List<StepScoreSingleStatisticPoint> getPointList() {
-        return pointList;
+        return state.getPointList();
     }
 
     // ************************************************************************
@@ -47,13 +58,18 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
+    @Override
+    public SingleStatisticState getSingleStatisticState() {
+        return state;
+    }
+    
     private class StepScoreSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
             if (stepScope.hasNoUninitializedVariables()) {
                 long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-                pointList.add(new StepScoreSingleStatisticPoint(timeMillisSpend, stepScope.getScore()));
+                getPointList().add(new StepScoreSingleStatisticPoint(timeMillisSpend, stepScope.getScore()));
             }
         }
 

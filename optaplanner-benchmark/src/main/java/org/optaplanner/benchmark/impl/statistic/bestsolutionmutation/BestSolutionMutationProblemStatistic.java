@@ -36,6 +36,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 
 public class BestSolutionMutationProblemStatistic extends AbstractProblemStatistic {
 
@@ -49,6 +50,10 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
         return new BestSolutionMutationSingleStatistic();
     }
 
+    public SingleStatistic createSingleStatistic(SingleStatisticState state) {
+        return new BestSolutionMutationSingleStatistic((BestSolutionMutationSingleStatisticState) state);
+    }
+    
     /**
      * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
      * (not {@link ProblemBenchmark#problemReportDirectory})
@@ -65,9 +70,9 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
-                BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (BestSolutionMutationSingleStatisticPoint point : singleStatistic.getPointList()) {
+                BestSolutionMutationSingleStatisticState singleStatisticState = (BestSolutionMutationSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (BestSolutionMutationSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     csv.addPoint(singleBenchmark, timeMillisSpend, point.getMutationCount());
                 }
@@ -94,9 +99,9 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
             XYSeries series = new XYSeries(singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmark.isSuccess()) {
-                BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
-                        singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (BestSolutionMutationSingleStatisticPoint point : singleStatistic.getPointList()) {
+                BestSolutionMutationSingleStatisticState singleStatisticState = (BestSolutionMutationSingleStatisticState)
+                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                for (BestSolutionMutationSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long mutationCount = point.getMutationCount();
                     series.add(timeMillisSpend, mutationCount);

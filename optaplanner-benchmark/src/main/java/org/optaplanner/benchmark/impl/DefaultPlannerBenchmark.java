@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.optaplanner.benchmark.impl;
 
 import java.io.File;
@@ -41,42 +40,41 @@ import org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.persistence.xstream.XStreamSingleBenchmarkHolderIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
+ * Represents the benchmarks on multiple {@link Solver} configurations on
+ * multiple problem instances (data sets).
  */
 public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
+    private static final String CHECKPOINT_FILE_NAME = "checkpoint.xml";
     private String name = null;
     private File benchmarkDirectory = null;
     private File benchmarkReportDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
     private SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
-
     private int parallelBenchmarkCount = -1;
     private long warmUpTimeMillisSpend = 0L;
-
     private List<SolverBenchmark> solverBenchmarkList = null;
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
     private final BenchmarkReport benchmarkReport = new BenchmarkReport(this);
-
     private boolean benchmarkHistoryReportEnabled;
     private final BenchmarkHistoryReport benchmarkHistoryReport = new BenchmarkHistoryReport(this);
-
     private long startingSystemTimeMillis;
     private Date startingTimestamp;
     private ExecutorService executorService;
     private Integer failureCount;
     private SingleBenchmark firstFailureSingleBenchmark;
-
     private Long averageProblemScale = null;
     private Score averageScore = null;
     private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
+    private SingleBenchmarkStateHolder singleBenchmarkStateHolder;
+    private XStreamSingleBenchmarkHolderIO xStreamIO = new XStreamSingleBenchmarkHolderIO();
 
     public String getName() {
         return name;
@@ -182,10 +180,23 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return benchmarkTimeMillisSpend;
     }
 
+    public SingleBenchmarkStateHolder getSingleBenchmarkStateHolder() {
+        return singleBenchmarkStateHolder;
+    }
+
+    public void setSingleBenchmarkStateHolder(SingleBenchmarkStateHolder singleBenchmarkStateHolder) {
+        this.singleBenchmarkStateHolder = singleBenchmarkStateHolder;
+    }
+    
+    synchronized public void addAndStore(SingleBenchmarkState singleBenchmarkState) {
+        singleBenchmarkState.setSucceeded(true);
+        singleBenchmarkStateHolder.getSingleBenchmarkStateList().add(singleBenchmarkState);
+        xStreamIO.write(singleBenchmarkStateHolder, new File(benchmarkReportDirectory, CHECKPOINT_FILE_NAME));
+    }
+
     // ************************************************************************
     // Benchmark methods
     // ************************************************************************
-
     public boolean hasMultipleParallelBenchmarks() {
         return parallelBenchmarkCount > 1;
     }
@@ -256,12 +267,13 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     protected void runSingleBenchmarks() {
-        Map<SingleBenchmark, Future<SingleBenchmark>> futureMap
-                = new HashMap<SingleBenchmark, Future<SingleBenchmark>>();
+        Map<SingleBenchmark, Future<SingleBenchmark>> futureMap = new HashMap<SingleBenchmark, Future<SingleBenchmark>>();
         for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
             for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-                Future<SingleBenchmark> future = executorService.submit(singleBenchmark);
-                futureMap.put(singleBenchmark, future);
+                if (!singleBenchmark.isRecovered()) { // state has not been set yet
+                    Future<SingleBenchmark> future = executorService.submit(singleBenchmark);
+                    futureMap.put(singleBenchmark, future);
+                }
             }
         }
         // wait for the benchmarks to complete
@@ -269,34 +281,41 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             SingleBenchmark singleBenchmark = futureEntry.getKey();
             Future<SingleBenchmark> future = futureEntry.getValue();
             Throwable failureThrowable = null;
-            try {
-                // Explicitly returning it in the Callable guarantees memory visibility
-                singleBenchmark = future.get();
-                // TODO WORKAROUND Remove when PLANNER-46 is fixed.
-                if (singleBenchmark.getScore() == null) {
-                    throw new IllegalStateException("Score is null. TODO fix PLANNER-46.");
+            if (!singleBenchmark.isRecovered()) {
+                try {
+                    // Explicitly returning it in the Callable guarantees memory visibility
+                    singleBenchmark = future.get();
+                    // TODO WORKAROUND Remove when PLANNER-46 is fixed.
+                    if (singleBenchmark.getScore() == null) {
+                        throw new IllegalStateException("Score is null. TODO fix PLANNER-46.");
+                    }
+                } catch (InterruptedException e) {
+                    logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") was interrupted.", e);
+                    failureThrowable = e;
+                } catch (ExecutionException e) {
+                    Throwable cause = e.getCause();
+                    logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", cause);
+                    failureThrowable = cause;
+                } catch (IllegalStateException e) {
+                    // TODO WORKAROUND Remove when PLANNER-46 is fixed.
+                    logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", e);
+                    failureThrowable = e;
                 }
-            } catch (InterruptedException e) {
-                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") was interrupted.", e);
-                failureThrowable = e;
-            } catch (ExecutionException e) {
-                Throwable cause = e.getCause();
-                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", cause);
-                failureThrowable = cause;
-            } catch (IllegalStateException e) {
-                // TODO WORKAROUND Remove when PLANNER-46 is fixed.
-                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", e);
-                failureThrowable = e;
+                if (failureThrowable == null) {
+                    singleBenchmark.setSucceeded(true);
+                } else {
+                    singleBenchmark.setSucceeded(false);
+                    singleBenchmark.setFailureThrowable(failureThrowable);
+                    failureCount++;
+                    if (firstFailureSingleBenchmark == null) {
+                        firstFailureSingleBenchmark = singleBenchmark;
+                    }
+                }
             }
-            if (failureThrowable == null) {
-                singleBenchmark.setSucceeded(true);
-            } else {
-                singleBenchmark.setSucceeded(false);
-                singleBenchmark.setFailureThrowable(failureThrowable);
-                failureCount++;
-                if (firstFailureSingleBenchmark == null) {
-                    firstFailureSingleBenchmark = singleBenchmark;
-                }
+        }
+        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
+            for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
+                problemBenchmark.registerProblemScale(singleBenchmark.getSingleBenchmarkState().getProblemScale());
             }
         }
     }
@@ -329,8 +348,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             logger.info("Benchmarking failed: time spend ({}), failureCount ({}), statistic html overview ({}).",
                     benchmarkTimeMillisSpend, failureCount,
                     benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
-            throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")." +
-                    " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
+            throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")."
+                    + " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
                     + ") is chained.",
                     firstFailureSingleBenchmark.getFailureThrowable());
         }
@@ -424,7 +443,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     public boolean hasAnyFailure() {
         return failureCount > 0;
     }
-
     // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666
 //    public void writeBenchmarkResult(XStream xStream) {
 //        File benchmarkResultFile = new File(benchmarkReportDirectory, "benchmarkResult.xml");
@@ -441,5 +459,4 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 //            IOUtils.closeQuietly(writer);
 //        }
 //    }
-
 }

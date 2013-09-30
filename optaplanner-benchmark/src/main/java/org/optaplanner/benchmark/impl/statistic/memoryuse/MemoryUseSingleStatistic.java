@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -32,10 +33,16 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
     private long timeMillisThresholdInterval;
     private long nextTimeMillisThreshold;
 
-    private List<MemoryUseSingleStatisticPoint> pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
+    //private List<MemoryUseSingleStatisticPoint> pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
+    private MemoryUseSingleStatisticState state;
 
     public MemoryUseSingleStatistic() {
         this(1000L);
+        this.state = new MemoryUseSingleStatisticState();
+    }
+
+    public MemoryUseSingleStatistic(MemoryUseSingleStatisticState memoryUseSingleStatisticState) {
+        this.state = memoryUseSingleStatisticState;
     }
 
     public MemoryUseSingleStatistic(long timeMillisThresholdInterval) {
@@ -48,7 +55,7 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
     }
 
     public List<MemoryUseSingleStatisticPoint> getPointList() {
-        return pointList;
+        return state.getPointList();
     }
 
     // ************************************************************************
@@ -63,13 +70,18 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
     
+    @Override
+    public SingleStatisticState getSingleStatisticState() {
+        return state;
+    }
+    
     private class MemoryUseSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             if (timeMillisSpend >= nextTimeMillisThreshold) {
-                pointList.add(new MemoryUseSingleStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
+                getPointList().add(new MemoryUseSingleStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
 
                 nextTimeMillisThreshold += timeMillisThresholdInterval;
                 if (nextTimeMillisThreshold < timeMillisSpend) {
