@@ -18,40 +18,35 @@ package org.optaplanner.benchmark.impl;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import java.util.HashMap;
 import java.util.Map;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.Score;
 
-/**
- *
- * @author matej
- */
 @XStreamAlias("singleBenchmarkState")
 public class SingleBenchmarkState {
     
-    private Long singleBenchmarkStateId;
+    private String singleBenchmarkStateId;
     private long timeMillisSpend;
     private Long calculateCount = 0L;
     private Score score;
     private Integer planningEntityCount;
     private Long usedMemoryAfterInputSolution;
-    private Map<StatisticType, SingleStatisticState> singleStatisticMap = new HashMap<StatisticType, SingleStatisticState>();
+    private Map<StatisticType, SingleStatisticState> singleStatisticMap = new HashMap<StatisticType, SingleStatisticState>(); //
     private Boolean succeeded;
     private Long problemScale;
     
     public SingleBenchmarkState() {
     }
 
-    public SingleBenchmarkState(Long singleBenchmarkStateId) {
+    public SingleBenchmarkState(String singleBenchmarkStateId) {
         this.singleBenchmarkStateId = singleBenchmarkStateId;
     }
     
-    public Long getSingleBenchmarkStateId() {
+    public String getSingleBenchmarkStateId() {
         return singleBenchmarkStateId;
     }
 
-    public void setSingleBenchmarkStateId(Long singleBenchmarkStateId) {
+    public void setSingleBenchmarkStateId(String singleBenchmarkStateId) {
         this.singleBenchmarkStateId = singleBenchmarkStateId;
     }
 

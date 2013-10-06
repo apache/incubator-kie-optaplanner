@@ -46,7 +46,6 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     private final ProblemBenchmark problemBenchmark;
 
     private SingleBenchmarkState singleBenchmarkState;
-    private Long singleBenchmarkId;
     
     // compared to winning singleBenchmark in the same ProblemBenchmark (which might not be the overall favorite)
     private Score winningScoreDifference = null;
@@ -62,11 +61,6 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     public SingleBenchmark(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
         this.solverBenchmark = solverBenchmark;
         this.problemBenchmark = problemBenchmark;
-    }
-    
-    public SingleBenchmark(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark, Long singleBenchmarkId) {
-        this(solverBenchmark, problemBenchmark);
-        this.singleBenchmarkId = singleBenchmarkId;        
     }
     
     public SolverBenchmark getSolverBenchmark() {
@@ -152,14 +146,6 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         this.singleBenchmarkState = singleBenchmarkState;
     }
 
-    public Long getSingleBenchmarkId() {
-        return singleBenchmarkId;
-    }
-
-    public void setSingleBenchmarkId(Long singleBenchmarkId) {
-        this.singleBenchmarkId = singleBenchmarkId;
-    }
-
     public boolean isRecovered() {
         return recovered;
     }
@@ -178,7 +164,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     public SingleBenchmark call() {
         if (singleBenchmarkState == null) {
-            singleBenchmarkState = new SingleBenchmarkState(singleBenchmarkId);
+            singleBenchmarkState = new SingleBenchmarkState(getName());
         }
         Runtime runtime = Runtime.getRuntime();
         Solution inputSolution = problemBenchmark.readPlanningProblem();

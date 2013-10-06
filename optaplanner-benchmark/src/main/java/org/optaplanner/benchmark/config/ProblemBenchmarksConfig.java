@@ -170,11 +170,11 @@ public class ProblemBenchmarksConfig {
 
     private void addSingleBenchmark(
             SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark, SingleBenchmarkStateHolder singleBenchmarkStateHolder) {
-        SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark, IdGenerator.generateId());
+        SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark);
         solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
         problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
         for (SingleBenchmarkState state : singleBenchmarkStateHolder.getSingleBenchmarkStateList()) {
-            if (state.getSingleBenchmarkStateId().equals(singleBenchmark.getSingleBenchmarkId())) {
+            if (state.getSingleBenchmarkStateId().equals(singleBenchmark.getName())) {
                 singleBenchmark.setSingleBenchmarkState(state);
                 singleBenchmark.setRecovered(true);
                 break;
@@ -193,14 +193,5 @@ public class ProblemBenchmarksConfig {
                 inheritedConfig.getInputSolutionFileList());
         problemStatisticTypeList = ConfigUtils.inheritMergeableListProperty(problemStatisticTypeList,
                 inheritedConfig.getProblemStatisticTypeList());
-    }
-
-    private static class IdGenerator {
-        
-        static long id;
-        
-        static long generateId() {
-            return id++;
-        }
     }
 }
