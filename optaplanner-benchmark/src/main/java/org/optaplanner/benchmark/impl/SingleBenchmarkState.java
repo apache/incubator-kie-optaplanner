@@ -33,7 +33,8 @@ public class SingleBenchmarkState {
     private Long usedMemoryAfterInputSolution;
     private Map<StatisticType, SingleStatisticState> singleStatisticMap = new HashMap<StatisticType, SingleStatisticState>(); //
     private Boolean succeeded;
-    private Long problemScale;
+    private Long problemScale = 0L;
+    private Throwable failureThrowable;
     
     public SingleBenchmarkState() {
     }
@@ -109,5 +110,12 @@ public class SingleBenchmarkState {
     public void setProblemScale(Long problemScale) {
         this.problemScale = problemScale;
     }
-    
+
+    public Throwable getFailureThrowable() {
+        return failureThrowable;
+    }
+
+    public void setFailureThrowable(Throwable failureThrowable) {
+        this.failureThrowable = failureThrowable;
+    }
 }

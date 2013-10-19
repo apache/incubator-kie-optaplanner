@@ -22,6 +22,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
+import java.io.IOException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -72,10 +74,22 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
     }
 
     public XmlPlannerBenchmarkFactory configure(Reader reader) {
-        plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(reader);
+        try {
+            String benchmarkConfig = IOUtils.toString(reader);
+            plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(benchmarkConfig);
+            if (!plannerBenchmarkConfig.isForceNoResuming()) {
+                if (plannerBenchmarkConfig.getResumeBenchmarkConfigFile() != null) { // check for config equality
+                    String resumeConfig = FileUtils.readFileToString(plannerBenchmarkConfig.getResumeBenchmarkConfigFile());
+                    plannerBenchmarkConfig.setForceNoResuming(!resumeConfig.equals(benchmarkConfig));
+                }
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Error while reading resume configuration file", e);
+        }
+
         return this;
     }
-
+    
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -96,11 +110,4 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
         return plannerBenchmarkConfig.buildPlannerBenchmark();
     }
 
-    public PlannerBenchmark buildResumableBenchmark(String resumeFilePath) {
-        if (plannerBenchmarkConfig == null) {
-            throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
-                    " call configure(...) first.");
-        }
-        return plannerBenchmarkConfig.buildResumablePlannerBenchmark(resumeFilePath);
-    }
 }

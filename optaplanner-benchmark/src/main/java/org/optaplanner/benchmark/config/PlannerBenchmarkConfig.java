@@ -34,15 +34,12 @@ import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmarkState;
-import org.optaplanner.benchmark.impl.SingleBenchmarkStateHolder;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.ranking.SolverBenchmarkRankingType;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.ranking.WorstScoreSolverBenchmarkRankingComparator;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.persistence.xstream.XStreamSingleBenchmarkHolderIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +56,10 @@ public class PlannerBenchmarkConfig {
 
     private String name = null;
     private File benchmarkDirectory = null;
+    
+    private boolean forceNoResuming;
+    private File resumeDirectory = null;
+    private File resumeBenchmarkConfigFile;
 
     private String parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpend = null;
@@ -198,6 +199,30 @@ public class PlannerBenchmarkConfig {
         this.benchmarkHistoryReportEnabled = benchmarkHistoryReportEnabled;
     }
 
+    public File getResumeDirectory() {
+        return resumeDirectory;
+    }
+
+    public void setResumeDirectory(File resumeDirectory) {
+        this.resumeDirectory = resumeDirectory;
+    }
+
+    public File getResumeBenchmarkConfigFile() {
+        return resumeBenchmarkConfigFile;
+    }
+
+    public void setResumeBenchmarkConfigFile(File resumeBenchmarkConfigFile) {
+        this.resumeBenchmarkConfigFile = resumeBenchmarkConfigFile;
+    }
+
+    public boolean isForceNoResuming() {
+        return forceNoResuming;
+    }
+
+    public void setForceNoResuming(boolean forceNoResuming) {
+        this.forceNoResuming = forceNoResuming;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -210,6 +235,8 @@ public class PlannerBenchmarkConfig {
         DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
         plannerBenchmark.setName(name);
         plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
+        plannerBenchmark.setResumeDirectory(resumeDirectory);
+
         plannerBenchmark.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
         plannerBenchmark.getBenchmarkReport().setLocale(
@@ -222,12 +249,8 @@ public class PlannerBenchmarkConfig {
         List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
         plannerBenchmark.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);     
         
-        SingleBenchmarkStateHolder singleBenchmarkStateHolder = new SingleBenchmarkStateHolder(); // first time
-        singleBenchmarkStateHolder.setSingleBenchmarkStateList(new ArrayList<SingleBenchmarkState>());
-        plannerBenchmark.setSingleBenchmarkStateHolder(singleBenchmarkStateHolder);
-        
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmark);
+            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmark, !forceNoResuming);
             solverBenchmarkList.add(solverBenchmark);
         }
         plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
@@ -237,48 +260,6 @@ public class PlannerBenchmarkConfig {
         return plannerBenchmark;
     }
 
-    public PlannerBenchmark buildResumablePlannerBenchmark(String resumeFilePath) {
-        validate();
-        
-        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
-        plannerBenchmark.setName(name);
-        plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
-        plannerBenchmark.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
-        plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
-        plannerBenchmark.getBenchmarkReport().setLocale(
-                benchmarkReportLocale == null ? Locale.getDefault() : benchmarkReportLocale);
-        plannerBenchmark.getBenchmarkHistoryReport().setLocale(
-                benchmarkReportLocale == null ? Locale.getDefault() : benchmarkReportLocale);
-        supplySolverBenchmarkRanking(plannerBenchmark);
-
-        List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
-        List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
-        plannerBenchmark.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);
-        
-        XStreamSingleBenchmarkHolderIO xStreamIO = new XStreamSingleBenchmarkHolderIO();
-        SingleBenchmarkStateHolder singleBenchmarkStateHolder = null;
-        try {
-            singleBenchmarkStateHolder = xStreamIO.read(new File(resumeFilePath));
-            plannerBenchmark.setSingleBenchmarkStateHolder(singleBenchmarkStateHolder);
-        } catch (Exception e) {
-            // failed, do benchmark from scratch
-            return buildPlannerBenchmark();
-        }
-        // in order not to configure twice when xstream reading fails
-        generateSolverBenchmarkConfigNames();
-        inherit();
-        
-        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmark);
-            solverBenchmarkList.add(solverBenchmark);
-        }
-        plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
-        boolean benchmarkHistoryReportEnabled_ = benchmarkHistoryReportEnabled == null ? false // TODO enable by default
-                : benchmarkHistoryReportEnabled;
-        plannerBenchmark.setBenchmarkHistoryReportEnabled(benchmarkHistoryReportEnabled_);
-        return plannerBenchmark;
-    }
-    
     protected void validate() {
         final String nameRegex = "^[\\w\\d _\\-\\.\\(\\)]+$";
         if (name != null && !name.matches(nameRegex)) {

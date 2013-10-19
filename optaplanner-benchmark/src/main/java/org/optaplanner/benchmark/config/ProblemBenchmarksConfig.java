@@ -22,12 +22,14 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmarkState;
-import org.optaplanner.benchmark.impl.SingleBenchmarkStateHolder;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
@@ -51,7 +53,7 @@ public class ProblemBenchmarksConfig {
 
     public Class<ProblemIO> getProblemIOClass() {
         return problemIOClass;
-    }
+    }  
 
     public void setProblemIOClass(Class<ProblemIO> problemIOClass) {
         this.problemIOClass = problemIOClass;
@@ -94,7 +96,7 @@ public class ProblemBenchmarksConfig {
     // ************************************************************************
 
     public List<ProblemBenchmark> buildProblemBenchmarkList(DefaultPlannerBenchmark plannerBenchmark,
-            SolverBenchmark solverBenchmark) {
+            SolverBenchmark solverBenchmark, boolean resume) {
         validate(solverBenchmark);
         ProblemIO problemIO = buildProblemIO();
         List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(inputSolutionFileList.size());
@@ -114,7 +116,7 @@ public class ProblemBenchmarksConfig {
             } else {
                 problemBenchmark = unifiedProblemBenchmarkList.get(index);
             }
-            addSingleBenchmark(solverBenchmark, problemBenchmark, plannerBenchmark.getSingleBenchmarkStateHolder());
+            addSingleBenchmark(solverBenchmark, problemBenchmark, resume);
             problemBenchmarkList.add(problemBenchmark);
         }
         return problemBenchmarkList;
@@ -169,15 +171,17 @@ public class ProblemBenchmarksConfig {
     }
 
     private void addSingleBenchmark(
-            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark, SingleBenchmarkStateHolder singleBenchmarkStateHolder) {
+            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark, boolean resume) {
         SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark);
         solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
         problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
-        for (SingleBenchmarkState state : singleBenchmarkStateHolder.getSingleBenchmarkStateList()) {
-            if (state.getSingleBenchmarkStateId().equals(singleBenchmark.getName())) {
+        if (resume) {
+            Path resumePath = filePath(problemBenchmark, singleBenchmark);
+            if (Files.exists(resumePath)) {
+                SingleBenchmarkState state = problemBenchmark.getPlannerBenchmark().getxStreamIO().read(new File(resumePath.toUri()));
                 singleBenchmark.setSingleBenchmarkState(state);
                 singleBenchmark.setRecovered(true);
-                break;
+                
             }
         }
     }
@@ -193,5 +197,9 @@ public class ProblemBenchmarksConfig {
                 inheritedConfig.getInputSolutionFileList());
         problemStatisticTypeList = ConfigUtils.inheritMergeableListProperty(problemStatisticTypeList,
                 inheritedConfig.getProblemStatisticTypeList());
+    }
+
+    private Path filePath(ProblemBenchmark problemBenchmark, SingleBenchmark singleBenchmark) {
+        return Paths.get(problemBenchmark.getPlannerBenchmark().getResumeDirectory() + File.separator + singleBenchmark.getName() + ".xml");
     }
 }

@@ -27,26 +27,21 @@ import java.io.Reader;
 import java.io.Writer;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.SingleBenchmarkState;
-import org.optaplanner.benchmark.impl.SingleBenchmarkStateHolder;
 
-/**
- *
- * @author matej
- */
-public class XStreamSingleBenchmarkHolderIO {
+public class XStreamResumeIO {
     
     private XStream xStream;
     
-    public XStreamSingleBenchmarkHolderIO() {
+    public XStreamResumeIO() {
         this.xStream = new XStream();
     }
     
-    public SingleBenchmarkStateHolder read(File inputFile) {
-        SingleBenchmarkStateHolder singleBenchmarkStateHolder = null;
+    public SingleBenchmarkState read(File inputFile) {
+        SingleBenchmarkState singleBenchmarkState = null;
         Reader reader = null;
         try {
             reader = new InputStreamReader(new FileInputStream(inputFile), "UTF-8");
-            singleBenchmarkStateHolder = (SingleBenchmarkStateHolder) xStream.fromXML(reader);
+            singleBenchmarkState = (SingleBenchmarkState) xStream.fromXML(reader);
         } catch (XStreamException e) {
             throw new IllegalArgumentException("Problem reading inputFile: " + inputFile, e);
         } catch (IOException e) {
@@ -54,14 +49,14 @@ public class XStreamSingleBenchmarkHolderIO {
         } finally {
             IOUtils.closeQuietly(reader);
         }
-        return singleBenchmarkStateHolder;
+        return singleBenchmarkState;
     }
     
-    public void write(SingleBenchmarkStateHolder singleBenchmarkStateHolder, File outputFile) {
+    public void write(SingleBenchmarkState singleBenchmarkState, File outputFile) {
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
-            xStream.toXML(singleBenchmarkStateHolder, writer);
+            xStream.toXML(singleBenchmarkState, writer);
         } catch (IOException e) {
             throw new IllegalArgumentException("Problem writing outputFile: " + outputFile, e);
         } finally {

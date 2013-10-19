@@ -138,8 +138,4 @@ public class FreemarkerXmlPlannerBenchmarkFactory implements PlannerBenchmarkFac
         return xmlPlannerBenchmarkFactory.buildPlannerBenchmark();
     }
 
-    public PlannerBenchmark buildResumableBenchmark(String resumeFilePath) {
-        return xmlPlannerBenchmarkFactory.buildResumableBenchmark(resumeFilePath);
-    }
-    
 }

@@ -65,7 +65,7 @@ public class SolverBenchmarkConfig {
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmark buildSolverBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
+    public SolverBenchmark buildSolverBenchmark(DefaultPlannerBenchmark plannerBenchmark, boolean resume) {
         validate();
         SolverBenchmark solverBenchmark = new SolverBenchmark(plannerBenchmark);
         solverBenchmark.setName(name);
@@ -75,7 +75,7 @@ public class SolverBenchmarkConfig {
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
         List<ProblemBenchmark> problemBenchmarkList
-                = problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmark);
+                = problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmark, resume);
         solverBenchmark.setProblemBenchmarkList(problemBenchmarkList);
         return solverBenchmark;
     }

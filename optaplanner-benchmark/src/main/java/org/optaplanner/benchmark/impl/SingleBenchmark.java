@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.impl;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -32,6 +33,7 @@ import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.persistence.xstream.XStreamResumeIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +55,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     // Ranking starts from 0
     private Integer ranking = null;
 
-    private Throwable failureThrowable = null;
+    private XStreamResumeIO xStreamIO = new XStreamResumeIO();
     private boolean recovered = false;
     
     private Map<StatisticType, SingleStatistic> singleStatisticMap = new HashMap<StatisticType, SingleStatistic>();
@@ -131,11 +133,11 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     }
 
     public Throwable getFailureThrowable() {
-        return failureThrowable;
+        return singleBenchmarkState.getFailureThrowable();
     }
 
     public void setFailureThrowable(Throwable failureThrowable) {
-        this.failureThrowable = failureThrowable;
+        singleBenchmarkState.setFailureThrowable(failureThrowable);
     }
 
     public SingleBenchmarkState getSingleBenchmarkState() {
@@ -182,7 +184,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
             singleStatistic.open(solver);
             singleStatisticMap.put(problemStatistic.getProblemStatisticType(), singleStatistic);
         }
-
+        
         solver.setPlanningProblem(inputSolution);
         solver.solve();
         Solution outputSolution = solver.getBestSolution();
@@ -204,12 +206,14 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
             singleBenchmarkState.getSingleStatisticMap().put(type, singleStatisticMap.get(type).getSingleStatisticState());
         }
         
-        problemBenchmark.getPlannerBenchmark().addAndStore(singleBenchmarkState);
+        setSucceeded(true);
+        xStreamIO.write(getSingleBenchmarkState(),
+                new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(), getName() + ".xml"));
         
         problemBenchmark.writeOutputSolution(this, outputSolution);
         return this;
     }
-
+    
     public boolean isSuccess() {
         return singleBenchmarkState.getSucceeded() != null && singleBenchmarkState.getSucceeded().booleanValue();
     }

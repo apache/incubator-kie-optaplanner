@@ -24,6 +24,4 @@ public interface PlannerBenchmarkFactory {
 
     PlannerBenchmark buildPlannerBenchmark();
     
-    PlannerBenchmark buildResumableBenchmark(String resumeFilePath);
-
 }

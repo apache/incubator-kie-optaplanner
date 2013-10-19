@@ -40,7 +40,7 @@ import org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.persistence.xstream.XStreamSingleBenchmarkHolderIO;
+import org.optaplanner.persistence.xstream.XStreamResumeIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,9 +51,10 @@ import org.slf4j.LoggerFactory;
 public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-    private static final String CHECKPOINT_FILE_NAME = "checkpoint.xml";
     private String name = null;
     private File benchmarkDirectory = null;
+    private File resumeDirectory = null;
+    private File benchmarkOutputDirectory = null;
     private File benchmarkReportDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
     private SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
@@ -73,8 +74,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private Score averageScore = null;
     private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
-    private SingleBenchmarkStateHolder singleBenchmarkStateHolder;
-    private XStreamSingleBenchmarkHolderIO xStreamIO = new XStreamSingleBenchmarkHolderIO();
+    private XStreamResumeIO xStream = new XStreamResumeIO();
 
     public String getName() {
         return name;
@@ -180,18 +180,20 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return benchmarkTimeMillisSpend;
     }
 
-    public SingleBenchmarkStateHolder getSingleBenchmarkStateHolder() {
-        return singleBenchmarkStateHolder;
+    public File getResumeDirectory() {
+        return resumeDirectory;
     }
 
-    public void setSingleBenchmarkStateHolder(SingleBenchmarkStateHolder singleBenchmarkStateHolder) {
-        this.singleBenchmarkStateHolder = singleBenchmarkStateHolder;
+    public void setResumeDirectory(File resumeDirectory) {
+        this.resumeDirectory = resumeDirectory;
     }
-    
-    synchronized public void addAndStore(SingleBenchmarkState singleBenchmarkState) {
-        singleBenchmarkState.setSucceeded(true);
-        singleBenchmarkStateHolder.getSingleBenchmarkStateList().add(singleBenchmarkState);
-        xStreamIO.write(singleBenchmarkStateHolder, new File(benchmarkReportDirectory, CHECKPOINT_FILE_NAME));
+
+    public File getBenchmarkOutputDirectory() {
+        return benchmarkOutputDirectory;
+    }
+
+    public XStreamResumeIO getxStreamIO() {
+        return xStream;
     }
 
     // ************************************************************************
@@ -243,6 +245,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         benchmarkReportDirectory = new File(benchmarkDirectory, timestamp);
         benchmarkReportDirectory.mkdirs();
+        benchmarkOutputDirectory = new File(benchmarkReportDirectory, "resume");
+        benchmarkOutputDirectory.mkdirs();
     }
 
     private void warmUp() {
@@ -301,11 +305,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", e);
                     failureThrowable = e;
                 }
-                if (failureThrowable == null) {
-                    singleBenchmark.setSucceeded(true);
-                } else {
+                if (failureThrowable != null) {
                     singleBenchmark.setSucceeded(false);
                     singleBenchmark.setFailureThrowable(failureThrowable);
+                    xStream.write(singleBenchmark.getSingleBenchmarkState(), new File(benchmarkOutputDirectory.getPath(), singleBenchmark.getName() + ".xml"));
                     failureCount++;
                     if (firstFailureSingleBenchmark == null) {
                         firstFailureSingleBenchmark = singleBenchmark;
