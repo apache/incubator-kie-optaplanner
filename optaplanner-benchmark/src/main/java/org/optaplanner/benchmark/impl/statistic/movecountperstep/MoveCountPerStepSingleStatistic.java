@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,19 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
+    @Override
+    public void writeCsvStatistic(File outputFile) {
+        SingleStatisticCsv csv = new SingleStatisticCsv();
+        for (MoveCountPerStepSingleStatisticPoint point : pointList) {
+            long timeMillisSpend = point.getTimeMillisSpend();
+            MoveCountPerStepMeasurement moveCountPerStepMeasurement = point.getMoveCountPerStepMeasurement();
+            csv.addPoint(timeMillisSpend,
+                    Long.toString(moveCountPerStepMeasurement.getAcceptedMoveCount())
+                    + "/" + Long.toString(moveCountPerStepMeasurement.getSelectedMoveCount()));
+        }
+        csv.writeCsvSingleStatisticFile(outputFile);
+    }
+    
     private class MoveCountPerStepSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
         @Override

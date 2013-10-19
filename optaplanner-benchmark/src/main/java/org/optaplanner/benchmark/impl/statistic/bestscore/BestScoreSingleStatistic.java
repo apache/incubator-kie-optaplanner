@@ -16,10 +16,12 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
@@ -47,6 +49,19 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
 
     public void close(Solver solver) {
         solver.removeEventListener(listener);
+    }
+
+    @Override
+    public void writeCsvStatistic(File outputFile) {
+        SingleStatisticCsv csv = new SingleStatisticCsv();
+        for (BestScoreSingleStatisticPoint point : pointList) {
+            long timeMillisSpend = point.getTimeMillisSpend();
+            Score score = point.getScore();
+            if (score != null) {
+                csv.addPoint(timeMillisSpend, score.toString());
+            }
+        }
+        csv.writeCsvSingleStatisticFile(outputFile);
     }
 
     private class BestScoreSingleStatisticListener implements SolverEventListener {

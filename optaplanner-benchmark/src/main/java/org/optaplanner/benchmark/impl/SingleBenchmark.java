@@ -204,6 +204,12 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         xStreamIO.write(getSingleBenchmarkState(),
                 new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(), getName() + ".xml"));
         
+        for (StatisticType type : singleStatisticMap.keySet()) {
+            SingleStatistic singleStatistic = singleStatisticMap.get(type);
+            String filename = getName() + "_statfile_" + type + ".csv";
+            singleStatistic.writeCsvStatistic(new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(), filename));
+        }
+        
         problemBenchmark.writeOutputSolution(this, outputSolution);
         return this;
     }

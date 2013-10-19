@@ -16,9 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +66,15 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
+    }
+    
+    @Override
+    public void writeCsvStatistic(File outputFile) {
+        SingleStatisticCsv csv = new SingleStatisticCsv();
+        for (CalculateCountSingleStatisticPoint point : pointList) {
+            csv.addPoint(point.getTimeMillisSpend(), point.getCalculateCountPerSecond());
+        }
+        csv.writeCsvSingleStatisticFile(outputFile);
     }
 
     private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {

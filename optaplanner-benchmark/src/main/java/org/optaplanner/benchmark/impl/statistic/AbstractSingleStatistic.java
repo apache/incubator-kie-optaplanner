@@ -16,9 +16,62 @@
 
 package org.optaplanner.benchmark.impl.statistic;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Map;
+import java.util.TreeMap;
+import org.apache.commons.io.IOUtils;
+
 public abstract class AbstractSingleStatistic implements SingleStatistic {
 
     protected AbstractSingleStatistic() {
     }
+    
+    public class SingleStatisticCsv {
+        
+        /**
+         * alternative: create crate object & store in ArrayList (potentially faster but creates many additional objects)
+         */ 
+        private Map<Long, String> singleStatisticLines = new TreeMap<Long, String>();
+        
+        public void addPoint(long timeMillisSpend, long value) {
+            addRawPoint(timeMillisSpend, Long.toString(value));
+        }
 
+        public void addPoint(long timeMillisSpend, double value) {
+            addRawPoint(timeMillisSpend, Double.toString(value));
+        }
+
+        public void addPoint(long timeMillisSpend, String value) {
+            // Surround with double quotes and apply Excel escaping
+            addRawPoint(timeMillisSpend, "\"" + value.replaceAll("\"", "\"\"") + "\"");
+        }
+
+        private void addRawPoint(long timeMillisSpend, String value) {
+            singleStatisticLines.put(timeMillisSpend, value);
+        }
+
+        public void writeCsvSingleStatisticFile(File outputFile) {
+            Writer writer = null;
+            try {
+                writer = new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8");
+                for (Long spent : singleStatisticLines.keySet()) {
+                    writer.write(spent.toString());
+                    writer.append(",");
+                    String value = singleStatisticLines.get(spent);
+                    if (value != null) {
+                        writer.append(value);
+                    }
+                    writer.append("\n");
+                }
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Problem writing csvStatisticFile: " + outputFile, e);
+            } finally {
+                IOUtils.closeQuietly(writer);
+            }
+        }
+    }
 }

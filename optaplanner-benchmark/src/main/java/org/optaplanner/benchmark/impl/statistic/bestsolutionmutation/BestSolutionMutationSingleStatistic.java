@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,15 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
         solver.removeEventListener(listener);
     }
 
+    @Override
+    public void writeCsvStatistic(File outputFile) {
+        SingleStatisticCsv csv = new SingleStatisticCsv();
+        for (BestSolutionMutationSingleStatisticPoint point : pointList) {
+            csv.addPoint(point.getTimeMillisSpend(), point.getMutationCount());
+        }
+        csv.writeCsvSingleStatisticFile(outputFile);
+    }
+    
     private class BestSolutionMutationSingleStatisticListener implements SolverEventListener {
 
         private MutationCounter mutationCounter;
