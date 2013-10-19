@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.move.Move;
@@ -70,11 +69,6 @@ public class ImprovingStepPercentageSingleStatistic extends AbstractSingleStatis
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
-    @Override
-    public SingleStatisticState getSingleStatisticState() {
-        throw new UnsupportedOperationException();
-    }
-    
     private class ImprovingStepPercentageSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
         private final Map<Class<? extends Move>, Integer> improvementCounts = new HashMap<Class<? extends Move>, Integer>();

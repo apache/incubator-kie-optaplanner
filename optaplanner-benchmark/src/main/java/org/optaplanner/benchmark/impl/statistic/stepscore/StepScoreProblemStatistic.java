@@ -40,7 +40,6 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
@@ -56,10 +55,6 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
         return new StepScoreSingleStatistic();
     }
     
-    public SingleStatistic createSingleStatistic(SingleStatisticState state) {
-        return new StepScoreSingleStatistic((StepScoreSingleStatisticState) state);
-    }
-
     /**
      * @return never null, each path is relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
      * (not {@link ProblemBenchmark#problemReportDirectory})
@@ -80,8 +75,8 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
-                StepScoreSingleStatisticState singleStatisticState = (StepScoreSingleStatisticState)
-                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                StepScoreSingleStatistic singleStatisticState = (StepScoreSingleStatistic)
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
                 for (StepScoreSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     Score score = point.getScore();
@@ -106,8 +101,8 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmark.isSuccess()) {
-                StepScoreSingleStatisticState singleStatisticState = (StepScoreSingleStatisticState)
-                        singleBenchmark.getSingleStatisticState(problemStatisticType);
+                StepScoreSingleStatistic singleStatisticState = (StepScoreSingleStatistic)
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
                 for (StepScoreSingleStatisticPoint point : singleStatisticState.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());

@@ -34,6 +34,4 @@ public interface SingleStatistic {
      */
     void close(Solver solver);
     
-    SingleStatisticState getSingleStatisticState();
-
 }

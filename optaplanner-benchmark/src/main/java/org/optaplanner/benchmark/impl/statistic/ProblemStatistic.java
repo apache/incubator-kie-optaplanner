@@ -42,8 +42,6 @@ public interface ProblemStatistic {
      */
     SingleStatistic createSingleStatistic();
     
-    SingleStatistic createSingleStatistic(SingleStatisticState state);
-    
     void writeStatistic();
 
     /**

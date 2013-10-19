@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -40,16 +39,10 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
     private long lastTimeMillisSpend = 0L;
     private long lastCalculateCount = 0L;
 
-    //private List<CalculateCountSingleStatisticPoint> pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
-    private CalculateCountSingleStatisticState state;
+    private List<CalculateCountSingleStatisticPoint> pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
     
     public CalculateCountSingleStatistic() {
         this(1000L);
-        state = new CalculateCountSingleStatisticState();
-    }
-
-    public CalculateCountSingleStatistic(CalculateCountSingleStatisticState state) {
-        this.state = state;
     }
 
     public CalculateCountSingleStatistic(long timeMillisThresholdInterval) {
@@ -62,7 +55,7 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
     }
 
     public List<CalculateCountSingleStatisticPoint> getPointList() {
-        return state.getPointList();
+        return pointList;
     }
 
     // ************************************************************************
@@ -75,11 +68,6 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
 
     public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
-    }
-
-    @Override
-    public SingleStatisticState getSingleStatisticState() {
-        return state;
     }
 
     private class CalculateCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {

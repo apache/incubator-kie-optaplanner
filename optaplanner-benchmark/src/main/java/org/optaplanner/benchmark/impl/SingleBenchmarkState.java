@@ -16,10 +16,6 @@
 package org.optaplanner.benchmark.impl;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import java.util.HashMap;
-import java.util.Map;
-import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
-import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.Score;
 
 @XStreamAlias("singleBenchmarkState")
@@ -31,7 +27,6 @@ public class SingleBenchmarkState {
     private Score score;
     private Integer planningEntityCount;
     private Long usedMemoryAfterInputSolution;
-    private Map<StatisticType, SingleStatisticState> singleStatisticMap = new HashMap<StatisticType, SingleStatisticState>(); //
     private Boolean succeeded;
     private Long problemScale = 0L;
     private Throwable failureThrowable;
@@ -91,10 +86,6 @@ public class SingleBenchmarkState {
         this.usedMemoryAfterInputSolution = usedMemoryAfterInputSolution;
     }
 
-    public Map<StatisticType, SingleStatisticState> getSingleStatisticMap() {
-        return singleStatisticMap;
-    }
-    
     public Boolean getSucceeded() {
         return succeeded;
     }

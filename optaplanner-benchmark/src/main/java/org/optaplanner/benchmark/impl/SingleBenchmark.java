@@ -24,7 +24,6 @@ import java.util.concurrent.Callable;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
@@ -201,11 +200,6 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
             singleStatistic.close(solver);
         }
         
-        // write statistic to state
-        for (StatisticType type : singleStatisticMap.keySet()) {
-            singleBenchmarkState.getSingleStatisticMap().put(type, singleStatisticMap.get(type).getSingleStatisticState());
-        }
-        
         setSucceeded(true);
         xStreamIO.write(getSingleBenchmarkState(),
                 new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(), getName() + ".xml"));
@@ -244,13 +238,8 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return ranking != null && ranking.intValue() == 0;
     }
 
-    // just to support ImprovingStepPercentageStatistic - will be removed
     public SingleStatistic getSingleStatistic(StatisticType statisticType) {
         return singleStatisticMap.get(statisticType);
-    }
-    
-    public SingleStatisticState getSingleStatisticState(StatisticType statisticType) {
-        return singleBenchmarkState.getSingleStatisticMap().get(statisticType);
     }
 
 }

@@ -16,10 +16,10 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatisticState;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
@@ -31,19 +31,13 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
 
     private BestSolutionMutationSingleStatisticListener listener = new BestSolutionMutationSingleStatisticListener();
 
-    //private List<BestSolutionMutationSingleStatisticPoint> pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
-    private BestSolutionMutationSingleStatisticState state;
+    private List<BestSolutionMutationSingleStatisticPoint> pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
 
     public BestSolutionMutationSingleStatistic() {
-        this.state = new BestSolutionMutationSingleStatisticState();
     }
 
-    public BestSolutionMutationSingleStatistic(BestSolutionMutationSingleStatisticState state) {
-        this.state = state;
-    }
-    
     public List<BestSolutionMutationSingleStatisticPoint> getPointList() {
-        return state.getPointList();
+        return pointList;
     }
 
     // ************************************************************************
@@ -58,11 +52,6 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
 
     public void close(Solver solver) {
         solver.removeEventListener(listener);
-    }
-
-    @Override
-    public SingleStatisticState getSingleStatisticState() {
-        return state;
     }
 
     private class BestSolutionMutationSingleStatisticListener implements SolverEventListener {
