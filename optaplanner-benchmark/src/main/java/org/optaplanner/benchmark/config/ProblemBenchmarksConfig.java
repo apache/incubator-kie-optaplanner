@@ -22,9 +22,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
@@ -33,6 +30,7 @@ import org.optaplanner.benchmark.impl.SingleBenchmarkState;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solution.ProblemIO;
 import org.optaplanner.persistence.xstream.XStreamProblemIO;
@@ -176,10 +174,17 @@ public class ProblemBenchmarksConfig {
         solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
         problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
         if (resume) {
-            Path resumePath = filePath(problemBenchmark, singleBenchmark);
-            if (Files.exists(resumePath)) {
-                SingleBenchmarkState state = problemBenchmark.getPlannerBenchmark().getxStreamIO().read(new File(resumePath.toUri()));
+            File stateFile = stateFile(problemBenchmark, singleBenchmark);
+            if (stateFile.exists()) {
+                SingleBenchmarkState state = problemBenchmark.getPlannerBenchmark().getxStreamIO().read(stateFile);
                 singleBenchmark.setSingleBenchmarkState(state);
+                for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
+                    File statisticFile = new File(problemBenchmark.getPlannerBenchmark().getResumeDirectory(),
+                            singleBenchmark.getSingleBenchmarkStatisticFilename(problemStatistic.getProblemStatisticType()));
+                    SingleStatistic singleStatistic = problemStatistic.readSingleStatistic(
+                            statisticFile, singleBenchmark.getSolverBenchmark().getSolverConfig().getScoreDirectorFactoryConfig());
+                    singleBenchmark.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
+                }
                 singleBenchmark.setRecovered(true);
                 
             }
@@ -199,7 +204,7 @@ public class ProblemBenchmarksConfig {
                 inheritedConfig.getProblemStatisticTypeList());
     }
 
-    private Path filePath(ProblemBenchmark problemBenchmark, SingleBenchmark singleBenchmark) {
-        return Paths.get(problemBenchmark.getPlannerBenchmark().getResumeDirectory() + File.separator + singleBenchmark.getName() + ".xml");
+    private File stateFile(ProblemBenchmark problemBenchmark, SingleBenchmark singleBenchmark) {
+        return new File(problemBenchmark.getPlannerBenchmark().getResumeDirectory(), singleBenchmark.getName() + ".xml");
     }
 }

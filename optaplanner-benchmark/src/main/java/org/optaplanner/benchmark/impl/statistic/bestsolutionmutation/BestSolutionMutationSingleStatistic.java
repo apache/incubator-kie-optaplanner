@@ -41,6 +41,10 @@ public class BestSolutionMutationSingleStatistic extends AbstractSingleStatistic
         return pointList;
     }
 
+    public void setPointList(List<BestSolutionMutationSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

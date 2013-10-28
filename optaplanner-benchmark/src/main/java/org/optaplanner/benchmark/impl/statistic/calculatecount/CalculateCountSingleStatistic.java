@@ -19,8 +19,10 @@ package org.optaplanner.benchmark.impl.statistic.calculatecount;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.optaplanner.benchmark.impl.SingleBenchmark;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -56,6 +58,10 @@ public class CalculateCountSingleStatistic extends AbstractSingleStatistic {
         return pointList;
     }
 
+    public void setPointList(List<CalculateCountSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+    
     // ************************************************************************
     // Worker methods
     // ************************************************************************

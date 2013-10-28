@@ -37,6 +37,10 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic {
         return pointList;
     }
 
+    public void setPointList(List<MoveCountPerStepSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

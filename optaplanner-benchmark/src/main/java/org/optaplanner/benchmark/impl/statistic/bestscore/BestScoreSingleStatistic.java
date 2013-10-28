@@ -39,6 +39,10 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
         return pointList;
     }
 
+    public void setPointList(List<BestScoreSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -63,7 +67,7 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
         }
         csv.writeCsvSingleStatisticFile(outputFile);
     }
-
+    
     private class BestScoreSingleStatisticListener implements SolverEventListener {
 
         public void bestSolutionChanged(BestSolutionChangedEvent event) {

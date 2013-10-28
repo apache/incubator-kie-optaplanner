@@ -35,6 +35,28 @@ import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.BENDABLE;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.HARD_MEDIUM_SOFT;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.HARD_SOFT;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.HARD_SOFT_BIG_DECIMAL;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.HARD_SOFT_DOUBLE;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.HARD_SOFT_LONG;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE_BIG_DECIMAL;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE_DOUBLE;
+import static org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE_LONG;
 
 public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
@@ -192,4 +214,30 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
         return chartFile;
     }
 
+    protected static Score getScoreInstance(ScoreDirectorFactoryConfig config, String scoreString) {
+        switch (config.getScoreDefinitionType()) {
+            case SIMPLE:
+                return SimpleScore.parseScore(scoreString);
+            case SIMPLE_BIG_DECIMAL:
+                return SimpleBigDecimalScore.parseScore(scoreString);
+            case SIMPLE_DOUBLE:
+                return SimpleDoubleScore.parseScore(scoreString);
+            case SIMPLE_LONG:
+                return SimpleLongScore.parseScore(scoreString);
+            case BENDABLE:
+                return BendableScore.parseScore(config.getBendableHardLevelCount(), config.getBendableSoftLevelCount(), scoreString);
+            case HARD_MEDIUM_SOFT:
+                return HardMediumSoftScore.parseScore(scoreString);
+            case HARD_SOFT: 
+                return HardSoftScore.parseScore(scoreString);
+            case HARD_SOFT_BIG_DECIMAL:
+                return HardSoftBigDecimalScore.parseScore(scoreString);
+            case HARD_SOFT_DOUBLE:
+                return HardSoftDoubleScore.parseScore(scoreString);
+            case HARD_SOFT_LONG:
+                return HardSoftLongScore.parseScore(scoreString);
+            default: throw new IllegalArgumentException("Score definition type " + config.getScoreDefinitionType() + " not supported.");
+        }
+    } 
+    
 }

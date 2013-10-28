@@ -52,6 +52,10 @@ public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
         return pointList;
     }
 
+    public void setPointList(List<MemoryUseSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

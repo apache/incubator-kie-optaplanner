@@ -17,8 +17,14 @@
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
 import java.awt.BasicStroke;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.jfree.chart.JFreeChart;
@@ -36,6 +42,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 
 public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
 
@@ -114,6 +121,27 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " calculate count statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "CalculateCountStatistic");
+    }
+    
+    @Override
+    public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
+        List<CalculateCountSingleStatisticPoint> pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            for (String line = br.readLine(); line != null; line = br.readLine()) {
+                String[] values = line.split(",");
+                long timeSpent = Long.valueOf(values[0]);
+                long calculateCountPerSecond = Long.valueOf(values[1].substring(1, values[1].length() - 1));
+                pointList.add(new CalculateCountSingleStatisticPoint(timeSpent, calculateCountPerSecond));
+            }
+        } catch (FileNotFoundException ex) {
+            throw new IllegalArgumentException("Could not open statistic file " + file, ex);
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("Error while reading statistic file " + file, ex);
+        }
+        CalculateCountSingleStatistic statistic = new CalculateCountSingleStatistic();
+        statistic.setPointList(pointList);
+        return statistic;
     }
 
 }

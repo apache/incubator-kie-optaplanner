@@ -155,6 +155,10 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         this.recovered = recovered;
     }
     
+    public Map<StatisticType, SingleStatistic> getSingleStatisticMap() {
+        return singleStatisticMap;
+    }
+    
     // ************************************************************************
     // Benchmark methods
     // ************************************************************************
@@ -163,6 +167,10 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return problemBenchmark.getName() + "_" + solverBenchmark.getName();
     }
 
+    public String getSingleBenchmarkStatisticFilename(StatisticType type) {
+        return getName() + "_statfile_" + type + ".csv";
+    }
+    
     public SingleBenchmark call() {
         if (singleBenchmarkState == null) {
             singleBenchmarkState = new SingleBenchmarkState(getName());
@@ -200,15 +208,15 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
             singleStatistic.close(solver);
         }
         
+        for (StatisticType type : singleStatisticMap.keySet()) {
+            File statisticFile = new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(),
+                    getSingleBenchmarkStatisticFilename(type));
+            singleStatisticMap.get(type).writeCsvStatistic(statisticFile);
+        }
+        
         setSucceeded(true);
         xStreamIO.write(getSingleBenchmarkState(),
                 new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(), getName() + ".xml"));
-        
-        for (StatisticType type : singleStatisticMap.keySet()) {
-            SingleStatistic singleStatistic = singleStatisticMap.get(type);
-            String filename = getName() + "_statfile_" + type + ".csv";
-            singleStatistic.writeCsvStatistic(new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(), filename));
-        }
         
         problemBenchmark.writeOutputSolution(this, outputSolution);
         return this;

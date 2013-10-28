@@ -41,6 +41,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.move.Move;
 
 public class ImprovingStepPercentageProblemStatistic extends AbstractProblemStatistic {
@@ -140,4 +141,10 @@ public class ImprovingStepPercentageProblemStatistic extends AbstractProblemStat
         return plot;
     }
 
+    @Override
+    public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
+        // TODO FIXME Planner doesn't support multiple CSV statistics per benchmark
+        throw new UnsupportedOperationException("Planner doesn't support multiple CSV statistics per benchmark.");
+    }
+    
 }

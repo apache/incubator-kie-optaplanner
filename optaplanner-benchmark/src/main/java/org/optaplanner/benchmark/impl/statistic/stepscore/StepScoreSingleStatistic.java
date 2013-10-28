@@ -40,6 +40,10 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic {
         return pointList;
     }
 
+    public void setPointList(List<StepScoreSingleStatisticPoint> pointList) {
+        this.pointList = pointList;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
