@@ -36,7 +36,7 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
-        throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
+        throw new UnsupportedOperationException("UnimprovedStepCountTermination can only be used for phase termination.");
     }
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope phaseScope) {
@@ -45,7 +45,7 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     }
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
-        throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
+        throw new UnsupportedOperationException("UnimprovedStepCountTermination can only be used for phase termination.");
     }
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope phaseScope) {

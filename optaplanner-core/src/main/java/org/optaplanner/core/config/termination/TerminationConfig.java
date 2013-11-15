@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.termination.StepCountTermination;
 import org.optaplanner.core.impl.termination.Termination;
 import org.optaplanner.core.impl.termination.TimeMillisSpendTermination;
 import org.optaplanner.core.impl.termination.UnimprovedStepCountTermination;
+import org.optaplanner.core.impl.termination.UnimprovedTimeMillisSpendTermination;
 
 @XStreamAlias("termination")
 public class TerminationConfig implements Cloneable {
@@ -44,6 +45,8 @@ public class TerminationConfig implements Cloneable {
     private Long maximumSecondsSpend = null;
     private Long maximumMinutesSpend = null;
     private Long maximumHoursSpend = null;
+    private Long maximumUnimprovedTimeMillisSpend = null;
+    
     private String scoreAttained = null;
     private Integer maximumStepCount = null;
     private Integer maximumUnimprovedStepCount = null;
@@ -97,6 +100,14 @@ public class TerminationConfig implements Cloneable {
 
     public void setMaximumHoursSpend(Long maximumHoursSpend) {
         this.maximumHoursSpend = maximumHoursSpend;
+    }
+
+    public Long getMaximumUnimprovedTimeMillisSpend() {
+        return maximumUnimprovedTimeMillisSpend;
+    }
+
+    public void setMaximumUnimprovedTimeMillisSpend(Long maximumUnimprovedTimeMillisSpend) {
+        this.maximumUnimprovedTimeMillisSpend = maximumUnimprovedTimeMillisSpend;
     }
 
     public String getScoreAttained() {
@@ -153,6 +164,11 @@ public class TerminationConfig implements Cloneable {
         if (maximumTimeMillisSpendTotal != null) {
             TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
             termination.setMaximumTimeMillisSpend(maximumTimeMillisSpendTotal);
+            terminationList.add(termination);
+        }
+        if (maximumUnimprovedTimeMillisSpend != null) {
+        	UnimprovedTimeMillisSpendTermination termination = new UnimprovedTimeMillisSpendTermination();
+            termination.setMaximumUnimprovedTimeMillisSpendTermination(maximumUnimprovedTimeMillisSpend);
             terminationList.add(termination);
         }
         if (scoreAttained != null) {
@@ -246,6 +262,9 @@ public class TerminationConfig implements Cloneable {
         }
         if (maximumHoursSpend == null) {
             maximumHoursSpend = inheritedConfig.getMaximumHoursSpend();
+        }
+        if (maximumUnimprovedTimeMillisSpend == null) {
+        	maximumUnimprovedTimeMillisSpend = inheritedConfig.getMaximumUnimprovedTimeMillisSpend();
         }
         if (scoreAttained == null) {
             scoreAttained = inheritedConfig.getScoreAttained();
