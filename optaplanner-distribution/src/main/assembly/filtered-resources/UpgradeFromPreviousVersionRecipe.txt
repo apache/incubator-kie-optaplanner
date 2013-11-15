@@ -3710,8 +3710,3 @@ After in *.java:
 because a ConstraintMatch can survive many Local Search steps, but its Total (which holds a Set) should not survive.
 Instead it has getConstraintPackage(), getConstraintName() and getScoreLevel().
 
-
-From 6.0.0.Final to 6.1.0.Alpha1
---------------------------------
-
-Nothing yet
