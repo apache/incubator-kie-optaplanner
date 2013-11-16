@@ -16,6 +16,7 @@
 package org.optaplanner.benchmark.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,11 +34,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.commons.collections.comparators.ReverseComparator;
+import org.apache.commons.io.FileUtils;
 import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.persistence.xstream.XStreamResumeIO;
@@ -53,7 +56,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
     private String name = null;
     private File benchmarkDirectory = null;
-    private File resumeDirectory = null;
+    private String resumeConfig = null;
     private File benchmarkOutputDirectory = null;
     private File benchmarkReportDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
@@ -180,12 +183,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return benchmarkTimeMillisSpend;
     }
 
-    public File getResumeDirectory() {
-        return resumeDirectory;
+    public String getResumeConfig() {
+        return resumeConfig;
     }
 
-    public void setResumeDirectory(File resumeDirectory) {
-        this.resumeDirectory = resumeDirectory;
+    public void setResumeConfig(String resumeConfig) {
+        this.resumeConfig = resumeConfig;
     }
 
     public File getBenchmarkOutputDirectory() {
@@ -247,6 +250,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         benchmarkReportDirectory.mkdirs();
         benchmarkOutputDirectory = new File(benchmarkReportDirectory, "resume");
         benchmarkOutputDirectory.mkdirs();
+        writeBenchmarkConfigFile();
     }
 
     private void warmUp() {
@@ -277,6 +281,13 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 if (!singleBenchmark.isRecovered()) { // state has not been set yet
                     Future<SingleBenchmark> future = executorService.submit(singleBenchmark);
                     futureMap.put(singleBenchmark, future);
+                } else {
+                    xStream.write(singleBenchmark.getSingleBenchmarkState(), new File(benchmarkOutputDirectory.getPath(), singleBenchmark.getName() + ".xml"));
+                    for (StatisticType statisticType : singleBenchmark.getSingleStatisticMap().keySet()) {
+                        File statisticFile = new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(),
+                                singleBenchmark.getSingleBenchmarkStatisticFilename(statisticType));
+                        singleBenchmark.getSingleStatisticMap().get(statisticType).writeCsvStatistic(statisticFile);
+                    }
                 }
             }
         }
@@ -355,6 +366,15 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     + " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
                     + ") is chained.",
                     firstFailureSingleBenchmark.getFailureThrowable());
+        }
+    }
+
+    private void writeBenchmarkConfigFile() {
+        try {
+            FileUtils.write(new File(getBenchmarkReportDirectory(), "resumeBenchmarkConfig.xml"), resumeConfig);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Error while writing benchmark configuration file"
+                    + " (" + resumeConfig + ").");
         }
     }
 

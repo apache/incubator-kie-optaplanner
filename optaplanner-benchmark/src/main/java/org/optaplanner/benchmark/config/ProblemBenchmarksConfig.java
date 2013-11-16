@@ -94,7 +94,7 @@ public class ProblemBenchmarksConfig {
     // ************************************************************************
 
     public List<ProblemBenchmark> buildProblemBenchmarkList(DefaultPlannerBenchmark plannerBenchmark,
-            SolverBenchmark solverBenchmark, boolean resume) {
+            SolverBenchmark solverBenchmark, File resumeBenchmarkDir) {
         validate(solverBenchmark);
         ProblemIO problemIO = buildProblemIO();
         List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(inputSolutionFileList.size());
@@ -114,7 +114,7 @@ public class ProblemBenchmarksConfig {
             } else {
                 problemBenchmark = unifiedProblemBenchmarkList.get(index);
             }
-            addSingleBenchmark(solverBenchmark, problemBenchmark, resume);
+            addSingleBenchmark(solverBenchmark, problemBenchmark, resumeBenchmarkDir);
             problemBenchmarkList.add(problemBenchmark);
         }
         return problemBenchmarkList;
@@ -169,21 +169,28 @@ public class ProblemBenchmarksConfig {
     }
 
     private void addSingleBenchmark(
-            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark, boolean resume) {
+            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark, File resumeBenchmarkDir) {
         SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark);
         solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
         problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
-        if (resume) {
-            File stateFile = stateFile(problemBenchmark, singleBenchmark);
-            if (stateFile.exists()) {
-                SingleBenchmarkState state = problemBenchmark.getPlannerBenchmark().getxStreamIO().read(stateFile);
-                singleBenchmark.setSingleBenchmarkState(state);
-                for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-                    File statisticFile = new File(problemBenchmark.getPlannerBenchmark().getResumeDirectory(),
-                            singleBenchmark.getSingleBenchmarkStatisticFilename(problemStatistic.getProblemStatisticType()));
-                    SingleStatistic singleStatistic = problemStatistic.readSingleStatistic(
-                            statisticFile, singleBenchmark.getSolverBenchmark().getSolverConfig().getScoreDirectorFactoryConfig());
-                    singleBenchmark.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
+        if (resumeBenchmarkDir != null) {
+            File resumeBenchmarkDirContent = new File(resumeBenchmarkDir, "resume");
+            File singleBenchmarkStateFile = new File(resumeBenchmarkDirContent, singleBenchmark.getName() + ".xml");
+            if (singleBenchmarkStateFile.exists()) {
+                SingleBenchmarkState singleBenchmarkState = problemBenchmark.getPlannerBenchmark().getxStreamIO().read(singleBenchmarkStateFile);
+                singleBenchmark.setSingleBenchmarkState(singleBenchmarkState);
+                if (Boolean.TRUE.equals(singleBenchmarkState.getSucceeded())) {
+                    for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
+                        File statisticFile = new File(resumeBenchmarkDirContent,
+                                singleBenchmark.getSingleBenchmarkStatisticFilename(problemStatistic.getProblemStatisticType()));
+                        if (!statisticFile.exists()) {
+                            throw new IllegalArgumentException("Statistic file (" + statisticFile.getName() + ") for singleBenchmark "
+                                    + "(" + singleBenchmark.getName() + ") has not been found in resume directory.");
+                        }
+                        SingleStatistic singleStatistic = problemStatistic.readSingleStatistic(
+                                statisticFile, singleBenchmark.getSolverBenchmark().getSolverConfig().getScoreDirectorFactoryConfig());
+                        singleBenchmark.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
+                    }
                 }
                 singleBenchmark.setRecovered(true);
                 
@@ -204,7 +211,4 @@ public class ProblemBenchmarksConfig {
                 inheritedConfig.getProblemStatisticTypeList());
     }
 
-    private File stateFile(ProblemBenchmark problemBenchmark, SingleBenchmark singleBenchmark) {
-        return new File(problemBenchmark.getPlannerBenchmark().getResumeDirectory(), singleBenchmark.getName() + ".xml");
-    }
 }

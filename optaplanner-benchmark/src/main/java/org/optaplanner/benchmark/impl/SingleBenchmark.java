@@ -154,11 +154,11 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     public void setRecovered(boolean recovered) {
         this.recovered = recovered;
     }
-    
+
     public Map<StatisticType, SingleStatistic> getSingleStatisticMap() {
         return singleStatisticMap;
     }
-    
+
     // ************************************************************************
     // Benchmark methods
     // ************************************************************************
@@ -168,9 +168,9 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     }
 
     public String getSingleBenchmarkStatisticFilename(StatisticType type) {
-        return getName() + "_statfile_" + type + ".csv";
+        return getName() + "_" + type + ".csv";
     }
-    
+
     public SingleBenchmark call() {
         if (singleBenchmarkState == null) {
             singleBenchmarkState = new SingleBenchmarkState(getName());
@@ -213,7 +213,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
                     getSingleBenchmarkStatisticFilename(type));
             singleStatisticMap.get(type).writeCsvStatistic(statisticFile);
         }
-        
+
         setSucceeded(true);
         xStreamIO.write(getSingleBenchmarkState(),
                 new File(problemBenchmark.getPlannerBenchmark().getBenchmarkOutputDirectory().getPath(), getName() + ".xml"));
@@ -221,7 +221,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         problemBenchmark.writeOutputSolution(this, outputSolution);
         return this;
     }
-    
+
     public boolean isSuccess() {
         return singleBenchmarkState.getSucceeded() != null && singleBenchmarkState.getSucceeded().booleanValue();
     }
