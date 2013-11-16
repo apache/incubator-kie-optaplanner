@@ -122,22 +122,26 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "BestSolutionMutationStatistic");
     }
-    
-    @Override
+
     public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
         List<BestSolutionMutationSingleStatisticPoint> pointList = new ArrayList<BestSolutionMutationSingleStatisticPoint>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
+            String pattern = "\\d+,\\d+";
             for (String line = br.readLine(); line != null; line = br.readLine()) {
+                if (!line.matches(pattern)) {
+                    throw new IllegalArgumentException("Error while reading statistic file - invalid format "
+                            + "for line " + line + ".");
+                }
                 String[] values = line.split(",");
                 long timeSpent = Long.valueOf(values[0]);
-                int mutationCount = Integer.valueOf(values[1].substring(1, values[1].length() - 1));
+                int mutationCount = Integer.valueOf(values[1]);
                 pointList.add(new BestSolutionMutationSingleStatisticPoint(timeSpent, mutationCount));
             }
         } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Could not open statistic file " + file, ex);
+            throw new IllegalArgumentException("Could not open statistic file (" + file + ").", ex);
         } catch (IOException ex) {
-            throw new IllegalArgumentException("Error while reading statistic file " + file, ex);
+            throw new IllegalArgumentException("Error while reading statistic file (" + file + ").", ex);
         }
         BestSolutionMutationSingleStatistic statistic = new BestSolutionMutationSingleStatistic();
         statistic.setPointList(pointList);

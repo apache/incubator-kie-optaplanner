@@ -122,22 +122,26 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "CalculateCountStatistic");
     }
-    
-    @Override
+
     public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
         List<CalculateCountSingleStatisticPoint> pointList = new ArrayList<CalculateCountSingleStatisticPoint>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
+            String pattern = "\\d+,\\d+";
             for (String line = br.readLine(); line != null; line = br.readLine()) {
+                if (!line.matches(pattern)) {
+                    throw new IllegalArgumentException("Error while reading statistic file - invalid format "
+                            + "for line " + line + ".");
+                }
                 String[] values = line.split(",");
                 long timeSpent = Long.valueOf(values[0]);
-                long calculateCountPerSecond = Long.valueOf(values[1].substring(1, values[1].length() - 1));
+                long calculateCountPerSecond = Long.valueOf(values[1]);
                 pointList.add(new CalculateCountSingleStatisticPoint(timeSpent, calculateCountPerSecond));
             }
         } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Could not open statistic file " + file, ex);
+            throw new IllegalArgumentException("Could not open statistic file (" + file + ").", ex);
         } catch (IOException ex) {
-            throw new IllegalArgumentException("Error while reading statistic file " + file, ex);
+            throw new IllegalArgumentException("Error while reading statistic file (" + file + ").", ex);
         }
         CalculateCountSingleStatistic statistic = new CalculateCountSingleStatistic();
         statistic.setPointList(pointList);

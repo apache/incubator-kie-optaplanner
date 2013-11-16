@@ -149,13 +149,17 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "MoveCountPerStepStatistic");
     }
-    
-    @Override
+
     public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
         List<MoveCountPerStepSingleStatisticPoint> pointList = new ArrayList<MoveCountPerStepSingleStatisticPoint>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
+            String pattern = "\\w+,\"\\d+/\\d+\"";
             for (String line = br.readLine(); line != null; line = br.readLine()) {
+                if (!line.matches(pattern)) {
+                    throw new IllegalArgumentException("Error while reading statistic file - invalid format "
+                            + "for line " + line + ".");
+                }
                 String[] values = line.split(",");
                 long timeSpent = Long.valueOf(values[0]);
                 String[] move = values[1].split("/");
@@ -163,9 +167,9 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
                         Long.valueOf(move[0].substring(1)), Long.valueOf(move[1].substring(0, move[1].length() - 1)))));
             }
         } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Could not open statistic file " + file, ex);
+            throw new IllegalArgumentException("Could not open statistic file (" + file + ").", ex);
         } catch (IOException ex) {
-            throw new IllegalArgumentException("Error while reading statistic file " + file, ex);
+            throw new IllegalArgumentException("Error while reading statistic file (" + file + ").", ex);
         }
         MoveCountPerStepSingleStatistic statistic = new MoveCountPerStepSingleStatistic();
         statistic.setPointList(pointList);

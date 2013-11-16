@@ -133,13 +133,17 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "MemoryUseStatistic");
     }
-    
-    @Override
+
     public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
         List<MemoryUseSingleStatisticPoint> pointList = new ArrayList<MemoryUseSingleStatisticPoint>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
+            String pattern = "\\d+,\"\\d+/\\d+\"";
             for (String line = br.readLine(); line != null; line = br.readLine()) {
+                if (!line.matches(pattern)) {
+                    throw new IllegalArgumentException("Error while reading statistic file - invalid format "
+                            + "for line " + line + ".");
+                }
                 String[] values = line.split(",");
                 long timeSpent = Long.valueOf(values[0]);
                 String[] memory = values[1].split("/");
@@ -147,9 +151,9 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
                         Long.valueOf(memory[0].substring(1)), Long.valueOf(memory[1].substring(0, memory[1].length() - 1)))));
             }
         } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Could not open statistic file " + file, ex);
+            throw new IllegalArgumentException("Could not open statistic file (" + file + ").", ex);
         } catch (IOException ex) {
-            throw new IllegalArgumentException("Error while reading statistic file " + file, ex);
+            throw new IllegalArgumentException("Error while reading statistic file (" + file + ").", ex);
         }
         MemoryUseSingleStatistic statistic = new MemoryUseSingleStatistic();
         statistic.setPointList(pointList);

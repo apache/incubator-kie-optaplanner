@@ -147,27 +147,31 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
         }
     }
 
-    @Override
     public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
         List<StepScoreSingleStatisticPoint> pointList = new ArrayList<StepScoreSingleStatisticPoint>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
+            String pattern = "\\w+,\"\\S+\"";
             for (String line = br.readLine(); line != null; line = br.readLine()) {
+                if (!line.matches(pattern)) {
+                    throw new IllegalArgumentException("Error while reading statistic file - invalid format "
+                            + "for line " + line + ".");
+                }
                 String[] values = line.split(",");
                 long timeSpent = Long.valueOf(values[0]);
-                Score score = getScoreInstance(scoreConfig, values[1].substring(0, values[1].length() - 1));
+                Score score = getScoreInstance(scoreConfig, values[1].substring(1, values[1].length() - 1));
                 pointList.add(new StepScoreSingleStatisticPoint(timeSpent, score));
             }
         } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("Could not open statistic file " + file, ex);
+            throw new IllegalArgumentException("Could not open statistic file (" + file + ").", ex);
         } catch (IOException ex) {
-            throw new IllegalArgumentException("Error while reading statistic file " + file, ex);
+            throw new IllegalArgumentException("Error while reading statistic file (" + file + ").", ex);
         }
         StepScoreSingleStatistic statistic = new StepScoreSingleStatistic();
         statistic.setPointList(pointList);
         return statistic;
     }
-    
+
     private XYPlot createPlot(int scoreLevelIndex) {
         Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
