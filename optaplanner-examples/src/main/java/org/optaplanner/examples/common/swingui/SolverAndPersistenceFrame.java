@@ -46,6 +46,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -53,6 +54,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
@@ -84,7 +86,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private JButton terminateSolvingEarlyButton;
     private JPanel middlePanel;
     private JProgressBar progressBar;
-    private JLabel resultLabel;
+    private JTextField resultLabel;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
 
     public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel,
@@ -117,6 +119,15 @@ public class SolverAndPersistenceFrame extends JFrame {
             solutionPanel.updatePanel(solution);
             validate(); // TODO remove me?
         }
+
+        if (!(solutionBusiness.getScore() instanceof FeasibilityScore)) {
+        	resultLabel.setForeground(Color.BLACK);
+        } else if (((FeasibilityScore<?>) solutionBusiness.getScore()).isFeasible()) {
+        	resultLabel.setForeground(TangoColorFactory.CHAMELEON_3);
+        } else {
+        	resultLabel.setForeground(TangoColorFactory.SCARLET_3);
+        }
+
         resultLabel.setText("Latest best score: " + solution.getScore());
     }
 
@@ -456,7 +467,9 @@ public class SolverAndPersistenceFrame extends JFrame {
         showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
         showConstraintMatchesDialogAction.setEnabled(false);
         scorePanel.add(new JButton(showConstraintMatchesDialogAction), BorderLayout.WEST);
-        resultLabel = new JLabel("Score:");
+        resultLabel = new JTextField("Score:");
+        resultLabel.setEditable(false);
+        resultLabel.setForeground(Color.BLACK);
         resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         scorePanel.add(resultLabel, BorderLayout.CENTER);
         refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving",
@@ -514,6 +527,13 @@ public class SolverAndPersistenceFrame extends JFrame {
     public void resetScreen() {
         solutionPanel.resetPanel(solutionBusiness.getSolution());
         validate();
+        if (!(solutionBusiness.getScore() instanceof FeasibilityScore)) {
+        	resultLabel.setForeground(Color.BLACK);
+        } else if (((FeasibilityScore<?>) solutionBusiness.getScore()).isFeasible()) {
+        	resultLabel.setForeground(TangoColorFactory.CHAMELEON_3);
+        } else {
+        	resultLabel.setForeground(TangoColorFactory.SCARLET_3);
+        }
         resultLabel.setText("Score: " + solutionBusiness.getScore());
     }
 
