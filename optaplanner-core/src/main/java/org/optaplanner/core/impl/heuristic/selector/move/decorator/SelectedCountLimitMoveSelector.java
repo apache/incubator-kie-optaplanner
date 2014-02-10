@@ -43,8 +43,8 @@ public class SelectedCountLimitMoveSelector extends AbstractMoveSelector {
     // Worker methods
     // ************************************************************************
 
-    public boolean isCountable() {
-        return true;
+    public boolean isContinuous() {
+        return false;
     }
 
     public boolean isNeverEnding() {
