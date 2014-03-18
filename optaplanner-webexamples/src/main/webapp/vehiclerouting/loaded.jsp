@@ -33,7 +33,7 @@
   <div>
     <button class="btn" onclick="window.location.href='solve.jsp'"><i class="icon-play"></i> Solve this planning problem</button>
   </div>
-  <img src="showSchedule.png"/>
+  <img src="showSchedule/image.png"/>
 </div>
 </div>
 </div>

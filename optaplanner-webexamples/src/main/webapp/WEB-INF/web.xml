@@ -15,7 +15,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>VrpShowScheduleServlet</servlet-name>
-    <url-pattern>/vehiclerouting/showSchedule.png</url-pattern>
+    <url-pattern>/vehiclerouting/showSchedule/*</url-pattern>
   </servlet-mapping>
 
 </web-app>

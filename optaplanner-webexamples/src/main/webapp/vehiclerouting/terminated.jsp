@@ -30,7 +30,7 @@
   <div>
     <button class="btn" onclick="window.location.href='loaded.jsp'"><i class="icon-fast-backward"></i> Start again</button>
   </div>
-  <img src="showSchedule.png"/>
+  <img src="showSchedule/image.png"/>
 </div>
 </div>
 </div>
