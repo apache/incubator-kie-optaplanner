@@ -13,10 +13,6 @@
   <!--[if lt IE 9]>
   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-
-  <!-- HACK to refresh this page automatically every 2 seconds -->
-  <!-- TODO: it should only refresh the image -->
-  <meta http-equiv="REFRESH" content="2;url=<%=application.getContextPath()%>/vehiclerouting/solving.jsp"/>
 </head>
 <body>
 
@@ -34,12 +30,23 @@
   <div>
     <button class="btn" onclick="window.location.href='terminateEarly.jsp'"><i class="icon-stop"></i> Terminate early</button>
   </div>
-  <img id="showSchedule" src="showSchedule.png"/>
+  <img id="showSchedule" src="showSchedule/image.png"/>
 </div>
 </div>
 </div>
 
 <script src="<%=application.getContextPath()%>/twitterbootstrap/js/jquery.js"></script>
 <script src="<%=application.getContextPath()%>/twitterbootstrap/js/bootstrap.js"></script>
+
+<script type="text/javascript">
+function reloadImage(){
+    d = new Date();
+    $("#showSchedule").attr("src", "showSchedule/image" + d.getTime() + ".png");
+}
+
+$(document).ready(function() {
+    setInterval('reloadImage()', 2000); // 2 seconds
+});
+</script>
 </body>
 </html>
