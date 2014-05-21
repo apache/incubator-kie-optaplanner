@@ -17,6 +17,7 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("VrpLocation")
@@ -25,6 +26,12 @@ public class Location extends AbstractPersistable {
     private String name = null;
     private double latitude;
     private double longitude;
+
+    @XStreamOmitField
+    protected CostMatrix costMatrix;
+
+    @XStreamOmitField
+    protected int index;
 
     public String getName() {
         return name;
@@ -60,13 +67,19 @@ public class Location extends AbstractPersistable {
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public int getDistance(Location location) {
-        // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
-        // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
-        double latitudeDifference = location.latitude - latitude;
-        double longitudeDifference = location.longitude - longitude;
-        double distance = Math.sqrt(
-                (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
-        return (int) (distance * 1000.0 + 0.5);
+        final int res;
+        if (costMatrix != null) {
+            res = costMatrix.get(location.getIndex(), index);
+        } else {
+            // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
+            // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
+            double latitudeDifference = location.latitude - latitude;
+            double longitudeDifference = location.longitude - longitude;
+            double distance = Math.sqrt(
+                    (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
+            res = (int) (distance * 1000.0 + 0.5);
+        }
+        return res;
     }
 
     @Override
@@ -84,4 +97,19 @@ public class Location extends AbstractPersistable {
         return name;
     }
 
+    public void setCostMatrix(CostMatrix costMatrix) {
+        this.costMatrix = costMatrix;
+    }
+
+    public CostMatrix getCostMatrix() {
+        return costMatrix;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 }
