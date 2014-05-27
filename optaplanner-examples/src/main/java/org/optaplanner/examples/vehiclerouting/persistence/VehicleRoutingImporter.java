@@ -25,16 +25,16 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Depot;
-import org.optaplanner.examples.vehiclerouting.domain.Location;
-import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
-import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.*;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
+
+    private static final String COST_MATRIX_BASED_EDGE_WEIGHT = "COST_MATRIX_BASED";
+
+    public static final String EUC_2D_EDGE_WEIGHT = "EUC_2D";
 
     public static void main(String[] args) {
         VehicleRoutingImporter importer = new VehicleRoutingImporter();
@@ -72,9 +72,12 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         private int vehicleListSize;
         private int capacity;
         private Map<Long, Location> locationMap;
+        private Map<String, Location> nameToLocation;
         private List<Depot> depotList;
+        private int costMatrixDefaultValue;
+        private String edgeWeightType;
 
-        public Solution readSolution() throws IOException {
+      public Solution readSolution() throws IOException {
             String firstLine = readStringValue();
             if (firstLine.trim().startsWith("NAME :")) {
                 schedule = new VehicleRoutingSolution();
@@ -116,14 +119,37 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             readBasicCustomerList();
             readBasicDepotList();
             createBasicVehicleList();
-            readConstantLine("EOF");
+            if (edgeWeightType.equals(COST_MATRIX_BASED_EDGE_WEIGHT)) {
+                readCostMatrix();
+            } else {
+                readConstantLine("EOF");
+            }
+        }
+
+        private void readCostMatrix() throws IOException {
+            readConstantLine("COSTMATRIX_SECTION");
+            String line = bufferedReader.readLine().trim();
+            CostMatrix costMatrix = new CostMatrix(locationListSize, costMatrixDefaultValue);
+            while (!line.equalsIgnoreCase("EOF")) {
+                String[] lineTokens = splitBySpace(line.trim().replaceAll("[\\ \\t]+", " "), 3);
+                Location from = nameToLocation.get(lineTokens[0]);
+                Location to = nameToLocation.get(lineTokens[1]);
+                int cost = Integer.parseInt(lineTokens[2]);
+                costMatrix.set(from.getIndex(), to.getIndex(), cost);
+                line = bufferedReader.readLine().trim();
+            }
+            for (Location location : locationMap.values()) {
+                 location.setCostMatrix(costMatrix);
+            }
         }
 
         private void readBasicHeaders() throws IOException {
             readUntilConstantLine("TYPE : CVRP");
             locationListSize = readIntegerValue("DIMENSION :");
-            String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
-            if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
+            edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
+            if (edgeWeightType.equalsIgnoreCase(COST_MATRIX_BASED_EDGE_WEIGHT)) {
+                costMatrixDefaultValue = readIntegerValue("COST_MATRIX_DEFAULT_VALUE :");
+            } else if (!edgeWeightType.equalsIgnoreCase(EUC_2D_EDGE_WEIGHT)) {
                 // Only Euclidean distance is implemented in Location.getDistance(Location)
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
@@ -134,18 +160,22 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             readConstantLine("NODE_COORD_SECTION");
             List<Location> locationList = new ArrayList<Location>(locationListSize);
             locationMap = new HashMap<Long, Location>(locationListSize);
+            nameToLocation = new HashMap<String, Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpace(line.trim().replaceAll(" +", " "), 3);
+                String[] lineTokens = splitBySpace(line.trim().replaceAll("[\\ \\t]+", " "), 3, 4);
                 Location location = new Location();
-                location.setId(Long.parseLong(lineTokens[0]));
+                location.setIndex(i);
+                final String locationIdStr = lineTokens[0];
+                location.setId(Long.parseLong(locationIdStr));
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
-                if (lineTokens.length >= 4) {
-                    location.setName(lineTokens[3]);
+                if (lineTokens.length == 4) {
+                  location.setName(lineTokens[3]);
                 }
                 locationList.add(location);
                 locationMap.put(location.getId(), location);
+                nameToLocation.put(location.getSafeName(), location);
             }
             schedule.setLocationList(locationList);
         }
