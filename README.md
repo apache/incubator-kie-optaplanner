@@ -1,5 +1,6 @@
 Developing Drools and jBPM
 ==========================
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/droolsjbpm/optaplanner?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 **If you want to build or contribute to a droolsjbpm project, [read this document](https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/README.md).**
 
