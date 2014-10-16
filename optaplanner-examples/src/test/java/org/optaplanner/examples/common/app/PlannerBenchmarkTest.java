@@ -17,6 +17,8 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,9 +59,10 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         String benchmarkConfigResource = createBenchmarkConfigResource();
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(benchmarkConfigResource);
         PlannerBenchmarkConfig plannerBenchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
-        String path = plannerBenchmarkConfig.getBenchmarkDirectory().getPath();
+        File benchmarkDirectory = plannerBenchmarkConfig.getBenchmarkDirectory();
+        String path = benchmarkDirectory.getPath();
         String prefix = "local/data/";
-        if (!path.startsWith(prefix)) {
+        if (!benchmarkDirectory.toPath().startsWith(prefix)) {
             throw new IllegalStateException("The path (" + path + ") should start with prefix (" + prefix + ")");
         }
         plannerBenchmarkConfig.setBenchmarkDirectory(new File(path.replace(prefix, "target/test/data/")));
