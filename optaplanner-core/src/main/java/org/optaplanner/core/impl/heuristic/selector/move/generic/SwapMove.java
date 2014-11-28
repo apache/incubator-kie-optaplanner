@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -31,6 +27,11 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class SwapMove extends AbstractMove {
 
@@ -122,7 +123,8 @@ public class SwapMove extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> values = new ArrayList<Object>(variableDescriptors.size() * 2);
+        // we don't want to resize values, so ((variableDescriptors.size() * 2) + 1, 1);
+        Set<Object> values = new LinkedHashSet<Object>((variableDescriptors.size() * 2) + 1, 1);
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             values.add(variableDescriptor.getValue(leftEntity));
             values.add(variableDescriptor.getValue(rightEntity));
