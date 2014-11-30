@@ -18,7 +18,9 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -138,7 +140,8 @@ public class PillarSwapMove extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> values = new ArrayList<Object>(variableDescriptors.size() * 2);
+        // we don't want to resize values, so ((variableDescriptors.size() * 2) + 1, 1);
+        Set<Object> values = new LinkedHashSet<Object>((variableDescriptors.size() * 2) + 1, 1);
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             values.add(variableDescriptor.getValue(leftPillar.get(0)));
             values.add(variableDescriptor.getValue(rightPillar.get(0)));
