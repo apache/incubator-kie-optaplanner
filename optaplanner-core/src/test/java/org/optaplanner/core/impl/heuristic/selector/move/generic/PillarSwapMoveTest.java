@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.entityproviding.TestdataEntityProvidingEntity;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class PillarSwapMoveTest {
@@ -218,6 +220,30 @@ public class PillarSwapMoveTest {
         assertEquals(v3, c.getValue());
         assertEquals(v3, z.getValue());
 
+    }
+
+    @Test
+    public void getPlanningEntities() {
+        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(new TestdataValue("1")), null);
+        TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(new TestdataValue("1")), null);
+        TestdataEntityProvidingEntity c = new TestdataEntityProvidingEntity("c", Arrays.asList(new TestdataValue("1")), null);
+        TestdataEntityProvidingEntity d = new TestdataEntityProvidingEntity("d", Arrays.asList(new TestdataValue("1")), null);
+
+        EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
+        PillarSwapMove move = new PillarSwapMove(entityDescriptor.getGenuineVariableDescriptors(), Arrays.asList((Object)a, b), Arrays.asList((Object)c, d));
+        List<Object> entities = (List<Object>) move.getPlanningEntities();
+
+        assertEquals(4, entities.size());
+        assertEquals(true, entities.contains(a));
+        assertEquals(true, entities.contains(b));
+        assertEquals(true, entities.contains(c));
+        assertEquals(true, entities.contains(d));
+    }
+
+    @Test
+    @Ignore("Waiting for fix. For now, this test is irrelevant. Implement test after bug is fixed") // https://issues.jboss.org/browse/PLANNER-278
+    public void getPlanningValues() {
+        // TODO: after bug is fixed write proper test for it.
     }
 
 }
