@@ -7,8 +7,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.entityproviding.TestdataEntityProvidingEntity;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class ChangeMoveTest {
@@ -58,6 +61,26 @@ public class ChangeMoveTest {
         a.setValue(v3);
         aMove.doMove(scoreDirector);
         assertEquals(v2, a.getValue());
+    }
+
+    @Test
+    public void getPlanningEntities() {
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1), null);
+        ChangeMove move = new ChangeMove(a, null, v1);
+        List<Object> entities = (List<Object>) move.getPlanningEntities();
+        assertEquals(1, entities.size());
+        assertEquals(a, entities.get(0));
+    }
+
+    @Test
+    public void getPlanningValues() {
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1), null);
+        ChangeMove move = new ChangeMove(a, null, v1);
+        List<Object> values = (List<Object>) move.getPlanningValues();
+        assertEquals(1, values.size());
+        assertEquals(v1, values.get(0));
     }
 
 }

@@ -17,12 +17,16 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.entityproviding.TestdataEntityProvidingEntity;
+import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -169,6 +173,39 @@ public class SwapMoveTest {
         bcMove.doMove(scoreDirector);
         assertEquals(v2, b.getValue());
         assertEquals(v3, c.getValue());
+    }
+
+    @Test
+    public void getPlanningEntities() {
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataValue v2 = new TestdataValue("2");
+        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2), null);
+        TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(v1, v2), null);
+
+        EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
+        SwapMove move = new SwapMove(entityDescriptor.getGenuineVariableDescriptors(), a, b);
+        List<Object> entities = (List<Object>) move.getPlanningEntities();
+
+        assertEquals(2, entities.size());
+        assertEquals(true, entities.contains(a));
+        assertEquals(true, entities.contains(b));
+    }
+
+    @Test
+    @Ignore("Waiting for fix. For now, this test is irrelevant. Double check(!!!) functionality after bug is fixed") // https://issues.jboss.org/browse/PLANNER-278
+    public void getPlanningValues() {
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataValue v2 = new TestdataValue("2");
+        TestdataValue v3 = new TestdataValue("3");
+
+        TestdataMultiVarEntity a = new TestdataMultiVarEntity("a", v1, v2, null);
+        TestdataMultiVarEntity b = new TestdataMultiVarEntity("b", v1, v3, null);
+
+        EntityDescriptor entityDescriptor = TestdataMultiVarEntity.buildEntityDescriptor();
+        SwapMove move = new SwapMove(entityDescriptor.getGenuineVariableDescriptors(), a, b);
+
+        Set<Object> values = (Set<Object>) move.getPlanningValues();
+        assertEquals(4, values.size());
     }
 
 }
