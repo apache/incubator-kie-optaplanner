@@ -260,7 +260,7 @@ public class ScoreDirectorFactoryConfig {
                     + ") and a bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
         }
         if (scoreDefinitionClass != null) {
-            if (scoreDefinitionType != null || bendableHardLevelsSize != null || bendableSoftLevelsSize != null) {
+            if (scoreDefinitionType != null) {
                 throw new IllegalStateException("With scoreDefinitionClass (" + scoreDefinitionClass
                         + ") there must be no scoreDefinitionType (" + scoreDefinitionType
                         + ") or bendableHardLevelsSize (" + bendableHardLevelsSize
