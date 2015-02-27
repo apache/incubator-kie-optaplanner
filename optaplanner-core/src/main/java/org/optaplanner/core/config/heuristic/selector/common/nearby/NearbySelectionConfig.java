@@ -229,10 +229,10 @@ public class NearbySelectionConfig extends SelectorConfig {
             double uniformDistributionProbability = blockDistributionUniformDistributionProbability == null ? 0.0 : blockDistributionUniformDistributionProbability;
             return new BlockDistributionNearbyRandom(sizeMinimum, sizeMaximum, sizeRatio, uniformDistributionProbability);
         } else if (linearDistributionEnabled) {
-            int sizeMaximum = linearDistributionSizeMaximum == null ? Integer.MAX_VALUE : linearDistributionSizeMaximum;
+            int sizeMaximum = linearDistributionSizeMaximum;
             return new LinearDistributionNearbyRandom(sizeMaximum);
         } else if (parabolicDistributionEnabled) {
-            int sizeMaximum = parabolicDistributionSizeMaximum == null ? Integer.MAX_VALUE : parabolicDistributionSizeMaximum;
+            int sizeMaximum = parabolicDistributionSizeMaximum;
             return new ParabolicDistributionNearbyRandom(sizeMaximum);
         } else if (betaDistributionEnabled) {
             double alpha = betaDistributionAlpha == null ? 1.0 : betaDistributionAlpha;
