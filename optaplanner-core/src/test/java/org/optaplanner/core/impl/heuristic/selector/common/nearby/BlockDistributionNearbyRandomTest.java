@@ -125,6 +125,10 @@ public class BlockDistributionNearbyRandomTest {
         assertEquals(-1, nearbyRandom.nextInt(random, 5));
         assertEquals(-2, nearbyRandom.nextInt(random, 6));
         assertEquals(-2, nearbyRandom.nextInt(random, 4));
+
+        nearbyRandom = new BlockDistributionNearbyRandom(0, 100, 0.1, threshold);
+
+        assertEquals(0, nearbyRandom.nextInt(new Random(0), 1));
     }
 
 }
