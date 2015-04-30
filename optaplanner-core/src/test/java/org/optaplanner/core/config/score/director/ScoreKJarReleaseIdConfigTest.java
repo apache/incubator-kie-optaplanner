@@ -81,7 +81,7 @@ public class ScoreKJarReleaseIdConfigTest extends CommonTestMethodBase {
 		ScoreKJarReleaseIdConfig config = new ScoreKJarReleaseIdConfig();
 		config.setGroupId(groupId);
 		config.setArtifactId(artifactId);
-		//Use a non-ex
+		//Use a non-existing version.
 		config.setVersion("1.0.1");
 		
 		DroolsScoreDirectorFactory scoreDirectorFactory = config.build();
