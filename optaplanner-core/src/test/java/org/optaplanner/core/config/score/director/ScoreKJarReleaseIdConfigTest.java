@@ -77,7 +77,6 @@ public class ScoreKJarReleaseIdConfigTest extends CommonTestMethodBase {
 	
 	@Test(expected=RuntimeException.class)
 	public void testKJarNotAvailable() {
-		boolean caughtException = false;
 		ScoreKJarReleaseIdConfig config = new ScoreKJarReleaseIdConfig();
 		config.setGroupId(groupId);
 		config.setArtifactId(artifactId);
