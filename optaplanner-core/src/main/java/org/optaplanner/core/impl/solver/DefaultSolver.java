@@ -149,16 +149,20 @@ public class DefaultSolver implements Solver {
             throw new IllegalArgumentException("The planningProblem (" + planningProblem
                     + ") must not be null.");
         }
-        solverScope.setBestSolution(planningProblem);
-        outerSolvingStarted(solverScope);
-        boolean restartSolver = true;
-        while (restartSolver) {
-            solvingStarted(solverScope);
-            runPhases();
-            solvingEnded(solverScope);
-            restartSolver = checkProblemFactChanges();
+        try {
+            solverScope.setBestSolution(planningProblem);
+            outerSolvingStarted(solverScope);
+            boolean restartSolver = true;
+            while (restartSolver) {
+                solvingStarted(solverScope);
+                runPhases();
+                solvingEnded(solverScope);
+                restartSolver = checkProblemFactChanges();
+            }
+            outerSolvingEnded(solverScope);
+        } finally {
+            solving.set(false);
         }
-        outerSolvingEnded(solverScope);
     }
 
     public void outerSolvingStarted(DefaultSolverScope solverScope) {
