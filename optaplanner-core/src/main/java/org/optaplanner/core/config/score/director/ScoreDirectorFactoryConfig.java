@@ -88,6 +88,8 @@ public class ScoreDirectorFactoryConfig {
     protected List<File> scoreDrlFileList = null;
     @XStreamConverter(value = KeyAsElementMapConverter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
+    @XStreamAlias("scoreKJarReleaseId")
+	protected ScoreKJarReleaseIdConfig scoreKJarReleaseIdConfig;
 
     protected String initializingScoreTrend = null;
 
@@ -361,7 +363,22 @@ public class ScoreDirectorFactoryConfig {
                 throw new IllegalArgumentException("If kieBase is not null, the kieBaseConfigurationProperties ("
                         + kieBaseConfigurationProperties + ") must be null.");
             }
+            if(scoreKJarReleaseIdConfig != null) {
+            	throw new IllegalArgumentException("If kieBase is not null, the scoreKJarReleaseId ("
+                        + scoreKJarReleaseIdConfig + ") must be null.");
+            }
             return new DroolsScoreDirectorFactory(kieBase);
+        } else if(scoreKJarReleaseIdConfig != null) {
+        	//Loading the rules from a KJAR identified by a GAV (i.e. KJAR ReleaseId).
+        	if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
+                throw new IllegalArgumentException("If scoreKJarReleaseId is not null, the scoreDrlList (" + scoreDrlList
+                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") must be empty.");
+            }
+            if (kieBaseConfigurationProperties != null) {
+                throw new IllegalArgumentException("If scoreKJarReleaseId is not null, the kieBaseConfigurationProperties ("
+                        + kieBaseConfigurationProperties + ") must be null.");
+            }
+        	return scoreKJarReleaseIdConfig.build();
         } else if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
             KieServices kieServices = KieServices.Factory.get();
             KieResources kieResources = kieServices.getResources();
