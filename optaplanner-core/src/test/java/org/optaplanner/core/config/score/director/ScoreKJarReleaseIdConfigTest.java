@@ -25,7 +25,7 @@ public class ScoreKJarReleaseIdConfigTest extends CommonTestMethodBase {
 	private static KieServices kieServices;
 	
 	//Simple rule that doesn't really do anything. Just for test.
-		private static String drlOne = "package org.optaplanner.test;\n " +
+	private static String drlOne = "package org.optaplanner.test;\n " +
 		
 				"import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;\n" +
 				"import java.lang.String;\n" +
@@ -53,7 +53,6 @@ public class ScoreKJarReleaseIdConfigTest extends CommonTestMethodBase {
 		createAndDeployJar(kieServices, KMODULE_CONTENT, releaseId, drlOneResource);
 	}
 	
-	
 	@Test
 	public void testKJarAvailable() {
 		
@@ -76,7 +75,7 @@ public class ScoreKJarReleaseIdConfigTest extends CommonTestMethodBase {
 		assertEquals("Expected rule with this specific name in KieBase.", "SimpleConstraintRule", ruleNames.get(0));
 	}
 	
-	@Test
+	@Test(expected=RuntimeException.class)
 	public void testKJarNotAvailable() {
 		boolean caughtException = false;
 		ScoreKJarReleaseIdConfig config = new ScoreKJarReleaseIdConfig();
@@ -84,13 +83,8 @@ public class ScoreKJarReleaseIdConfigTest extends CommonTestMethodBase {
 		config.setArtifactId(artifactId);
 		//Use a non-ex
 		config.setVersion("1.0.1");
-		try {
-			DroolsScoreDirectorFactory scoreDirectorFactory = config.build();
-		} catch (RuntimeException re) {
-			caughtException = true;
-		}
-		assertEquals("Expected exception when trying to load a KJAR which doesn't exist.", true, caughtException);
+		
+		DroolsScoreDirectorFactory scoreDirectorFactory = config.build();
 	}
-	
 
 }
