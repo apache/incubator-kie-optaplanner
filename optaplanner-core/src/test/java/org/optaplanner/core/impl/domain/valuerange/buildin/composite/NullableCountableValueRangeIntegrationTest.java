@@ -2,7 +2,6 @@ package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -24,22 +23,15 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
-public class CompositeCountableValueRangeIntegrationTest {
+public class NullableCountableValueRangeIntegrationTest {
 
     @Test
-    public void compositeValueRange() {
-        IntValueRange range1 = (IntValueRange) ValueRangeFactory.createIntValueRange(0, 1);
-        IntValueRange range2 = (IntValueRange) ValueRangeFactory.createIntValueRange(10, 11);
-        IntValueRange range3 = (IntValueRange) ValueRangeFactory.createIntValueRange(29, 30);
-        IntValueRange range4 = (IntValueRange) ValueRangeFactory.createIntValueRange(50, 55);
-        IntValueRange countableValueRange = new IntValueRange(99, 100);
+    public void nullableValueRange() {
+        IntValueRange countableValueRange = new IntValueRange(0, 10);
         NullableCountableValueRange<Integer> nullableCountableValueRange = new NullableCountableValueRange<Integer>(countableValueRange);
-        CompositeCountableValueRange<Integer> valRange =
-                new CompositeCountableValueRange<Integer>(Arrays.asList(range1, range2, range3, range4, nullableCountableValueRange));
-
         TestdataCompositeCountableEntity entity = new TestdataCompositeCountableEntity();
         entity.setValue(0);
-        entity.setValueRange(valRange);
+        entity.setValueRange(nullableCountableValueRange);
         TestdataIntegerRangeSolution problem = new TestdataIntegerRangeSolution();
         problem.setEntities(Arrays.asList(entity));
 
@@ -49,14 +41,14 @@ public class CompositeCountableValueRangeIntegrationTest {
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
-        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(CompositeCountableValueRangeIntegrationScoreFunction.class);
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(NullableCountableValueRangeIntegrationScoreFunction.class);
         config.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         config.setPhaseConfigList(new ArrayList<PhaseConfig>());
 
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setAcceptorConfig(new AcceptorConfig());
-        phaseConfig.getAcceptorConfig().setAcceptorTypeList(Arrays.asList(AcceptorType.HILL_CLIMBING));
+        phaseConfig.getAcceptorConfig().setAcceptorTypeList(Arrays.asList(AcceptorType.LATE_ACCEPTANCE));
         phaseConfig.setForagerConfig(new LocalSearchForagerConfig());
         phaseConfig.getForagerConfig().setAcceptedCountLimit(2);
         config.getPhaseConfigList().add(phaseConfig);
@@ -64,12 +56,13 @@ public class CompositeCountableValueRangeIntegrationTest {
         config.getPhaseConfigList().get(0).setTerminationConfig(new TerminationConfig());
         config.getPhaseConfigList().get(0).getTerminationConfig().setStepCountLimit(100);
 
-        config.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
+        config.setEnvironmentMode(EnvironmentMode.FULL_ASSERT);
 
         Solver solver = config.buildSolver();
         solver.solve(problem);
         Solution solution = solver.getBestSolution();
 
-        assertEquals(0, ((SimpleScore)solution.getScore()).getScore());
+        assertEquals(1, ((SimpleScore)solution.getScore()).getScore()); // null was picked
     }
+
 }
