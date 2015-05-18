@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
+package org.optaplanner.core.impl.domain.valuerange.custom;
 
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -14,34 +14,31 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.domain.valuerange.buildin.primint.IntValueRange;
-import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataCompositeCountableEntity;
-import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataIntegerRangeSolution;
+import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataDoubleRangeSolution;
+import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataUncountableEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
-public class NullableCountableValueRangeIntegrationTest {
+public class CustomValueRangeIntegrationTest {
 
     @Test
-    public void nullableValueRange() {
-        IntValueRange countableValueRange = new IntValueRange(0, 10);
-        NullableCountableValueRange<Integer> nullableCountableValueRange = new NullableCountableValueRange<Integer>(countableValueRange);
-        TestdataCompositeCountableEntity entity = new TestdataCompositeCountableEntity();
-        entity.setValue(0);
-        entity.setValueRange(nullableCountableValueRange);
-        TestdataIntegerRangeSolution problem = new TestdataIntegerRangeSolution();
+    public void customValueRangeTest() {
+        TwoDoubleIntervalValueRange twoDoubleIntervalValueRange = new TwoDoubleIntervalValueRange(0.0, 10.0, 95.0, 105.0);
+        TestdataUncountableEntity entity = new TestdataUncountableEntity();
+        entity.setValue(0.0);
+        entity.setValueRange(twoDoubleIntervalValueRange);
+        TestdataDoubleRangeSolution problem = new TestdataDoubleRangeSolution();
         problem.setEntities(Arrays.asList(entity));
-
         SolverConfig config = new SolverConfig();
-        config.setSolutionClass(TestdataIntegerRangeSolution.class);
-        config.setEntityClassList(Arrays.<Class<?>>asList(TestdataCompositeCountableEntity.class));
+        config.setSolutionClass(TestdataDoubleRangeSolution.class);
+        config.setEntityClassList(Arrays.<Class<?>>asList(TestdataUncountableEntity.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
-        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(NullableCountableValueRangeIntegrationScoreFunction.class);
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(CustomUncountableValueRangeIntegrationScoreFunction.class);
         config.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         config.setPhaseConfigList(new ArrayList<PhaseConfig>());
@@ -62,7 +59,7 @@ public class NullableCountableValueRangeIntegrationTest {
         solver.solve(problem);
         Solution solution = solver.getBestSolution();
 
-        assertEquals(1, ((SimpleScore)solution.getScore()).getScore()); // null was picked
+        assertEquals(0, ((SimpleScore)solution.getScore()).getScore());
     }
 
 }
