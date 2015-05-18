@@ -12,6 +12,7 @@ import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForage
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primint.IntValueRange;
@@ -31,8 +32,10 @@ public class CompositeCountableValueRangeIntegrationTest {
         IntValueRange range2 = (IntValueRange) ValueRangeFactory.createIntValueRange(10, 11);
         IntValueRange range3 = (IntValueRange) ValueRangeFactory.createIntValueRange(29, 30);
         IntValueRange range4 = (IntValueRange) ValueRangeFactory.createIntValueRange(50, 55);
+        IntValueRange countableValueRange = new IntValueRange(99, 100);
+        NullableCountableValueRange<Integer> nullableCountableValueRange = new NullableCountableValueRange<Integer>(countableValueRange);
         CompositeCountableValueRange<Integer> valRange =
-                new CompositeCountableValueRange<Integer>(Arrays.asList(range1, range2, range3, range4));
+                new CompositeCountableValueRange<Integer>(Arrays.asList(range1, range2, range3, range4, nullableCountableValueRange));
 
         TestdataCompositeCountableEntity entity = new TestdataCompositeCountableEntity();
         entity.setValue(0);
@@ -46,7 +49,7 @@ public class CompositeCountableValueRangeIntegrationTest {
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
-        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(DummyCompositeLinearEasyScoreFunction.class);
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(CompositeCountableValueRangeIntegrationScoreFunction.class);
         config.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         config.setPhaseConfigList(new ArrayList<PhaseConfig>());
@@ -60,6 +63,8 @@ public class CompositeCountableValueRangeIntegrationTest {
 
         config.getPhaseConfigList().get(0).setTerminationConfig(new TerminationConfig());
         config.getPhaseConfigList().get(0).getTerminationConfig().setStepCountLimit(100);
+
+        config.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
 
         Solver solver = config.buildSolver();
         solver.solve(problem);
