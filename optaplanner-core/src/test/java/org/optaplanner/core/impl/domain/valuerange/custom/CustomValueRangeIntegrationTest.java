@@ -26,7 +26,7 @@ public class CustomValueRangeIntegrationTest {
 
     @Test
     public void customValueRangeTest() {
-        TwoDoubleIntervalValueRange twoDoubleIntervalValueRange = new TwoDoubleIntervalValueRange(0.0, 50.0, 100.0, 200.0);
+        TwoDoubleIntervalValueRange twoDoubleIntervalValueRange = new TwoDoubleIntervalValueRange(0.0, 10.0, 95.0, 105.0);
         TestdataUncountableEntity entity = new TestdataUncountableEntity();
         entity.setValue(0.0);
         entity.setValueRange(twoDoubleIntervalValueRange);
@@ -53,7 +53,7 @@ public class CustomValueRangeIntegrationTest {
         config.getPhaseConfigList().get(0).setTerminationConfig(new TerminationConfig());
         config.getPhaseConfigList().get(0).getTerminationConfig().setStepCountLimit(100);
 
-        config.setEnvironmentMode(EnvironmentMode.FULL_ASSERT);
+        config.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
 
         Solver solver = config.buildSolver();
         solver.solve(problem);

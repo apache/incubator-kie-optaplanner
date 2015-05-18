@@ -56,7 +56,7 @@ public class NullableCountableValueRangeIntegrationTest {
         config.getPhaseConfigList().get(0).setTerminationConfig(new TerminationConfig());
         config.getPhaseConfigList().get(0).getTerminationConfig().setStepCountLimit(100);
 
-        config.setEnvironmentMode(EnvironmentMode.FULL_ASSERT);
+        config.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
 
         Solver solver = config.buildSolver();
         solver.solve(problem);

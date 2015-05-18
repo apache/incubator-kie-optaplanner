@@ -10,7 +10,7 @@ public class CustomUncountableValueRangeIntegrationScoreFunction implements Easy
     @Override
     public Score calculateScore(TestdataDoubleRangeSolution solution) {
         Double x = (solution.getEntities().get(0)).getValue();
-        if ((x >= 0.0 && x <= 50.0) || (x >= 100.0 && x <= 200.0)) {
+        if ((x >= 0.0 && x <= 10.0) || (x >= 95.0 && x <= 105.0)) {
             return SimpleScore.valueOf(0);
         } else {
             return SimpleScore.valueOf(1);
