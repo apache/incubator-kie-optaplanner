@@ -10,7 +10,7 @@ public class IntIncrementValueRangeIntegrationScoreFunction implements EasyScore
     @Override
     public Score calculateScore(TestdataIntegerRangeSolution solution) {
         Integer x = (solution.getEntities().get(0)).getValue();
-        if (x % 100 == 0 && (x < 0 || x > 10000)) {
+        if (x % 100 == 0 && (x >= 0 || x <= 10000)) {
             x = 0;
         } else {
             x = 1;
