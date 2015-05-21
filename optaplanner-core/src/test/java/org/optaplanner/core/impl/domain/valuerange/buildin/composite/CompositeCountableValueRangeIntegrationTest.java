@@ -56,7 +56,7 @@ public class CompositeCountableValueRangeIntegrationTest {
 
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setAcceptorConfig(new AcceptorConfig());
-        phaseConfig.getAcceptorConfig().setAcceptorTypeList(Arrays.asList(AcceptorType.HILL_CLIMBING));
+        phaseConfig.getAcceptorConfig().setAcceptorTypeList(Arrays.asList(AcceptorType.LATE_ACCEPTANCE));
         phaseConfig.setForagerConfig(new LocalSearchForagerConfig());
         phaseConfig.getForagerConfig().setAcceptedCountLimit(2);
         config.getPhaseConfigList().add(phaseConfig);
