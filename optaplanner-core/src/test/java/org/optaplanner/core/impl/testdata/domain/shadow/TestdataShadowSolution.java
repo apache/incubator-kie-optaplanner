@@ -41,13 +41,13 @@ public class TestdataShadowSolution extends TestdataObject implements Solution<S
         return anchors;
     }
 
-    @ValueRangeProvider(id = "startingPointList")
+    @ValueRangeProvider(id = "anchorList")
     public List<TestdataShadowAnchor> getAnchorList() {
         return anchors;
     }
 
     @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "numbersList")
+    @ValueRangeProvider(id = "entityList")
     public List<TestdataShadowEntity> getEntityList() {
         return entities;
     }

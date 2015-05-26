@@ -33,7 +33,7 @@ public class TestdataShadowEntity extends TestdataObject implements TestdataShad
     }
 
     @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED,
-            valueRangeProviderRefs = {"entitiesList", "startingPointList"})
+            valueRangeProviderRefs = {"entityList", "anchorList"})
     public TestdataShadowIface getPreviousEntity() {
         return previousEntity;
     }
