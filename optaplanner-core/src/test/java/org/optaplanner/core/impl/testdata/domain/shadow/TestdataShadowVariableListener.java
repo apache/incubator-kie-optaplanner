@@ -12,7 +12,7 @@ public class TestdataShadowVariableListener implements VariableListener<Testdata
 
     @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, TestdataShadowEntity entity) {
-
+        updateStartingPoint(scoreDirector, entity);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class TestdataShadowVariableListener implements VariableListener<Testdata
 
     @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, TestdataShadowEntity entity) {
-
+        updateStartingPoint(scoreDirector, entity);
     }
 
     @Override
