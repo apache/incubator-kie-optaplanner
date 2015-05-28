@@ -25,6 +25,15 @@ import static org.junit.Assert.assertTrue;
 
 public class InverseRelationShadowVariableIntegrationTest {
 
+    /**
+     * using planner for sorting numbers in chain (easy to check).
+     * each entity has shadow variable, each shadow variable value equals "distance" from anchor
+     * there are several anchors.
+     * optimal solution is minimal distance from anchor over all entities.
+     * (Anchor 1) <- 1 <- 2 <- 5
+     * (Anchor 50) <- 50 <- 50 <- 51
+     */
+
     @Test
     public void InverseRelationShadowVariable() {
         SolverConfig config = new SolverConfig();
@@ -44,34 +53,30 @@ public class InverseRelationShadowVariableIntegrationTest {
 
         Solver solver = config.buildSolver();
 
-
         List<List<Integer>> chains = new ArrayList<List<Integer>>();
-        /*chains.add(Arrays.asList(1, 2, 3, 3, 3, 3, 4, 5, 6, 7, 8, 9));
-        chains.add(Arrays.asList(50, 50, 50, 51, 51, 51, 55, 63));
-        chains.add(Arrays.asList(90, 90, 91, 91, 91, 92));*/
         chains.add(Arrays.asList(3, 9, 4, 2, 3, 3, 8, 3, 5, 6, 1, 7));
         chains.add(Arrays.asList(51, 50, 51, 50, 55, 50, 51, 63));
         chains.add(Arrays.asList(92, 90, 91, 91, 91, 90));
-        List<TestdataShadowEntity> numbers = new ArrayList<TestdataShadowEntity>();
+        List<TestdataShadowEntity> entities = new ArrayList<TestdataShadowEntity>();
         for (List<Integer> list : chains) {
             for (Integer num : list) {
-                numbers.add(TestdataShadowEntity.createNewShadowEntity(num));
+                entities.add(TestdataShadowEntity.createNewShadowEntity(num));
             }
         }
-        List<TestdataShadowAnchor> startingPoints = new ArrayList<TestdataShadowAnchor>();
-        startingPoints.add(TestdataShadowAnchor.createNewShadowAnchor(0));
-        startingPoints.add(TestdataShadowAnchor.createNewShadowAnchor(50));
-        startingPoints.add(TestdataShadowAnchor.createNewShadowAnchor(90));
+        List<TestdataShadowAnchor> anchors = new ArrayList<TestdataShadowAnchor>();
+        anchors.add(TestdataShadowAnchor.createNewShadowAnchor(0));
+        anchors.add(TestdataShadowAnchor.createNewShadowAnchor(50));
+        anchors.add(TestdataShadowAnchor.createNewShadowAnchor(90));
 
-
-        solver.solve(TestdataShadowSolution.createChainedSortingSolution(numbers, startingPoints));
+        solver.solve(TestdataShadowSolution.createChainedSortingSolution(entities, anchors));
         TestdataShadowSolution solution = (TestdataShadowSolution) solver.getBestSolution();
-        startingPoints = solution.getAnchorList();
-        for (int i = 0; i < startingPoints.size(); i++) {
-            TestdataShadowIface start = startingPoints.get(i);
+        anchors = solution.getAnchorList();
+        for (int i = 0; i < anchors.size(); i++) {
+            TestdataShadowIface start = anchors.get(i);
             List<Integer> sortedList = new ArrayList<Integer>();
             for (; start != null; ) {
-                sortedList.add(start.getValue());
+                sortedList.add(start.getForwardSum());
+                assertEquals(start.getValue() - anchors.get(i).getValue(), start.getForwardSum());
                 start = start.getNextEntity();
             }
             assertTrue(Ordering.natural().isOrdered(sortedList));
@@ -84,25 +89,26 @@ public class InverseRelationShadowVariableIntegrationTest {
         chains.add(Arrays.asList(1, 7, 3,  2, 3, 9, 4, 6, 8, 3, 3, 5));
         chains.add(Arrays.asList(51, 51, 51, 50, 63, 50, 50, 55));
         chains.add(Arrays.asList(92, 91, 91, 90, 91, 90));
-        numbers = new ArrayList<TestdataShadowEntity>();
+        entities = new ArrayList<TestdataShadowEntity>();
         for (List<Integer> list : chains) {
             for (Integer num : list) {
-                numbers.add(TestdataShadowEntity.createNewShadowEntity(num));
+                entities.add(TestdataShadowEntity.createNewShadowEntity(num));
             }
         }
-        startingPoints = new ArrayList<TestdataShadowAnchor>();
-        startingPoints.add(TestdataShadowAnchor.createNewShadowAnchor(0));
-        startingPoints.add(TestdataShadowAnchor.createNewShadowAnchor(50));
-        startingPoints.add(TestdataShadowAnchor.createNewShadowAnchor(90));
+        anchors = new ArrayList<TestdataShadowAnchor>();
+        anchors.add(TestdataShadowAnchor.createNewShadowAnchor(0));
+        anchors.add(TestdataShadowAnchor.createNewShadowAnchor(50));
+        anchors.add(TestdataShadowAnchor.createNewShadowAnchor(90));
 
-        solver.solve(TestdataShadowSolution.createChainedSortingSolution(numbers, startingPoints));
+        solver.solve(TestdataShadowSolution.createChainedSortingSolution(entities, anchors));
         solution = (TestdataShadowSolution) solver.getBestSolution();
-        startingPoints = solution.getAnchorList();
-        for (int i = 0; i < startingPoints.size(); i++) {
-            TestdataShadowIface start = startingPoints.get(i);
+        anchors = solution.getAnchorList();
+        for (int i = 0; i < anchors.size(); i++) {
+            TestdataShadowIface start = anchors.get(i);
             List<Integer> sortedList = new ArrayList<Integer>();
             for (; start != null; ) {
-                sortedList.add(start.getValue());
+                sortedList.add(start.getForwardSum());
+                assertEquals(start.getValue() - anchors.get(i).getValue(), start.getForwardSum());
                 start = start.getNextEntity();
             }
             assertTrue(Ordering.natural().isOrdered(sortedList));
