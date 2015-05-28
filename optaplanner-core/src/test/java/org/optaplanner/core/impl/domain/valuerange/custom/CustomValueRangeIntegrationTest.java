@@ -24,6 +24,11 @@ import static org.junit.Assert.assertEquals;
 
 public class CustomValueRangeIntegrationTest {
 
+    /**
+     * using custom value range
+     * score function rises best score when there is invalid value (from invalid range)
+     */
+
     @Test
     public void customValueRangeTest() {
         TwoDoubleIntervalValueRange twoDoubleIntervalValueRange = new TwoDoubleIntervalValueRange(0.0, 10.0, 95.0, 105.0);

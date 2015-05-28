@@ -48,8 +48,8 @@ public class CustomShadowVariableIntegrationTest {
         solver.solve(TestdataShadowSolution.createChainedSortingSolution(entities, anchors));
 
         TestdataShadowSolution solution = (TestdataShadowSolution) solver.getBestSolution();
-        List<TestdataShadowAnchor> startingPoints = solution.getAnchorList();
-        for (TestdataShadowAnchor startingPoint : startingPoints) {
+        List<TestdataShadowAnchor> anchors_ = solution.getAnchorList();
+        for (TestdataShadowAnchor startingPoint : anchors_) {
             TestdataShadowIface start = startingPoint;
             for (; start != null; ) {
                 /**

@@ -25,6 +25,11 @@ import static org.junit.Assert.assertEquals;
 
 public class NullableCountableValueRangeIntegrationTest {
 
+    /**
+     * score function rises best score when there is invalid value (from invalid range)
+     * special case for null value (planner should hit null value at least once)
+     */
+
     @Test
     public void nullableValueRange() {
         IntValueRange countableValueRange = new IntValueRange(0, 10);

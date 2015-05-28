@@ -26,6 +26,10 @@ import static org.junit.Assert.assertEquals;
 
 public class CompositeCountableValueRangeIntegrationTest {
 
+    /**
+     * score function rises best score when there is invalid value (from invalid range)
+     */
+
     @Test
     public void compositeValueRange() {
         IntValueRange range1 = (IntValueRange) ValueRangeFactory.createIntValueRange(0, 1);
