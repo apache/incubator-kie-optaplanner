@@ -16,6 +16,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primint.IntValueRange;
 import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataCompositeCountableEntity;
+import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataCompositeCountableNullableEntity;
 import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataIntegerRangeSolution;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class NullableCountableValueRangeIntegrationTest {
     public void nullableValueRange() {
         IntValueRange countableValueRange = new IntValueRange(0, 10);
         NullableCountableValueRange<Integer> nullableCountableValueRange = new NullableCountableValueRange<Integer>(countableValueRange);
-        TestdataCompositeCountableEntity entity = new TestdataCompositeCountableEntity();
+        TestdataCompositeCountableEntity entity = new TestdataCompositeCountableNullableEntity();
         entity.setValue(0);
         entity.setValueRange(nullableCountableValueRange);
         TestdataIntegerRangeSolution problem = new TestdataIntegerRangeSolution();
@@ -42,7 +43,7 @@ public class NullableCountableValueRangeIntegrationTest {
 
         SolverConfig config = new SolverConfig();
         config.setSolutionClass(TestdataIntegerRangeSolution.class);
-        config.setEntityClassList(Arrays.<Class<?>>asList(TestdataCompositeCountableEntity.class));
+        config.setEntityClassList(Arrays.<Class<?>>asList(TestdataCompositeCountableNullableEntity.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
