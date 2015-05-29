@@ -183,12 +183,11 @@ public class DefaultSolver implements Solver {
     public void outerSolvingStarted(DefaultSolverScope solverScope) {
         solving.set(true);
         basicPlumbingTermination.resetTerminateEarly();
-        solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
-        solverScope.setEndingSystemTimeMillis(null);
-        solverScope.setStartingSolverCount(0);
+        solverScope.reset();
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
+        solverScope.reset();
         solverScope.setWorkingRandom(randomFactory.createRandom());
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference));
         solverScope.setWorkingSolutionFromBestSolution();
