@@ -183,7 +183,6 @@ public class DefaultSolver implements Solver {
     public void outerSolvingStarted(DefaultSolverScope solverScope) {
         solving.set(true);
         basicPlumbingTermination.resetTerminateEarly();
-        solverScope.reset();
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
