@@ -81,6 +81,52 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         }
     }
 
+    @Test(timeout = 100000)
+    public void daemonWithTimeTermination() throws InterruptedException { // In main thread
+        Solver solver = buildTimeTerminationSolver();
+        CloudBalance cloudBalance = buildPlanningProblem();
+        SolverThread solverThread = new SolverThread(solver, cloudBalance);
+        solverThread.start();
+        // Wait for the solver thread to start up
+        waitForNextStage();
+
+        // Give the solver thread a chance to terminate and get into the daemon waiting state
+        Thread.sleep(35000);
+        for (int i = 0; i < 8; i++) {
+            CloudProcess process = notYetAddedProcessQueue.poll();
+            solver.addProblemFactChange(new AddProcessChange(process));
+        }
+        // Wait until those AddProcessChanges are processed
+        waitForNextStage();
+
+        // Give the solver thread some time to solve, terminate and get into the daemon waiting state
+        Thread.sleep(1000);
+        while (!notYetAddedProcessQueue.isEmpty()) {
+            CloudProcess process = notYetAddedProcessQueue.poll();
+            solver.addProblemFactChange(new AddProcessChange(process));
+        }
+        // Wait until those AddProcessChanges are processed
+        waitForNextStage();
+
+        solver.terminateEarly();
+        try {
+            // Wait until the solver thread dies.
+            solverThread.join();
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("SolverThread did not die.", e);
+        }
+    }
+    
+    protected Solver buildTimeTerminationSolver() {
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+        solverFactory.getSolverConfig().setDaemon(true);
+        TerminationConfig terminationConfig = new TerminationConfig();
+        terminationConfig.setSecondsSpentLimit(30L);
+        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
+        return solverFactory.buildSolver();
+    }
+    
     private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {
 
         private final Solver solver;
