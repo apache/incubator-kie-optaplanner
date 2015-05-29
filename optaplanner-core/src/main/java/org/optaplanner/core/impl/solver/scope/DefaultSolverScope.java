@@ -186,6 +186,12 @@ public class DefaultSolverScope {
     // Calculated methods
     // ************************************************************************
 
+   public void reset(){
+        setStartingSystemTimeMillis(System.currentTimeMillis());
+        setEndingSystemTimeMillis(null);
+        setStartingSolverCount(0);
+    }
+    
     public boolean isBestSolutionInitialized() {
         return bestUninitializedVariableCount == 0;
     }
