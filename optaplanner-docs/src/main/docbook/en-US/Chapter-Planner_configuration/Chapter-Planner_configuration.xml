@@ -1392,6 +1392,7 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
           <title>Cached Problem Fact</title>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
           <para>A cached problem fact is a problem fact that doesn't exist in the real domain model, but is calculated
           before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method
           has the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster
@@ -1400,6 +1401,8 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
           <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every
           2 <literal>Topic</literal>'s which share at least 1 <literal>Student</literal>.</para>
 =======
+=======
+>>>>>>> 5721071f3a22390c758a0ff6e5bbb5e66f7c56a5
         <para>A cached problem fact is a problem fact that does not exist in the real domain model, but is calculated
         before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method has
         the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster score
@@ -1407,7 +1410,10 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
 
         <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every two
         <literal>Topic</literal>s which share at least one <literal>Student</literal>.</para>
+<<<<<<< HEAD
 >>>>>>> Completed review of Chapter-Planner_configuration.xml
+=======
+>>>>>>> 5721071f3a22390c758a0ff6e5bbb5e66f7c56a5
 
           <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
         List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
@@ -1437,6 +1443,7 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
         return topicConflictList;
     }</programlisting>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
           <para>Any score constraint that needs to check if no 2 exams have a topic which share a student are being
           scheduled close together (depending on the constraint: at the same time, in a row or in the same day), can
