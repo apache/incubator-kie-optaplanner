@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.heuristic.move;
 
 /**
- * Abstract superclass for {@link Move}
+ * Abstract superclass for {@link Move}.
  * @see Move
  */
 public abstract class AbstractMove implements Move {

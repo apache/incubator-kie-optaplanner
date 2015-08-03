@@ -52,7 +52,7 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
         scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), 1, BigDecimal.valueOf(-4)); // Rule match added
 
-        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{BigDecimal.valueOf(-1000)}, 
+        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{BigDecimal.valueOf(-1000)},
                 new BigDecimal[]{BigDecimal.valueOf(-3), BigDecimal.valueOf(-4)}), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
             assertEquals(4, scoreHolder.getConstraintMatchTotals().size());

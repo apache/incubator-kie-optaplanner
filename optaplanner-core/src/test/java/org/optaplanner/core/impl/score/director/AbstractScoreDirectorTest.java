@@ -80,7 +80,7 @@ public class AbstractScoreDirectorTest {
         assertEquals(a2, scoreDirector.getTrailingEntity(variableDescriptor, a1));
         assertEquals(a3, scoreDirector.getTrailingEntity(variableDescriptor, a2));
         assertEquals(b1, scoreDirector.getTrailingEntity(variableDescriptor, b0));
-        
+
         scoreDirector.beforeVariableChanged(a3, "chainedObject");
         a3.setChainedObject(b1);
         scoreDirector.afterVariableChanged(a3, "chainedObject");
