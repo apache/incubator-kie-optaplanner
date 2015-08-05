@@ -320,10 +320,11 @@ public class PlannerBenchmarkResult {
                 benchmarkReport, rankableSolverBenchmarkResultList);
         int ranking = 0;
         for (List<SolverBenchmarkResult> sameRankingList : sameRankingListList) {
+            ranking += sameRankingList.size() - 1;
             for (SolverBenchmarkResult solverBenchmarkResult : sameRankingList) {
                 solverBenchmarkResult.setRanking(ranking);
             }
-            ranking += sameRankingList.size();
+            ranking++;
         }
         favoriteSolverBenchmarkResult = sameRankingListList.isEmpty() ? null
                 : sameRankingListList.get(0).get(0);
