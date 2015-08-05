@@ -333,6 +333,19 @@ public class PlannerBenchmarkResult {
             BenchmarkReport benchmarkReport, List<SolverBenchmarkResult> rankableSolverBenchmarkResultList) {
         List<List<SolverBenchmarkResult>> sameRankingListList = new ArrayList<List<SolverBenchmarkResult>>(
                 rankableSolverBenchmarkResultList.size());
+        SortedMap<Integer, List<SolverBenchmarkResult>> uninitializedRankingMap = new TreeMap<Integer, List<SolverBenchmarkResult>>();
+        for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
+            if (solverBenchmarkResult.hasAnyUninitializedSolution()) {
+                int uninitializedIndex = solverBenchmarkResult.getUninitializedSolutionCount() / solverBenchmarkResult.getSingleBenchmarkResultList().size();
+                if (uninitializedRankingMap.containsKey(uninitializedIndex)) {
+                    uninitializedRankingMap.get(uninitializedIndex).add(solverBenchmarkResult);
+                } else {
+                    List<SolverBenchmarkResult> uninitializedRankingLevel = new ArrayList<SolverBenchmarkResult>();
+                    uninitializedRankingLevel.add(solverBenchmarkResult);
+                    uninitializedRankingMap.put(uninitializedIndex, uninitializedRankingLevel);
+                }
+            }
+        }
         if (benchmarkReport.getSolverRankingComparator() != null) {
             Comparator<SolverBenchmarkResult> comparator = Collections.reverseOrder(
                     benchmarkReport.getSolverRankingComparator());
@@ -340,6 +353,9 @@ public class PlannerBenchmarkResult {
             List<SolverBenchmarkResult> sameRankingList = null;
             SolverBenchmarkResult previousSolverBenchmarkResult = null;
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
+                if (solverBenchmarkResult.hasAnyUninitializedSolution()) {
+                    continue;
+                }
                 if (previousSolverBenchmarkResult == null
                         || comparator.compare(previousSolverBenchmarkResult, solverBenchmarkResult) != 0) {
                     // New rank
@@ -353,6 +369,9 @@ public class PlannerBenchmarkResult {
             SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap
                     = new TreeMap<Comparable, List<SolverBenchmarkResult>>(Collections.reverseOrder());
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
+                if (solverBenchmarkResult.hasAnyUninitializedSolution()) {
+                    continue;
+                }
                 Comparable rankingWeight = benchmarkReport.getSolverRankingWeightFactory()
                         .createRankingWeight(rankableSolverBenchmarkResultList, solverBenchmarkResult);
                 List<SolverBenchmarkResult> sameRankingList = rankedMap.get(rankingWeight);
@@ -368,6 +387,9 @@ public class PlannerBenchmarkResult {
         } else {
             throw new IllegalStateException("Ranking is impossible" +
                     " because solverRankingComparator and solverRankingWeightFactory are null.");
+        }
+        for (Map.Entry<Integer, List<SolverBenchmarkResult>> entry : uninitializedRankingMap.entrySet()) {
+            sameRankingListList.add(entry.getValue());
         }
         return sameRankingListList;
     }
