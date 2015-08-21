@@ -56,7 +56,7 @@ public class ConstraintMatchesDialog extends JDialog {
         this.solutionBusiness = solutionBusiness;
     }
 
-    public void resetContentPanel() {
+    public void showDialog() {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         Action okAction = new AbstractAction("OK") {
             @Override
@@ -114,6 +114,7 @@ public class ConstraintMatchesDialog extends JDialog {
         }
         pack();
         setLocationRelativeTo(getParent());
+        setVisible(true);
     }
 
     public String buildConstraintMatchSetText(ConstraintMatchTotal constraintMatchTotal) {
@@ -134,7 +135,7 @@ public class ConstraintMatchesDialog extends JDialog {
         }
 
         public int getRowCount() {
-            return constraintMatchTotalList.size();
+            return constraintMatchTotalList == null ? 0 : constraintMatchTotalList.size();
         }
 
         public int getColumnCount() {

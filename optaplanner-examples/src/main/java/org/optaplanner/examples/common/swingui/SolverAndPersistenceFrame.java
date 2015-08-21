@@ -22,8 +22,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -46,11 +44,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
@@ -77,7 +73,6 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
     private final SolutionBusiness<Solution_> solutionBusiness;
 
     private SolutionPanel solutionPanel;
-    private ConstraintMatchesDialog constraintMatchesDialog;
 
     private JPanel quickOpenUnsolvedPanel;
     private List<Action> quickOpenUnsolvedActionList;
@@ -105,7 +100,6 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
         solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setSolverAndPersistenceFrame(this);
         registerListeners();
-        constraintMatchesDialog = new ConstraintMatchesDialog(this, solutionBusiness);
     }
 
     private void registerListeners() {
@@ -552,7 +546,7 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
     private JPanel createScorePanel() {
         JPanel scorePanel = new JPanel(new BorderLayout(5, 0));
         scorePanel.setBorder(BorderFactory.createEtchedBorder());
-        showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
+        showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction(this);
         showConstraintMatchesDialogAction.setEnabled(false);
         scorePanel.add(new JButton(showConstraintMatchesDialogAction), BorderLayout.WEST);
         scoreField = new JTextField("Score:");
@@ -568,13 +562,15 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
 
     private class ShowConstraintMatchesDialogAction extends AbstractAction {
 
-        public ShowConstraintMatchesDialogAction() {
+        private final SolverAndPersistenceFrame parentFrame;
+
+        public ShowConstraintMatchesDialogAction(SolverAndPersistenceFrame parentFrame) {
             super("Constraint matches", new ImageIcon(SolverAndPersistenceFrame.class.getResource("showConstraintMatchesDialogAction.png")));
+            this.parentFrame = parentFrame;
         }
 
         public void actionPerformed(ActionEvent e) {
-            constraintMatchesDialog.resetContentPanel();
-            constraintMatchesDialog.setVisible(true);
+            new ConstraintMatchesDialog(parentFrame, solutionBusiness).showDialog();
         }
 
     }
