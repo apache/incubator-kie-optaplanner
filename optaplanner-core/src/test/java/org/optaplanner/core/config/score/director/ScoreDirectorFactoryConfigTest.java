@@ -29,6 +29,7 @@ public class ScoreDirectorFactoryConfigTest {
 
     @Test
     public void buildSimpleScoreDefinition() {
+        assertTrue("Fail the build!", false); // This will fail the build (on purpose)
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         config.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         ScoreDefinition scoreDefinition = config.buildScoreDefinition();
