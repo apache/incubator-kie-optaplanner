@@ -32,6 +32,7 @@ public class DefaultConstructionHeuristicForagerTest {
 
     @Test
     public void checkPickEarlyNever() {
+        assertTrue(false); // break the build on purpose
         DefaultConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(
                 ConstructionHeuristicPickEarlyType.NEVER);
         ConstructionHeuristicStepScope stepScope = buildStepScope(SimpleScore.valueOf(-100));
