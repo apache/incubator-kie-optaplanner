@@ -166,6 +166,10 @@ public class SolverConfig {
     // ************************************************************************
 
     public Solver buildSolver() {
+        return buildSolver(null);
+    }
+
+    public Solver buildSolver(ClassLoader classLoader) {
         DefaultSolver solver = new DefaultSolver();
         EnvironmentMode environmentMode_ = defaultIfNull(environmentMode, EnvironmentMode.REPRODUCIBLE);
         solver.setEnvironmentMode(environmentMode_);
@@ -179,7 +183,7 @@ public class SolverConfig {
                 = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
         InnerScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
-                environmentMode_, solutionDescriptor);
+                classLoader, environmentMode_, solutionDescriptor);
         solver.setConstraintMatchEnabledPreference(environmentMode_.isAsserted());
         solver.setScoreDirectorFactory(scoreDirectorFactory);
 
