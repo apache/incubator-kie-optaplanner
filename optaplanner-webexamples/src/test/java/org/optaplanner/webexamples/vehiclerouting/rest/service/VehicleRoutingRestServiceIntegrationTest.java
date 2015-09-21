@@ -16,28 +16,24 @@
 
 package org.optaplanner.webexamples.vehiclerouting.rest.service;
 
-import java.io.IOException;
-import java.net.URL;
-
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.optaplanner.webexamples.common.rest.service.AbstractClientArquillianTest;
+import org.optaplanner.webexamples.common.rest.service.AbstractWebExamplesIntegrationTest;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRoutingSolution;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
 
-@Ignore // TODO Fix arquillian/shrinkwrap/maven/aether dependency mess https://issues.jboss.org/browse/PLANNER-445
-public class VehicleRoutingRestServiceTest extends AbstractClientArquillianTest {
+import static org.junit.Assert.assertNotNull;
+
+public class VehicleRoutingRestServiceIntegrationTest extends AbstractWebExamplesIntegrationTest {
 
     @Test
-    public void getSolutions(@ArquillianResource URL baseUrl) throws IOException {
+    public void getSolutions() throws IOException {
         RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
         VehicleRoutingRestService proxy
-                = ProxyFactory.create(VehicleRoutingRestService.class, baseUrl.toExternalForm() + "rest/vehiclerouting/solution");
+                = ProxyFactory.create(VehicleRoutingRestService.class, BASE_URL + "rest/vehiclerouting/solution");
         JsonVehicleRoutingSolution solution = proxy.getSolution();
         assertNotNull(solution);
     }

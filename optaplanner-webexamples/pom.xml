@@ -24,6 +24,7 @@
   <properties>
     <version.org.wildfly>9.0.1.Final</version.org.wildfly>
     <version.org.wildfly.arquillian.container>1.0.0.Final</version.org.wildfly.arquillian.container>
+    <deployable.base.url>http://localhost:18080/optaplanner-webexamples</deployable.base.url>
   </properties>
   <build>
     <testResources>
@@ -34,41 +35,81 @@
     </testResources>
     <plugins>
       <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <groupId>org.codehaus.cargo</groupId>
+        <artifactId>cargo-maven2-plugin</artifactId>
+        <configuration>
+          <container>
+            <containerId>wildfly9x</containerId>
+            <type>installed</type>
+            <artifactInstaller>
+              <groupId>org.wildfly</groupId>
+              <artifactId>wildfly-dist</artifactId>
+              <version>${version.org.wildfly}</version>
+            </artifactInstaller>
+          </container>
+          <configuration>
+            <properties>
+              <cargo.jvmargs>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</cargo.jvmargs>
+              <cargo.port.offset>10000</cargo.port.offset>
+              <cargo.pingUrl>${deployable.base.url}</cargo.pingUrl>
+            </properties>
+          </configuration>
+          <deployables>
+            <deployable>
+              <groupId>org.optaplanner</groupId>
+              <artifactId>optaplanner-webexamples</artifactId>
+              <type>war</type>
+              <pingURL>${deployable.base.url}</pingURL>
+            </deployable>
+          </deployables>
+
+        </configuration>
         <executions>
           <execution>
-            <id>unpack-wildfly</id>
-            <phase>generate-test-resources</phase>
+            <id>start-container</id>
+            <phase>pre-integration-test</phase>
             <goals>
-              <goal>unpack</goal>
+              <goal>start</goal>
             </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.wildfly</groupId>
-                  <artifactId>wildfly-dist</artifactId>
-                  <version>${version.org.wildfly}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
+          </execution>
+          <execution>
+            <id>stop-container</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <deployable.base.url>${deployable.base.url}</deployable.base.url>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.wildfly.arquillian</groupId>
-        <artifactId>wildfly-arquillian-container-managed</artifactId>
-        <version>${version.org.wildfly.arquillian.container}</version>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging-api</artifactId>
+        <version>1.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -123,28 +164,18 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Tests -->
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.shrinkwrap.resolver</groupId>
-      <artifactId>shrinkwrap-resolver-depchain</artifactId>
-      <type>pom</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.arquillian</groupId>
-      <artifactId>wildfly-arquillian-container-managed</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Required by resteasy-jaxrs-->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
