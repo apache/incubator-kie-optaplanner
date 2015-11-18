@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<VrpTimeWindowedVehicleRoutingSolution id="1">
+    <id>0</id>
+    <name>A-n33-k6</name>
+    <distanceType>AIR_DISTANCE</distanceType>
+    <distanceUnitOfMeasurement>distance</distanceUnitOfMeasurement>
+    <locationList id="2">
+        <VrpAirLocation id="3">
+            <id>1</id>
+            <latitude>34.0</latitude>
+            <longitude>31.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="4">
+            <id>2</id>
+            <latitude>45.0</latitude>
+            <longitude>55.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="5">
+            <id>3</id>
+            <latitude>70.0</latitude>
+            <longitude>80.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="6">
+            <id>4</id>
+            <latitude>81.0</latitude>
+            <longitude>70.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="7">
+            <id>5</id>
+            <latitude>85.0</latitude>
+            <longitude>61.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="8">
+            <id>6</id>
+            <latitude>59.0</latitude>
+            <longitude>55.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="9">
+            <id>7</id>
+            <latitude>45.0</latitude>
+            <longitude>60.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="10">
+            <id>8</id>
+            <latitude>50.0</latitude>
+            <longitude>64.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="11">
+            <id>9</id>
+            <latitude>80.0</latitude>
+            <longitude>64.0</longitude>
+        </VrpAirLocation>
+        <VrpAirLocation id="12">
+            <id>10</id>
+            <latitude>75.0</latitude>
+            <longitude>90.0</longitude>
+        </VrpAirLocation>
+    </locationList>
+    <depotList id="13">
+        <VrpTimeWindowedDepot id="14">
+            <id>1</id>
+            <location class="VrpAirLocation" reference="3"/>
+            <readyTime>0</readyTime>
+            <dueTime>23000000000000</dueTime>
+        </VrpTimeWindowedDepot>
+    </depotList>
+    <vehicleList id="15">
+        <VrpVehicle id="16">
+            <id>0</id>
+            <capacity>100</capacity>
+            <depot reference="14"/>
+        </VrpVehicle>
+        <VrpVehicle id="17">
+            <id>1</id>
+            <capacity>100</capacity>
+            <depot reference="14"/>
+        </VrpVehicle>
+        <VrpVehicle id="18">
+            <id>2</id>
+            <capacity>100</capacity>
+            <depot reference="14"/>
+        </VrpVehicle>
+        <VrpVehicle id="19">
+            <id>3</id>
+            <capacity>100</capacity>
+            <depot reference="14"/>
+        </VrpVehicle>
+        <VrpVehicle id="20">
+            <id>4</id>
+            <capacity>100</capacity>
+            <depot reference="14"/>
+        </VrpVehicle>
+        <VrpVehicle id="21">
+            <id>5</id>
+            <capacity>100</capacity>
+            <depot reference="14"/>
+        </VrpVehicle>
+    </vehicleList>
+    <customerList id="22">
+        <VrpTimeWindowedCustomer id="23">
+            <id>2</id>
+            <location class="VrpAirLocation" reference="4"/>
+            <demand>26</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>2</deliveryRangeStart>
+            <deliveryRangeEnd>5</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+        <VrpTimeWindowedCustomer id="24">
+            <id>3</id>
+            <location class="VrpAirLocation" reference="5"/>
+            <demand>17</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>2</deliveryRangeStart>
+            <deliveryRangeEnd>5</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+        <VrpTimeWindowedCustomer id="25">
+            <id>4</id>
+            <location class="VrpAirLocation" reference="6"/>
+            <demand>6</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>2</deliveryRangeStart>
+            <deliveryRangeEnd>5</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+        <VrpTimeWindowedCustomer id="26">
+            <id>5</id>
+            <location class="VrpAirLocation" reference="7"/>
+            <demand>15</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>2</deliveryRangeStart>
+            <deliveryRangeEnd>5</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+        <VrpTimeWindowedCustomer id="27">
+            <id>6</id>
+            <location class="VrpAirLocation" reference="8"/>
+            <demand>7</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>1</deliveryRangeStart>
+            <deliveryRangeEnd>1</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+        <VrpTimeWindowedCustomer id="28">
+            <id>7</id>
+            <location class="VrpAirLocation" reference="9"/>
+            <demand>5</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>1</deliveryRangeStart>
+            <deliveryRangeEnd>1</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+        <VrpTimeWindowedCustomer id="29">
+            <id>8</id>
+            <location class="VrpAirLocation" reference="10"/>
+            <demand>15</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>0</deliveryRangeStart>
+            <deliveryRangeEnd>0</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+        <VrpTimeWindowedCustomer id="30">
+            <id>9</id>
+            <location class="VrpAirLocation" reference="11"/>
+            <demand>16</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>0</deliveryRangeStart>
+            <deliveryRangeEnd>0</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+        <VrpTimeWindowedCustomer id="31">
+            <id>10</id>
+            <location class="VrpAirLocation" reference="12"/>
+            <demand>17</demand>
+            <readyTime>480000</readyTime>
+            <dueTime>1440000</dueTime>
+            <deliveryRangeStart>0</deliveryRangeStart>
+            <deliveryRangeEnd>0</deliveryRangeEnd>
+            <serviceDuration>30000</serviceDuration>
+        </VrpTimeWindowedCustomer>
+
+    </customerList>
+</VrpTimeWindowedVehicleRoutingSolution>
