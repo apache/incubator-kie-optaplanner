@@ -31,6 +31,34 @@ public class TimeWindowedCustomer extends Customer {
     private long dueTime;
     private long serviceDuration;
 
+    private int arrivalDay;
+    private int deliveryRangeStart;
+    private int deliveryRangeEnd;
+
+    public int getdeliveryRangeStart() {
+      return deliveryRangeStart;
+    }
+
+    public void setdeliveryRangeStart(int deliveryRangeStart) {
+      this.deliveryRangeStart = deliveryRangeStart;
+    }
+
+    public int getdeliveryRangeEnd() {
+      return deliveryRangeEnd;
+    }
+
+    public void setdeliveryRangeEnd(int deliveryRangeEnd) {
+      this.deliveryRangeEnd = deliveryRangeEnd;
+    }
+
+    public int getarrivalDay() {
+      return arrivalDay;
+    }
+
+    public void setarrivalDay(int arrivalDay) {
+      this.arrivalDay = arrivalDay;
+    }
+
     // Shadow variable
     private Long arrivalTime;
 
