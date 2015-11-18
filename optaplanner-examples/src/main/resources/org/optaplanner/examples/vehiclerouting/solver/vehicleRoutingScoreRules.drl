@@ -73,11 +73,11 @@ end
 // TimeWindowed: extra hard constraints
 // ############################################################################
 
-rule "arrivalAfterDueTime"
+rule "arrivalAfterDeliveryRangeEnd"
     when
-        TimeWindowedCustomer(dueTime < arrivalTime, $dueTime : dueTime, $arrivalTime : arrivalTime)
+        TimeWindowedCustomer(deliveryRangeEnd*24*60*1000 + dueTime < arrivalTime , $dueTime : dueTime, $deliveryRangeEnd : deliveryRangeEnd, $arrivalTime : arrivalTime)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $arrivalTime.longValue());
+        scoreHolder.addHardConstraintMatch(kcontext, $deliveryRangeEnd*24*60*1000 - $arrivalTime.longValue());
 end
 
 // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
