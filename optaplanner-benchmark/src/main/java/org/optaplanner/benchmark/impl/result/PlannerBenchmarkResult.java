@@ -217,6 +217,17 @@ public class PlannerBenchmarkResult {
         return failureCount > 0;
     }
 
+    public int getMaximumSubSingleCount() {
+        int maximumSubSingleCount = 0;
+        for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
+            int problemMaximumSubSingleCount = problemBenchmarkResult.getMaximumSubSingleCount();
+            if (problemMaximumSubSingleCount > maximumSubSingleCount) {
+                maximumSubSingleCount = problemMaximumSubSingleCount;
+            }
+        }
+        return maximumSubSingleCount;
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
@@ -278,6 +289,14 @@ public class PlannerBenchmarkResult {
         } else {
             throw new IllegalStateException("Logging level for category (org.optaplanner.core) cannot be determined.");
         }
+    }
+
+    public int getTotalSubSingleCount() {
+        int totalSubSingleCount = 0;
+        for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
+            totalSubSingleCount += problemBenchmarkResult.getTotalSubSingleCount();
+        }
+        return totalSubSingleCount;
     }
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {

@@ -226,10 +226,6 @@ public class ProblemBenchmarkResult {
         return false;
     }
 
-    public boolean isMaximumSubSingleCountMultiple() {
-        return maximumSubSingleCount != null ? maximumSubSingleCount > 1 : false;
-    }
-
     public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
         Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<SingleStatisticType>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
@@ -271,6 +267,14 @@ public class ProblemBenchmarkResult {
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleBenchmarkResult.makeDirs();
         }
+    }
+
+    public int getTotalSubSingleCount() {
+        int totalSubSingleCount = 0;
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            totalSubSingleCount += singleBenchmarkResult.getSubSingleCount();
+        }
+        return totalSubSingleCount;
     }
 
     public Solution readPlanningProblem() {
