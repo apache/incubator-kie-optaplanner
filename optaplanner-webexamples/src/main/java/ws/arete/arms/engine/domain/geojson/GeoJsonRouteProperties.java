@@ -3,11 +3,11 @@ package ws.arete.arms.engine.domain.geojson;
 import java.util.Random;
 
 public class GeoJsonRouteProperties {
-    public int getTrip() {
+    public Long getTrip() {
         return trip;
     }
 
-    public void setTrip(int trip) {
+    public void setTrip(Long trip) {
         this.trip = trip;
     }
 
@@ -19,7 +19,7 @@ public class GeoJsonRouteProperties {
         this.stroke = String.format("#%02x%02x%02x", randHue(), randHue(), randHue());
     }
     
-    private int trip;
+    private Long trip;
     private String stroke;
     
     public static int randHue() {
