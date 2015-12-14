@@ -40,14 +40,20 @@
   var map;
   var vehicleRouteLayerGroup;
   var intervalTimer;
-
+var geojsonlayer;
   initMap = function() {
-    map = L.map('map');
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+	  map = L.map('map').setView([51, 5], 7);
+
+	  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IjZjNmRjNzk3ZmE2MTcwOTEwMGY0MzU3YjUzOWFmNWZhIn0.Y8bhBaUMqFiPrDRW9hieoQ', {
+	      maxZoom: 18,
+	      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+	          '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+	          'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	      id: 'mapbox.streets'
+	  }).addTo(map);
+
     loadSolution();
-    updateSolution();
+//    updateSolution();
   };
 
   ajaxError = function(jqXHR, textStatus, errorThrown) {
@@ -58,49 +64,20 @@
   };
 
   loadSolution = function() {
-    $.ajax({
-      url: "<%=application.getContextPath()%>/rest/vehiclerouting/solution",
-      type: "GET",
-      dataType : "json",
-      success: function(solution) {
-        var markers = [];
-        $.each(solution.customerList, function(index, customer) {
-          var customerIcon = L.divIcon({
-            iconSize: new L.Point(20, 20),
-            className: "vehicleRoutingCustomerMarker",
-            html: "<span>" + customer.demand + "</span>"
-          });
-          var marker = L.marker([customer.latitude, customer.longitude], {icon: customerIcon});
-          marker.addTo(map).bindPopup(customer.locationName + "</br>Deliver " + customer.demand + " items.");
-          markers.push(marker);
+      $.ajax({
+          url: "<%=application.getContextPath()%>/rest/vehiclerouting/solution/geoJson",
+          type: "GET",
+          dataType : "json",
+          success: function(solution) {
+          geojsonlayer = L.geoJson(solution);
+          map.addLayer(geojsonlayer);
+          }
         });
-        map.fitBounds(L.featureGroup(markers).getBounds());
-      }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
-    });
   };
 
   updateSolution = function() {
-    $.ajax({
-      url: "<%=application.getContextPath()%>/rest/vehiclerouting/solution",
-      type: "GET",
-      dataType : "json",
-      success: function(solution) {
-        if (vehicleRouteLayerGroup != undefined) {
-          map.removeLayer(vehicleRouteLayerGroup);
-        }
-        var vehicleRouteLines = [];
-        $.each(solution.vehicleRouteList, function(index, vehicleRoute) {
-          var locations = [[vehicleRoute.depotLatitude, vehicleRoute.depotLongitude]];
-          $.each(vehicleRoute.customerList, function(index, customer) {
-            locations.push([customer.latitude, customer.longitude]);
-          });
-          locations.push([vehicleRoute.depotLatitude, vehicleRoute.depotLongitude]);
-          vehicleRouteLines.push(L.polyline(locations, {color: vehicleRoute.hexColor}));
-        });
-        vehicleRouteLayerGroup = L.layerGroup(vehicleRouteLines).addTo(map);
-        $('#scoreValue').text(solution.feasible ? solution.distance : "Not solved");
-      }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
-    });
+	    map.removeLayer(geojsonlayer);
+	    loadSolution();
   };
 
   solve = function() {
