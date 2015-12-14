@@ -69,7 +69,11 @@ var geojsonlayer;
           type: "GET",
           dataType : "json",
           success: function(solution) {
-          geojsonlayer = L.geoJson(solution);
+          geojsonlayer = L.geoJson(solution, {
+              style : function(feature) {
+                  return {color: feature.properties.stroke};
+              }
+          });
           map.addLayer(geojsonlayer);
           }
         });
