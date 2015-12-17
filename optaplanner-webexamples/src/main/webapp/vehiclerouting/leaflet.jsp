@@ -40,6 +40,12 @@
   var map;
   var vehicleRouteLayerGroup;
   var intervalTimer;
+  var warehouseIcon = L.icon({
+  iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABgUlEQVRIS+2VzUoCURiG32/8KXUmmkiR2khQKwk3uowhb0C6gdpVK+8gojtwVe3qBsIuQJKW1kLCVUG4KUQjI//KnznhDDM65oxCCBKezRlmznkf3u9nPsKEF01YH9MFqEUjMcgy89zcX4/rfKSDhhQKdDhHHKAYCAFFmCEPsKRNbiVc6WzeCmYKqG6H90DYBUjSBNq+svJoL4p9miwN0AWfylwOAxkAVSkcAoc4A2JEtNi9QO5vONYLsK+WUZKbioaXc6L9IqL15Aerz6mmGPsgIAkZCT59l9VgRkA0wrQPz/MlPHBvqAoV7G+pb4sVdfcJ6n5+C/AVAZvyMta+vLoBPpXRdQ2A+k6QOTYKsK+UAWfnl+NBgOFA04b2q4jWox/uq9xwADuD7mBYPC0BfRfooFf+BgczgF45ZiHKHVnnYNzuDZ5MQw66Nf7ZABZcsOyDwTNKc86qSPtVmCX9P4foFMdWtf5eUwfOkqc7cMwXHfZ0Rk60cZvLNB9/FRh1/wfn/ZwZAH3fXQAAAABJRU5ErkJggg==',
+    iconSize: [32, 37],
+    iconAnchor: [16, 37],
+    popupAnchor: [0, -28]
+  });
 var geojsonlayer;
   initMap = function() {
 	  map = L.map('map').setView([51, 5], 7);
@@ -72,6 +78,11 @@ var geojsonlayer;
           geojsonlayer = L.geoJson(solution, {
               style : function(feature) {
                   return {color: feature.properties.stroke};
+              },
+              pointToLayer: function(feature, latlng) {
+                return L.marker(latlng, {
+                  icon: warehouseIcon
+                });
               }
           });
           map.addLayer(geojsonlayer);
