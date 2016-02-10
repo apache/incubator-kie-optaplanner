@@ -27,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
+import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -69,9 +70,8 @@ public class XStreamXmlSolverFactory<Solution_ extends Solution> extends Abstrac
     public XStreamXmlSolverFactory(SolverConfigContext solverConfigContext) {
         super(solverConfigContext);
         xStream = buildXStream();
-        if (solverConfigContext.getClassLoader() != null) {
-            xStream.setClassLoader(solverConfigContext.getClassLoader());
-        }
+        ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
+        xStream.setClassLoader(actualClassLoader);
     }
 
     /**

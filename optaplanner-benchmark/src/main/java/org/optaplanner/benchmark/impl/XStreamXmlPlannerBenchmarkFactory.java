@@ -26,6 +26,8 @@ import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConversionException;
+import com.thoughtworks.xstream.converters.extended.FileConverter;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -52,10 +54,15 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
     public XStreamXmlPlannerBenchmarkFactory(SolverConfigContext solverConfigContext) {
         this.solverConfigContext = solverConfigContext;
         xStream = XStreamXmlSolverFactory.buildXStream();
+        ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
+        xStream.setClassLoader(actualClassLoader);
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
-        if (solverConfigContext.getClassLoader() != null) {
-            xStream.setClassLoader(solverConfigContext.getClassLoader());
-        }
+        xStream.registerConverter(new FileConverter() {
+            @Override
+            public String toString(Object obj) {
+                return FilenameUtils.separatorsToUnix(((File) obj).getPath());
+            }
+        });
     }
 
     // ************************************************************************

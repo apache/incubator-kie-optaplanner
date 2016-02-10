@@ -217,6 +217,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @return never null
      */
     public <Solution_ extends Solution> Solver<Solution_> buildSolver(SolverConfigContext configContext) {
+        configContext.validate();
         DefaultSolver<Solution_> solver = new DefaultSolver<Solution_>();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
         solver.setEnvironmentMode(environmentMode_);
@@ -225,7 +226,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         solver.setBasicPlumbingTermination(basicPlumbingTermination);
 
         solver.setRandomFactory(buildRandomFactory(environmentMode_));
-        SolutionDescriptor solutionDescriptor = buildSolutionDescriptor();
+        SolutionDescriptor solutionDescriptor = buildSolutionDescriptor(configContext);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
                 = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
@@ -266,7 +267,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return randomFactory;
     }
 
-    protected SolutionDescriptor buildSolutionDescriptor() {
+    protected SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext) {
         if (scanAnnotatedClassesConfig != null) {
             if (solutionClass != null || entityClassList != null) {
                 throw new IllegalArgumentException("The solver configuration with scanAnnotatedClasses ("
@@ -274,7 +275,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                         + ") or an entityClass (" + entityClassList + ").\n"
                         + "  Please decide between automatic scanning or manual referencing.");
             }
-            return scanAnnotatedClassesConfig.buildSolutionDescriptor();
+            return scanAnnotatedClassesConfig.buildSolutionDescriptor(configContext);
         } else {
             if (solutionClass == null) {
                 throw new IllegalArgumentException("The solver configuration must have a solutionClass (" + solutionClass
