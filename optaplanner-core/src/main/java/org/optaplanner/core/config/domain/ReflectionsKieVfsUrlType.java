@@ -83,7 +83,7 @@ public class ReflectionsKieVfsUrlType implements Vfs.UrlType {
         @Override
         public Iterable<Vfs.File> getFiles() {
             List<Vfs.File> vfsFileList = new ArrayList<Vfs.File>();
-            Deque<Resource> resourceDeque = new ArrayDeque<>();
+            Deque<Resource> resourceDeque = new ArrayDeque<Resource>();
             Collection<? extends Resource> mainMembers = kieFolder.getMembers();
             if (mainMembers != null) {
                 resourceDeque.addAll(mainMembers);
