@@ -194,25 +194,21 @@ public class SolutionDescriptor {
         }
     }
 
-    private boolean processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
+    private void processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
         Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(field);
         if (entityPropertyAnnotationClass != null) {
             MemberAccessor memberAccessor = new FieldMemberAccessor(field);
             registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
-            return false;
         }
-        return true;
     }
 
-    private boolean processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Method method) {
+    private void processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Method method) {
         Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(method);
         if (entityPropertyAnnotationClass != null) {
             ReflectionHelper.assertGetterMethod(method, entityPropertyAnnotationClass);
             MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
             registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
-            return false;
         }
-        return true;
     }
 
     private void processFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
