@@ -231,6 +231,7 @@ public class SolutionDescriptor {
     private Class<? extends Annotation> extractEntityPropertyAnnotationClass(AnnotatedElement member) {
         return extractAnnotationClass(member, PlanningEntityProperty.class, PlanningEntityCollectionProperty.class);
     }
+
     private Class<? extends Annotation> extractFactPropertyAnnotationClass(AnnotatedElement member) {
         return extractAnnotationClass(member, PlanningFactProperty.class, PlanningFactCollectionProperty.class);
     }
@@ -494,26 +495,15 @@ public class SolutionDescriptor {
 
     public Collection<Object> getAllFacts(Solution solution) {
         Collection<Object> facts = new ArrayList<>();
-        for (MemberAccessor factMemberAccessor : factPropertyAccessorMap.values()) {
-            Object fact = extract(factMemberAccessor, solution);
-            if (fact != null) {
-                facts.add(fact);
+        // will add both entities and facts
+        Arrays.asList(entityPropertyAccessorMap, factPropertyAccessorMap).forEach(map -> map.forEach((key, value) -> {
+            Object object = extract(value, solution);
+            if (object != null) {
+                facts.add(object);
             }
-        }
-        for (MemberAccessor factCollectionMemberAccessor : factCollectionPropertyAccessorMap.values()) {
-            Collection<Object> factCollection = extractCollection(factCollectionMemberAccessor, solution, true);
-            facts.addAll(factCollection);
-        }
-        for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extract(entityMemberAccessor, solution);
-            if (entity != null) {
-                facts.add(entity);
-            }
-        }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
-            facts.addAll(entityCollection);
-        }
+        }));
+        Arrays.asList(entityCollectionPropertyAccessorMap, factCollectionPropertyAccessorMap).forEach(map ->
+                map.forEach((key, value) -> facts.addAll(extractCollection(value, solution))));
         return facts;
     }
 
