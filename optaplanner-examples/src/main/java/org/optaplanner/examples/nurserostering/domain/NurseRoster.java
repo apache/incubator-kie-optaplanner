@@ -18,9 +18,7 @@ package org.optaplanner.examples.nurserostering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -35,8 +33,6 @@ import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution
@@ -45,21 +41,37 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
 
     private String code;
 
+    @PlanningFactProperty
     private NurseRosterParametrization nurseRosterParametrization;
+    @PlanningFactCollectionProperty
     private List<Skill> skillList;
+    @PlanningFactCollectionProperty
     private List<ShiftType> shiftTypeList;
+    @PlanningFactCollectionProperty
     private List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList;
+    @PlanningFactCollectionProperty
     private List<Pattern> patternList;
+    @PlanningFactCollectionProperty
     private List<Contract> contractList;
+    @PlanningFactCollectionProperty
     private List<ContractLine> contractLineList;
+    @PlanningFactCollectionProperty
     private List<PatternContractLine> patternContractLineList;
+    @PlanningFactCollectionProperty
     private List<Employee> employeeList;
+    @PlanningFactCollectionProperty
     private List<SkillProficiency> skillProficiencyList;
+    @PlanningFactCollectionProperty
     private List<ShiftDate> shiftDateList;
+    @PlanningFactCollectionProperty
     private List<Shift> shiftList;
+    @PlanningFactCollectionProperty
     private List<DayOffRequest> dayOffRequestList;
+    @PlanningFactCollectionProperty
     private List<DayOnRequest> dayOnRequestList;
+    @PlanningFactCollectionProperty
     private List<ShiftOffRequest> shiftOffRequestList;
+    @PlanningFactCollectionProperty
     private List<ShiftOnRequest> shiftOnRequestList;
 
     private List<ShiftAssignment> shiftAssignmentList;
@@ -224,28 +236,5 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.add(nurseRosterParametrization);
-        facts.addAll(skillList);
-        facts.addAll(shiftTypeList);
-        facts.addAll(shiftTypeSkillRequirementList);
-        facts.addAll(patternList);
-        facts.addAll(contractList);
-        facts.addAll(contractLineList);
-        facts.addAll(patternContractLineList);
-        facts.addAll(employeeList);
-        facts.addAll(skillProficiencyList);
-        facts.addAll(shiftDateList);
-        facts.addAll(shiftList);
-        facts.addAll(dayOffRequestList);
-        facts.addAll(dayOnRequestList);
-        facts.addAll(shiftOffRequestList);
-        facts.addAll(shiftOnRequestList);
-        // Do not add the planning entity's (shiftAssignmentList) because that will be done automatically
-        return facts;
-    }
 
 }

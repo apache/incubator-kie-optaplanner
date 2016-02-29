@@ -16,13 +16,10 @@
 
 package org.optaplanner.examples.pas.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -31,22 +28,37 @@ import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScor
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.List;
+
 @PlanningSolution
 @XStreamAlias("PatientAdmissionSchedule")
 public class PatientAdmissionSchedule extends AbstractPersistable implements Solution<HardMediumSoftScore> {
 
+    @PlanningFactCollectionProperty
     private List<Specialism> specialismList;
+    @PlanningFactCollectionProperty
     private List<Equipment> equipmentList;
+    @PlanningFactCollectionProperty
     private List<Department> departmentList;
+    @PlanningFactCollectionProperty
     private List<DepartmentSpecialism> departmentSpecialismList;
+    @PlanningFactCollectionProperty
     private List<Room> roomList;
+    @PlanningFactCollectionProperty
     private List<RoomSpecialism> roomSpecialismList;
+    @PlanningFactCollectionProperty
     private List<RoomEquipment> roomEquipmentList;
+    @PlanningFactCollectionProperty
     private List<Bed> bedList;
+    @PlanningFactCollectionProperty
     private List<Night> nightList;
+    @PlanningFactCollectionProperty
     private List<Patient> patientList;
+    @PlanningFactCollectionProperty
     private List<AdmissionPart> admissionPartList;
+    @PlanningFactCollectionProperty
     private List<RequiredPatientEquipment> requiredPatientEquipmentList;
+    @PlanningFactCollectionProperty
     private List<PreferredPatientEquipment> preferredPatientEquipmentList;
 
     private List<BedDesignation> bedDesignationList;
@@ -179,25 +191,5 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(specialismList);
-        facts.addAll(equipmentList);
-        facts.addAll(departmentList);
-        facts.addAll(departmentSpecialismList);
-        facts.addAll(roomList);
-        facts.addAll(roomSpecialismList);
-        facts.addAll(roomEquipmentList);
-        facts.addAll(bedList);
-        facts.addAll(nightList);
-        facts.addAll(patientList);
-        facts.addAll(admissionPartList);
-        facts.addAll(requiredPatientEquipmentList);
-        facts.addAll(preferredPatientEquipmentList);
-        // Do not add the planning entity's (bedDesignationList) because that will be done automatically
-        return facts;
-    }
 
 }

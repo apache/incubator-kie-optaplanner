@@ -16,17 +16,9 @@
 
 package org.optaplanner.examples.investment.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -36,13 +28,19 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.*;
+
 @PlanningSolution
 @XStreamAlias("InvestmentSolution")
 public class InvestmentSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
+    @PlanningFactProperty
     private InvestmentParametrization parametrization;
+    @PlanningFactCollectionProperty
     private List<Region> regionList;
+    @PlanningFactCollectionProperty
     private List<Sector> sectorList;
+    @PlanningFactCollectionProperty
     private List<AssetClass> assetClassList;
 
     private List<AssetClassAllocation> assetClassAllocationList;
@@ -106,17 +104,6 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
     @ValueRangeProvider(id = "quantityMillisRange")
     public CountableValueRange<Long> getQuantityMillisRange() {
         return ValueRangeFactory.createLongValueRange(0L, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS + 1L);
-    }
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.add(parametrization);
-        facts.addAll(regionList);
-        facts.addAll(sectorList);
-        facts.addAll(assetClassList);
-        // Do not add the planning entity's (assetClassAllocationList) because that will be done automatically
-        return facts;
     }
 
     /**

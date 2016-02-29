@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -32,8 +33,6 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedV
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution
@@ -46,7 +45,9 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
     protected String name;
     protected DistanceType distanceType;
     protected String distanceUnitOfMeasurement;
+    @PlanningFactCollectionProperty
     protected List<Location> locationList;
+    @PlanningFactCollectionProperty
     protected List<Depot> depotList;
     protected List<Vehicle> vehicleList;
 
@@ -126,15 +127,6 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(locationList);
-        facts.addAll(depotList);
-        // Do not add the planning entities (vehicleList, customerList) because that will be done automatically
-        return facts;
-    }
 
     public String getDistanceString(NumberFormat numberFormat) {
         if (score == null) {

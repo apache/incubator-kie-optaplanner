@@ -16,32 +16,35 @@
 
 package org.optaplanner.examples.meetingscheduling.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+
+import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("MsMeetingSchedule")
 public class MeetingSchedule extends AbstractPersistable implements Solution<HardMediumSoftScore> {
 
+    @PlanningFactCollectionProperty
     private List<Meeting> meetingList;
+    @PlanningFactCollectionProperty
     private List<Day> dayList;
+    @PlanningFactCollectionProperty
     private List<TimeGrain> timeGrainList;
+    @PlanningFactCollectionProperty
     private List<Room> roomList;
+    @PlanningFactCollectionProperty
     private List<Person> personList;
+    @PlanningFactCollectionProperty
     private List<Attendance> attendanceList;
 
     private List<MeetingAssignment> meetingAssignmentList;
@@ -121,18 +124,5 @@ public class MeetingSchedule extends AbstractPersistable implements Solution<Har
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(meetingList);
-        facts.addAll(dayList);
-        facts.addAll(timeGrainList);
-        facts.addAll(roomList);
-        facts.addAll(personList);
-        facts.addAll(attendanceList);
-        // Do not add the planning entity's (meetingAssignmentList) because that will be done automatically
-        return facts;
-    }
 
 }

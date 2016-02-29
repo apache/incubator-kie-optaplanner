@@ -16,13 +16,10 @@
 
 package org.optaplanner.examples.cheaptime.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -31,6 +28,9 @@ import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoft
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.List;
+
+// FIXME originally had itself as a fact
 @PlanningSolution
 @XStreamAlias("CtCheapTimeSolution")
 public class CheapTimeSolution extends AbstractPersistable implements Solution<HardMediumSoftLongScore> {
@@ -39,13 +39,19 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     private int globalPeriodRangeFrom; // Inclusive
     private int globalPeriodRangeTo; // Exclusive
 
+    @PlanningFactCollectionProperty
     private List<Resource> resourceList;
     @ValueRangeProvider(id = "machineRange")
+    @PlanningFactCollectionProperty
     private List<Machine> machineList;
+    @PlanningFactCollectionProperty
     private List<MachineCapacity> machineCapacityList;
+    @PlanningFactCollectionProperty
     private List<Task> taskList;
+    @PlanningFactCollectionProperty
     private List<TaskRequirement> taskRequirementList;
     // Order is equal to global periodRange so int period can be used for the index
+    @PlanningFactCollectionProperty
     private List<PeriodPowerPrice> periodPowerPriceList;
 
     @PlanningEntityCollectionProperty
@@ -145,19 +151,5 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(resourceList);
-        facts.addAll(machineList);
-        facts.addAll(machineCapacityList);
-        facts.addAll(taskList);
-        facts.addAll(taskRequirementList);
-        facts.addAll(periodPowerPriceList);
-        facts.add(this);
-        // Do not add the planning entity's (taskAssignmentList) because that will be done automatically
-        return facts;
-    }
 
 }

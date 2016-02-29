@@ -19,6 +19,7 @@ package org.optaplanner.examples.cloudbalancing.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -27,14 +28,13 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("CloudBalance")
 public class CloudBalance extends AbstractPersistable implements Solution<HardSoftScore> {
 
+    @PlanningFactCollectionProperty
     private List<CloudComputer> computerList;
 
     private List<CloudProcess> processList;
@@ -71,13 +71,5 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardSo
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(computerList);
-        // Do not add the planning entity's (processList) because that will be done automatically
-        return facts;
-    }
 
 }

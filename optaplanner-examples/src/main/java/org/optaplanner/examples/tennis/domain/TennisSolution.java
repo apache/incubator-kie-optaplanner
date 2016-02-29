@@ -16,24 +16,26 @@
 
 package org.optaplanner.examples.tennis.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
+import java.util.List;
+
 @PlanningSolution
 @XStreamAlias("TennisSolution")
 public class TennisSolution extends AbstractPersistable implements Solution<HardMediumSoftScore> {
 
+    @PlanningFactCollectionProperty
     private List<Team> teamList;
+    @PlanningFactCollectionProperty
     private List<Day> dayList;
+    @PlanningFactCollectionProperty
     private List<UnavailabilityPenalty> unavailabilityPenaltyList;
 
     private List<TeamAssignment> teamAssignmentList;
@@ -80,16 +82,6 @@ public class TennisSolution extends AbstractPersistable implements Solution<Hard
 
     public void setScore(HardMediumSoftScore score) {
         this.score = score;
-    }
-
-    @Override
-    public Collection<?> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(teamList);
-        facts.addAll(dayList);
-        facts.addAll(unavailabilityPenaltyList);
-        // Do not add the planning entity's (teamAssignmentList) because that will be done automatically
-        return facts;
     }
 
 }

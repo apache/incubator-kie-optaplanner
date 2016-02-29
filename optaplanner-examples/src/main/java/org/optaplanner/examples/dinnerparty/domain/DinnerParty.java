@@ -16,14 +16,10 @@
 
 package org.optaplanner.examples.dinnerparty.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -32,15 +28,27 @@ import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.EnumSet;
+import java.util.List;
+
 @PlanningSolution
 @XStreamAlias("DinnerParty")
 public class DinnerParty extends AbstractPersistable implements Solution<SimpleScore> {
 
+    @PlanningFactCollectionProperty
     private List<Job> jobList;
+    @PlanningFactCollectionProperty
     private List<Guest> guestList;
+    @PlanningFactCollectionProperty
     private List<HobbyPractician> hobbyPracticianList;
+    @PlanningFactCollectionProperty
     private List<Table> tableList;
+    @PlanningFactCollectionProperty
     private List<Seat> seatList;
+    @PlanningFactCollectionProperty
+    private EnumSet<JobType> jobType = EnumSet.allOf(JobType.class);
+    @PlanningFactCollectionProperty
+    private EnumSet<Hobby> hobbyType = EnumSet.allOf(Hobby.class);
 
     private List<SeatDesignation> seatDesignationList;
 
@@ -108,19 +116,5 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(EnumSet.allOf(JobType.class));
-        facts.addAll(jobList);
-        facts.addAll(guestList);
-        facts.addAll(EnumSet.allOf(Hobby.class));
-        facts.addAll(hobbyPracticianList);
-        facts.addAll(tableList);
-        facts.addAll(seatList);
-        // Do not add the planning entity's (seatDesignationList) because that will be done automatically
-        return facts;
-    }
 
 }

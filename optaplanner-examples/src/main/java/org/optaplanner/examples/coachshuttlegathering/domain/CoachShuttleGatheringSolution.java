@@ -18,9 +18,7 @@ package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
@@ -29,7 +27,6 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,10 +35,12 @@ import java.util.List;
 public class CoachShuttleGatheringSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
     protected String name;
+    @PlanningFactCollectionProperty
     protected List<RoadLocation> locationList;
     protected List<Coach> coachList;
     protected List<Shuttle> shuttleList;
     protected List<BusStop> stopList;
+    @PlanningFactProperty
     protected BusHub hub;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
@@ -116,15 +115,6 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
     @ValueRangeProvider(id = "hubRange")
     public List<BusHub> getHubRange() {
         return Collections.singletonList(hub);
-    }
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(locationList);
-        facts.add(hub);
-        // Do not add the planning entities (coachList, shuttleList, busStopList) because that will be done automatically
-        return facts;
     }
 
     public List<Bus> getBusList() {

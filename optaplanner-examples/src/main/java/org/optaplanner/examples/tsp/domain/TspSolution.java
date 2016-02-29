@@ -18,9 +18,7 @@ package org.optaplanner.examples.tsp.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
@@ -30,8 +28,6 @@ import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,7 +38,9 @@ public class TspSolution extends AbstractPersistable implements Solution<SimpleL
     private String name;
     protected DistanceType distanceType;
     protected String distanceUnitOfMeasurement;
+    @PlanningFactCollectionProperty
     private List<Location> locationList;
+    @PlanningFactProperty
     private Domicile domicile;
 
     private List<Visit> visitList;
@@ -115,15 +113,6 @@ public class TspSolution extends AbstractPersistable implements Solution<SimpleL
     @ValueRangeProvider(id = "domicileRange")
     public List<Domicile> getDomicileRange() {
         return Collections.singletonList(domicile);
-    }
-
-    @Override
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(locationList);
-        facts.add(domicile);
-        // Do not add the planning entity's (visitList) because that will be done automatically
-        return facts;
     }
 
     public String getDistanceString(NumberFormat numberFormat) {
