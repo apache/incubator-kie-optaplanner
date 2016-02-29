@@ -45,15 +45,16 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
     private List<Table> tableList;
     @PlanningFactCollectionProperty
     private List<Seat> seatList;
-    @PlanningFactCollectionProperty
-    private EnumSet<JobType> jobType = EnumSet.allOf(JobType.class);
-    @PlanningFactCollectionProperty
-    private EnumSet<Hobby> hobbyType = EnumSet.allOf(Hobby.class);
 
     private List<SeatDesignation> seatDesignationList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
     private SimpleScore score;
+
+    @PlanningFactCollectionProperty
+    public EnumSet<Hobby> getHobbyType() {
+        return EnumSet.allOf(Hobby.class);
+    }
 
     public List<Job> getJobList() {
         return jobList;
@@ -61,6 +62,11 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
 
     public void setJobList(List<Job> jobList) {
         this.jobList = jobList;
+    }
+
+    @PlanningFactCollectionProperty
+    public EnumSet<JobType> getJobType() {
+        return EnumSet.allOf(JobType.class);
     }
 
     public List<Guest> getGuestList() {

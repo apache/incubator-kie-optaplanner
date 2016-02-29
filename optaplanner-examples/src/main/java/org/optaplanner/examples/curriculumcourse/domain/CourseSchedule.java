@@ -157,7 +157,7 @@ public class CourseSchedule extends AbstractPersistable implements Solution<Hard
     // ************************************************************************
 
     @PlanningFactCollectionProperty
-    private List<CourseConflict> precalculateCourseConflictList() {
+    private List<CourseConflict> getCourseConflictList() {
         List<CourseConflict> courseConflictList = new ArrayList<CourseConflict>();
         for (Course leftCourse : courseList) {
             for (Course rightCourse : courseList) {

@@ -152,7 +152,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     // ************************************************************************
 
     @PlanningFactCollectionProperty
-    private List<MrServiceDependency> createServiceDependencyList() {
+    private List<MrServiceDependency> getServiceDependencyList() {
         List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceList.size() * 5);
         for (MrService service : serviceList) {
             for (MrService toService : service.getToDependencyServiceList()) {

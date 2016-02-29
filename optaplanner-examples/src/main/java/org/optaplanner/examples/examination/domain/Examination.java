@@ -134,7 +134,7 @@ public class Examination extends AbstractPersistable implements Solution<HardSof
     // ************************************************************************
 
     @PlanningFactCollectionProperty
-    private List<TopicConflict> precalculateTopicConflictList() {
+    private List<TopicConflict> getTopicConflictList() {
         List<TopicConflict> topicConflictList = new ArrayList<TopicConflict>();
         for (Topic leftTopic : topicList) {
             for (Topic rightTopic : topicList) {
