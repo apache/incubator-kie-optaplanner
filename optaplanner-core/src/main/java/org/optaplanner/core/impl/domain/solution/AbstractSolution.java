@@ -28,7 +28,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,8 +61,8 @@ public abstract class AbstractSolution<S extends Score> implements Solution<S>, 
     }
 
     @PlanningFactCollectionProperty
-    public List<Object> getProblemFactsFromClass(Class<?> instanceClass) {
-        List<Object> factList = new ArrayList<>();
+    private Collection<Object> getProblemFactsFromClass(Class<?> instanceClass) {
+        Collection<Object> factList = new ArrayList<>();
         if (instanceClass.equals(AbstractSolution.class)) {
             // The field score should not be included
             return factList;
