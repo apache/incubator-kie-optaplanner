@@ -16,11 +16,6 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -32,6 +27,11 @@ import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDef
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("CsgCoachShuttleGatheringSolution")
@@ -118,6 +118,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         return Collections.singletonList(hub);
     }
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(locationList);

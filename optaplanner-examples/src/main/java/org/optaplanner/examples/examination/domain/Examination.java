@@ -16,10 +16,6 @@
 
 package org.optaplanner.examples.examination.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -32,10 +28,13 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @PlanningSolution()
 @XStreamAlias("Examination")
-public class Examination extends AbstractPersistable
-        implements Solution<HardSoftScore> {
+public class Examination extends AbstractPersistable implements Solution<HardSoftScore> {
 
     private InstitutionParametrization institutionParametrization;
 
@@ -131,6 +130,7 @@ public class Examination extends AbstractPersistable
     // Complex methods
     // ************************************************************************
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(institutionParametrization);

@@ -109,6 +109,7 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
     // Complex methods
     // ************************************************************************
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(EnumSet.allOf(JobType.class));

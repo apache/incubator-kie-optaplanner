@@ -16,11 +16,6 @@
 
 package org.optaplanner.examples.vehiclerouting.domain;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
@@ -35,6 +30,11 @@ import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("VrpVehicleRoutingSolution")
@@ -127,6 +127,7 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
     // Complex methods
     // ************************************************************************
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(locationList);

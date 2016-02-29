@@ -108,6 +108,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
         return ValueRangeFactory.createLongValueRange(0L, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS + 1L);
     }
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(parametrization);

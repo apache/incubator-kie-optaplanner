@@ -16,10 +16,6 @@
 
 package org.optaplanner.examples.nurserostering.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -38,6 +34,10 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("NurseRoster")
@@ -225,6 +225,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
     // Complex methods
     // ************************************************************************
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(nurseRosterParametrization);

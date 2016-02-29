@@ -16,12 +16,6 @@
 
 package org.optaplanner.examples.tsp.domain;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -31,9 +25,15 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
+import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("TspSolution")
@@ -117,6 +117,7 @@ public class TspSolution extends AbstractPersistable implements Solution<SimpleL
         return Collections.singletonList(domicile);
     }
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(locationList);

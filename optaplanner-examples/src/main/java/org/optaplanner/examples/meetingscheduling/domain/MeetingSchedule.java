@@ -122,6 +122,7 @@ public class MeetingSchedule extends AbstractPersistable implements Solution<Har
     // Complex methods
     // ************************************************************************
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(meetingList);

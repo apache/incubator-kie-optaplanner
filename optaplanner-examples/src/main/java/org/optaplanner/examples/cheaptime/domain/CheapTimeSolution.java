@@ -146,6 +146,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     // Complex methods
     // ************************************************************************
 
+    @Override
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(resourceList);
