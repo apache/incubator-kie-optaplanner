@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -31,6 +26,11 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class SwapMove extends AbstractMove {
 
@@ -60,6 +60,9 @@ public class SwapMove extends AbstractMove {
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         boolean movable = false;
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+            if (leftEntity == null || rightEntity == null) {
+                return false;
+            }
             Object leftValue = variableDescriptor.getValue(leftEntity);
             Object rightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
