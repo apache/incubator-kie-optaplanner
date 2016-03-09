@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,9 @@
 
 package org.optaplanner.examples.machinereassignment.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
@@ -32,18 +26,30 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @PlanningSolution
 @XStreamAlias("MachineReassignment")
 public class MachineReassignment extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
+    @PlanningFactProperty
     private MrGlobalPenaltyInfo globalPenaltyInfo;
+    @PlanningFactCollectionProperty
     private List<MrResource> resourceList;
+    @PlanningFactCollectionProperty
     private List<MrNeighborhood> neighborhoodList;
+    @PlanningFactCollectionProperty
     private List<MrLocation> locationList;
+    @PlanningFactCollectionProperty
     private List<MrMachine> machineList;
+    @PlanningFactCollectionProperty
     private List<MrMachineCapacity> machineCapacityList;
+    @PlanningFactCollectionProperty
     private List<MrService> serviceList;
+    @PlanningFactCollectionProperty
     private List<MrProcess> processList;
+    @PlanningFactCollectionProperty
     private List<MrBalancePenalty> balancePenaltyList;
 
     private List<MrProcessAssignment> processAssignmentList;
@@ -145,23 +151,8 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     // Complex methods
     // ************************************************************************
 
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.add(globalPenaltyInfo);
-        facts.addAll(resourceList);
-        facts.addAll(neighborhoodList);
-        facts.addAll(locationList);
-        facts.addAll(machineList);
-        facts.addAll(machineCapacityList);
-        facts.addAll(serviceList);
-        facts.addAll(createServiceDependencyList());
-        facts.addAll(processList);
-        facts.addAll(balancePenaltyList);
-        // Do not add the planning entity's (bedDesignationList) because that will be done automatically
-        return facts;
-    }
-
-    private List<MrServiceDependency> createServiceDependencyList() {
+    @PlanningFactCollectionProperty
+    private List<MrServiceDependency> getServiceDependencyList() {
         List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceList.size() * 5);
         for (MrService service : serviceList) {
             for (MrService toService : service.getToDependencyServiceList()) {

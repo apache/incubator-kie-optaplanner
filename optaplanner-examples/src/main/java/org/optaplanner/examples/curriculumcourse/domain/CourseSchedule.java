@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,10 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -32,20 +29,31 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @PlanningSolution
 @XStreamAlias("CourseSchedule")
 public class CourseSchedule extends AbstractPersistable implements Solution<HardSoftScore> {
 
     private String name;
 
+    @PlanningFactCollectionProperty
     private List<Teacher> teacherList;
+    @PlanningFactCollectionProperty
     private List<Curriculum> curriculumList;
+    @PlanningFactCollectionProperty
     private List<Course> courseList;
+    @PlanningFactCollectionProperty
     private List<Day> dayList;
+    @PlanningFactCollectionProperty
     private List<Timeslot> timeslotList;
+    @PlanningFactCollectionProperty
     private List<Period> periodList;
+    @PlanningFactCollectionProperty
     private List<Room> roomList;
 
+    @PlanningFactCollectionProperty
     private List<UnavailablePeriodPenalty> unavailablePeriodPenaltyList;
 
     private List<Lecture> lectureList;
@@ -148,22 +156,8 @@ public class CourseSchedule extends AbstractPersistable implements Solution<Hard
     // Complex methods
     // ************************************************************************
 
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(teacherList);
-        facts.addAll(curriculumList);
-        facts.addAll(courseList);
-        facts.addAll(dayList);
-        facts.addAll(timeslotList);
-        facts.addAll(periodList);
-        facts.addAll(roomList);
-        facts.addAll(unavailablePeriodPenaltyList);
-        facts.addAll(precalculateCourseConflictList());
-        // Do not add the planning entity's (lectureList) because that will be done automatically
-        return facts;
-    }
-
-    private List<CourseConflict> precalculateCourseConflictList() {
+    @PlanningFactCollectionProperty
+    private List<CourseConflict> getCourseConflictList() {
         List<CourseConflict> courseConflictList = new ArrayList<CourseConflict>();
         for (Course leftCourse : courseList) {
             for (Course rightCourse : courseList) {

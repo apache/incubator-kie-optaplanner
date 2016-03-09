@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,11 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -33,11 +29,16 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.Iterator;
+import java.util.List;
+
 @PlanningSolution
 @XStreamAlias("TravelingTournament")
 public class TravelingTournament extends AbstractPersistable implements Solution<HardSoftScore> {
 
+    @PlanningFactCollectionProperty
     private List<Day> dayList;
+    @PlanningFactCollectionProperty
     private List<Team> teamList;
 
     private List<Match> matchList;
@@ -85,14 +86,6 @@ public class TravelingTournament extends AbstractPersistable implements Solution
 
     public int getN() {
         return teamList.size();
-    }
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(dayList);
-        facts.addAll(teamList);
-        // Do not add the planning entity's (matchList) because that will be done automatically
-        return facts;
     }
 
     public boolean equals(Object o) {

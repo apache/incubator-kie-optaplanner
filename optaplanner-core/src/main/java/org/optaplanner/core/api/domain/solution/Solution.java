@@ -54,18 +54,4 @@ public interface Solution<S extends Score> {
      */
     void setScore(S score);
 
-    /**
-     * Called by the {@link DroolsScoreDirector} when the {@link Solution} needs to be inserted
-     * into an empty {@link KieSession}.
-     * These facts can be used by the score rules.
-     * They don't change during planning (except through {@link ProblemFactChange} events).
-     * <p>
-     * Do not include the planning entities as problem facts:
-     * they are automatically inserted into the {@link KieSession} if and only if they are initialized.
-     * When they are initialized later, they are also automatically inserted.
-     * @return never null (although an empty collection is allowed),
-     *         all the facts of this solution except for the planning entities
-     */
-    Collection<? extends Object> getProblemFacts();
-
 }

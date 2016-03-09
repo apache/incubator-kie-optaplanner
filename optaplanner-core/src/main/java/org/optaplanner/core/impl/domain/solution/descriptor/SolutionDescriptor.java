@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,20 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
-import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -62,6 +41,12 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class SolutionDescriptor {
 
@@ -115,12 +100,17 @@ public class SolutionDescriptor {
     private final Map<String, MemberAccessor> entityPropertyAccessorMap;
     private final Map<String, MemberAccessor> entityCollectionPropertyAccessorMap;
 
+    private final Map<String, MemberAccessor> factPropertyAccessorMap;
+    private final Map<String, MemberAccessor> factCollectionPropertyAccessorMap;
+
     private final Map<Class<?>, EntityDescriptor> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
     private final Map<Class<?>, EntityDescriptor> lowestEntityDescriptorCache;
 
     public SolutionDescriptor(Class<? extends Solution> solutionClass) {
         this.solutionClass = solutionClass;
+        factPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
+        factCollectionPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
         entityPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
         entityCollectionPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
         entityDescriptorMap = new LinkedHashMap<Class<?>, EntityDescriptor>();
@@ -144,8 +134,23 @@ public class SolutionDescriptor {
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processSolutionAnnotations(descriptorPolicy);
-        processValueRangeProviderAnnotations(descriptorPolicy);
-        processEntityPropertyAnnotations(descriptorPolicy);
+        // TODO This does not support annotations on inherited fields
+        Arrays.stream(solutionClass.getDeclaredFields()).sorted(new AlphabeticMemberComparator()).forEach(field -> {
+            processValueRangeProviderAnnotation(descriptorPolicy, field);
+            processEntityPropertyAnnotation(descriptorPolicy, field);
+            processFactPropertyAnnotation(descriptorPolicy, field);
+        });
+        // TODO This does not support annotations on inherited methods
+        Arrays.stream(solutionClass.getDeclaredMethods()).sorted(new AlphabeticMemberComparator()).forEach(method -> {
+            processValueRangeProviderAnnotation(descriptorPolicy, method);
+            processEntityPropertyAnnotation(descriptorPolicy, method);
+            processFactPropertyAnnotation(descriptorPolicy, method);
+        });
+        if (!hasEntityAnnotation()) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") should have at least 1 getter with a PlanningEntityCollectionProperty or PlanningEntityProperty"
+                    + " annotation.");
+        }
     }
 
     private void processSolutionAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -174,63 +179,66 @@ public class SolutionDescriptor {
         }
     }
 
-    private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
-        // TODO This does not support annotations on inherited fields
-        List<Field> fieldList = Arrays.asList(solutionClass.getDeclaredFields());
-        Collections.sort(fieldList, new AlphabeticMemberComparator());
-        for (Field field : fieldList) {
-            if (field.isAnnotationPresent(ValueRangeProvider.class)) {
-                MemberAccessor memberAccessor = new FieldMemberAccessor(field);
-                descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
-            }
-        }
-        // TODO This does not support annotations on inherited members
-        List<Method> methodList = Arrays.asList(solutionClass.getDeclaredMethods());
-        Collections.sort(methodList, new AlphabeticMemberComparator());
-        for (Method method : methodList) {
-            if (method.isAnnotationPresent(ValueRangeProvider.class)) {
-                ReflectionHelper.assertReadMethod(method, ValueRangeProvider.class);
-                MemberAccessor memberAccessor = new MethodMemberAccessor(method);
-                descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
-            }
+    private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
+        if (field.isAnnotationPresent(ValueRangeProvider.class)) {
+            MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+            descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
         }
     }
 
-    private void processEntityPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-        boolean noEntityPropertyAnnotation = true;
-        // TODO This does not support annotations on inherited fields
-        List<Field> fieldList = Arrays.asList(solutionClass.getDeclaredFields());
-        Collections.sort(fieldList, new AlphabeticMemberComparator());
-        for (Field field : fieldList) {
-            Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(field);
-            if (entityPropertyAnnotationClass != null) {
-                noEntityPropertyAnnotation = false;
-                MemberAccessor memberAccessor = new FieldMemberAccessor(field);
-                registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
-            }
+    private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy, Method method) {
+        if (method.isAnnotationPresent(ValueRangeProvider.class)) {
+            ReflectionHelper.assertReadMethod(method, ValueRangeProvider.class);
+            MemberAccessor memberAccessor = new MethodMemberAccessor(method);
+            descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
         }
-        // TODO This does not support annotations on inherited methods
-        List<Method> methodList = Arrays.asList(solutionClass.getDeclaredMethods());
-        Collections.sort(methodList, new AlphabeticMemberComparator());
-        for (Method method : methodList) {
-            Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(method);
-            if (entityPropertyAnnotationClass != null) {
-                noEntityPropertyAnnotation = false;
-                ReflectionHelper.assertGetterMethod(method, entityPropertyAnnotationClass);
-                MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
-                registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
-            }
+    }
+
+    private void processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
+        Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(field);
+        if (entityPropertyAnnotationClass != null) {
+            MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+            registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
         }
-        if (noEntityPropertyAnnotation) {
-            throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") should have at least 1 getter with a PlanningEntityCollectionProperty or PlanningEntityProperty"
-                    + " annotation.");
+    }
+
+    private void processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Method method) {
+        Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(method);
+        if (entityPropertyAnnotationClass != null) {
+            ReflectionHelper.assertGetterMethod(method, entityPropertyAnnotationClass);
+            MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
+            registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
+        }
+    }
+
+    private void processFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
+        Class<? extends Annotation> factPropertyAnnotationClass = extractFactPropertyAnnotationClass(field);
+        if (factPropertyAnnotationClass != null) {
+            MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+            registerFactPropertyAccessor(factPropertyAnnotationClass, memberAccessor);
+        }
+    }
+
+    private void processFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Method method) {
+        Class<? extends Annotation> factPropertyAnnotationClass = extractFactPropertyAnnotationClass(method);
+        if (factPropertyAnnotationClass != null) {
+            ReflectionHelper.assertGetterMethod(method, factPropertyAnnotationClass);
+            MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
+            registerFactPropertyAccessor(factPropertyAnnotationClass, memberAccessor);
         }
     }
 
     private Class<? extends Annotation> extractEntityPropertyAnnotationClass(AnnotatedElement member) {
+        return extractAnnotationClass(member, PlanningEntityProperty.class, PlanningEntityCollectionProperty.class);
+    }
+
+    private Class<? extends Annotation> extractFactPropertyAnnotationClass(AnnotatedElement member) {
+        return extractAnnotationClass(member, PlanningFactProperty.class, PlanningFactCollectionProperty.class);
+    }
+
+    private Class<? extends Annotation> extractAnnotationClass(AnnotatedElement member, Class<? extends Annotation>... annotations) {
         Class<? extends Annotation> annotationClass = null;
-        for (Class<? extends Annotation> detectedAnnotationClass : Arrays.asList(PlanningEntityProperty.class, PlanningEntityCollectionProperty.class)) {
+        for (Class<? extends Annotation> detectedAnnotationClass : Arrays.asList(annotations)) {
             if (member.isAnnotationPresent(detectedAnnotationClass)) {
                 if (annotationClass != null) {
                     throw new IllegalStateException("The solutionClass (" + solutionClass
@@ -247,29 +255,46 @@ public class SolutionDescriptor {
 
     private void registerEntityPropertyAccessor(Class<? extends Annotation> entityPropertyAnnotationClass,
             MemberAccessor memberAccessor) {
+        registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor, entityPropertyAccessorMap,
+                entityCollectionPropertyAccessorMap, PlanningEntityProperty.class,
+                PlanningEntityCollectionProperty.class);
+    }
+
+    private void registerFactPropertyAccessor(Class<? extends Annotation> factPropertyAnnotationClass,
+                                                MemberAccessor memberAccessor) {
+        registerEntityPropertyAccessor(factPropertyAnnotationClass, memberAccessor, factPropertyAccessorMap,
+                factCollectionPropertyAccessorMap, PlanningFactProperty.class, PlanningFactCollectionProperty.class);
+    }
+
+    private void registerEntityPropertyAccessor(Class<? extends Annotation> annotationClass,
+                                                MemberAccessor memberAccessor,
+                                                Map<String, MemberAccessor> propertyAccessorMap,
+                                                Map<String, MemberAccessor> collectionPropertyAccessorMap,
+                                                Class<? extends Annotation> propertyAnnotationClass,
+                                                Class<? extends Annotation> collectionPropertyAnnotationClass) {
         String memberName = memberAccessor.getName();
-        if (entityPropertyAccessorMap.containsKey(memberName)
-                || entityCollectionPropertyAccessorMap.containsKey(memberName)) {
-            MemberAccessor duplicate = entityPropertyAccessorMap.get(memberName);
+        if (propertyAccessorMap.containsKey(memberName)
+                || collectionPropertyAccessorMap.containsKey(memberName)) {
+            MemberAccessor duplicate = propertyAccessorMap.get(memberName);
             if (duplicate == null) {
-                duplicate = entityCollectionPropertyAccessorMap.get(memberName);
+                duplicate = collectionPropertyAccessorMap.get(memberName);
             }
             throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") has a " + entityPropertyAnnotationClass.getSimpleName()
+                    + ") has a " + propertyAnnotationClass.getSimpleName()
                     + " annotated member (" + memberAccessor
                     + ") that is duplicated by another member (" + duplicate + ").\n"
                     + "  Verify that the annotation is not defined on both the field and its getter.");
         }
-        if (entityPropertyAnnotationClass.equals(PlanningEntityProperty.class)) {
-            entityPropertyAccessorMap.put(memberName, memberAccessor);
-        } else if (entityPropertyAnnotationClass.equals(PlanningEntityCollectionProperty.class)) {
+        if (annotationClass.equals(propertyAnnotationClass)) {
+            propertyAccessorMap.put(memberName, memberAccessor);
+        } else if (annotationClass.equals(collectionPropertyAnnotationClass)) {
             if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
+                        + ") has a " + collectionPropertyAnnotationClass.getSimpleName()
                         + " annotated member (" + memberName + ") that does not return a "
                         + Collection.class.getSimpleName() + ".");
             }
-            entityCollectionPropertyAccessorMap.put(memberName, memberAccessor);
+            collectionPropertyAccessorMap.put(memberName, memberAccessor);
         }
     }
 
@@ -399,6 +424,10 @@ public class SolutionDescriptor {
         return entityDescriptorMap.get(entityClass);
     }
 
+    private boolean hasEntityAnnotation() {
+        return !(this.entityCollectionPropertyAccessorMap.isEmpty() && this.entityPropertyAccessorMap.isEmpty());
+    }
+
     public boolean hasEntityDescriptor(Class<?> entitySubclass) {
         EntityDescriptor entityDescriptor = findEntityDescriptor(entitySubclass);
         return entityDescriptor != null;
@@ -465,23 +494,16 @@ public class SolutionDescriptor {
     // ************************************************************************
 
     public Collection<Object> getAllFacts(Solution solution) {
-        Collection<Object> facts = new ArrayList<Object>();
-        Collection<?> problemFacts = solution.getProblemFacts();
-        if (problemFacts == null) {
-            throw new IllegalStateException("The solution (" + solution
-                    + ")'s method getProblemFacts() should never return null.");
-        }
-        facts.addAll(problemFacts);
-        for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extractEntity(entityMemberAccessor, solution);
-            if (entity != null) {
-                facts.add(entity);
+        Collection<Object> facts = new ArrayList<>();
+        // will add both entities and facts
+        Arrays.asList(entityPropertyAccessorMap, factPropertyAccessorMap).forEach(map -> map.forEach((key, value) -> {
+            Object object = extract(value, solution);
+            if (object != null) {
+                facts.add(object);
             }
-        }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<Object> entityCollection = extractEntityCollection(entityCollectionMemberAccessor, solution);
-            facts.addAll(entityCollection);
-        }
+        }));
+        Arrays.asList(entityCollectionPropertyAccessorMap, factCollectionPropertyAccessorMap).forEach(map ->
+                map.forEach((key, value) -> facts.addAll(extractCollection(value, solution))));
         return facts;
     }
 
@@ -492,13 +514,13 @@ public class SolutionDescriptor {
     public int getEntityCount(Solution solution) {
         int entityCount = 0;
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extractEntity(entityMemberAccessor, solution);
+            Object entity = extract(entityMemberAccessor, solution);
             if (entity != null) {
                 entityCount++;
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<Object> entityCollection = extractEntityCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
             entityCount += entityCollection.size();
         }
         return entityCount;
@@ -507,13 +529,13 @@ public class SolutionDescriptor {
     public List<Object> getEntityList(Solution solution) {
         List<Object> entityList = new ArrayList<Object>();
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extractEntity(entityMemberAccessor, solution);
+            Object entity = extract(entityMemberAccessor, solution);
             if (entity != null) {
                 entityList.add(entity);
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<Object> entityCollection = extractEntityCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
             entityList.addAll(entityCollection);
         }
         return entityList;
@@ -523,7 +545,7 @@ public class SolutionDescriptor {
         List<Object> entityList = new ArrayList<Object>();
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
             if (entityMemberAccessor.getType().isAssignableFrom(entityClass)) {
-                Object entity = extractEntity(entityMemberAccessor, solution);
+                Object entity = extract(entityMemberAccessor, solution);
                 if (entity != null && entityClass.isInstance(entity)) {
                     entityList.add(entity);
                 }
@@ -531,7 +553,7 @@ public class SolutionDescriptor {
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
             // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(entityClass)) {
-            Collection<Object> entityCollection = extractEntityCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
             for (Object entity : entityCollection) {
                 if (entityClass.isInstance(entity)) {
                     entityList.add(entity);
@@ -617,31 +639,36 @@ public class SolutionDescriptor {
         List<Iterator<Object>> iteratorList = new ArrayList<Iterator<Object>>(
                 entityPropertyAccessorMap.size() + entityCollectionPropertyAccessorMap.size());
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extractEntity(entityMemberAccessor, solution);
+            Object entity = extract(entityMemberAccessor, solution);
             if (entity != null) {
                 iteratorList.add(Collections.singletonList(entity).iterator());
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<Object> entityCollection = extractEntityCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
             iteratorList.add(entityCollection.iterator());
         }
         return Iterators.concat(iteratorList.iterator());
     }
 
-    private Object extractEntity(MemberAccessor entityMemberAccessor, Solution solution) {
-        return entityMemberAccessor.executeGetter(solution);
+    private Object extract(MemberAccessor memberAccessor, Solution solution) {
+        return memberAccessor.executeGetter(solution);
     }
 
-    private Collection<Object> extractEntityCollection(
-            MemberAccessor entityCollectionMemberAccessor, Solution solution) {
-        Collection<Object> entityCollection = (Collection<Object>) entityCollectionMemberAccessor.executeGetter(solution);
+    private Collection<Object> extractCollection(MemberAccessor collectionMemberAccessor, Solution solution,
+                                                 boolean isFact) {
+        Collection<Object> entityCollection = (Collection<Object>) collectionMemberAccessor.executeGetter(solution);
         if (entityCollection == null) {
+            String descr = isFact ? "factCollectionProperty" : "entityCollectionProperty";
             throw new IllegalArgumentException("The solutionClass (" + solutionClass
-                    + ")'s entityCollectionProperty ("
-                    + entityCollectionMemberAccessor.getName() + ") should never return null.");
+                    + ")'s " + descr + " ("
+                    + collectionMemberAccessor.getName() + ") should never return null.");
         }
         return entityCollection;
+    }
+
+    private Collection<Object> extractCollection(MemberAccessor collectionMemberAccessor, Solution solution) {
+        return extractCollection(collectionMemberAccessor, solution, false);
     }
 
     @Override
