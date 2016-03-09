@@ -16,13 +16,10 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -31,13 +28,19 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
+import java.util.List;
+
 @PlanningSolution
 @XStreamAlias("TaTaskAssigningSolution")
 public class TaskAssigningSolution extends AbstractPersistable implements Solution<HardSoftScore> {
 
+    @PlanningFactCollectionProperty
     private List<Skill> skillList;
+    @PlanningFactCollectionProperty
     private List<Employee> employeeList;
+    @PlanningFactCollectionProperty
     private List<TaskType> taskTypeList;
+    @PlanningFactCollectionProperty
     private List<Customer> customerList;
 
     private List<Task> taskList;
@@ -96,20 +99,6 @@ public class TaskAssigningSolution extends AbstractPersistable implements Soluti
     @Override
     public void setScore(HardSoftScore score) {
         this.score = score;
-    }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(skillList);
-        facts.addAll(employeeList);
-        facts.addAll(taskTypeList);
-        facts.addAll(customerList);
-        // Do not add the planning entity's (taskList) because that will be done automatically
-        return facts;
     }
 
 }
