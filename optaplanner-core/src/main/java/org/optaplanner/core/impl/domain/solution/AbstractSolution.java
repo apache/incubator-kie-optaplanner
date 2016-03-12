@@ -27,10 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-/*
- * FIXME existence of this class is now a problem. our code doesn't support inherited methods, which is why every
- * solution using this class as a parent will fail.
- */
 /**
  * Currently only used by OptaPlanner Workbench.
  * TODO Should we promote using this class in the examples and docs too?

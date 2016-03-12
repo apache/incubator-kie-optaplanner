@@ -136,15 +136,15 @@ public class SolutionDescriptor<Solution_> {
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processSolutionAnnotations(descriptorPolicy);
-        // TODO This does not support annotations on inherited fields
-        Arrays.stream(solutionClass.getDeclaredFields()).sorted(new AlphabeticMemberComparator()).forEach(field -> {
+        ClassBrowser.getAllVisibleFields(solutionClass).stream().sorted(new AlphabeticMemberComparator())
+                .forEach(field -> {
             processScoreAnnotation(descriptorPolicy, field);
             processValueRangeProviderAnnotation(descriptorPolicy, field);
             processEntityPropertyAnnotation(descriptorPolicy, field);
             processFactPropertyAnnotation(descriptorPolicy, field);
         });
-        // TODO This does not support annotations on inherited methods
-        Arrays.stream(solutionClass.getDeclaredMethods()).sorted(new AlphabeticMemberComparator()).forEach(method -> {
+        ClassBrowser.getAllVisibleMethods(solutionClass).stream().sorted(new AlphabeticMemberComparator())
+                .forEach(method -> {
             processScoreAnnotation(descriptorPolicy, method);
             processValueRangeProviderAnnotation(descriptorPolicy, method);
             processEntityPropertyAnnotation(descriptorPolicy, method);
