@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.common.swingui;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.business.SolutionBusiness;
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class SolutionPanel<Solution_ extends Solution> extends JPanel implements Scrollable {
+public abstract class SolutionPanel<Solution_> extends JPanel implements Scrollable {
 
     protected static final String USAGE_EXPLANATION_PATH = "/org/optaplanner/examples/common/swingui/exampleUsageExplanation.png";
     // Size fits into screen resolution 1024*768

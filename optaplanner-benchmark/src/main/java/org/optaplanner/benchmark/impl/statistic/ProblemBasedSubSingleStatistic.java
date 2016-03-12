@@ -19,7 +19,8 @@ package org.optaplanner.benchmark.impl.statistic;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 
-public abstract class ProblemBasedSubSingleStatistic<P extends StatisticPoint> extends SubSingleStatistic<P> {
+public abstract class ProblemBasedSubSingleStatistic<Solution_, P extends StatisticPoint>
+        extends SubSingleStatistic<Solution_, P> {
 
     protected final ProblemStatisticType problemStatisticType;
 

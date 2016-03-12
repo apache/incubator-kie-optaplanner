@@ -16,21 +16,7 @@
 
 package org.optaplanner.benchmark.impl.result;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -39,6 +25,11 @@ import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BenchmarkResultIO {
 
@@ -108,9 +99,6 @@ public class BenchmarkResultIO {
             String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
             plannerBenchmarkResult = PlannerBenchmarkResult.createUnmarshallingFailedResult(
                     benchmarkReportDirectoryName);
-        } catch (XStreamException e) {
-            throw new IllegalArgumentException(
-                    "Problem reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Problem reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
@@ -128,12 +116,10 @@ public class BenchmarkResultIO {
             if (problemBenchmarkResult.getProblemStatisticList() == null) {
                 problemBenchmarkResult.setProblemStatisticList(new ArrayList<ProblemStatistic>(0));
             }
-            for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
-                problemStatistic.setProblemBenchmarkResult(problemBenchmarkResult);
-            }
-            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-                singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
-            }
+            List<ProblemStatistic> statistics = problemBenchmarkResult.getProblemStatisticList();
+            statistics.forEach(statistic -> statistic.setProblemBenchmarkResult(problemBenchmarkResult));
+            List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+            results.forEach(result -> result.setProblemBenchmarkResult(problemBenchmarkResult));
         }
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);

@@ -33,7 +33,7 @@ import java.util.Map;
  * We can never enforce it, as the user might want to use a different superclass.
  * @param <S> the {@link Score} type used by this use case
  */
-public abstract class AbstractSolution<S extends Score> implements Solution<S>, Serializable {
+public abstract class AbstractSolution<S extends Score> implements Serializable {
 
     protected S score;
 

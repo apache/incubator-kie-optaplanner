@@ -32,7 +32,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("CsgCoachShuttleGatheringSolution")
-public class CoachShuttleGatheringSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class CoachShuttleGatheringSolution extends AbstractPersistable {
 
     protected String name;
     @PlanningFactCollectionProperty

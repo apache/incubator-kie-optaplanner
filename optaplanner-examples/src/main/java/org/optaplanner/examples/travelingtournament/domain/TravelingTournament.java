@@ -31,7 +31,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("TravelingTournament")
-public class TravelingTournament extends AbstractPersistable implements Solution<HardSoftScore> {
+public class TravelingTournament extends AbstractPersistable {
 
     @PlanningFactCollectionProperty
     private List<Day> dayList;

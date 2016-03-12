@@ -37,7 +37,7 @@ import java.util.List;
 @XStreamInclude({
         TimeWindowedVehicleRoutingSolution.class
 })
-public class VehicleRoutingSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class VehicleRoutingSolution extends AbstractPersistable {
 
     protected String name;
     protected DistanceType distanceType;

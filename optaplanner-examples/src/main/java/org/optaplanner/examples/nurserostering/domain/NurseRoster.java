@@ -37,7 +37,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("NurseRoster")
-public class NurseRoster extends AbstractPersistable implements Solution<HardSoftScore> {
+public class NurseRoster extends AbstractPersistable {
 
     private String code;
 

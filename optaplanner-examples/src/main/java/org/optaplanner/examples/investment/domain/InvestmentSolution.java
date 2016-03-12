@@ -32,7 +32,7 @@ import java.util.*;
 
 @PlanningSolution
 @XStreamAlias("InvestmentSolution")
-public class InvestmentSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class InvestmentSolution extends AbstractPersistable {
 
     @PlanningFactProperty
     private InvestmentParametrization parametrization;

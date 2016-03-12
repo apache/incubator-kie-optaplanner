@@ -29,7 +29,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("CloudBalance")
-public class CloudBalance extends AbstractPersistable implements Solution<HardSoftScore> {
+public class CloudBalance extends AbstractPersistable {
 
     @PlanningFactCollectionProperty
     private List<CloudComputer> computerList;

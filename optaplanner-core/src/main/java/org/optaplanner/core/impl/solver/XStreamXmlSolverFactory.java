@@ -27,8 +27,6 @@ import java.io.UnsupportedEncodingException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
-import org.kie.api.runtime.KieContainer;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.SolverConfigContext;
@@ -38,7 +36,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
  * XML based configuration that builds a {@link Solver} with {@link XStream}.
  * @see SolverFactory
  */
-public class XStreamXmlSolverFactory<Solution_ extends Solution> extends AbstractSolverFactory<Solution_> {
+public class XStreamXmlSolverFactory<Solution_> extends AbstractSolverFactory<Solution_> {
 
     /**
      * Builds the {@link XStream} setup which is used to read/write solver configs and benchmark configs.

@@ -17,7 +17,6 @@
 package org.optaplanner.examples.common.swingui;
 
 import org.apache.commons.io.FilenameUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
@@ -39,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFrame {
+public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -284,7 +283,7 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
         @Override
         protected void done() {
             try {
-                Solution bestSolution = get();
+                Solution_ bestSolution = get();
                 solutionBusiness.setSolution(bestSolution);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

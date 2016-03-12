@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution
-public class TestdataAccessModifierSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataAccessModifierSolution extends TestdataObject {
 
     private static final String STATIC_FINAL_FIELD = "staticFinalFieldValue";
 

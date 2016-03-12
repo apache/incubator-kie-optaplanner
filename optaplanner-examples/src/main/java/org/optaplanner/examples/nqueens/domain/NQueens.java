@@ -29,7 +29,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("NQueens")
-public class NQueens extends AbstractPersistable implements Solution<SimpleScore> {
+public class NQueens extends AbstractPersistable {
 
     private int n;
 

@@ -17,9 +17,9 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
 import org.junit.Test;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
@@ -41,7 +41,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         when(phaseScope.getLastCompletedStepScope()).thenReturn(lastCompletedStepScope);
         ExhaustiveSearchStepScope stepScope = mock(ExhaustiveSearchStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
-        Solution workingSolution = mock(Solution.class);
+        AbstractSolution workingSolution = mock(AbstractSolution.class);
         when(phaseScope.getWorkingSolution()).thenReturn(workingSolution);
 
         SolutionDescriptor sd = mock(SolutionDescriptor.class);

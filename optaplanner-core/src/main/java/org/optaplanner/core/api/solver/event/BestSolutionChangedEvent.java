@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.solver.event;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -29,7 +28,7 @@ import java.util.EventObject;
  * Delivered when the best {@link Solution} changes during solving.
  * Delivered in the solver thread (which is the thread that calls {@link Solver#solve(Solution)}.
  */
-public class BestSolutionChangedEvent<Solution_ extends Solution> extends EventObject {
+public class BestSolutionChangedEvent<Solution_> extends EventObject {
 
     private final DefaultSolver<Solution_> solver;
     private final long timeMillisSpent;

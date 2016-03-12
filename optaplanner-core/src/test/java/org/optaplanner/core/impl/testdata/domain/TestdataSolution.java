@@ -25,9 +25,9 @@ import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution
-public class TestdataSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataSolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataSolution.class, TestdataEntity.class);
     }
 

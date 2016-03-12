@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution
-public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedDeepCloningSolution.class, TestdataFieldAnnotatedDeepCloningEntity.class);

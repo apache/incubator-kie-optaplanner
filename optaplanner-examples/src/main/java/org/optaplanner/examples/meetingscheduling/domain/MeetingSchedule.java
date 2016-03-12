@@ -29,7 +29,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("MsMeetingSchedule")
-public class MeetingSchedule extends AbstractPersistable implements Solution<HardMediumSoftScore> {
+public class MeetingSchedule extends AbstractPersistable {
 
     @PlanningFactCollectionProperty
     private List<Meeting> meetingList;

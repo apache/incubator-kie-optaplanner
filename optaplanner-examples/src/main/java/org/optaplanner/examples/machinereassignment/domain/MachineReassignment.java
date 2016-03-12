@@ -31,7 +31,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("MachineReassignment")
-public class MachineReassignment extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class MachineReassignment extends AbstractPersistable {
 
     @PlanningFactProperty
     private MrGlobalPenaltyInfo globalPenaltyInfo;

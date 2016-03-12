@@ -48,17 +48,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class SolutionDescriptor {
+public class SolutionDescriptor<Solution_> {
 
-    public static SolutionDescriptor buildSolutionDescriptor(Class<? extends Solution> solutionClass,
+    public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             Class<?> ... entityClasses) {
         return buildSolutionDescriptor(solutionClass, Arrays.asList(entityClasses));
     }
 
-    public static SolutionDescriptor buildSolutionDescriptor(Class<? extends Solution> solutionClass,
+    public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             List<Class<?>> entityClassList) {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
-        SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
+        SolutionDescriptor<Solution_> solutionDescriptor = new SolutionDescriptor(solutionClass);
         solutionDescriptor.processAnnotations(descriptorPolicy);
         for (Class<?> entityClass : sortEntityClassList(entityClassList)) {
             EntityDescriptor entityDescriptor = new EntityDescriptor(solutionDescriptor, entityClass);
@@ -94,8 +94,8 @@ public class SolutionDescriptor {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Class<? extends Solution> solutionClass;
-    private SolutionCloner solutionCloner;
+    private final Class<Solution_> solutionClass;
+    private SolutionCloner<Solution_> solutionCloner;
 
     private final Map<String, MemberAccessor> entityPropertyAccessorMap;
     private final Map<String, MemberAccessor> entityCollectionPropertyAccessorMap;
@@ -105,22 +105,22 @@ public class SolutionDescriptor {
 
     private MemberAccessor scoreAccessor;
 
-    private final Map<Class<?>, EntityDescriptor> entityDescriptorMap;
+    private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
-    private final Map<Class<?>, EntityDescriptor> lowestEntityDescriptorCache;
+    private final Map<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorCache;
 
-    public SolutionDescriptor(Class<? extends Solution> solutionClass) {
+    public SolutionDescriptor(Class<Solution_> solutionClass) {
         this.solutionClass = solutionClass;
-        factPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
-        factCollectionPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
-        entityPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
-        entityCollectionPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
-        entityDescriptorMap = new LinkedHashMap<Class<?>, EntityDescriptor>();
-        reversedEntityClassList = new ArrayList<Class<?>>();
-        lowestEntityDescriptorCache = new HashMap<Class<?>, EntityDescriptor>();
+        factPropertyAccessorMap = new LinkedHashMap<>();
+        factCollectionPropertyAccessorMap = new LinkedHashMap<>();
+        entityPropertyAccessorMap = new LinkedHashMap<>();
+        entityCollectionPropertyAccessorMap = new LinkedHashMap<>();
+        entityDescriptorMap = new LinkedHashMap<>();
+        reversedEntityClassList = new ArrayList<>();
+        lowestEntityDescriptorCache = new HashMap<>();
     }
 
-    public void addEntityDescriptor(EntityDescriptor entityDescriptor) {
+    public void addEntityDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
         Class<?> entityClass = entityDescriptor.getEntityClass();
         for (Class<?> otherEntityClass : entityDescriptorMap.keySet()) {
             if (entityClass.isAssignableFrom(otherEntityClass)) {
@@ -180,9 +180,9 @@ public class SolutionDescriptor {
             solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
         } else {
             if (PlanningCloneable.class.isAssignableFrom(solutionClass)) {
-                solutionCloner = new PlanningCloneableSolutionCloner();
+                solutionCloner = new PlanningCloneableSolutionCloner<>();
             } else {
-                solutionCloner = new FieldAccessingSolutionCloner(this);
+                solutionCloner = new FieldAccessingSolutionCloner<>(this);
             }
         }
     }
@@ -356,14 +356,14 @@ public class SolutionDescriptor {
         determineGlobalShadowOrder();
         if (logger.isTraceEnabled()) {
             logger.trace("    Model annotations parsed for Solution {}:", solutionClass.getSimpleName());
-            for (Map.Entry<Class<?>, EntityDescriptor> entry : entityDescriptorMap.entrySet()) {
-                EntityDescriptor entityDescriptor = entry.getValue();
+            entityDescriptorMap.entrySet().forEach(entry -> {
+                EntityDescriptor<Solution_> entityDescriptor = entry.getValue();
                 logger.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
                 for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
                     logger.trace("            Variable {} ({})", variableDescriptor.getVariableName(),
                             variableDescriptor instanceof GenuineVariableDescriptor ? "genuine" : "shadow");
                 }
-            }
+            });
         }
     }
 
@@ -372,7 +372,7 @@ public class SolutionDescriptor {
         List<Pair<ShadowVariableDescriptor, Integer>> pairList = new ArrayList<Pair<ShadowVariableDescriptor, Integer>>();
         Map<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>> shadowToPairMap
                 = new HashMap<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>>();
-        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+        for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (ShadowVariableDescriptor shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
                 int sourceSize = shadow.getSourceVariableDescriptorList().size();
                 Pair<ShadowVariableDescriptor, Integer> pair = MutablePair.of(shadow, sourceSize);
@@ -380,7 +380,7 @@ public class SolutionDescriptor {
                 shadowToPairMap.put(shadow, pair);
             }
         }
-        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+        for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (GenuineVariableDescriptor genuine : entityDescriptor.getDeclaredGenuineVariableDescriptors()) {
                 for (ShadowVariableDescriptor sink : genuine.getSinkVariableDescriptorList()) {
                     Pair<ShadowVariableDescriptor, Integer> sinkPair = shadowToPairMap.get(sink);
@@ -413,7 +413,7 @@ public class SolutionDescriptor {
         }
     }
 
-    public Class<? extends Solution> getSolutionClass() {
+    public Class<Solution_> getSolutionClass() {
         return solutionClass;
     }
 
@@ -424,7 +424,7 @@ public class SolutionDescriptor {
         return (Class<? extends Score>) scoreAccessor.getType();
     }
 
-    public SolutionCloner getSolutionCloner() {
+    public SolutionCloner<Solution_> getSolutionCloner() {
         return solutionCloner;
     }
 
@@ -444,14 +444,14 @@ public class SolutionDescriptor {
         return entityDescriptorMap.keySet();
     }
 
-    public Collection<EntityDescriptor> getEntityDescriptors() {
+    public Collection<EntityDescriptor<Solution_>> getEntityDescriptors() {
         return entityDescriptorMap.values();
     }
 
-    public Collection<EntityDescriptor> getGenuineEntityDescriptors() {
-        List<EntityDescriptor> genuineEntityDescriptorList = new ArrayList<EntityDescriptor>(
+    public Collection<EntityDescriptor<Solution_>> getGenuineEntityDescriptors() {
+        List<EntityDescriptor<Solution_>> genuineEntityDescriptorList = new ArrayList<>(
                 entityDescriptorMap.size());
-        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+        for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             if (entityDescriptor.hasAnyDeclaredGenuineVariableDescriptor()) {
                 genuineEntityDescriptorList.add(entityDescriptor);
             }
@@ -463,7 +463,7 @@ public class SolutionDescriptor {
         return entityDescriptorMap.containsKey(entityClass);
     }
 
-    public EntityDescriptor getEntityDescriptorStrict(Class<?> entityClass) {
+    public EntityDescriptor<Solution_> getEntityDescriptorStrict(Class<?> entityClass) {
         return entityDescriptorMap.get(entityClass);
     }
 
@@ -476,8 +476,8 @@ public class SolutionDescriptor {
         return entityDescriptor != null;
     }
 
-    public EntityDescriptor findEntityDescriptorOrFail(Class<?> entitySubclass) {
-        EntityDescriptor entityDescriptor = findEntityDescriptor(entitySubclass);
+    public EntityDescriptor<Solution_> findEntityDescriptorOrFail(Class<?> entitySubclass) {
+        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptor(entitySubclass);
         if (entityDescriptor == null) {
             throw new IllegalArgumentException("A planning entity is an instance of an entitySubclass ("
                     + entitySubclass + ") that is not configured as a planning entity.\n" +
@@ -489,8 +489,8 @@ public class SolutionDescriptor {
         return entityDescriptor;
     }
 
-    public EntityDescriptor findEntityDescriptor(Class<?> entitySubclass) {
-        EntityDescriptor entityDescriptor = lowestEntityDescriptorCache.get(entitySubclass);
+    public EntityDescriptor<Solution_> findEntityDescriptor(Class<?> entitySubclass) {
+        EntityDescriptor<Solution_> entityDescriptor = lowestEntityDescriptorCache.get(entitySubclass);
         if (entityDescriptor == null) {
             // Reverse order to find the nearest ancestor
             for (Class<?> entityClass : reversedEntityClassList) {
@@ -504,14 +504,14 @@ public class SolutionDescriptor {
         return entityDescriptor;
     }
 
-    public GenuineVariableDescriptor findGenuineVariableDescriptor(Object entity, String variableName) {
-        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+    public GenuineVariableDescriptor<Solution_> findGenuineVariableDescriptor(Object entity, String variableName) {
+        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
         return entityDescriptor.getGenuineVariableDescriptor(variableName);
     }
 
-    public GenuineVariableDescriptor findGenuineVariableDescriptorOrFail(Object entity, String variableName) {
-        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
+    public GenuineVariableDescriptor<Solution_> findGenuineVariableDescriptorOrFail(Object entity, String variableName) {
+        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+        GenuineVariableDescriptor<Solution_> variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
         if (variableDescriptor == null) {
             throw new IllegalArgumentException(entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
         }
@@ -536,7 +536,7 @@ public class SolutionDescriptor {
     // Extraction methods
     // ************************************************************************
 
-    public Collection<Object> getAllFacts(Solution solution) {
+    public Collection<Object> getAllFacts(Solution_ solution) {
         Collection<Object> facts = new ArrayList<>();
         // will add both entities and facts
         Arrays.asList(entityPropertyAccessorMap, factPropertyAccessorMap).forEach(map -> map.forEach((key, value) -> {
@@ -554,7 +554,7 @@ public class SolutionDescriptor {
      * @param solution never null
      * @return {@code >= 0}
      */
-    public int getEntityCount(Solution solution) {
+    public int getEntityCount(Solution_ solution) {
         int entityCount = 0;
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extract(entityMemberAccessor, solution);
@@ -569,7 +569,7 @@ public class SolutionDescriptor {
         return entityCount;
     }
 
-    public List<Object> getEntityList(Solution solution) {
+    public List<Object> getEntityList(Solution_ solution) {
         List<Object> entityList = new ArrayList<Object>();
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extract(entityMemberAccessor, solution);
@@ -584,7 +584,7 @@ public class SolutionDescriptor {
         return entityList;
     }
 
-    public List<Object> getEntityListByEntityClass(Solution solution, Class<?> entityClass) {
+    public List<Object> getEntityListByEntityClass(Solution_ solution, Class<?> entityClass) {
         List<Object> entityList = new ArrayList<Object>();
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
             if (entityMemberAccessor.getType().isAssignableFrom(entityClass)) {
@@ -610,7 +610,7 @@ public class SolutionDescriptor {
      * @param solution never null
      * @return {@code >= 0}
      */
-    public long getGenuineVariableCount(Solution solution) {
+    public long getGenuineVariableCount(Solution_ solution) {
         long variableCount = 0L;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
@@ -624,7 +624,7 @@ public class SolutionDescriptor {
      * @param solution never null
      * @return Score of the given solution.
      */
-    public Score getScore(Solution solution) {
+    public Score getScore(Solution_ solution) {
         return (Score)scoreAccessor.executeGetter(solution);
     }
 
@@ -632,7 +632,7 @@ public class SolutionDescriptor {
      * @param solution never null
      * @param score
      */
-    public void setScore(Solution solution, Score score) {
+    public void setScore(Solution_ solution, Score score) {
         scoreAccessor.executeSetter(solution, score);
     }
 
@@ -640,7 +640,7 @@ public class SolutionDescriptor {
      * @param solution never null
      * @return {@code >= 0}
      */
-    public int getValueCount(Solution solution) {
+    public int getValueCount(Solution_ solution) {
         int valueCount = 0;
         // TODO FIXME for ValueRatioTabuSizeStrategy
         throw new UnsupportedOperationException(
@@ -654,7 +654,7 @@ public class SolutionDescriptor {
      * @param solution never null
      * @return {@code >= 0}
      */
-    public long getProblemScale(Solution solution) {
+    public long getProblemScale(Solution_ solution) {
         long problemScale = 0L;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
@@ -664,7 +664,7 @@ public class SolutionDescriptor {
         return problemScale;
     }
 
-    public int countUninitializedVariables(Solution solution) {
+    public int countUninitializedVariables(Solution_ solution) {
         int count = 0;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
@@ -684,7 +684,7 @@ public class SolutionDescriptor {
         return entityDescriptor.isInitialized(entity) || !entityDescriptor.isMovable(scoreDirector, entity);
     }
 
-    public int countReinitializableVariables(ScoreDirector scoreDirector, Solution solution) {
+    public int countReinitializableVariables(ScoreDirector scoreDirector, Solution_ solution) {
         int count = 0;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
@@ -694,7 +694,7 @@ public class SolutionDescriptor {
         return count;
     }
 
-    public Iterator<Object> extractAllEntitiesIterator(Solution solution) {
+    public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {
         List<Iterator<Object>> iteratorList = new ArrayList<Iterator<Object>>(
                 entityPropertyAccessorMap.size() + entityCollectionPropertyAccessorMap.size());
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
@@ -710,11 +710,11 @@ public class SolutionDescriptor {
         return Iterators.concat(iteratorList.iterator());
     }
 
-    private Object extract(MemberAccessor memberAccessor, Solution solution) {
+    private Object extract(MemberAccessor memberAccessor, Solution_ solution) {
         return memberAccessor.executeGetter(solution);
     }
 
-    private Collection<Object> extractCollection(MemberAccessor collectionMemberAccessor, Solution solution,
+    private Collection<Object> extractCollection(MemberAccessor collectionMemberAccessor, Solution_ solution,
                                                  boolean isFact) {
         Collection<Object> entityCollection = (Collection<Object>) collectionMemberAccessor.executeGetter(solution);
         if (entityCollection == null) {
@@ -726,7 +726,7 @@ public class SolutionDescriptor {
         return entityCollection;
     }
 
-    private Collection<Object> extractCollection(MemberAccessor collectionMemberAccessor, Solution solution) {
+    private Collection<Object> extractCollection(MemberAccessor collectionMemberAccessor, Solution_ solution) {
         return extractCollection(collectionMemberAccessor, solution, false);
     }
 

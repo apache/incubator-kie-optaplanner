@@ -29,7 +29,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("TaTaskAssigningSolution")
-public class TaskAssigningSolution extends AbstractPersistable implements Solution<HardSoftScore> {
+public class TaskAssigningSolution extends AbstractPersistable {
 
     @PlanningFactCollectionProperty
     private List<Skill> skillList;

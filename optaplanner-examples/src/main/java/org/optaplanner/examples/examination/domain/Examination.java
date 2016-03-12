@@ -31,7 +31,7 @@ import java.util.List;
 
 @PlanningSolution()
 @XStreamAlias("Examination")
-public class Examination extends AbstractPersistable implements Solution<HardSoftScore> {
+public class Examination extends AbstractPersistable {
 
     @PlanningFactProperty
     private InstitutionParametrization institutionParametrization;

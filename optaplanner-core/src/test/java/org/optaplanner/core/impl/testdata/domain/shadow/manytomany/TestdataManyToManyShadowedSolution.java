@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataManyToManyShadowedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataManyToManyShadowedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataManyToManyShadowedSolution.class,

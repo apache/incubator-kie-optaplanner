@@ -33,7 +33,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("TspSolution")
-public class TspSolution extends AbstractPersistable implements Solution<SimpleLongScore> {
+public class TspSolution extends AbstractPersistable {
 
     private String name;
     protected DistanceType distanceType;

@@ -30,7 +30,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("DinnerParty")
-public class DinnerParty extends AbstractPersistable implements Solution<SimpleScore> {
+public class DinnerParty extends AbstractPersistable {
 
     @PlanningFactCollectionProperty
     private List<Job> jobList;

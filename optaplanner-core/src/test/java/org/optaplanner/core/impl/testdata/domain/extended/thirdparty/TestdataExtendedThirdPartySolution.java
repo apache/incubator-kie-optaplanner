@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution
-public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySolutionPojo implements Solution<SimpleScore> {
+public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySolutionPojo {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedThirdPartySolution.class, TestdataExtendedThirdPartyEntity.class);

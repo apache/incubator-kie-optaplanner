@@ -29,7 +29,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("PjsSchedule")
-public class Schedule extends AbstractPersistable implements Solution<BendableScore> {
+public class Schedule extends AbstractPersistable {
 
     @PlanningFactCollectionProperty
     private List<Project> projectList;

@@ -23,15 +23,12 @@ import java.util.List;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import testdata.kjar.ClassloadedTestdataEntity;
-import testdata.kjar.ClassloadedTestdataValue;
 
 @PlanningSolution
-public class ClassloadedTestdataSolution implements Solution<SimpleScore> {
+public class ClassloadedTestdataSolution {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(ClassloadedTestdataSolution.class, ClassloadedTestdataEntity.class);

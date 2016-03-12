@@ -26,7 +26,7 @@ import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("TennisSolution")
-public class TennisSolution extends AbstractPersistable implements Solution<HardMediumSoftScore> {
+public class TennisSolution extends AbstractPersistable {
 
     @PlanningFactCollectionProperty
     private List<Team> teamList;

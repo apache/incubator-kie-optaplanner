@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution
-public class TestdataCyclicShadowedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataCyclicShadowedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataCyclicShadowedSolution.class,

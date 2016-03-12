@@ -30,7 +30,7 @@ import java.util.List;
 // FIXME originally had itself as a fact
 @PlanningSolution
 @XStreamAlias("CtCheapTimeSolution")
-public class CheapTimeSolution extends AbstractPersistable implements Solution<HardMediumSoftLongScore> {
+public class CheapTimeSolution extends AbstractPersistable {
 
     private int timeResolutionInMinutes;
     private int globalPeriodRangeFrom; // Inclusive
