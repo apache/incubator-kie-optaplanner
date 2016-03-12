@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.solver;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
@@ -70,6 +71,20 @@ public interface Solver<Solution_> {
      * @see #terminateEarly()
      */
     Solution_ solve(Solution_ planningProblem);
+
+    /**
+     * Solves the planning problem and returns the best solution encountered
+     * (which might or might not be optimal, feasible or even initialized).
+     * <p>
+     * It can take seconds, minutes, even hours or days before this method returns,
+     * depending on the {@link Termination} configuration.
+     * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
+     * @param planningProblem never null, usually its planning variables are uninitialized
+     * @return never null, but it can return the original, uninitialized {@link Solution_} with a {@link Score} null.
+     * @see #terminateEarly()
+     */
+    @Deprecated
+    Solution_ solve(Solution planningProblem);
 
     /**
      * This method is thread-safe.

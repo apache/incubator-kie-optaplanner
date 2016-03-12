@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
@@ -127,7 +128,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
     // ************************************************************************
 
     public Solution_ getBestSolution() {
-        return (Solution_) solverScope.getBestSolution();
+        return solverScope.getBestSolution();
     }
 
     public long getTimeMillisSpent() {
@@ -178,6 +179,15 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         }
         outerSolvingEnded(solverScope);
         return solverScope.getBestSolution();
+    }
+
+    public Solution_ solve(Solution planningProblem) {
+        if (planningProblem == null) {
+            throw new IllegalArgumentException("The planningProblem (" + planningProblem
+                    + ") must not be null.");
+        }
+        // we can do this, since this legacy Solution is in fact the same type as Solution_
+        return solve((Solution_)planningProblem);
     }
 
     public void outerSolvingStarted(DefaultSolverScope<Solution_> solverScope) {

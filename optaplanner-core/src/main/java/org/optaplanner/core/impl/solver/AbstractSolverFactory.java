@@ -25,7 +25,7 @@ public class AbstractSolverFactory<Solution_> extends SolverFactory<Solution_> {
 
     protected final SolverConfigContext solverConfigContext;
 
-    protected SolverConfig solverConfig = null;
+    protected SolverConfig<Solution_> solverConfig = null;
 
     public AbstractSolverFactory(SolverConfigContext solverConfigContext) {
         this.solverConfigContext = solverConfigContext;

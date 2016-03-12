@@ -134,6 +134,37 @@ public class SolutionDescriptor<Solution_> {
         lowestEntityDescriptorCache.put(entityClass, entityDescriptor);
     }
 
+    private void processLegacySolution() {
+        boolean hasFactAnnotation = !(this.factCollectionPropertyAccessorMap.isEmpty() && this.factPropertyAccessorMap.isEmpty());
+        if (hasFactAnnotation) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") must not have any PlanningFactProperty or PlanningFactCollectionProperty annotations when " +
+                    "implementing the legacy Solution interface.");
+        } else {
+            try {
+                Method getProblemFactsMethod = solutionClass.getMethod("getProblemFacts");
+                registerFactPropertyAccessor(PlanningFactCollectionProperty.class,
+                        new MethodMemberAccessor(getProblemFactsMethod));
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException("Impossible thing just happened. Implementation of Solution " +
+                        "interface does not implement all of its methods.");
+            }
+        }
+        boolean hasScoreAnnotation = this.scoreAccessor != null;
+        if (hasScoreAnnotation) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") must not have any PlanningScore annotation when implementing the legacy Solution interface.");
+        } else {
+            try {
+                Method getScoreMethod = solutionClass.getMethod("getScore");
+                registerScoreAccessor(new BeanPropertyMemberAccessor(getScoreMethod));
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException("Impossible thing just happened. Implementation of Solution " +
+                        "interface does not implement all of its methods.");
+            }
+        }
+    }
+
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processSolutionAnnotations(descriptorPolicy);
         ClassBrowser.getAllVisibleFields(solutionClass).stream().sorted(new AlphabeticMemberComparator())
@@ -154,11 +185,21 @@ public class SolutionDescriptor<Solution_> {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") should have at least 1 getter with a PlanningEntityCollectionProperty or PlanningEntityProperty"
                     + " annotation.");
-        } else if (scoreAccessor == null) {
-            throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") must have either a Score-returning getter method annotated with PlanningScore annotation with"
-                    + " equivalent setter, or a field annotated the same.");
+        } else if (isLegacySolution()) {
+            // TODO delete when where're getting rid of Solution
+            processLegacySolution();
+        } else {
+            // the solution class does not implement Solution
+            if (scoreAccessor == null) {
+                throw new IllegalStateException("The solutionClass (" + solutionClass
+                        + ") must have either a Score-returning getter method annotated with PlanningScore annotation with"
+                        + " equivalent setter, or a field annotated the same.");
+            }
         }
+    }
+
+    private boolean isLegacySolution() {
+        return Solution.class.isAssignableFrom(solutionClass);
     }
 
     private void processSolutionAnnotations(DescriptorPolicy descriptorPolicy) {

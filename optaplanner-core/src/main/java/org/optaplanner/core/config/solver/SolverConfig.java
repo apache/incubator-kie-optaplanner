@@ -195,7 +195,7 @@ public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
      */
     public Solver<Solution_> buildSolver(SolverConfigContext configContext) {
         configContext.validate();
-        DefaultSolver<Solution_> solver = new DefaultSolver<Solution_>();
+        DefaultSolver<Solution_> solver = new DefaultSolver<>();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
         solver.setEnvironmentMode(environmentMode_);
         boolean daemon_ = defaultIfNull(daemon, false);
