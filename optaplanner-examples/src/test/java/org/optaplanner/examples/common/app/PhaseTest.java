@@ -16,11 +16,6 @@
 
 package org.optaplanner.examples.common.app;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +25,12 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import static org.junit.Assert.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public abstract class PhaseTest extends LoggingTest {
@@ -79,7 +79,6 @@ public abstract class PhaseTest extends LoggingTest {
 
     protected void assertSolution(Solution bestSolution) {
         assertNotNull(bestSolution);
-        assertNotNull(bestSolution.getScore());
     }
 
     protected abstract SolverFactory<Solution> buildSolverFactory();

@@ -103,6 +103,8 @@ public class SolutionDescriptor {
     private final Map<String, MemberAccessor> factPropertyAccessorMap;
     private final Map<String, MemberAccessor> factCollectionPropertyAccessorMap;
 
+    private MemberAccessor scoreAccessor;
+
     private final Map<Class<?>, EntityDescriptor> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
     private final Map<Class<?>, EntityDescriptor> lowestEntityDescriptorCache;
@@ -136,12 +138,14 @@ public class SolutionDescriptor {
         processSolutionAnnotations(descriptorPolicy);
         // TODO This does not support annotations on inherited fields
         Arrays.stream(solutionClass.getDeclaredFields()).sorted(new AlphabeticMemberComparator()).forEach(field -> {
+            processScoreAnnotation(descriptorPolicy, field);
             processValueRangeProviderAnnotation(descriptorPolicy, field);
             processEntityPropertyAnnotation(descriptorPolicy, field);
             processFactPropertyAnnotation(descriptorPolicy, field);
         });
         // TODO This does not support annotations on inherited methods
         Arrays.stream(solutionClass.getDeclaredMethods()).sorted(new AlphabeticMemberComparator()).forEach(method -> {
+            processScoreAnnotation(descriptorPolicy, method);
             processValueRangeProviderAnnotation(descriptorPolicy, method);
             processEntityPropertyAnnotation(descriptorPolicy, method);
             processFactPropertyAnnotation(descriptorPolicy, method);
@@ -150,6 +154,10 @@ public class SolutionDescriptor {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") should have at least 1 getter with a PlanningEntityCollectionProperty or PlanningEntityProperty"
                     + " annotation.");
+        } else if (scoreAccessor == null) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") must have either a Score-returning getter method annotated with PlanningScore annotation with"
+                    + " equivalent setter, or a field annotated the same.");
         }
     }
 
@@ -198,7 +206,7 @@ public class SolutionDescriptor {
         Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(field);
         if (entityPropertyAnnotationClass != null) {
             MemberAccessor memberAccessor = new FieldMemberAccessor(field);
-            registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
+            registerPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
         }
     }
 
@@ -207,7 +215,7 @@ public class SolutionDescriptor {
         if (entityPropertyAnnotationClass != null) {
             ReflectionHelper.assertGetterMethod(method, entityPropertyAnnotationClass);
             MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
-            registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
+            registerPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
         }
     }
 
@@ -228,12 +236,33 @@ public class SolutionDescriptor {
         }
     }
 
+    private void processScoreAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
+        Class<? extends Annotation> scoreAnnotationClass = extractScoreAnnotationClass(field);
+        if (scoreAnnotationClass != null) {
+            MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+            registerScoreAccessor(memberAccessor);
+        }
+    }
+
+    private void processScoreAnnotation(DescriptorPolicy descriptorPolicy, Method method) {
+        Class<? extends Annotation> scoreAnnotationClass = extractScoreAnnotationClass(method);
+        if (scoreAnnotationClass != null) {
+            ReflectionHelper.assertGetterMethod(method, scoreAnnotationClass);
+            MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
+            registerScoreAccessor(memberAccessor);
+        }
+    }
+
     private Class<? extends Annotation> extractEntityPropertyAnnotationClass(AnnotatedElement member) {
         return extractAnnotationClass(member, PlanningEntityProperty.class, PlanningEntityCollectionProperty.class);
     }
 
     private Class<? extends Annotation> extractFactPropertyAnnotationClass(AnnotatedElement member) {
         return extractAnnotationClass(member, PlanningFactProperty.class, PlanningFactCollectionProperty.class);
+    }
+
+    private Class<? extends Annotation> extractScoreAnnotationClass(AnnotatedElement member) {
+        return extractAnnotationClass(member, PlanningScore.class);
     }
 
     private Class<? extends Annotation> extractAnnotationClass(AnnotatedElement member, Class<? extends Annotation>... annotations) {
@@ -253,25 +282,44 @@ public class SolutionDescriptor {
         return annotationClass;
     }
 
-    private void registerEntityPropertyAccessor(Class<? extends Annotation> entityPropertyAnnotationClass,
-            MemberAccessor memberAccessor) {
-        registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor, entityPropertyAccessorMap,
+    private void registerPropertyAccessor(Class<? extends Annotation> entityPropertyAnnotationClass,
+                                          MemberAccessor memberAccessor) {
+        registerPropertyAccessor(entityPropertyAnnotationClass, memberAccessor, entityPropertyAccessorMap,
                 entityCollectionPropertyAccessorMap, PlanningEntityProperty.class,
                 PlanningEntityCollectionProperty.class);
     }
 
     private void registerFactPropertyAccessor(Class<? extends Annotation> factPropertyAnnotationClass,
                                                 MemberAccessor memberAccessor) {
-        registerEntityPropertyAccessor(factPropertyAnnotationClass, memberAccessor, factPropertyAccessorMap,
+        registerPropertyAccessor(factPropertyAnnotationClass, memberAccessor, factPropertyAccessorMap,
                 factCollectionPropertyAccessorMap, PlanningFactProperty.class, PlanningFactCollectionProperty.class);
     }
 
-    private void registerEntityPropertyAccessor(Class<? extends Annotation> annotationClass,
-                                                MemberAccessor memberAccessor,
-                                                Map<String, MemberAccessor> propertyAccessorMap,
-                                                Map<String, MemberAccessor> collectionPropertyAccessorMap,
-                                                Class<? extends Annotation> propertyAnnotationClass,
-                                                Class<? extends Annotation> collectionPropertyAnnotationClass) {
+    private void registerScoreAccessor(MemberAccessor memberAccessor) {
+        if (scoreAccessor != null) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has a " + PlanningScore.class.getSimpleName()
+                    + " annotated member (" + memberAccessor
+                    + ") that is duplicated by another member (" + scoreAccessor + ").\n"
+                    + "  Verify that the annotation is not defined on both the field and its getter.");
+        } else if (!Score.class.isAssignableFrom(memberAccessor.getType())) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has a " + PlanningScore.class.getSimpleName()
+                    + " annotated member (" + memberAccessor + ") that does not return a subtype of Score.");
+        } else if (!memberAccessor.supportSetter()) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has a " + PlanningScore.class.getSimpleName()
+                    + " annotated member (" + memberAccessor + ") that has no equivalent setter.");
+        }
+        scoreAccessor = memberAccessor;
+    }
+
+    private void registerPropertyAccessor(Class<? extends Annotation> annotationClass,
+                                          MemberAccessor memberAccessor,
+                                          Map<String, MemberAccessor> propertyAccessorMap,
+                                          Map<String, MemberAccessor> collectionPropertyAccessorMap,
+                                          Class<? extends Annotation> propertyAnnotationClass,
+                                          Class<? extends Annotation> collectionPropertyAnnotationClass) {
         String memberName = memberAccessor.getName();
         if (propertyAccessorMap.containsKey(memberName)
                 || collectionPropertyAccessorMap.containsKey(memberName)) {
@@ -370,15 +418,10 @@ public class SolutionDescriptor {
     }
 
     /**
-     * @return the {@link Class} of {@link Solution#getScore()}
+     * @return the {@link Class} of {@link PlanningScore}
      */
     public Class<? extends Score> extractScoreClass() {
-        try {
-            return (Class<? extends Score>) solutionClass.getMethod("getScore").getReturnType();
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException("Impossible situation: a solutionClass (" + solutionClass
-                    + ") which implements the interface Solution, lacks its getScore() method.", e);
-        }
+        return (Class<? extends Score>) scoreAccessor.getType();
     }
 
     public SolutionCloner getSolutionCloner() {
@@ -575,6 +618,22 @@ public class SolutionDescriptor {
             variableCount += entityDescriptor.getGenuineVariableCount();
         }
         return variableCount;
+    }
+
+    /**
+     * @param solution never null
+     * @return Score of the given solution.
+     */
+    public Score getScore(Solution solution) {
+        return (Score)scoreAccessor.executeGetter(solution);
+    }
+
+    /**
+     * @param solution never null
+     * @param score
+     */
+    public void setScore(Solution solution, Score score) {
+        scoreAccessor.executeSetter(solution, score);
     }
 
     /**

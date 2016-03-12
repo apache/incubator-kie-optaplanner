@@ -98,6 +98,7 @@ public class TspSolution extends AbstractPersistable implements Solution<SimpleL
         this.visitList = visitList;
     }
 
+    @PlanningScore
     public SimpleLongScore getScore() {
         return score;
     }

@@ -71,7 +71,7 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
         solverScope.setBestScore(score);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
         // The original bestSolution might be the final bestSolution and should have an accurate Score
-        solverScope.getBestSolution().setScore(score);
+        solverScope.getSolutionDescriptor().setScore(solverScope.getBestSolution(), score);
         if (uninitializedVariableCount == 0) {
             solverScope.setStartingInitializedScore(score);
         } else {
@@ -135,14 +135,15 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
     }
 
     public void updateBestSolution(DefaultSolverScope solverScope, Solution solution, int uninitializedVariableCount) {
+        Score score = solverScope.getSolutionDescriptor().getScore(solution);
         if (uninitializedVariableCount == 0) {
             if (!solverScope.isBestSolutionInitialized()) {
-                solverScope.setStartingInitializedScore(solution.getScore());
+                solverScope.setStartingInitializedScore(score);
             }
         }
         solverScope.setBestUninitializedVariableCount(uninitializedVariableCount);
         solverScope.setBestSolution(solution);
-        solverScope.setBestScore(solution.getScore());
+        solverScope.setBestScore(score);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
         solverEventSupport.fireBestSolutionChanged(solution, uninitializedVariableCount);
     }

@@ -16,8 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
@@ -26,6 +24,8 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+
+import java.util.List;
 
 public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<BestScoreStatisticPoint> {
 
@@ -51,8 +51,7 @@ public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
     private class BestScoreSubSingleStatisticListener implements SolverEventListener<Solution> {
 
         public void bestSolutionChanged(BestSolutionChangedEvent<Solution> event) {
-            pointList.add(new BestScoreStatisticPoint(
-                    event.getTimeMillisSpent(), event.getNewBestSolution().getScore()));
+            pointList.add(new BestScoreStatisticPoint(event.getTimeMillisSpent(), event.getNewBestScore()));
         }
 
     }

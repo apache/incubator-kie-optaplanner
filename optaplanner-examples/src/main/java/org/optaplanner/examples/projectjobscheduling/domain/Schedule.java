@@ -18,10 +18,7 @@ package org.optaplanner.examples.projectjobscheduling.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -99,6 +96,7 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
         this.allocationList = allocationList;
     }
 
+    @PlanningScore
     public BendableScore getScore() {
         return score;
     }

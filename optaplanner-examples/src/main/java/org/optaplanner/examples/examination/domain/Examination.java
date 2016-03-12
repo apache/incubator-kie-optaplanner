@@ -121,6 +121,7 @@ public class Examination extends AbstractPersistable implements Solution<HardSof
         this.examList = examList;
     }
 
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }

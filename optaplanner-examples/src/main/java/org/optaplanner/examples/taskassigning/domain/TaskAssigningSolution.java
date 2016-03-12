@@ -18,10 +18,7 @@ package org.optaplanner.examples.taskassigning.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -91,12 +88,11 @@ public class TaskAssigningSolution extends AbstractPersistable implements Soluti
         this.taskList = taskList;
     }
 
-    @Override
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }
 
-    @Override
     public void setScore(HardSoftScore score) {
         this.score = score;
     }

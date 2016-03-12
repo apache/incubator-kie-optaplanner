@@ -16,16 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
@@ -41,6 +31,8 @@ import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Abstract superclass for {@link ScoreDirector}.
@@ -139,12 +131,14 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
 
     public Solution cloneSolution(Solution originalSolution) {
         SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
+        Score originalScore = solutionDescriptor.getScore(originalSolution);
         Solution cloneSolution = solutionDescriptor.getSolutionCloner().cloneSolution(originalSolution);
+        Score cloneScore = solutionDescriptor.getScore(cloneSolution);
         if (scoreDirectorFactory.isAssertClonedSolution()) {
-            if (!Objects.equals(originalSolution.getScore(), cloneSolution.getScore())) {
+            if (!Objects.equals(originalScore, cloneScore)) {
                 throw new IllegalStateException("Cloning corruption: "
-                        + "the original's score (" + originalSolution.getScore()
-                        + ") is different from the clone's score (" + cloneSolution.getScore() + ").\n"
+                        + "the original's score (" + originalScore
+                        + ") is different from the clone's score (" + cloneScore + ").\n"
                         + "Check the " + SolutionCloner.class.getSimpleName() + ".");
             }
             List<Object> originalEntityList = solutionDescriptor.getEntityList(originalSolution);
@@ -188,7 +182,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
     }
 
     protected void setCalculatedScore(Score score) {
-        workingSolution.setScore(score);
+        getSolutionDescriptor().setScore(workingSolution, score);
         calculateCount++;
     }
 

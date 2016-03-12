@@ -139,6 +139,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.processAssignmentList = processAssignmentList;
     }
 
+    @PlanningScore
     public HardSoftLongScore getScore() {
         return score;
     }

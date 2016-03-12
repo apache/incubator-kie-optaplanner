@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.common.app;
 
-import java.io.File;
-
 import org.junit.Before;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
@@ -28,7 +26,10 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import static org.junit.Assert.*;
+import java.io.File;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Runs an example solver.
@@ -77,8 +78,8 @@ public abstract class SolverPerformanceTest extends LoggingTest {
 
     private void assertBestSolution(Solver<Solution> solver, Solution bestSolution, String bestScoreLimitString) {
         assertNotNull(bestSolution);
-        Score bestScore = bestSolution.getScore();
         InnerScoreDirectorFactory scoreDirectorFactory = (InnerScoreDirectorFactory) solver.getScoreDirectorFactory();
+        Score bestScore = scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);
         Score bestScoreLimit = scoreDirectorFactory.getScoreDefinition().parseScore(bestScoreLimitString);
         assertTrue("The bestScore (" + bestScore + ") must be at least bestScoreLimit (" + bestScoreLimit + ").",
                 bestScore.compareTo(bestScoreLimit) >= 0);

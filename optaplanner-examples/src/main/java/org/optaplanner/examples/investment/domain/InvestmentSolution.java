@@ -89,6 +89,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
         this.assetClassAllocationList = assetClassAllocationList;
     }
 
+    @PlanningScore
     public HardSoftLongScore getScore() {
         return score;
     }

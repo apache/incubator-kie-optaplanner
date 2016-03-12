@@ -100,6 +100,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.hub = hub;
     }
 
+    @PlanningScore
     public HardSoftLongScore getScore() {
         return score;
     }

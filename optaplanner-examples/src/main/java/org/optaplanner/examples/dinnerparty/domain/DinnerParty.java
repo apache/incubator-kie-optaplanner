@@ -18,10 +18,7 @@ package org.optaplanner.examples.dinnerparty.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
@@ -111,6 +108,7 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
         this.seatDesignationList = seatDesignationList;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }

@@ -91,7 +91,7 @@ public abstract class AbstractScoreDirectorFactory implements InnerScoreDirector
 
     public void assertScoreFromScratch(Solution solution) {
         // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
-        Score score = solution.getScore();
+        Score score = getSolutionDescriptor().getScore(solution);
         InnerScoreDirector uncorruptedScoreDirector = buildScoreDirector(true);
         uncorruptedScoreDirector.setWorkingSolution(solution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();

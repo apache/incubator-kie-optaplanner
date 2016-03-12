@@ -16,13 +16,7 @@
 
 package org.optaplanner.core.api.domain.solution;
 
-import java.util.Collection;
-
-import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * A Solution represents a problem and a possible solution of that problem.
@@ -40,18 +34,5 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * @param <S> the {@link Score} type used by this use case
  */
 public interface Solution<S extends Score> {
-
-    /**
-     * Returns the {@link Score} of this Solution.
-     * @return null if the Solution is uninitialized
-     *         or the last calculated {@link Score} is dirty the new {@link Score} has not yet been recalculated
-     */
-    S getScore();
-
-    /**
-     * Called by the {@link Solver} when the {@link Score} of this Solution has been calculated.
-     * @param score null if the Solution has changed and the new {@link Score} has not yet been recalculated
-     */
-    void setScore(S score);
 
 }

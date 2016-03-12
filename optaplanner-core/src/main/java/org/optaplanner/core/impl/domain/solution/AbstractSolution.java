@@ -16,10 +16,7 @@
 
 package org.optaplanner.core.impl.domain.solution;
 
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
@@ -40,12 +37,11 @@ public abstract class AbstractSolution<S extends Score> implements Solution<S>, 
 
     protected S score;
 
-    @Override
+    @PlanningScore
     public S getScore() {
         return score;
     }
 
-    @Override
     public void setScore(S score) {
         this.score = score;
     }

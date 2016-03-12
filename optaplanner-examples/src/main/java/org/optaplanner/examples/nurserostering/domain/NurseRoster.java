@@ -225,6 +225,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.shiftAssignmentList = shiftAssignmentList;
     }
 
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }

@@ -17,10 +17,7 @@
 package org.optaplanner.examples.tennis.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -76,6 +73,7 @@ public class TennisSolution extends AbstractPersistable implements Solution<Hard
         this.teamAssignmentList = teamAssignmentList;
     }
 
+    @PlanningScore
     public HardMediumSoftScore getScore() {
         return score;
     }
