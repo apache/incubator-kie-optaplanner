@@ -21,15 +21,15 @@
       <title>Examples Overview</title>
 
       <tgroup cols="5">
-        <colspec align="left" colnum="1" colwidth="2*"/>
+        <colspec align="left" colnum="1" colwidth="1*"/>
 
         <colspec align="left" colnum="2" colwidth="1*"/>
 
-        <colspec align="left" colnum="3" colwidth="1*"/>
+        <colspec align="left" colnum="3" colwidth="2*"/>
 
         <colspec align="left" colnum="4" colwidth="1*"/>
 
-        <colspec align="left" colnum="5" colwidth="2*"/>
+        <colspec align="left" colnum="5" colwidth="1*"/>
 
         <thead>
           <row>
