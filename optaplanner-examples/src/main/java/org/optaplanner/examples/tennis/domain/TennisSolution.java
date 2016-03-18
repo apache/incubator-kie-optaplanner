@@ -16,23 +16,23 @@
 
 package org.optaplanner.examples.tennis.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-
-import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("TennisSolution")
 public class TennisSolution extends AbstractPersistable {
 
-    @PlanningFactCollectionProperty
     private List<Team> teamList;
-    @PlanningFactCollectionProperty
     private List<Day> dayList;
-    @PlanningFactCollectionProperty
     private List<UnavailabilityPenalty> unavailabilityPenaltyList;
 
     private List<TeamAssignment> teamAssignmentList;
@@ -40,6 +40,7 @@ public class TennisSolution extends AbstractPersistable {
     private HardMediumSoftScore score;
 
     @ValueRangeProvider(id = "teamRange")
+    @PlanningFactCollectionProperty
     public List<Team> getTeamList() {
         return teamList;
     }
@@ -48,6 +49,7 @@ public class TennisSolution extends AbstractPersistable {
         this.teamList = teamList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -56,6 +58,7 @@ public class TennisSolution extends AbstractPersistable {
         this.dayList = dayList;
     }
 
+    @PlanningFactCollectionProperty
     public List<UnavailabilityPenalty> getUnavailabilityPenaltyList() {
         return unavailabilityPenaltyList;
     }

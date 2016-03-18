@@ -27,7 +27,8 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 import java.util.List;
 
-public class MemoryUseSubSingleStatistic<Solution_> extends ProblemBasedSubSingleStatistic<Solution_, MemoryUseStatisticPoint> {
+public class MemoryUseSubSingleStatistic<Solution_>
+        extends ProblemBasedSubSingleStatistic<Solution_, MemoryUseStatisticPoint> {
 
     private long timeMillisThresholdInterval;
 

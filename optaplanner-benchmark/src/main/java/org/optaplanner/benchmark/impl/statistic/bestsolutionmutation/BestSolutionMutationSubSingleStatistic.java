@@ -29,7 +29,8 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
 import java.util.List;
 
-public class BestSolutionMutationSubSingleStatistic<Solution_> extends ProblemBasedSubSingleStatistic<Solution_, BestSolutionMutationStatisticPoint> {
+public class BestSolutionMutationSubSingleStatistic<Solution_>
+        extends ProblemBasedSubSingleStatistic<Solution_, BestSolutionMutationStatisticPoint> {
 
     private BestSolutionMutationSubSingleStatisticListener listener;
 

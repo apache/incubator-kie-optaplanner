@@ -16,6 +16,12 @@
 
 package org.optaplanner.examples.common.business;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.io.FileUtils;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -43,12 +49,6 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class SolutionBusiness<Solution_> {
 
@@ -213,7 +213,7 @@ public class SolutionBusiness<Solution_> {
     }
 
     public void registerForBestSolutionChanges(final SolverAndPersistenceFrame solverAndPersistenceFrame) {
-        solver.addEventListener(event -> {
+        solver.addEventListener(event -> { // Not called on the event thread
             /*
              * Avoid ConcurrentModificationException when there is an unprocessed ProblemFactChange
              * because the paint method uses the same problem facts instances as the Solver's workingSolution

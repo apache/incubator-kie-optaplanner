@@ -16,46 +16,36 @@
 
 package org.optaplanner.examples.pas.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.List;
-
 @PlanningSolution
 @XStreamAlias("PatientAdmissionSchedule")
 public class PatientAdmissionSchedule extends AbstractPersistable {
 
-    @PlanningFactCollectionProperty
     private List<Specialism> specialismList;
-    @PlanningFactCollectionProperty
     private List<Equipment> equipmentList;
-    @PlanningFactCollectionProperty
     private List<Department> departmentList;
-    @PlanningFactCollectionProperty
     private List<DepartmentSpecialism> departmentSpecialismList;
-    @PlanningFactCollectionProperty
     private List<Room> roomList;
-    @PlanningFactCollectionProperty
     private List<RoomSpecialism> roomSpecialismList;
-    @PlanningFactCollectionProperty
     private List<RoomEquipment> roomEquipmentList;
-    @PlanningFactCollectionProperty
     private List<Bed> bedList;
-    @PlanningFactCollectionProperty
     private List<Night> nightList;
-    @PlanningFactCollectionProperty
     private List<Patient> patientList;
-    @PlanningFactCollectionProperty
     private List<AdmissionPart> admissionPartList;
-    @PlanningFactCollectionProperty
     private List<RequiredPatientEquipment> requiredPatientEquipmentList;
-    @PlanningFactCollectionProperty
     private List<PreferredPatientEquipment> preferredPatientEquipmentList;
 
     private List<BedDesignation> bedDesignationList;
@@ -63,6 +53,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftScoreDefinition.class})
     private HardMediumSoftScore score;
 
+    @PlanningFactCollectionProperty
     public List<Specialism> getSpecialismList() {
         return specialismList;
     }
@@ -71,6 +62,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.specialismList = specialismList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Equipment> getEquipmentList() {
         return equipmentList;
     }
@@ -79,6 +71,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.equipmentList = equipmentList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Department> getDepartmentList() {
         return departmentList;
     }
@@ -87,6 +80,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.departmentList = departmentList;
     }
 
+    @PlanningFactCollectionProperty
     public List<DepartmentSpecialism> getDepartmentSpecialismList() {
         return departmentSpecialismList;
     }
@@ -95,6 +89,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.departmentSpecialismList = departmentSpecialismList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -103,6 +98,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.roomList = roomList;
     }
 
+    @PlanningFactCollectionProperty
     public List<RoomSpecialism> getRoomSpecialismList() {
         return roomSpecialismList;
     }
@@ -111,6 +107,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.roomSpecialismList = roomSpecialismList;
     }
 
+    @PlanningFactCollectionProperty
     public List<RoomEquipment> getRoomEquipmentList() {
         return roomEquipmentList;
     }
@@ -120,6 +117,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "bedRange")
+    @PlanningFactCollectionProperty
     public List<Bed> getBedList() {
         return bedList;
     }
@@ -128,6 +126,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.bedList = bedList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Night> getNightList() {
         return nightList;
     }
@@ -136,6 +135,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.nightList = nightList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Patient> getPatientList() {
         return patientList;
     }
@@ -144,6 +144,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.patientList = patientList;
     }
 
+    @PlanningFactCollectionProperty
     public List<AdmissionPart> getAdmissionPartList() {
         return admissionPartList;
     }
@@ -152,6 +153,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.admissionPartList = admissionPartList;
     }
 
+    @PlanningFactCollectionProperty
     public List<RequiredPatientEquipment> getRequiredPatientEquipmentList() {
         return requiredPatientEquipmentList;
     }
@@ -160,6 +162,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.requiredPatientEquipmentList = requiredPatientEquipmentList;
     }
 
+    @PlanningFactCollectionProperty
     public List<PreferredPatientEquipment> getPreferredPatientEquipmentList() {
         return preferredPatientEquipmentList;
     }

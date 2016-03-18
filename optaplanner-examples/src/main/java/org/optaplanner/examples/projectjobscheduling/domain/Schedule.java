@@ -16,30 +16,28 @@
 
 package org.optaplanner.examples.projectjobscheduling.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.List;
-
 @PlanningSolution
 @XStreamAlias("PjsSchedule")
 public class Schedule extends AbstractPersistable {
 
-    @PlanningFactCollectionProperty
     private List<Project> projectList;
-    @PlanningFactCollectionProperty
     private List<Job> jobList;
-    @PlanningFactCollectionProperty
     private List<ExecutionMode> executionModeList;
-    @PlanningFactCollectionProperty
     private List<Resource> resourceList;
-    @PlanningFactCollectionProperty
     private List<ResourceRequirement> resourceRequirementList;
 
     private List<Allocation> allocationList;
@@ -47,6 +45,7 @@ public class Schedule extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {1, 2})
     private BendableScore score;
 
+    @PlanningFactCollectionProperty
     public List<Project> getProjectList() {
         return projectList;
     }
@@ -55,6 +54,7 @@ public class Schedule extends AbstractPersistable {
         this.projectList = projectList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Job> getJobList() {
         return jobList;
     }
@@ -63,6 +63,7 @@ public class Schedule extends AbstractPersistable {
         this.jobList = jobList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ExecutionMode> getExecutionModeList() {
         return executionModeList;
     }
@@ -71,6 +72,7 @@ public class Schedule extends AbstractPersistable {
         this.executionModeList = executionModeList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Resource> getResourceList() {
         return resourceList;
     }
@@ -79,6 +81,7 @@ public class Schedule extends AbstractPersistable {
         this.resourceList = resourceList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ResourceRequirement> getResourceRequirementList() {
         return resourceRequirementList;
     }

@@ -16,9 +16,15 @@
 
 package org.optaplanner.examples.nurserostering.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -33,45 +39,27 @@ import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.List;
-
 @PlanningSolution
 @XStreamAlias("NurseRoster")
 public class NurseRoster extends AbstractPersistable {
 
     private String code;
 
-    @PlanningFactProperty
     private NurseRosterParametrization nurseRosterParametrization;
-    @PlanningFactCollectionProperty
     private List<Skill> skillList;
-    @PlanningFactCollectionProperty
     private List<ShiftType> shiftTypeList;
-    @PlanningFactCollectionProperty
     private List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList;
-    @PlanningFactCollectionProperty
     private List<Pattern> patternList;
-    @PlanningFactCollectionProperty
     private List<Contract> contractList;
-    @PlanningFactCollectionProperty
     private List<ContractLine> contractLineList;
-    @PlanningFactCollectionProperty
     private List<PatternContractLine> patternContractLineList;
-    @PlanningFactCollectionProperty
     private List<Employee> employeeList;
-    @PlanningFactCollectionProperty
     private List<SkillProficiency> skillProficiencyList;
-    @PlanningFactCollectionProperty
     private List<ShiftDate> shiftDateList;
-    @PlanningFactCollectionProperty
     private List<Shift> shiftList;
-    @PlanningFactCollectionProperty
     private List<DayOffRequest> dayOffRequestList;
-    @PlanningFactCollectionProperty
     private List<DayOnRequest> dayOnRequestList;
-    @PlanningFactCollectionProperty
     private List<ShiftOffRequest> shiftOffRequestList;
-    @PlanningFactCollectionProperty
     private List<ShiftOnRequest> shiftOnRequestList;
 
     private List<ShiftAssignment> shiftAssignmentList;
@@ -87,6 +75,7 @@ public class NurseRoster extends AbstractPersistable {
         this.code = code;
     }
 
+    @PlanningFactProperty
     public NurseRosterParametrization getNurseRosterParametrization() {
         return nurseRosterParametrization;
     }
@@ -95,6 +84,7 @@ public class NurseRoster extends AbstractPersistable {
         this.nurseRosterParametrization = nurseRosterParametrization;
     }
 
+    @PlanningFactCollectionProperty
     public List<Skill> getSkillList() {
         return skillList;
     }
@@ -103,6 +93,7 @@ public class NurseRoster extends AbstractPersistable {
         this.skillList = skillList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftType> getShiftTypeList() {
         return shiftTypeList;
     }
@@ -111,6 +102,7 @@ public class NurseRoster extends AbstractPersistable {
         this.shiftTypeList = shiftTypeList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftTypeSkillRequirement> getShiftTypeSkillRequirementList() {
         return shiftTypeSkillRequirementList;
     }
@@ -119,6 +111,7 @@ public class NurseRoster extends AbstractPersistable {
         this.shiftTypeSkillRequirementList = shiftTypeSkillRequirementList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Pattern> getPatternList() {
         return patternList;
     }
@@ -127,6 +120,7 @@ public class NurseRoster extends AbstractPersistable {
         this.patternList = patternList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Contract> getContractList() {
         return contractList;
     }
@@ -135,6 +129,7 @@ public class NurseRoster extends AbstractPersistable {
         this.contractList = contractList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ContractLine> getContractLineList() {
         return contractLineList;
     }
@@ -143,6 +138,7 @@ public class NurseRoster extends AbstractPersistable {
         this.contractLineList = contractLineList;
     }
 
+    @PlanningFactCollectionProperty
     public List<PatternContractLine> getPatternContractLineList() {
         return patternContractLineList;
     }
@@ -152,6 +148,7 @@ public class NurseRoster extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "employeeRange")
+    @PlanningFactCollectionProperty
     public List<Employee> getEmployeeList() {
         return employeeList;
     }
@@ -160,6 +157,7 @@ public class NurseRoster extends AbstractPersistable {
         this.employeeList = employeeList;
     }
 
+    @PlanningFactCollectionProperty
     public List<SkillProficiency> getSkillProficiencyList() {
         return skillProficiencyList;
     }
@@ -168,6 +166,7 @@ public class NurseRoster extends AbstractPersistable {
         this.skillProficiencyList = skillProficiencyList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftDate> getShiftDateList() {
         return shiftDateList;
     }
@@ -176,6 +175,7 @@ public class NurseRoster extends AbstractPersistable {
         this.shiftDateList = shiftDateList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Shift> getShiftList() {
         return shiftList;
     }
@@ -184,6 +184,7 @@ public class NurseRoster extends AbstractPersistable {
         this.shiftList = shiftList;
     }
 
+    @PlanningFactCollectionProperty
     public List<DayOffRequest> getDayOffRequestList() {
         return dayOffRequestList;
     }
@@ -192,6 +193,7 @@ public class NurseRoster extends AbstractPersistable {
         this.dayOffRequestList = dayOffRequestList;
     }
 
+    @PlanningFactCollectionProperty
     public List<DayOnRequest> getDayOnRequestList() {
         return dayOnRequestList;
     }
@@ -200,6 +202,7 @@ public class NurseRoster extends AbstractPersistable {
         this.dayOnRequestList = dayOnRequestList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftOffRequest> getShiftOffRequestList() {
         return shiftOffRequestList;
     }
@@ -208,6 +211,7 @@ public class NurseRoster extends AbstractPersistable {
         this.shiftOffRequestList = shiftOffRequestList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftOnRequest> getShiftOnRequestList() {
         return shiftOnRequestList;
     }

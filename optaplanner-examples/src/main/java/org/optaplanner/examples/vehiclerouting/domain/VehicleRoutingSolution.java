@@ -16,10 +16,16 @@
 
 package org.optaplanner.examples.vehiclerouting.domain;
 
+import java.text.NumberFormat;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
@@ -28,9 +34,6 @@ import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
-
-import java.text.NumberFormat;
-import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("VrpVehicleRoutingSolution")
@@ -42,9 +45,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
     protected String name;
     protected DistanceType distanceType;
     protected String distanceUnitOfMeasurement;
-    @PlanningFactCollectionProperty
     protected List<Location> locationList;
-    @PlanningFactCollectionProperty
     protected List<Depot> depotList;
     protected List<Vehicle> vehicleList;
 
@@ -77,6 +78,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
         this.distanceUnitOfMeasurement = distanceUnitOfMeasurement;
     }
 
+    @PlanningFactCollectionProperty
     public List<Location> getLocationList() {
         return locationList;
     }
@@ -85,6 +87,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
         this.locationList = locationList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Depot> getDepotList() {
         return depotList;
     }

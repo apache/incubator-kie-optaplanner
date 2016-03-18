@@ -446,7 +446,7 @@
            id="rect3459" /></flowRegion><flowPara
          id="flowPara3490"><flowSpan
    style="text-align:start;text-anchor:start;fill:#555753"
-   id="flowSpan3463">P(</flowSpan>x<flowSpan
+   id="flowSpan3463">StatisticPoint_(</flowSpan>x<flowSpan
    style="text-align:start;text-anchor:start;fill:#555753"
    id="flowSpan3465">)</flowSpan></flowPara><flowPara
          id="flowPara3558" /></flowRoot>    <flowRoot
@@ -501,7 +501,7 @@
          id="flowPara4070">A0, A1, B0, B1, C0, C1, D0, D1</flowPara><flowPara
          id="flowPara3166"><flowSpan
    style="fill:#555753"
-   id="flowSpan3215">P(</flowSpan>A0<flowSpan
+   id="flowSpan3215">StatisticPoint_(</flowSpan>A0<flowSpan
    style="fill:#555753"
    id="flowSpan3186">)=</flowSpan><flowSpan
    style="font-size:14.48488903px"
@@ -528,7 +528,7 @@
          style="font-size:10.86366653px">AB, AC, AD, BC, BD, CD</flowPara><flowPara
          id="flowPara3303"><flowSpan
    id="flowSpan3295"
-   style="fill:#555753">P(</flowSpan>AB<flowSpan
+   style="fill:#555753">StatisticPoint_(</flowSpan>AB<flowSpan
    id="flowSpan3297"
    style="fill:#555753">)=</flowSpan><flowSpan
    style="font-size:14.48488903px"
@@ -554,7 +554,7 @@
          style="font-size:10.86366653px;fill:#000000;fill-opacity:1">A0, A1, B0, B1, C0, C1, D0, D1, AB, AC, AD, BC, BD, CD</flowPara><flowPara
          id="flowPara4256"><flowSpan
    style="fill:#555753"
-   id="flowSpan4258">P(</flowSpan>A0<flowSpan
+   id="flowSpan4258">StatisticPoint_(</flowSpan>A0<flowSpan
    id="flowSpan3413"
    style="fill:#555753">)=</flowSpan><flowSpan
    style="font-size:14.48488903px"
@@ -562,7 +562,7 @@
    style="font-weight:bold"
    id="flowSpan4378">1/16</flowSpan>, ..</flowSpan>., <flowSpan
    style="fill:#555753"
-   id="flowSpan3443">P(</flowSpan>AB<flowSpan
+   id="flowSpan3443">StatisticPoint_(</flowSpan>AB<flowSpan
    style="fill:#555753"
    id="flowSpan3453">)=</flowSpan><flowSpan
    style="font-weight:bold"
@@ -644,7 +644,7 @@
          style="font-size:10.86366653px;fill:#000000;fill-opacity:1">A0, A1, B0, B1, C0, C1, D0, D1</flowPara><flowPara
          id="flowPara4426"><flowSpan
    id="flowSpan4428"
-   style="fill:#555753">P(</flowSpan>A0<flowSpan
+   style="fill:#555753">StatisticPoint_(</flowSpan>A0<flowSpan
    id="flowSpan4430"
    style="fill:#555753">)=</flowSpan><flowSpan
    id="flowSpan4432"
@@ -692,7 +692,7 @@
          id="flowPara4454">AB, AC, AD, BC, BD, CD</flowPara><flowPara
          id="flowPara4456"><flowSpan
    style="fill:#555753"
-   id="flowSpan4458">P(</flowSpan>AB<flowSpan
+   id="flowSpan4458">StatisticPoint_(</flowSpan>AB<flowSpan
    style="fill:#555753"
    id="flowSpan4460">)=</flowSpan><flowSpan
    id="flowSpan4462"
@@ -712,7 +712,7 @@
          id="flowPara4470">A0, A1, B0, B1, C0, C1, D0, D1, AB, AC, AD, BC, BD, CD</flowPara><flowPara
          id="flowPara4472"><flowSpan
    id="flowSpan4474"
-   style="fill:#555753">P(</flowSpan>A0<flowSpan
+   style="fill:#555753">StatisticPoint_(</flowSpan>A0<flowSpan
    style="fill:#555753"
    id="flowSpan4476">)=</flowSpan><flowSpan
    id="flowSpan4478"
@@ -720,7 +720,7 @@
    id="flowSpan4480"
    style="font-weight:bold">1/14</flowSpan>, ..</flowSpan>., <flowSpan
    id="flowSpan4482"
-   style="fill:#555753">P(</flowSpan>AB<flowSpan
+   style="fill:#555753">StatisticPoint_(</flowSpan>AB<flowSpan
    id="flowSpan4484"
    style="fill:#555753">)=</flowSpan><flowSpan
    id="flowSpan4486"

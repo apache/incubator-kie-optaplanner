@@ -16,31 +16,29 @@
 
 package org.optaplanner.examples.dinnerparty.domain;
 
+import java.util.EnumSet;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.EnumSet;
-import java.util.List;
-
 @PlanningSolution
 @XStreamAlias("DinnerParty")
 public class DinnerParty extends AbstractPersistable {
 
-    @PlanningFactCollectionProperty
     private List<Job> jobList;
-    @PlanningFactCollectionProperty
     private List<Guest> guestList;
-    @PlanningFactCollectionProperty
     private List<HobbyPractician> hobbyPracticianList;
-    @PlanningFactCollectionProperty
     private List<Table> tableList;
-    @PlanningFactCollectionProperty
     private List<Seat> seatList;
 
     private List<SeatDesignation> seatDesignationList;
@@ -53,6 +51,7 @@ public class DinnerParty extends AbstractPersistable {
         return EnumSet.allOf(Hobby.class);
     }
 
+    @PlanningFactCollectionProperty
     public List<Job> getJobList() {
         return jobList;
     }
@@ -66,6 +65,7 @@ public class DinnerParty extends AbstractPersistable {
         return EnumSet.allOf(JobType.class);
     }
 
+    @PlanningFactCollectionProperty
     public List<Guest> getGuestList() {
         return guestList;
     }
@@ -74,6 +74,7 @@ public class DinnerParty extends AbstractPersistable {
         this.guestList = guestList;
     }
 
+    @PlanningFactCollectionProperty
     public List<HobbyPractician> getHobbyPracticianList() {
         return hobbyPracticianList;
     }
@@ -82,6 +83,7 @@ public class DinnerParty extends AbstractPersistable {
         this.hobbyPracticianList = hobbyPracticianList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Table> getTableList() {
         return tableList;
     }
@@ -91,6 +93,7 @@ public class DinnerParty extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "seatRange")
+    @PlanningFactCollectionProperty
     public List<Seat> getSeatList() {
         return seatList;
     }

@@ -35,7 +35,7 @@ import java.util.*;
 @XStreamInclude({
         PureSubSingleStatistic.class
 })
-public abstract class SubSingleStatistic<Solution_, P extends StatisticPoint> {
+public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends StatisticPoint> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -43,7 +43,7 @@ public abstract class SubSingleStatistic<Solution_, P extends StatisticPoint> {
     protected SubSingleBenchmarkResult subSingleBenchmarkResult;
 
     @XStreamOmitField
-    protected List<P> pointList;
+    protected List<StatisticPoint_> pointList;
 
     protected SubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         this.subSingleBenchmarkResult = subSingleBenchmarkResult;
@@ -59,10 +59,10 @@ public abstract class SubSingleStatistic<Solution_, P extends StatisticPoint> {
 
     public abstract StatisticType getStatisticType();
 
-    public List<P> getPointList() {
+    public List<StatisticPoint_> getPointList() {
         return pointList;
     }
-    public void setPointList(List<P> pointList) {
+    public void setPointList(List<StatisticPoint_> pointList) {
         this.pointList = pointList;
     }
 
@@ -100,7 +100,7 @@ public abstract class SubSingleStatistic<Solution_, P extends StatisticPoint> {
     // ************************************************************************
 
     public void initPointList() {
-        pointList = new ArrayList<P>();
+        pointList = new ArrayList<StatisticPoint_>();
     }
 
     protected abstract String getCsvHeader();
@@ -200,7 +200,7 @@ public abstract class SubSingleStatistic<Solution_, P extends StatisticPoint> {
         pointList = null;
     }
 
-    protected abstract P createPointFromCsvLine(ScoreDefinition scoreDefinition, List<String> csvLine);
+    protected abstract StatisticPoint_ createPointFromCsvLine(ScoreDefinition scoreDefinition, List<String> csvLine);
 
     // ************************************************************************
     // Report accumulates

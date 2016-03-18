@@ -16,9 +16,17 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
@@ -26,21 +34,15 @@ import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocati
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 @PlanningSolution
 @XStreamAlias("CsgCoachShuttleGatheringSolution")
 public class CoachShuttleGatheringSolution extends AbstractPersistable {
 
     protected String name;
-    @PlanningFactCollectionProperty
     protected List<RoadLocation> locationList;
     protected List<Coach> coachList;
     protected List<Shuttle> shuttleList;
     protected List<BusStop> stopList;
-    @PlanningFactProperty
     protected BusHub hub;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
@@ -54,6 +56,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable {
         this.name = name;
     }
 
+    @PlanningFactCollectionProperty
     public List<RoadLocation> getLocationList() {
         return locationList;
     }
@@ -92,6 +95,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable {
         this.stopList = stopList;
     }
 
+    @PlanningFactProperty
     public BusHub getHub() {
         return hub;
     }

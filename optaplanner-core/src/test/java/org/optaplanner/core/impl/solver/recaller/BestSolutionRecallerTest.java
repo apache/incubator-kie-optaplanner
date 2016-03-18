@@ -58,13 +58,13 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringStep() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
         DefaultSolverScope solverScope = new DefaultSolverScope();
         ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
         when(phaseScope.getSolverScope()).thenReturn(solverScope);
         ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        BestSolutionRecaller recaller = new BestSolutionRecaller();
+        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
 
         AbstractSolution solution = mock(AbstractSolution.class);
         Score score = SimpleScore.parseScore("0");

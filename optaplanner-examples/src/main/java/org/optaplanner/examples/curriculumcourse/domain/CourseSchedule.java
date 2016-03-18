@@ -16,9 +16,15 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -26,28 +32,18 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @PlanningSolution
 @XStreamAlias("CourseSchedule")
 public class CourseSchedule extends AbstractPersistable {
 
     private String name;
 
-    @PlanningFactCollectionProperty
     private List<Teacher> teacherList;
-    @PlanningFactCollectionProperty
     private List<Curriculum> curriculumList;
-    @PlanningFactCollectionProperty
     private List<Course> courseList;
-    @PlanningFactCollectionProperty
     private List<Day> dayList;
-    @PlanningFactCollectionProperty
     private List<Timeslot> timeslotList;
-    @PlanningFactCollectionProperty
     private List<Period> periodList;
-    @PlanningFactCollectionProperty
     private List<Room> roomList;
 
     @PlanningFactCollectionProperty
@@ -66,6 +62,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.name = name;
     }
 
+    @PlanningFactCollectionProperty
     public List<Teacher> getTeacherList() {
         return teacherList;
     }
@@ -74,6 +71,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.teacherList = teacherList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Curriculum> getCurriculumList() {
         return curriculumList;
     }
@@ -82,6 +80,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.curriculumList = curriculumList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Course> getCourseList() {
         return courseList;
     }
@@ -90,6 +89,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.courseList = courseList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -98,6 +98,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.dayList = dayList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Timeslot> getTimeslotList() {
         return timeslotList;
     }
@@ -107,6 +108,7 @@ public class CourseSchedule extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "periodRange")
+    @PlanningFactCollectionProperty
     public List<Period> getPeriodList() {
         return periodList;
     }
@@ -116,6 +118,7 @@ public class CourseSchedule extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "roomRange")
+    @PlanningFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }

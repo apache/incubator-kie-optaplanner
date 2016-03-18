@@ -16,26 +16,27 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
+import java.util.Iterator;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.Iterator;
-import java.util.List;
-
 @PlanningSolution
 @XStreamAlias("TravelingTournament")
 public class TravelingTournament extends AbstractPersistable {
 
-    @PlanningFactCollectionProperty
     private List<Day> dayList;
-    @PlanningFactCollectionProperty
     private List<Team> teamList;
 
     private List<Match> matchList;
@@ -44,6 +45,7 @@ public class TravelingTournament extends AbstractPersistable {
     private HardSoftScore score;
 
     @ValueRangeProvider(id = "dayRange")
+    @PlanningFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -52,6 +54,7 @@ public class TravelingTournament extends AbstractPersistable {
         this.dayList = dayList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Team> getTeamList() {
         return teamList;
     }

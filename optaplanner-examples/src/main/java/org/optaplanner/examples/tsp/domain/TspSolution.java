@@ -16,9 +16,17 @@
 
 package org.optaplanner.examples.tsp.domain;
 
+import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
@@ -27,10 +35,6 @@ import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.List;
-
 @PlanningSolution
 @XStreamAlias("TspSolution")
 public class TspSolution extends AbstractPersistable {
@@ -38,9 +42,7 @@ public class TspSolution extends AbstractPersistable {
     private String name;
     protected DistanceType distanceType;
     protected String distanceUnitOfMeasurement;
-    @PlanningFactCollectionProperty
     private List<Location> locationList;
-    @PlanningFactProperty
     private Domicile domicile;
 
     private List<Visit> visitList;
@@ -72,6 +74,7 @@ public class TspSolution extends AbstractPersistable {
         this.distanceUnitOfMeasurement = distanceUnitOfMeasurement;
     }
 
+    @PlanningFactCollectionProperty
     public List<Location> getLocationList() {
         return locationList;
     }
@@ -80,6 +83,7 @@ public class TspSolution extends AbstractPersistable {
         this.locationList = locationList;
     }
 
+    @PlanningFactProperty
     public Domicile getDomicile() {
         return domicile;
     }

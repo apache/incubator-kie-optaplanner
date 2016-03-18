@@ -16,9 +16,17 @@
 
 package org.optaplanner.examples.investment.domain;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -28,19 +36,13 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.*;
-
 @PlanningSolution
 @XStreamAlias("InvestmentSolution")
 public class InvestmentSolution extends AbstractPersistable {
 
-    @PlanningFactProperty
     private InvestmentParametrization parametrization;
-    @PlanningFactCollectionProperty
     private List<Region> regionList;
-    @PlanningFactCollectionProperty
     private List<Sector> sectorList;
-    @PlanningFactCollectionProperty
     private List<AssetClass> assetClassList;
 
     private List<AssetClassAllocation> assetClassAllocationList;
@@ -48,6 +50,7 @@ public class InvestmentSolution extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
     private HardSoftLongScore score;
 
+    @PlanningFactProperty
     public InvestmentParametrization getParametrization() {
         return parametrization;
     }
@@ -56,6 +59,7 @@ public class InvestmentSolution extends AbstractPersistable {
         this.parametrization = parametrization;
     }
 
+    @PlanningFactCollectionProperty
     public List<Region> getRegionList() {
         return regionList;
     }
@@ -64,6 +68,7 @@ public class InvestmentSolution extends AbstractPersistable {
         this.regionList = regionList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Sector> getSectorList() {
         return sectorList;
     }
@@ -72,6 +77,7 @@ public class InvestmentSolution extends AbstractPersistable {
         this.sectorList = sectorList;
     }
 
+    @PlanningFactCollectionProperty
     public List<AssetClass> getAssetClassList() {
         return assetClassList;
     }

@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-class ClassBrowser {
+public class ClassBrowser {
 
     private static Set<Class<?>> getAllClassesInHierarchy(Class<?> root) {
         Set<Class<?>> classes = new HashSet<>();
@@ -20,8 +20,8 @@ class ClassBrowser {
 
     /**
      *
-     * @param root The class in which to start the search.
-     * @return All fields in the class, and all non-private non-static fields in super-types.
+     * @param root Never null, the class in which to start the search.
+     * @return Never null; all fields in the class, and all non-private non-static fields in super-types.
      */
     public static Set<Field> getAllVisibleFields(Class<?> root) {
         Set<Class<?>> classes = getAllClassesInHierarchy(root);
@@ -37,8 +37,8 @@ class ClassBrowser {
 
     /**
      *
-     * @param root The class in which to start the search.
-     * @return All methods in the class, and all non-private non-abstract non-static fields in super-types.
+     * @param root Never null, the class in which to start the search.
+     * @return Never null; all methods in the class, and all non-private non-abstract non-static fields in super-types.
      */
     public static Set<Method> getAllVisibleMethods(Class<?> root) {
         Set<Class<?>> classes = getAllClassesInHierarchy(root);

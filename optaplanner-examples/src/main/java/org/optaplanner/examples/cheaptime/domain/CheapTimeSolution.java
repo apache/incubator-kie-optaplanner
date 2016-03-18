@@ -16,18 +16,21 @@
 
 package org.optaplanner.examples.cheaptime.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.List;
-
-// FIXME originally had itself as a fact
 @PlanningSolution
 @XStreamAlias("CtCheapTimeSolution")
 public class CheapTimeSolution extends AbstractPersistable {
@@ -36,22 +39,18 @@ public class CheapTimeSolution extends AbstractPersistable {
     private int globalPeriodRangeFrom; // Inclusive
     private int globalPeriodRangeTo; // Exclusive
 
-    @PlanningFactCollectionProperty
+    @PlanningFactProperty
+    private CheapTimeSolution selfReference = this;
+
     private List<Resource> resourceList;
     @ValueRangeProvider(id = "machineRange")
-    @PlanningFactCollectionProperty
     private List<Machine> machineList;
-    @PlanningFactCollectionProperty
     private List<MachineCapacity> machineCapacityList;
-    @PlanningFactCollectionProperty
     private List<Task> taskList;
-    @PlanningFactCollectionProperty
     private List<TaskRequirement> taskRequirementList;
     // Order is equal to global periodRange so int period can be used for the index
-    @PlanningFactCollectionProperty
     private List<PeriodPowerPrice> periodPowerPriceList;
 
-    @PlanningEntityCollectionProperty
     private List<TaskAssignment> taskAssignmentList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftLongScoreDefinition.class})
@@ -81,10 +80,12 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.globalPeriodRangeTo = globalPeriodRangeTo;
     }
 
+    @PlanningFactCollectionProperty
     public List<Resource> getResourceList() {
         return resourceList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Machine> getMachineList() {
         return machineList;
     }
@@ -97,6 +98,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.resourceList = resourceList;
     }
 
+    @PlanningFactCollectionProperty
     public List<MachineCapacity> getMachineCapacityList() {
         return machineCapacityList;
     }
@@ -105,6 +107,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.machineCapacityList = machineCapacityList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Task> getTaskList() {
         return taskList;
     }
@@ -113,6 +116,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.taskList = taskList;
     }
 
+    @PlanningFactCollectionProperty
     public List<TaskRequirement> getTaskRequirementList() {
         return taskRequirementList;
     }
@@ -121,6 +125,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.taskRequirementList = taskRequirementList;
     }
 
+    @PlanningFactCollectionProperty
     public List<PeriodPowerPrice> getPeriodPowerPriceList() {
         return periodPowerPriceList;
     }
@@ -129,6 +134,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.periodPowerPriceList = periodPowerPriceList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<TaskAssignment> getTaskAssignmentList() {
         return taskAssignmentList;
     }

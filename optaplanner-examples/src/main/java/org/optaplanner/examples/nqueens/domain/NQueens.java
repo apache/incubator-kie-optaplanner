@@ -16,16 +16,19 @@
 
 package org.optaplanner.examples.nqueens.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
-
-import java.util.List;
 
 @PlanningSolution
 @XStreamAlias("NQueens")
@@ -33,9 +36,7 @@ public class NQueens extends AbstractPersistable {
 
     private int n;
 
-    @PlanningFactCollectionProperty
     private List<Column> columnList;
-    @PlanningFactCollectionProperty
     private List<Row> rowList;
 
     private List<Queen> queenList;
@@ -51,6 +52,7 @@ public class NQueens extends AbstractPersistable {
         this.n = n;
     }
 
+    @PlanningFactCollectionProperty
     public List<Column> getColumnList() {
         return columnList;
     }
@@ -60,6 +62,7 @@ public class NQueens extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "rowRange")
+    @PlanningFactCollectionProperty
     public List<Row> getRowList() {
         return rowList;
     }

@@ -16,9 +16,16 @@
 
 package org.optaplanner.examples.examination.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -26,27 +33,18 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @PlanningSolution()
 @XStreamAlias("Examination")
 public class Examination extends AbstractPersistable {
 
-    @PlanningFactProperty
     private InstitutionParametrization institutionParametrization;
 
     private List<Student> studentList;
-    @PlanningFactCollectionProperty
     private List<Topic> topicList;
-    @PlanningFactCollectionProperty
     private List<Period> periodList;
-    @PlanningFactCollectionProperty
     private List<Room> roomList;
 
-    @PlanningFactCollectionProperty
     private List<PeriodPenalty> periodPenaltyList;
-    @PlanningFactCollectionProperty
     private List<RoomPenalty> roomPenaltyList;
 
     private List<Exam> examList;
@@ -54,6 +52,7 @@ public class Examination extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private HardSoftScore score;
 
+    @PlanningFactProperty
     public InstitutionParametrization getInstitutionParametrization() {
         return institutionParametrization;
     }
@@ -70,6 +69,7 @@ public class Examination extends AbstractPersistable {
         this.studentList = studentList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Topic> getTopicList() {
         return topicList;
     }
@@ -79,6 +79,7 @@ public class Examination extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "periodRange")
+    @PlanningFactCollectionProperty
     public List<Period> getPeriodList() {
         return periodList;
     }
@@ -88,6 +89,7 @@ public class Examination extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "roomRange")
+    @PlanningFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -96,6 +98,7 @@ public class Examination extends AbstractPersistable {
         this.roomList = roomList;
     }
 
+    @PlanningFactCollectionProperty
     public List<PeriodPenalty> getPeriodPenaltyList() {
         return periodPenaltyList;
     }
@@ -104,6 +107,7 @@ public class Examination extends AbstractPersistable {
         this.periodPenaltyList = periodPenaltyList;
     }
 
+    @PlanningFactCollectionProperty
     public List<RoomPenalty> getRoomPenaltyList() {
         return roomPenaltyList;
     }
