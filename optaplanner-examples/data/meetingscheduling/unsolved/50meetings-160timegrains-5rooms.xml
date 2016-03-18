@@ -154,7 +154,7 @@
           <id>15</id>
           <person id="44">
             <id>38</id>
-            <fullName>Micha I. StatisticPoint_. Proc</fullName>
+            <fullName>Micha I. P. Proc</fullName>
           </person>
           <meeting reference="35"/>
         </MsRequiredAttendance>
@@ -193,7 +193,7 @@
           <id>21</id>
           <person id="53">
             <id>29</id>
-            <fullName>Steph J. StatisticPoint_. Proc</fullName>
+            <fullName>Steph J. P. Proc</fullName>
           </person>
           <meeting reference="35"/>
         </MsRequiredAttendance>
@@ -232,7 +232,7 @@
           <id>27</id>
           <person id="62">
             <id>10</id>
-            <fullName>Geoff A. StatisticPoint_. Proc</fullName>
+            <fullName>Geoff A. P. Proc</fullName>
           </person>
           <meeting reference="35"/>
         </MsRequiredAttendance>
@@ -284,7 +284,7 @@
           <id>34</id>
           <person id="75">
             <id>1</id>
-            <fullName>Mark B. StatisticPoint_. Proc</fullName>
+            <fullName>Mark B. P. Proc</fullName>
           </person>
           <meeting reference="35"/>
         </MsPreferredAttendance>
