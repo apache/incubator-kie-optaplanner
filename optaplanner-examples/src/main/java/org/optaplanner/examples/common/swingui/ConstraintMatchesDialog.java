@@ -93,18 +93,15 @@ public class ConstraintMatchesDialog extends JDialog {
             JScrollPane detailScrollPane = new JScrollPane(detailTextArea);
             bottomPanel.add(detailScrollPane, BorderLayout.CENTER);
             table.getSelectionModel().addListSelectionListener(
-                    new ListSelectionListener() {
-                        @Override
-                        public void valueChanged(ListSelectionEvent event) {
-                            int selectedRow = table.getSelectedRow();
-                            if (selectedRow < 0) {
-                                detailTextArea.setText("");
-                            } else {
-                                ConstraintMatchTotal constraintMatchTotal
-                                        = constraintMatchTotalList.get(selectedRow);
-                                detailTextArea.setText(buildConstraintMatchSetText(constraintMatchTotal));
-                                detailTextArea.setCaretPosition(0);
-                            }
+                    event -> {
+                        int selectedRow = table.getSelectedRow();
+                        if (selectedRow < 0) {
+                            detailTextArea.setText("");
+                        } else {
+                            ConstraintMatchTotal constraintMatchTotal
+                                    = constraintMatchTotalList.get(selectedRow);
+                            detailTextArea.setText(buildConstraintMatchSetText(constraintMatchTotal));
+                            detailTextArea.setCaretPosition(0);
                         }
                     }
             );

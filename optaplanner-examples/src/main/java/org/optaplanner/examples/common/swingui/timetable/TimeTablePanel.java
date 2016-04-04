@@ -154,7 +154,7 @@ public class TimeTablePanel<XObject, YObject> extends JPanel implements Scrollab
     @Override
     public boolean getScrollableTracksViewportWidth() {
         if (getParent() instanceof JViewport) {
-            return (((JViewport) getParent()).getWidth() > getPreferredSize().width);
+            return (getParent().getWidth() > getPreferredSize().width);
         }
         return false;
     }
@@ -162,7 +162,7 @@ public class TimeTablePanel<XObject, YObject> extends JPanel implements Scrollab
     @Override
     public boolean getScrollableTracksViewportHeight() {
         if (getParent() instanceof JViewport) {
-            return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
+            return (getParent().getHeight() > getPreferredSize().height);
         }
         return false;
     }

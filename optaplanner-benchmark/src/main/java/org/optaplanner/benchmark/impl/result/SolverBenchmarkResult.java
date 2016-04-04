@@ -211,7 +211,7 @@ public class SolverBenchmarkResult {
     }
 
     public boolean isFavorite() {
-        return ranking != null && ranking.intValue() == 0;
+        return ranking != null && ranking == 0;
     }
 
     public Score getAverageWinningScoreDifference() {

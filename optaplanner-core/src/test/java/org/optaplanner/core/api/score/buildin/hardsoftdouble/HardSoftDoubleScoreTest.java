@@ -128,12 +128,9 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
     public void serializeAndDeserialize() {
         HardSoftDoubleScore input = HardSoftDoubleScore.valueOf(-12.3, 3400.5);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<HardSoftDoubleScore>() {
-                    @Override
-                    public void assertOutput(HardSoftDoubleScore output) {
-                        assertEquals(-12.3, output.getHardScore(), 0.0);
-                        assertEquals(3400.5, output.getSoftScore(), 0.0);
-                    }
+                output -> {
+                    assertEquals(-12.3, output.getHardScore(), 0.0);
+                    assertEquals(3400.5, output.getSoftScore(), 0.0);
                 }
         );
     }

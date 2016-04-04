@@ -107,12 +107,7 @@ public class SimpleScoreTest extends AbstractScoreTest {
     public void serializeAndDeserialize() {
         SimpleScore input = SimpleScore.valueOf(123);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<SimpleScore>() {
-                    @Override
-                    public void assertOutput(SimpleScore output) {
-                        assertEquals(123, output.getScore());
-                    }
-                }
+                output -> assertEquals(123, output.getScore())
         );
     }
 

@@ -53,7 +53,7 @@ public class ExternalizedCollectionInverseVariableSupplyTest {
         supply.resetWorkingSolution(scoreDirector);
 
         assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val1), a, b);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val2));
+        assertCollectionContainsExactly(supply.getInverseCollection(val2));
         assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val3), c, d);
 
         supply.beforeVariableChanged(scoreDirector, c);

@@ -129,13 +129,10 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
     public void serializeAndDeserialize() {
         HardMediumSoftScore input = HardMediumSoftScore.valueOf(-12, 3400, -56);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<HardMediumSoftScore>() {
-                    @Override
-                    public void assertOutput(HardMediumSoftScore output) {
-                        assertEquals(-12, output.getHardScore());
-                        assertEquals(3400, output.getMediumScore());
-                        assertEquals(-56, output.getSoftScore());
-                    }
+                output -> {
+                    assertEquals(-12, output.getHardScore());
+                    assertEquals(3400, output.getMediumScore());
+                    assertEquals(-56, output.getSoftScore());
                 }
         );
     }

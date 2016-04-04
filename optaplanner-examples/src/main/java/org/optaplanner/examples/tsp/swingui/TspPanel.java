@@ -70,7 +70,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
     private void resetNextLocationId() {
         long highestLocationId = 0L;
         for (Location location : getSolution().getLocationList()) {
-            if (highestLocationId < location.getId().longValue()) {
+            if (highestLocationId < location.getId()) {
                 highestLocationId = location.getId();
             }
         }
@@ -131,7 +131,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         }
         if (targetStandstill instanceof Visit
                 && (sourceStandstill instanceof Domicile ||  ((Visit) sourceStandstill).getPreviousStandstill() != null)) {
-            solutionBusiness.doChangeMove((Visit) targetStandstill, "previousStandstill", sourceStandstill);
+            solutionBusiness.doChangeMove(targetStandstill, "previousStandstill", sourceStandstill);
         }
         solverAndPersistenceFrame.resetScreen();
     }

@@ -164,11 +164,11 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 department.setRoomList(new ArrayList<>());
                 int minimumAge = Integer.parseInt(departmentTokens[2]);
                 if (minimumAge != 0) {
-                    department.setMinimumAge(Integer.valueOf(minimumAge));
+                    department.setMinimumAge(minimumAge);
                 }
                 int maximumAge = Integer.parseInt(departmentTokens[3]);
                 if (maximumAge != 0) {
-                    department.setMaximumAge(Integer.valueOf(maximumAge));
+                    department.setMaximumAge(maximumAge);
                 }
                 departmentList.add(department);
                 idToDepartmentMap.put(department.getId(), department);
@@ -296,15 +296,10 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 }
                 room.setRoomEquipmentList(roomEquipmentListOfRoom);
             }
-            Collections.sort(roomList, new Comparator<Room>() {
-                @Override
-                public int compare(Room a, Room b) {
-                    return new CompareToBuilder()
-                            .append(a.getDepartment().getId(), b.getDepartment().getId())
-                            .append(a.getId(), b.getId())
-                            .toComparison();
-                }
-            });
+            Collections.sort(roomList, (a, b) -> new CompareToBuilder()
+                    .append(a.getDepartment().getId(), b.getDepartment().getId())
+                    .append(a.getId(), b.getId())
+                    .toComparison());
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
             patientAdmissionSchedule.setRoomEquipmentList(roomEquipmentList);
@@ -332,17 +327,12 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 bedList.add(bed);
                 room.getBedList().add(bed);
             }
-            Collections.sort(bedList, new Comparator<Bed>() {
-                @Override
-                public int compare(Bed a, Bed b) {
-                    return new CompareToBuilder()
-                            .append(a.getRoom().getDepartment().getId(), b.getRoom().getDepartment().getId())
-                            .append(a.getRoom().getId(), b.getRoom().getId())
-                            .append(a.getIndexInRoom(), b.getIndexInRoom())
-                            .append(a.getId(), b.getId())
-                            .toComparison();
-                }
-            });
+            Collections.sort(bedList, (a, b) -> new CompareToBuilder()
+                    .append(a.getRoom().getDepartment().getId(), b.getRoom().getDepartment().getId())
+                    .append(a.getRoom().getId(), b.getRoom().getId())
+                    .append(a.getIndexInRoom(), b.getIndexInRoom())
+                    .append(a.getId(), b.getId())
+                    .toComparison());
             patientAdmissionSchedule.setBedList(bedList);
         }
 

@@ -28,11 +28,11 @@ public class ConfigUtilsTest {
         Integer a = null;
         Integer b = null;
         assertEquals(null, mergeProperty(a, b));
-        a = Integer.valueOf(1);
+        a = 1;
         assertEquals(null, mergeProperty(a, b));
-        b = Integer.valueOf(10);
+        b = 10;
         assertEquals(null, mergeProperty(a, b));
-        b = Integer.valueOf(1);
+        b = 1;
         assertEquals(Integer.valueOf(1), mergeProperty(a, b));
         a = null;
         assertEquals(null, mergeProperty(a, b));
@@ -43,10 +43,10 @@ public class ConfigUtilsTest {
         Integer a = null;
         Integer b = null;
         assertEquals(null, meldProperty(a, b));
-        a = Integer.valueOf(1);
+        a = 1;
         assertEquals(Integer.valueOf(1), meldProperty(a, b));
-        b = Integer.valueOf(10);
-        assertEquals(mergeProperty(Integer.valueOf(1), Integer.valueOf(10)), meldProperty(a, b));
+        b = 10;
+        assertEquals(mergeProperty(1, 10), meldProperty(a, b));
         a = null;
         assertEquals(Integer.valueOf(10), meldProperty(a, b));
     }
