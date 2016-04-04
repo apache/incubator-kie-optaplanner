@@ -71,7 +71,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
     }
 
     public void generateVrp(File tspInputFile, int locationListSize, int vehicleListSize, int capacity) {
-        TspSolution tspSolution = (TspSolution) tspImporter.readSolution(tspInputFile);
+        TspSolution tspSolution = tspImporter.readSolution(tspInputFile);
         String name = tspInputFile.getName().replaceAll("\\d+\\.tsp", "")
                 + "-n" + locationListSize + "-k" + vehicleListSize;
         File vrpOutputFile = new File(vehicleRoutingDao.getDataDir(), "import/capacitated/" + name + ".vrp");

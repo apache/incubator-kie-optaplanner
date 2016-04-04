@@ -23,8 +23,6 @@ import java.util.Random;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 

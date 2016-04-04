@@ -435,15 +435,10 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         private void tagFrontLoadLargeTopics() {
             List<Topic> sortedTopicList = new ArrayList<>(examination.getTopicList());
-            Collections.sort(sortedTopicList, new Comparator<Topic>() {
-                @Override
-                public int compare(Topic a, Topic b) {
-                    return new CompareToBuilder()
-                            .append(a.getStudentSize(), b.getStudentSize()) // Ascending
-                            .append(b.getId(), a.getId()) // Descending (according to spec)
-                            .toComparison();
-                }
-            });
+            Collections.sort(sortedTopicList, (a, b) -> new CompareToBuilder()
+                    .append(a.getStudentSize(), b.getStudentSize()) // Ascending
+                    .append(b.getId(), a.getId()) // Descending (according to spec)
+                    .toComparison());
             int frontLoadLargeTopicSize = examination.getInstitutionParametrization().getFrontLoadLargeTopicSize();
             if (frontLoadLargeTopicSize == 0) {
                 return;

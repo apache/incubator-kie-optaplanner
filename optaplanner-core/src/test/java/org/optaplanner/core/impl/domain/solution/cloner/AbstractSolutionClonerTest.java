@@ -55,12 +55,7 @@ import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.Testdata
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedSolution;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNull;
 
 public abstract class AbstractSolutionClonerTest {
 
@@ -224,7 +219,7 @@ public abstract class AbstractSolutionClonerTest {
         List<TestdataEntity> originalEntityList = Arrays.<TestdataEntity>asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
-        TestdataUnannotatedExtendedSolution clone = (TestdataUnannotatedExtendedSolution) cloner.cloneSolution(original);
+        TestdataUnannotatedExtendedSolution clone = cloner.cloneSolution(original);
 
         assertNotSame(original, clone);
         assertCode("solution", clone);
@@ -274,7 +269,7 @@ public abstract class AbstractSolutionClonerTest {
         List<TestdataThirdPartyEntityPojo> originalEntityList = Arrays.<TestdataThirdPartyEntityPojo>asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
-        TestdataExtendedThirdPartySolution clone = (TestdataExtendedThirdPartySolution) cloner.cloneSolution(original);
+        TestdataExtendedThirdPartySolution clone = cloner.cloneSolution(original);
 
         assertNotSame(original, clone);
         assertCode("solution", clone);
@@ -392,20 +387,14 @@ public abstract class AbstractSolutionClonerTest {
         TestdataSetBasedEntity d = new TestdataSetBasedEntity("d", val3);
 
         TestdataSetBasedSolution original = new TestdataSetBasedSolution("solution");
-        Comparator<TestdataValue> valueComparator = new Comparator<TestdataValue>() {
-            @Override
-            public int compare(TestdataValue a, TestdataValue b) {
-                return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
-            }
+        Comparator<TestdataValue> valueComparator = (a1, b1) -> {
+            return b1.getCode().compareTo(a1.getCode()); // Reverse alphabetic
         };
         Set<TestdataValue> valueSet = new TreeSet<>(valueComparator);
         valueSet.addAll(Arrays.asList(val1, val2, val3));
         original.setValueSet(valueSet);
-        Comparator<TestdataSetBasedEntity> entityComparator = new Comparator<TestdataSetBasedEntity>() {
-            @Override
-            public int compare(TestdataSetBasedEntity a, TestdataSetBasedEntity b) {
-                return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
-            }
+        Comparator<TestdataSetBasedEntity> entityComparator = (a1, b1) -> {
+            return b1.getCode().compareTo(a1.getCode()); // Reverse alphabetic
         };
         Set<TestdataSetBasedEntity> originalEntitySet = new TreeSet<>(entityComparator);
         originalEntitySet.addAll(Arrays.asList(a, b, c, d));

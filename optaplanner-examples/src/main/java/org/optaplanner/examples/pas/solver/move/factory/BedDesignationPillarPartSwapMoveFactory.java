@@ -53,16 +53,13 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
             bedDesignationListPerBed.add(bedDesignation);
         }
         for (List<BedDesignation> bedDesignationListPerBed : bedToBedDesignationList.values()) {
-            Collections.sort(bedDesignationListPerBed, new Comparator<BedDesignation>() {
-                @Override
-                public int compare(BedDesignation a, BedDesignation b) {
-                    // This comparison is sameBedInSameNight safe.
-                    return new CompareToBuilder()
-                            .append(a.getAdmissionPart().getFirstNight(), b.getAdmissionPart().getFirstNight())
-                            .append(a.getAdmissionPart().getLastNight(), b.getAdmissionPart().getLastNight())
-                            .append(a.getAdmissionPart(), b.getAdmissionPart())
-                            .toComparison();
-                }
+            Collections.sort(bedDesignationListPerBed, (a, b) -> {
+                // This comparison is sameBedInSameNight safe.
+                return new CompareToBuilder()
+                        .append(a.getAdmissionPart().getFirstNight(), b.getAdmissionPart().getFirstNight())
+                        .append(a.getAdmissionPart().getLastNight(), b.getAdmissionPart().getLastNight())
+                        .append(a.getAdmissionPart(), b.getAdmissionPart())
+                        .toComparison();
             });
         }
 

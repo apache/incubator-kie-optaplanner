@@ -226,15 +226,12 @@ public class BendableLongScoreTest extends AbstractScoreTest {
     public void serializeAndDeserialize() {
         BendableLongScore input = scoreDefinitionHSS.createScore(-5000000000L, -300000000000L, -4000000000000L);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<BendableLongScore>() {
-                    @Override
-                    public void assertOutput(BendableLongScore output) {
-                        assertEquals(1, output.getHardLevelsSize());
-                        assertEquals(-5000000000L, output.getHardScore(0));
-                        assertEquals(2, output.getSoftLevelsSize());
-                        assertEquals(-300000000000L, output.getSoftScore(0));
-                        assertEquals(-4000000000000L, output.getSoftScore(1));
-                    }
+                output -> {
+                    assertEquals(1, output.getHardLevelsSize());
+                    assertEquals(-5000000000L, output.getHardScore(0));
+                    assertEquals(2, output.getSoftLevelsSize());
+                    assertEquals(-300000000000L, output.getSoftScore(0));
+                    assertEquals(-4000000000000L, output.getSoftScore(1));
                 }
         );
     }

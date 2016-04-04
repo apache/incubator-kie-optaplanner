@@ -79,15 +79,12 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
         standardDeviationMaximumField.setEditor(new JSpinner.NumberEditor(standardDeviationMaximumField,
                 InvestmentNumericUtil.MILLIS_PERCENT_PATTERN));
         headerPanel.add(standardDeviationMaximumField);
-        standardDeviationMaximumField.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (ignoreChangeEvents) {
-                    return;
-                }
-                long standardDeviationMillisMaximum = (long) (((Number) standardDeviationMaximumField.getValue()).doubleValue() * 1000.0);
-                changeStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
+        standardDeviationMaximumField.addChangeListener(e -> {
+            if (ignoreChangeEvents) {
+                return;
             }
+            long standardDeviationMillisMaximum = (long) (((Number) standardDeviationMaximumField.getValue()).doubleValue() * 1000.0);
+            changeStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
         });
         return headerPanel;
     }
@@ -241,15 +238,12 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
             maximumField.setEditor(new JSpinner.NumberEditor(maximumField,
                     InvestmentNumericUtil.MILLIS_PERCENT_PATTERN));
             regionPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, region, maximumField);
-            maximumField.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    if (ignoreChangeEvents) {
-                        return;
-                    }
-                    long quantityMillisMaximum = (long) (((Number) maximumField.getValue()).doubleValue() * 1000.0);
-                    changeRegionQuantityMillisMaximum(region, quantityMillisMaximum);
+            maximumField.addChangeListener(e -> {
+                if (ignoreChangeEvents) {
+                    return;
                 }
+                long quantityMillisMaximum = (long) (((Number) maximumField.getValue()).doubleValue() * 1000.0);
+                changeRegionQuantityMillisMaximum(region, quantityMillisMaximum);
             });
         }
 
@@ -271,15 +265,12 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
             maximumField.setEditor(new JSpinner.NumberEditor(maximumField,
                     InvestmentNumericUtil.MILLIS_PERCENT_PATTERN));
             sectorPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, sector, maximumField);
-            maximumField.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    if (ignoreChangeEvents) {
-                        return;
-                    }
-                    long quantityMillisMaximum = (long) (((Number) maximumField.getValue()).doubleValue() * 1000.0);
-                    changeSectorQuantityMillisMaximum(sector, quantityMillisMaximum);
+            maximumField.addChangeListener(e -> {
+                if (ignoreChangeEvents) {
+                    return;
                 }
+                long quantityMillisMaximum = (long) (((Number) maximumField.getValue()).doubleValue() * 1000.0);
+                changeSectorQuantityMillisMaximum(sector, quantityMillisMaximum);
             });
         }
     }

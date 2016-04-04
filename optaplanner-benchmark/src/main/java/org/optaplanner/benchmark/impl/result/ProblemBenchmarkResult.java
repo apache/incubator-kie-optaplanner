@@ -380,7 +380,7 @@ public class ProblemBenchmarkResult<Solution_> {
             long registeringProblemScale) {
         if (entityCount == null) {
             entityCount = registeringEntityCount;
-        } else if (entityCount.longValue() != registeringEntityCount) {
+        } else if (entityCount != registeringEntityCount) {
             logger.warn("The problemBenchmarkResult ({}) has different entityCount values ([{},{}]).",
                     getName(), entityCount, registeringEntityCount);
             // The entityCount is not unknown (null), but known to be ambiguous
@@ -388,7 +388,7 @@ public class ProblemBenchmarkResult<Solution_> {
         }
         if (variableCount == null) {
             variableCount = registeringVariableCount;
-        } else if (variableCount.longValue() != registeringVariableCount) {
+        } else if (variableCount != registeringVariableCount) {
             logger.warn("The problemBenchmarkResult ({}) has different variableCount values ([{},{}]).",
                     getName(), variableCount, registeringVariableCount);
             // The variableCount is not unknown (null), but known to be ambiguous
@@ -396,7 +396,7 @@ public class ProblemBenchmarkResult<Solution_> {
         }
         if (problemScale == null) {
             problemScale = registeringProblemScale;
-        } else if (problemScale.longValue() != registeringProblemScale) {
+        } else if (problemScale != registeringProblemScale) {
             logger.warn("The problemBenchmarkResult ({}) has different problemScale values ([{},{}]).",
                     getName(), problemScale, registeringProblemScale);
             // The problemScale is not unknown (null), but known to be ambiguous

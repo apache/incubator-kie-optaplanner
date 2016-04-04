@@ -128,12 +128,9 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
         HardSoftBigDecimalScore input = HardSoftBigDecimalScore.valueOf(
                 new BigDecimal("-12.3"), new BigDecimal("3400.5"));
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<HardSoftBigDecimalScore>() {
-                    @Override
-                    public void assertOutput(HardSoftBigDecimalScore output) {
-                        assertEquals(new BigDecimal("-12.3"), output.getHardScore());
-                        assertEquals(new BigDecimal("3400.5"), output.getSoftScore());
-                    }
+                output -> {
+                    assertEquals(new BigDecimal("-12.3"), output.getHardScore());
+                    assertEquals(new BigDecimal("3400.5"), output.getSoftScore());
                 }
         );
     }

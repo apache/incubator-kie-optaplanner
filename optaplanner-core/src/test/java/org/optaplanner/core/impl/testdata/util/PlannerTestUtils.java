@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.testdata.util;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.lang3.SerializationUtils;
@@ -33,7 +34,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.DummySimpleScoreEasyScoreCalculator;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -77,7 +77,7 @@ public class PlannerTestUtils {
 
     public static <Solution_> InnerScoreDirector mockScoreDirector(SolutionDescriptor<Solution_> solutionDescriptor) {
         EasyScoreDirectorFactory<Solution_> scoreDirectorFactory =
-                new EasyScoreDirectorFactory<>((EasyScoreCalculator<Solution_>) solution -> SimpleScore.valueOf(0));
+                new EasyScoreDirectorFactory<>(solution -> SimpleScore.valueOf(0));
         scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
         scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
         scoreDirectorFactory.setInitializingScoreTrend(
@@ -89,9 +89,9 @@ public class PlannerTestUtils {
     // Serialization methods
     // ************************************************************************
 
-    public static <T> void serializeAndDeserializeWithAll(T input, OutputAsserter<T> outputAsserter) {
-        outputAsserter.assertOutput(serializeAndDeserializeWithJavaSerialization(input));
-        outputAsserter.assertOutput(serializeAndDeserializeWithXStream(input));
+    public static <T> void serializeAndDeserializeWithAll(T input, Consumer<T> outputAsserter) {
+        outputAsserter.accept(serializeAndDeserializeWithJavaSerialization(input));
+        outputAsserter.accept(serializeAndDeserializeWithXStream(input));
     }
 
     public static <T> T serializeAndDeserializeWithJavaSerialization(T input) {
@@ -107,19 +107,6 @@ public class PlannerTestUtils {
         }
         String xmlString = xStream.toXML(input);
         return (T) xStream.fromXML(xmlString);
-    }
-
-    public static interface OutputAsserter<T> {
-
-        void assertOutput(T output);
-
-    }
-
-    // ************************************************************************
-    // Private constructor
-    // ************************************************************************
-
-    private PlannerTestUtils() {
     }
 
 }

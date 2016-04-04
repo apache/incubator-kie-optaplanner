@@ -68,7 +68,7 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
     private void resetNextLocationId() {
         long highestLocationId = 0L;
         for (Location location : getSolution().getLocationList()) {
-            if (highestLocationId < location.getId().longValue()) {
+            if (highestLocationId < location.getId()) {
                 highestLocationId = location.getId();
             }
         }

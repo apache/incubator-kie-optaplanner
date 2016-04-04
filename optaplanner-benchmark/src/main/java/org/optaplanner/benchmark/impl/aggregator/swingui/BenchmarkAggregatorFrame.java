@@ -204,19 +204,15 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private CheckBoxTree createCheckBoxTree() {
         final CheckBoxTree resultCheckBoxTree = new CheckBoxTree(initBenchmarkHierarchy(true));
-        resultCheckBoxTree.addTreeSelectionListener(new TreeSelectionListener() {
-
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                TreePath treeSelectionPath = e.getNewLeadSelectionPath();
-                if (treeSelectionPath != null) {
-                    DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treeSelectionPath.getLastPathComponent();
-                    MixedCheckBox checkBox = (MixedCheckBox) treeNode.getUserObject();
-                    detailTextArea.setText(checkBox.getDetail());
-                    detailTextArea.setCaretPosition(0);
-                    renameNodeButton.setEnabled(checkBox.getBenchmarkResult() instanceof PlannerBenchmarkResult
-                            || checkBox.getBenchmarkResult() instanceof SolverBenchmarkResult);
-                }
+        resultCheckBoxTree.addTreeSelectionListener(e -> {
+            TreePath treeSelectionPath = e.getNewLeadSelectionPath();
+            if (treeSelectionPath != null) {
+                DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treeSelectionPath.getLastPathComponent();
+                MixedCheckBox checkBox = (MixedCheckBox) treeNode.getUserObject();
+                detailTextArea.setText(checkBox.getDetail());
+                detailTextArea.setCaretPosition(0);
+                renameNodeButton.setEnabled(checkBox.getBenchmarkResult() instanceof PlannerBenchmarkResult
+                        || checkBox.getBenchmarkResult() instanceof SolverBenchmarkResult);
             }
         });
         resultCheckBoxTree.addMouseListener(new MouseAdapter() {

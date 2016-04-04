@@ -279,7 +279,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     public boolean isWinner() {
-        return ranking != null && ranking.intValue() == 0;
+        return ranking != null && ranking == 0;
     }
 
     public SubSingleStatistic getSubSingleStatistic(ProblemStatisticType problemStatisticType) {
@@ -341,15 +341,10 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultListCopy = new ArrayList<>(subSingleBenchmarkResultList);
         // sort (according to ranking) so that the best subSingle is at index 0
-        Collections.sort(subSingleBenchmarkResultListCopy, new Comparator<SubSingleBenchmarkResult>() {
-            @Override
-            public int compare(SubSingleBenchmarkResult o1, SubSingleBenchmarkResult o2) {
-                return new CompareToBuilder()
-                        .append(o1.hasAnyFailure(), o2.hasAnyFailure())
-                        .append(o1.getRanking(), o2.getRanking())
-                        .toComparison();
-            }
-        });
+        Collections.sort(subSingleBenchmarkResultListCopy, (o1, o2) -> new CompareToBuilder()
+                .append(o1.hasAnyFailure(), o2.hasAnyFailure())
+                .append(o1.getRanking(), o2.getRanking())
+                .toComparison());
         best = subSingleBenchmarkResultListCopy.get(0);
         worst = subSingleBenchmarkResultListCopy.get(subSingleBenchmarkResultListCopy.size() - 1);
         median = subSingleBenchmarkResultListCopy.get(ConfigUtils.ceilDivide(subSingleBenchmarkResultListCopy.size() - 1, 2));
