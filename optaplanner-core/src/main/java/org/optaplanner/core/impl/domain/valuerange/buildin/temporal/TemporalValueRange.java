@@ -4,9 +4,9 @@ import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 
-import java.time.temporal.*;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
@@ -20,26 +20,36 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
     private final long incrementAmount;
     private final TemporalUnit incrementUnit;
 
+    /**
+     * @param from inclusive minimum
+     * @param to exclusive maximum, {@code >= from}
+     * @param incrementAmount {@code > 0}
+     * @param incrementUnit depends on the supported units of {from} and {to}
+     */
     public TemporalValueRange(Temporal from, Temporal to, long incrementAmount, TemporalUnit incrementUnit) {
         this.from = from;
         this.to = to;
         this.incrementAmount = incrementAmount;
         this.incrementUnit = incrementUnit;
 
-        if (from == null || to == null) {
-            throw new IllegalArgumentException("Parameters should not be null.");
+        if (from == null || to == null || incrementUnit == null) {
+            throw new IllegalArgumentException("The " + getClass().getSimpleName()
+                    + " must have from (" + from + "),  to (" + to + "), incrementUnit (" + incrementUnit + ") which are not null.");
         }
 
         if (incrementAmount <= 0) {
-            throw new IllegalArgumentException("Increment amount must be greater 0");
+            throw new IllegalArgumentException("The " + getClass().getSimpleName()
+                    + " must have strictly positive incrementAmount (" + incrementAmount + ").");
         }
 
         if (!from.isSupported(incrementUnit) || !to.isSupported(incrementUnit)) {
-            throw new IllegalArgumentException("The increment unit " + incrementUnit + " is not supported.");
+            throw new IllegalArgumentException("The " + getClass().getSimpleName()
+                    + " must have a incrementUnit which is supported by from/to (" + incrementUnit + ").");
         }
 
         if (from.until(to, incrementUnit) < 0) {
-            throw new IllegalArgumentException("From is before to.");
+            throw new IllegalArgumentException("The " + getClass().getSimpleName()
+                    + " cannot have a from (" + from + ") which is strictly higher than its to (" + to + ").");
         }
 
 
