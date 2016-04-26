@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 /**
@@ -34,11 +35,19 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  */
 public class InitializedValueSelector extends AbstractValueSelector {
 
+    public static ValueSelector create(ValueSelector valueSelector) {
+        if (valueSelector instanceof EntityIndependentValueSelector) {
+            return new EntityIndependentInitializedValueSelector((EntityIndependentValueSelector) valueSelector);
+        } else {
+            return new InitializedValueSelector(valueSelector);
+        }
+    }
+
     protected final GenuineVariableDescriptor variableDescriptor;
     protected final ValueSelector childValueSelector;
     protected final boolean bailOutEnabled;
 
-    public InitializedValueSelector(ValueSelector childValueSelector) {
+    protected InitializedValueSelector(ValueSelector childValueSelector) {
         this.variableDescriptor = childValueSelector.getVariableDescriptor();
         this.childValueSelector = childValueSelector;
         bailOutEnabled = childValueSelector.isNeverEnding();

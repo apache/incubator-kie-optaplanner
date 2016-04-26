@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,43 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
+package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class FilteringEntitySelector extends AbstractEntitySelector {
+public class FilteringValueSelector extends AbstractValueSelector {
 
-    protected final EntitySelector childEntitySelector;
+    public static ValueSelector create(ValueSelector valueSelector, List<SelectionFilter> filterList) {
+        if (valueSelector instanceof EntityIndependentValueSelector) {
+            return new EntityIndependentFilteringValueSelector((EntityIndependentValueSelector) valueSelector,
+                    filterList);
+        } else {
+            return new FilteringValueSelector(valueSelector, filterList);
+        }
+    }
+
+    protected final ValueSelector childValueSelector;
     protected final List<SelectionFilter> filterList;
     protected final boolean bailOutEnabled;
 
     protected ScoreDirector scoreDirector = null;
 
-    public FilteringEntitySelector(EntitySelector childEntitySelector, List<SelectionFilter> filterList) {
-        this.childEntitySelector = childEntitySelector;
+    protected FilteringValueSelector(ValueSelector childValueSelector, List<SelectionFilter> filterList) {
+        this.childValueSelector = childValueSelector;
         this.filterList = filterList;
-        bailOutEnabled = childEntitySelector.isNeverEnding();
-        phaseLifecycleSupport.addEventListener(childEntitySelector);
+        bailOutEnabled = childValueSelector.isNeverEnding();
+        phaseLifecycleSupport.addEventListener(childValueSelector);
     }
 
     // ************************************************************************
@@ -59,33 +69,39 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         scoreDirector = null;
     }
 
-    public EntityDescriptor getEntityDescriptor() {
-        return childEntitySelector.getEntityDescriptor();
+    @Override
+    public GenuineVariableDescriptor getVariableDescriptor() {
+        return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
-        return childEntitySelector.isCountable();
+        return childValueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
-        return childEntitySelector.isNeverEnding();
+        return childValueSelector.isNeverEnding();
     }
 
-    public long getSize() {
-        return childEntitySelector.getSize();
+    @Override
+    public long getSize(Object entity) {
+        return childValueSelector.getSize(entity);
     }
 
-    public Iterator<Object> iterator() {
-        return new JustInTimeFilteringEntityIterator(childEntitySelector.iterator(), determineBailOutSize());
+    @Override
+    public Iterator<Object> iterator(Object entity) {
+        return new JustInTimeFilteringValueIterator(childValueSelector.iterator(entity),
+                determineBailOutSize(entity));
     }
 
-    protected class JustInTimeFilteringEntityIterator extends UpcomingSelectionIterator<Object> {
+    protected class JustInTimeFilteringValueIterator extends UpcomingSelectionIterator<Object> {
 
-        private final Iterator<Object> childEntityIterator;
+        private final Iterator<Object> childValueIterator;
         private final long bailOutSize;
 
-        public JustInTimeFilteringEntityIterator(Iterator<Object> childEntityIterator, long bailOutSize) {
-            this.childEntityIterator = childEntityIterator;
+        public JustInTimeFilteringValueIterator(Iterator<Object> childValueIterator, long bailOutSize) {
+            this.childValueIterator = childValueIterator;
             this.bailOutSize = bailOutSize;
         }
 
@@ -94,19 +110,19 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
             Object next;
             long attemptsBeforeBailOut = bailOutSize;
             do {
-                if (!childEntityIterator.hasNext()) {
+                if (!childValueIterator.hasNext()) {
                     return noUpcomingSelection();
                 }
                 if (bailOutEnabled) {
-                    // if childEntityIterator is neverEnding and nothing is accepted, bail out of the infinite loop
+                    // if childValueIterator is neverEnding and nothing is accepted, bail out of the infinite loop
                     if (attemptsBeforeBailOut <= 0L) {
                         logger.warn("Bailing out of neverEnding selector ({}) to avoid infinite loop.",
-                                FilteringEntitySelector.this);
+                                FilteringValueSelector.this);
                         return noUpcomingSelection();
                     }
                     attemptsBeforeBailOut--;
                 }
-                next = childEntityIterator.next();
+                next = childValueIterator.next();
             } while (!accept(scoreDirector, next));
             return next;
         }
@@ -114,25 +130,16 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
     }
 
     @Override
-    public ListIterator<Object> listIterator() {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
+    public Iterator<Object> endingIterator(Object entity) {
+        return new JustInTimeFilteringValueIterator(childValueSelector.endingIterator(entity),
+                determineBailOutSize(entity));
     }
 
-    public ListIterator<Object> listIterator(int index) {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
-    }
-
-    public Iterator<Object> endingIterator() {
-        return new JustInTimeFilteringEntityIterator(childEntitySelector.endingIterator(), determineBailOutSize());
-    }
-
-    protected long determineBailOutSize() {
+    protected long determineBailOutSize(Object entity) {
         if (!bailOutEnabled) {
             return -1L;
         }
-        return childEntitySelector.getSize() * 10L;
+        return childValueSelector.getSize(entity) * 10L;
     }
 
     protected boolean accept(ScoreDirector scoreDirector, Object entity) {
@@ -146,7 +153,7 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
 
     @Override
     public String toString() {
-        return "Filtering(" + childEntitySelector + ")";
+        return "Filtering(" + childValueSelector + ")";
     }
 
 }
