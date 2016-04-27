@@ -43,6 +43,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.MovableChainedTrailingValueFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class GenuineVariableDescriptor extends VariableDescriptor {
@@ -51,6 +52,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
 
     private ValueRangeDescriptor valueRangeDescriptor;
     private boolean nullable;
+    private SelectionFilter movableChainedTrailingValueFilter;
     private SelectionFilter reinitializeVariableEntityFilter;
     private SelectionSorter increasingStrengthSorter;
     private SelectionSorter decreasingStrengthSorter;
@@ -107,6 +109,11 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableMemberAccessor.getName()
                     + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
+        }
+        if (chained && entityDescriptor.hasMovableEntitySelectionFilter()) {
+            movableChainedTrailingValueFilter = new MovableChainedTrailingValueFilter(this);
+        } else {
+            movableChainedTrailingValueFilter = null;
         }
     }
 
@@ -201,6 +208,14 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
 
     public boolean isNullable() {
         return nullable;
+    }
+
+    public boolean hasMovableChainedTrailingValueFilter() {
+        return movableChainedTrailingValueFilter != null;
+    }
+
+    public SelectionFilter getMovableChainedTrailingValueFilter() {
+        return movableChainedTrailingValueFilter;
     }
 
     public SelectionFilter getReinitializeVariableEntityFilter() {
