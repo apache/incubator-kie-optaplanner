@@ -19,10 +19,10 @@ package org.optaplanner.core.impl.testdata.domain.immovable.chained;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class TestdataImmovableChainedEntityFilter implements SelectionFilter<TestdataImmovableChainedSolution, TestdataImmovableChainedEntity> {
+public class TestdataImmovableChainedEntityFilter implements SelectionFilter<TestdataImmovableChainedEntity> {
 
     @Override
-    public boolean accept(ScoreDirector<TestdataImmovableChainedSolution> scoreDirector, TestdataImmovableChainedEntity entity) {
+    public boolean accept(ScoreDirector scoreDirector, TestdataImmovableChainedEntity entity) {
         return !entity.isLocked();
     }
 

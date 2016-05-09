@@ -19,10 +19,10 @@ package org.optaplanner.core.impl.testdata.domain.immovable;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class TestdataImmovableEntityFilter implements SelectionFilter<TestdataImmovableSolution, TestdataImmovableEntity> {
+public class TestdataImmovableEntityFilter implements SelectionFilter<TestdataImmovableEntity> {
 
     @Override
-    public boolean accept(ScoreDirector<TestdataImmovableSolution> scoreDirector, TestdataImmovableEntity entity) {
+    public boolean accept(ScoreDirector scoreDirector, TestdataImmovableEntity entity) {
         return !entity.isLocked();
     }
 

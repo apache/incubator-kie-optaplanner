@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.testdata.domain.immovable;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
 
 @PlanningSolution
-public class TestdataImmovableSolution extends TestdataObject {
+public class TestdataImmovableSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataImmovableSolution.class, TestdataImmovableEntity.class);
@@ -49,7 +49,6 @@ public class TestdataImmovableSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
-    @ProblemFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -67,7 +66,6 @@ public class TestdataImmovableSolution extends TestdataObject {
         this.entityList = entityList;
     }
 
-    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -79,5 +77,9 @@ public class TestdataImmovableSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public Collection<? extends Object> getProblemFacts() {
+        return valueList;
+    }
 
 }

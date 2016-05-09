@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.testdata.domain.immovable.chained;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -29,9 +29,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 
 @PlanningSolution
-public class TestdataImmovableChainedSolution extends TestdataObject {
+public class TestdataImmovableChainedSolution extends TestdataObject implements Solution<SimpleScore> {
 
-    public static SolutionDescriptor<TestdataImmovableChainedSolution> buildSolutionDescriptor() {
+    public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataImmovableChainedSolution.class, TestdataImmovableChainedEntity.class);
     }
 
@@ -48,7 +48,6 @@ public class TestdataImmovableChainedSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "chainedAnchorRange")
-    @ProblemFactCollectionProperty
     public List<TestdataChainedAnchor> getChainedAnchorList() {
         return chainedAnchorList;
     }
@@ -67,7 +66,6 @@ public class TestdataImmovableChainedSolution extends TestdataObject {
         this.chainedEntityList = chainedEntityList;
     }
 
-    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -79,5 +77,9 @@ public class TestdataImmovableChainedSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public Collection<? extends Object> getProblemFacts() {
+        return chainedAnchorList;
+    }
 
 }

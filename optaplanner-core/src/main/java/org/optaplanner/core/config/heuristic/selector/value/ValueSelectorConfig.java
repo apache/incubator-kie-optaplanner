@@ -412,7 +412,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             ValueSelector valueSelector) {
         GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         if (hasFiltering(variableDescriptor)) {
-            List<SelectionFilter> filterList = new ArrayList<>(
+            List<SelectionFilter> filterList = new ArrayList<SelectionFilter>(
                     filterClassList == null ? 1 : filterClassList.size() + 1);
             if (filterClassList != null) {
                 for (Class<? extends SelectionFilter> filterClass : filterClassList) {

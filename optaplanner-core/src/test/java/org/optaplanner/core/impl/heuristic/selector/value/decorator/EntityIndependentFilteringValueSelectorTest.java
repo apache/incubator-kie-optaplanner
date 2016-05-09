@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -44,9 +45,14 @@ public class EntityIndependentFilteringValueSelectorTest {
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"));
 
 
-        SelectionFilter<TestdataSolution, TestdataValue> filter
-                = (scoreDirector, value) -> !value.getCode().equals("v3");
-        List<SelectionFilter> filterList = Arrays.asList(filter);
+        SelectionFilter<TestdataValue> filter
+                = new SelectionFilter<TestdataValue>() {
+            @Override
+            public boolean accept(ScoreDirector scoreDirector, TestdataValue value) {
+                return !value.getCode().equals("v3");
+            }
+        };
+        List<SelectionFilter> filterList = Arrays.<SelectionFilter>asList(filter);
         EntityIndependentValueSelector valueSelector = new EntityIndependentFilteringValueSelector(
                 childValueSelector, filterList);
 
