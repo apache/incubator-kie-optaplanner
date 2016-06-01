@@ -50,6 +50,8 @@ import static org.mockito.Mockito.*;
  */
 public class PlannerTestUtils {
 
+    public static final int TERMINATION_STEP_COUNT_LIMIT = 10;
+
     // ************************************************************************
     // SolverFactory methods
     // ************************************************************************
@@ -68,7 +70,7 @@ public class PlannerTestUtils {
         phaseConfigList.add(new ConstructionHeuristicPhaseConfig());
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setStepCountLimit(10);
+        terminationConfig.setStepCountLimit(TERMINATION_STEP_COUNT_LIMIT);
         localSearchPhaseConfig.setTerminationConfig(terminationConfig);
         phaseConfigList.add(localSearchPhaseConfig);
         solverConfig.setPhaseConfigList(phaseConfigList);

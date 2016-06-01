@@ -151,7 +151,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
 
     @Override
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
-        super.solvingStarted(solverScope);
+        super.solvingEnded(solverScope);
         entityPlacer.solvingEnded(solverScope);
         decider.solvingEnded(solverScope);
     }
