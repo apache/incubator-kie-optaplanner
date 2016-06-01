@@ -62,7 +62,7 @@ public class PhaseLifecyleTest {
         // step count = number of uninitialized entities (CH) + LS step count limit
         final int stepCount = entitiesCount + PlannerTestUtils.TERMINATION_STEP_COUNT_LIMIT;
         final int phaseCount = solverFactory.getSolverConfig().getPhaseConfigList().size();
-        final int solvingCount = phaseCount; // FIXME should be 1
+        final int solvingCount = 1;
         PlannerAssert.verifyPhaseLifecycle(listener, solvingCount, phaseCount, stepCount);
     }
 }
