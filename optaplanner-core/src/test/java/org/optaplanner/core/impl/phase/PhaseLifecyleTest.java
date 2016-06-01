@@ -21,6 +21,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -57,12 +58,28 @@ public class PhaseLifecyleTest {
 
         // add listener mock and solve
         ((DefaultSolver<TestdataSolution>) solver).addPhaseLifecycleListener(listener);
-        solver.solve(solution);
+        TestdataSolution solvedSolution = solver.solve(solution);
 
         // step count = number of uninitialized entities (CH) + LS step count limit
         final int stepCount = entitiesCount + PlannerTestUtils.TERMINATION_STEP_COUNT_LIMIT;
         final int phaseCount = solverFactory.getSolverConfig().getPhaseConfigList().size();
         final int solvingCount = 1;
         PlannerAssert.verifyPhaseLifecycle(listener, solvingCount, phaseCount, stepCount);
+
+        // forget previous invocations
+        Mockito.<PhaseLifecycleListener<?>>reset(listener);
+
+        // uninitialize 1 entity and solve again
+        solvedSolution.getEntityList().get(0).setValue(null);
+        solver.solve(solvedSolution);
+        PlannerAssert.verifyPhaseLifecycle(listener, solvingCount, phaseCount, 1 + PlannerTestUtils.TERMINATION_STEP_COUNT_LIMIT);
+
+        // forget previous invocations
+        Mockito.<PhaseLifecycleListener<?>>reset(listener);
+
+        // remove listener and solve again
+        ((DefaultSolver<TestdataSolution>) solver).removePhaseLifecycleListener(listener);
+        solver.solve(solution);
+        PlannerAssert.verifyPhaseLifecycle(listener, 0, 0, 0);
     }
 }

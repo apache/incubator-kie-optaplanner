@@ -312,9 +312,9 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
     }
 
     public void removePhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
-        phaseLifecycleSupport.addEventListener(phaseLifecycleListener);
+        phaseLifecycleSupport.removeEventListener(phaseLifecycleListener);
         for (Phase phase : phaseList) {
-            phase.addPhaseLifecycleListener(phaseLifecycleListener);
+            phase.removePhaseLifecycleListener(phaseLifecycleListener);
         }
     }
 
