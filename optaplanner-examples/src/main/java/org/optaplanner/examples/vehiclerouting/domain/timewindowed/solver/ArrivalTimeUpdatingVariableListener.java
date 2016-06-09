@@ -73,7 +73,6 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
 
         Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime, arrivalDay);
         while (shadowCustomer != null && !Objects.equals(shadowCustomer.getArrivalTime(), arrivalTime)) {
-
             scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
             shadowCustomer.setArrivalTime(arrivalTime);
             scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");
