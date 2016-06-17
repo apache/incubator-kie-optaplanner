@@ -42,10 +42,12 @@ public class DroolsScoreDirector<Solution_>
 
     protected KieSession kieSession;
     protected ScoreHolder workingScoreHolder;
+    private DroolsReproducerGenerator reproducer = new DroolsReproducerGenerator();
 
     public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
                                boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, constraintMatchEnabledPreference);
+        reproducer.setDomainPackage(scoreDirectorFactory.getSolutionDescriptor().getSolutionClass().getPackage().getName());
     }
 
     public KieSession getKieSession() {
@@ -63,7 +65,9 @@ public class DroolsScoreDirector<Solution_>
     }
 
     private void resetKieSession() {
+        reproducer.init();
         if (kieSession != null) {
+            reproducer.dispose();
             kieSession.dispose();
         }
         kieSession = scoreDirectorFactory.newKieSession();
@@ -71,7 +75,9 @@ public class DroolsScoreDirector<Solution_>
         kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
         Collection<Object> workingFacts = getWorkingFacts();
+        reproducer.addFacts(workingFacts);
         for (Object fact : workingFacts) {
+            reproducer.insert(fact);
             kieSession.insert(fact);
         }
     }
@@ -83,7 +89,13 @@ public class DroolsScoreDirector<Solution_>
     @Override
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        kieSession.fireAllRules();
+        try {
+            reproducer.fireAllRules();
+            kieSession.fireAllRules();
+        } catch (RuntimeException e) {
+            reproducer.close();
+            throw e;
+        }
         Score score = workingScoreHolder.extractScore(workingInitScore);
         setCalculatedScore(score);
         return score;
@@ -100,6 +112,7 @@ public class DroolsScoreDirector<Solution_>
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotals().");
         }
+        reproducer.fireAllRules();
         kieSession.fireAllRules();
         return workingScoreHolder.getConstraintMatchTotals();
     }
@@ -119,6 +132,7 @@ public class DroolsScoreDirector<Solution_>
     public void dispose() {
         super.dispose();
         if (kieSession != null) {
+            reproducer.dispose();
             kieSession.dispose();
             kieSession = null;
         }
@@ -145,6 +159,7 @@ public class DroolsScoreDirector<Solution_>
                     + " Usually the cause is that that specific instance was already in your Solution's entities" +
                     " and you probably want to use before/afterVariableChanged() instead.");
         }
+        reproducer.insert(entity);
         kieSession.insert(entity);
         super.afterEntityAdded(entityDescriptor, entity);
     }
@@ -153,6 +168,7 @@ public class DroolsScoreDirector<Solution_>
 
     @Override
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+        reproducer.update(entity, variableDescriptor);
         update(entity);
         super.afterVariableChanged(variableDescriptor, entity);
     }
@@ -181,6 +197,7 @@ public class DroolsScoreDirector<Solution_>
                     + PlanningSolution.class.getSimpleName() + "'s entity members ("
                     + getSolutionDescriptor().getEntityMemberAndEntityCollectionMemberNames() + ").");
         }
+        reproducer.delete(entity);
         kieSession.delete(factHandle);
         super.afterEntityRemoved(entityDescriptor, entity);
     }
@@ -202,6 +219,7 @@ public class DroolsScoreDirector<Solution_>
                     + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
                     + "Maybe use before/afterProblemPropertyChanged() instead of before/afterProblemFactAdded().");
         }
+        reproducer.insert(problemFact);
         kieSession.insert(problemFact);
         super.afterProblemFactAdded(problemFact);
     }
@@ -234,6 +252,7 @@ public class DroolsScoreDirector<Solution_>
                     + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
                     + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
         }
+        reproducer.delete(problemFact);
         kieSession.delete(factHandle);
         super.afterProblemFactRemoved(problemFact);
     }

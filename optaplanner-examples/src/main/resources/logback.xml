@@ -31,4 +31,14 @@
     <!--<appender-ref ref="fileAppender" />-->
   </root>
 
+  <appender name="reproducerAppender" class="ch.qos.logback.core.FileAppender">
+    <file>DroolsReproducerTest.java</file>
+    <append>false</append>
+    <encoder>
+      <pattern>%m%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="org.optaplanner.drools.reproducer" level="${logback.level.org.optaplanner.reproducer:-debug}" additivity="false">
+    <appender-ref ref="reproducerAppender"/>
+  </logger>
 </configuration>
