@@ -42,7 +42,7 @@ public class DroolsScoreDirector<Solution_>
 
     protected KieSession kieSession;
     protected ScoreHolder workingScoreHolder;
-    private DroolsReproducerGenerator reproducer = new DroolsReproducerGenerator();
+    private DroolsReproducer reproducer = new DroolsReproducer();
 
     public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
                                boolean constraintMatchEnabledPreference) {

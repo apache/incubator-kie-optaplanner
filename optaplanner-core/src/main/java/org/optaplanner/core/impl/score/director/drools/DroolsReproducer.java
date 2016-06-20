@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class DroolsReproducerGenerator {
+final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private static final int MAX_UPDATES_PER_METHOD = 1000;
