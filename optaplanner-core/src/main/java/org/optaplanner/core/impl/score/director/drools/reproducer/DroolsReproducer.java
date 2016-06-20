@@ -50,8 +50,8 @@ public final class DroolsReproducer {
     public static String getVariableName(Object fact) {
         try {
             return fact == null ? "null"
-                    : "fact" + fact.getClass().getSimpleName() + "_" +
-                    fact.getClass().getMethod("getId").invoke(fact);
+                    : ("fact" + fact.getClass().getSimpleName() + "_" +
+                    fact.getClass().getMethod("getId").invoke(fact)).replaceAll("-", "_");
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
             log.error("Cannot create variable name", ex);
         }
