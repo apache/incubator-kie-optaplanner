@@ -83,6 +83,8 @@ public class Fact {
                         MapValueProvider mapValueProvider = new MapValueProvider(value, id, existingInstances);
                         attributes.put(setter, mapValueProvider);
                         dependencies.addAll(mapValueProvider.getFacts());
+                    } else if (field.getType().getName().matches("org\\.joda\\.time\\.LocalDate(Time)?")) {
+                        attributes.put(setter, new JodaTimeValueProvider(value));
                     } else {
                         throw new IllegalStateException("Unsupported type: " + field.getType());
                     }
