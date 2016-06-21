@@ -15,17 +15,15 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionDelete;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionDispose;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionFireAllRules;
@@ -153,7 +151,7 @@ public final class DroolsReproducer {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    // KIE session
+    // KIE session operations
     //------------------------------------------------------------------------------------------------------------------
     //
     public void insert(Object fact) {
@@ -178,231 +176,4 @@ public final class DroolsReproducer {
         journal.add(new KieSessionDispose());
     }
 
-    private static class Fact {
-
-        private final Object instance;
-        private final String variableName;
-        private final HashMap<String, Method> getters = new HashMap<>();
-        private final HashMap<String, Method> setters = new HashMap<>();
-        private final HashMap<Method, ValueProvider> attributes = new HashMap<>();
-
-        public Fact(Object instance) {
-            this.instance = instance;
-            this.variableName = getVariableName(instance);
-            for (Method method : instance.getClass().getMethods()) {
-                String methodName = method.getName();
-                String fieldName = methodName.replaceFirst("^(set|get|is)", "").toLowerCase();
-                if (method.getReturnType().equals(Void.TYPE)) {
-                    setters.put(fieldName, method);
-                } else {
-                    getters.put(fieldName, method);
-                }
-            }
-        }
-
-        public void setUp(Map<Object, Fact> existingInstances) {
-            for (Field field : instance.getClass().getDeclaredFields()) {
-                String fieldKey = field.getName().toLowerCase();
-                if (setters.containsKey(fieldKey) && getters.containsKey(fieldKey)) {
-                    Object value;
-                    try {
-                        value = getters.get(fieldKey).invoke(instance);
-                    } catch (Exception ex) {
-                        log.error("Can't get value of {}.{}()", variableName, getters.get(fieldKey).getName());
-                        throw new RuntimeException(ex);
-                    }
-                    Method setter = setters.get(fieldKey);
-                    if (value != null) {
-                        if (field.getType().equals(String.class)) {
-                            attributes.put(setter, new StringValueProvider(value));
-                        } else if (field.getType().isPrimitive()) {
-                            attributes.put(setter, new PrimitiveValueProvider(value));
-                        } else if (field.getType().isEnum()) {
-                            attributes.put(setter, new EnumValueProvider(value));
-                        } else if (existingInstances.containsKey(value)) {
-                            attributes.put(setter, new ExistingInstanceValueProvider(value, existingInstances.get(value).variableName));
-                        } else if (field.getType().equals(java.util.List.class)) {
-                            String id = variableName + "_" + field.getName();
-                            attributes.put(setter, new ListValueProvider(value, id, existingInstances));
-                        } else if (field.getType().equals(java.util.Map.class)) {
-                            String id = variableName + "_" + field.getName();
-                            attributes.put(setter, new MapValueProvider(value, id, existingInstances));
-                        } else {
-                            throw new IllegalStateException("Unsupported type: " + field.getType());
-                        }
-                    }
-                }
-            }
-        }
-
-        public void set(String variableName, Object value) {
-            try {
-                setters.get(variableName).invoke(value);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        public void reset() {
-            for (Map.Entry<Method, ValueProvider> entry : attributes.entrySet()) {
-                Object originalValue = entry.getValue().get();
-                try {
-                    entry.getKey().invoke(instance, originalValue);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-
-        public void printInitialization(Logger log) {
-            log.debug("    {} {} = new {}();", instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName());
-        }
-
-        public void printSetup(Logger log) {
-            log.debug("        //{}", instance);
-            for (Map.Entry<Method, ValueProvider> entry : attributes.entrySet()) {
-                Method setter = entry.getKey();
-                ValueProvider value = entry.getValue();
-                value.printSetup(log);
-                log.debug("        {}.{}({});", variableName, setter.getName(), value.toString());
-            }
-        }
-
-        @Override
-        public String toString() {
-            return variableName;
-        }
-    }
-
-    private interface ValueProvider {
-
-        Object get();
-
-        void printSetup(Logger log);
-    }
-
-    private static abstract class AbstractValueProvider implements ValueProvider {
-
-        protected final Object value;
-
-        public AbstractValueProvider(Object value) {
-            this.value = value;
-        }
-
-        @Override
-        public Object get() {
-            return value;
-        }
-
-        @Override
-        public void printSetup(Logger log) {
-            // no setup required
-        }
-
-    }
-
-    private static class PrimitiveValueProvider extends AbstractValueProvider {
-
-        public PrimitiveValueProvider(Object value) {
-            super(value);
-        }
-
-        @Override
-        public String toString() {
-            return value.toString();
-        }
-    }
-
-    private static class StringValueProvider extends AbstractValueProvider {
-
-        public StringValueProvider(Object value) {
-            super(value);
-        }
-
-        @Override
-        public String toString() {
-            return '"' + (String) value + '"';
-        }
-    }
-
-    private static class EnumValueProvider extends AbstractValueProvider {
-
-        public EnumValueProvider(Object value) {
-            super(value);
-        }
-
-        @Override
-        public String toString() {
-            return value.getClass().getSimpleName() + "." + ((Enum) value).name();
-        }
-    }
-
-    private static class ExistingInstanceValueProvider extends AbstractValueProvider {
-
-        private final String identifier;
-
-        public ExistingInstanceValueProvider(Object value, String identifier) {
-            super(value);
-            this.identifier = identifier;
-        }
-
-        @Override
-        public String toString() {
-            return identifier;
-        }
-    }
-
-    private static class ListValueProvider extends AbstractValueProvider {
-
-        private final String identifier;
-        private final Map<Object, Fact> existingInstances;
-
-        public ListValueProvider(Object value, String identifier, Map<Object, Fact> existingInstances) {
-            super(value);
-            this.identifier = identifier;
-            this.existingInstances = existingInstances;
-        }
-
-        @Override
-        public void printSetup(Logger log) {
-            log.debug("        java.util.ArrayList {} = new java.util.ArrayList();", identifier);
-            for (Object item : ((java.util.List<?>) value)) {
-                log.debug("        //{}", item);
-                log.debug("        {}.add({});", identifier, existingInstances.get(item));
-            }
-        }
-
-        @Override
-        public String toString() {
-            return identifier;
-        }
-    }
-
-    private static class MapValueProvider extends AbstractValueProvider {
-
-        private final String identifier;
-        private final Map<Object, Fact> existingInstances;
-
-        public MapValueProvider(Object value, String identifier, Map<Object, Fact> existingInstances) {
-            super(value);
-            this.identifier = identifier;
-            this.existingInstances = existingInstances;
-        }
-
-        @Override
-        public void printSetup(Logger log) {
-            log.debug("        java.util.HashMap {} = new java.util.HashMap();", identifier);
-            for (Map.Entry<? extends Object, ? extends Object> entry : ((java.util.Map<?, ?>) value).entrySet()) {
-                log.debug("        //{} => {}", entry.getKey(), entry.getValue());
-                log.debug("        {}.put({}, {});", identifier,
-                          existingInstances.get(entry.getKey()),
-                          existingInstances.get(entry.getValue()));
-            }
-        }
-
-        @Override
-        public String toString() {
-            return identifier;
-        }
-    }
 }
