@@ -24,11 +24,13 @@ import org.optaplanner.core.impl.score.director.drools.reproducer.DroolsReproduc
 
 public class KieSessionUpdate implements KieSessionOperation {
 
+    private final int id;
     private final Object entity;
     private final Method variableSetter;
     private final Object value;
 
-    public KieSessionUpdate(Object entity, VariableDescriptor<?> variableDescriptor) {
+    public KieSessionUpdate(int id, Object entity, VariableDescriptor<?> variableDescriptor) {
+        this.id = id;
         this.entity = entity;
         this.value = variableDescriptor.getValue(entity);
         String variableName = variableDescriptor.getVariableName();
@@ -38,6 +40,11 @@ public class KieSessionUpdate implements KieSessionOperation {
         } catch (NoSuchMethodException | SecurityException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     @Override

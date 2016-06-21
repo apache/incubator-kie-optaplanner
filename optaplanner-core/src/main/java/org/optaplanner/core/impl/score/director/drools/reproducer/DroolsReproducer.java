@@ -43,6 +43,7 @@ public final class DroolsReproducer {
     private final List<KieSessionOperation> journal = new ArrayList<>();
     private final List<Fact> facts = new ArrayList<>();
     private String domainPackage;
+    private int operationId = 0;
 
     public static String getVariableName(Object fact) {
         try {
@@ -127,13 +128,12 @@ public final class DroolsReproducer {
                 KieSessionOperation op = testedJournal.get(index);
                 testedJournal.remove(index.intValue());
                 if (reproduce(kieSession, testedJournal) != null) {
-                    log.debug("// Reproduced without operation #{}", index);
+                    log.debug("// Reproduced without operation #{}", op.getId());
                     reproducingJournal = testedJournal;
                     reduced = true;
                     break;
                 } else {
-                    log.debug("// Can't reproduce without operation #{}", index);
-                    testedJournal.add(index, op);
+                    log.debug("// Can't reproduce without operation #{}", op.getId());
                 }
             }
         }
@@ -175,6 +175,7 @@ public final class DroolsReproducer {
                 log.info("    }\n");
                 log.info("    private void chunk{}() {", opCounter / MAX_OPERATIONS_PER_METHOD + 1);
             }
+            log.debug("        //operation #{}", op.getId());
             log.info("{}", op);
         }
 
@@ -233,6 +234,7 @@ public final class DroolsReproducer {
         }
         log.info("");
         for (KieSessionOperation insert : initialInsertJournal) {
+            log.debug("        //operation #{}", insert.getId());
             log.info("{}", insert);
         }
         log.info(
@@ -244,29 +246,29 @@ public final class DroolsReproducer {
     //------------------------------------------------------------------------------------------------------------------
     //
     public void insertInitial(Object fact) {
-        initialInsertJournal.add(new KieSessionInsert(fact));
+        initialInsertJournal.add(new KieSessionInsert(operationId++, fact));
     }
 
     public void insert(Object fact) {
-        journal.add(new KieSessionInsert(fact));
+        journal.add(new KieSessionInsert(operationId++, fact));
     }
 
     public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
         if (log.isInfoEnabled()) {
-            journal.add(new KieSessionUpdate(entity, variableDescriptor));
+            journal.add(new KieSessionUpdate(operationId++, entity, variableDescriptor));
         }
     }
 
     public void delete(Object entity) {
-        journal.add(new KieSessionDelete(entity));
+        journal.add(new KieSessionDelete(operationId++, entity));
     }
 
     public void fireAllRules() {
-        journal.add(new KieSessionFireAllRules());
+        journal.add(new KieSessionFireAllRules(operationId++));
     }
 
     public void dispose() {
-        journal.add(new KieSessionDispose());
+        journal.add(new KieSessionDispose(operationId++));
     }
 
 }

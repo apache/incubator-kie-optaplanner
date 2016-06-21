@@ -19,6 +19,17 @@ import org.kie.api.runtime.KieSession;
 
 public class KieSessionDispose implements KieSessionOperation {
 
+    private final int id;
+
+    public KieSessionDispose(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
     @Override
     public void invoke(KieSession kieSession) {
         kieSession.dispose();

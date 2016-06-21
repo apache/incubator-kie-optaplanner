@@ -19,6 +19,8 @@ import org.kie.api.runtime.KieSession;
 
 public interface KieSessionOperation {
 
+    int getId();
+
     void invoke(KieSession kieSession);
 
 }

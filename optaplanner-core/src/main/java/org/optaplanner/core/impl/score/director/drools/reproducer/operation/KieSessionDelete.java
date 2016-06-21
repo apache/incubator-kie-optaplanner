@@ -20,10 +20,17 @@ import org.optaplanner.core.impl.score.director.drools.reproducer.DroolsReproduc
 
 public class KieSessionDelete implements KieSessionOperation {
 
-    final Object entity;
+    private final int id;
+    private final Object entity;
 
-    public KieSessionDelete(Object entity) {
+    public KieSessionDelete(int id, Object entity) {
+        this.id = id;
         this.entity = entity;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     @Override

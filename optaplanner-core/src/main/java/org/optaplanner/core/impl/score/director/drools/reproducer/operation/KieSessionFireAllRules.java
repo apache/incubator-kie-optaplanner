@@ -19,6 +19,17 @@ import org.kie.api.runtime.KieSession;
 
 public class KieSessionFireAllRules implements KieSessionOperation {
 
+    private final int id;
+
+    public KieSessionFireAllRules(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
     @Override
     public void invoke(KieSession kieSession) {
         kieSession.fireAllRules();

@@ -20,10 +20,17 @@ import org.optaplanner.core.impl.score.director.drools.reproducer.DroolsReproduc
 
 public class KieSessionInsert implements KieSessionOperation {
 
-    final Object fact;
+    private final int id;
+    private final Object fact;
 
-    public KieSessionInsert(Object fact) {
+    public KieSessionInsert(int id, Object fact) {
+        this.id = id;
         this.fact = fact;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     @Override
