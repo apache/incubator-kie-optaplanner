@@ -18,8 +18,10 @@ package org.optaplanner.core.impl.score.director.drools.reproducer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -77,6 +79,68 @@ public final class DroolsReproducer {
             f.reset();
         }
 
+        List<KieSessionOperation> minimalJournal = pruneFromTheStart(oldKieSession, journal);
+        log.debug("\n// Now trying to remove random operations.\n");
+        minimalJournal = tryRandomMutations(oldKieSession, minimalJournal);
+        printTest(minimalJournal);
+        throw reproduce(oldKieSession, minimalJournal);
+    }
+
+    private List<KieSessionOperation> pruneFromTheStart(KieSession kieSession, List<KieSessionOperation> journal) {
+        int nextDrop = journal.size() / 10;
+        int dropSize = 0;
+        ArrayList<KieSessionOperation> reproducingJournal = null;
+        while (nextDrop > 0) {
+            ArrayList<KieSessionOperation> testedJournal = new ArrayList<>(journal);
+            for (int i = 0; i < dropSize; i++) {
+                testedJournal.remove(0);
+            }
+            boolean reproduced = reproduce(kieSession, testedJournal) != null;
+            if (reproduced) {
+                log.debug("// Reproduced with journal size: {}", testedJournal.size());
+                reproducingJournal = testedJournal;
+                dropSize += nextDrop;
+            } else {
+                log.debug("// Can't reproduce with journal size: {}", testedJournal.size());
+                dropSize -= nextDrop;
+                nextDrop /= 2;
+                log.debug("// >> reducing next drop size to {}", nextDrop);
+            }
+        }
+        return reproducingJournal;
+    }
+
+    private List<KieSessionOperation> tryRandomMutations(KieSession kieSession, List<KieSessionOperation> journal) {
+        boolean reduced = true;
+        ArrayList<KieSessionOperation> reproducingJournal = new ArrayList<>(journal);
+        Random random = new Random(0);
+        while (reduced) {
+            log.debug("// Current journal size: {}", reproducingJournal.size());
+            ArrayList<Integer> indices = new ArrayList<>(reproducingJournal.size());
+            for (int i = 0; i < reproducingJournal.size(); i++) {
+                indices.add(i);
+            }
+            Collections.shuffle(indices, random);
+            reduced = false;
+            for (Integer index : indices) {
+                ArrayList<KieSessionOperation> testedJournal = new ArrayList<>(reproducingJournal);
+                KieSessionOperation op = testedJournal.get(index);
+                testedJournal.remove(index.intValue());
+                if (reproduce(kieSession, testedJournal) != null) {
+                    log.debug("// Reproduced without operation #{}", index);
+                    reproducingJournal = testedJournal;
+                    reduced = true;
+                    break;
+                } else {
+                    log.debug("// Can't reproduce without operation #{}", index);
+                    testedJournal.add(index, op);
+                }
+            }
+        }
+        return reproducingJournal;
+    }
+
+    private RuntimeException reproduce(KieSession oldKieSession, List<KieSessionOperation> journal) {
         KieSession newKieSession = oldKieSession.getKieBase().newKieSession();
         oldKieSession.dispose();
 
@@ -87,8 +151,9 @@ public final class DroolsReproducer {
             for (KieSessionOperation op : journal) {
                 op.invoke(newKieSession);
             }
-        } finally {
-            printTest(journal);
+            return null;
+        } catch (RuntimeException ex) {
+            return ex;
         }
     }
 
