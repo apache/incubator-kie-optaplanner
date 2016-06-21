@@ -56,32 +56,6 @@ public final class DroolsReproducer {
         this.domainPackage = domainPackage;
     }
 
-    private void printInit() {
-        log.debug("package {};\n", domainPackage);
-        log.debug("import org.junit.Before;");
-        log.debug("import org.junit.Test;");
-        log.debug("import org.kie.api.KieServices;\n" +
-                "import org.kie.api.builder.KieFileSystem;\n" +
-                "import org.kie.api.builder.model.KieModuleModel;\n" +
-                "import org.kie.api.io.ResourceType;\n" +
-                "import org.kie.api.runtime.KieContainer;\n" +
-                "import org.kie.api.runtime.KieSession;");
-        log.debug("\npublic class DroolsReproducerTest {\n");
-        log.debug("    KieSession kieSession;");
-        log.debug("\n    @Before");
-        log.debug("    public void setUp() {\n" +
-                "        KieServices kieServices = KieServices.Factory.get();\n" +
-                "        KieModuleModel kieModuleModel = kieServices.newKieModuleModel();\n" +
-                "        KieFileSystem kfs = kieServices.newKieFileSystem();\n" +
-                "        kfs.writeKModuleXML(kieModuleModel.toXML());\n" +
-                // TODO don't hard-code score DRL
-                "        kfs.write(kieServices.getResources().newClassPathResource(\"org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl\").setResourceType(ResourceType.DRL));\n" +
-                "        kieServices.newKieBuilder(kfs).buildAll();\n" +
-                "        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());\n" +
-                "        kieSession = kieContainer.newKieSession();\n" +
-                "");
-    }
-
     public void addFacts(Collection<Object> workingFacts) {
         if (log.isDebugEnabled()) {
             HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
@@ -110,23 +84,19 @@ public final class DroolsReproducer {
                 op.invoke(newKieSession);
             }
         } finally {
-            dump(journal);
+            printTest(journal);
         }
-
     }
 
-    private void dump(List<KieSessionOperation> record) {
+    //------------------------------------------------------------------------------------------------------------------
+    // Test printing
+    //------------------------------------------------------------------------------------------------------------------
+    //
+    private void printTest(List<KieSessionOperation> record) {
         printInit();
-        for (Fact fact : facts) {
-            fact.printSetup(log);
-        }
-        log.debug("    }\n");
+        printSetup();
 
-        for (Fact fact : facts) {
-            fact.printInitialization(log);
-        }
-
-        log.debug("\n    private void chunk1() {");
+        log.debug("    private void chunk1() {");
 
         int opCounter = 0;
         for (KieSessionOperation op : record) {
@@ -147,7 +117,53 @@ public final class DroolsReproducer {
         for (int i = 1; i <= opCounter / MAX_OPERATIONS_PER_METHOD + 1; i++) {
             log.debug("        chunk{}();", i);
         }
-        log.debug("    }\n}");
+        log.debug(
+                "    }\n}");
+    }
+
+    private void printInit() {
+        log.debug(
+                "package {};\n", domainPackage);
+        log.debug(
+                "import org.junit.Before;\n" +
+                "import org.junit.Test;\n" +
+                "import org.kie.api.KieServices;\n" +
+                "import org.kie.api.builder.KieFileSystem;\n" +
+                "import org.kie.api.builder.model.KieModuleModel;\n" +
+                "import org.kie.api.io.ResourceType;\n" +
+                "import org.kie.api.runtime.KieContainer;\n" +
+                "import org.kie.api.runtime.KieSession;");
+        // TODO import fact classes outside the domain package
+        log.debug(
+                "\n" +
+                "public class DroolsReproducerTest {\n" +
+                "\n" +
+                "    KieSession kieSession;");
+        for (Fact fact : facts) {
+            fact.printInitialization(log);
+        }
+        log.debug("");
+    }
+
+    private void printSetup() {
+        log.debug(
+                "    @Before\n" +
+                "    public void setUp() {\n" +
+                "        KieServices kieServices = KieServices.Factory.get();\n" +
+                "        KieModuleModel kieModuleModel = kieServices.newKieModuleModel();\n" +
+                "        KieFileSystem kfs = kieServices.newKieFileSystem();\n" +
+                "        kfs.writeKModuleXML(kieModuleModel.toXML());\n" +
+                // TODO don't hard-code score DRL
+                "        kfs.write(kieServices.getResources().newClassPathResource(\"org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl\").setResourceType(ResourceType.DRL));\n" +
+                "        kieServices.newKieBuilder(kfs).buildAll();\n" +
+                "        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());\n" +
+                "        kieSession = kieContainer.newKieSession();\n" +
+                "");
+        for (Fact fact : facts) {
+            fact.printSetup(log);
+        }
+        log.debug(
+                "    }\n");
     }
 
     //------------------------------------------------------------------------------------------------------------------
