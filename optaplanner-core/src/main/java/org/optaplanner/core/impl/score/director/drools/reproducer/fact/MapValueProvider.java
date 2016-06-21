@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 
-public class MapValueProvider extends AbstractValueProvider {
+class MapValueProvider extends AbstractValueProvider {
 
     final String identifier;
     final Map<Object, Fact> existingInstances;

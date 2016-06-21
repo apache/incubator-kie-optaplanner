@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractValueProvider implements ValueProvider {
+abstract class AbstractValueProvider implements ValueProvider {
 
     protected final Object value;
 

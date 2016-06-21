@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
 import org.slf4j.Logger;
 
-public interface ValueProvider {
+interface ValueProvider {
 
     Object get();
 

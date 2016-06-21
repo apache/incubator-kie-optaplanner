@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
-public class EnumValueProvider extends AbstractValueProvider {
+class EnumValueProvider extends AbstractValueProvider {
 
     public EnumValueProvider(Object value) {
         super(value);

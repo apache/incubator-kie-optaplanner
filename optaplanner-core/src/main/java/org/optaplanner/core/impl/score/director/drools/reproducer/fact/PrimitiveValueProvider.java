@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
-public class PrimitiveValueProvider extends AbstractValueProvider {
+class PrimitiveValueProvider extends AbstractValueProvider {
 
     public PrimitiveValueProvider(Object value) {
         super(value);

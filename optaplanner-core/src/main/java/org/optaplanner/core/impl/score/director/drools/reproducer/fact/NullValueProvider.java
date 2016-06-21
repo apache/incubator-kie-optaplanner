@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
-public class NullValueProvider extends AbstractValueProvider {
+class NullValueProvider extends AbstractValueProvider {
 
     public NullValueProvider() {
         super(null);
