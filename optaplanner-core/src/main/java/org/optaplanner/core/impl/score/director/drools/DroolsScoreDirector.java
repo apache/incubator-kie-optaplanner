@@ -77,7 +77,7 @@ public class DroolsScoreDirector<Solution_>
         Collection<Object> workingFacts = getWorkingFacts();
         reproducer.addFacts(workingFacts);
         for (Object fact : workingFacts) {
-            reproducer.insert(fact);
+            reproducer.insertInitial(fact);
             kieSession.insert(fact);
         }
     }

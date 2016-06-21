@@ -37,6 +37,7 @@ public final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
+    private final List<KieSessionOperation> initialInsertJournal = new ArrayList<>();
     private final List<KieSessionOperation> journal = new ArrayList<>();
     private final List<Fact> facts = new ArrayList<>();
     private String domainPackage;
@@ -80,6 +81,9 @@ public final class DroolsReproducer {
         oldKieSession.dispose();
 
         try {
+            for (KieSessionOperation insert : initialInsertJournal) {
+                insert.invoke(newKieSession);
+            }
             for (KieSessionOperation op : journal) {
                 op.invoke(newKieSession);
             }
@@ -92,14 +96,14 @@ public final class DroolsReproducer {
     // Test printing
     //------------------------------------------------------------------------------------------------------------------
     //
-    private void printTest(List<KieSessionOperation> record) {
+    private void printTest(List<KieSessionOperation> journal) {
         printInit();
         printSetup();
 
         log.debug("    private void chunk1() {");
 
         int opCounter = 0;
-        for (KieSessionOperation op : record) {
+        for (KieSessionOperation op : journal) {
             opCounter++;
             if (opCounter % MAX_OPERATIONS_PER_METHOD == 0) {
                 // There's 64k limit for Java method size so we need to split into multiple methods
@@ -162,6 +166,10 @@ public final class DroolsReproducer {
         for (Fact fact : facts) {
             fact.printSetup(log);
         }
+        log.debug("");
+        for (KieSessionOperation insert : initialInsertJournal) {
+            log.debug("{}", insert);
+        }
         log.debug(
                 "    }\n");
     }
@@ -170,6 +178,10 @@ public final class DroolsReproducer {
     // KIE session operations
     //------------------------------------------------------------------------------------------------------------------
     //
+    public void insertInitial(Object fact) {
+        initialInsertJournal.add(new KieSessionInsert(fact));
+    }
+
     public void insert(Object fact) {
         journal.add(new KieSessionInsert(fact));
     }
