@@ -78,6 +78,8 @@ public class Fact {
                     } else {
                         throw new IllegalStateException("Unsupported type: " + field.getType());
                     }
+                } else {
+                    attributes.put(setter, new NullValueProvider());
                 }
             }
         }
