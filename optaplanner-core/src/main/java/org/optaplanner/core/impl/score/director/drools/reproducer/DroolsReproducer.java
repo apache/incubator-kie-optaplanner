@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -39,9 +41,10 @@ public final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
+    private final List<Fact> facts = new ArrayList<>();
+    private final SortedSet<String> imports = new TreeSet<>();
     private final List<KieSessionOperation> initialInsertJournal = new ArrayList<>();
     private final List<KieSessionOperation> journal = new ArrayList<>();
-    private final List<Fact> facts = new ArrayList<>();
     private String domainPackage;
     private int operationId = 0;
 
@@ -67,11 +70,19 @@ public final class DroolsReproducer {
                 Fact f = new Fact(fact);
                 facts.add(f);
                 existingInstances.put(fact, f);
+                addImport(fact);
             }
 
             for (Object fact : workingFacts) {
                 existingInstances.get(fact).setUp(existingInstances);
             }
+        }
+    }
+
+    private void addImport(Object fact) {
+        String pkg = fact.getClass().getPackage().getName();
+        if (!pkg.equals(domainPackage) && !pkg.startsWith("java")) {
+            imports.add(fact.getClass().getCanonicalName());
         }
     }
 
@@ -198,16 +209,17 @@ public final class DroolsReproducer {
     private void printInit() {
         log.info(
                 "package {};\n", domainPackage);
-        log.info(
-                "import org.junit.Before;\n" +
-                "import org.junit.Test;\n" +
-                "import org.kie.api.KieServices;\n" +
-                "import org.kie.api.builder.KieFileSystem;\n" +
-                "import org.kie.api.builder.model.KieModuleModel;\n" +
-                "import org.kie.api.io.ResourceType;\n" +
-                "import org.kie.api.runtime.KieContainer;\n" +
-                "import org.kie.api.runtime.KieSession;");
-        // TODO import fact classes outside the domain package
+        imports.add("org.junit.Before");
+        imports.add("org.junit.Test");
+        imports.add("org.kie.api.KieServices");
+        imports.add("org.kie.api.builder.KieFileSystem");
+        imports.add("org.kie.api.builder.model.KieModuleModel");
+        imports.add("org.kie.api.io.ResourceType");
+        imports.add("org.kie.api.runtime.KieContainer");
+        imports.add("org.kie.api.runtime.KieSession");
+        for (String cls : imports) {
+            log.info("import {};", cls);
+        }
         log.info(
                 "\n" +
                 "public class DroolsReproducerTest {\n" +
