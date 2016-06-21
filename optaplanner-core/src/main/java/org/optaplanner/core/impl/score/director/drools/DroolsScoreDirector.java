@@ -65,7 +65,6 @@ public class DroolsScoreDirector<Solution_>
     }
 
     private void resetKieSession() {
-        reproducer.init();
         if (kieSession != null) {
             reproducer.dispose();
             kieSession.dispose();
@@ -93,8 +92,10 @@ public class DroolsScoreDirector<Solution_>
             reproducer.fireAllRules();
             kieSession.fireAllRules();
         } catch (RuntimeException e) {
-            reproducer.close();
-            throw e;
+            logger.error("kieSession.fireAllRules() failed:", e);
+            logger.info("Starting replay & reduce to find a minimal Drools reproducer.");
+            reproducer.replay(kieSession);
+            throw new IllegalStateException("Reproducer should have failed!");
         }
         Score score = workingScoreHolder.extractScore(workingInitScore);
         setCalculatedScore(score);
