@@ -76,10 +76,6 @@ public final class DroolsReproducer {
     }
 
     public void replay(KieSession oldKieSession) {
-        for (Fact f : facts) {
-            f.reset();
-        }
-
         List<KieSessionOperation> minimalJournal = pruneFromTheStart(oldKieSession, journal);
         log.debug("\n// Now trying to remove random operations.\n");
         minimalJournal = tryRandomMutations(oldKieSession, minimalJournal);
@@ -144,10 +140,18 @@ public final class DroolsReproducer {
         KieSession newKieSession = oldKieSession.getKieBase().newKieSession();
         oldKieSession.dispose();
 
+        // reset facts to the original state
+        for (Fact fact : facts) {
+            fact.reset();
+        }
+
+        // insert facts into KIE session
+        for (KieSessionOperation insert : initialInsertJournal) {
+            insert.invoke(newKieSession);
+        }
+
+        // replay tested journal
         try {
-            for (KieSessionOperation insert : initialInsertJournal) {
-                insert.invoke(newKieSession);
-            }
             for (KieSessionOperation op : journal) {
                 op.invoke(newKieSession);
             }
