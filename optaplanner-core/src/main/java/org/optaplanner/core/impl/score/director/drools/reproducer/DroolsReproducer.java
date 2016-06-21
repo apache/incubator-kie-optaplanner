@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools;
+package org.optaplanner.core.impl.score.director.drools.reproducer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class DroolsReproducer {
+public final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
@@ -48,7 +48,7 @@ final class DroolsReproducer {
         return null;
     }
 
-    void setDomainPackage(String domainPackage) {
+    public void setDomainPackage(String domainPackage) {
         this.domainPackage = domainPackage;
     }
 
@@ -78,7 +78,7 @@ final class DroolsReproducer {
                 "");
     }
 
-    void addFacts(Collection<Object> workingFacts) {
+    public void addFacts(Collection<Object> workingFacts) {
         if (log.isDebugEnabled()) {
             HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
             for (Object fact : workingFacts) {
@@ -93,7 +93,7 @@ final class DroolsReproducer {
         }
     }
 
-    void replay(KieSession oldKieSession) {
+    public void replay(KieSession oldKieSession) {
         for (Fact f : facts) {
             f.reset();
         }
@@ -150,25 +150,25 @@ final class DroolsReproducer {
     // KIE session
     //------------------------------------------------------------------------------------------------------------------
     //
-    void insert(Object fact) {
+    public void insert(Object fact) {
         journal.add(new KieSessionInsert(fact));
     }
 
-    void update(Object entity, VariableDescriptor<?> variableDescriptor) {
+    public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
         if (log.isDebugEnabled()) {
             journal.add(new KieSessionUpdate(entity, variableDescriptor));
         }
     }
 
-    void delete(Object entity) {
+    public void delete(Object entity) {
         journal.add(new KieSessionDelete(entity));
     }
 
-    void fireAllRules() {
+    public void fireAllRules() {
         journal.add(new KieSessionFireAllRules());
     }
 
-    void dispose() {
+    public void dispose() {
         journal.add(new KieSessionDispose());
     }
 
