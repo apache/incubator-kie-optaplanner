@@ -26,6 +26,12 @@ import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionDelete;
+import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionDispose;
+import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionFireAllRules;
+import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionInsert;
+import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,11 +43,11 @@ public final class DroolsReproducer {
     private final List<Fact> facts = new ArrayList<>();
     private String domainPackage;
 
-    private static String getVariableName(Object entity) {
+    public static String getVariableName(Object fact) {
         try {
-            return entity == null ? "null"
-                    : "fact" + entity.getClass().getSimpleName() + "_" +
-                    entity.getClass().getMethod("getId").invoke(entity);
+            return fact == null ? "null"
+                    : "fact" + fact.getClass().getSimpleName() + "_" +
+                    fact.getClass().getMethod("getId").invoke(fact);
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
             log.error("Cannot create variable name", ex);
         }
@@ -170,113 +176,6 @@ public final class DroolsReproducer {
 
     public void dispose() {
         journal.add(new KieSessionDispose());
-    }
-
-    private interface KieSessionOperation {
-
-        void invoke(KieSession kieSession);
-    }
-
-    private static class KieSessionInsert implements KieSessionOperation {
-
-        private final Object fact;
-
-        public KieSessionInsert(Object fact) {
-            this.fact = fact;
-        }
-
-        @Override
-        public void invoke(KieSession kieSession) {
-            kieSession.insert(fact);
-        }
-
-        @Override
-        public String toString() {
-            return "        kieSession.insert(" + getVariableName(fact) + ");";
-        }
-    }
-
-    private static class KieSessionUpdate implements KieSessionOperation {
-
-        private final Object entity;
-        private final Method variableSetter;
-        private final Object value;
-
-        private KieSessionUpdate(Object entity, VariableDescriptor<?> variableDescriptor) {
-            this.entity = entity;
-            this.value = variableDescriptor.getValue(entity);
-            String variableName = variableDescriptor.getVariableName();
-            String setterName = "set" + String.valueOf(variableName.charAt(0)).toUpperCase() + variableName.substring(1);
-            try {
-                this.variableSetter = entity.getClass().getMethod(setterName, variableDescriptor.getVariablePropertyType());
-            } catch (NoSuchMethodException | SecurityException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        @Override
-        public void invoke(KieSession kieSession) {
-            try {
-                variableSetter.invoke(entity, value);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                log.error("Cannot set variable!", ex);
-                throw new RuntimeException(ex);
-            }
-            kieSession.update(kieSession.getFactHandle(entity), entity);
-        }
-
-        @Override
-        public String toString() {
-            String entityName = getVariableName(entity);
-            return "        " + entityName + "." + variableSetter.getName() + "(" + getVariableName(value) + ");\n" +
-                    "        kieSession.update(kieSession.getFactHandle(" + entityName + "), " + entityName + ");";
-        }
-    }
-
-    private static class KieSessionDelete implements KieSessionOperation {
-
-        private final Object entity;
-
-        public KieSessionDelete(Object entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public void invoke(KieSession kieSession) {
-            kieSession.delete(kieSession.getFactHandle(entity));
-        }
-
-        @Override
-        public String toString() {
-            String entityName = getVariableName(entity);
-            return "        kieSession.delete(kieSession.getFactHandle(" + entityName + "), " + entityName + ");";
-        }
-    }
-
-    private static class KieSessionFireAllRules implements KieSessionOperation {
-
-        @Override
-        public void invoke(KieSession kieSession) {
-            kieSession.fireAllRules();
-        }
-
-        @Override
-        public String toString() {
-            return "\n        kieSession.fireAllRules();\n";
-        }
-    }
-
-    private static class KieSessionDispose implements KieSessionOperation {
-
-        @Override
-        public void invoke(KieSession kieSession) {
-            kieSession.dispose();
-        }
-
-        @Override
-        public String toString() {
-            return "        kieSession.dispose();";
-        }
     }
 
     private static class Fact {
