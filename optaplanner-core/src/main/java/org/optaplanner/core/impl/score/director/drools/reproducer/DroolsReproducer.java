@@ -60,7 +60,7 @@ public final class DroolsReproducer {
     }
 
     public void addFacts(Collection<Object> workingFacts) {
-        if (log.isDebugEnabled()) {
+        if (log.isInfoEnabled()) {
             HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
             for (Object fact : workingFacts) {
                 Fact f = new Fact(fact);
@@ -165,35 +165,35 @@ public final class DroolsReproducer {
         printInit();
         printSetup();
 
-        log.debug("    private void chunk1() {");
+        log.info("    private void chunk1() {");
 
         int opCounter = 0;
         for (KieSessionOperation op : journal) {
             opCounter++;
             if (opCounter % MAX_OPERATIONS_PER_METHOD == 0) {
                 // There's 64k limit for Java method size so we need to split into multiple methods
-                log.debug("    }\n");
-                log.debug("    private void chunk{}() {", opCounter / MAX_OPERATIONS_PER_METHOD + 1);
+                log.info("    }\n");
+                log.info("    private void chunk{}() {", opCounter / MAX_OPERATIONS_PER_METHOD + 1);
             }
-            log.debug("{}", op);
+            log.info("{}", op);
         }
 
-        log.debug(
+        log.info(
                 "    }\n");
-        log.debug(
+        log.info(
                 "    @Test\n" +
                 "    public void test() {");
         for (int i = 1; i <= opCounter / MAX_OPERATIONS_PER_METHOD + 1; i++) {
-            log.debug("        chunk{}();", i);
+            log.info("        chunk{}();", i);
         }
-        log.debug(
+        log.info(
                 "    }\n}");
     }
 
     private void printInit() {
-        log.debug(
+        log.info(
                 "package {};\n", domainPackage);
-        log.debug(
+        log.info(
                 "import org.junit.Before;\n" +
                 "import org.junit.Test;\n" +
                 "import org.kie.api.KieServices;\n" +
@@ -203,7 +203,7 @@ public final class DroolsReproducer {
                 "import org.kie.api.runtime.KieContainer;\n" +
                 "import org.kie.api.runtime.KieSession;");
         // TODO import fact classes outside the domain package
-        log.debug(
+        log.info(
                 "\n" +
                 "public class DroolsReproducerTest {\n" +
                 "\n" +
@@ -211,11 +211,11 @@ public final class DroolsReproducer {
         for (Fact fact : facts) {
             fact.printInitialization(log);
         }
-        log.debug("");
+        log.info("");
     }
 
     private void printSetup() {
-        log.debug(
+        log.info(
                 "    @Before\n" +
                 "    public void setUp() {\n" +
                 "        KieServices kieServices = KieServices.Factory.get();\n" +
@@ -231,11 +231,11 @@ public final class DroolsReproducer {
         for (Fact fact : facts) {
             fact.printSetup(log);
         }
-        log.debug("");
+        log.info("");
         for (KieSessionOperation insert : initialInsertJournal) {
-            log.debug("{}", insert);
+            log.info("{}", insert);
         }
-        log.debug(
+        log.info(
                 "    }\n");
     }
 
@@ -252,7 +252,7 @@ public final class DroolsReproducer {
     }
 
     public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
-        if (log.isDebugEnabled()) {
+        if (log.isInfoEnabled()) {
             journal.add(new KieSessionUpdate(entity, variableDescriptor));
         }
     }

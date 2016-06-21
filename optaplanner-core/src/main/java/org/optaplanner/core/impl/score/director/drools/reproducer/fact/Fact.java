@@ -103,16 +103,16 @@ public class Fact {
     }
 
     public void printInitialization(Logger log) {
-        log.debug("    {} {} = new {}();", instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName());
+        log.info("    {} {} = new {}();", instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName());
     }
 
     public void printSetup(Logger log) {
-        log.debug("        //{}", instance);
+        log.info("        //{}", instance);
         for (Map.Entry<Method, ValueProvider> entry : attributes.entrySet()) {
             Method setter = entry.getKey();
             ValueProvider value = entry.getValue();
             value.printSetup(log);
-            log.debug("        {}.{}({});", variableName, setter.getName(), value.toString());
+            log.info("        {}.{}({});", variableName, setter.getName(), value.toString());
         }
     }
 

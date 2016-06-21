@@ -32,10 +32,10 @@ public class MapValueProvider extends AbstractValueProvider {
 
     @Override
     public void printSetup(Logger log) {
-        log.debug("        java.util.HashMap {} = new java.util.HashMap();", identifier);
+        log.info("        java.util.HashMap {} = new java.util.HashMap();", identifier);
         for (Map.Entry<? extends Object, ? extends Object> entry : ((java.util.Map<?, ?>) value).entrySet()) {
-            log.debug("        //{} => {}", entry.getKey(), entry.getValue());
-            log.debug("        {}.put({}, {});", identifier, existingInstances.get(entry.getKey()), existingInstances.get(entry.getValue()));
+            log.info("        //{} => {}", entry.getKey(), entry.getValue());
+            log.info("        {}.put({}, {});", identifier, existingInstances.get(entry.getKey()), existingInstances.get(entry.getValue()));
         }
     }
 

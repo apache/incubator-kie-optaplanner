@@ -32,10 +32,10 @@ public class ListValueProvider extends AbstractValueProvider {
 
     @Override
     public void printSetup(Logger log) {
-        log.debug("        java.util.ArrayList {} = new java.util.ArrayList();", identifier);
+        log.info("        java.util.ArrayList {} = new java.util.ArrayList();", identifier);
         for (Object item : ((java.util.List<?>) value)) {
-            log.debug("        //{}", item);
-            log.debug("        {}.add({});", identifier, existingInstances.get(item));
+            log.info("        //{}", item);
+            log.info("        {}.add({});", identifier, existingInstances.get(item));
         }
     }
 
