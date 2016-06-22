@@ -46,7 +46,7 @@ public class TspSolution extends AbstractPersistable {
 
     private List<Visit> visitList;
 
-    @XStreamConverter(value = SimpleLongScoreXStreamConverter.class)
+    @XStreamConverter(SimpleLongScoreXStreamConverter.class)
     private SimpleLongScore score;
 
     public String getName() {

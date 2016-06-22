@@ -40,7 +40,7 @@ public class NQueens extends AbstractPersistable {
 
     private List<Queen> queenList;
 
-    @XStreamConverter(value = SimpleScoreXStreamConverter.class)
+    @XStreamConverter(SimpleScoreXStreamConverter.class)
     private SimpleScore score;
 
     public int getN() {

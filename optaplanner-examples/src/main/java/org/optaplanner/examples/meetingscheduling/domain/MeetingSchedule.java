@@ -42,7 +42,7 @@ public class MeetingSchedule extends AbstractPersistable {
 
     private List<MeetingAssignment> meetingAssignmentList;
 
-    @XStreamConverter(value = HardMediumSoftScoreXStreamConverter.class)
+    @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
     private HardMediumSoftScore score;
 
     @ProblemFactCollectionProperty

@@ -42,7 +42,7 @@ public class DinnerParty extends AbstractPersistable {
 
     private List<SeatDesignation> seatDesignationList;
 
-    @XStreamConverter(value = SimpleScoreXStreamConverter.class)
+    @XStreamConverter(SimpleScoreXStreamConverter.class)
     private SimpleScore score;
 
     @ProblemFactCollectionProperty

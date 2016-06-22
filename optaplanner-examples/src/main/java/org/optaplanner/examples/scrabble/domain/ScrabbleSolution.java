@@ -43,7 +43,7 @@ public class ScrabbleSolution extends AbstractPersistable {
     @PlanningEntityCollectionProperty
     private List<ScrabbleWordAssignment> wordList;
 
-    @XStreamConverter(value = HardMediumSoftScoreXStreamConverter.class)
+    @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
     private HardMediumSoftScore score;
 
     public int getGridWidth() {

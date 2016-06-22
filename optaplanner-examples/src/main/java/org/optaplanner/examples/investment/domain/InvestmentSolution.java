@@ -46,7 +46,7 @@ public class InvestmentSolution extends AbstractPersistable {
 
     private List<AssetClassAllocation> assetClassAllocationList;
 
-    @XStreamConverter(value = HardSoftLongScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftLongScoreXStreamConverter.class)
     private HardSoftLongScore score;
 
     @ProblemFactProperty

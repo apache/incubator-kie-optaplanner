@@ -36,7 +36,7 @@ public class SimpleBigDecimalScoreXStreamConverterTest extends AbstractScoreXStr
 
     public static class TestSimpleBigDecimalScoreWrapper extends TestScoreWrapper<SimpleBigDecimalScore> {
 
-        @XStreamConverter(value = SimpleBigDecimalScoreXStreamConverter.class)
+        @XStreamConverter(SimpleBigDecimalScoreXStreamConverter.class)
         private SimpleBigDecimalScore score;
 
         public TestSimpleBigDecimalScoreWrapper(SimpleBigDecimalScore score) {

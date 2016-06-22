@@ -34,7 +34,7 @@ public class SimpleDoubleScoreXStreamConverterTest extends AbstractScoreXStreamC
 
     public static class TestSimpleDoubleScoreWrapper extends TestScoreWrapper<SimpleDoubleScore> {
 
-        @XStreamConverter(value = SimpleDoubleScoreXStreamConverter.class)
+        @XStreamConverter(SimpleDoubleScoreXStreamConverter.class)
         private SimpleDoubleScore score;
 
         public TestSimpleDoubleScoreWrapper(SimpleDoubleScore score) {

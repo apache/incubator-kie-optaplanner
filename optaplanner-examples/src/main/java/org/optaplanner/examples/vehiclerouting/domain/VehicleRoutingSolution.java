@@ -50,7 +50,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
 
     protected List<Customer> customerList;
 
-    @XStreamConverter(value = HardSoftLongScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftLongScoreXStreamConverter.class)
     protected HardSoftLongScore score;
 
     public String getName() {

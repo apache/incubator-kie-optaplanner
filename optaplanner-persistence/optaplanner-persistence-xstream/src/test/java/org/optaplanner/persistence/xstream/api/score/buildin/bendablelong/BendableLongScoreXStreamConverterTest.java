@@ -34,7 +34,7 @@ public class BendableLongScoreXStreamConverterTest extends AbstractScoreXStreamC
 
     public static class TestBendableLongScoreWrapper extends TestScoreWrapper<BendableLongScore> {
 
-        @XStreamConverter(value = BendableLongScoreXStreamConverter.class)
+        @XStreamConverter(BendableLongScoreXStreamConverter.class)
         private BendableLongScore score;
 
         public TestBendableLongScoreWrapper(BendableLongScore score) {

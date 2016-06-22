@@ -44,7 +44,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable {
     protected List<BusStop> stopList;
     protected BusHub hub;
 
-    @XStreamConverter(value = HardSoftLongScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftLongScoreXStreamConverter.class)
     protected HardSoftLongScore score;
 
     public String getName() {

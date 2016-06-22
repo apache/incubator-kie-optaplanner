@@ -48,7 +48,7 @@ public class CheapTimeSolution extends AbstractPersistable {
 
     private List<TaskAssignment> taskAssignmentList;
 
-    @XStreamConverter(value = HardMediumSoftLongScoreXStreamConverter.class)
+    @XStreamConverter(HardMediumSoftLongScoreXStreamConverter.class)
     private HardMediumSoftLongScore score;
 
     public int getTimeResolutionInMinutes() {

@@ -47,7 +47,7 @@ public class TaskAssigningSolution extends AbstractPersistable {
     @ValueRangeProvider(id = "taskRange")
     private List<Task> taskList;
 
-    @XStreamConverter(value = BendableScoreXStreamConverter.class)
+    @XStreamConverter(BendableScoreXStreamConverter.class)
     private BendableScore score;
 
     public List<Skill> getSkillList() {

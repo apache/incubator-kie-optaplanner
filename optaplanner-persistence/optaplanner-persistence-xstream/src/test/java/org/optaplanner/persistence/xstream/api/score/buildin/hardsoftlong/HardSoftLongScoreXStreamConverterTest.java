@@ -34,7 +34,7 @@ public class HardSoftLongScoreXStreamConverterTest extends AbstractScoreXStreamC
 
     public static class TestHardSoftLongScoreWrapper extends TestScoreWrapper<HardSoftLongScore> {
 
-        @XStreamConverter(value = HardSoftLongScoreXStreamConverter.class)
+        @XStreamConverter(HardSoftLongScoreXStreamConverter.class)
         private HardSoftLongScore score;
 
         public TestHardSoftLongScoreWrapper(HardSoftLongScore score) {

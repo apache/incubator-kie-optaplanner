@@ -41,7 +41,7 @@ public class XStreamTestdataSolution extends TestdataObject {
     private List<XStreamTestdataValue> valueList;
     private List<XStreamTestdataEntity> entityList;
 
-    @XStreamConverter(value = SimpleScoreXStreamConverter.class)
+    @XStreamConverter(SimpleScoreXStreamConverter.class)
     private SimpleScore score;
 
     public XStreamTestdataSolution() {

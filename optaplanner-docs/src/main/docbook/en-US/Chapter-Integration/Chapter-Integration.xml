@@ -220,7 +220,7 @@ public class Room {
 public class CloudBalance {
 
     @PlanningScore
-    @XStreamConverter(value = HardSoftScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
     ...
@@ -240,7 +240,7 @@ public class CloudBalance {
 public class Schedule {
 
     @PlanningScore
-    @XStreamConverter(value = BendableScoreXStreamConverter.class)
+    @XStreamConverter(BendableScoreXStreamConverter.class)
     private BendableScore score;
 
     ...

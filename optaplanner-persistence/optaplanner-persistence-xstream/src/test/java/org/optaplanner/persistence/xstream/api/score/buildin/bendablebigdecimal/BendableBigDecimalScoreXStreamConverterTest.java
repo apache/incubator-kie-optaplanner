@@ -38,7 +38,7 @@ public class BendableBigDecimalScoreXStreamConverterTest extends AbstractScoreXS
 
     public static class TestBendableBigDecimalScoreWrapper extends TestScoreWrapper<BendableBigDecimalScore> {
 
-        @XStreamConverter(value = BendableBigDecimalScoreXStreamConverter.class)
+        @XStreamConverter(BendableBigDecimalScoreXStreamConverter.class)
         private BendableBigDecimalScore score;
 
         public TestBendableBigDecimalScoreWrapper(BendableBigDecimalScore score) {

@@ -49,7 +49,7 @@ public class CourseSchedule extends AbstractPersistable {
 
     private List<Lecture> lectureList;
 
-    @XStreamConverter(value = HardSoftScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
     public String getName() {

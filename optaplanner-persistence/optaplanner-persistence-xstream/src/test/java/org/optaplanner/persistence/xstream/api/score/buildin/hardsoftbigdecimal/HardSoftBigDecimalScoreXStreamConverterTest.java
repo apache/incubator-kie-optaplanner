@@ -36,7 +36,7 @@ public class HardSoftBigDecimalScoreXStreamConverterTest extends AbstractScoreXS
 
     public static class TestHardSoftBigDecimalScoreWrapper extends TestScoreWrapper<HardSoftBigDecimalScore> {
 
-        @XStreamConverter(value = HardSoftBigDecimalScoreXStreamConverter.class)
+        @XStreamConverter(HardSoftBigDecimalScoreXStreamConverter.class)
         private HardSoftBigDecimalScore score;
 
         public TestHardSoftBigDecimalScoreWrapper(HardSoftBigDecimalScore score) {

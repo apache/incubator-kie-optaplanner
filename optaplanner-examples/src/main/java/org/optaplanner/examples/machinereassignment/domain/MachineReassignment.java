@@ -48,7 +48,7 @@ public class MachineReassignment extends AbstractPersistable {
 
     private List<MrProcessAssignment> processAssignmentList;
 
-    @XStreamConverter(value = HardSoftLongScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftLongScoreXStreamConverter.class)
     private HardSoftLongScore score;
 
     @ProblemFactProperty

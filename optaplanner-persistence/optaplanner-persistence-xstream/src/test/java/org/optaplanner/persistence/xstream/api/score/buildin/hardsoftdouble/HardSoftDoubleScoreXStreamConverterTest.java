@@ -34,7 +34,7 @@ public class HardSoftDoubleScoreXStreamConverterTest extends AbstractScoreXStrea
 
     public static class TestHardSoftDoubleScoreWrapper extends TestScoreWrapper<HardSoftDoubleScore> {
 
-        @XStreamConverter(value = HardSoftDoubleScoreXStreamConverter.class)
+        @XStreamConverter(HardSoftDoubleScoreXStreamConverter.class)
         private HardSoftDoubleScore score;
 
         public TestHardSoftDoubleScoreWrapper(HardSoftDoubleScore score) {

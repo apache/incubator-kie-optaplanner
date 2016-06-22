@@ -34,7 +34,7 @@ public class SimpleLongScoreXStreamConverterTest extends AbstractScoreXStreamCon
 
     public static class TestSimpleLongScoreWrapper extends TestScoreWrapper<SimpleLongScore> {
 
-        @XStreamConverter(value = SimpleLongScoreXStreamConverter.class)
+        @XStreamConverter(SimpleLongScoreXStreamConverter.class)
         private SimpleLongScore score;
 
         public TestSimpleLongScoreWrapper(SimpleLongScore score) {

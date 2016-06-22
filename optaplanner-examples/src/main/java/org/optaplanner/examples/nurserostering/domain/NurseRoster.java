@@ -82,7 +82,7 @@ public class NurseRoster extends AbstractPersistable {
     private List<ShiftAssignment> shiftAssignmentList;
 
     @PlanningScore
-    @XStreamConverter(value = HardSoftScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
     public String getCode() {

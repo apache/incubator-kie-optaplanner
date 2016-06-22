@@ -48,7 +48,7 @@ public class Examination extends AbstractPersistable {
 
     private List<Exam> examList;
 
-    @XStreamConverter(value = HardSoftScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
     @ProblemFactProperty

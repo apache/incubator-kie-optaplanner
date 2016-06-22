@@ -49,7 +49,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
 
     private List<BedDesignation> bedDesignationList;
 
-    @XStreamConverter(value = HardMediumSoftScoreXStreamConverter.class)
+    @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
     private HardMediumSoftScore score;
 
     @ProblemFactCollectionProperty

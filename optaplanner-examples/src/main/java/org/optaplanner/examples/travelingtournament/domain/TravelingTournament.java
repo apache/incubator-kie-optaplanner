@@ -40,7 +40,7 @@ public class TravelingTournament extends AbstractPersistable {
 
     private List<Match> matchList;
 
-    @XStreamConverter(value = HardSoftScoreXStreamConverter.class)
+    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
     @ValueRangeProvider(id = "dayRange")
