@@ -137,16 +137,16 @@ public final class DroolsReproducer {
         boolean reduced = true;
         ArrayList<KieSessionOperation> reproducingJournal = new ArrayList<>(journal);
         Random random = new Random(0);
+        ArrayList<KieSessionOperation> testedJournal = new ArrayList<>(journal);
         while (reduced) {
-            log.debug("// Current journal size: {}", reproducingJournal.size());
-            ArrayList<Integer> indices = new ArrayList<>(reproducingJournal.size());
+            log.debug("// Current journal size: {}", testedJournal.size());
+            ArrayList<Integer> indices = new ArrayList<>(testedJournal.size());
             for (int i = 0; i < reproducingJournal.size(); i++) {
                 indices.add(i);
             }
             Collections.shuffle(indices, random);
             reduced = false;
             for (Integer index : indices) {
-                ArrayList<KieSessionOperation> testedJournal = new ArrayList<>(reproducingJournal);
                 KieSessionOperation op = testedJournal.get(index);
                 testedJournal.remove(index.intValue());
                 if (reproduce(ex, kieSession, testedJournal)) {
@@ -156,6 +156,8 @@ public final class DroolsReproducer {
                     break;
                 } else {
                     log.debug("// Can't reproduce without operation #{}", op.getId());
+                    // return the operation
+                    testedJournal.add(index, op);
                 }
             }
         }
