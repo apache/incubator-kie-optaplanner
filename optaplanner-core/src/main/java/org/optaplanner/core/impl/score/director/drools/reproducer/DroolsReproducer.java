@@ -95,25 +95,32 @@ public final class DroolsReproducer {
     }
 
     private List<KieSessionOperation> pruneFromTheStart(KieSession kieSession, List<KieSessionOperation> journal) {
-        int nextDrop = journal.size() / 10;
+        double dropFactor = 0.8;
         int dropSize = 0;
+        int dropIncrement = (int) (journal.size() * dropFactor);
         ArrayList<KieSessionOperation> reproducingJournal = null;
-        while (nextDrop > 0) {
+        while (dropIncrement > 0) {
             ArrayList<KieSessionOperation> testedJournal = new ArrayList<>(journal);
+            dropSize += dropIncrement;
             for (int i = 0; i < dropSize; i++) {
                 testedJournal.remove(0);
             }
+            long start = System.currentTimeMillis();
             boolean reproduced = reproduce(kieSession, testedJournal) != null;
+            double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
             if (reproduced) {
-                log.debug("// Reproduced with journal size: {}", testedJournal.size());
+                log.debug("// Reproduced with journal size: {} (took {}s)", testedJournal.size(), tookSeconds);
                 reproducingJournal = testedJournal;
-                dropSize += nextDrop;
             } else {
-                log.debug("// Can't reproduce with journal size: {}", testedJournal.size());
-                dropSize -= nextDrop;
-                nextDrop /= 2;
-                log.debug("// >> reducing next drop size to {}", nextDrop);
+                log.debug("// Can't reproduce with journal size: {} (took {}s)", testedJournal.size(), tookSeconds);
+                // revert drop size
+                dropSize -= dropIncrement;
+                // reduce drop factor
+                dropFactor /= 2;
+                log.debug("// >> reducing next drop size to {}", dropIncrement);
             }
+            // determine next drop increment
+            dropIncrement = (int) (testedJournal.size() * dropFactor);
         }
         return reproducingJournal;
     }
