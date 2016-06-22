@@ -32,7 +32,7 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
-import org.optaplanner.persistence.xstream.impl.score.buildin.simplelong.SimpleLongScoreXStreamConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.simplelong.SimpleLongScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("TspSolution")

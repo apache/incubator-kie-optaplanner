@@ -32,7 +32,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
-import org.optaplanner.persistence.xstream.impl.score.buildin.hardsoftlong.HardSoftLongScoreXStreamConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.hardsoftlong.HardSoftLongScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("VrpVehicleRoutingSolution")

@@ -28,7 +28,7 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProp
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.impl.score.buildin.simple.SimpleScoreXStreamConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.simple.SimpleScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("DinnerParty")

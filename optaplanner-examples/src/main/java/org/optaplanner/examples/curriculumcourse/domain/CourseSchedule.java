@@ -29,7 +29,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
-import org.optaplanner.persistence.xstream.impl.score.buildin.hardsoft.HardSoftScoreXStreamConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.hardsoft.HardSoftScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("CourseSchedule")
