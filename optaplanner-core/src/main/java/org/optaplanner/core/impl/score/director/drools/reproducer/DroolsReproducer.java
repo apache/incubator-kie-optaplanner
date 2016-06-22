@@ -97,7 +97,7 @@ public final class DroolsReproducer {
             throw new IllegalStateException("Cannot reproduce original exception even without journal modifications. " +
                     "This is a bug!" +
                     "\nExpected [" + originalException.getClass() + ": " + originalException.getMessage() + "]" +
-                    "\nCaused [" + testException.getClass() + ": " + testException.getMessage() + "]");
+                    "\nCaused [" + testException.getClass() + ": " + testException.getMessage() + "]", testException);
         }
         List<KieSessionOperation> minimalJournal = pruneFromTheStart(originalException, oldKieSession, journal);
         log.debug("\n// Now trying to remove random operations.\n");
