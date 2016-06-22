@@ -181,7 +181,6 @@ public final class DroolsReproducer {
 
     private RuntimeException test(KieSession oldKieSession, List<KieSessionOperation> journal) {
         KieSession newKieSession = oldKieSession.getKieBase().newKieSession();
-        oldKieSession.dispose();
 
         for (String globalKey : oldKieSession.getGlobals().getGlobalKeys()) {
             newKieSession.setGlobal(globalKey, oldKieSession.getGlobal(globalKey));
@@ -205,6 +204,8 @@ public final class DroolsReproducer {
             return null;
         } catch (RuntimeException ex) {
             return ex;
+        } finally {
+            newKieSession.dispose();
         }
     }
 
