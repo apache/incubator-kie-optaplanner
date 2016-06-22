@@ -61,9 +61,11 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         String regex;
         if (expectedScore != null) {
             regex = "<\\?[^\\?]*\\?>" // XML header
-                    + "<([\\w\\-\\.]+)>\\s*<score>" // Start of element
+                    + "<([\\w\\-\\.]+)>\\s*" // Start of element
+                    + "<score>"
                     + expectedScore.toString().replaceAll("\\[", "\\\\[").replaceAll("\\]", "\\\\]") // Score
-                    + "</score>\\s*</\\1>"; // End of element
+                    + "</score>"
+                    + "\\s*</\\1>"; // End of element
         } else {
             regex = "<\\?[^\\?]*\\?>" // XML header
                     + "<([\\w\\-\\.]+)/>"; // Start and end of element
