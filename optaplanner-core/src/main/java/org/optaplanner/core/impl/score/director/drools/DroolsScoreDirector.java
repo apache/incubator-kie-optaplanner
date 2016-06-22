@@ -95,7 +95,7 @@ public class DroolsScoreDirector<Solution_>
         } catch (RuntimeException e) {
             logger.error("kieSession.fireAllRules() failed:", e);
             logger.info("Starting replay & reduce to find a minimal Drools reproducer.");
-            reproducer.replay(kieSession);
+            reproducer.replay(kieSession, e);
             throw new IllegalStateException("Reproducer should have failed!");
         }
         Score score = workingScoreHolder.extractScore(workingInitScore);
