@@ -184,6 +184,10 @@ public final class DroolsReproducer {
         KieSession newKieSession = oldKieSession.getKieBase().newKieSession();
         oldKieSession.dispose();
 
+        for (String globalKey : oldKieSession.getGlobals().getGlobalKeys()) {
+            newKieSession.setGlobal(globalKey, oldKieSession.getGlobal(globalKey));
+        }
+
         // reset facts to the original state
         for (Fact fact : facts) {
             fact.reset();
