@@ -110,13 +110,10 @@ public final class DroolsReproducer {
         double dropFactor = 0.8;
         int dropSize = 0;
         int dropIncrement = (int) (journal.size() * dropFactor);
-        ArrayList<KieSessionOperation> reproducingJournal = null;
+        List<KieSessionOperation> reproducingJournal = journal;
         while (dropIncrement > 0) {
-            ArrayList<KieSessionOperation> testedJournal = new ArrayList<>(journal);
             dropSize += dropIncrement;
-            for (int i = 0; i < dropSize; i++) {
-                testedJournal.remove(0);
-            }
+            List<KieSessionOperation> testedJournal = journal.subList(dropSize, journal.size());
             long start = System.currentTimeMillis();
             boolean reproduced = reproduce(ex, kieSession, testedJournal);
             double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
@@ -134,7 +131,7 @@ public final class DroolsReproducer {
             // determine next drop increment
             dropIncrement = (int) (testedJournal.size() * dropFactor);
         }
-        return reproducingJournal;
+        return new ArrayList<>(reproducingJournal);
     }
 
     private List<KieSessionOperation> tryRandomMutations(RuntimeException ex, KieSession kieSession, List<KieSessionOperation> journal) {
