@@ -30,7 +30,6 @@ import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionDelete;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionDispose;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionFireAllRules;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionInsert;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
@@ -321,7 +320,11 @@ public final class DroolsReproducer {
     }
 
     public void dispose() {
-        journal.add(new KieSessionDispose(operationId++));
+        facts.clear();
+        imports.clear();
+        initialInsertJournal.clear();
+        journal.clear();
+        operationId = 0;
     }
 
 }
