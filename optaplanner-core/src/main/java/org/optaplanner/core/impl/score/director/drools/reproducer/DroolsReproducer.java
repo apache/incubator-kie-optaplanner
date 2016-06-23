@@ -73,8 +73,8 @@ public final class DroolsReproducer {
                 addImport(fact);
             }
 
-            for (Object fact : workingFacts) {
-                existingInstances.get(fact).setUp(existingInstances);
+            for (Fact fact : facts) {
+                fact.setUp(existingInstances);
             }
         }
     }
