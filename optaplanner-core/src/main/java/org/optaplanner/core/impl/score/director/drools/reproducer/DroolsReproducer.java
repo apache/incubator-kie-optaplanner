@@ -100,7 +100,7 @@ public final class DroolsReproducer {
         }
         List<KieSessionOperation> minimalJournal = cutJournalHead(originalException, oldKieSession, journal);
         log.debug("\n// Now trying to remove random operations.\n");
-        minimalJournal = tryRandomMutations(originalException, oldKieSession, minimalJournal);
+        minimalJournal = pruneUpdateJournalOperations(originalException, oldKieSession, minimalJournal);
         printTest(minimalJournal);
         throw test(oldKieSession, minimalJournal);
     }
@@ -120,35 +120,18 @@ public final class DroolsReproducer {
         return m.getResult();
     }
 
-    private List<KieSessionOperation> tryRandomMutations(RuntimeException ex, KieSession kieSession, List<KieSessionOperation> journal) {
-        boolean reduced = true;
-        ArrayList<KieSessionOperation> reproducingJournal = new ArrayList<>(journal);
-        Random random = new Random(0);
-        ArrayList<KieSessionOperation> testedJournal = new ArrayList<>(journal);
-        while (reduced) {
-            log.debug("// Current journal size: {}", testedJournal.size());
-            ArrayList<Integer> indices = new ArrayList<>(testedJournal.size());
-            for (int i = 0; i < reproducingJournal.size(); i++) {
-                indices.add(i);
-            }
-            Collections.shuffle(indices, random);
-            reduced = false;
-            for (Integer index : indices) {
-                KieSessionOperation op = testedJournal.get(index);
-                testedJournal.remove(index.intValue());
-                if (reproduce(ex, kieSession, testedJournal)) {
-                    log.debug("// Reproduced without operation #{}", op.getId());
-                    reproducingJournal = testedJournal;
-                    reduced = true;
-                    break;
-                } else {
-                    log.debug("// Can't reproduce without operation #{}", op.getId());
-                    // return the operation
-                    testedJournal.add(index, op);
-                }
+    private List<KieSessionOperation> pruneUpdateJournalOperations(RuntimeException ex, KieSession kieSession, List<KieSessionOperation> journal) {
+        RemoveRandomItemMutator m = new RemoveRandomItemMutator(journal);
+        while (m.canMutate()) {
+            log.debug("// Current journal size: {}", m.getResult().size());
+            boolean reproduced = reproduce(ex, kieSession, m.mutate());
+            String outcome = reproduced ? "Reproduced" : "Can't reproduce";
+            log.debug("// {} without operation #{}", outcome, m.getRemovedItem().getId());
+            if (!reproduced) {
+                m.revert();
             }
         }
-        return reproducingJournal;
+        return m.getResult();
     }
 
     private boolean reproduce(RuntimeException originalException, KieSession oldKieSession, List<KieSessionOperation> journal) {
