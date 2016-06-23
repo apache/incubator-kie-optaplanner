@@ -98,39 +98,26 @@ public final class DroolsReproducer {
                     "\nExpected [" + originalException.getClass() + ": " + originalException.getMessage() + "]" +
                     "\nCaused [" + testException.getClass() + ": " + testException.getMessage() + "]", testException);
         }
-        List<KieSessionOperation> minimalJournal = pruneFromTheStart(originalException, oldKieSession, journal);
+        List<KieSessionOperation> minimalJournal = cutJournalHead(originalException, oldKieSession, journal);
         log.debug("\n// Now trying to remove random operations.\n");
         minimalJournal = tryRandomMutations(originalException, oldKieSession, minimalJournal);
         printTest(minimalJournal);
         throw test(oldKieSession, minimalJournal);
     }
 
-    private List<KieSessionOperation> pruneFromTheStart(RuntimeException ex, KieSession kieSession, List<KieSessionOperation> journal) {
-        double dropFactor = 0.8;
-        int dropSize = 0;
-        int dropIncrement = (int) (journal.size() * dropFactor);
-        List<KieSessionOperation> reproducingJournal = journal;
-        while (dropIncrement > 0) {
-            dropSize += dropIncrement;
-            List<KieSessionOperation> testedJournal = journal.subList(dropSize, journal.size());
+    private List<KieSessionOperation> cutJournalHead(RuntimeException ex, KieSession kieSession, List<KieSessionOperation> journal) {
+        HeadCuttingMutator m = new HeadCuttingMutator(journal);
+        while (m.canMutate()) {
             long start = System.currentTimeMillis();
-            boolean reproduced = reproduce(ex, kieSession, testedJournal);
+            boolean reproduced = reproduce(ex, kieSession, m.mutate());
             double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
-            if (reproduced) {
-                log.debug("// Reproduced with journal size: {} (took {}s)", testedJournal.size(), tookSeconds);
-                reproducingJournal = testedJournal;
-            } else {
-                log.debug("// Can't reproduce with journal size: {} (took {}s)", testedJournal.size(), tookSeconds);
-                // revert drop size
-                dropSize -= dropIncrement;
-                // reduce drop factor
-                dropFactor /= 2;
-                log.debug("// >> reducing next drop size to {}", dropIncrement);
+            String outcome = reproduced ? "Reproduced" : "Can't reproduce";
+            log.debug("// {} with journal size: {} (took {}s)", outcome, m.getResult().size(), tookSeconds);
+            if (!reproduced) {
+                m.revert();
             }
-            // determine next drop increment
-            dropIncrement = (int) (testedJournal.size() * dropFactor);
         }
-        return new ArrayList<>(reproducingJournal);
+        return m.getResult();
     }
 
     private List<KieSessionOperation> tryRandomMutations(RuntimeException ex, KieSession kieSession, List<KieSessionOperation> journal) {
