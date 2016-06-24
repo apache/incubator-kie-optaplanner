@@ -15,6 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,13 @@ import org.slf4j.Logger;
 class ListValueProvider extends AbstractValueProvider {
 
     final String identifier;
+    final Type typeArgument;
     final Map<Object, Fact> existingInstances;
 
-    public ListValueProvider(Object value, String identifier, Map<Object, Fact> existingInstances) {
+    public ListValueProvider(Object value, String identifier, Type genericType, Map<Object, Fact> existingInstances) {
         super(value);
         this.identifier = identifier;
+        this.typeArgument = genericType;
         this.existingInstances = existingInstances;
     }
 
@@ -45,7 +48,8 @@ class ListValueProvider extends AbstractValueProvider {
 
     @Override
     public void printSetup(Logger log) {
-        log.info("        java.util.ArrayList {} = new java.util.ArrayList();", identifier);
+        String e = ((Class<?>) typeArgument).getSimpleName();
+        log.info("        java.util.ArrayList<{}> {} = new java.util.ArrayList<{}>();", e, identifier, e);
         for (Object item : ((java.util.List<?>) value)) {
             log.info("        //{}", item);
             log.info("        {}.add({});", identifier, existingInstances.get(item));

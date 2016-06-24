@@ -17,6 +17,8 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,12 +62,14 @@ public class ValueFact implements Fact {
                         dependencies.add(existingInstances.get(value));
                     } else if (field.getType().equals(java.util.List.class)) {
                         String id = variableName + "_" + field.getName();
-                        ListValueProvider listValueProvider = new ListValueProvider(value, id, existingInstances);
+                        Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+                        ListValueProvider listValueProvider = new ListValueProvider(value, id, typeArgs[0], existingInstances);
                         attributes.put(accessor, listValueProvider);
                         dependencies.addAll(listValueProvider.getFacts());
                     } else if (field.getType().equals(java.util.Map.class)) {
                         String id = variableName + "_" + field.getName();
-                        MapValueProvider mapValueProvider = new MapValueProvider(value, id, existingInstances);
+                        Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+                        MapValueProvider mapValueProvider = new MapValueProvider(value, id, typeArgs, existingInstances);
                         attributes.put(accessor, mapValueProvider);
                         dependencies.addAll(mapValueProvider.getFacts());
                     } else if (field.getType().getName().matches("org\\.joda\\.time\\.LocalDate(Time)?")) {

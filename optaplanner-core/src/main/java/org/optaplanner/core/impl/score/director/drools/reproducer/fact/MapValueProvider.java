@@ -15,6 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,15 @@ import org.slf4j.Logger;
 class MapValueProvider extends AbstractValueProvider {
 
     final String identifier;
+    final Type[] typeArguments;
     final Map<Object, Fact> existingInstances;
 
-    public MapValueProvider(Object value, String identifier, Map<Object, Fact> existingInstances) {
+    public MapValueProvider(Object value, String identifier,
+                            Type[] typeArguments,
+                            Map<Object, Fact> existingInstances) {
         super(value);
         this.identifier = identifier;
+        this.typeArguments = typeArguments;
         this.existingInstances = existingInstances;
     }
 
@@ -50,7 +55,9 @@ class MapValueProvider extends AbstractValueProvider {
 
     @Override
     public void printSetup(Logger log) {
-        log.info("        java.util.HashMap {} = new java.util.HashMap();", identifier);
+        String k = ((Class<?>) typeArguments[0]).getSimpleName();
+        String v = ((Class<?>) typeArguments[1]).getSimpleName();
+        log.info("        java.util.HashMap<{}, {}> {} = new java.util.HashMap<{}, {}>();", k, v, identifier, k, v);
         for (Map.Entry<? extends Object, ? extends Object> entry : ((java.util.Map<?, ?>) value).entrySet()) {
             log.info("        //{} => {}", entry.getKey(), entry.getValue());
             log.info("        {}.put({}, {});", identifier, existingInstances.get(entry.getKey()), existingInstances.get(entry.getValue()));
