@@ -18,7 +18,9 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.impl.score.director.drools.reproducer.DroolsReproducer;
@@ -33,6 +35,7 @@ public class Fact {
     private final HashMap<String, Method> getters = new HashMap<>();
     private final HashMap<String, Method> setters = new HashMap<>();
     private final HashMap<Method, ValueProvider> attributes = new HashMap<>();
+    private final List<Fact> dependencies = new ArrayList<>();
 
     public Fact(Object instance) {
         this.instance = instance;
@@ -69,12 +72,17 @@ public class Fact {
                         attributes.put(setter, new EnumValueProvider(value));
                     } else if (existingInstances.containsKey(value)) {
                         attributes.put(setter, new ExistingInstanceValueProvider(value, existingInstances.get(value).variableName));
+                        dependencies.add(existingInstances.get(value));
                     } else if (field.getType().equals(java.util.List.class)) {
                         String id = variableName + "_" + field.getName();
-                        attributes.put(setter, new ListValueProvider(value, id, existingInstances));
+                        ListValueProvider listValueProvider = new ListValueProvider(value, id, existingInstances);
+                        attributes.put(setter, listValueProvider);
+                        dependencies.addAll(listValueProvider.getFacts());
                     } else if (field.getType().equals(java.util.Map.class)) {
                         String id = variableName + "_" + field.getName();
-                        attributes.put(setter, new MapValueProvider(value, id, existingInstances));
+                        MapValueProvider mapValueProvider = new MapValueProvider(value, id, existingInstances);
+                        attributes.put(setter, mapValueProvider);
+                        dependencies.addAll(mapValueProvider.getFacts());
                     } else {
                         throw new IllegalStateException("Unsupported type: " + field.getType());
                     }
@@ -83,6 +91,10 @@ public class Fact {
                 }
             }
         }
+    }
+
+    public List<Fact> getDependencies() {
+        return dependencies;
     }
 
     public void set(String variableName, Object value) {

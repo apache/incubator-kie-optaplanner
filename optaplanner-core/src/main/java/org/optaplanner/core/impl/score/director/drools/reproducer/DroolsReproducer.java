@@ -39,7 +39,8 @@ public final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
-    private final List<Fact> facts = new ArrayList<>();
+    private List<Fact> facts = new ArrayList<>();
+    private HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
     private final SortedSet<String> imports = new TreeSet<>();
     private List<KieSessionInsert> initialInsertJournal = new ArrayList<>();
     private List<KieSessionOperation> updateJournal = new ArrayList<>();
@@ -63,7 +64,6 @@ public final class DroolsReproducer {
 
     public void addFacts(Collection<Object> workingFacts) {
         if (log.isInfoEnabled()) {
-            HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
             for (Object fact : workingFacts) {
                 Fact f = new Fact(fact);
                 facts.add(f);
@@ -101,8 +101,10 @@ public final class DroolsReproducer {
         updateJournal = pruneUpdateJournalOperations(originalException, oldKieSession, updateJournal);
         log.debug("\n// Pruning facts.\n");
         initialInsertJournal = pruneInsertJournalOperations(originalException, oldKieSession, initialInsertJournal);
-        // TODO clean up facts list
+        facts.retainAll(pruneFacts());
+        // TODO prune setup code
         printTest();
+        // TODO check that original exception is still reproduced after fact pruning
         throw test(oldKieSession, initialInsertJournal, updateJournal);
     }
 
@@ -153,6 +155,32 @@ public final class DroolsReproducer {
             }
         }
         return m.getResult();
+    }
+
+    private ArrayList<Fact> pruneFacts() {
+        ArrayList<Fact> minimal = new ArrayList<>();
+        for (KieSessionInsert insert : initialInsertJournal) {
+            addWithDependencies(existingInstances.get(insert.getFact()), minimal);
+        }
+        for (KieSessionOperation op : updateJournal) {
+            if (op instanceof KieSessionUpdate) {
+                Fact f = existingInstances.get(((KieSessionUpdate) op).getValue());
+                if (f != null) {
+                    addWithDependencies(f, minimal);
+                }
+            }
+        }
+        return minimal;
+    }
+
+    private static void addWithDependencies(Fact f, List<Fact> factList) {
+        if (factList.contains(f)) {
+            return;
+        }
+        factList.add(f);
+        for (Fact dependency : f.getDependencies()) {
+            addWithDependencies(dependency, factList);
+        }
     }
 
     private boolean reproduce(RuntimeException originalException,
@@ -330,6 +358,7 @@ public final class DroolsReproducer {
 
     public void dispose() {
         facts.clear();
+        existingInstances.clear();
         imports.clear();
         initialInsertJournal.clear();
         updateJournal.clear();

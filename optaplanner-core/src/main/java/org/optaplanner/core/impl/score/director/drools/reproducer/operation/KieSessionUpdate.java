@@ -42,6 +42,10 @@ public class KieSessionUpdate implements KieSessionOperation {
         }
     }
 
+    public Object getValue() {
+        return value;
+    }
+
     @Override
     public int getId() {
         return id;

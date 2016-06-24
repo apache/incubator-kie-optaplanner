@@ -15,6 +15,8 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -28,6 +30,17 @@ class ListValueProvider extends AbstractValueProvider {
         super(value);
         this.identifier = identifier;
         this.existingInstances = existingInstances;
+    }
+
+    public List<Fact> getFacts() {
+        ArrayList<Fact> facts = new ArrayList<>();
+        for (Object o : (List<?>) value) {
+            Fact fact = existingInstances.get(o);
+            if (fact != null) {
+                facts.add(fact);
+            }
+        }
+        return facts;
     }
 
     @Override

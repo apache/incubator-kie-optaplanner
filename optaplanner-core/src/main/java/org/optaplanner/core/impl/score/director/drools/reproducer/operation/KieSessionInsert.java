@@ -28,6 +28,10 @@ public class KieSessionInsert implements KieSessionOperation {
         this.fact = fact;
     }
 
+    public Object getFact() {
+        return fact;
+    }
+
     @Override
     public int getId() {
         return id;
