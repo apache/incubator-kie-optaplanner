@@ -18,11 +18,9 @@ package org.optaplanner.core.impl.score.director.drools.reproducer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -43,8 +41,8 @@ public final class DroolsReproducer {
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
     private final List<Fact> facts = new ArrayList<>();
     private final SortedSet<String> imports = new TreeSet<>();
-    private final List<KieSessionOperation> initialInsertJournal = new ArrayList<>();
-    private final List<KieSessionOperation> journal = new ArrayList<>();
+    private List<KieSessionOperation> initialInsertJournal = new ArrayList<>();
+    private List<KieSessionOperation> updateJournal = new ArrayList<>();
     private String domainPackage;
     private int operationId = 0;
 
@@ -87,7 +85,7 @@ public final class DroolsReproducer {
     }
 
     public void replay(KieSession oldKieSession, RuntimeException originalException) {
-        RuntimeException testException = test(oldKieSession, journal);
+        RuntimeException testException = test(oldKieSession, initialInsertJournal, updateJournal);
         if (testException == null) {
             throw new IllegalStateException("Cannot reproduce original exception even without journal modifications. " +
                     "This is a bug!");
@@ -98,18 +96,23 @@ public final class DroolsReproducer {
                     "\nExpected [" + originalException.getClass() + ": " + originalException.getMessage() + "]" +
                     "\nCaused [" + testException.getClass() + ": " + testException.getMessage() + "]", testException);
         }
-        List<KieSessionOperation> minimalJournal = cutJournalHead(originalException, oldKieSession, journal);
+        updateJournal = cutJournalHead(originalException, oldKieSession, updateJournal);
         log.debug("\n// Now trying to remove random operations.\n");
-        minimalJournal = pruneUpdateJournalOperations(originalException, oldKieSession, minimalJournal);
-        printTest(minimalJournal);
-        throw test(oldKieSession, minimalJournal);
+        updateJournal = pruneUpdateJournalOperations(originalException, oldKieSession, updateJournal);
+        log.debug("\n// Pruning facts.\n");
+        initialInsertJournal = pruneInsertJournalOperations(originalException, oldKieSession, initialInsertJournal);
+        // TODO clean up facts list
+        printTest();
+        throw test(oldKieSession, initialInsertJournal, updateJournal);
     }
 
-    private List<KieSessionOperation> cutJournalHead(RuntimeException ex, KieSession kieSession, List<KieSessionOperation> journal) {
+    private List<KieSessionOperation> cutJournalHead(RuntimeException ex,
+                                                     KieSession kieSession,
+                                                     List<KieSessionOperation> journal) {
         HeadCuttingMutator m = new HeadCuttingMutator(journal);
         while (m.canMutate()) {
             long start = System.currentTimeMillis();
-            boolean reproduced = reproduce(ex, kieSession, m.mutate());
+            boolean reproduced = reproduce(ex, kieSession, initialInsertJournal, m.mutate());
             double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             log.debug("// {} with journal size: {} (took {}s)", outcome, m.getResult().size(), tookSeconds);
@@ -120,11 +123,13 @@ public final class DroolsReproducer {
         return m.getResult();
     }
 
-    private List<KieSessionOperation> pruneUpdateJournalOperations(RuntimeException ex, KieSession kieSession, List<KieSessionOperation> journal) {
-        RemoveRandomItemMutator m = new RemoveRandomItemMutator(journal);
+    private List<KieSessionOperation> pruneUpdateJournalOperations(RuntimeException ex,
+                                                                   KieSession kieSession,
+                                                                   List<KieSessionOperation> updateJournal) {
+        RemoveRandomItemMutator m = new RemoveRandomItemMutator(updateJournal);
         while (m.canMutate()) {
             log.debug("// Current journal size: {}", m.getResult().size());
-            boolean reproduced = reproduce(ex, kieSession, m.mutate());
+            boolean reproduced = reproduce(ex, kieSession, initialInsertJournal, m.mutate());
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             log.debug("// {} without operation #{}", outcome, m.getRemovedItem().getId());
             if (!reproduced) {
@@ -134,8 +139,27 @@ public final class DroolsReproducer {
         return m.getResult();
     }
 
-    private boolean reproduce(RuntimeException originalException, KieSession oldKieSession, List<KieSessionOperation> journal) {
-        RuntimeException ex = test(oldKieSession, journal);
+    private List<KieSessionOperation> pruneInsertJournalOperations(RuntimeException ex,
+                                                                   KieSession kieSession,
+                                                                   List<KieSessionOperation> insertJournal) {
+        RemoveRandomItemMutator m = new RemoveRandomItemMutator(insertJournal);
+        while (m.canMutate()) {
+            log.debug("// Current journal size: {}", m.getResult().size());
+            boolean reproduced = reproduce(ex, kieSession, m.mutate(), updateJournal);
+            String outcome = reproduced ? "Reproduced" : "Can't reproduce";
+            log.debug("// {} without operation #{}", outcome, m.getRemovedItem().getId());
+            if (!reproduced) {
+                m.revert();
+            }
+        }
+        return m.getResult();
+    }
+
+    private boolean reproduce(RuntimeException originalException,
+                              KieSession oldKieSession,
+                              List<KieSessionOperation> insertJournal,
+                              List<KieSessionOperation> updateJournal) {
+        RuntimeException ex = test(oldKieSession, insertJournal, updateJournal);
         if (ex == null) {
             return false;
         } else if (areEqual(originalException, ex)) {
@@ -146,12 +170,9 @@ public final class DroolsReproducer {
         }
     }
 
-    private boolean areEqual(RuntimeException originalException, RuntimeException testException) {
-        return originalException.getClass().equals(testException.getClass()) &&
-                Objects.equals(originalException.getMessage(), testException.getMessage());
-    }
-
-    private RuntimeException test(KieSession oldKieSession, List<KieSessionOperation> journal) {
+    private RuntimeException test(KieSession oldKieSession,
+                                  List<KieSessionOperation> insertJournal,
+                                  List<KieSessionOperation> updateJournal) {
         KieSession newKieSession = oldKieSession.getKieBase().newKieSession();
 
         for (String globalKey : oldKieSession.getGlobals().getGlobalKeys()) {
@@ -164,13 +185,13 @@ public final class DroolsReproducer {
         }
 
         // insert facts into KIE session
-        for (KieSessionOperation insert : initialInsertJournal) {
+        for (KieSessionOperation insert : insertJournal) {
             insert.invoke(newKieSession);
         }
 
         // replay tested journal
         try {
-            for (KieSessionOperation op : journal) {
+            for (KieSessionOperation op : updateJournal) {
                 op.invoke(newKieSession);
             }
             return null;
@@ -181,18 +202,23 @@ public final class DroolsReproducer {
         }
     }
 
+    private boolean areEqual(RuntimeException originalException, RuntimeException testException) {
+        return originalException.getClass().equals(testException.getClass()) &&
+                Objects.equals(originalException.getMessage(), testException.getMessage());
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     // Test printing
     //------------------------------------------------------------------------------------------------------------------
     //
-    private void printTest(List<KieSessionOperation> journal) {
+    private void printTest() {
         printInit();
         printSetup();
 
         log.info("    private void chunk1() {");
 
         int opCounter = 0;
-        for (KieSessionOperation op : journal) {
+        for (KieSessionOperation op : updateJournal) {
             opCounter++;
             if (opCounter % MAX_OPERATIONS_PER_METHOD == 0) {
                 // There's 64k limit for Java method size so we need to split into multiple methods
@@ -275,28 +301,28 @@ public final class DroolsReproducer {
     }
 
     public void insert(Object fact) {
-        journal.add(new KieSessionInsert(operationId++, fact));
+        updateJournal.add(new KieSessionInsert(operationId++, fact));
     }
 
     public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
         if (log.isInfoEnabled()) {
-            journal.add(new KieSessionUpdate(operationId++, entity, variableDescriptor));
+            updateJournal.add(new KieSessionUpdate(operationId++, entity, variableDescriptor));
         }
     }
 
     public void delete(Object entity) {
-        journal.add(new KieSessionDelete(operationId++, entity));
+        updateJournal.add(new KieSessionDelete(operationId++, entity));
     }
 
     public void fireAllRules() {
-        journal.add(new KieSessionFireAllRules(operationId++));
+        updateJournal.add(new KieSessionFireAllRules(operationId++));
     }
 
     public void dispose() {
         facts.clear();
         imports.clear();
         initialInsertJournal.clear();
-        journal.clear();
+        updateJournal.clear();
         operationId = 0;
     }
 
