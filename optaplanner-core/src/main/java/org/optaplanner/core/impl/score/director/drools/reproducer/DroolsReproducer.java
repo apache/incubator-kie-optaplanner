@@ -202,9 +202,19 @@ public final class DroolsReproducer {
         }
     }
 
-    private boolean areEqual(RuntimeException originalException, RuntimeException testException) {
-        return originalException.getClass().equals(testException.getClass()) &&
-                Objects.equals(originalException.getMessage(), testException.getMessage());
+    private static boolean areEqual(RuntimeException originalException, RuntimeException testException) {
+        if (!originalException.getClass().equals(testException.getClass())) {
+            return false;
+        }
+        if (!Objects.equals(originalException.getMessage(), testException.getMessage())) {
+            return false;
+        }
+        if (testException.getStackTrace().length == 0) {
+            throw new IllegalStateException("Caught exception with empty stack trace => can't compare to the original." +
+                    " Use '-XX:-OmitStackTraceInFastThrow' to turn off this optimization.", testException);
+        }
+        // TODO check all org.drools elements?
+        return originalException.getStackTrace()[0].equals(testException.getStackTrace()[0]);
     }
 
     //------------------------------------------------------------------------------------------------------------------
