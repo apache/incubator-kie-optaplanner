@@ -19,17 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
+class RemoveRandomItemMutator<T> {
 
-class RemoveRandomItemMutator {
-
-    private final List<KieSessionOperation> list;
+    private final List<T> list;
     private final Random random = new Random(0);
     private final List<Integer> indexBlacklist = new ArrayList<>();
     private int removedIndex = -1;
-    private KieSessionOperation removedItem;
+    private T removedItem;
 
-    public RemoveRandomItemMutator(List<KieSessionOperation> list) {
+    public RemoveRandomItemMutator(List<T> list) {
         this.list = new ArrayList<>(list);
     }
 
@@ -37,7 +35,7 @@ class RemoveRandomItemMutator {
         return !list.isEmpty() && list.size() != indexBlacklist.size();
     }
 
-    public List<KieSessionOperation> mutate() {
+    public List<T> mutate() {
         if (removedIndex >= 0) {
             // last mutation was succesful => clear the blacklist
             indexBlacklist.clear();
@@ -61,11 +59,11 @@ class RemoveRandomItemMutator {
         removedIndex = -1;
     }
 
-    public List<KieSessionOperation> getResult() {
+    public List<T> getResult() {
         return list;
     }
 
-    public KieSessionOperation getRemovedItem() {
+    public T getRemovedItem() {
         return removedItem;
     }
 

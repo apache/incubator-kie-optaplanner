@@ -27,19 +27,19 @@ import static org.mockito.Mockito.mock;
 public class RemoveRandomItemMutatorTest {
 
     private static final int LIST_SIZE = 10;
-    private ArrayList<KieSessionOperation> list = new ArrayList<>();
+    private ArrayList<Integer> list = new ArrayList<>();
 
     @Before
     public void setUp() {
         for (int i = 0; i < LIST_SIZE; i++) {
-            list.add(mock(KieSessionOperation.class));
+            list.add(i);
         }
     }
 
     @Test
     public void testRemoveAll() {
-        RemoveRandomItemMutator m = new RemoveRandomItemMutator(list);
-        ArrayList<KieSessionOperation> removed = new ArrayList<>();
+        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<>(list);
+        ArrayList<Integer> removed = new ArrayList<>();
         for (int i = 0; i < LIST_SIZE; i++) {
             assertTrue(m.canMutate());
             m.mutate();
@@ -55,9 +55,9 @@ public class RemoveRandomItemMutatorTest {
 
     @Test
     public void testRevert() {
-        RemoveRandomItemMutator m = new RemoveRandomItemMutator(list);
+        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<>(list);
         m.mutate();
-        KieSessionOperation removedItem = m.getRemovedItem();
+        int removedItem = m.getRemovedItem();
         m.revert();
         assertTrue(m.getResult().contains(removedItem));
         assertEquals(LIST_SIZE, m.getResult().size());
@@ -65,8 +65,8 @@ public class RemoveRandomItemMutatorTest {
 
     @Test
     public void testImpossibleMutation() {
-        RemoveRandomItemMutator m = new RemoveRandomItemMutator(list);
-        ArrayList<KieSessionOperation> removed = new ArrayList<>();
+        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<>(list);
+        ArrayList<Integer> removed = new ArrayList<>();
         for (int i = 0; i < LIST_SIZE; i++) {
             assertTrue(m.canMutate());
             m.mutate();
