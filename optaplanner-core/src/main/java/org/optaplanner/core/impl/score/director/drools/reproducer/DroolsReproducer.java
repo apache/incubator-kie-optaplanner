@@ -40,11 +40,11 @@ public final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
-    private List<Fact> facts = new ArrayList<>();
+    private List<Fact> facts = new ArrayList<Fact>();
     private HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
-    private final SortedSet<String> imports = new TreeSet<>();
-    private List<KieSessionInsert> initialInsertJournal = new ArrayList<>();
-    private List<KieSessionOperation> updateJournal = new ArrayList<>();
+    private final SortedSet<String> imports = new TreeSet<String>();
+    private List<KieSessionInsert> initialInsertJournal = new ArrayList<KieSessionInsert>();
+    private List<KieSessionOperation> updateJournal = new ArrayList<KieSessionOperation>();
     private String domainPackage;
     private int operationId = 0;
 
@@ -119,7 +119,7 @@ public final class DroolsReproducer {
     private List<KieSessionOperation> pruneUpdateJournalOperations(RuntimeException ex,
                                                                    KieSession kieSession,
                                                                    List<KieSessionOperation> updateJournal) {
-        RemoveRandomItemMutator<KieSessionOperation> m = new RemoveRandomItemMutator<>(updateJournal);
+        RemoveRandomItemMutator<KieSessionOperation> m = new RemoveRandomItemMutator<KieSessionOperation>(updateJournal);
         while (m.canMutate()) {
             log.debug("// Current journal size: {}", m.getResult().size());
             boolean reproduced = reproduce(ex, kieSession, initialInsertJournal, m.mutate());
@@ -135,7 +135,7 @@ public final class DroolsReproducer {
     private List<KieSessionInsert> pruneInsertJournalOperations(RuntimeException ex,
                                                                 KieSession kieSession,
                                                                 List<KieSessionInsert> insertJournal) {
-        RemoveRandomItemMutator<KieSessionInsert> m = new RemoveRandomItemMutator<>(insertJournal);
+        RemoveRandomItemMutator<KieSessionInsert> m = new RemoveRandomItemMutator<KieSessionInsert>(insertJournal);
         while (m.canMutate()) {
             log.debug("// Current journal size: {}", m.getResult().size());
             boolean reproduced = reproduce(ex, kieSession, m.mutate(), updateJournal);
@@ -149,7 +149,7 @@ public final class DroolsReproducer {
     }
 
     private ArrayList<Fact> pruneFacts() {
-        ArrayList<Fact> minimal = new ArrayList<>();
+        ArrayList<Fact> minimal = new ArrayList<Fact>();
         for (KieSessionInsert insert : initialInsertJournal) {
             addWithDependencies(insert.getFact(), minimal);
         }

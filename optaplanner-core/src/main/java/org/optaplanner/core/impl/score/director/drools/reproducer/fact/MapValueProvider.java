@@ -33,7 +33,7 @@ class MapValueProvider extends AbstractValueProvider {
     }
 
     public List<Fact> getFacts() {
-        ArrayList<Fact> facts = new ArrayList<>();
+        ArrayList<Fact> facts = new ArrayList<Fact>();
         for (Map.Entry<? extends Object, ? extends Object> entry : ((java.util.Map<?, ?>) value).entrySet()) {
             addFact(facts, entry.getKey());
             addFact(facts, entry.getValue());

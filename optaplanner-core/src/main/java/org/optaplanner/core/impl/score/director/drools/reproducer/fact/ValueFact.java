@@ -16,81 +16,65 @@
 package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ValueFact implements Fact {
 
-    private static final Logger log = LoggerFactory.getLogger(Fact.class);
     private final Object instance;
     private final String variableName;
-    private final HashMap<String, Method> getters = new HashMap<>();
-    private final HashMap<String, Method> setters = new HashMap<>();
-    private final HashMap<Method, ValueProvider> attributes = new HashMap<>();
-    private final List<Fact> dependencies = new ArrayList<>();
+    private final HashMap<BeanPropertyMemberAccessor, ValueProvider> attributes = new HashMap<BeanPropertyMemberAccessor, ValueProvider>();
+    private final List<Fact> dependencies = new ArrayList<Fact>();
 
     public ValueFact(int id, Object instance) {
         this.instance = instance;
         this.variableName = instance.getClass().getSimpleName().substring(0, 1).toLowerCase() +
                 instance.getClass().getSimpleName().substring(1) + "_" + id;
-        for (Method method : instance.getClass().getMethods()) {
-            String methodName = method.getName();
-            String fieldName = methodName.replaceFirst("^(set|get|is)", "").toLowerCase();
-            if (method.getReturnType().equals(Void.TYPE)) {
-                setters.put(fieldName, method);
-            } else {
-                getters.put(fieldName, method);
-            }
-        }
     }
 
     @Override
     public void setUp(Map<Object, Fact> existingInstances) {
         for (Field field : instance.getClass().getDeclaredFields()) {
-            String fieldKey = field.getName().toLowerCase();
-            if (setters.containsKey(fieldKey) && getters.containsKey(fieldKey)) {
-                Object value;
-                try {
-                    value = getters.get(fieldKey).invoke(instance);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    log.error("Can't get value of {}.{}()", variableName, getters.get(fieldKey).getName());
-                    throw new RuntimeException(ex);
-                }
-                Method setter = setters.get(fieldKey);
+            String fieldName = field.getName();
+            Method setter = ReflectionHelper.getSetterMethod(instance.getClass(), field.getType(), fieldName);
+            Method getter = ReflectionHelper.getGetterMethod(instance.getClass(), fieldName);
+            if (setter != null && getter != null) {
+                BeanPropertyMemberAccessor accessor = new BeanPropertyMemberAccessor(getter);
+                Object value = accessor.executeGetter(instance);
                 if (value != null) {
                     if (field.getType().equals(String.class)) {
-                        attributes.put(setter, new StringValueProvider(value));
+                        attributes.put(accessor, new StringValueProvider(value));
                     } else if (field.getType().isPrimitive()) {
-                        attributes.put(setter, new PrimitiveValueProvider(value));
+                        attributes.put(accessor, new PrimitiveValueProvider(value));
                     } else if (field.getType().isEnum()) {
-                        attributes.put(setter, new EnumValueProvider(value));
+                        attributes.put(accessor, new EnumValueProvider(value));
                     } else if (existingInstances.containsKey(value)) {
-                        attributes.put(setter, new ExistingInstanceValueProvider(value, existingInstances.get(value).toString()));
+                        attributes.put(accessor, new ExistingInstanceValueProvider(value, existingInstances.get(value).toString()));
                         dependencies.add(existingInstances.get(value));
                     } else if (field.getType().equals(java.util.List.class)) {
                         String id = variableName + "_" + field.getName();
                         ListValueProvider listValueProvider = new ListValueProvider(value, id, existingInstances);
-                        attributes.put(setter, listValueProvider);
+                        attributes.put(accessor, listValueProvider);
                         dependencies.addAll(listValueProvider.getFacts());
                     } else if (field.getType().equals(java.util.Map.class)) {
                         String id = variableName + "_" + field.getName();
                         MapValueProvider mapValueProvider = new MapValueProvider(value, id, existingInstances);
-                        attributes.put(setter, mapValueProvider);
+                        attributes.put(accessor, mapValueProvider);
                         dependencies.addAll(mapValueProvider.getFacts());
                     } else if (field.getType().getName().matches("org\\.joda\\.time\\.LocalDate(Time)?")) {
-                        attributes.put(setter, new JodaTimeValueProvider(value));
+                        attributes.put(accessor, new JodaTimeValueProvider(value));
                     } else {
                         throw new IllegalStateException("Unsupported type: " + field.getType());
                     }
                 } else {
-                    attributes.put(setter, new NullValueProvider());
+                    attributes.put(accessor, new NullValueProvider());
                 }
             }
         }
@@ -103,13 +87,10 @@ public class ValueFact implements Fact {
 
     @Override
     public void reset() {
-        for (Map.Entry<Method, ValueProvider> entry : attributes.entrySet()) {
-            Object originalValue = entry.getValue().get();
-            try {
-                entry.getKey().invoke(instance, originalValue);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
+        for (Map.Entry<BeanPropertyMemberAccessor, ValueProvider> entry : attributes.entrySet()) {
+            BeanPropertyMemberAccessor accessor = entry.getKey();
+            ValueProvider value = entry.getValue();
+            accessor.executeSetter(instance, value.get());
         }
     }
 
@@ -121,8 +102,9 @@ public class ValueFact implements Fact {
     @Override
     public void printSetup(Logger log) {
         log.info("        //{}", instance);
-        for (Map.Entry<Method, ValueProvider> entry : attributes.entrySet()) {
-            Method setter = entry.getKey();
+        for (Map.Entry<BeanPropertyMemberAccessor, ValueProvider> entry : attributes.entrySet()) {
+            BeanPropertyMemberAccessor accessor = entry.getKey();
+            Method setter = ReflectionHelper.getSetterMethod(instance.getClass(), accessor.getType(), accessor.getName());
             ValueProvider value = entry.getValue();
             value.printSetup(log);
             log.info("        {}.{}({});", variableName, setter.getName(), value.toString());

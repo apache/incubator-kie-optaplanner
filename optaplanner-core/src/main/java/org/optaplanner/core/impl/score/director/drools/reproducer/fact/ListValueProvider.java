@@ -33,7 +33,7 @@ class ListValueProvider extends AbstractValueProvider {
     }
 
     public List<Fact> getFacts() {
-        ArrayList<Fact> facts = new ArrayList<>();
+        ArrayList<Fact> facts = new ArrayList<Fact>();
         for (Object o : (List<?>) value) {
             Fact fact = existingInstances.get(o);
             if (fact != null) {

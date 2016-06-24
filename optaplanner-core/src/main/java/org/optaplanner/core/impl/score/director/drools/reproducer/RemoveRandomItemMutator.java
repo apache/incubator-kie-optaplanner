@@ -23,12 +23,12 @@ class RemoveRandomItemMutator<T> {
 
     private final List<T> list;
     private final Random random = new Random(0);
-    private final List<Integer> indexBlacklist = new ArrayList<>();
+    private final List<Integer> indexBlacklist = new ArrayList<Integer>();
     private int removedIndex = -1;
     private T removedItem;
 
     public RemoveRandomItemMutator(List<T> list) {
-        this.list = new ArrayList<>(list);
+        this.list = new ArrayList<T>(list);
     }
 
     public boolean canMutate() {

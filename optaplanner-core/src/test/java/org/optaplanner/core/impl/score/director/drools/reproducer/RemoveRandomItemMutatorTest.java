@@ -19,15 +19,13 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 public class RemoveRandomItemMutatorTest {
 
     private static final int LIST_SIZE = 10;
-    private ArrayList<Integer> list = new ArrayList<>();
+    private ArrayList<Integer> list = new ArrayList<Integer>();
 
     @Before
     public void setUp() {
@@ -38,8 +36,8 @@ public class RemoveRandomItemMutatorTest {
 
     @Test
     public void testRemoveAll() {
-        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<>(list);
-        ArrayList<Integer> removed = new ArrayList<>();
+        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
+        ArrayList<Integer> removed = new ArrayList<Integer>();
         for (int i = 0; i < LIST_SIZE; i++) {
             assertTrue(m.canMutate());
             m.mutate();
@@ -55,7 +53,7 @@ public class RemoveRandomItemMutatorTest {
 
     @Test
     public void testRevert() {
-        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<>(list);
+        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
         m.mutate();
         int removedItem = m.getRemovedItem();
         m.revert();
@@ -65,8 +63,8 @@ public class RemoveRandomItemMutatorTest {
 
     @Test
     public void testImpossibleMutation() {
-        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<>(list);
-        ArrayList<Integer> removed = new ArrayList<>();
+        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
+        ArrayList<Integer> removed = new ArrayList<Integer>();
         for (int i = 0; i < LIST_SIZE; i++) {
             assertTrue(m.canMutate());
             m.mutate();
