@@ -16,14 +16,14 @@
 package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
 
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.impl.score.director.drools.reproducer.DroolsReproducer;
+import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
 
 public class KieSessionDelete implements KieSessionOperation {
 
     private final int id;
-    private final Object entity;
+    private final Fact entity;
 
-    public KieSessionDelete(int id, Object entity) {
+    public KieSessionDelete(int id, Fact entity) {
         this.id = id;
         this.entity = entity;
     }
@@ -35,13 +35,12 @@ public class KieSessionDelete implements KieSessionOperation {
 
     @Override
     public void invoke(KieSession kieSession) {
-        kieSession.delete(kieSession.getFactHandle(entity));
+        kieSession.delete(kieSession.getFactHandle(entity.getInstance()));
     }
 
     @Override
     public String toString() {
-        String entityName = DroolsReproducer.getVariableName(entity);
-        return "        kieSession.delete(kieSession.getFactHandle(" + entityName + "), " + entityName + ");";
+        return "        kieSession.delete(kieSession.getFactHandle(" + entity + "), " + entity + ");";
     }
 
 }

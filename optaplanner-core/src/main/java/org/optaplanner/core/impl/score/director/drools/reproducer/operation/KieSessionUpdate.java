@@ -15,34 +15,36 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.drools.reproducer.DroolsReproducer;
+import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
 
 public class KieSessionUpdate implements KieSessionOperation {
 
     private final int id;
-    private final Object entity;
-    private final Method variableSetter;
-    private final Object value;
+    private final Fact entity;
+    private final BeanPropertyMemberAccessor accessor;
+    private final String setterName;
+    private final Fact value;
 
-    public KieSessionUpdate(int id, Object entity, VariableDescriptor<?> variableDescriptor) {
+    public KieSessionUpdate(int id, Fact entity, VariableDescriptor<?> variableDescriptor, Fact value) {
         this.id = id;
         this.entity = entity;
-        this.value = variableDescriptor.getValue(entity);
-        String variableName = variableDescriptor.getVariableName();
-        String setterName = "set" + String.valueOf(variableName.charAt(0)).toUpperCase() + variableName.substring(1);
-        try {
-            this.variableSetter = entity.getClass().getMethod(setterName, variableDescriptor.getVariablePropertyType());
-        } catch (NoSuchMethodException | SecurityException ex) {
-            throw new RuntimeException(ex);
-        }
+        this.value = value;
+        Method getter = ReflectionHelper.getGetterMethod(
+                variableDescriptor.getEntityDescriptor().getEntityClass(),
+                variableDescriptor.getVariableName());
+        setterName = ReflectionHelper.getSetterMethod(
+                getter.getDeclaringClass(), getter.getReturnType(), variableDescriptor.getVariableName()).getName();
+        accessor = new BeanPropertyMemberAccessor(getter);
     }
 
-    public Object getValue() {
+    public Fact getValue() {
         return value;
     }
 
@@ -53,19 +55,18 @@ public class KieSessionUpdate implements KieSessionOperation {
 
     @Override
     public void invoke(KieSession kieSession) {
-        try {
-            variableSetter.invoke(entity, value);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            throw new RuntimeException(ex);
+        accessor.executeSetter(entity.getInstance(), value.getInstance());
+        FactHandle fh = kieSession.getFactHandle(entity.getInstance());
+        if (fh == null) {
+            throw new IllegalStateException("No fact handle for " + entity);
         }
-        kieSession.update(kieSession.getFactHandle(entity), entity);
+        kieSession.update(fh, entity.getInstance());
     }
 
     @Override
     public String toString() {
-        String entityName = DroolsReproducer.getVariableName(entity);
-        return "        " + entityName + "." + variableSetter.getName() + "(" + DroolsReproducer.getVariableName(value) +
-                ");\n" + "        kieSession.update(kieSession.getFactHandle(" + entityName + "), " + entityName + ");";
+        return "        " + entity + "." + setterName + "(" + value + ");\n" +
+                "        kieSession.update(kieSession.getFactHandle(" + entity + "), " + entity + ");";
     }
 
 }

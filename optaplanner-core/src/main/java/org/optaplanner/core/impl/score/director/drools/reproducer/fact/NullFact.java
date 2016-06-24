@@ -13,38 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
+package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
-import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-public class KieSessionInsert implements KieSessionOperation {
+import org.slf4j.Logger;
 
-    private final int id;
-    private final Fact fact;
+public class NullFact implements Fact {
 
-    public KieSessionInsert(int id, Fact fact) {
-        this.id = id;
-        this.fact = fact;
-    }
-
-    public Fact getFact() {
-        return fact;
+    @Override
+    public void setUp(Map<Object, Fact> existingInstances) {
     }
 
     @Override
-    public int getId() {
-        return id;
+    public List<Fact> getDependencies() {
+        return Collections.emptyList();
     }
 
     @Override
-    public void invoke(KieSession kieSession) {
-        kieSession.insert(fact.getInstance());
+    public void reset() {
+    }
+
+    @Override
+    public void printInitialization(Logger log) {
+    }
+
+    @Override
+    public void printSetup(Logger log) {
+    }
+
+    @Override
+    public Object getInstance() {
+        return null;
     }
 
     @Override
     public String toString() {
-        return "        kieSession.insert(" + fact + ");";
+        return "null";
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +26,8 @@ import java.util.TreeSet;
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
+import org.optaplanner.core.impl.score.director.drools.reproducer.fact.NullFact;
+import org.optaplanner.core.impl.score.director.drools.reproducer.fact.ValueFact;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionDelete;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionFireAllRules;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionInsert;
@@ -47,25 +48,15 @@ public final class DroolsReproducer {
     private String domainPackage;
     private int operationId = 0;
 
-    public static String getVariableName(Object fact) {
-        try {
-            return fact == null ? "null"
-                    : ("fact" + fact.getClass().getSimpleName() + "_" +
-                    fact.getClass().getMethod("getId").invoke(fact)).replaceAll("-", "_");
-        } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
-            log.error("Cannot create variable name", ex);
-        }
-        return null;
-    }
-
     public void setDomainPackage(String domainPackage) {
         this.domainPackage = domainPackage;
     }
 
     public void addFacts(Collection<Object> workingFacts) {
         if (log.isInfoEnabled()) {
+            int i = 0;
             for (Object fact : workingFacts) {
-                Fact f = new Fact(fact);
+                Fact f = new ValueFact(i++, fact);
                 facts.add(f);
                 existingInstances.put(fact, f);
                 addImport(fact);
@@ -160,11 +151,11 @@ public final class DroolsReproducer {
     private ArrayList<Fact> pruneFacts() {
         ArrayList<Fact> minimal = new ArrayList<>();
         for (KieSessionInsert insert : initialInsertJournal) {
-            addWithDependencies(existingInstances.get(insert.getFact()), minimal);
+            addWithDependencies(insert.getFact(), minimal);
         }
         for (KieSessionOperation op : updateJournal) {
             if (op instanceof KieSessionUpdate) {
-                Fact f = existingInstances.get(((KieSessionUpdate) op).getValue());
+                Fact f = ((KieSessionUpdate) op).getValue();
                 if (f != null) {
                     addWithDependencies(f, minimal);
                 }
@@ -335,21 +326,24 @@ public final class DroolsReproducer {
     //------------------------------------------------------------------------------------------------------------------
     //
     public void insertInitial(Object fact) {
-        initialInsertJournal.add(new KieSessionInsert(operationId++, fact));
+        initialInsertJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
     }
 
     public void insert(Object fact) {
-        updateJournal.add(new KieSessionInsert(operationId++, fact));
+        updateJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
     }
 
     public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
         if (log.isInfoEnabled()) {
-            updateJournal.add(new KieSessionUpdate(operationId++, entity, variableDescriptor));
+            Fact entityFact = existingInstances.get(entity);
+            Object value = variableDescriptor.getValue(entity);
+            Fact valueFact = value == null ? new NullFact() : existingInstances.get(value);
+            updateJournal.add(new KieSessionUpdate(operationId++, entityFact, variableDescriptor, valueFact));
         }
     }
 
     public void delete(Object entity) {
-        updateJournal.add(new KieSessionDelete(operationId++, entity));
+        updateJournal.add(new KieSessionDelete(operationId++, existingInstances.get(entity)));
     }
 
     public void fireAllRules() {
