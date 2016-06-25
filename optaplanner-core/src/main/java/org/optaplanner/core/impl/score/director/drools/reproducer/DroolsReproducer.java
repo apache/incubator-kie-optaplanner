@@ -119,6 +119,7 @@ public final class DroolsReproducer {
     private List<KieSessionOperation> pruneUpdateJournalOperations(RuntimeException ex,
                                                                    KieSession kieSession,
                                                                    List<KieSessionOperation> updateJournal) {
+        // TODO generalize to RemoveRandomBlockMutator, start with 10% blocks
         RemoveRandomItemMutator<KieSessionOperation> m = new RemoveRandomItemMutator<KieSessionOperation>(updateJournal);
         while (m.canMutate()) {
             log.debug("// Current journal size: {}", m.getResult().size());
@@ -325,6 +326,7 @@ public final class DroolsReproducer {
     // KIE session operations
     //------------------------------------------------------------------------------------------------------------------
     //
+    //TODO add setGlobal()
     public void insertInitial(Object fact) {
         initialInsertJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
     }
