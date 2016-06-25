@@ -17,6 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -72,16 +73,31 @@ public class ValueFact implements Fact {
                         MapValueProvider mapValueProvider = new MapValueProvider(value, id, typeArgs, existingInstances);
                         attributes.put(accessor, mapValueProvider);
                         dependencies.addAll(mapValueProvider.getFacts());
-                    } else if (field.getType().getName().matches("org\\.joda\\.time\\.LocalDate(Time)?")) {
-                        attributes.put(accessor, new JodaTimeValueProvider(value));
                     } else {
-                        throw new IllegalStateException("Unsupported type: " + field.getType());
+                        Method parseMethod = getParseMethod(field);
+                        if (parseMethod != null) {
+                            attributes.put(accessor, new ParsedValueProvider(parseMethod, value));
+                        } else {
+                            throw new IllegalStateException("Unsupported type: " + field.getType());
+                        }
                     }
+                    // TODO add imports for list/map/parseable
                 } else {
                     attributes.put(accessor, new NullValueProvider());
                 }
             }
         }
+    }
+
+    private static Method getParseMethod(Field f) {
+        for (Method m : f.getType().getMethods()) {
+            if (Modifier.isStatic(m.getModifiers()) && f.getType().equals(m.getReturnType()) &&
+                    m.getParameters().length == 1 && m.getParameters()[0].getType().equals(String.class) &&
+                    (m.getName().startsWith("parse") || m.getName().startsWith("valueOf"))) {
+                return m;
+            }
+        }
+        return null;
     }
 
     @Override

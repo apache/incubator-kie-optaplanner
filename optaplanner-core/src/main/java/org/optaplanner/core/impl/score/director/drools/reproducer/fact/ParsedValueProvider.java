@@ -15,15 +15,20 @@
  */
 package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
-public class JodaTimeValueProvider extends AbstractValueProvider {
+import java.lang.reflect.Method;
 
-    public JodaTimeValueProvider(Object value) {
+public class ParsedValueProvider extends AbstractValueProvider {
+
+    private final Method parseMethod;
+
+    public ParsedValueProvider(Method parseMethod, Object value) {
         super(value);
+        this.parseMethod = parseMethod;
     }
 
     @Override
     public String toString() {
-        return value.getClass().getCanonicalName() + ".parse(\"" + value.toString() + "\")";
+        return value.getClass().getCanonicalName() + "." + parseMethod.getName() + "(\"" + value.toString() + "\")";
     }
 
 }
