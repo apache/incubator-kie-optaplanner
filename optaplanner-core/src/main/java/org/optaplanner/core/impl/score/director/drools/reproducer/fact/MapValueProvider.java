@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 
 class MapValueProvider extends AbstractValueProvider {
 
-    final String identifier;
-    final Type[] typeArguments;
-    final Map<Object, Fact> existingInstances;
+    private final String identifier;
+    private final Type[] typeArguments;
+    private final Map<Object, Fact> existingInstances;
 
     public MapValueProvider(Object value, String identifier,
                             Type[] typeArguments,

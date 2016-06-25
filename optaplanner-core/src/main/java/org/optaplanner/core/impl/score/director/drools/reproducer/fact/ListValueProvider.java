@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 
 class ListValueProvider extends AbstractValueProvider {
 
-    final String identifier;
-    final Type typeArgument;
-    final Map<Object, Fact> existingInstances;
+    private final String identifier;
+    private final Type typeArgument;
+    private final Map<Object, Fact> existingInstances;
 
     public ListValueProvider(Object value, String identifier, Type genericType, Map<Object, Fact> existingInstances) {
         super(value);

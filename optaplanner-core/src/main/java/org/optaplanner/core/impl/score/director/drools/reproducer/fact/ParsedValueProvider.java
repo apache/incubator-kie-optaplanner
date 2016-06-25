@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
 import java.lang.reflect.Method;
 
-public class ParsedValueProvider extends AbstractValueProvider {
+class ParsedValueProvider extends AbstractValueProvider {
 
     private final Method parseMethod;
 

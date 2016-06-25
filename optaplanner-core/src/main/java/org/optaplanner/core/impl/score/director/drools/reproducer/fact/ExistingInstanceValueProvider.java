@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
 class ExistingInstanceValueProvider extends AbstractValueProvider {
 
-    final String identifier;
+    private final String identifier;
 
     public ExistingInstanceValueProvider(Object value, String identifier) {
         super(value);
