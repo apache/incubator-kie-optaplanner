@@ -38,7 +38,8 @@ import org.slf4j.LoggerFactory;
 
 public final class DroolsReproducer {
 
-    private static final Logger log = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
+    private static final Logger log = LoggerFactory.getLogger(DroolsReproducer.class);
+    private static final Logger reproducerLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
     private List<Fact> facts = new ArrayList<Fact>();
     private HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
@@ -53,7 +54,7 @@ public final class DroolsReproducer {
     }
 
     public void addFacts(Collection<Object> workingFacts) {
-        if (log.isInfoEnabled()) {
+        if (reproducerLog.isInfoEnabled()) {
             int i = 0;
             for (Object fact : workingFacts) {
                 Fact f = new ValueFact(i++, fact);
@@ -87,12 +88,17 @@ public final class DroolsReproducer {
                     "\nExpected [" + originalException.getClass() + ": " + originalException.getMessage() + "]" +
                     "\nCaused [" + testException.getClass() + ": " + testException.getMessage() + "]", testException);
         }
+        log.info("{} updates. Dropping oldest updates...", updateJournal.size());
         updateJournal = cutJournalHead(originalException, oldKieSession, updateJournal);
-        log.debug("\n// Now trying to remove random operations.\n");
+        log.info("{} updates remaining. Removing random operations...", updateJournal.size());
         updateJournal = pruneUpdateJournalOperations(originalException, oldKieSession, updateJournal);
-        log.debug("\n// Pruning facts.\n");
+        log.info("{} updates remaining.", updateJournal.size());
+        log.info("{} inserts. Pruning inserts...", initialInsertJournal.size());
         initialInsertJournal = pruneInsertJournalOperations(originalException, oldKieSession, initialInsertJournal);
+        log.info("{} inserts remaining.", initialInsertJournal.size());
+        log.info("{} facts. Pruning facts...", facts.size());
         facts.retainAll(pruneFacts());
+        log.info("{} facts remaining.", facts.size());
         // TODO prune setup code
         printTest();
         // TODO check that original exception is still reproduced after fact pruning
@@ -108,7 +114,7 @@ public final class DroolsReproducer {
             boolean reproduced = reproduce(ex, kieSession, initialInsertJournal, m.mutate());
             double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            log.debug("// {} with journal size: {} (took {}s)", outcome, m.getResult().size(), tookSeconds);
+            log.debug("{} with journal size: {} (took {}s)", outcome, m.getResult().size(), tookSeconds);
             if (!reproduced) {
                 m.revert();
             }
@@ -122,10 +128,10 @@ public final class DroolsReproducer {
         // TODO generalize to RemoveRandomBlockMutator, start with 10% blocks
         RemoveRandomItemMutator<KieSessionOperation> m = new RemoveRandomItemMutator<KieSessionOperation>(updateJournal);
         while (m.canMutate()) {
-            log.debug("// Current journal size: {}", m.getResult().size());
+            log.debug("Current journal size: {}", m.getResult().size());
             boolean reproduced = reproduce(ex, kieSession, initialInsertJournal, m.mutate());
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            log.debug("// {} without operation #{}", outcome, m.getRemovedItem().getId());
+            log.debug("{} without operation #{}", outcome, m.getRemovedItem().getId());
             if (!reproduced) {
                 m.revert();
             }
@@ -138,10 +144,10 @@ public final class DroolsReproducer {
                                                                 List<KieSessionInsert> insertJournal) {
         RemoveRandomItemMutator<KieSessionInsert> m = new RemoveRandomItemMutator<KieSessionInsert>(insertJournal);
         while (m.canMutate()) {
-            log.debug("// Current journal size: {}", m.getResult().size());
+            log.debug("Current journal size: {}", m.getResult().size());
             boolean reproduced = reproduce(ex, kieSession, m.mutate(), updateJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            log.debug("// {} without operation #{}", outcome, m.getRemovedItem().getId());
+            log.debug("{} without operation #{}", outcome, m.getRemovedItem().getId());
             if (!reproduced) {
                 m.revert();
             }
@@ -185,7 +191,7 @@ public final class DroolsReproducer {
         } else if (areEqual(originalException, ex)) {
             return true;
         } else {
-            log.debug("// Unexpected exception: {}: {}", ex.getClass(), ex.getMessage());
+            log.info("Unexpected exception: {}: {}", ex.getClass(), ex.getMessage());
             return false;
         }
     }
@@ -245,34 +251,34 @@ public final class DroolsReproducer {
         printInit();
         printSetup();
 
-        log.info("    private void chunk1() {");
+        reproducerLog.info("    private void chunk1() {");
 
         int opCounter = 0;
         for (KieSessionOperation op : updateJournal) {
             opCounter++;
             if (opCounter % MAX_OPERATIONS_PER_METHOD == 0) {
                 // There's 64k limit for Java method size so we need to split into multiple methods
-                log.info("    }\n");
-                log.info("    private void chunk{}() {", opCounter / MAX_OPERATIONS_PER_METHOD + 1);
+                reproducerLog.info("    }\n");
+                reproducerLog.info("    private void chunk{}() {", opCounter / MAX_OPERATIONS_PER_METHOD + 1);
             }
-            log.debug("        //operation #{}", op.getId());
-            log.info("{}", op);
+            reproducerLog.debug("        //operation #{}", op.getId());
+            reproducerLog.info("{}", op);
         }
 
-        log.info(
+        reproducerLog.info(
                 "    }\n");
-        log.info(
+        reproducerLog.info(
                 "    @Test\n" +
                 "    public void test() {");
         for (int i = 1; i <= opCounter / MAX_OPERATIONS_PER_METHOD + 1; i++) {
-            log.info("        chunk{}();", i);
+            reproducerLog.info("        chunk{}();", i);
         }
-        log.info(
+        reproducerLog.info(
                 "    }\n}");
     }
 
     private void printInit() {
-        log.info(
+        reproducerLog.info(
                 "package {};\n", domainPackage);
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
@@ -283,21 +289,21 @@ public final class DroolsReproducer {
         imports.add("org.kie.api.runtime.KieContainer");
         imports.add("org.kie.api.runtime.KieSession");
         for (String cls : imports) {
-            log.info("import {};", cls);
+            reproducerLog.info("import {};", cls);
         }
-        log.info(
+        reproducerLog.info(
                 "\n" +
                 "public class DroolsReproducerTest {\n" +
                 "\n" +
                 "    KieSession kieSession;");
         for (Fact fact : facts) {
-            fact.printInitialization(log);
+            fact.printInitialization(reproducerLog);
         }
-        log.info("");
+        reproducerLog.info("");
     }
 
     private void printSetup() {
-        log.info(
+        reproducerLog.info(
                 "    @Before\n" +
                 "    public void setUp() {\n" +
                 "        KieServices kieServices = KieServices.Factory.get();\n" +
@@ -311,14 +317,14 @@ public final class DroolsReproducer {
                 "        kieSession = kieContainer.newKieSession();\n" +
                 "");
         for (Fact fact : facts) {
-            fact.printSetup(log);
+            fact.printSetup(reproducerLog);
         }
-        log.info("");
+        reproducerLog.info("");
         for (KieSessionOperation insert : initialInsertJournal) {
-            log.debug("        //operation #{}", insert.getId());
-            log.info("{}", insert);
+            reproducerLog.debug("        //operation #{}", insert.getId());
+            reproducerLog.info("{}", insert);
         }
-        log.info(
+        reproducerLog.info(
                 "    }\n");
     }
 
@@ -336,7 +342,7 @@ public final class DroolsReproducer {
     }
 
     public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
-        if (log.isInfoEnabled()) {
+        if (reproducerLog.isInfoEnabled()) {
             Fact entityFact = existingInstances.get(entity);
             Object value = variableDescriptor.getValue(entity);
             Fact valueFact = value == null ? new NullFact() : existingInstances.get(value);
