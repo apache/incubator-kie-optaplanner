@@ -77,17 +77,9 @@ public final class DroolsReproducer {
     }
 
     public void replay(KieSession oldKieSession, RuntimeException originalException) {
-        RuntimeException testException = test(oldKieSession, initialInsertJournal, updateJournal);
-        if (testException == null) {
-            throw new IllegalStateException("Cannot reproduce original exception even without journal modifications. " +
-                    "This is a bug!");
-        }
-        if (!areEqual(originalException, testException)) {
-            throw new IllegalStateException("Cannot reproduce original exception even without journal modifications. " +
-                    "This is a bug!" +
-                    "\nExpected [" + originalException.getClass() + ": " + originalException.getMessage() + "]" +
-                    "\nCaused [" + testException.getClass() + ": " + testException.getMessage() + "]", testException);
-        }
+        assertOriginalExceptionReproduced(originalException, test(oldKieSession, initialInsertJournal, updateJournal),
+                                          "Cannot reproduce original exception even without journal modifications. " +
+                                          "This is a bug!");
         log.info("{} updates. Dropping oldest updates...", updateJournal.size());
         updateJournal = cutJournalHead(originalException, oldKieSession, updateJournal);
         log.info("{} updates remaining. Removing random operations...", updateJournal.size());
@@ -101,7 +93,9 @@ public final class DroolsReproducer {
         log.info("{} facts remaining.", facts.size());
         // TODO prune setup code
         printTest();
-        // TODO check that original exception is still reproduced after fact pruning
+        assertOriginalExceptionReproduced(originalException, test(oldKieSession, initialInsertJournal, updateJournal),
+                                          "Cannot reproduce original exception after pruning the journal. " +
+                                          "This is a bug!");
         throw test(oldKieSession, initialInsertJournal, updateJournal);
     }
 
@@ -241,6 +235,19 @@ public final class DroolsReproducer {
         }
         // TODO check all org.drools elements?
         return originalException.getStackTrace()[0].equals(testException.getStackTrace()[0]);
+    }
+
+    private static void assertOriginalExceptionReproduced(RuntimeException originalException,
+                                                          RuntimeException testException,
+                                                          String message) {
+        if (testException == null) {
+            throw new IllegalStateException(message);
+        }
+        if (!areEqual(originalException, testException)) {
+            throw new IllegalStateException(message +
+                    "\nExpected [" + originalException.getClass() + ": " + originalException.getMessage() + "]" +
+                    "\nCaused [" + testException.getClass() + ": " + testException.getMessage() + "]", testException);
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------
