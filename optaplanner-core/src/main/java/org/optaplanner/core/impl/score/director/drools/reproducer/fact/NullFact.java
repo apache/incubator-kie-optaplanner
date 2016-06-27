@@ -33,6 +33,11 @@ public class NullFact implements Fact {
     }
 
     @Override
+    public List<Class<?>> getImports() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public void reset() {
     }
 

@@ -27,12 +27,18 @@ class ListValueProvider extends AbstractValueProvider {
     private final String identifier;
     private final Type typeArgument;
     private final Map<Object, Fact> existingInstances;
+    private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
     public ListValueProvider(Object value, String identifier, Type genericType, Map<Object, Fact> existingInstances) {
         super(value);
         this.identifier = identifier;
         this.typeArgument = genericType;
         this.existingInstances = existingInstances;
+        imports.add(ArrayList.class);
+        imports.add((Class<?>) genericType);
+        for (Object item : ((java.util.List<?>) value)) {
+            imports.add(item.getClass());
+        }
     }
 
     public List<Fact> getFacts() {
@@ -46,10 +52,14 @@ class ListValueProvider extends AbstractValueProvider {
         return facts;
     }
 
+    public List<Class<?>> getImports() {
+        return imports;
+    }
+
     @Override
     public void printSetup(Logger log) {
         String e = ((Class<?>) typeArgument).getSimpleName();
-        log.info("        java.util.ArrayList<{}> {} = new java.util.ArrayList<{}>();", e, identifier, e);
+        log.info("        ArrayList<{}> {} = new ArrayList<{}>();", e, identifier, e);
         for (Object item : ((java.util.List<?>) value)) {
             log.info("        //{}", item);
             log.info("        {}.add({});", identifier, existingInstances.get(item));

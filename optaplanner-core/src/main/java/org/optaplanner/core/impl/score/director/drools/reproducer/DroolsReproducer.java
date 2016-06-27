@@ -43,7 +43,6 @@ public final class DroolsReproducer {
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
     private List<Fact> facts = new ArrayList<Fact>();
     private HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
-    private final SortedSet<String> imports = new TreeSet<String>();
     private List<KieSessionInsert> initialInsertJournal = new ArrayList<KieSessionInsert>();
     private List<KieSessionOperation> updateJournal = new ArrayList<KieSessionOperation>();
     private String domainPackage;
@@ -60,19 +59,11 @@ public final class DroolsReproducer {
                 Fact f = new ValueFact(i++, fact);
                 facts.add(f);
                 existingInstances.put(fact, f);
-                addImport(fact);
             }
 
             for (Fact fact : facts) {
                 fact.setUp(existingInstances);
             }
-        }
-    }
-
-    private void addImport(Object fact) {
-        String pkg = fact.getClass().getPackage().getName();
-        if (!pkg.equals(domainPackage) && !pkg.startsWith("java")) {
-            imports.add(fact.getClass().getCanonicalName());
         }
     }
 
@@ -287,6 +278,7 @@ public final class DroolsReproducer {
     private void printInit() {
         reproducerLog.info(
                 "package {};\n", domainPackage);
+        SortedSet<String> imports = new TreeSet<String>();
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
         imports.add("org.kie.api.KieServices");
@@ -295,6 +287,14 @@ public final class DroolsReproducer {
         imports.add("org.kie.api.io.ResourceType");
         imports.add("org.kie.api.runtime.KieContainer");
         imports.add("org.kie.api.runtime.KieSession");
+        for (Fact fact : facts) {
+            for (Class<?> cls : fact.getImports()) {
+                if (!cls.getPackage().getName().equals(domainPackage)) {
+                    imports.add(cls.getCanonicalName());
+                }
+            }
+        }
+
         for (String cls : imports) {
             reproducerLog.info("import {};", cls);
         }
@@ -368,7 +368,6 @@ public final class DroolsReproducer {
     public void dispose() {
         facts.clear();
         existingInstances.clear();
-        imports.clear();
         initialInsertJournal.clear();
         updateJournal.clear();
         operationId = 0;

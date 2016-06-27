@@ -17,6 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ class MapValueProvider extends AbstractValueProvider {
     private final String identifier;
     private final Type[] typeArguments;
     private final Map<Object, Fact> existingInstances;
+    private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
     public MapValueProvider(Object value, String identifier,
                             Type[] typeArguments,
@@ -35,6 +37,13 @@ class MapValueProvider extends AbstractValueProvider {
         this.identifier = identifier;
         this.typeArguments = typeArguments;
         this.existingInstances = existingInstances;
+        imports.add(HashMap.class);
+        imports.add((Class<?>) typeArguments[0]);
+        imports.add((Class<?>) typeArguments[1]);
+        for (Map.Entry<? extends Object, ? extends Object> entry : ((java.util.Map<?, ?>) value).entrySet()) {
+            imports.add(entry.getKey().getClass());
+            imports.add(entry.getValue().getClass());
+        }
     }
 
     public List<Fact> getFacts() {
@@ -44,6 +53,10 @@ class MapValueProvider extends AbstractValueProvider {
             addFact(facts, entry.getValue());
         }
         return facts;
+    }
+
+    public List<Class<?>> getImports() {
+        return imports;
     }
 
     private void addFact(List<Fact> facts, Object o) {
@@ -57,7 +70,7 @@ class MapValueProvider extends AbstractValueProvider {
     public void printSetup(Logger log) {
         String k = ((Class<?>) typeArguments[0]).getSimpleName();
         String v = ((Class<?>) typeArguments[1]).getSimpleName();
-        log.info("        java.util.HashMap<{}, {}> {} = new java.util.HashMap<{}, {}>();", k, v, identifier, k, v);
+        log.info("        HashMap<{}, {}> {} = new HashMap<{}, {}>();", k, v, identifier, k, v);
         for (Map.Entry<? extends Object, ? extends Object> entry : ((java.util.Map<?, ?>) value).entrySet()) {
             log.info("        //{} => {}", entry.getKey(), entry.getValue());
             log.info("        {}.put({}, {});", identifier, existingInstances.get(entry.getKey()), existingInstances.get(entry.getValue()));

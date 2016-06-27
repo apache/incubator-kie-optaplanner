@@ -26,6 +26,8 @@ public interface Fact {
 
     List<Fact> getDependencies();
 
+    List<Class<?>> getImports();
+
     void reset();
 
     void printInitialization(Logger log);

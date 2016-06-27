@@ -35,6 +35,7 @@ public class ValueFact implements Fact {
     private final String variableName;
     private final HashMap<BeanPropertyMemberAccessor, ValueProvider> attributes = new HashMap<BeanPropertyMemberAccessor, ValueProvider>();
     private final List<Fact> dependencies = new ArrayList<Fact>();
+    private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
     public ValueFact(int id, Object instance) {
         this.instance = instance;
@@ -61,27 +62,30 @@ public class ValueFact implements Fact {
                     } else if (existingInstances.containsKey(value)) {
                         attributes.put(accessor, new ExistingInstanceValueProvider(value, existingInstances.get(value).toString()));
                         dependencies.add(existingInstances.get(value));
-                    } else if (field.getType().equals(java.util.List.class)) {
+                        imports.add(value.getClass());
+                    } else if (field.getType().equals(List.class)) {
                         String id = variableName + "_" + field.getName();
                         Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                         ListValueProvider listValueProvider = new ListValueProvider(value, id, typeArgs[0], existingInstances);
                         attributes.put(accessor, listValueProvider);
                         dependencies.addAll(listValueProvider.getFacts());
-                    } else if (field.getType().equals(java.util.Map.class)) {
+                        imports.addAll(listValueProvider.getImports());
+                    } else if (field.getType().equals(Map.class)) {
                         String id = variableName + "_" + field.getName();
                         Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                         MapValueProvider mapValueProvider = new MapValueProvider(value, id, typeArgs, existingInstances);
                         attributes.put(accessor, mapValueProvider);
                         dependencies.addAll(mapValueProvider.getFacts());
+                        imports.addAll(mapValueProvider.getImports());
                     } else {
                         Method parseMethod = getParseMethod(field);
                         if (parseMethod != null) {
                             attributes.put(accessor, new ParsedValueProvider(parseMethod, value));
+                            imports.add(value.getClass());
                         } else {
                             throw new IllegalStateException("Unsupported type: " + field.getType());
                         }
                     }
-                    // TODO add imports for list/map/parseable
                 } else {
                     attributes.put(accessor, new NullValueProvider());
                 }
@@ -103,6 +107,11 @@ public class ValueFact implements Fact {
     @Override
     public List<Fact> getDependencies() {
         return dependencies;
+    }
+
+    @Override
+    public List<Class<?>> getImports() {
+        return imports;
     }
 
     @Override
