@@ -28,7 +28,7 @@ class ParsedValueProvider extends AbstractValueProvider {
 
     @Override
     public String toString() {
-        return value.getClass().getCanonicalName() + "." + parseMethod.getName() + "(\"" + value.toString() + "\")";
+        return value.getClass().getSimpleName() + "." + parseMethod.getName() + "(\"" + value.toString() + "\")";
     }
 
 }
