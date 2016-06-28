@@ -361,7 +361,6 @@ public final class DroolsReproducer {
     // KIE session operations
     //------------------------------------------------------------------------------------------------------------------
     //
-    //TODO add setGlobal()
     public void insertInitial(Object fact) {
         if (enabled) {
             initialInsertJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
