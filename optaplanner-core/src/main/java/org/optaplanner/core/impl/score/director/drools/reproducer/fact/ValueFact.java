@@ -136,8 +136,10 @@ public class ValueFact implements Fact {
             Method setter = ReflectionHelper.getSetterMethod(instance.getClass(), accessor.getType(), accessor.getName());
             ValueProvider value = entry.getValue();
             value.printSetup(log);
-            // TODO skip if value is null (NullValueProvider)
-            log.info("        {}.{}({});", variableName, setter.getName(), value.toString());
+            // null original value means the field is uninitialized so there's no need to .set(null);
+            if (value.get() != null) {
+                log.info("        {}.{}({});", variableName, setter.getName(), value.toString());
+            }
         }
     }
 
