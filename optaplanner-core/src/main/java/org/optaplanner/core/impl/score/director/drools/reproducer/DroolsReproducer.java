@@ -179,7 +179,12 @@ public final class DroolsReproducer {
         } else if (areEqual(originalException, ex)) {
             return true;
         } else {
-            log.info("Unexpected exception: {}: {}", ex.getClass(), ex.getMessage());
+            if (ex.getMessage().startsWith("No fact handle for ")) {
+                // this is common when removing insert of a fact that is later updated - not interesting
+                log.debug("Can't remove insert: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
+            } else {
+                log.info("Unexpected exception", ex);
+            }
             return false;
         }
     }
