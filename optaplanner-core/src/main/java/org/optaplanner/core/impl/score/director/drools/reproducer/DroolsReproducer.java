@@ -66,9 +66,11 @@ public final class DroolsReproducer {
         log.info("Starting replay & reduce to find a minimal Drools reproducer for:", originalException);
         assertOriginalExceptionReproduced("Cannot reproduce original exception even without journal modifications. " +
                 "This is a bug!");
-        cutJournalHead();
-        pruneUpdateJournalOperations();
-        pruneInsertJournalOperations();
+        log.info("The KIE session journal has {} facts, {} inserts and {} updates.",
+                 journal.getFacts().size(), journal.getInitialInserts().size(), journal.getMoveOperations().size());
+        dropOldestUpdates();
+        pruneUpdates();
+        pruneInserts();
         pruneFacts();
         // TODO prune setup code
         printReproducer();
@@ -84,8 +86,8 @@ public final class DroolsReproducer {
         this.journal = journal;
     }
 
-    private void cutJournalHead() {
-        log.info("{} updates. Dropping oldest updates...", journal.getMoveOperations().size());
+    private void dropOldestUpdates() {
+        log.info("Dropping oldest updates...", journal.getMoveOperations().size());
         HeadCuttingMutator m = new HeadCuttingMutator(journal.getMoveOperations());
         while (m.canMutate()) {
             long start = System.currentTimeMillis();
@@ -99,10 +101,11 @@ public final class DroolsReproducer {
             }
         }
         journal = new KieSessionJournalImpl(journal.getFacts(), journal.getInitialInserts(), m.getResult());
+        log.info("{} updates remaining.", journal.getMoveOperations().size());
     }
 
-    private void pruneUpdateJournalOperations() {
-        log.info("{} updates remaining. Removing random operations...", journal.getMoveOperations().size());
+    private void pruneUpdates() {
+        log.info("Pruning updates...", journal.getMoveOperations().size());
         RemoveRandomBlockMutator<KieSessionOperation> m = new RemoveRandomBlockMutator<KieSessionOperation>(journal.getMoveOperations());
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
@@ -120,8 +123,8 @@ public final class DroolsReproducer {
         log.info("{} updates remaining.", journal.getMoveOperations().size());
     }
 
-    private void pruneInsertJournalOperations() {
-        log.info("{} inserts. Pruning inserts...", journal.getInitialInserts().size());
+    private void pruneInserts() {
+        log.info("Pruning inserts...", journal.getInitialInserts().size());
         RemoveRandomBlockMutator<KieSessionInsert> m = new RemoveRandomBlockMutator<KieSessionInsert>(journal.getInitialInserts());
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
@@ -140,7 +143,7 @@ public final class DroolsReproducer {
     }
 
     private void pruneFacts() {
-        log.info("{} facts. Pruning facts...", journal.getFacts().size());
+        log.info("Pruning facts...", journal.getFacts().size());
         ArrayList<Fact> minimal = new ArrayList<Fact>();
         for (KieSessionInsert insert : journal.getInitialInserts()) {
             addWithDependencies(insert.getFact(), minimal);
@@ -184,19 +187,19 @@ public final class DroolsReproducer {
         }
     }
 
-    private static boolean areEqual(RuntimeException originalException, RuntimeException testException) {
-        if (!originalException.getClass().equals(testException.getClass())) {
+    private static boolean areEqual(RuntimeException originalException, RuntimeException reproducedException) {
+        if (!originalException.getClass().equals(reproducedException.getClass())) {
             return false;
         }
-        if (!Objects.equals(originalException.getMessage(), testException.getMessage())) {
+        if (!Objects.equals(originalException.getMessage(), reproducedException.getMessage())) {
             return false;
         }
-        if (testException.getStackTrace().length == 0) {
+        if (reproducedException.getStackTrace().length == 0) {
             throw new IllegalStateException("Caught exception with empty stack trace => can't compare to the original." +
-                    " Use '-XX:-OmitStackTraceInFastThrow' to turn off this optimization.", testException);
+                    " Use '-XX:-OmitStackTraceInFastThrow' to turn off this optimization.", reproducedException);
         }
         // TODO check all org.drools elements?
-        return originalException.getStackTrace()[0].equals(testException.getStackTrace()[0]);
+        return originalException.getStackTrace()[0].equals(reproducedException.getStackTrace()[0]);
     }
 
     private void assertOriginalExceptionReproduced(String message) {
