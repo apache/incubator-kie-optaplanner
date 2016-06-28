@@ -40,7 +40,6 @@ public final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger(DroolsReproducer.class);
     private static final Logger reproducerLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
-    private static final int MAX_OPERATIONS_PER_METHOD = 1000;
     private boolean enabled = reproducerLog.isInfoEnabled();
     private String domainPackage;
     private List<Fact> facts = new ArrayList<Fact>();
@@ -271,27 +270,12 @@ public final class DroolsReproducer {
         printInit();
         printSetup();
 
-        reproducerLog.info("    private void chunk1() {");
-
-        int opCounter = 0;
-        for (KieSessionOperation op : updateJournal) {
-            opCounter++;
-            if (opCounter % MAX_OPERATIONS_PER_METHOD == 0) {
-                // There's 64k limit for Java method size so we need to split into multiple methods
-                reproducerLog.info("    }\n");
-                reproducerLog.info("    private void chunk{}() {", opCounter / MAX_OPERATIONS_PER_METHOD + 1);
-            }
-            reproducerLog.debug("        //operation #{}", op.getId());
-            reproducerLog.info("{}", op);
-        }
-
-        reproducerLog.info(
-                "    }\n");
         reproducerLog.info(
                 "    @Test\n" +
                 "    public void test() {");
-        for (int i = 1; i <= opCounter / MAX_OPERATIONS_PER_METHOD + 1; i++) {
-            reproducerLog.info("        chunk{}();", i);
+        for (KieSessionOperation op : updateJournal) {
+            reproducerLog.debug("        //operation #{}", op.getId());
+            reproducerLog.info("{}", op);
         }
         reproducerLog.info(
                 "    }\n}");
