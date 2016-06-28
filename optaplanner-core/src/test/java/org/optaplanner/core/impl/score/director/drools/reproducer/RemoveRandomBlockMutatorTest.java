@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class RemoveRandomItemMutatorTest {
+public class RemoveRandomBlockMutatorTest {
 
     private static final int LIST_SIZE = 500;
     private ArrayList<Integer> list = new ArrayList<Integer>();
@@ -37,7 +37,7 @@ public class RemoveRandomItemMutatorTest {
 
     @Test
     public void testRemoveAll() {
-        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
+        RemoveRandomBlockMutator<Integer> m = new RemoveRandomBlockMutator<Integer>(list);
         ArrayList<Integer> removed = new ArrayList<Integer>();
         while (m.canMutate()) {
             assertTrue(m.canMutate());
@@ -53,7 +53,7 @@ public class RemoveRandomItemMutatorTest {
 
     @Test
     public void testRevert() {
-        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
+        RemoveRandomBlockMutator<Integer> m = new RemoveRandomBlockMutator<Integer>(list);
         m.mutate();
         List<Integer> removedBlock = m.getRemovedBlock();
         m.revert();
@@ -63,7 +63,7 @@ public class RemoveRandomItemMutatorTest {
 
     @Test
     public void testImpossibleMutation() {
-        RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
+        RemoveRandomBlockMutator<Integer> m = new RemoveRandomBlockMutator<Integer>(list);
         ArrayList<Integer> removed = new ArrayList<Integer>();
         while (m.canMutate()) {
             m.mutate();
