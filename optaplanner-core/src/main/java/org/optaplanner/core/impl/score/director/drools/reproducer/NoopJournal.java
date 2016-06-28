@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionInsert;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
 
-public class NoopJournal implements KieSessionJournal {
+class NoopJournal implements KieSessionJournal {
 
     @Override
     public void addFacts(Collection<Object> workingFacts) {

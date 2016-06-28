@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieS
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
 import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionUpdate;
 
-public final class KieSessionJournalImpl implements KieSessionJournal {
+class KieSessionJournalImpl implements KieSessionJournal {
 
     private final List<Fact> facts;
     private final HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
