@@ -41,11 +41,12 @@ public final class DroolsReproducer {
     private static final Logger log = LoggerFactory.getLogger(DroolsReproducer.class);
     private static final Logger reproducerLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private static final int MAX_OPERATIONS_PER_METHOD = 1000;
+    private boolean enabled = reproducerLog.isInfoEnabled();
+    private String domainPackage;
     private List<Fact> facts = new ArrayList<Fact>();
     private HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
     private List<KieSessionInsert> initialInsertJournal = new ArrayList<KieSessionInsert>();
     private List<KieSessionOperation> updateJournal = new ArrayList<KieSessionOperation>();
-    private String domainPackage;
     private int operationId = 0;
 
     public void setDomainPackage(String domainPackage) {
@@ -53,7 +54,7 @@ public final class DroolsReproducer {
     }
 
     public void addFacts(Collection<Object> workingFacts) {
-        if (reproducerLog.isInfoEnabled()) {
+        if (enabled) {
             int i = 0;
             for (Object fact : workingFacts) {
                 Fact f = new ValueFact(i++, fact);
@@ -68,6 +69,19 @@ public final class DroolsReproducer {
     }
 
     public void replay(KieSession oldKieSession, RuntimeException originalException) {
+        if (!enabled) {
+            for (StackTraceElement element : originalException.getStackTrace()) {
+                if (element.getClassName().startsWith("org.drools")) {
+                    log.info("OptaPlanner failed due to an exception in Drools. This is probably a bug in Drools. " +
+                            "You may activate an automatic reproducer generator by setting 'org.optaplanner.drools.reproducer' " +
+                            "logger level to INFO or lower.");
+                    break;
+                }
+            }
+            throw originalException;
+        }
+
+        log.info("Starting replay & reduce to find a minimal Drools reproducer for:", originalException);
         assertOriginalExceptionReproduced(originalException, test(oldKieSession, initialInsertJournal, updateJournal),
                                           "Cannot reproduce original exception even without journal modifications. " +
                                           "This is a bug!");
@@ -349,15 +363,19 @@ public final class DroolsReproducer {
     //
     //TODO add setGlobal()
     public void insertInitial(Object fact) {
-        initialInsertJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
+        if (enabled) {
+            initialInsertJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
+        }
     }
 
     public void insert(Object fact) {
-        updateJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
+        if (enabled) {
+            updateJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
+        }
     }
 
     public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
-        if (reproducerLog.isInfoEnabled()) {
+        if (enabled) {
             Fact entityFact = existingInstances.get(entity);
             Object value = variableDescriptor.getValue(entity);
             Fact valueFact = value == null ? new NullFact() : existingInstances.get(value);
@@ -366,19 +384,25 @@ public final class DroolsReproducer {
     }
 
     public void delete(Object entity) {
-        updateJournal.add(new KieSessionDelete(operationId++, existingInstances.get(entity)));
+        if (enabled) {
+            updateJournal.add(new KieSessionDelete(operationId++, existingInstances.get(entity)));
+        }
     }
 
     public void fireAllRules() {
-        updateJournal.add(new KieSessionFireAllRules(operationId++));
+        if (enabled) {
+            updateJournal.add(new KieSessionFireAllRules(operationId++));
+        }
     }
 
     public void dispose() {
-        facts.clear();
-        existingInstances.clear();
-        initialInsertJournal.clear();
-        updateJournal.clear();
-        operationId = 0;
+        if (enabled) {
+            facts.clear();
+            existingInstances.clear();
+            initialInsertJournal.clear();
+            updateJournal.clear();
+            operationId = 0;
+        }
     }
 
 }
