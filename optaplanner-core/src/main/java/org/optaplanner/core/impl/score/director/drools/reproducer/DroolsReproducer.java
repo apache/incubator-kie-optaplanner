@@ -129,8 +129,8 @@ public final class DroolsReproducer {
             boolean reproduced = reproduce(ex, kieSession, initialInsertJournal, m.mutate());
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<KieSessionOperation> block = m.getRemovedBlock();
-            log.debug("{} without block of {} operations #{} - #{}",
-                      outcome, block.size(), block.get(0).getId(), block.get(block.size() - 1).getId());
+            log.debug("{} without block of {} [{} - {}]",
+                      outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
                 m.revert();
             }
@@ -147,8 +147,8 @@ public final class DroolsReproducer {
             boolean reproduced = reproduce(ex, kieSession, m.mutate(), updateJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<KieSessionInsert> block = m.getRemovedBlock();
-            log.debug("{} without block of {} operations #{} - #{}",
-                      outcome, block.size(), block.get(0).getId(), block.get(block.size() - 1).getId());
+            log.debug("{} without block of {} [{} - {}]",
+                      outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
                 m.revert();
             }
@@ -274,8 +274,7 @@ public final class DroolsReproducer {
                 "    @Test\n" +
                 "    public void test() {");
         for (KieSessionOperation op : updateJournal) {
-            reproducerLog.debug("        //operation #{}", op.getId());
-            reproducerLog.info("{}", op);
+            op.print(reproducerLog);
         }
         reproducerLog.info(
                 "    }\n}");
@@ -334,8 +333,7 @@ public final class DroolsReproducer {
         }
         reproducerLog.info("");
         for (KieSessionOperation insert : initialInsertJournal) {
-            reproducerLog.debug("        //operation #{}", insert.getId());
-            reproducerLog.info("{}", insert);
+            insert.print(reproducerLog);
         }
         reproducerLog.info(
                 "    }\n");

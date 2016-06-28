@@ -17,6 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
+import org.slf4j.Logger;
 
 public class KieSessionInsert implements KieSessionOperation {
 
@@ -33,18 +34,19 @@ public class KieSessionInsert implements KieSessionOperation {
     }
 
     @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
     public void invoke(KieSession kieSession) {
         kieSession.insert(fact.getInstance());
     }
 
     @Override
+    public void print(Logger log) {
+        log.debug("        //{}", this);
+        log.info("        kieSession.insert({});", fact);
+    }
+
+    @Override
     public String toString() {
-        return "        kieSession.insert(" + fact + ");";
+        return "operation #" + id;
     }
 
 }

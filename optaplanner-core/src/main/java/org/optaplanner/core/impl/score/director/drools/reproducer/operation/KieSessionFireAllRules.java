@@ -16,6 +16,7 @@
 package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
 
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
 
 public class KieSessionFireAllRules implements KieSessionOperation {
 
@@ -26,18 +27,19 @@ public class KieSessionFireAllRules implements KieSessionOperation {
     }
 
     @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
     public void invoke(KieSession kieSession) {
         kieSession.fireAllRules();
     }
 
     @Override
+    public void print(Logger log) {
+        log.debug("\n        //{}", this);
+        log.info("        kieSession.fireAllRules();\n");
+    }
+
+    @Override
     public String toString() {
-        return "\n        kieSession.fireAllRules();\n";
+        return "operation #" + id;
     }
 
 }

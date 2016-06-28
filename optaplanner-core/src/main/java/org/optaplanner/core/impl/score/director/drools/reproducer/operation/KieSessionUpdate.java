@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
+import org.slf4j.Logger;
 
 public class KieSessionUpdate implements KieSessionOperation {
 
@@ -49,11 +50,6 @@ public class KieSessionUpdate implements KieSessionOperation {
     }
 
     @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
     public void invoke(KieSession kieSession) {
         accessor.executeSetter(entity.getInstance(), value.getInstance());
         FactHandle fh = kieSession.getFactHandle(entity.getInstance());
@@ -64,9 +60,15 @@ public class KieSessionUpdate implements KieSessionOperation {
     }
 
     @Override
+    public void print(Logger log) {
+        log.debug("        //{}", this);
+        log.info("        {}.{}({});", entity, setterName, value);
+        log.info("        kieSession.update(kieSession.getFactHandle({}), {});", entity, entity);
+    }
+
+    @Override
     public String toString() {
-        return "        " + entity + "." + setterName + "(" + value + ");\n" +
-                "        kieSession.update(kieSession.getFactHandle(" + entity + "), " + entity + ");";
+        return "operation #" + id;
     }
 
 }

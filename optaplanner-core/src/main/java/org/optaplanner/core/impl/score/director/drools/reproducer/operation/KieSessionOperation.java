@@ -16,11 +16,12 @@
 package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
 
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
 
 public interface KieSessionOperation {
 
-    int getId();
-
     void invoke(KieSession kieSession);
+
+    void print(Logger log);
 
 }
