@@ -24,35 +24,49 @@ class RemoveRandomItemMutator<T> {
     private final List<T> list;
     private final Random random = new Random(0);
     private final List<Integer> indexBlacklist = new ArrayList<Integer>();
+    private int blockPortion = 10;
     private int removedIndex = -1;
-    private T removedItem;
+    private List<T> removedBlock;
 
     public RemoveRandomItemMutator(List<T> list) {
         this.list = new ArrayList<T>(list);
     }
 
     public boolean canMutate() {
-        return !list.isEmpty() && list.size() != indexBlacklist.size();
+        return !list.isEmpty() && list.size() > indexBlacklist.size();
     }
 
     public List<T> mutate() {
+        if (!canMutate()) {
+            throw new IllegalStateException("No more mutations possible.");
+        }
+
         if (removedIndex >= 0) {
             // last mutation was succesful => clear the blacklist
             indexBlacklist.clear();
         }
 
+        int blockSize = Math.max(list.size() / blockPortion, 1);
+        if (indexBlacklist.size() == list.size() / blockSize && list.size() / blockPortion > 1) {
+            // we've tried all blocks without success => try smaller blocks and clear the blacklist
+            blockPortion *= 2;
+            indexBlacklist.clear();
+        }
+
+        blockSize = Math.max(list.size() / blockPortion, 1);
+
         do {
-            removedIndex = random.nextInt(list.size());
+            removedIndex = random.nextInt(list.size() / blockSize) * blockSize;
         } while (indexBlacklist.contains(removedIndex));
 
-        removedItem = list.get(removedIndex);
-        list.remove(removedIndex);
+        removedBlock = new ArrayList<T>(list.subList(removedIndex, removedIndex + blockSize));
+        list.removeAll(removedBlock);
         return list;
     }
 
     public void revert() {
         // return the item
-        list.add(removedIndex, removedItem);
+        list.addAll(removedIndex, removedBlock);
         // don't try this index on next mutation
         indexBlacklist.add(removedIndex);
         // last mutation wasn't successful
@@ -63,8 +77,8 @@ class RemoveRandomItemMutator<T> {
         return list;
     }
 
-    public T getRemovedItem() {
-        return removedItem;
+    public List<T> getRemovedBlock() {
+        return removedBlock;
     }
 
 }

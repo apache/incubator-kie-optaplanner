@@ -16,6 +16,7 @@
 package org.optaplanner.core.impl.score.director.drools.reproducer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 
 public class RemoveRandomItemMutatorTest {
 
-    private static final int LIST_SIZE = 10;
+    private static final int LIST_SIZE = 500;
     private ArrayList<Integer> list = new ArrayList<Integer>();
 
     @Before
@@ -38,11 +39,10 @@ public class RemoveRandomItemMutatorTest {
     public void testRemoveAll() {
         RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
         ArrayList<Integer> removed = new ArrayList<Integer>();
-        for (int i = 0; i < LIST_SIZE; i++) {
+        while (m.canMutate()) {
             assertTrue(m.canMutate());
             m.mutate();
-            removed.add(m.getRemovedItem());
-            assertEquals(LIST_SIZE - i - 1, m.getResult().size());
+            removed.addAll(m.getRemovedBlock());
         }
         assertFalse(m.canMutate());
 
@@ -55,9 +55,9 @@ public class RemoveRandomItemMutatorTest {
     public void testRevert() {
         RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
         m.mutate();
-        int removedItem = m.getRemovedItem();
+        List<Integer> removedBlock = m.getRemovedBlock();
         m.revert();
-        assertTrue(m.getResult().contains(removedItem));
+        assertTrue(m.getResult().containsAll(removedBlock));
         assertEquals(LIST_SIZE, m.getResult().size());
     }
 
@@ -65,13 +65,11 @@ public class RemoveRandomItemMutatorTest {
     public void testImpossibleMutation() {
         RemoveRandomItemMutator<Integer> m = new RemoveRandomItemMutator<Integer>(list);
         ArrayList<Integer> removed = new ArrayList<Integer>();
-        for (int i = 0; i < LIST_SIZE; i++) {
-            assertTrue(m.canMutate());
+        while (m.canMutate()) {
             m.mutate();
-            removed.add(m.getRemovedItem());
+            removed.addAll(m.getRemovedBlock());
             m.revert();
         }
-        assertFalse(m.canMutate());
 
         for (int i = 0; i < LIST_SIZE; i++) {
             assertTrue(removed.contains(list.get(i)));

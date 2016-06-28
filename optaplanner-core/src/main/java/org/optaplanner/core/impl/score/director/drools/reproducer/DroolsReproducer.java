@@ -110,13 +110,14 @@ public final class DroolsReproducer {
     private List<KieSessionOperation> pruneUpdateJournalOperations(RuntimeException ex,
                                                                    KieSession kieSession,
                                                                    List<KieSessionOperation> updateJournal) {
-        // TODO generalize to RemoveRandomBlockMutator, start with 10% blocks
         RemoveRandomItemMutator<KieSessionOperation> m = new RemoveRandomItemMutator<KieSessionOperation>(updateJournal);
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
             boolean reproduced = reproduce(ex, kieSession, initialInsertJournal, m.mutate());
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            log.debug("{} without operation #{}", outcome, m.getRemovedItem().getId());
+            List<KieSessionOperation> block = m.getRemovedBlock();
+            log.debug("{} without block of {} operations #{} - #{}",
+                      outcome, block.size(), block.get(0).getId(), block.get(block.size() - 1).getId());
             if (!reproduced) {
                 m.revert();
             }
@@ -132,7 +133,9 @@ public final class DroolsReproducer {
             log.debug("Current journal size: {}", m.getResult().size());
             boolean reproduced = reproduce(ex, kieSession, m.mutate(), updateJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            log.debug("{} without operation #{}", outcome, m.getRemovedItem().getId());
+            List<KieSessionInsert> block = m.getRemovedBlock();
+            log.debug("{} without block of {} operations #{} - #{}",
+                      outcome, block.size(), block.get(0).getId(), block.get(block.size() - 1).getId());
             if (!reproduced) {
                 m.revert();
             }
