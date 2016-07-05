@@ -143,7 +143,7 @@ public final class DroolsReproducer {
     }
 
     private void pruneFacts() {
-        log.info("Pruning facts...", journal.getFacts().size());
+        log.info("Pruning {} facts...", journal.getFacts().size());
         ArrayList<Fact> minimal = new ArrayList<Fact>();
         for (KieSessionInsert insert : journal.getInitialInserts()) {
             addWithDependencies(insert.getFact(), minimal);
