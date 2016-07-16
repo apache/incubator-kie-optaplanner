@@ -16,33 +16,12 @@
 package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
 import org.slf4j.Logger;
 
-public class KieSessionDelete implements KieSessionOperation {
+public interface TestGenKieSessionOperation {
 
-    private final int id;
-    private final Fact entity;
+    void invoke(KieSession kieSession);
 
-    public KieSessionDelete(int id, Fact entity) {
-        this.id = id;
-        this.entity = entity;
-    }
-
-    @Override
-    public void invoke(KieSession kieSession) {
-        kieSession.delete(kieSession.getFactHandle(entity.getInstance()));
-    }
-
-    @Override
-    public void print(Logger log) {
-        log.debug("        //{}", this);
-        log.info("        kieSession.delete(kieSession.getFactHandle({}), {});", entity, entity);
-    }
-
-    @Override
-    public String toString() {
-        return "operation #" + id;
-    }
+    void print(Logger log);
 
 }

@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionInsert;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 
 class NoopJournal implements KieSessionJournal {
 
@@ -44,17 +44,17 @@ class NoopJournal implements KieSessionJournal {
     }
 
     @Override
-    public List<Fact> getFacts() {
+    public List<TestGenFact> getFacts() {
         return Collections.emptyList();
     }
 
     @Override
-    public List<KieSessionInsert> getInitialInserts() {
+    public List<TestGenKieSessionInsert> getInitialInserts() {
         return Collections.emptyList();
     }
 
     @Override
-    public List<KieSessionOperation> getMoveOperations() {
+    public List<TestGenKieSessionOperation> getMoveOperations() {
         return Collections.emptyList();
     }
 

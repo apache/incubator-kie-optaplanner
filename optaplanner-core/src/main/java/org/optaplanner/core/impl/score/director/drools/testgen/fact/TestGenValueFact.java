@@ -29,22 +29,22 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.slf4j.Logger;
 
-public class ValueFact implements Fact {
+public class TestGenValueFact implements TestGenFact {
 
     private final Object instance;
     private final String variableName;
     private final HashMap<BeanPropertyMemberAccessor, ValueProvider> attributes = new HashMap<BeanPropertyMemberAccessor, ValueProvider>();
-    private final List<Fact> dependencies = new ArrayList<Fact>();
+    private final List<TestGenFact> dependencies = new ArrayList<TestGenFact>();
     private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
-    public ValueFact(int id, Object instance) {
+    public TestGenValueFact(int id, Object instance) {
         this.instance = instance;
         this.variableName = instance.getClass().getSimpleName().substring(0, 1).toLowerCase() +
                 instance.getClass().getSimpleName().substring(1) + "_" + id;
     }
 
     @Override
-    public void setUp(Map<Object, Fact> existingInstances) {
+    public void setUp(Map<Object, TestGenFact> existingInstances) {
         for (Field field : instance.getClass().getDeclaredFields()) {
             String fieldName = field.getName();
             Method setter = ReflectionHelper.getSetterMethod(instance.getClass(), field.getType(), fieldName);
@@ -105,7 +105,7 @@ public class ValueFact implements Fact {
     }
 
     @Override
-    public List<Fact> getDependencies() {
+    public List<TestGenFact> getDependencies() {
         return dependencies;
     }
 

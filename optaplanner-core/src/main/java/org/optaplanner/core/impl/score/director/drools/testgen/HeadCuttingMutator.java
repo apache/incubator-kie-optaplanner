@@ -17,17 +17,17 @@ package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import java.util.List;
 
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 
 class HeadCuttingMutator {
 
-    private final List<KieSessionOperation> list;
+    private final List<TestGenKieSessionOperation> list;
     private double cutFactor = 0.8;
     private int totalCutSize = 0;
     private int revertIncrement = -1;
     private int cutIncrement;
 
-    public HeadCuttingMutator(List<KieSessionOperation> list) {
+    public HeadCuttingMutator(List<TestGenKieSessionOperation> list) {
         this.list = list;
         updateIncrement(false);
     }
@@ -36,7 +36,7 @@ class HeadCuttingMutator {
         return cutIncrement > 0 && totalCutSize + cutIncrement <= list.size();
     }
 
-    public List<KieSessionOperation> mutate() {
+    public List<TestGenKieSessionOperation> mutate() {
         totalCutSize += cutIncrement;
         revertIncrement = cutIncrement;
         updateIncrement(false);
@@ -62,7 +62,7 @@ class HeadCuttingMutator {
         }
     }
 
-    public List<KieSessionOperation> getResult() {
+    public List<TestGenKieSessionOperation> getResult() {
         return list.subList(totalCutSize, list.size());
     }
 

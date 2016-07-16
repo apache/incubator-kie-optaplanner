@@ -15,48 +15,25 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 
-public class NullFact implements Fact {
+public interface TestGenFact {
 
-    @Override
-    public void setUp(Map<Object, Fact> existingInstances) {
-    }
+    void setUp(Map<Object, TestGenFact> existingInstances);
 
-    @Override
-    public List<Fact> getDependencies() {
-        return Collections.emptyList();
-    }
+    List<TestGenFact> getDependencies();
 
-    @Override
-    public List<Class<?>> getImports() {
-        return Collections.emptyList();
-    }
+    List<Class<?>> getImports();
 
-    @Override
-    public void reset() {
-    }
+    void reset();
 
-    @Override
-    public void printInitialization(Logger log) {
-    }
+    void printInitialization(Logger log);
 
-    @Override
-    public void printSetup(Logger log) {
-    }
+    void printSetup(Logger log);
 
-    @Override
-    public Object getInstance() {
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return "null";
-    }
+    public Object getInstance();
 
 }

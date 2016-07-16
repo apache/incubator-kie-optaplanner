@@ -26,10 +26,10 @@ class ListValueProvider extends AbstractValueProvider {
 
     private final String identifier;
     private final Type typeArgument;
-    private final Map<Object, Fact> existingInstances;
+    private final Map<Object, TestGenFact> existingInstances;
     private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
-    public ListValueProvider(Object value, String identifier, Type genericType, Map<Object, Fact> existingInstances) {
+    public ListValueProvider(Object value, String identifier, Type genericType, Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;
         this.typeArgument = genericType;
@@ -41,10 +41,10 @@ class ListValueProvider extends AbstractValueProvider {
         }
     }
 
-    public List<Fact> getFacts() {
-        ArrayList<Fact> facts = new ArrayList<Fact>();
+    public List<TestGenFact> getFacts() {
+        ArrayList<TestGenFact> facts = new ArrayList<TestGenFact>();
         for (Object o : (List<?>) value) {
-            Fact fact = existingInstances.get(o);
+            TestGenFact fact = existingInstances.get(o);
             if (fact != null) {
                 facts.add(fact);
             }

@@ -13,33 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen.operation;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import org.kie.api.runtime.KieSession;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 
-public class KieSessionFireAllRules implements KieSessionOperation {
+public class TestGenNullFact implements TestGenFact {
 
-    private final int id;
-
-    public KieSessionFireAllRules(int id) {
-        this.id = id;
+    @Override
+    public void setUp(Map<Object, TestGenFact> existingInstances) {
     }
 
     @Override
-    public void invoke(KieSession kieSession) {
-        kieSession.fireAllRules();
+    public List<TestGenFact> getDependencies() {
+        return Collections.emptyList();
     }
 
     @Override
-    public void print(Logger log) {
-        log.debug("\n        //{}", this);
-        log.info("        kieSession.fireAllRules();\n");
+    public List<Class<?>> getImports() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void reset() {
+    }
+
+    @Override
+    public void printInitialization(Logger log) {
+    }
+
+    @Override
+    public void printSetup(Logger log) {
+    }
+
+    @Override
+    public Object getInstance() {
+        return null;
     }
 
     @Override
     public String toString() {
-        return "operation #" + id;
+        return "null";
     }
 
 }

@@ -16,12 +16,37 @@
 package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.slf4j.Logger;
 
-public interface KieSessionOperation {
+public class TestGenKieSessionInsert implements TestGenKieSessionOperation {
 
-    void invoke(KieSession kieSession);
+    private final int id;
+    private final TestGenFact fact;
 
-    void print(Logger log);
+    public TestGenKieSessionInsert(int id, TestGenFact fact) {
+        this.id = id;
+        this.fact = fact;
+    }
+
+    public TestGenFact getFact() {
+        return fact;
+    }
+
+    @Override
+    public void invoke(KieSession kieSession) {
+        kieSession.insert(fact.getInstance());
+    }
+
+    @Override
+    public void print(Logger log) {
+        log.debug("        //{}", this);
+        log.info("        kieSession.insert({});", fact);
+    }
+
+    @Override
+    public String toString() {
+        return "operation #" + id;
+    }
 
 }

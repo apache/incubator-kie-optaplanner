@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionInsert;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 
 public interface KieSessionJournal {
 
@@ -34,11 +34,11 @@ public interface KieSessionJournal {
 
     void fireAllRules();
 
-    List<Fact> getFacts();
+    List<TestGenFact> getFacts();
 
-    List<KieSessionInsert> getInitialInserts();
+    List<TestGenKieSessionInsert> getInitialInserts();
 
-    List<KieSessionOperation> getMoveOperations();
+    List<TestGenKieSessionOperation> getMoveOperations();
 
     void insert(Object fact);
 

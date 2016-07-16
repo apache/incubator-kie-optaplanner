@@ -24,10 +24,10 @@ import java.util.TreeSet;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionInsert;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionUpdate;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,13 +106,13 @@ public final class DroolsReproducer {
 
     private void pruneUpdates() {
         log.info("Pruning updates...", journal.getMoveOperations().size());
-        RemoveRandomBlockMutator<KieSessionOperation> m = new RemoveRandomBlockMutator<KieSessionOperation>(journal.getMoveOperations());
+        RemoveRandomBlockMutator<TestGenKieSessionOperation> m = new RemoveRandomBlockMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
             KieSessionJournalImpl testJournal = new KieSessionJournalImpl(journal.getFacts(), journal.getInitialInserts(), m.mutate());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            List<KieSessionOperation> block = m.getRemovedBlock();
+            List<TestGenKieSessionOperation> block = m.getRemovedBlock();
             log.debug("{} without block of {} [{} - {}]",
                       outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
@@ -125,13 +125,13 @@ public final class DroolsReproducer {
 
     private void pruneInserts() {
         log.info("Pruning inserts...", journal.getInitialInserts().size());
-        RemoveRandomBlockMutator<KieSessionInsert> m = new RemoveRandomBlockMutator<KieSessionInsert>(journal.getInitialInserts());
+        RemoveRandomBlockMutator<TestGenKieSessionInsert> m = new RemoveRandomBlockMutator<TestGenKieSessionInsert>(journal.getInitialInserts());
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
             KieSessionJournalImpl testJournal = new KieSessionJournalImpl(journal.getFacts(), m.mutate(), journal.getMoveOperations());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            List<KieSessionInsert> block = m.getRemovedBlock();
+            List<TestGenKieSessionInsert> block = m.getRemovedBlock();
             log.debug("{} without block of {} [{} - {}]",
                       outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
@@ -144,13 +144,13 @@ public final class DroolsReproducer {
 
     private void pruneFacts() {
         log.info("Pruning {} facts...", journal.getFacts().size());
-        ArrayList<Fact> minimal = new ArrayList<Fact>();
-        for (KieSessionInsert insert : journal.getInitialInserts()) {
+        ArrayList<TestGenFact> minimal = new ArrayList<TestGenFact>();
+        for (TestGenKieSessionInsert insert : journal.getInitialInserts()) {
             addWithDependencies(insert.getFact(), minimal);
         }
-        for (KieSessionOperation op : journal.getMoveOperations()) {
-            if (op instanceof KieSessionUpdate) {
-                Fact f = ((KieSessionUpdate) op).getValue();
+        for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
+            if (op instanceof TestGenKieSessionUpdate) {
+                TestGenFact f = ((TestGenKieSessionUpdate) op).getValue();
                 if (f != null) {
                     addWithDependencies(f, minimal);
                 }
@@ -160,12 +160,12 @@ public final class DroolsReproducer {
         log.info("{} facts remaining.", journal.getFacts().size());
     }
 
-    private static void addWithDependencies(Fact f, List<Fact> factList) {
+    private static void addWithDependencies(TestGenFact f, List<TestGenFact> factList) {
         if (factList.contains(f)) {
             return;
         }
         factList.add(f);
-        for (Fact dependency : f.getDependencies()) {
+        for (TestGenFact dependency : f.getDependencies()) {
             addWithDependencies(dependency, factList);
         }
     }
@@ -226,7 +226,7 @@ public final class DroolsReproducer {
 
     private void printInit() {
         String domainPackage = null;
-        for (Fact fact : journal.getFacts()) {
+        for (TestGenFact fact : journal.getFacts()) {
             Class<? extends Object> factClass = fact.getInstance().getClass();
             for (Annotation ann : factClass.getAnnotations()) {
                 if (PlanningEntity.class.equals(ann.annotationType())) {
@@ -253,7 +253,7 @@ public final class DroolsReproducer {
         imports.add("org.kie.api.io.ResourceType");
         imports.add("org.kie.api.runtime.KieContainer");
         imports.add("org.kie.api.runtime.KieSession");
-        for (Fact fact : journal.getFacts()) {
+        for (TestGenFact fact : journal.getFacts()) {
             for (Class<?> cls : fact.getImports()) {
                 if (!cls.getPackage().getName().equals(domainPackage)) {
                     imports.add(cls.getCanonicalName());
@@ -269,7 +269,7 @@ public final class DroolsReproducer {
                 "public class DroolsReproducerTest {\n" +
                 "\n" +
                 "    KieSession kieSession;");
-        for (Fact fact : journal.getFacts()) {
+        for (TestGenFact fact : journal.getFacts()) {
             fact.printInitialization(reproducerLog);
         }
         reproducerLog.info("");
@@ -289,11 +289,11 @@ public final class DroolsReproducer {
                 "        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());\n" +
                 "        kieSession = kieContainer.newKieSession();\n" +
                 "");
-        for (Fact fact : journal.getFacts()) {
+        for (TestGenFact fact : journal.getFacts()) {
             fact.printSetup(reproducerLog);
         }
         reproducerLog.info("");
-        for (KieSessionOperation insert : journal.getInitialInserts()) {
+        for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
             insert.print(reproducerLog);
         }
         reproducerLog.info("    }\n");
@@ -303,7 +303,7 @@ public final class DroolsReproducer {
         reproducerLog.info(
                 "    @Test\n" +
                 "    public void test() {");
-        for (KieSessionOperation op : journal.getMoveOperations()) {
+        for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
             op.print(reproducerLog);
         }
         reproducerLog.info("    }\n}");

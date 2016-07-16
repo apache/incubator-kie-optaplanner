@@ -22,18 +22,18 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.slf4j.Logger;
 
-public class KieSessionUpdate implements KieSessionOperation {
+public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
     private final int id;
-    private final Fact entity;
+    private final TestGenFact entity;
     private final BeanPropertyMemberAccessor accessor;
     private final String setterName;
-    private final Fact value;
+    private final TestGenFact value;
 
-    public KieSessionUpdate(int id, Fact entity, VariableDescriptor<?> variableDescriptor, Fact value) {
+    public TestGenKieSessionUpdate(int id, TestGenFact entity, VariableDescriptor<?> variableDescriptor, TestGenFact value) {
         this.id = id;
         this.entity = entity;
         this.value = value;
@@ -45,7 +45,7 @@ public class KieSessionUpdate implements KieSessionOperation {
         accessor = new BeanPropertyMemberAccessor(getter);
     }
 
-    public Fact getValue() {
+    public TestGenFact getValue() {
         return value;
     }
 

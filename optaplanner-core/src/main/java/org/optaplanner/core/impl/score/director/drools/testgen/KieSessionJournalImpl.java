@@ -22,30 +22,30 @@ import java.util.List;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
-import org.optaplanner.core.impl.score.director.drools.testgen.fact.NullFact;
-import org.optaplanner.core.impl.score.director.drools.testgen.fact.ValueFact;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionDelete;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionFireAllRules;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionInsert;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionUpdate;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenNullFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenValueFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionDelete;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionFireAllRules;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionUpdate;
 
 class KieSessionJournalImpl implements KieSessionJournal {
 
-    private final List<Fact> facts;
-    private final HashMap<Object, Fact> existingInstances = new HashMap<Object, Fact>();
-    private final List<KieSessionInsert> initialInsertJournal;
-    private final List<KieSessionOperation> updateJournal;
+    private final List<TestGenFact> facts;
+    private final HashMap<Object, TestGenFact> existingInstances = new HashMap<Object, TestGenFact>();
+    private final List<TestGenKieSessionInsert> initialInsertJournal;
+    private final List<TestGenKieSessionOperation> updateJournal;
     private int operationId = 0;
 
     public KieSessionJournalImpl() {
-        facts = new ArrayList<Fact>();
-        initialInsertJournal = new ArrayList<KieSessionInsert>();
-        updateJournal = new ArrayList<KieSessionOperation>();
+        facts = new ArrayList<TestGenFact>();
+        initialInsertJournal = new ArrayList<TestGenKieSessionInsert>();
+        updateJournal = new ArrayList<TestGenKieSessionOperation>();
     }
 
-    public KieSessionJournalImpl(List<Fact> facts, List<KieSessionInsert> initialInsertJournal, List<KieSessionOperation> updateJournal) {
+    public KieSessionJournalImpl(List<TestGenFact> facts, List<TestGenKieSessionInsert> initialInsertJournal, List<TestGenKieSessionOperation> updateJournal) {
         this.facts = facts;
         this.initialInsertJournal = initialInsertJournal;
         this.updateJournal = updateJournal;
@@ -60,18 +60,18 @@ class KieSessionJournalImpl implements KieSessionJournal {
         }
 
         // reset facts to the original state
-        for (Fact fact : facts) {
+        for (TestGenFact fact : facts) {
             fact.reset();
         }
 
         // insert facts into KIE session
-        for (KieSessionOperation insert : initialInsertJournal) {
+        for (TestGenKieSessionOperation insert : initialInsertJournal) {
             insert.invoke(newKieSession);
         }
 
         // replay tested journal
         try {
-            for (KieSessionOperation op : updateJournal) {
+            for (TestGenKieSessionOperation op : updateJournal) {
                 op.invoke(newKieSession);
             }
             return null;
@@ -86,12 +86,12 @@ class KieSessionJournalImpl implements KieSessionJournal {
     public void addFacts(Collection<Object> workingFacts) {
         int i = 0;
         for (Object fact : workingFacts) {
-            Fact f = new ValueFact(i++, fact);
+            TestGenFact f = new TestGenValueFact(i++, fact);
             facts.add(f);
             existingInstances.put(fact, f);
         }
 
-        for (Fact fact : facts) {
+        for (TestGenFact fact : facts) {
             fact.setUp(existingInstances);
         }
     }
@@ -102,30 +102,30 @@ class KieSessionJournalImpl implements KieSessionJournal {
     //
     @Override
     public void insertInitial(Object fact) {
-        initialInsertJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
+        initialInsertJournal.add(new TestGenKieSessionInsert(operationId++, existingInstances.get(fact)));
     }
 
     @Override
     public void insert(Object fact) {
-        updateJournal.add(new KieSessionInsert(operationId++, existingInstances.get(fact)));
+        updateJournal.add(new TestGenKieSessionInsert(operationId++, existingInstances.get(fact)));
     }
 
     @Override
     public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
-        Fact entityFact = existingInstances.get(entity);
+        TestGenFact entityFact = existingInstances.get(entity);
         Object value = variableDescriptor.getValue(entity);
-        Fact valueFact = value == null ? new NullFact() : existingInstances.get(value);
-        updateJournal.add(new KieSessionUpdate(operationId++, entityFact, variableDescriptor, valueFact));
+        TestGenFact valueFact = value == null ? new TestGenNullFact() : existingInstances.get(value);
+        updateJournal.add(new TestGenKieSessionUpdate(operationId++, entityFact, variableDescriptor, valueFact));
     }
 
     @Override
     public void delete(Object entity) {
-        updateJournal.add(new KieSessionDelete(operationId++, existingInstances.get(entity)));
+        updateJournal.add(new TestGenKieSessionDelete(operationId++, existingInstances.get(entity)));
     }
 
     @Override
     public void fireAllRules() {
-        updateJournal.add(new KieSessionFireAllRules(operationId++));
+        updateJournal.add(new TestGenKieSessionFireAllRules(operationId++));
     }
 
     @Override
@@ -142,17 +142,17 @@ class KieSessionJournalImpl implements KieSessionJournal {
     //------------------------------------------------------------------------------------------------------------------
     //
     @Override
-    public List<Fact> getFacts() {
+    public List<TestGenFact> getFacts() {
         return facts;
     }
 
     @Override
-    public List<KieSessionInsert> getInitialInserts() {
+    public List<TestGenKieSessionInsert> getInitialInserts() {
         return initialInsertJournal;
     }
 
     @Override
-    public List<KieSessionOperation> getMoveOperations() {
+    public List<TestGenKieSessionOperation> getMoveOperations() {
         return updateJournal;
     }
 

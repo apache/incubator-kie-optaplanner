@@ -27,12 +27,12 @@ class MapValueProvider extends AbstractValueProvider {
 
     private final String identifier;
     private final Type[] typeArguments;
-    private final Map<Object, Fact> existingInstances;
+    private final Map<Object, TestGenFact> existingInstances;
     private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
     public MapValueProvider(Object value, String identifier,
                             Type[] typeArguments,
-                            Map<Object, Fact> existingInstances) {
+                            Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;
         this.typeArguments = typeArguments;
@@ -46,8 +46,8 @@ class MapValueProvider extends AbstractValueProvider {
         }
     }
 
-    public List<Fact> getFacts() {
-        ArrayList<Fact> facts = new ArrayList<Fact>();
+    public List<TestGenFact> getFacts() {
+        ArrayList<TestGenFact> facts = new ArrayList<TestGenFact>();
         for (Map.Entry<? extends Object, ? extends Object> entry : ((java.util.Map<?, ?>) value).entrySet()) {
             addFact(facts, entry.getKey());
             addFact(facts, entry.getValue());
@@ -59,8 +59,8 @@ class MapValueProvider extends AbstractValueProvider {
         return imports;
     }
 
-    private void addFact(List<Fact> facts, Object o) {
-        Fact fact = existingInstances.get(o);
+    private void addFact(List<TestGenFact> facts, Object o) {
+        TestGenFact fact = existingInstances.get(o);
         if (fact != null) {
             facts.add(fact);
         }

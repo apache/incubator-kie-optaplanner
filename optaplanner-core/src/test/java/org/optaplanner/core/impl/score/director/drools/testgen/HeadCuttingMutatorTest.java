@@ -19,18 +19,19 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
+
 public class HeadCuttingMutatorTest {
 
-    private ArrayList<KieSessionOperation> list = new ArrayList<KieSessionOperation>();
+    private ArrayList<TestGenKieSessionOperation> list = new ArrayList<TestGenKieSessionOperation>();
 
     @Before
     public void setUp() {
-        KieSessionOperation op = mock(KieSessionOperation.class);
+        TestGenKieSessionOperation op = mock(TestGenKieSessionOperation.class);
         for (int i = 0; i < 25; i++) {
             list.add(op);
         }
