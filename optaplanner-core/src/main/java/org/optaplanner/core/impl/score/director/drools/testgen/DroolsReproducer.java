@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer;
+package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -24,10 +24,10 @@ import java.util.TreeSet;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionInsert;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionUpdate;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionInsert;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

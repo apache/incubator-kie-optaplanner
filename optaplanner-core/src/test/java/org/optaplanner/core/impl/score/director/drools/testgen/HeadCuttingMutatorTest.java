@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer;
+package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

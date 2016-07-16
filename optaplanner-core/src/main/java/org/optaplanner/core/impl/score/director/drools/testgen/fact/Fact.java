@@ -13,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
-class ParsedValueProvider extends AbstractValueProvider {
+import org.slf4j.Logger;
 
-    private final Method parseMethod;
+public interface Fact {
 
-    public ParsedValueProvider(Method parseMethod, Object value) {
-        super(value);
-        this.parseMethod = parseMethod;
-    }
+    void setUp(Map<Object, Fact> existingInstances);
 
-    @Override
-    public String toString() {
-        return value.getClass().getSimpleName() + "." + parseMethod.getName() + "(\"" + value.toString() + "\")";
-    }
+    List<Fact> getDependencies();
+
+    List<Class<?>> getImports();
+
+    void reset();
+
+    void printInitialization(Logger log);
+
+    void printSetup(Logger log);
+
+    public Object getInstance();
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

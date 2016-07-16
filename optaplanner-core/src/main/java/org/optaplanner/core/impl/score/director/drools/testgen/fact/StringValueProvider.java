@@ -13,33 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
+class StringValueProvider extends AbstractValueProvider {
 
-public class KieSessionFireAllRules implements KieSessionOperation {
-
-    private final int id;
-
-    public KieSessionFireAllRules(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public void invoke(KieSession kieSession) {
-        kieSession.fireAllRules();
-    }
-
-    @Override
-    public void print(Logger log) {
-        log.debug("\n        //{}", this);
-        log.info("        kieSession.fireAllRules();\n");
+    public StringValueProvider(Object value) {
+        super(value);
     }
 
     @Override
     public String toString() {
-        return "operation #" + id;
+        return '"' + (String) value + '"';
     }
 
 }

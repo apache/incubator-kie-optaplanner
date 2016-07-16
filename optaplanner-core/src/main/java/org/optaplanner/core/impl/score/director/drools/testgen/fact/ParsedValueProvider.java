@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import org.slf4j.Logger;
+import java.lang.reflect.Method;
 
-interface ValueProvider {
+class ParsedValueProvider extends AbstractValueProvider {
 
-    Object get();
+    private final Method parseMethod;
 
-    void printSetup(Logger log);
+    public ParsedValueProvider(Method parseMethod, Object value) {
+        super(value);
+        this.parseMethod = parseMethod;
+    }
+
+    @Override
+    public String toString() {
+        return value.getClass().getSimpleName() + "." + parseMethod.getName() + "(\"" + value.toString() + "\")";
+    }
 
 }

@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
+package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
-class EnumValueProvider extends AbstractValueProvider {
+import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
 
-    public EnumValueProvider(Object value) {
-        super(value);
-    }
+public interface KieSessionOperation {
 
-    @Override
-    public String toString() {
-        return value.getClass().getSimpleName() + "." + ((Enum) value).name();
-    }
+    void invoke(KieSession kieSession);
+
+    void print(Logger log);
 
 }

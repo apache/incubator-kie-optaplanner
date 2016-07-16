@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
+package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
 import java.lang.reflect.Method;
 
@@ -22,7 +22,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
 import org.slf4j.Logger;
 
 public class KieSessionUpdate implements KieSessionOperation {

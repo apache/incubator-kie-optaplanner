@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-class StringValueProvider extends AbstractValueProvider {
+class EnumValueProvider extends AbstractValueProvider {
 
-    public StringValueProvider(Object value) {
+    public EnumValueProvider(Object value) {
         super(value);
     }
 
     @Override
     public String toString() {
-        return '"' + (String) value + '"';
+        return value.getClass().getSimpleName() + "." + ((Enum) value).name();
     }
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer;
+package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,14 +22,14 @@ import java.util.List;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
-import org.optaplanner.core.impl.score.director.drools.reproducer.fact.NullFact;
-import org.optaplanner.core.impl.score.director.drools.reproducer.fact.ValueFact;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionDelete;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionFireAllRules;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionInsert;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionOperation;
-import org.optaplanner.core.impl.score.director.drools.reproducer.operation.KieSessionUpdate;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.NullFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.ValueFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionDelete;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionFireAllRules;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionInsert;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.KieSessionUpdate;
 
 class KieSessionJournalImpl implements KieSessionJournal {
 

@@ -13,31 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
+package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.impl.score.director.drools.reproducer.fact.Fact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.Fact;
 import org.slf4j.Logger;
 
-public class KieSessionDelete implements KieSessionOperation {
+public class KieSessionInsert implements KieSessionOperation {
 
     private final int id;
-    private final Fact entity;
+    private final Fact fact;
 
-    public KieSessionDelete(int id, Fact entity) {
+    public KieSessionInsert(int id, Fact fact) {
         this.id = id;
-        this.entity = entity;
+        this.fact = fact;
+    }
+
+    public Fact getFact() {
+        return fact;
     }
 
     @Override
     public void invoke(KieSession kieSession) {
-        kieSession.delete(kieSession.getFactHandle(entity.getInstance()));
+        kieSession.insert(fact.getInstance());
     }
 
     @Override
     public void print(Logger log) {
         log.debug("        //{}", this);
-        log.info("        kieSession.delete(kieSession.getFactHandle({}), {});", entity, entity);
+        log.info("        kieSession.insert({});", fact);
     }
 
     @Override

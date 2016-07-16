@@ -28,8 +28,8 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.reproducer.DroolsReproducer;
-import org.optaplanner.core.impl.score.director.drools.reproducer.KieSessionJournal;
+import org.optaplanner.core.impl.score.director.drools.testgen.DroolsReproducer;
+import org.optaplanner.core.impl.score.director.drools.testgen.KieSessionJournal;
 
 /**
  * Drools implementation of {@link ScoreDirector}, which directs the Rule Engine to calculate the {@link Score}

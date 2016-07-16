@@ -13,15 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.operation;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 
-public interface KieSessionOperation {
+abstract class AbstractValueProvider implements ValueProvider {
 
-    void invoke(KieSession kieSession);
+    protected final Object value;
 
-    void print(Logger log);
+    public AbstractValueProvider(Object value) {
+        this.value = value;
+    }
+
+    @Override
+    public Object get() {
+        return value;
+    }
+
+    @Override
+    public void printSetup(Logger log) {
+        // no setup required
+    }
 
 }

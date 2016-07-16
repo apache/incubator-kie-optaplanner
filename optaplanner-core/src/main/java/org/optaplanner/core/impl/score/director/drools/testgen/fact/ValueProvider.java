@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.reproducer.fact;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 import org.slf4j.Logger;
 
-abstract class AbstractValueProvider implements ValueProvider {
+interface ValueProvider {
 
-    protected final Object value;
+    Object get();
 
-    public AbstractValueProvider(Object value) {
-        this.value = value;
-    }
-
-    @Override
-    public Object get() {
-        return value;
-    }
-
-    @Override
-    public void printSetup(Logger log) {
-        // no setup required
-    }
+    void printSetup(Logger log);
 
 }
