@@ -40,25 +40,10 @@ public final class DroolsReproducer {
     private KieSessionJournal journal;
 
     public static KieSessionJournal newJournal() {
-        if (reproducerLog.isInfoEnabled()) {
-            return new KieSessionJournalImpl();
-        } else {
-            return new NoopJournal();
-        }
+        return new KieSessionJournalImpl();
     }
 
     public static void replay(KieSessionJournal journal, KieSession kieSession, RuntimeException originalException) {
-        if (!reproducerLog.isInfoEnabled()) {
-            for (StackTraceElement element : originalException.getStackTrace()) {
-                if (element.getClassName().startsWith("org.drools")) {
-                    log.info("OptaPlanner failed due to an exception in Drools. This is probably a bug in Drools. " +
-                            "You may activate an automatic reproducer generator by setting 'org.optaplanner.drools.reproducer' " +
-                            "logger level to INFO or lower.");
-                    break;
-                }
-            }
-            throw originalException;
-        }
         throw new DroolsReproducer(kieSession, originalException, journal).doReplay();
     }
 
