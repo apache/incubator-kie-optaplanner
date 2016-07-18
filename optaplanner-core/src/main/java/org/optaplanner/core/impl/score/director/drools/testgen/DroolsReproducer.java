@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGen
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class DroolsReproducer {
+final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger(DroolsReproducer.class);
     private static final Logger reproducerLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
@@ -39,11 +39,7 @@ public final class DroolsReproducer {
     private final RuntimeException originalException;
     private KieSessionJournal journal;
 
-    public static KieSessionJournal newJournal() {
-        return new KieSessionJournalImpl();
-    }
-
-    public static void replay(KieSessionJournal journal, KieSession kieSession, RuntimeException originalException) {
+    static void replay(KieSessionJournal journal, KieSession kieSession, RuntimeException originalException) {
         throw new DroolsReproducer(kieSession, originalException, journal).doReplay();
     }
 
@@ -76,7 +72,7 @@ public final class DroolsReproducer {
         HeadCuttingMutator m = new HeadCuttingMutator(journal.getMoveOperations());
         while (m.canMutate()) {
             long start = System.currentTimeMillis();
-            KieSessionJournalImpl testJournal = new KieSessionJournalImpl(journal.getFacts(), journal.getInitialInserts(), m.mutate());
+            KieSessionJournal testJournal = new KieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
             boolean reproduced = reproduce(testJournal);
             double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
@@ -85,7 +81,7 @@ public final class DroolsReproducer {
                 m.revert();
             }
         }
-        journal = new KieSessionJournalImpl(journal.getFacts(), journal.getInitialInserts(), m.getResult());
+        journal = new KieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.getResult());
         log.info("{} updates remaining.", journal.getMoveOperations().size());
     }
 
@@ -94,7 +90,7 @@ public final class DroolsReproducer {
         RemoveRandomBlockMutator<TestGenKieSessionOperation> m = new RemoveRandomBlockMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
-            KieSessionJournalImpl testJournal = new KieSessionJournalImpl(journal.getFacts(), journal.getInitialInserts(), m.mutate());
+            KieSessionJournal testJournal = new KieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionOperation> block = m.getRemovedBlock();
@@ -104,7 +100,7 @@ public final class DroolsReproducer {
                 m.revert();
             }
         }
-        journal = new KieSessionJournalImpl(journal.getFacts(), journal.getInitialInserts(), m.getResult());
+        journal = new KieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.getResult());
         log.info("{} updates remaining.", journal.getMoveOperations().size());
     }
 
@@ -113,7 +109,7 @@ public final class DroolsReproducer {
         RemoveRandomBlockMutator<TestGenKieSessionInsert> m = new RemoveRandomBlockMutator<TestGenKieSessionInsert>(journal.getInitialInserts());
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
-            KieSessionJournalImpl testJournal = new KieSessionJournalImpl(journal.getFacts(), m.mutate(), journal.getMoveOperations());
+            KieSessionJournal testJournal = new KieSessionJournal(journal.getFacts(), m.mutate(), journal.getMoveOperations());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionInsert> block = m.getRemovedBlock();
@@ -123,7 +119,7 @@ public final class DroolsReproducer {
                 m.revert();
             }
         }
-        journal = new KieSessionJournalImpl(journal.getFacts(), m.getResult(), journal.getMoveOperations());
+        journal = new KieSessionJournal(journal.getFacts(), m.getResult(), journal.getMoveOperations());
         log.info("{} inserts remaining.", journal.getInitialInserts().size());
     }
 
@@ -141,7 +137,7 @@ public final class DroolsReproducer {
                 }
             }
         }
-        journal = new KieSessionJournalImpl(minimal, journal.getInitialInserts(), journal.getMoveOperations());
+        journal = new KieSessionJournal(minimal, journal.getInitialInserts(), journal.getMoveOperations());
         log.info("{} facts remaining.", journal.getFacts().size());
     }
 

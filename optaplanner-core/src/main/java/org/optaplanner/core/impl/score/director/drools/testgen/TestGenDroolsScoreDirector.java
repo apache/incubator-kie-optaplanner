@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactor
 
 public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<Solution_> {
 
-    private final KieSessionJournal journal = DroolsReproducer.newJournal();
+    private final KieSessionJournal journal = new KieSessionJournal();
 
     public TestGenDroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, constraintMatchEnabledPreference);

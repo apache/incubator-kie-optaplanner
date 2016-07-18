@@ -15,37 +15,134 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenNullFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenValueFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionDelete;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionFireAllRules;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionUpdate;
 
-public interface KieSessionJournal {
+class KieSessionJournal {
 
-    void addFacts(Collection<Object> workingFacts);
+    private final List<TestGenFact> facts;
+    private final HashMap<Object, TestGenFact> existingInstances = new HashMap<Object, TestGenFact>();
+    private final List<TestGenKieSessionInsert> initialInsertJournal;
+    private final List<TestGenKieSessionOperation> updateJournal;
+    private int operationId = 0;
 
-    void delete(Object entity);
+    public KieSessionJournal() {
+        facts = new ArrayList<TestGenFact>();
+        initialInsertJournal = new ArrayList<TestGenKieSessionInsert>();
+        updateJournal = new ArrayList<TestGenKieSessionOperation>();
+    }
 
-    void dispose();
+    public KieSessionJournal(List<TestGenFact> facts, List<TestGenKieSessionInsert> initialInsertJournal, List<TestGenKieSessionOperation> updateJournal) {
+        this.facts = facts;
+        this.initialInsertJournal = initialInsertJournal;
+        this.updateJournal = updateJournal;
+    }
 
-    void fireAllRules();
+    public RuntimeException replay(KieSession kieSession) {
+        KieSession newKieSession = kieSession.getKieBase().newKieSession();
 
-    List<TestGenFact> getFacts();
+        for (String globalKey : kieSession.getGlobals().getGlobalKeys()) {
+            newKieSession.setGlobal(globalKey, kieSession.getGlobal(globalKey));
+        }
 
-    List<TestGenKieSessionInsert> getInitialInserts();
+        // reset facts to the original state
+        for (TestGenFact fact : facts) {
+            fact.reset();
+        }
 
-    List<TestGenKieSessionOperation> getMoveOperations();
+        // insert facts into KIE session
+        for (TestGenKieSessionOperation insert : initialInsertJournal) {
+            insert.invoke(newKieSession);
+        }
 
-    void insert(Object fact);
+        // replay tested journal
+        try {
+            for (TestGenKieSessionOperation op : updateJournal) {
+                op.invoke(newKieSession);
+            }
+            return null;
+        } catch (RuntimeException ex) {
+            return ex;
+        } finally {
+            newKieSession.dispose();
+        }
+    }
 
-    void insertInitial(Object fact);
+    public void addFacts(Collection<Object> workingFacts) {
+        int i = 0;
+        for (Object fact : workingFacts) {
+            TestGenFact f = new TestGenValueFact(i++, fact);
+            facts.add(f);
+            existingInstances.put(fact, f);
+        }
 
-    void update(Object entity, VariableDescriptor<?> variableDescriptor);
+        for (TestGenFact fact : facts) {
+            fact.setUp(existingInstances);
+        }
+    }
 
-    RuntimeException replay(KieSession kieSession);
+    //------------------------------------------------------------------------------------------------------------------
+    // KIE session operations recording
+    //------------------------------------------------------------------------------------------------------------------
+    //
+    public void insertInitial(Object fact) {
+        initialInsertJournal.add(new TestGenKieSessionInsert(operationId++, existingInstances.get(fact)));
+    }
+
+    public void insert(Object fact) {
+        updateJournal.add(new TestGenKieSessionInsert(operationId++, existingInstances.get(fact)));
+    }
+
+    public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
+        TestGenFact entityFact = existingInstances.get(entity);
+        Object value = variableDescriptor.getValue(entity);
+        TestGenFact valueFact = value == null ? new TestGenNullFact() : existingInstances.get(value);
+        updateJournal.add(new TestGenKieSessionUpdate(operationId++, entityFact, variableDescriptor, valueFact));
+    }
+
+    public void delete(Object entity) {
+        updateJournal.add(new TestGenKieSessionDelete(operationId++, existingInstances.get(entity)));
+    }
+
+    public void fireAllRules() {
+        updateJournal.add(new TestGenKieSessionFireAllRules(operationId++));
+    }
+
+    public void dispose() {
+        facts.clear();
+        existingInstances.clear();
+        initialInsertJournal.clear();
+        updateJournal.clear();
+        operationId = 0;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Getters
+    //------------------------------------------------------------------------------------------------------------------
+    //
+    public List<TestGenFact> getFacts() {
+        return facts;
+    }
+
+    public List<TestGenKieSessionInsert> getInitialInserts() {
+        return initialInsertJournal;
+    }
+
+    public List<TestGenKieSessionOperation> getMoveOperations() {
+        return updateJournal;
+    }
 
 }
