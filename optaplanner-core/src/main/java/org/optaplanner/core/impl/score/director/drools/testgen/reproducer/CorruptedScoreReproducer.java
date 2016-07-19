@@ -16,13 +16,17 @@
 package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.testgen.CorruptedScoreException;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionJournal;
+import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CorruptedScoreReproducer implements OriginalProblemReproducer {
+public class CorruptedScoreReproducer implements OriginalProblemReproducer, TestGenKieSessionListener {
 
     private static final Logger log = LoggerFactory.getLogger(CorruptedScoreReproducer.class);
     private final String analysis;
@@ -37,10 +41,32 @@ public class CorruptedScoreReproducer implements OriginalProblemReproducer {
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
     }
 
+    private static Score<?> extractScore(KieSession kieSession) {
+        ScoreHolder sh = (ScoreHolder) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
+        return sh.extractScore(0);
+    }
+
+    private KieSession createKieSession() {
+        KieSession newKieSession = originalKieSession.getKieBase().newKieSession();
+
+        for (String globalKey : originalKieSession.getGlobals().getGlobalKeys()) {
+            newKieSession.setGlobal(globalKey, originalKieSession.getGlobal(globalKey));
+        }
+
+        // set a fresh score holder
+        if (scoreDefinition != null) {
+            ScoreHolder sh = scoreDefinition.buildScoreHolder(constraintMatchEnabledPreference);
+            newKieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, sh);
+        }
+
+        return newKieSession;
+    }
+
     @Override
     public boolean isReproducible(TestGenKieSessionJournal journal) {
+        journal.addListener(this);
         try {
-            journal.replay(originalKieSession, scoreDefinition, constraintMatchEnabledPreference);
+            journal.replay(createKieSession());
             return false;
         } catch (CorruptedScoreException e) {
             return true;
@@ -59,6 +85,23 @@ public class CorruptedScoreReproducer implements OriginalProblemReproducer {
     public void assertReproducible(TestGenKieSessionJournal journal, String message) {
         if (!isReproducible(journal)) {
             throw new IllegalStateException(message + " The score is not corrupted.");
+        }
+    }
+
+    @Override
+    public void afterFireAllRules(KieSession kieSession) {
+        KieSession uncorruptedSession = createKieSession();
+        for (Object object : kieSession.getObjects()) {
+            uncorruptedSession.insert(object);
+        }
+        uncorruptedSession.fireAllRules();
+        uncorruptedSession.dispose();
+        Score<?> uncorruptedScore = extractScore(uncorruptedSession);
+        Score<?> workingScore = extractScore(kieSession);
+        if (!workingScore.equals(uncorruptedScore)) {
+            log.debug("  Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
+            throw new CorruptedScoreException("Working: " + workingScore + ", uncorrupted: "
+                    + uncorruptedScore);
         }
     }
 

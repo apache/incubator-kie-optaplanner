@@ -33,10 +33,20 @@ public class DroolsExceptionReproducer implements OriginalProblemReproducer {
         this.originalKieSession = originalKieSession;
     }
 
+    private KieSession createKieSession() {
+        KieSession newKieSession = originalKieSession.getKieBase().newKieSession();
+
+        for (String globalKey : originalKieSession.getGlobals().getGlobalKeys()) {
+            newKieSession.setGlobal(globalKey, originalKieSession.getGlobal(globalKey));
+        }
+
+        return newKieSession;
+    }
+
     @Override
     public boolean isReproducible(TestGenKieSessionJournal journal) {
         try {
-            journal.replay(originalKieSession, null, false);
+            journal.replay(createKieSession());
             return false;
         } catch (RuntimeException reproducedException) {
             if (areEqual(originalException, reproducedException)) {
@@ -56,7 +66,7 @@ public class DroolsExceptionReproducer implements OriginalProblemReproducer {
     @Override
     public void assertReproducible(TestGenKieSessionJournal journal, String message) {
         try {
-            journal.replay(originalKieSession, null, false);
+            journal.replay(createKieSession());
             throw new IllegalStateException(message + " No exception thrown.");
         } catch (RuntimeException reproducedException) {
             if (!areEqual(originalException, reproducedException)) {
