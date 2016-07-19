@@ -21,25 +21,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 
 public class HeadCuttingMutatorTest {
 
-    private ArrayList<TestGenKieSessionOperation> list = new ArrayList<TestGenKieSessionOperation>();
+    private ArrayList<Integer> list = new ArrayList<Integer>();
 
     @Before
     public void setUp() {
-        TestGenKieSessionOperation op = mock(TestGenKieSessionOperation.class);
         for (int i = 0; i < 25; i++) {
-            list.add(op);
+            list.add(i);
         }
     }
 
     @Test
     public void mutateUntilListIsEmpty() {
-        HeadCuttingMutator m = new HeadCuttingMutator(list);
+        HeadCuttingMutator<Integer> m = new HeadCuttingMutator<Integer>(list);
         assertTrue(m.canMutate());
 
         // 0.8 * 25 = 20 cut
@@ -86,7 +82,7 @@ public class HeadCuttingMutatorTest {
 
     @Test
     public void testImpossibleMutation() {
-        HeadCuttingMutator m = new HeadCuttingMutator(list);
+        HeadCuttingMutator<Integer> m = new HeadCuttingMutator<Integer>(list);
         assertTrue(m.canMutate());
 
         assertTrue(m.canMutate());

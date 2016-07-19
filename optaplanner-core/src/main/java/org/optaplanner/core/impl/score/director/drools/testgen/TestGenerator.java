@@ -66,7 +66,7 @@ final class TestGenerator {
 
     private void dropOldestUpdates() {
         log.info("Dropping oldest updates...", journal.getMoveOperations().size());
-        HeadCuttingMutator m = new HeadCuttingMutator(journal.getMoveOperations());
+        HeadCuttingMutator<TestGenKieSessionOperation> m = new HeadCuttingMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
         while (m.canMutate()) {
             long start = System.currentTimeMillis();
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
