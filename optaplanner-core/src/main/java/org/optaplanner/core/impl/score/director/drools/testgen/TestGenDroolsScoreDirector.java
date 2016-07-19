@@ -52,8 +52,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
             return super.calculateScore();
         } catch (RuntimeException e) {
             TestGenerator.replay(journal, new DroolsExceptionReproducer(e, kieSession));
-            // This is important so that the original exception is never swallowed
-            throw new IllegalStateException("Reproducer should have failed!");
+            throw e;
         }
     }
 

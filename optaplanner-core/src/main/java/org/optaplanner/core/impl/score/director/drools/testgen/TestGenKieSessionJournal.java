@@ -71,7 +71,7 @@ public class TestGenKieSessionJournal {
             for (TestGenKieSessionOperation op : updateJournal) {
                 op.invoke(replayKieSession);
                 // Detect corrupted score after firing rules
-                if (op.getClass().equals(TestGenKieSessionFireAllRules.class)) {
+                if (scoreDefinition != null && op.getClass().equals(TestGenKieSessionFireAllRules.class)) {
                     KieSession uncorruptedSession = initSession(kieSession, scoreDefinition, constraintMatchEnabledPreference);
                     uncorruptedSession.fireAllRules();
                     uncorruptedSession.dispose();
@@ -104,8 +104,10 @@ public class TestGenKieSessionJournal {
         }
 
         // set a fresh score holder
-        ScoreHolder sh = scoreDefinition.buildScoreHolder(constraintMatchEnabledPreference);
-        newKieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, sh);
+        if (scoreDefinition != null) {
+            ScoreHolder sh = scoreDefinition.buildScoreHolder(constraintMatchEnabledPreference);
+            newKieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, sh);
+        }
 
         // insert facts into KIE session
         for (TestGenKieSessionOperation insert : initialInsertJournal) {
