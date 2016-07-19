@@ -21,7 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenNullFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenValueFact;
@@ -30,9 +34,12 @@ import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGen
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionUpdate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class KieSessionJournal {
 
+    private static final Logger log = LoggerFactory.getLogger(KieSessionJournal.class);
     private final List<TestGenFact> facts;
     private final HashMap<Object, TestGenFact> existingInstances = new HashMap<Object, TestGenFact>();
     private final List<TestGenKieSessionInsert> initialInsertJournal;
@@ -51,34 +58,61 @@ class KieSessionJournal {
         this.updateJournal = updateJournal;
     }
 
-    public RuntimeException replay(KieSession kieSession) {
+    public void replay(KieSession kieSession, ScoreDefinition<?> scoreDefinition, boolean constraintMatchEnabledPreference) {
+        // reset facts to the original state
+        for (TestGenFact fact : facts) {
+            fact.reset();
+        }
+
+        final KieSession replayKieSession = initSession(kieSession, scoreDefinition, constraintMatchEnabledPreference);
+
+        // replay KIE session operations
+        try {
+            for (TestGenKieSessionOperation op : updateJournal) {
+                op.invoke(replayKieSession);
+                // Detect corrupted score after firing rules
+                if (op.getClass().equals(TestGenKieSessionFireAllRules.class)) {
+                    KieSession uncorruptedSession = initSession(kieSession, scoreDefinition, constraintMatchEnabledPreference);
+                    uncorruptedSession.fireAllRules();
+                    uncorruptedSession.dispose();
+                    Score<?> uncorruptedScore = extractScore(uncorruptedSession);
+                    Score<?> workingScore = extractScore(replayKieSession);
+                    if (!workingScore.equals(uncorruptedScore)) {
+                        log.debug("  Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
+                        throw new CorruptedScoreException("Working: " + workingScore + ", uncorrupted: " +
+                                uncorruptedScore);
+                    }
+                }
+            }
+        } catch (RuntimeException ex) {
+            throw ex;
+        } finally {
+            replayKieSession.dispose();
+        }
+    }
+
+    private Score<?> extractScore(KieSession kieSession) {
+        ScoreHolder sh = (ScoreHolder) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
+        return sh.extractScore(0);
+    }
+
+    private KieSession initSession(KieSession kieSession, ScoreDefinition<?> scoreDefinition, boolean constraintMatchEnabledPreference) {
         KieSession newKieSession = kieSession.getKieBase().newKieSession();
 
         for (String globalKey : kieSession.getGlobals().getGlobalKeys()) {
             newKieSession.setGlobal(globalKey, kieSession.getGlobal(globalKey));
         }
 
-        // reset facts to the original state
-        for (TestGenFact fact : facts) {
-            fact.reset();
-        }
+        // set a fresh score holder
+        ScoreHolder sh = scoreDefinition.buildScoreHolder(constraintMatchEnabledPreference);
+        newKieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, sh);
 
         // insert facts into KIE session
         for (TestGenKieSessionOperation insert : initialInsertJournal) {
             insert.invoke(newKieSession);
         }
 
-        // replay tested journal
-        try {
-            for (TestGenKieSessionOperation op : updateJournal) {
-                op.invoke(newKieSession);
-            }
-            return null;
-        } catch (RuntimeException ex) {
-            return ex;
-        } finally {
-            newKieSession.dispose();
-        }
+        return newKieSession;
     }
 
     public void addFacts(Collection<Object> workingFacts) {

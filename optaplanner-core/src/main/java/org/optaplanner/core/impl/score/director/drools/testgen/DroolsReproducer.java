@@ -18,11 +18,9 @@ package org.optaplanner.core.impl.score.director.drools.testgen;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
@@ -31,21 +29,26 @@ import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGen
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO rename to TestGenerator
 final class DroolsReproducer {
 
     private static final Logger log = LoggerFactory.getLogger(DroolsReproducer.class);
     private static final Logger reproducerLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
-    private final KieSession oldKieSession;
-    private final RuntimeException originalException;
+    private final OriginalProblemReproducer reproducer;
     private KieSessionJournal journal;
 
-    static void replay(KieSessionJournal journal, KieSession kieSession, RuntimeException originalException) {
-        throw new DroolsReproducer(kieSession, originalException, journal).doReplay();
+    static void replay(KieSessionJournal journal, OriginalProblemReproducer reproducer) {
+        new DroolsReproducer(journal, reproducer).doReplay();
     }
 
-    private RuntimeException doReplay() {
-        log.info("Starting replay & reduce to find a minimal Drools reproducer for:", originalException);
-        assertOriginalExceptionReproduced("Cannot reproduce original exception even without journal modifications. " +
+    private DroolsReproducer(KieSessionJournal journal, OriginalProblemReproducer reproducer) {
+        this.journal = journal;
+        this.reproducer = reproducer;
+    }
+
+    private void doReplay() {
+        log.info("Starting replay & reduce to find a minimal Drools reproducer for: {}", reproducer);
+        assertOriginalExceptionReproduced("Cannot reproduce the original problem even without journal modifications. " +
                 "This is a bug!");
         log.info("The KIE session journal has {} facts, {} inserts and {} updates.",
                  journal.getFacts().size(), journal.getInitialInserts().size(), journal.getMoveOperations().size());
@@ -55,16 +58,8 @@ final class DroolsReproducer {
         pruneFacts();
         // TODO prune setup code
         printReproducer();
-        RuntimeException reproducedException = journal.replay(oldKieSession);
-        assertOriginalExceptionReproduced("Cannot reproduce original exception after pruning the journal. " +
+        assertOriginalExceptionReproduced("Cannot reproduce the original problem after pruning the journal. " +
                 "This is a bug!");
-        return reproducedException;
-    }
-
-    public DroolsReproducer(KieSession oldKieSession, RuntimeException originalException, KieSessionJournal journal) {
-        this.oldKieSession = oldKieSession;
-        this.originalException = originalException;
-        this.journal = journal;
     }
 
     private void dropOldestUpdates() {
@@ -151,48 +146,12 @@ final class DroolsReproducer {
         }
     }
 
-    private boolean reproduce(KieSessionJournal journal) {
-        RuntimeException reproducedEx = journal.replay(oldKieSession);
-        if (reproducedEx == null) {
-            return false;
-        } else if (areEqual(originalException, reproducedEx)) {
-            return true;
-        } else {
-            if (reproducedEx.getMessage().startsWith("No fact handle for ")) {
-                // this is common when removing insert of a fact that is later updated - not interesting
-                log.debug("Can't remove insert: {}: {}", reproducedEx.getClass().getSimpleName(), reproducedEx.getMessage());
-            } else {
-                log.info("Unexpected exception", reproducedEx);
-            }
-            return false;
-        }
-    }
-
-    private static boolean areEqual(RuntimeException originalException, RuntimeException reproducedException) {
-        if (!originalException.getClass().equals(reproducedException.getClass())) {
-            return false;
-        }
-        if (!Objects.equals(originalException.getMessage(), reproducedException.getMessage())) {
-            return false;
-        }
-        if (reproducedException.getStackTrace().length == 0) {
-            throw new IllegalStateException("Caught exception with empty stack trace => can't compare to the original." +
-                    " Use '-XX:-OmitStackTraceInFastThrow' to turn off this optimization.", reproducedException);
-        }
-        // TODO check all org.drools elements?
-        return originalException.getStackTrace()[0].equals(reproducedException.getStackTrace()[0]);
+    private boolean reproduce(KieSessionJournal testJournal) {
+        return reproducer.isReproducible(testJournal);
     }
 
     private void assertOriginalExceptionReproduced(String message) {
-        RuntimeException reproducedException = journal.replay(oldKieSession);
-        if (reproducedException == null) {
-            throw new IllegalStateException(message + " No exception thrown.");
-        }
-        if (!areEqual(originalException, reproducedException)) {
-            throw new IllegalStateException(message +
-                    "\nExpected [" + originalException.getClass() + ": " + originalException.getMessage() + "]" +
-                    "\nCaused [" + reproducedException.getClass() + ": " + reproducedException.getMessage() + "]", reproducedException);
-        }
+        reproducer.assertReproducible(journal, message);
     }
 
     //------------------------------------------------------------------------------------------------------------------

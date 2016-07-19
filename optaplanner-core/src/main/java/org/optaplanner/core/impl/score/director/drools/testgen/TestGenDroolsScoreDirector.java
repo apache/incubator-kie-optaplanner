@@ -21,6 +21,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 
@@ -49,10 +50,19 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         try {
             return super.calculateScore();
         } catch (RuntimeException e) {
-            DroolsReproducer.replay(journal, kieSession, e);
+            DroolsReproducer.replay(journal, new DroolsExceptionReproducer(e, kieSession));
             // This is important so that the original exception is never swallowed
             throw new IllegalStateException("Reproducer should have failed!");
         }
+    }
+
+    @Override
+    protected String buildScoreCorruptionAnalysis(ScoreDirector<Solution_> uncorruptedScoreDirector) {
+        String originalAnalysis = super.buildScoreCorruptionAnalysis(uncorruptedScoreDirector);
+        CorruptedScoreReproducer reproducer = new CorruptedScoreReproducer(
+                originalAnalysis, kieSession, getScoreDefinition(), constraintMatchEnabledPreference);
+        DroolsReproducer.replay(journal, reproducer);
+        return originalAnalysis;
     }
 
     @Override
