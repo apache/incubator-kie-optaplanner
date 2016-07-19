@@ -21,7 +21,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.CorruptedScoreReproducer;
@@ -59,12 +58,15 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     }
 
     @Override
-    protected String buildScoreCorruptionAnalysis(ScoreDirector<Solution_> uncorruptedScoreDirector) {
-        String originalAnalysis = super.buildScoreCorruptionAnalysis(uncorruptedScoreDirector);
-        CorruptedScoreReproducer reproducer = new CorruptedScoreReproducer(
-                originalAnalysis, kieSession, getScoreDefinition(), constraintMatchEnabledPreference);
-        TestGenerator.replay(journal, reproducer);
-        return originalAnalysis;
+    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
+        try {
+            super.assertWorkingScoreFromScratch(workingScore, completedAction);
+        } catch (IllegalStateException e) {
+            CorruptedScoreReproducer reproducer = new CorruptedScoreReproducer(
+                    e.getMessage(), kieSession, getScoreDefinition(), constraintMatchEnabledPreference);
+            TestGenerator.replay(journal, reproducer);
+            throw e;
+        }
     }
 
     @Override
