@@ -39,8 +39,8 @@ public class TestGenValueFact implements TestGenFact {
 
     public TestGenValueFact(int id, Object instance) {
         this.instance = instance;
-        this.variableName = instance.getClass().getSimpleName().substring(0, 1).toLowerCase() +
-                instance.getClass().getSimpleName().substring(1) + "_" + id;
+        this.variableName = instance.getClass().getSimpleName().substring(0, 1).toLowerCase()
+                + instance.getClass().getSimpleName().substring(1) + "_" + id;
     }
 
     @Override
@@ -95,9 +95,11 @@ public class TestGenValueFact implements TestGenFact {
 
     private static Method getParseMethod(Field f) {
         for (Method m : f.getType().getMethods()) {
-            if (Modifier.isStatic(m.getModifiers()) && f.getType().equals(m.getReturnType()) &&
-                    m.getParameters().length == 1 && m.getParameters()[0].getType().equals(String.class) &&
-                    (m.getName().startsWith("parse") || m.getName().startsWith("valueOf"))) {
+            if (Modifier.isStatic(m.getModifiers())
+                    && f.getType().equals(m.getReturnType())
+                    && m.getParameters().length == 1
+                    && m.getParameters()[0].getType().equals(String.class)
+                    && (m.getName().startsWith("parse") || m.getName().startsWith("valueOf"))) {
                 return m;
             }
         }

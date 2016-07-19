@@ -68,7 +68,7 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
     @Override
     public String toString() {
-        return "operation #" + id;
+        return "operation U #" + id;
     }
 
 }

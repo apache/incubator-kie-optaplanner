@@ -46,7 +46,7 @@ public class TestGenKieSessionInsert implements TestGenKieSessionOperation {
 
     @Override
     public String toString() {
-        return "operation #" + id;
+        return "operation I #" + id;
     }
 
 }

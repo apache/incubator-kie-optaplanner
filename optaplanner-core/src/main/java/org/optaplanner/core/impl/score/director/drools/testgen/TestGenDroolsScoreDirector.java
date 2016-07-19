@@ -51,7 +51,9 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         try {
             return super.calculateScore();
         } catch (RuntimeException e) {
-            TestGenerator.replay(journal, new DroolsExceptionReproducer(e, kieSession));
+            // catch any Drools exception and create a minimal reproducing test
+            // TODO check the exception is coming from org.drools
+            TestGenerator.createTest(journal, new DroolsExceptionReproducer(e, kieSession));
             throw e;
         }
     }
@@ -61,9 +63,15 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         try {
             super.assertWorkingScoreFromScratch(workingScore, completedAction);
         } catch (IllegalStateException e) {
+            // catch corrupted score exception and create a minimal reproducing test
+            // TODO check it's really corrupted score
             CorruptedScoreReproducer reproducer = new CorruptedScoreReproducer(
-                    e.getMessage(), kieSession, getScoreDefinition(), constraintMatchEnabledPreference);
-            TestGenerator.replay(journal, reproducer);
+                    e.getMessage(),
+                    kieSession,
+                    getScoreDefinition(),
+                    constraintMatchEnabledPreference
+            );
+            TestGenerator.createTest(journal, reproducer);
             throw e;
         }
     }

@@ -35,12 +35,12 @@ import org.slf4j.LoggerFactory;
 final class TestGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(TestGenerator.class);
-    private static final Logger reproducerLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
+    private static final Logger testLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private final OriginalProblemReproducer reproducer;
     private TestGenKieSessionJournal journal;
 
-    static void replay(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
-        new TestGenerator(journal, reproducer).doReplay();
+    static void createTest(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
+        new TestGenerator(journal, reproducer).run();
     }
 
     private TestGenerator(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
@@ -48,20 +48,20 @@ final class TestGenerator {
         this.reproducer = reproducer;
     }
 
-    private void doReplay() {
-        log.info("Starting replay & reduce to find a minimal Drools reproducer for: {}", reproducer);
-        assertOriginalExceptionReproduced("Cannot reproduce the original problem even without journal modifications. " +
-                "This is a bug!");
+    private void run() {
+        log.info("Creating a minimal test that reproduces following Drools problem: {}", reproducer);
+        assertOriginalExceptionReproduced("Cannot reproduce the original problem even without journal modifications. "
+                + "This is a bug!");
         log.info("The KIE session journal has {} facts, {} inserts and {} updates.",
-                 journal.getFacts().size(), journal.getInitialInserts().size(), journal.getMoveOperations().size());
+                journal.getFacts().size(), journal.getInitialInserts().size(), journal.getMoveOperations().size());
         dropOldestUpdates();
         pruneUpdates();
         pruneInserts();
         pruneFacts();
         // TODO prune setup code
         printReproducer();
-        assertOriginalExceptionReproduced("Cannot reproduce the original problem after pruning the journal. " +
-                "This is a bug!");
+        assertOriginalExceptionReproduced("Cannot reproduce the original problem after pruning the journal. "
+                + "This is a bug!");
     }
 
     private void dropOldestUpdates() {
@@ -92,7 +92,7 @@ final class TestGenerator {
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionOperation> block = m.getRemovedBlock();
             log.debug("{} without block of {} [{} - {}]",
-                      outcome, block.size(), block.get(0), block.get(block.size() - 1));
+                    outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
                 m.revert();
             }
@@ -111,7 +111,7 @@ final class TestGenerator {
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionInsert> block = m.getRemovedBlock();
             log.debug("{} without block of {} [{} - {}]",
-                      outcome, block.size(), block.get(0), block.get(block.size() - 1));
+                    outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
                 m.revert();
             }
@@ -185,7 +185,7 @@ final class TestGenerator {
             throw new IllegalStateException("Cannot determine planning domain package.");
         }
 
-        reproducerLog.info("package {};\n", domainPackage);
+        testLog.info("package {};\n", domainPackage);
         SortedSet<String> imports = new TreeSet<String>();
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
@@ -204,51 +204,48 @@ final class TestGenerator {
         }
 
         for (String cls : imports) {
-            reproducerLog.info("import {};", cls);
+            testLog.info("import {};", cls);
         }
-        reproducerLog.info(
-                "\n" +
-                "public class DroolsReproducerTest {\n" +
-                "\n" +
-                "    KieSession kieSession;");
+        testLog.info("\n"
+                + "public class DroolsReproducerTest {\n"
+                + "\n"
+                + "    KieSession kieSession;");
         for (TestGenFact fact : journal.getFacts()) {
-            fact.printInitialization(reproducerLog);
+            fact.printInitialization(testLog);
         }
-        reproducerLog.info("");
+        testLog.info("");
     }
 
     private void printSetup() {
-        reproducerLog.info(
-                "    @Before\n" +
-                "    public void setUp() {\n" +
-                "        KieServices kieServices = KieServices.Factory.get();\n" +
-                "        KieModuleModel kieModuleModel = kieServices.newKieModuleModel();\n" +
-                "        KieFileSystem kfs = kieServices.newKieFileSystem();\n" +
-                "        kfs.writeKModuleXML(kieModuleModel.toXML());\n" +
+        testLog.info("    @Before\n"
+                + "    public void setUp() {\n"
+                + "        KieServices kieServices = KieServices.Factory.get();\n"
+                + "        KieModuleModel kieModuleModel = kieServices.newKieModuleModel();\n"
+                + "        KieFileSystem kfs = kieServices.newKieFileSystem();\n"
+                + "        kfs.writeKModuleXML(kieModuleModel.toXML());\n"
                 // TODO don't hard-code score DRL
-                "        kfs.write(kieServices.getResources().newClassPathResource(\"org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl\").setResourceType(ResourceType.DRL));\n" +
-                "        kieServices.newKieBuilder(kfs).buildAll();\n" +
-                "        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());\n" +
-                "        kieSession = kieContainer.newKieSession();\n" +
-                "");
+                + "        kfs.write(kieServices.getResources().newClassPathResource(\"org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl\").setResourceType(ResourceType.DRL));\n"
+                + "        kieServices.newKieBuilder(kfs).buildAll();\n"
+                + "        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());\n"
+                + "        kieSession = kieContainer.newKieSession();\n"
+                + "");
         for (TestGenFact fact : journal.getFacts()) {
-            fact.printSetup(reproducerLog);
+            fact.printSetup(testLog);
         }
-        reproducerLog.info("");
+        testLog.info("");
         for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
-            insert.print(reproducerLog);
+            insert.print(testLog);
         }
-        reproducerLog.info("    }\n");
+        testLog.info("    }\n");
     }
 
     private void printTest() {
-        reproducerLog.info(
-                "    @Test\n" +
-                "    public void test() {");
+        testLog.info("    @Test\n"
+                + "    public void test() {");
         for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
-            op.print(reproducerLog);
+            op.print(testLog);
         }
-        reproducerLog.info("    }\n}");
+        testLog.info("    }\n}");
     }
 
 }

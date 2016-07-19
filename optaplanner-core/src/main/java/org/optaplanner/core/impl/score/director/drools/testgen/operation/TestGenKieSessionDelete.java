@@ -42,7 +42,7 @@ public class TestGenKieSessionDelete implements TestGenKieSessionOperation {
 
     @Override
     public String toString() {
-        return "operation #" + id;
+        return "operation D #" + id;
     }
 
 }

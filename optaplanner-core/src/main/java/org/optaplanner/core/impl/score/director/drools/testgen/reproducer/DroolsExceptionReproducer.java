@@ -38,15 +38,15 @@ public class DroolsExceptionReproducer implements OriginalProblemReproducer {
         try {
             journal.replay(originalKieSession, null, false);
             return false;
-        } catch (RuntimeException reproducedEx) {
-            if (areEqual(originalException, reproducedEx)) {
+        } catch (RuntimeException reproducedException) {
+            if (areEqual(originalException, reproducedException)) {
                 return true;
             } else {
-                if (reproducedEx.getMessage().startsWith("No fact handle for ")) {
+                if (reproducedException.getMessage().startsWith("No fact handle for ")) {
                     // this is common when removing insert of a fact that is later updated - not interesting
-                    log.debug("Can't remove insert: {}: {}", reproducedEx.getClass().getSimpleName(), reproducedEx.getMessage());
+                    log.debug("Can't remove insert: {}", reproducedException.toString());
                 } else {
-                    log.info("Unexpected exception", reproducedEx);
+                    log.info("Unexpected exception", reproducedException);
                 }
                 return false;
             }
@@ -60,10 +60,10 @@ public class DroolsExceptionReproducer implements OriginalProblemReproducer {
             throw new IllegalStateException(message + " No exception thrown.");
         } catch (RuntimeException reproducedException) {
             if (!areEqual(originalException, reproducedException)) {
-                throw new IllegalStateException(message +
-                        "\nExpected [" + originalException + "]" +
-                        "\nCaused [" + reproducedException + "]",
-                                                reproducedException);
+                throw new IllegalStateException(message
+                        + "\nExpected [" + originalException + "]"
+                        + "\nCaused [" + reproducedException + "]",
+                        reproducedException);
             }
         }
     }
@@ -76,8 +76,8 @@ public class DroolsExceptionReproducer implements OriginalProblemReproducer {
             return false;
         }
         if (reproducedException.getStackTrace().length == 0) {
-            throw new IllegalStateException("Caught exception with empty stack trace => can't compare to the original. " +
-                    "Use '-XX:-OmitStackTraceInFastThrow' to turn off this optimization.", reproducedException);
+            throw new IllegalStateException("Caught exception with empty stack trace => can't compare to the original. "
+                    + "Use '-XX:-OmitStackTraceInFastThrow' to turn off this optimization.", reproducedException);
         }
         // TODO check all org.drools elements?
         return originalException.getStackTrace()[0].equals(reproducedException.getStackTrace()[0]);

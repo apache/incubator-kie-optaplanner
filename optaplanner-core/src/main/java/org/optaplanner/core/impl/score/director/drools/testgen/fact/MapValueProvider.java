@@ -31,8 +31,7 @@ class MapValueProvider extends AbstractValueProvider {
     private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
     public MapValueProvider(Object value, String identifier,
-                            Type[] typeArguments,
-                            Map<Object, TestGenFact> existingInstances) {
+            Type[] typeArguments, Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;
         this.typeArguments = typeArguments;

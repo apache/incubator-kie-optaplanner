@@ -39,7 +39,7 @@ public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation
 
     @Override
     public String toString() {
-        return "operation #" + id;
+        return "operation F #" + id;
     }
 
 }
