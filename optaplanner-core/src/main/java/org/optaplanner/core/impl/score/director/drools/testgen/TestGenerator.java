@@ -23,25 +23,27 @@ import java.util.TreeSet;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.mutation.HeadCuttingMutator;
+import org.optaplanner.core.impl.score.director.drools.testgen.mutation.RemoveRandomBlockMutator;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionUpdate;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.OriginalProblemReproducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO rename to TestGenerator
-final class DroolsReproducer {
+final class TestGenerator {
 
-    private static final Logger log = LoggerFactory.getLogger(DroolsReproducer.class);
+    private static final Logger log = LoggerFactory.getLogger(TestGenerator.class);
     private static final Logger reproducerLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private final OriginalProblemReproducer reproducer;
-    private KieSessionJournal journal;
+    private TestGenKieSessionJournal journal;
 
-    static void replay(KieSessionJournal journal, OriginalProblemReproducer reproducer) {
-        new DroolsReproducer(journal, reproducer).doReplay();
+    static void replay(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
+        new TestGenerator(journal, reproducer).doReplay();
     }
 
-    private DroolsReproducer(KieSessionJournal journal, OriginalProblemReproducer reproducer) {
+    private TestGenerator(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
         this.journal = journal;
         this.reproducer = reproducer;
     }
@@ -67,7 +69,7 @@ final class DroolsReproducer {
         HeadCuttingMutator m = new HeadCuttingMutator(journal.getMoveOperations());
         while (m.canMutate()) {
             long start = System.currentTimeMillis();
-            KieSessionJournal testJournal = new KieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
+            TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
             boolean reproduced = reproduce(testJournal);
             double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
@@ -76,7 +78,7 @@ final class DroolsReproducer {
                 m.revert();
             }
         }
-        journal = new KieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.getResult());
+        journal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.getResult());
         log.info("{} updates remaining.", journal.getMoveOperations().size());
     }
 
@@ -85,7 +87,7 @@ final class DroolsReproducer {
         RemoveRandomBlockMutator<TestGenKieSessionOperation> m = new RemoveRandomBlockMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
-            KieSessionJournal testJournal = new KieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
+            TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionOperation> block = m.getRemovedBlock();
@@ -95,7 +97,7 @@ final class DroolsReproducer {
                 m.revert();
             }
         }
-        journal = new KieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.getResult());
+        journal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.getResult());
         log.info("{} updates remaining.", journal.getMoveOperations().size());
     }
 
@@ -104,7 +106,7 @@ final class DroolsReproducer {
         RemoveRandomBlockMutator<TestGenKieSessionInsert> m = new RemoveRandomBlockMutator<TestGenKieSessionInsert>(journal.getInitialInserts());
         while (m.canMutate()) {
             log.debug("Current journal size: {}", m.getResult().size());
-            KieSessionJournal testJournal = new KieSessionJournal(journal.getFacts(), m.mutate(), journal.getMoveOperations());
+            TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), m.mutate(), journal.getMoveOperations());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionInsert> block = m.getRemovedBlock();
@@ -114,7 +116,7 @@ final class DroolsReproducer {
                 m.revert();
             }
         }
-        journal = new KieSessionJournal(journal.getFacts(), m.getResult(), journal.getMoveOperations());
+        journal = new TestGenKieSessionJournal(journal.getFacts(), m.getResult(), journal.getMoveOperations());
         log.info("{} inserts remaining.", journal.getInitialInserts().size());
     }
 
@@ -132,7 +134,7 @@ final class DroolsReproducer {
                 }
             }
         }
-        journal = new KieSessionJournal(minimal, journal.getInitialInserts(), journal.getMoveOperations());
+        journal = new TestGenKieSessionJournal(minimal, journal.getInitialInserts(), journal.getMoveOperations());
         log.info("{} facts remaining.", journal.getFacts().size());
     }
 
@@ -146,7 +148,7 @@ final class DroolsReproducer {
         }
     }
 
-    private boolean reproduce(KieSessionJournal testJournal) {
+    private boolean reproduce(TestGenKieSessionJournal testJournal) {
         return reproducer.isReproducible(testJournal);
     }
 

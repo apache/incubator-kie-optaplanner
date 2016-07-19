@@ -24,10 +24,12 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.CorruptedScoreReproducer;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.DroolsExceptionReproducer;
 
 public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<Solution_> {
 
-    private final KieSessionJournal journal = new KieSessionJournal();
+    private final TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
 
     public TestGenDroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, constraintMatchEnabledPreference);
@@ -50,7 +52,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         try {
             return super.calculateScore();
         } catch (RuntimeException e) {
-            DroolsReproducer.replay(journal, new DroolsExceptionReproducer(e, kieSession));
+            TestGenerator.replay(journal, new DroolsExceptionReproducer(e, kieSession));
             // This is important so that the original exception is never swallowed
             throw new IllegalStateException("Reproducer should have failed!");
         }
@@ -61,7 +63,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         String originalAnalysis = super.buildScoreCorruptionAnalysis(uncorruptedScoreDirector);
         CorruptedScoreReproducer reproducer = new CorruptedScoreReproducer(
                 originalAnalysis, kieSession, getScoreDefinition(), constraintMatchEnabledPreference);
-        DroolsReproducer.replay(journal, reproducer);
+        TestGenerator.replay(journal, reproducer);
         return originalAnalysis;
     }
 

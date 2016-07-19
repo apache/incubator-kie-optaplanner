@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen;
+package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
 import java.util.Objects;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionJournal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class DroolsExceptionReproducer implements OriginalProblemReproducer {
+public class DroolsExceptionReproducer implements OriginalProblemReproducer {
 
     private static final Logger log = LoggerFactory.getLogger(DroolsExceptionReproducer.class);
     private final RuntimeException originalException;
@@ -33,7 +34,7 @@ class DroolsExceptionReproducer implements OriginalProblemReproducer {
     }
 
     @Override
-    public boolean isReproducible(KieSessionJournal journal) {
+    public boolean isReproducible(TestGenKieSessionJournal journal) {
         try {
             journal.replay(originalKieSession, null, false);
             return false;
@@ -53,7 +54,7 @@ class DroolsExceptionReproducer implements OriginalProblemReproducer {
     }
 
     @Override
-    public void assertReproducible(KieSessionJournal journal, String message) {
+    public void assertReproducible(TestGenKieSessionJournal journal, String message) {
         try {
             journal.replay(originalKieSession, null, false);
             throw new IllegalStateException(message + " No exception thrown.");

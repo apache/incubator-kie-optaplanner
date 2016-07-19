@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen;
+package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.drools.testgen.CorruptedScoreException;
+import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionJournal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class CorruptedScoreReproducer implements OriginalProblemReproducer {
+public class CorruptedScoreReproducer implements OriginalProblemReproducer {
 
     private static final Logger log = LoggerFactory.getLogger(CorruptedScoreReproducer.class);
     private final String analysis;
@@ -36,7 +38,7 @@ class CorruptedScoreReproducer implements OriginalProblemReproducer {
     }
 
     @Override
-    public boolean isReproducible(KieSessionJournal journal) {
+    public boolean isReproducible(TestGenKieSessionJournal journal) {
         try {
             journal.replay(originalKieSession, scoreDefinition, constraintMatchEnabledPreference);
             return false;
@@ -54,7 +56,7 @@ class CorruptedScoreReproducer implements OriginalProblemReproducer {
     }
 
     @Override
-    public void assertReproducible(KieSessionJournal journal, String message) {
+    public void assertReproducible(TestGenKieSessionJournal journal, String message) {
         if (!isReproducible(journal)) {
             throw new IllegalStateException(message + " The score is not corrupted.");
         }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen;
+package org.optaplanner.core.impl.score.director.drools.testgen.mutation;
 
 import java.util.ArrayList;
 import java.util.List;

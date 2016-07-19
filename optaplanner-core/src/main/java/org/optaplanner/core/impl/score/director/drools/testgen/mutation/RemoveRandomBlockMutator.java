@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen;
+package org.optaplanner.core.impl.score.director.drools.testgen.mutation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-class RemoveRandomBlockMutator<T> {
+public class RemoveRandomBlockMutator<T> {
 
     private final List<T> list;
     private final Random random = new Random(0);

@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
-class CorruptedScoreException extends RuntimeException {
+public class CorruptedScoreException extends RuntimeException {
 
     /**
      * Creates a new instance of <code>CorruptedScoreException</code> without detail message.

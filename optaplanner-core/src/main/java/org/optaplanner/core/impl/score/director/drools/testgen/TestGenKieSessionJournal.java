@@ -37,22 +37,22 @@ import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGen
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class KieSessionJournal {
+public class TestGenKieSessionJournal {
 
-    private static final Logger log = LoggerFactory.getLogger(KieSessionJournal.class);
+    private static final Logger log = LoggerFactory.getLogger(TestGenKieSessionJournal.class);
     private final List<TestGenFact> facts;
     private final HashMap<Object, TestGenFact> existingInstances = new HashMap<Object, TestGenFact>();
     private final List<TestGenKieSessionInsert> initialInsertJournal;
     private final List<TestGenKieSessionOperation> updateJournal;
     private int operationId = 0;
 
-    public KieSessionJournal() {
+    public TestGenKieSessionJournal() {
         facts = new ArrayList<TestGenFact>();
         initialInsertJournal = new ArrayList<TestGenKieSessionInsert>();
         updateJournal = new ArrayList<TestGenKieSessionOperation>();
     }
 
-    public KieSessionJournal(List<TestGenFact> facts, List<TestGenKieSessionInsert> initialInsertJournal, List<TestGenKieSessionOperation> updateJournal) {
+    public TestGenKieSessionJournal(List<TestGenFact> facts, List<TestGenKieSessionInsert> initialInsertJournal, List<TestGenKieSessionOperation> updateJournal) {
         this.facts = facts;
         this.initialInsertJournal = initialInsertJournal;
         this.updateJournal = updateJournal;
