@@ -15,12 +15,10 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import org.slf4j.Logger;
-
 interface ValueProvider {
 
     Object get();
 
-    void printSetup(Logger log);
+    void printSetup(StringBuilder sb);
 
 }

@@ -17,7 +17,6 @@ package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
-import org.slf4j.Logger;
 
 public class TestGenKieSessionDelete implements TestGenKieSessionOperation {
 
@@ -35,9 +34,9 @@ public class TestGenKieSessionDelete implements TestGenKieSessionOperation {
     }
 
     @Override
-    public void print(Logger log) {
-        log.debug("        //{}", this);
-        log.info("        kieSession.delete(kieSession.getFactHandle({}), {});", entity, entity);
+    public void print(StringBuilder sb) {
+        sb.append(String.format("        //%s%n", this));
+        sb.append(String.format("        kieSession.delete(kieSession.getFactHandle(%s), %s);", entity, entity));
     }
 
     @Override

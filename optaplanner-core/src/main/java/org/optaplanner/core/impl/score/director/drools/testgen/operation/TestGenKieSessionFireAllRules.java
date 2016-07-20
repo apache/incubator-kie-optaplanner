@@ -16,7 +16,6 @@
 package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
 import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
 
 public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation {
 
@@ -32,9 +31,9 @@ public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation
     }
 
     @Override
-    public void print(Logger log) {
-        log.debug("\n        //{}", this);
-        log.info("        kieSession.fireAllRules();\n");
+    public void print(StringBuilder sb) {
+        sb.append(String.format("        //%s%n", this));
+        sb.append(String.format("        kieSession.fireAllRules();%n"));
     }
 
     @Override

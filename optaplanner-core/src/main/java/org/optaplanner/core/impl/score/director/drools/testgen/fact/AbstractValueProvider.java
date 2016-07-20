@@ -15,8 +15,6 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import org.slf4j.Logger;
-
 abstract class AbstractValueProvider implements ValueProvider {
 
     protected final Object value;
@@ -31,7 +29,7 @@ abstract class AbstractValueProvider implements ValueProvider {
     }
 
     @Override
-    public void printSetup(Logger log) {
+    public void printSetup(StringBuilder sb) {
         // no setup required
     }
 

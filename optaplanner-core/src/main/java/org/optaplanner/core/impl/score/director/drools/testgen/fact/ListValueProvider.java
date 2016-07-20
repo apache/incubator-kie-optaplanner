@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 class ListValueProvider extends AbstractValueProvider {
 
     private final String identifier;
@@ -57,12 +55,12 @@ class ListValueProvider extends AbstractValueProvider {
     }
 
     @Override
-    public void printSetup(Logger log) {
+    public void printSetup(StringBuilder sb) {
         String e = ((Class<?>) typeArgument).getSimpleName();
-        log.info("        ArrayList<{}> {} = new ArrayList<{}>();", e, identifier, e);
+        sb.append(String.format("        ArrayList<%s> %s = new ArrayList<%s>();%n", e, identifier, e));
         for (Object item : ((java.util.List<?>) value)) {
-            log.info("        //{}", item);
-            log.info("        {}.add({});", identifier, existingInstances.get(item));
+            sb.append(String.format("        //%s%n", item));
+            sb.append(String.format("        %s.add(%s);%n", identifier, existingInstances.get(item)));
         }
     }
 

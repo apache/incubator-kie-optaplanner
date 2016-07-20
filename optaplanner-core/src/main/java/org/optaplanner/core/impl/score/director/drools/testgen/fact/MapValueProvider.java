@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 class MapValueProvider extends AbstractValueProvider {
 
     private final String identifier;
@@ -66,13 +64,13 @@ class MapValueProvider extends AbstractValueProvider {
     }
 
     @Override
-    public void printSetup(Logger log) {
+    public void printSetup(StringBuilder sb) {
         String k = ((Class<?>) typeArguments[0]).getSimpleName();
         String v = ((Class<?>) typeArguments[1]).getSimpleName();
-        log.info("        HashMap<{}, {}> {} = new HashMap<{}, {}>();", k, v, identifier, k, v);
+        sb.append(String.format("        HashMap<%s, %s> %s = new HashMap<%s, %s>();%n", k, v, identifier, k, v));
         for (Map.Entry<? extends Object, ? extends Object> entry : ((java.util.Map<?, ?>) value).entrySet()) {
-            log.info("        //{} => {}", entry.getKey(), entry.getValue());
-            log.info("        {}.put({}, {});", identifier, existingInstances.get(entry.getKey()), existingInstances.get(entry.getValue()));
+            sb.append(String.format("        //%s => %s%n", entry.getKey(), entry.getValue()));
+            sb.append(String.format("        %s.put(%s, %s);%n", identifier, existingInstances.get(entry.getKey()), existingInstances.get(entry.getValue())));
         }
     }
 

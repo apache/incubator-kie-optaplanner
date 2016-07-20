@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
-import org.slf4j.Logger;
 
 public class TestGenValueFact implements TestGenFact {
 
@@ -126,21 +125,22 @@ public class TestGenValueFact implements TestGenFact {
     }
 
     @Override
-    public void printInitialization(Logger log) {
-        log.info("    {} {} = new {}();", instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName());
+    public void printInitialization(StringBuilder sb) {
+        sb.append(String.format("    %s %s = new %s();%n",
+                instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName()));
     }
 
     @Override
-    public void printSetup(Logger log) {
-        log.info("        //{}", instance);
+    public void printSetup(StringBuilder sb) {
+        sb.append(String.format("        //%s%n", instance));
         for (Map.Entry<BeanPropertyMemberAccessor, ValueProvider> entry : attributes.entrySet()) {
             BeanPropertyMemberAccessor accessor = entry.getKey();
             Method setter = ReflectionHelper.getSetterMethod(instance.getClass(), accessor.getType(), accessor.getName());
             ValueProvider value = entry.getValue();
-            value.printSetup(log);
+            value.printSetup(sb);
             // null original value means the field is uninitialized so there's no need to .set(null);
             if (value.get() != null) {
-                log.info("        {}.{}({});", variableName, setter.getName(), value.toString());
+                sb.append(String.format("        %s.%s(%s);%n", variableName, setter.getName(), value.toString()));
             }
         }
     }

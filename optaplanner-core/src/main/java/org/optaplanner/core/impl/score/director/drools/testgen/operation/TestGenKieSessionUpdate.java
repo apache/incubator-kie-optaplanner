@@ -23,7 +23,6 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
-import org.slf4j.Logger;
 
 public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
@@ -60,10 +59,10 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
     }
 
     @Override
-    public void print(Logger log) {
-        log.debug("        //{}", this);
-        log.info("        {}.{}({});", entity, setterName, value);
-        log.info("        kieSession.update(kieSession.getFactHandle({}), {});", entity, entity);
+    public void print(StringBuilder sb) {
+        sb.append(String.format("        //%s%n", this));
+        sb.append(String.format("        %s.%s(%s);%n", entity, setterName, value));
+        sb.append(String.format("        kieSession.update(kieSession.getFactHandle(%s), %s);%n", entity, entity));
     }
 
     @Override

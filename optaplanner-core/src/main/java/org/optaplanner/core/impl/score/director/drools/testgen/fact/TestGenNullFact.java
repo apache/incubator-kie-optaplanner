@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 public class TestGenNullFact implements TestGenFact {
 
     @Override
@@ -42,11 +40,11 @@ public class TestGenNullFact implements TestGenFact {
     }
 
     @Override
-    public void printInitialization(Logger log) {
+    public void printInitialization(StringBuilder sb) {
     }
 
     @Override
-    public void printSetup(Logger log) {
+    public void printSetup(StringBuilder sb) {
     }
 
     @Override

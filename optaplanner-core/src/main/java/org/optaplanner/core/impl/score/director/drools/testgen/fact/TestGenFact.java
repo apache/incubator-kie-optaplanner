@@ -18,8 +18,6 @@ package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 public interface TestGenFact {
 
     void setUp(Map<Object, TestGenFact> existingInstances);
@@ -30,9 +28,9 @@ public interface TestGenFact {
 
     void reset();
 
-    void printInitialization(Logger log);
+    void printInitialization(StringBuilder sb);
 
-    void printSetup(Logger log);
+    void printSetup(StringBuilder sb);
 
     public Object getInstance();
 

@@ -15,6 +15,12 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +41,6 @@ import org.slf4j.LoggerFactory;
 final class TestGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(TestGenerator.class);
-    private static final Logger testLog = LoggerFactory.getLogger("org.optaplanner.drools.reproducer");
     private final OriginalProblemReproducer reproducer;
     private TestGenKieSessionJournal journal;
 
@@ -161,12 +166,14 @@ final class TestGenerator {
     //------------------------------------------------------------------------------------------------------------------
     //
     private void printReproducer() {
-        printInit();
-        printSetup();
-        printTest();
+        StringBuilder sb = new StringBuilder(1 << 15); // 2^15 initial capacity
+        printInit(sb);
+        printSetup(sb);
+        printTest(sb);
+        writeTestFile(sb);
     }
 
-    private void printInit() {
+    private void printInit(StringBuilder sb) {
         String domainPackage = null;
         for (TestGenFact fact : journal.getFacts()) {
             Class<? extends Object> factClass = fact.getInstance().getClass();
@@ -185,7 +192,7 @@ final class TestGenerator {
             throw new IllegalStateException("Cannot determine planning domain package.");
         }
 
-        testLog.info("package {};\n", domainPackage);
+        sb.append(String.format("package %s;%n%n", domainPackage));
         SortedSet<String> imports = new TreeSet<String>();
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
@@ -204,48 +211,85 @@ final class TestGenerator {
         }
 
         for (String cls : imports) {
-            testLog.info("import {};", cls);
+            sb.append(String.format("import %s;%n", cls));
         }
-        testLog.info("\n"
-                + "public class DroolsReproducerTest {\n"
-                + "\n"
-                + "    KieSession kieSession;");
+        sb.append(System.lineSeparator())
+                .append("public class DroolsReproducerTest {").append(System.lineSeparator())
+                .append(System.lineSeparator())
+                .append("    KieSession kieSession;").append(System.lineSeparator());
         for (TestGenFact fact : journal.getFacts()) {
-            fact.printInitialization(testLog);
+            fact.printInitialization(sb);
         }
-        testLog.info("");
+        sb.append(System.lineSeparator());
     }
 
-    private void printSetup() {
-        testLog.info("    @Before\n"
-                + "    public void setUp() {\n"
-                + "        KieServices kieServices = KieServices.Factory.get();\n"
-                + "        KieModuleModel kieModuleModel = kieServices.newKieModuleModel();\n"
-                + "        KieFileSystem kfs = kieServices.newKieFileSystem();\n"
-                + "        kfs.writeKModuleXML(kieModuleModel.toXML());\n"
+    private void printSetup(StringBuilder sb) {
+        sb
+                .append("    @Before").append(System.lineSeparator())
+                .append("    public void setUp() {").append(System.lineSeparator())
+                .append("        KieServices kieServices = KieServices.Factory.get();").append(System.lineSeparator())
+                .append("        KieModuleModel kieModuleModel = kieServices.newKieModuleModel();").append(System.lineSeparator())
+                .append("        KieFileSystem kfs = kieServices.newKieFileSystem();").append(System.lineSeparator())
+                .append("        kfs.writeKModuleXML(kieModuleModel.toXML());").append(System.lineSeparator())
                 // TODO don't hard-code score DRL
-                + "        kfs.write(kieServices.getResources().newClassPathResource(\"org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl\").setResourceType(ResourceType.DRL));\n"
-                + "        kieServices.newKieBuilder(kfs).buildAll();\n"
-                + "        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());\n"
-                + "        kieSession = kieContainer.newKieSession();\n"
-                + "");
+                .append("        kfs.write(kieServices.getResources()").append(System.lineSeparator())
+                .append("                .newClassPathResource(\"org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl\")").append(System.lineSeparator())
+                .append("                .setResourceType(ResourceType.DRL));").append(System.lineSeparator())
+                .append("        kieServices.newKieBuilder(kfs).buildAll();").append(System.lineSeparator())
+                .append("        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());").append(System.lineSeparator())
+                .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
+                .append(System.lineSeparator());
         for (TestGenFact fact : journal.getFacts()) {
-            fact.printSetup(testLog);
+            fact.printSetup(sb);
         }
-        testLog.info("");
+        sb.append(System.lineSeparator());
         for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
-            insert.print(testLog);
+            insert.print(sb);
         }
-        testLog.info("    }\n");
+        sb.append("    }")
+                .append(System.lineSeparator())
+                .append(System.lineSeparator());
     }
 
-    private void printTest() {
-        testLog.info("    @Test\n"
-                + "    public void test() {");
+    private void printTest(StringBuilder sb) {
+        sb
+                .append("    @Test").append(System.lineSeparator())
+                .append("    public void test() {").append(System.lineSeparator());
         for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
-            op.print(testLog);
+            op.print(sb);
         }
-        testLog.info("    }\n}");
+        sb
+                .append("    }").append(System.lineSeparator())
+                .append("}").append(System.lineSeparator());
+    }
+
+    private void writeTestFile(StringBuilder sb) {
+        FileOutputStream fos;
+        File file = new File("DroolsReproducerTest.java");
+        try {
+            fos = new FileOutputStream(file);
+        } catch (FileNotFoundException ex) {
+            log.error("Cannot open test file: " + file.toString(), ex);
+            return;
+        }
+        OutputStreamWriter out;
+        try {
+            out = new OutputStreamWriter(fos, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            log.error("Can't open", ex);
+            return;
+        }
+        try {
+            out.append(sb);
+        } catch (IOException ex) {
+            log.error("Can't write", ex);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                log.error("Can't close", ex);
+            }
+        }
     }
 
 }

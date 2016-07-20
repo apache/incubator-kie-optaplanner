@@ -17,7 +17,6 @@ package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
-import org.slf4j.Logger;
 
 public class TestGenKieSessionInsert implements TestGenKieSessionOperation {
 
@@ -39,9 +38,9 @@ public class TestGenKieSessionInsert implements TestGenKieSessionOperation {
     }
 
     @Override
-    public void print(Logger log) {
-        log.debug("        //{}", this);
-        log.info("        kieSession.insert({});", fact);
+    public void print(StringBuilder sb) {
+        sb.append(String.format("        //%s%n", this));
+        sb.append(String.format("        kieSession.insert(%s);%n", fact));
     }
 
     @Override
