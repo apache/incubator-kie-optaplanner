@@ -73,7 +73,7 @@ public class CorruptedScoreReproducer implements OriginalProblemReproducer, Test
         } catch (RuntimeException e) {
             if (e.getMessage().startsWith("No fact handle for ")) {
                 // this is common when removing insert of a fact that is later updated - not interesting
-                log.debug("Can't remove insert: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+                log.debug("    Can't remove insert: {}: {}", e.getClass().getSimpleName(), e.getMessage());
             } else {
                 log.info("Unexpected exception", e);
             }
@@ -99,7 +99,7 @@ public class CorruptedScoreReproducer implements OriginalProblemReproducer, Test
         Score<?> uncorruptedScore = extractScore(uncorruptedSession);
         Score<?> workingScore = extractScore(kieSession);
         if (!workingScore.equals(uncorruptedScore)) {
-            log.debug("  Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
+            log.debug("    Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
             throw new CorruptedScoreException("Working: " + workingScore + ", uncorrupted: "
                     + uncorruptedScore);
         }

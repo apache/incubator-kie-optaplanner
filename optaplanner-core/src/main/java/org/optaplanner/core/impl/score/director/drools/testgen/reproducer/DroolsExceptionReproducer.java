@@ -54,7 +54,7 @@ public class DroolsExceptionReproducer implements OriginalProblemReproducer {
             } else {
                 if (reproducedException.getMessage().startsWith("No fact handle for ")) {
                     // this is common when removing insert of a fact that is later updated - not interesting
-                    log.debug("Can't remove insert: {}", reproducedException.toString());
+                    log.debug("    Can't remove insert: {}", reproducedException.toString());
                 } else {
                     log.info("Unexpected exception", reproducedException);
                 }

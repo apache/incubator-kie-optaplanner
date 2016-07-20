@@ -55,10 +55,12 @@ final class TestGenerator {
 
     private void run() {
         log.info("Creating a minimal test that reproduces following Drools problem: {}", reproducer);
-        assertOriginalExceptionReproduced("Cannot reproduce the original problem even without journal modifications. "
-                + "This is a bug!");
         log.info("The KIE session journal has {} facts, {} inserts and {} updates.",
                 journal.getFacts().size(), journal.getInitialInserts().size(), journal.getMoveOperations().size());
+        log.info("Trying to reproduce with the complete KIE session journal...");
+        assertOriginalExceptionReproduced("Cannot reproduce the original problem even without journal modifications. "
+                + "This is a bug!");
+        log.info("Reproduced.");
         dropOldestUpdates();
         pruneUpdates();
         pruneInserts();
@@ -78,7 +80,7 @@ final class TestGenerator {
             boolean reproduced = reproduce(testJournal);
             double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            log.debug("{} with journal size: {} (took {}s)", outcome, m.getResult().size(), tookSeconds);
+            log.debug("    {} with journal size: {} (took {}s)", outcome, m.getResult().size(), tookSeconds);
             if (!reproduced) {
                 m.revert();
             }
@@ -91,12 +93,12 @@ final class TestGenerator {
         log.info("Pruning updates...", journal.getMoveOperations().size());
         RemoveRandomBlockMutator<TestGenKieSessionOperation> m = new RemoveRandomBlockMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
         while (m.canMutate()) {
-            log.debug("Current journal size: {}", m.getResult().size());
+            log.debug("    Current journal size: {}", m.getResult().size());
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionOperation> block = m.getRemovedBlock();
-            log.debug("{} without block of {} [{} - {}]",
+            log.debug("    {} without block of {} [{} - {}]",
                     outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
                 m.revert();
@@ -110,12 +112,12 @@ final class TestGenerator {
         log.info("Pruning inserts...", journal.getInitialInserts().size());
         RemoveRandomBlockMutator<TestGenKieSessionInsert> m = new RemoveRandomBlockMutator<TestGenKieSessionInsert>(journal.getInitialInserts());
         while (m.canMutate()) {
-            log.debug("Current journal size: {}", m.getResult().size());
+            log.debug("    Current journal size: {}", m.getResult().size());
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), m.mutate(), journal.getMoveOperations());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionInsert> block = m.getRemovedBlock();
-            log.debug("{} without block of {} [{} - {}]",
+            log.debug("    {} without block of {} [{} - {}]",
                     outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
                 m.revert();
