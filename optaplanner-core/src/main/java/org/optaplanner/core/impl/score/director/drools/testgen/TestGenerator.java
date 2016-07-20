@@ -15,19 +15,9 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.mutation.HeadCuttingMutator;
 import org.optaplanner.core.impl.score.director.drools.testgen.mutation.RemoveRandomBlockMutator;
@@ -44,8 +34,8 @@ final class TestGenerator {
     private final OriginalProblemReproducer reproducer;
     private TestGenKieSessionJournal journal;
 
-    static void createTest(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
-        new TestGenerator(journal, reproducer).run();
+    static TestGenKieSessionJournal minimize(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
+        return new TestGenerator(journal, reproducer).run();
     }
 
     private TestGenerator(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
@@ -53,7 +43,7 @@ final class TestGenerator {
         this.reproducer = reproducer;
     }
 
-    private void run() {
+    private TestGenKieSessionJournal run() {
         log.info("Creating a minimal test that reproduces following Drools problem: {}", reproducer);
         log.info("The KIE session journal has {} facts, {} inserts and {} updates.",
                 journal.getFacts().size(), journal.getInitialInserts().size(), journal.getMoveOperations().size());
@@ -66,9 +56,9 @@ final class TestGenerator {
         pruneInserts();
         pruneFacts();
         // TODO prune setup code
-        printReproducer();
         assertOriginalExceptionReproduced("Cannot reproduce the original problem after pruning the journal. "
                 + "This is a bug!");
+        return journal;
     }
 
     private void dropOldestUpdates() {
@@ -162,136 +152,4 @@ final class TestGenerator {
     private void assertOriginalExceptionReproduced(String message) {
         reproducer.assertReproducible(journal, message);
     }
-
-    //------------------------------------------------------------------------------------------------------------------
-    // Test printing
-    //------------------------------------------------------------------------------------------------------------------
-    //
-    private void printReproducer() {
-        StringBuilder sb = new StringBuilder(1 << 15); // 2^15 initial capacity
-        printInit(sb);
-        printSetup(sb);
-        printTest(sb);
-        writeTestFile(sb);
-    }
-
-    private void printInit(StringBuilder sb) {
-        String domainPackage = null;
-        for (TestGenFact fact : journal.getFacts()) {
-            Class<? extends Object> factClass = fact.getInstance().getClass();
-            for (Annotation ann : factClass.getAnnotations()) {
-                if (PlanningEntity.class.equals(ann.annotationType())) {
-                    domainPackage = factClass.getPackage().getName();
-                }
-                break;
-            }
-            if (domainPackage != null) {
-                break;
-            }
-        }
-
-        if (domainPackage == null) {
-            throw new IllegalStateException("Cannot determine planning domain package.");
-        }
-
-        sb.append(String.format("package %s;%n%n", domainPackage));
-        SortedSet<String> imports = new TreeSet<String>();
-        imports.add("org.junit.Before");
-        imports.add("org.junit.Test");
-        imports.add("org.kie.api.KieServices");
-        imports.add("org.kie.api.builder.KieFileSystem");
-        imports.add("org.kie.api.builder.model.KieModuleModel");
-        imports.add("org.kie.api.io.ResourceType");
-        imports.add("org.kie.api.runtime.KieContainer");
-        imports.add("org.kie.api.runtime.KieSession");
-        for (TestGenFact fact : journal.getFacts()) {
-            for (Class<?> cls : fact.getImports()) {
-                if (!cls.getPackage().getName().equals(domainPackage)) {
-                    imports.add(cls.getCanonicalName());
-                }
-            }
-        }
-
-        for (String cls : imports) {
-            sb.append(String.format("import %s;%n", cls));
-        }
-        sb.append(System.lineSeparator())
-                .append("public class DroolsReproducerTest {").append(System.lineSeparator())
-                .append(System.lineSeparator())
-                .append("    KieSession kieSession;").append(System.lineSeparator());
-        for (TestGenFact fact : journal.getFacts()) {
-            fact.printInitialization(sb);
-        }
-        sb.append(System.lineSeparator());
-    }
-
-    private void printSetup(StringBuilder sb) {
-        sb
-                .append("    @Before").append(System.lineSeparator())
-                .append("    public void setUp() {").append(System.lineSeparator())
-                .append("        KieServices kieServices = KieServices.Factory.get();").append(System.lineSeparator())
-                .append("        KieModuleModel kieModuleModel = kieServices.newKieModuleModel();").append(System.lineSeparator())
-                .append("        KieFileSystem kfs = kieServices.newKieFileSystem();").append(System.lineSeparator())
-                .append("        kfs.writeKModuleXML(kieModuleModel.toXML());").append(System.lineSeparator())
-                // TODO don't hard-code score DRL
-                .append("        kfs.write(kieServices.getResources()").append(System.lineSeparator())
-                .append("                .newClassPathResource(\"org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl\")").append(System.lineSeparator())
-                .append("                .setResourceType(ResourceType.DRL));").append(System.lineSeparator())
-                .append("        kieServices.newKieBuilder(kfs).buildAll();").append(System.lineSeparator())
-                .append("        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());").append(System.lineSeparator())
-                .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
-                .append(System.lineSeparator());
-        for (TestGenFact fact : journal.getFacts()) {
-            fact.printSetup(sb);
-        }
-        sb.append(System.lineSeparator());
-        for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
-            insert.print(sb);
-        }
-        sb.append("    }")
-                .append(System.lineSeparator())
-                .append(System.lineSeparator());
-    }
-
-    private void printTest(StringBuilder sb) {
-        sb
-                .append("    @Test").append(System.lineSeparator())
-                .append("    public void test() {").append(System.lineSeparator());
-        for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
-            op.print(sb);
-        }
-        sb
-                .append("    }").append(System.lineSeparator())
-                .append("}").append(System.lineSeparator());
-    }
-
-    private void writeTestFile(StringBuilder sb) {
-        FileOutputStream fos;
-        File file = new File("DroolsReproducerTest.java");
-        try {
-            fos = new FileOutputStream(file);
-        } catch (FileNotFoundException ex) {
-            log.error("Cannot open test file: " + file.toString(), ex);
-            return;
-        }
-        OutputStreamWriter out;
-        try {
-            out = new OutputStreamWriter(fos, "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            log.error("Can't open", ex);
-            return;
-        }
-        try {
-            out.append(sb);
-        } catch (IOException ex) {
-            log.error("Can't write", ex);
-        } finally {
-            try {
-                out.close();
-            } catch (IOException ex) {
-                log.error("Can't close", ex);
-            }
-        }
-    }
-
 }

@@ -15,6 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
+import java.io.File;
 import java.util.Collection;
 
 import org.optaplanner.core.api.score.Score;
@@ -29,6 +30,7 @@ import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.Drools
 public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<Solution_> {
 
     private final TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
+    private final File testFile = new File("DroolsReproducerTest.java");
 
     public TestGenDroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, constraintMatchEnabledPreference);
@@ -53,8 +55,9 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         } catch (RuntimeException e) {
             // catch any Drools exception and create a minimal reproducing test
             // TODO check the exception is coming from org.drools
-            TestGenerator.createTest(journal, new DroolsExceptionReproducer(e, kieSession));
-            throw e;
+            TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, new DroolsExceptionReproducer(e, kieSession));
+            TestGenTestWriter.print(minJournal, testFile);
+            throw wrapOriginalException(e);
         }
     }
 
@@ -71,8 +74,9 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
                     getScoreDefinition(),
                     constraintMatchEnabledPreference
             );
-            TestGenerator.createTest(journal, reproducer);
-            throw e;
+            TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, reproducer);
+            TestGenTestWriter.print(minJournal, testFile);
+            throw wrapOriginalException(e);
         }
     }
 
@@ -117,6 +121,10 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     public void afterProblemFactRemoved(Object problemFact) {
         journal.delete(problemFact);
         super.afterProblemFactRemoved(problemFact);
+    }
+
+    private RuntimeException wrapOriginalException(RuntimeException e) {
+        return new RuntimeException(e.getMessage() + "\nDrools test written to: " + testFile.getAbsolutePath(), e);
     }
 
 }
