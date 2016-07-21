@@ -124,7 +124,7 @@ final class TestGenerator {
             addWithDependencies(insert.getFact(), minimal);
         }
         for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
-            if (op instanceof TestGenKieSessionUpdate) {
+            if (op.getClass().equals(TestGenKieSessionUpdate.class)) {
                 TestGenFact f = ((TestGenKieSessionUpdate) op).getValue();
                 addWithDependencies(f, minimal);
             }
