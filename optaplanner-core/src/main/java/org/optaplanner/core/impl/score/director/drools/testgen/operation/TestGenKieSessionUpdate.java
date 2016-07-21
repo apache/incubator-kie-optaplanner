@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenNullFact;
 
 public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
@@ -33,6 +34,9 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
     private final TestGenFact value;
 
     public TestGenKieSessionUpdate(int id, TestGenFact entity, VariableDescriptor<?> variableDescriptor, TestGenFact value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value may not be null");
+        }
         this.id = id;
         this.entity = entity;
         this.value = value;
@@ -44,6 +48,12 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
         accessor = new BeanPropertyMemberAccessor(getter);
     }
 
+    /**
+     * Get the value that is used to update a fact's field (an entity's variable).
+     *
+     * @return a TestGenFact representing the new value, never null (null value is represented by
+     * {@link TestGenNullFact})
+     */
     public TestGenFact getValue() {
         return value;
     }
