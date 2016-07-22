@@ -15,14 +15,15 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-class NullValueProvider extends AbstractValueProvider {
+class TestGenStringValueProvider extends TestGenAbstractValueProvider {
 
-    public NullValueProvider() {
-        super(null);
+    public TestGenStringValueProvider(Object value) {
+        super(value);
     }
 
     @Override
     public String toString() {
-        return "null";
+        return '"' + (String) value + '"';
     }
+
 }

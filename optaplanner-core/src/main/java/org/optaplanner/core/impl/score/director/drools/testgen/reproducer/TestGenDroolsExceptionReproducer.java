@@ -22,13 +22,13 @@ import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSession
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DroolsExceptionReproducer implements OriginalProblemReproducer {
+public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemReproducer {
 
-    private static final Logger log = LoggerFactory.getLogger(DroolsExceptionReproducer.class);
+    private static final Logger log = LoggerFactory.getLogger(TestGenDroolsExceptionReproducer.class);
     private final RuntimeException originalException;
     private final KieSession originalKieSession;
 
-    public DroolsExceptionReproducer(RuntimeException originalException, KieSession originalKieSession) {
+    public TestGenDroolsExceptionReproducer(RuntimeException originalException, KieSession originalKieSession) {
         this.originalException = originalException;
         this.originalKieSession = originalKieSession;
     }

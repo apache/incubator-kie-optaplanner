@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class HeadCuttingMutatorTest {
+public class TestGenHeadCuttingMutatorTest {
 
     private ArrayList<Integer> list = new ArrayList<Integer>();
 
@@ -35,7 +35,7 @@ public class HeadCuttingMutatorTest {
 
     @Test
     public void mutateUntilListIsEmpty() {
-        HeadCuttingMutator<Integer> m = new HeadCuttingMutator<Integer>(list);
+        TestGenHeadCuttingMutator<Integer> m = new TestGenHeadCuttingMutator<Integer>(list);
         assertTrue(m.canMutate());
 
         // 0.8 * 25 = 20 cut
@@ -82,7 +82,7 @@ public class HeadCuttingMutatorTest {
 
     @Test
     public void testImpossibleMutation() {
-        HeadCuttingMutator<Integer> m = new HeadCuttingMutator<Integer>(list);
+        TestGenHeadCuttingMutator<Integer> m = new TestGenHeadCuttingMutator<Integer>(list);
         assertTrue(m.canMutate());
 
         assertTrue(m.canMutate());

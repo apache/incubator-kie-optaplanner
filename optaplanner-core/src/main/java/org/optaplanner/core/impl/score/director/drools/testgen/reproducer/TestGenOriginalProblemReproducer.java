@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen.fact;
+package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
-class StringValueProvider extends AbstractValueProvider {
+import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionJournal;
 
-    public StringValueProvider(Object value) {
-        super(value);
-    }
+public interface TestGenOriginalProblemReproducer {
 
-    @Override
-    public String toString() {
-        return '"' + (String) value + '"';
-    }
+    boolean isReproducible(TestGenKieSessionJournal journal);
 
+    void assertReproducible(TestGenKieSessionJournal journal, String message);
 }

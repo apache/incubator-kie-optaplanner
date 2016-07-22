@@ -21,14 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class MapValueProvider extends AbstractValueProvider {
+class TestGenMapValueProvider extends TestGenAbstractValueProvider {
 
     private final String identifier;
     private final Type[] typeArguments;
     private final Map<Object, TestGenFact> existingInstances;
     private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
-    public MapValueProvider(Object value, String identifier,
+    public TestGenMapValueProvider(Object value, String identifier,
             Type[] typeArguments, Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;

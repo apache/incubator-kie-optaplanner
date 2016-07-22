@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class ListValueProvider extends AbstractValueProvider {
+class TestGenListValueProvider extends TestGenAbstractValueProvider {
 
     private final String identifier;
     private final Type typeArgument;
     private final Map<Object, TestGenFact> existingInstances;
     private final List<Class<?>> imports = new ArrayList<Class<?>>();
 
-    public ListValueProvider(Object value, String identifier, Type genericType, Map<Object, TestGenFact> existingInstances) {
+    public TestGenListValueProvider(Object value, String identifier, Type genericType, Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;
         this.typeArgument = genericType;

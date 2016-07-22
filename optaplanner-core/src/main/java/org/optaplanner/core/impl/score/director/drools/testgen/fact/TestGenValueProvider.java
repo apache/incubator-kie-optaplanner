@@ -15,20 +15,10 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import java.lang.reflect.Method;
+interface TestGenValueProvider {
 
-class ParsedValueProvider extends AbstractValueProvider {
+    Object get();
 
-    private final Method parseMethod;
-
-    public ParsedValueProvider(Method parseMethod, Object value) {
-        super(value);
-        this.parseMethod = parseMethod;
-    }
-
-    @Override
-    public String toString() {
-        return value.getClass().getSimpleName() + "." + parseMethod.getName() + "(\"" + value.toString() + "\")";
-    }
+    void printSetup(StringBuilder sb);
 
 }

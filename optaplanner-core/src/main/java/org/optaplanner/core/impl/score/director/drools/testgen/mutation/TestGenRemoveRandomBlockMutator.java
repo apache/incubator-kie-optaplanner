@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RemoveRandomBlockMutator<T> {
+public class TestGenRemoveRandomBlockMutator<T> {
 
     private final List<T> list;
     private final Random random = new Random(0);
@@ -28,7 +28,7 @@ public class RemoveRandomBlockMutator<T> {
     private int removedIndex = -1;
     private List<T> removedBlock;
 
-    public RemoveRandomBlockMutator(List<T> list) {
+    public TestGenRemoveRandomBlockMutator(List<T> list) {
         this.list = new ArrayList<T>(list);
     }
 

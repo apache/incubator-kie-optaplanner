@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-public class CorruptedScoreException extends RuntimeException {
+class TestGenPrimitiveValueProvider extends TestGenAbstractValueProvider {
 
-    /**
-     * Creates a new instance of <code>CorruptedScoreException</code> without detail message.
-     */
-    public CorruptedScoreException() {
+    public TestGenPrimitiveValueProvider(Object value) {
+        super(value);
     }
 
-    /**
-     * Constructs an instance of <code>CorruptedScoreException</code> with the specified detail message.
-     *
-     * @param msg the detail message.
-     */
-    public CorruptedScoreException(String msg) {
-        super(msg);
+    @Override
+    public String toString() {
+        return value.toString();
     }
+
 }

@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
+package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionJournal;
+import java.lang.reflect.Method;
 
-public interface OriginalProblemReproducer {
+class TestGenParsedValueProvider extends TestGenAbstractValueProvider {
 
-    boolean isReproducible(TestGenKieSessionJournal journal);
+    private final Method parseMethod;
 
-    void assertReproducible(TestGenKieSessionJournal journal, String message);
+    public TestGenParsedValueProvider(Method parseMethod, Object value) {
+        super(value);
+        this.parseMethod = parseMethod;
+    }
+
+    @Override
+    public String toString() {
+        return value.getClass().getSimpleName() + "." + parseMethod.getName() + "(\"" + value.toString() + "\")";
+    }
+
 }

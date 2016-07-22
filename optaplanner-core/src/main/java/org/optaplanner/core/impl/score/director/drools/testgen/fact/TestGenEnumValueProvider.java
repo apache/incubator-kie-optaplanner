@@ -15,10 +15,15 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-interface ValueProvider {
+class TestGenEnumValueProvider extends TestGenAbstractValueProvider {
 
-    Object get();
+    public TestGenEnumValueProvider(Object value) {
+        super(value);
+    }
 
-    void printSetup(StringBuilder sb);
+    @Override
+    public String toString() {
+        return value.getClass().getSimpleName() + "." + ((Enum) value).name();
+    }
 
 }

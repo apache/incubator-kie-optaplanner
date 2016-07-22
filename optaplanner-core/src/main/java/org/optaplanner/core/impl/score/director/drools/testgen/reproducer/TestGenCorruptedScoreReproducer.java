@@ -20,21 +20,20 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.impl.score.director.drools.testgen.CorruptedScoreException;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionJournal;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CorruptedScoreReproducer implements OriginalProblemReproducer, TestGenKieSessionListener {
+public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemReproducer, TestGenKieSessionListener {
 
-    private static final Logger log = LoggerFactory.getLogger(CorruptedScoreReproducer.class);
+    private static final Logger log = LoggerFactory.getLogger(TestGenCorruptedScoreReproducer.class);
     private final String analysis;
     private final KieSession originalKieSession;
     private final ScoreDefinition<?> scoreDefinition;
     private final boolean constraintMatchEnabledPreference;
 
-    public CorruptedScoreReproducer(String analysis, KieSession originalKieSession, ScoreDefinition<?> scoreDefinition, boolean constraintMatchEnabledPreference) {
+    public TestGenCorruptedScoreReproducer(String analysis, KieSession originalKieSession, ScoreDefinition<?> scoreDefinition, boolean constraintMatchEnabledPreference) {
         this.analysis = analysis;
         this.originalKieSession = originalKieSession;
         this.scoreDefinition = scoreDefinition;
@@ -68,7 +67,7 @@ public class CorruptedScoreReproducer implements OriginalProblemReproducer, Test
         try {
             journal.replay(createKieSession());
             return false;
-        } catch (CorruptedScoreException e) {
+        } catch (TestGenCorruptedScoreException e) {
             return true;
         } catch (RuntimeException e) {
             if (e.getMessage().startsWith("No fact handle for ")) {
@@ -100,7 +99,7 @@ public class CorruptedScoreReproducer implements OriginalProblemReproducer, Test
         Score<?> workingScore = extractScore(kieSession);
         if (!workingScore.equals(uncorruptedScore)) {
             log.debug("    Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
-            throw new CorruptedScoreException("Working: " + workingScore + ", uncorrupted: "
+            throw new TestGenCorruptedScoreException("Working: " + workingScore + ", uncorrupted: "
                     + uncorruptedScore);
         }
     }

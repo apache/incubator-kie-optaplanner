@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.director.drools.testgen.fact;
+package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
-abstract class AbstractValueProvider implements ValueProvider {
+class TestGenCorruptedScoreException extends RuntimeException {
 
-    protected final Object value;
-
-    public AbstractValueProvider(Object value) {
-        this.value = value;
+    /**
+     * Creates a new instance of <code>CorruptedScoreException</code> without detail message.
+     */
+    public TestGenCorruptedScoreException() {
     }
 
-    @Override
-    public Object get() {
-        return value;
+    /**
+     * Constructs an instance of <code>CorruptedScoreException</code> with the specified detail message.
+     *
+     * @param msg the detail message.
+     */
+    public TestGenCorruptedScoreException(String msg) {
+        super(msg);
     }
-
-    @Override
-    public void printSetup(StringBuilder sb) {
-        // no setup required
-    }
-
 }

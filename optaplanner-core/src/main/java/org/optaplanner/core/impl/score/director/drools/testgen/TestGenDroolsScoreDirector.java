@@ -24,8 +24,8 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.CorruptedScoreReproducer;
-import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.DroolsExceptionReproducer;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedScoreReproducer;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenDroolsExceptionReproducer;
 
 public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<Solution_> {
 
@@ -55,7 +55,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         } catch (RuntimeException e) {
             // catch any Drools exception and create a minimal reproducing test
             // TODO check the exception is coming from org.drools
-            TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, new DroolsExceptionReproducer(e, kieSession));
+            TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, new TestGenDroolsExceptionReproducer(e, kieSession));
             TestGenTestWriter.print(minJournal, testFile);
             throw wrapOriginalException(e);
         }
@@ -68,7 +68,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         } catch (IllegalStateException e) {
             // catch corrupted score exception and create a minimal reproducing test
             // TODO check it's really corrupted score
-            CorruptedScoreReproducer reproducer = new CorruptedScoreReproducer(
+            TestGenCorruptedScoreReproducer reproducer = new TestGenCorruptedScoreReproducer(
                     e.getMessage(),
                     kieSession,
                     getScoreDefinition(),

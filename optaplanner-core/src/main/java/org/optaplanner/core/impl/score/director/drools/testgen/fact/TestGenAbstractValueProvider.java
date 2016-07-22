@@ -15,15 +15,22 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-class EnumValueProvider extends AbstractValueProvider {
+abstract class TestGenAbstractValueProvider implements TestGenValueProvider {
 
-    public EnumValueProvider(Object value) {
-        super(value);
+    protected final Object value;
+
+    public TestGenAbstractValueProvider(Object value) {
+        this.value = value;
     }
 
     @Override
-    public String toString() {
-        return value.getClass().getSimpleName() + "." + ((Enum) value).name();
+    public Object get() {
+        return value;
+    }
+
+    @Override
+    public void printSetup(StringBuilder sb) {
+        // no setup required
     }
 
 }

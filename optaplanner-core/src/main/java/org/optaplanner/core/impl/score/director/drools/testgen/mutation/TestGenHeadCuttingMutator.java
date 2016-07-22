@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.testgen.mutation;
 
 import java.util.List;
 
-public class HeadCuttingMutator<T> {
+public class TestGenHeadCuttingMutator<T> {
 
     private final List<T> list;
     private double cutFactor = 0.8;
@@ -25,7 +25,7 @@ public class HeadCuttingMutator<T> {
     private int revertIncrement = -1;
     private int cutIncrement;
 
-    public HeadCuttingMutator(List<T> list) {
+    public TestGenHeadCuttingMutator(List<T> list) {
         this.list = list;
         updateIncrement(false);
     }

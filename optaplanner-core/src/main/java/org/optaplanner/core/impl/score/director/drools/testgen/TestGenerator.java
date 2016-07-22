@@ -19,26 +19,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
-import org.optaplanner.core.impl.score.director.drools.testgen.mutation.HeadCuttingMutator;
-import org.optaplanner.core.impl.score.director.drools.testgen.mutation.RemoveRandomBlockMutator;
+import org.optaplanner.core.impl.score.director.drools.testgen.mutation.TestGenHeadCuttingMutator;
+import org.optaplanner.core.impl.score.director.drools.testgen.mutation.TestGenRemoveRandomBlockMutator;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionUpdate;
-import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.OriginalProblemReproducer;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenOriginalProblemReproducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 final class TestGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(TestGenerator.class);
-    private final OriginalProblemReproducer reproducer;
+    private final TestGenOriginalProblemReproducer reproducer;
     private TestGenKieSessionJournal journal;
 
-    static TestGenKieSessionJournal minimize(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
+    static TestGenKieSessionJournal minimize(TestGenKieSessionJournal journal, TestGenOriginalProblemReproducer reproducer) {
         return new TestGenerator(journal, reproducer).run();
     }
 
-    private TestGenerator(TestGenKieSessionJournal journal, OriginalProblemReproducer reproducer) {
+    private TestGenerator(TestGenKieSessionJournal journal, TestGenOriginalProblemReproducer reproducer) {
         this.journal = journal;
         this.reproducer = reproducer;
     }
@@ -63,7 +63,7 @@ final class TestGenerator {
 
     private void dropOldestUpdates() {
         log.info("Dropping oldest updates...", journal.getMoveOperations().size());
-        HeadCuttingMutator<TestGenKieSessionOperation> m = new HeadCuttingMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
+        TestGenHeadCuttingMutator<TestGenKieSessionOperation> m = new TestGenHeadCuttingMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
         while (m.canMutate()) {
             long start = System.currentTimeMillis();
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
@@ -81,7 +81,7 @@ final class TestGenerator {
 
     private void pruneUpdates() {
         log.info("Pruning updates...", journal.getMoveOperations().size());
-        RemoveRandomBlockMutator<TestGenKieSessionOperation> m = new RemoveRandomBlockMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
+        TestGenRemoveRandomBlockMutator<TestGenKieSessionOperation> m = new TestGenRemoveRandomBlockMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
         while (m.canMutate()) {
             log.debug("    Current journal size: {}", m.getResult().size());
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
@@ -100,7 +100,7 @@ final class TestGenerator {
 
     private void pruneInserts() {
         log.info("Pruning inserts...", journal.getInitialInserts().size());
-        RemoveRandomBlockMutator<TestGenKieSessionInsert> m = new RemoveRandomBlockMutator<TestGenKieSessionInsert>(journal.getInitialInserts());
+        TestGenRemoveRandomBlockMutator<TestGenKieSessionInsert> m = new TestGenRemoveRandomBlockMutator<TestGenKieSessionInsert>(journal.getInitialInserts());
         while (m.canMutate()) {
             log.debug("    Current journal size: {}", m.getResult().size());
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), m.mutate(), journal.getMoveOperations());
