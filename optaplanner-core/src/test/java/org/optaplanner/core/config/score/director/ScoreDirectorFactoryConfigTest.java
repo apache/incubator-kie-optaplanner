@@ -49,12 +49,12 @@ public class ScoreDirectorFactoryConfigTest {
     @Test
     public void testGenerateDroolsTestOption() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        assertFalse(config.isGenerateDroolsTestOnError());
+        assertNull(config.isGenerateDroolsTestOnError());
         config.setGenerateDroolsTestOnError(true);
         assertTrue(config.isGenerateDroolsTestOnError());
-        config.setGenerateDroolsTestOnError(null);
-        assertFalse(config.isGenerateDroolsTestOnError());
         config.setGenerateDroolsTestOnError(Boolean.FALSE);
         assertFalse(config.isGenerateDroolsTestOnError());
+        config.setGenerateDroolsTestOnError(null);
+        assertNull(config.isGenerateDroolsTestOnError());
     }
 }

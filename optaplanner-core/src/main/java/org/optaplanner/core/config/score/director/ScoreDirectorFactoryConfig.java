@@ -25,6 +25,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.apache.commons.lang3.BooleanUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -247,8 +248,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
     }
 
-    public boolean isGenerateDroolsTestOnError() {
-        return generateDroolsTestOnError != null && generateDroolsTestOnError.booleanValue();
+    public Boolean isGenerateDroolsTestOnError() {
+        return generateDroolsTestOnError;
     }
 
     public void setGenerateDroolsTestOnError(Boolean generateDroolsTestOnError) {
@@ -336,7 +337,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
                         + "both an easyScoreDirectorFactory and an droolsScoreDirectorFactory.");
             }
-            if (isGenerateDroolsTestOnError()) {
+            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
                 throw new IllegalArgumentException("The <generateDroolsTestOnError> option can only be set to true "
                         + "when used together with droolsScoreDirectorFactory, not with easyScoreDirectorFactory.");
             }
@@ -346,7 +347,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
                         + "both an incrementalScoreDirectorFactory and an droolsScoreDirectorFactory.");
             }
-            if (isGenerateDroolsTestOnError()) {
+            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
                 throw new IllegalArgumentException("The <generateDroolsTestOnError> option can only be set to true "
                         + "when used together with droolsScoreDirectorFactory, not with incrementalScoreDirectorFactory.");
             }
@@ -434,7 +435,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                         + ") is not null, then the kieBaseConfigurationProperties ("
                         + kieBaseConfigurationProperties + ") must be null.");
             }
-            if (isGenerateDroolsTestOnError()) {
+            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
                 return new TestGenDroolsScoreDirectorFactory<>(kieContainer, ksessionName);
             } else {
                 return new DroolsScoreDirectorFactory<>(kieContainer, ksessionName);
@@ -448,7 +449,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 throw new IllegalArgumentException("If kieBase is not null, then the kieBaseConfigurationProperties ("
                         + kieBaseConfigurationProperties + ") must be null.");
             }
-            if (isGenerateDroolsTestOnError()) {
+            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
                 return new TestGenLegacyDroolsScoreDirectorFactory<>(kieBase);
             } else {
                 return new LegacyDroolsScoreDirectorFactory<>(kieBase);
@@ -508,7 +509,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 }
             }
             KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
-            if (isGenerateDroolsTestOnError()) {
+            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
                 return new TestGenLegacyDroolsScoreDirectorFactory<>(kieBase);
             } else {
                 return new LegacyDroolsScoreDirectorFactory<>(kieBase);
