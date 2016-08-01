@@ -553,6 +553,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
         assertionScoreDirectorFactory = ConfigUtils.inheritOverwritableProperty(
                 assertionScoreDirectorFactory, inheritedConfig.getAssertionScoreDirectorFactory());
+        generateDroolsTestOnError = ConfigUtils.inheritOverwritableProperty(
+                generateDroolsTestOnError, inheritedConfig.isGenerateDroolsTestOnError());
     }
 
 }
