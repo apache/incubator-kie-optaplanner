@@ -498,8 +498,8 @@ public class BenchmarkReport {
         }
         XYPlot plot = createScalabilityPlot(seriesList,
                 "Problem scale", NumberFormat.getInstance(locale),
-                "Average calculate count per second", NumberFormat.getInstance(locale));
-        JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
+                "Average calculation count per second", NumberFormat.getInstance(locale));
+        JFreeChart chart = new JFreeChart("Average calculation count summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         averageCalculateCountSummaryChartFile = writeChartToImageFile(chart, "averageCalculateCountSummary");
     }
