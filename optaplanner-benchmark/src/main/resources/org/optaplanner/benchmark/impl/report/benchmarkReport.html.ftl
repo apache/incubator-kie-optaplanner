@@ -358,7 +358,7 @@
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="summary_averageCalculateCount">
-                                <h3>Average calculate count summary</h3>
+                                <h3>Average calculation count summary</h3>
                                 <p>
                                     Useful for comparing different score calculators and/or score rule implementations
                                     (presuming that the solver configurations do not differ otherwise).
