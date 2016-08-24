@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 /**
@@ -176,11 +175,6 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
     @Override
     public boolean isSolutionInitialized() {
         return initScore >= 0;
-    }
-
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return getClass().isInstance(otherScore);
     }
 
     protected String getInitPrefix() {
