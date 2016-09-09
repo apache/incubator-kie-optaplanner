@@ -65,27 +65,70 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
         Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
         Long departureTime = (previousStandstill instanceof TimeWindowedCustomer)
                 ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
+
+        int arrivalDay = (previousStandstill instanceof TimeWindowedCustomer)
+                ? ((TimeWindowedCustomer) previousStandstill).getarrivalDay() : 0;
+
         TimeWindowedCustomer shadowCustomer = sourceCustomer;
-        Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
+
+        Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime, arrivalDay);
         while (shadowCustomer != null && !Objects.equals(shadowCustomer.getArrivalTime(), arrivalTime)) {
             scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
             shadowCustomer.setArrivalTime(arrivalTime);
             scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");
             departureTime = shadowCustomer.getDepartureTime();
+            arrivalDay = shadowCustomer.getarrivalDay();
             shadowCustomer = shadowCustomer.getNextCustomer();
-            arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
+            arrivalTime = calculateArrivalTime(shadowCustomer, departureTime, arrivalDay);
         }
     }
 
-    private Long calculateArrivalTime(TimeWindowedCustomer customer, Long previousDepartureTime) {
-        if (customer == null || customer.getPreviousStandstill() == null) {
-            return null;
-        }
-        if (previousDepartureTime == null) {
-            // PreviousStandstill is the Vehicle, so we leave from the Depot at the best suitable time
-            return Math.max(customer.getReadyTime(), customer.getDistanceFromPreviousStandstill());
-        }
-        return previousDepartureTime + customer.getDistanceFromPreviousStandstill();
+    private long dayS(int i){
+      return i * 24 * 60 * 1000;
+    }
+
+    private Long calculateArrivalTime(TimeWindowedCustomer customer, Long previousDepartureTime, int arrivalDay) {
+
+      if (customer == null) {
+        return null;
+      }
+
+      long arrivalTime;
+
+      if (previousDepartureTime == null) {
+        // PreviousStandstill is the Vehicle, so we leave from the Depot at
+        // the best suitable time
+
+        customer.setarrivalDay(customer.getdeliveryRangeStart());
+        long a = dayS(customer.getdeliveryRangeStart()) + customer.getReadyTime();
+        long b = customer.getDistanceFromPreviousStandstill();
+        arrivalTime = Math.max(a, b);
+      } else {
+        arrivalTime = previousDepartureTime + customer.getDistanceFromPreviousStandstill();
+      }
+
+      if (arrivalDay < customer.getdeliveryRangeStart()) {
+        //If arrival is before the delivery range then the arrival day is set to the
+        //first day of the delivery range.
+
+        arrivalDay = customer.getdeliveryRangeStart();
+        customer.setarrivalDay(customer.getdeliveryRangeStart());
+        arrivalTime = dayS(arrivalDay) + customer.getReadyTime();
+        return arrivalTime;
+      }
+
+      if (arrivalTime > dayS(arrivalDay) + customer.getDueTime()) {
+        //If arrival is after the dueTime, for the current day of arrival
+        //the time of arrival is set to the readyTime of the next day.
+
+        customer.setarrivalDay(arrivalDay + 1);
+        arrivalTime = dayS(arrivalDay + 1) + customer.getReadyTime();
+        return arrivalTime;
+      } else {
+        customer.setarrivalDay(arrivalDay);
+        return arrivalTime;
+
+      }
     }
 
 }
