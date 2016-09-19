@@ -153,7 +153,7 @@ To try it now:
 Linux or Mac:
 +
 
-[source,options="nowrap"]
+[source,sh,options="nowrap"]
 ----
 $ cd examples
 $ ./runExamples.sh
@@ -162,7 +162,7 @@ $ ./runExamples.sh
 Windows:
 +
 
-[source,options="nowrap"]
+[source,sh,options="nowrap"]
 ----
 $ cd examples
 $ runExamples.bat
@@ -290,7 +290,7 @@ It's easy to build OptaPlanner from source:
 . https://help.github.com/articles/set-up-git/[Set up Git] and clone `optaplanner` from GitHub (or alternatively, download https://github.com/droolsjbpm/optaplanner/zipball/master[the zipball]):
 +
 
-[source,options="nowrap"]
+[source,sh,options="nowrap"]
 ----
 $ git clone git@github.com:droolsjbpm/optaplanner.git optaplanner
 ...
@@ -301,7 +301,7 @@ $ git clone git@github.com:droolsjbpm/optaplanner.git optaplanner
 ====
 If you don't have a GitHub account or your local Git installation isn't configured with it, use this command instead, to avoid an authentication issue:
 
-[source,options="nowrap"]
+[source,sh,options="nowrap"]
 ----
 $ git clone https://github.com/droolsjbpm/optaplanner.git optaplanner
 ...
@@ -310,7 +310,7 @@ $ git clone https://github.com/droolsjbpm/optaplanner.git optaplanner
 . Build it with http://maven.apache.org/[Maven]:
 +
 
-[source,options="nowrap"]
+[source,sh,options="nowrap"]
 ----
 $ cd optaplanner
 $ mvn clean install -DskipTests
@@ -325,7 +325,7 @@ The first time, Maven might take a long time, because it needs to download jars.
 . Run the examples:
 +
 
-[source,options="nowrap"]
+[source,sh,options="nowrap"]
 ----
 $ cd optaplanner-examples
 $ mvn exec:java

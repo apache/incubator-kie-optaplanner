@@ -17,7 +17,7 @@
 
 [.lead]
 image::Chapter-Planner_introduction/optaPlannerLogo.png[align="left"]
-link:https://www.optaplanner.org/community/team.html[The Optaplanner Team] +
+link:https://www.optaplanner.org/community/team.html[The OptaPlanner Team] +
 {project-version}
 
 
