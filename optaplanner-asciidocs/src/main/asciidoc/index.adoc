@@ -1,5 +1,3 @@
-// Properties 
-
 :doctype: book
 :sectnums:
 :sectanchors: 
