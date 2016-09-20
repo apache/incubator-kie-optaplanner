@@ -36,6 +36,7 @@ The development philosophy includes:
 .. **Fail Fast at startup time**. For example: if the configuration parameter needs to be a positive `int` and it's negative, fail fast
 .. **Fail Fast at runtime**. For example: if the request needs to contain a double between `0.0` and `1.0` and it's bigger than ``1.0``, fail fast.
 .. *Fail Fast at runtime in assertion mode* if the detection performance cost is high. For example: If, after every low level iteration, the variable A needs to be equal to the square root of B, check it if and only if an assert flag is set to true (usually controlled by the <<_environmentmode,EnvironmentMode>>).
+
 . `Exception` messages
 .. The `Exception` message must include the name and state of each relevant variable. For example:
 +
@@ -46,15 +47,17 @@ if (fooSize < 0) {
 }
 ----
 Notice that the output clearly explains what's wrong:
++
 [source,java,options="nowrap"]
 ----
 Exception in thread "main" java.lang.IllegalArgumentException: The fooSize (-5) of bar (myBar) must be positive.
     at ...
 ----
+
 .. Whenever possible, the `Exception` message must include context.
+
 .. Whenever the fix is not obvious, the `Exception` message should include advice. Advice normally starts with the word _maybe_ on a new line:
 +
-
 [source,java,options="nowrap"]
 ----
 Exception in thread "main" java.lang.IllegalStateException: The valueRangeDescriptor (fooRange) is nullable, but not countable (false).
@@ -63,4 +66,5 @@ Maybe the member (getFooRange) should return CountableValueRange.
 ----
 +
 The word _maybe_ is to indicate that the advice is not guaranteed to be right in all cases.
+
 . Generics. The `Solution` class is often passed as a generic type parameter to subsystems. The `PlanningEntity` class(es) are rarely passed as a generic type parameter.

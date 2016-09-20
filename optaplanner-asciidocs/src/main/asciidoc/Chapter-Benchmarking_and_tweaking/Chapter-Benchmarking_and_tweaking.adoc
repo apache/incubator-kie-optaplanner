@@ -30,8 +30,7 @@ image::Chapter-Benchmarking_and_tweaking/benchmarkOverview.png[align="center"]
 
 The benchmarker is in a separate artifact called ``optaplanner-benchmark``.
 
-If you use Maven, add a dependency in your [path]_pom.xml_
- file:
+If you use Maven, add a dependency in your [path]_pom.xml_ file:
 
 [source,xml,options="nowrap"]
 ----

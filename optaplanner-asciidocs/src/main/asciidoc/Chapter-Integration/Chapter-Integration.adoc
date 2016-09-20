@@ -452,6 +452,7 @@ Let's create an module called __org.optaplanner__:
   </dependencies>
 </module>
 ----
+
 . Navigate to the deployed `war` file.
 .. Remove `optaplanner-core-${version}.jar` and all its direct and transitive dependency jars from the `WEB-INF/lib` directory in the `war` file.
 .. Create the file `jboss-deployment-structure.xml` in the `WEB-INF/lib` directory. Give it this content:

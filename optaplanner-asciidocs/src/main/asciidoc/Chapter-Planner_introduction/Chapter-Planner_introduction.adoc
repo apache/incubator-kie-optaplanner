@@ -305,6 +305,7 @@ $ git clone https://github.com/droolsjbpm/optaplanner.git optaplanner
 ...
 ----
 ====
+
 . Build it with http://maven.apache.org/[Maven]:
 +
 
@@ -320,6 +321,7 @@ $ mvn clean install -DskipTests
 ====
 The first time, Maven might take a long time, because it needs to download jars.
 ====
+
 . Run the examples:
 +
 
@@ -329,7 +331,9 @@ $ cd optaplanner-examples
 $ mvn exec:java
 ...
 ----
+
 . Edit the sources in your favorite IDE.
+
 . Optional: use a Java profiler.
 
 
