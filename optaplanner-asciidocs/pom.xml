@@ -27,8 +27,6 @@
     <source.document.name>index.adoc</source.document.name>
   </properties>
 
-
-
   <build>
     <plugins>
       <plugin>
@@ -115,11 +113,7 @@
             <sourceHighlighter>highlightjs</sourceHighlighter>
             <compact>true</compact>
             <attributes>
-              <sourceDocumentName>${source.document.name}</sourceDocumentName>
-              <chapter/>
-              <docinfo/>
-              <nolang/>
-              <icons>font</icons>
+              <docinfo/><!-- Needed for googleAnalytics -->
               <!-- Custom attributes -->
               <codeDir>${project.build.directory}/code</codeDir>
               <COMMUNITY-ONLY/>
@@ -130,6 +124,34 @@
               <html-googleTagManagerChannel>OptaPlanner</html-googleTagManagerChannel>
             </attributes>
           </configuration>
+          <executions>
+            <execution>
+              <id>generate-single-html</id>
+              <phase>process-sources</phase>
+              <goals>
+                <goal>process-asciidoc</goal>
+              </goals>
+              <configuration>
+                <!-- Needs to be duplicated to avoid rendering each adoc separately -->
+                <sourceDocumentName>${source.document.name}</sourceDocumentName>
+                <backend>html5</backend>
+                <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
+              </configuration>
+            </execution>
+            <execution>
+              <id>generate-pdf</id>
+              <phase>process-sources</phase>
+              <goals>
+                <goal>process-asciidoc</goal>
+              </goals>
+              <configuration>
+                <!-- Needs to be duplicated to avoid rendering each adoc separately -->
+                <sourceDocumentName>${source.document.name}</sourceDocumentName>
+                <backend>pdf</backend>
+                <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
+              </configuration>
+            </execution>
+          </executions>
           <dependencies>
             <dependency>
               <groupId>org.asciidoctor</groupId>
@@ -142,30 +164,6 @@
               <version>1.5.0-alpha.11</version>
             </dependency>
           </dependencies>
-          <executions>
-            <execution>
-              <id>generate-single-html</id>
-              <phase>process-sources</phase>
-              <goals>
-                <goal>process-asciidoc</goal>
-              </goals>
-              <configuration>
-                <backend>html5</backend>
-                <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
-              </configuration>
-            </execution>
-            <execution>
-              <id>generate-pdf</id>
-              <phase>process-sources</phase>
-              <goals>
-                <goal>process-asciidoc</goal>
-              </goals>
-              <configuration>
-                <backend>pdf</backend>
-                <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
-              </configuration>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
