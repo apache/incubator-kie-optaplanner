@@ -30,17 +30,7 @@
 
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/asciidoc</directory>
-      </resource>
-    </resources>
-
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
@@ -53,70 +43,70 @@
     
     <pluginManagement>
       <plugins>
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>copy-shared-images-to-single</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>copy-resources</goal>
-              </goals>
-              <configuration>
-                <outputDirectory>${project.build.directory}/generated-docs/html_single/images</outputDirectory>
-                <resources>
-                  <resource>
-                    <directory>${project.basedir}/../shared/images/</directory>
-                    <filtering>false</filtering>
-                  </resource>
-                </resources>
-              </configuration>
-            </execution>
-            <!-- PDF generation requires only having JPG files: add back in when all PNG have been converted to JPG.
-                 prawn  (Ruby library used by asciidoctor-pdf) does not support all PNG formats
-                 See: https://github.com/asciidoctor/asciidoctor-pdf/blob/master/Gemfile#L3
-                      https://github.com/prawnpdf/prawn/blob/89c95e07ca1563713bf3f44db466b51770ddca1e/lib/prawn/images/png.rb#L140
-                      http://stackoverflow.com/questions/13741110/add-image-using-prawn-got-error-prawnerrorsunsupportedimagetype-png-uses
+        <!--<plugin>-->
+          <!--<artifactId>maven-resources-plugin</artifactId>-->
+          <!--<executions>-->
+            <!--<execution>-->
+              <!--<id>copy-shared-images-to-single</id>-->
+              <!--<phase>generate-sources</phase>-->
+              <!--<goals>-->
+                <!--<goal>copy-resources</goal>-->
+              <!--</goals>-->
+              <!--<configuration>-->
+                <!--<outputDirectory>${project.build.directory}/generated-docs/html_single/images</outputDirectory>-->
+                <!--<resources>-->
+                  <!--<resource>-->
+                    <!--<directory>${project.basedir}/../shared/images/</directory>-->
+                    <!--<filtering>false</filtering>-->
+                  <!--</resource>-->
+                <!--</resources>-->
+              <!--</configuration>-->
+            <!--</execution>-->
+            <!--&lt;!&ndash; PDF generation requires only having JPG files: add back in when all PNG have been converted to JPG.-->
+                 <!--prawn  (Ruby library used by asciidoctor-pdf) does not support all PNG formats-->
+                 <!--See: https://github.com/asciidoctor/asciidoctor-pdf/blob/master/Gemfile#L3-->
+                      <!--https://github.com/prawnpdf/prawn/blob/89c95e07ca1563713bf3f44db466b51770ddca1e/lib/prawn/images/png.rb#L140-->
+                      <!--http://stackoverflow.com/questions/13741110/add-image-using-prawn-got-error-prawnerrorsunsupportedimagetype-png-uses-->
 
-            <execution>
-              <id>copy-shared-images-for-pdf-generation</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>copy-resources</goal>
-              </goals>
-              <configuration>
-                <outputDirectory>${project.basedir}/src/main/asciidoc/images</outputDirectory>
-                <resources>
-                  <resource>
-                    <directory>${project.basedir}/../shared/images/</directory>
-                    <filtering>false</filtering>
-                  </resource>
-                </resources>
-              </configuration>
-            </execution>
-             -->
+            <!--<execution>-->
+              <!--<id>copy-shared-images-for-pdf-generation</id>-->
+              <!--<phase>generate-sources</phase>-->
+              <!--<goals>-->
+                <!--<goal>copy-resources</goal>-->
+              <!--</goals>-->
+              <!--<configuration>-->
+                <!--<outputDirectory>${project.basedir}/src/main/asciidoc/images</outputDirectory>-->
+                <!--<resources>-->
+                  <!--<resource>-->
+                    <!--<directory>${project.basedir}/../shared/images/</directory>-->
+                    <!--<filtering>false</filtering>-->
+                  <!--</resource>-->
+                <!--</resources>-->
+              <!--</configuration>-->
+            <!--</execution>-->
+             <!--&ndash;&gt;-->
 
-            <!-- Add when chunked HTML is available
-                 See: https://github.com/asciidoctor/asciidoctor-maven-plugin/issues/135
-            <execution>
-              <id>copy-shared-images-to-multiple</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>copy-resources</goal>
-              </goals>
-              <configuration>
-                <outputDirectory>${project.build.directory}/generated-docs/html/images</outputDirectory>
-                <resources>
-                  <resource>
-                    <directory>${project.basedir}/../shared/images/</directory>
-                    <filtering>false</filtering>
-                  </resource>
-                </resources>
-              </configuration>
-            </execution>
-             -->
-          </executions>
-        </plugin>
+            <!--&lt;!&ndash; Add when chunked HTML is available-->
+                 <!--See: https://github.com/asciidoctor/asciidoctor-maven-plugin/issues/135-->
+            <!--<execution>-->
+              <!--<id>copy-shared-images-to-multiple</id>-->
+              <!--<phase>generate-sources</phase>-->
+              <!--<goals>-->
+                <!--<goal>copy-resources</goal>-->
+              <!--</goals>-->
+              <!--<configuration>-->
+                <!--<outputDirectory>${project.build.directory}/generated-docs/html/images</outputDirectory>-->
+                <!--<resources>-->
+                  <!--<resource>-->
+                    <!--<directory>${project.basedir}/../shared/images/</directory>-->
+                    <!--<filtering>false</filtering>-->
+                  <!--</resource>-->
+                <!--</resources>-->
+              <!--</configuration>-->
+            <!--</execution>-->
+             <!--&ndash;&gt;-->
+          <!--</executions>-->
+        <!--</plugin>-->
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
@@ -125,10 +115,12 @@
             <sourceHighlighter>highlightjs</sourceHighlighter>
             <compact>true</compact>
             <attributes>
+              <sourceDocumentName>${source.document.name}</sourceDocumentName>
               <chapter/>
               <docinfo/>
               <nolang/>
               <icons>font</icons>
+              <!-- Custom attributes -->
               <codeDir>${project.build.directory}/code</codeDir>
               <COMMUNITY-ONLY/>
               <project-version>${project.version}</project-version>
@@ -141,13 +133,13 @@
           <dependencies>
             <dependency>
               <groupId>org.asciidoctor</groupId>
-              <artifactId>asciidoctorj-pdf</artifactId>
-              <version>1.5.0-alpha.11</version>
+              <artifactId>asciidoctorj</artifactId>
+              <version>1.5.4.1</version>
             </dependency>
             <dependency>
               <groupId>org.asciidoctor</groupId>
-              <artifactId>asciidoctorj</artifactId>
-              <version>1.5.4.1</version>
+              <artifactId>asciidoctorj-pdf</artifactId>
+              <version>1.5.0-alpha.11</version>
             </dependency>
           </dependencies>
           <executions>
@@ -159,28 +151,9 @@
               </goals>
               <configuration>
                 <backend>html5</backend>
-                <sourceDirectory>${project.basedir}/src/main/asciidoc</sourceDirectory>
-                <sourceDocumentName>${source.document.name}</sourceDocumentName>
                 <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
               </configuration>
             </execution>
-            <!-- Chunked HTML generation not yet available (AsciiDoctor issue)
-                 See: https://github.com/asciidoctor/asciidoctor-maven-plugin/issues/135
-            <execution>
-              <id>generate-multiple-html</id>
-              <phase>process-sources</phase>
-              <goals>
-                <goal>process-asciidoc</goal>
-              </goals>
-              <configuration>
-                <backend>html5</backend>
-                <sourceDirectory>${project.basedir}/src/main/asciidoc</sourceDirectory>
-                <sourceDocumentName>${source.document.name}</sourceDocumentName>
-                <outputDirectory>${project.build.directory}/generated-docs/html</outputDirectory>
-                <preserveDirectories>true</preserveDirectories>
-              </configuration>
-            </execution> -->
-            <!-- PDF generation doesn't work yet
             <execution>
               <id>generate-pdf</id>
               <phase>process-sources</phase>
@@ -189,13 +162,9 @@
               </goals>
               <configuration>
                 <backend>pdf</backend>
-                <sourceDirectory>${project.basedir}/src/main/asciidoc</sourceDirectory>
-                <sourceDocumentName>${source.document.name}</sourceDocumentName>
                 <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
-                <sourceHighlighter>highlightjs</sourceHighlighter>
-                <compact>true</compact>
               </configuration>
-            </execution> -->
+            </execution>
           </executions>
         </plugin>
         <plugin>
@@ -282,27 +251,5 @@
       </build>
     </profile>
   </profiles>
- 
-  <!--  HOW TO DO THIS IN ASCIIDOC???
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.jboss.maven.plugins</groupId>
-          <artifactId>maven-jdocbook-plugin</artifactId>
-          <configuration>
-            <options>
-              <transformerParameters>
-                <html.googleAnalyticsId>UA-39485370-1</html.googleAnalyticsId>
-                <html.googleTagManagerId>GTM-NJWS5L</html.googleTagManagerId>
-                <html.googleTagManagerChannel>OptaPlanner</html.googleTagManagerChannel>
-              </transformerParameters>
-            </options>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-   --> 
   
 </project>
