@@ -120,6 +120,7 @@
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
+          <version>1.5.3</version>
           <configuration>
             <sourceHighlighter>highlightjs</sourceHighlighter>
             <compact>true</compact>
@@ -141,17 +142,12 @@
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj-pdf</artifactId>
-              <version>${version.org.asciidoctor.pdf}</version>
+              <version>1.5.0-alpha.11</version>
             </dependency>
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj</artifactId>
-              <version>1.5.4</version>
-            </dependency>
-            <dependency>
-              <groupId>org.jruby</groupId>
-              <artifactId>jruby-complete</artifactId>
-              <version>9.1.2.0</version>
+              <version>1.5.4.1</version>
             </dependency>
           </dependencies>
           <executions>
