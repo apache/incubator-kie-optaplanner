@@ -48,8 +48,7 @@ Under the hood, it combines optimization heuristics and metaheuristics with very
 
 OptaPlanner is _open source_ software, released under http://www.apache.org/licenses/LICENSE-2.0.html[the Apache Software License 2.0].
 This license is very liberal and allows reuse for commercial purposes.
-Read http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN[the layman's
-    explanation].
+Read http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN[the layman's explanation].
 
 OptaPlanner is 100% pure Java^TM^
  and runs on any JVM 1.6 or higher.
@@ -80,8 +79,7 @@ In layman's terms, NP-complete means:
 (*) At least, none of the smartest computer scientists in the world have found such a silver bullet yet.
 But if they find one for 1 NP-complete problem, it will work for every NP-complete problem.
 
-In fact, there's a $ 1,000,000 reward for anyone that proves if http://en.wikipedia.org/wiki/P_%3D_NP_problem[such a silver bullet actually exists or
-        not].
+In fact, there's a $ 1,000,000 reward for anyone that proves if http://en.wikipedia.org/wiki/P_%3D_NP_problem[such a silver bullet actually exists or not].
 ====
 
 
@@ -354,8 +352,7 @@ OptaPlanner is:
 === Release Notes
 
 
-We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. http://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our
-      website.]
+We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. http://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
 
 [[_backwardscompatibility]]
 === Backwards Compatibility
@@ -381,14 +378,12 @@ Those documented `impl` classes are reliable and safe to use (unless explicitly 
 For news and articles, check http://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]). *If OptaPlanner
       helps you, help us by blogging or tweeting about it!*
 
-Public questions are welcome on http://www.optaplanner.org/community/forum.html[our
-      community forum].
+Public questions are welcome on http://www.optaplanner.org/community/forum.html[our community forum].
 Bugs and feature requests are welcome in https://issues.jboss.org/browse/PLANNER[our issue tracker].
 Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you 'll benefit from our peer review and from our improvements made on top of your improvements.
 
 Red Hat sponsors OptaPlanner development by employing the core team.
-For enterprise support and consulting, take a look at http://www.optaplanner.org/community/product.html[the BRMS and BPM Suite
-      products] (which contain OptaPlanner) or http://www.redhat.com/en/about/contact/sales[contact Red Hat].
+For enterprise support and consulting, take a look at http://www.optaplanner.org/community/product.html[the BRMS and BPM Suite products] (which contain OptaPlanner) or http://www.redhat.com/en/about/contact/sales[contact Red Hat].
 
 [[_relationshipwithkie]]
 === Relationship with Drools and jBPM

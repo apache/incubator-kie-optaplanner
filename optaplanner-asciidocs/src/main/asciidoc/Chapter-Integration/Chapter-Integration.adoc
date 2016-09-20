@@ -414,8 +414,8 @@ The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score
 
 http://camel.apache.org/[Camel] is an enterprise integration framework which includes support for Planner (starting from Camel 2.13). It can expose a use case as a REST service, a SOAP service, a JMS service, ...
 
-http://camel.apache.org/optaplanner.html[Read the documentation for the camel-optaplanner
-      component.] That component works in Karaf too.
+http://camel.apache.org/optaplanner.html[Read the documentation for the camel-optaplanner component.]
+That component works in Karaf too.
 
 [[_integrationwithotherenvironments]]
 == Other Environments

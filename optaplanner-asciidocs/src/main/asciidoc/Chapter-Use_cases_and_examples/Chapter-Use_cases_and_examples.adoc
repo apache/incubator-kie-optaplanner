@@ -809,8 +809,7 @@ Soft constraints:
 * Room stability: Lectures of the same course should be assigned the same room.
 
 
-The problem is defined by http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[the International
-        Timetabling Competition 2007 track 3].
+The problem is defined by http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[the International Timetabling Competition 2007 track 3].
 
 [[_curriculumcourseproblemsize]]
 ==== Problem Size
@@ -869,8 +868,7 @@ Soft constraints:
 * Machine move cost: Moving a process from machine A to machine B has another A-B specific move cost.
 
 
-The problem is defined by http://challenge.roadef.org/2012/en/[the Google ROADEF/EURO
-        Challenge 2012].
+The problem is defined by http://challenge.roadef.org/2012/en/[the Google ROADEF/EURO Challenge 2012].
 
 [[_machinereassignmentvalueproposition]]
 ==== Value Proposition
@@ -1063,8 +1061,7 @@ image::Chapter-Use_cases_and_examples/vehicleRoutingDistanceType.png[align="cent
 
 
 For the optimization algorithm, this doesn't matter much, as long as the distance between 2 points can be looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it can also be travel time, fuel cost, or a weighted function of those.
-There are several technologies available to precalculate road costs, such as https://graphhopper.com/[GraphHopper] (embeddable, offline Java engine), http://open.mapquestapi.com/directions/#matrix[Open MapQuest] (web service) and https://developers.google.com/maps/documentation/webservices/client-library[Google Maps Client
-        API] (web service).
+There are several technologies available to precalculate road costs, such as https://graphhopper.com/[GraphHopper] (embeddable, offline Java engine), http://open.mapquestapi.com/directions/#matrix[Open MapQuest] (web service) and https://developers.google.com/maps/documentation/webservices/client-library[Google Maps Client API] (web service).
 
 
 image::Chapter-Use_cases_and_examples/integrationWithRealMaps.png[align="center"]
@@ -1129,8 +1126,7 @@ Soft constraints:
 * Total makespan: minimize the duration of the whole multi-project schedule.
 
 
-The problem is defined by http://gent.cs.kuleuven.be/mista2013challenge/[the MISTA 2013
-        challenge].
+The problem is defined by http://gent.cs.kuleuven.be/mista2013challenge/[the MISTA 2013 challenge].
 
 [[_projectjobschedulingproblemsize]]
 ==== Problem Size
@@ -1324,8 +1320,7 @@ Soft constraints (each of which has a parametrized penalty):
 
 It uses large test data sets of real-life universities.
 
-The problem is defined by http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm[the International Timetabling
-        Competition 2007 track 1].
+The problem is defined by http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm[the International Timetabling Competition 2007 track 1].
 Geoffrey De Smet finished 4th in that competition with a very early version of Planner.
 Many improvements have been made since then.
 
@@ -1395,8 +1390,7 @@ Soft constraints:
 * **Alternative skill**: An employee assigned to a skill should have a proficiency in every skill required by that shift.
 
 
-The problem is defined by http://www.kuleuven-kortrijk.be/nrpcompetition[the
-        International Nurse Rostering Competition 2010].
+The problem is defined by http://www.kuleuven-kortrijk.be/nrpcompetition[the International Nurse Rostering Competition 2010].
 
 [[_employeerosteringvalueproposition]]
 ==== Value Proposition
@@ -1507,8 +1501,7 @@ Soft constraints:
 * Minimize the total distance traveled by all teams.
 
 
-The problem is defined on http://mat.gsia.cmu.edu/TOURN/[Michael Trick's website (which
-        contains the world records too)].
+The problem is defined on http://mat.gsia.cmu.edu/TOURN/[Michael Trick's website (which contains the world records too)].
 
 [[_travelingtournamentproblemsize]]
 ==== Problem Size
@@ -1590,8 +1583,7 @@ Soft constraints (addendum to the original problem definition):
 * Start early: prefer starting a task sooner rather than later.
 
 
-The problem is defined by http://iconchallenge.insight-centre.org/[the ICON
-        challenge].
+The problem is defined by http://iconchallenge.insight-centre.org/[the ICON challenge].
 
 [[_cheaptimeschedulingproblemsize]]
 ==== Problem Size

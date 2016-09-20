@@ -525,8 +525,7 @@ A move is accepted if it does not decrease the score, or if it leads to a score 
 image::Chapter-Local_search/lateAcceptance.png[align="center"]
 
 
-Scientific paper: http://www.cs.stir.ac.uk/research/publications/techreps/pdf/TR192.pdf[The Late Acceptance
-      Hill-Climbing Heuristic by Edmund K. Burke, Yuri Bykov (2012)]
+Scientific paper: http://www.cs.stir.ac.uk/research/publications/techreps/pdf/TR192.pdf[The Late Acceptance Hill-Climbing Heuristic by Edmund K. Burke, Yuri Bykov (2012)]
 
 [[_lateacceptanceconfiguration]]
 === Configuration
