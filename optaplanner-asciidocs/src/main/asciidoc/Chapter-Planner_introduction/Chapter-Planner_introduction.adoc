@@ -13,8 +13,7 @@
 
 image::Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
 
-*http://www.optaplanner.org[OptaPlanner] is a lightweight,
-    embeddable constraint satisfaction engine which optimizes planning problems.* It solves use cases such as:
+*http://www.optaplanner.org[OptaPlanner] is a lightweight, embeddable constraint satisfaction engine which optimizes planning problems.* It solves use cases such as:
 
 * **Employee shift rostering**: timetabling nurses, repairmen, ...
 * **Agenda scheduling**: scheduling meetings, appointments, maintenance jobs, advertisements, ...
