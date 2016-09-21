@@ -48,7 +48,6 @@
           <version>1.5.3</version>
           <configuration>
             <attributes>
-              <docinfo/><!-- Needed for googleAnalytics -->
               <!-- Custom attributes -->
               <codeDir>${project.build.directory}/code</codeDir>
               <COMMUNITY-ONLY/>
