@@ -41,77 +41,12 @@
     
     <pluginManagement>
       <plugins>
-        <!--<plugin>-->
-          <!--<artifactId>maven-resources-plugin</artifactId>-->
-          <!--<executions>-->
-            <!--<execution>-->
-              <!--<id>copy-shared-images-to-single</id>-->
-              <!--<phase>generate-sources</phase>-->
-              <!--<goals>-->
-                <!--<goal>copy-resources</goal>-->
-              <!--</goals>-->
-              <!--<configuration>-->
-                <!--<outputDirectory>${project.build.directory}/generated-docs/html_single/images</outputDirectory>-->
-                <!--<resources>-->
-                  <!--<resource>-->
-                    <!--<directory>${project.basedir}/../shared/images/</directory>-->
-                    <!--<filtering>false</filtering>-->
-                  <!--</resource>-->
-                <!--</resources>-->
-              <!--</configuration>-->
-            <!--</execution>-->
-            <!--&lt;!&ndash; PDF generation requires only having JPG files: add back in when all PNG have been converted to JPG.-->
-                 <!--prawn  (Ruby library used by asciidoctor-pdf) does not support all PNG formats-->
-                 <!--See: https://github.com/asciidoctor/asciidoctor-pdf/blob/master/Gemfile#L3-->
-                      <!--https://github.com/prawnpdf/prawn/blob/89c95e07ca1563713bf3f44db466b51770ddca1e/lib/prawn/images/png.rb#L140-->
-                      <!--http://stackoverflow.com/questions/13741110/add-image-using-prawn-got-error-prawnerrorsunsupportedimagetype-png-uses-->
-
-            <!--<execution>-->
-              <!--<id>copy-shared-images-for-pdf-generation</id>-->
-              <!--<phase>generate-sources</phase>-->
-              <!--<goals>-->
-                <!--<goal>copy-resources</goal>-->
-              <!--</goals>-->
-              <!--<configuration>-->
-                <!--<outputDirectory>${project.basedir}/src/main/asciidoc/images</outputDirectory>-->
-                <!--<resources>-->
-                  <!--<resource>-->
-                    <!--<directory>${project.basedir}/../shared/images/</directory>-->
-                    <!--<filtering>false</filtering>-->
-                  <!--</resource>-->
-                <!--</resources>-->
-              <!--</configuration>-->
-            <!--</execution>-->
-             <!--&ndash;&gt;-->
-
-            <!--&lt;!&ndash; Add when chunked HTML is available-->
-                 <!--See: https://github.com/asciidoctor/asciidoctor-maven-plugin/issues/135-->
-            <!--<execution>-->
-              <!--<id>copy-shared-images-to-multiple</id>-->
-              <!--<phase>generate-sources</phase>-->
-              <!--<goals>-->
-                <!--<goal>copy-resources</goal>-->
-              <!--</goals>-->
-              <!--<configuration>-->
-                <!--<outputDirectory>${project.build.directory}/generated-docs/html/images</outputDirectory>-->
-                <!--<resources>-->
-                  <!--<resource>-->
-                    <!--<directory>${project.basedir}/../shared/images/</directory>-->
-                    <!--<filtering>false</filtering>-->
-                  <!--</resource>-->
-                <!--</resources>-->
-              <!--</configuration>-->
-            <!--</execution>-->
-             <!--&ndash;&gt;-->
-          <!--</executions>-->
-        <!--</plugin>-->
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
+          <!-- TODO upgrade to 1.5.4 when https://github.com/asciidoctor/asciidoctor-maven-plugin/pull/270 is fixed to avoid docinfo files copy -->
           <version>1.5.3</version>
           <configuration>
-            <sourceHighlighter>highlightjs</sourceHighlighter>
-            <compact>true</compact>
             <attributes>
               <docinfo/><!-- Needed for googleAnalytics -->
               <!-- Custom attributes -->
@@ -135,6 +70,7 @@
                 <!-- Needs to be duplicated to avoid rendering each adoc separately -->
                 <sourceDocumentName>${source.document.name}</sourceDocumentName>
                 <backend>html5</backend>
+                <sourceHighlighter>highlightjs</sourceHighlighter>
                 <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
               </configuration>
             </execution>
@@ -148,6 +84,7 @@
                 <!-- Needs to be duplicated to avoid rendering each adoc separately -->
                 <sourceDocumentName>${source.document.name}</sourceDocumentName>
                 <backend>pdf</backend>
+                <sourceHighlighter>coderay</sourceHighlighter><!-- highlightjs does not work in PDF -->
                 <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
               </configuration>
             </execution>

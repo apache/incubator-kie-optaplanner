@@ -91,7 +91,7 @@
         </property>
       </activation>
       <modules>
-        <module>optaplanner-docs</module>
+        <module>optaplanner-asciidocs</module>
         <module>optaplanner-distribution</module>
       </modules>
     </profile>

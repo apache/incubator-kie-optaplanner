@@ -67,6 +67,18 @@
     </plugins>
   </build>
 
+  <!-- TODO adjust optaplanner-bom from type jdocbook to zip -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-docs</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Binaries and sources -->
     <dependency>
@@ -113,7 +125,7 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-docs</artifactId>
-      <type>jdocbook</type>
+      <type>zip</type>
     </dependency>
   </dependencies>
 
