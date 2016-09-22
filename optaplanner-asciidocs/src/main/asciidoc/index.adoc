@@ -1,5 +1,5 @@
 = OptaPlanner User Guide
-:author: The OptaPlanner Team
+The OptaPlanner Team <http://www.optaplanner.org/community/team.html>
 :revnumber: {project-version}
 :doctype: book
 :sectnums:
