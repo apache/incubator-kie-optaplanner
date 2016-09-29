@@ -19,6 +19,7 @@ package org.optaplanner.persistence.jaxb.api.score;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -64,9 +65,7 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
             regex = "<\\?[^\\?]*\\?>" // XML header
                     + "<([\\w\\-\\.]+)/>"; // Start and end of element
         }
-        if (!xmlString.matches(regex)) {
-            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + xmlString);
-        }
+        assertThat(xmlString).matches(Pattern.compile(regex));
     }
 
     public static abstract class TestScoreWrapper<S extends Score> implements Serializable {
