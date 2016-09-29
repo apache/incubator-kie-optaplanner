@@ -28,46 +28,46 @@ public class LongValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(10L, new LongValueRange(0L, 10L).getSize());
-        assertEquals(20L, new LongValueRange(100L, 120L).getSize());
-        assertEquals(40L, new LongValueRange(-15L, 25L).getSize());
-        assertEquals(0L, new LongValueRange(7L, 7L).getSize());
-        assertEquals(Long.MAX_VALUE - 2000L, new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).getSize());
+        assertThat(new LongValueRange(0L, 10L).getSize()).isEqualTo(10L);
+        assertThat(new LongValueRange(100L, 120L).getSize()).isEqualTo(20L);
+        assertThat(new LongValueRange(-15L, 25L).getSize()).isEqualTo(40L);
+        assertThat(new LongValueRange(7L, 7L).getSize()).isEqualTo(0L);
+        assertThat(new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).getSize()).isEqualTo(Long.MAX_VALUE - 2000L);
         // IncrementUnit
-        assertEquals(5L, new LongValueRange(0L, 10L, 2L).getSize());
-        assertEquals(5L, new LongValueRange(-1L, 9L, 2L).getSize());
-        assertEquals(4L, new LongValueRange(100L, 120L, 5L).getSize());
+        assertThat(new LongValueRange(0L, 10L, 2L).getSize()).isEqualTo(5L);
+        assertThat(new LongValueRange(-1L, 9L, 2L).getSize()).isEqualTo(5L);
+        assertThat(new LongValueRange(100L, 120L, 5L).getSize()).isEqualTo(4L);
     }
 
     @Test
     public void get() {
-        assertEquals(3L, new LongValueRange(0L, 10L).get(3L).intValue());
-        assertEquals(103L, new LongValueRange(100L, 120L).get(3L).intValue());
-        assertEquals(-4L, new LongValueRange(-5L, 25L).get(1L).intValue());
-        assertEquals(1L, new LongValueRange(-5L, 25L).get(6L).intValue());
-        assertEquals(4L, new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).get(1004L).intValue());
+        assertThat(new LongValueRange(0L, 10L).get(3L).intValue()).isEqualTo(3L);
+        assertThat(new LongValueRange(100L, 120L).get(3L).intValue()).isEqualTo(103L);
+        assertThat(new LongValueRange(-5L, 25L).get(1L).intValue()).isEqualTo(-4L);
+        assertThat(new LongValueRange(-5L, 25L).get(6L).intValue()).isEqualTo(1L);
+        assertThat(new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).get(1004L).intValue()).isEqualTo(4L);
         // IncrementUnit
-        assertEquals(6L, new LongValueRange(0L, 10L, 2L).get(3L).intValue());
-        assertEquals(5L, new LongValueRange(-1L, 9L, 2L).get(3L).intValue());
-        assertEquals(115L, new LongValueRange(100L, 120L, 5L).get(3L).intValue());
+        assertThat(new LongValueRange(0L, 10L, 2L).get(3L).intValue()).isEqualTo(6L);
+        assertThat(new LongValueRange(-1L, 9L, 2L).get(3L).intValue()).isEqualTo(5L);
+        assertThat(new LongValueRange(100L, 120L, 5L).get(3L).intValue()).isEqualTo(115L);
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new LongValueRange(0L, 10L).contains(3L));
-        assertEquals(false, new LongValueRange(0L, 10L).contains(10L));
-        assertEquals(false, new LongValueRange(0L, 10L).contains(null));
-        assertEquals(true, new LongValueRange(100L, 120L).contains(100L));
-        assertEquals(false, new LongValueRange(100L, 120L).contains(99L));
-        assertEquals(true, new LongValueRange(-5L, 25L).contains(-4L));
-        assertEquals(false, new LongValueRange(-5L, 25L).contains(-20L));
+        assertThat(new LongValueRange(0L, 10L).contains(3L)).isEqualTo(true);
+        assertThat(new LongValueRange(0L, 10L).contains(10L)).isEqualTo(false);
+        assertThat(new LongValueRange(0L, 10L).contains(null)).isEqualTo(false);
+        assertThat(new LongValueRange(100L, 120L).contains(100L)).isEqualTo(true);
+        assertThat(new LongValueRange(100L, 120L).contains(99L)).isEqualTo(false);
+        assertThat(new LongValueRange(-5L, 25L).contains(-4L)).isEqualTo(true);
+        assertThat(new LongValueRange(-5L, 25L).contains(-20L)).isEqualTo(false);
         // IncrementUnit
-        assertEquals(true, new LongValueRange(0L, 10L, 2L).contains(2L));
-        assertEquals(false, new LongValueRange(0L, 10L, 2L).contains(3L));
-        assertEquals(true, new LongValueRange(-1L, 9L, 2L).contains(1L));
-        assertEquals(false, new LongValueRange(-1L, 9L, 2L).contains(2L));
-        assertEquals(true, new LongValueRange(100L, 120L, 5L).contains(115L));
-        assertEquals(false, new LongValueRange(100L, 120L, 5L).contains(114L));
+        assertThat(new LongValueRange(0L, 10L, 2L).contains(2L)).isEqualTo(true);
+        assertThat(new LongValueRange(0L, 10L, 2L).contains(3L)).isEqualTo(false);
+        assertThat(new LongValueRange(-1L, 9L, 2L).contains(1L)).isEqualTo(true);
+        assertThat(new LongValueRange(-1L, 9L, 2L).contains(2L)).isEqualTo(false);
+        assertThat(new LongValueRange(100L, 120L, 5L).contains(115L)).isEqualTo(true);
+        assertThat(new LongValueRange(100L, 120L, 5L).contains(114L)).isEqualTo(false);
     }
 
     @Test

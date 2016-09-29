@@ -28,13 +28,13 @@ public class DoubleValueRangeTest {
 
     @Test
     public void contains() {
-        assertEquals(true, new DoubleValueRange(0.0, 10.0).contains(3.0));
-        assertEquals(false, new DoubleValueRange(0.0, 10.0).contains(10.0));
-        assertEquals(false, new DoubleValueRange(0.0, 10.0).contains(null));
-        assertEquals(true, new DoubleValueRange(100.0, 120.0).contains(100.0));
-        assertEquals(false, new DoubleValueRange(100.0, 120.0).contains(99.9));
-        assertEquals(true, new DoubleValueRange(-5.3, 25.2).contains(-5.2));
-        assertEquals(false, new DoubleValueRange(-5.3, 25.2).contains(-5.4));
+        assertThat(new DoubleValueRange(0.0, 10.0).contains(3.0)).isEqualTo(true);
+        assertThat(new DoubleValueRange(0.0, 10.0).contains(10.0)).isEqualTo(false);
+        assertThat(new DoubleValueRange(0.0, 10.0).contains(null)).isEqualTo(false);
+        assertThat(new DoubleValueRange(100.0, 120.0).contains(100.0)).isEqualTo(true);
+        assertThat(new DoubleValueRange(100.0, 120.0).contains(99.9)).isEqualTo(false);
+        assertThat(new DoubleValueRange(-5.3, 25.2).contains(-5.2)).isEqualTo(true);
+        assertThat(new DoubleValueRange(-5.3, 25.2).contains(-5.4)).isEqualTo(false);
     }
 
     @Test

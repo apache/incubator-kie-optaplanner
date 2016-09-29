@@ -27,11 +27,11 @@ public class BendableLongScoreDefinitionTest {
 
     @Test
     public void getLevelsSize() {
-        assertEquals(2, new BendableLongScoreDefinition(1, 1).getLevelsSize());
-        assertEquals(7, new BendableLongScoreDefinition(3, 4).getLevelsSize());
-        assertEquals(7, new BendableLongScoreDefinition(4, 3).getLevelsSize());
-        assertEquals(5, new BendableLongScoreDefinition(0, 5).getLevelsSize());
-        assertEquals(5, new BendableLongScoreDefinition(5, 0).getLevelsSize());
+        assertThat(new BendableLongScoreDefinition(1, 1).getLevelsSize()).isEqualTo(2);
+        assertThat(new BendableLongScoreDefinition(3, 4).getLevelsSize()).isEqualTo(7);
+        assertThat(new BendableLongScoreDefinition(4, 3).getLevelsSize()).isEqualTo(7);
+        assertThat(new BendableLongScoreDefinition(0, 5).getLevelsSize()).isEqualTo(5);
+        assertThat(new BendableLongScoreDefinition(5, 0).getLevelsSize()).isEqualTo(5);
     }
 
     @Test
@@ -45,11 +45,11 @@ public class BendableLongScoreDefinitionTest {
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new BendableLongScoreDefinition(1, 1).getFeasibleLevelsSize());
-        assertEquals(3, new BendableLongScoreDefinition(3, 4).getFeasibleLevelsSize());
-        assertEquals(4, new BendableLongScoreDefinition(4, 3).getFeasibleLevelsSize());
-        assertEquals(0, new BendableLongScoreDefinition(0, 5).getFeasibleLevelsSize());
-        assertEquals(5, new BendableLongScoreDefinition(5, 0).getFeasibleLevelsSize());
+        assertThat(new BendableLongScoreDefinition(1, 1).getFeasibleLevelsSize()).isEqualTo(1);
+        assertThat(new BendableLongScoreDefinition(3, 4).getFeasibleLevelsSize()).isEqualTo(3);
+        assertThat(new BendableLongScoreDefinition(4, 3).getFeasibleLevelsSize()).isEqualTo(4);
+        assertThat(new BendableLongScoreDefinition(0, 5).getFeasibleLevelsSize()).isEqualTo(0);
+        assertThat(new BendableLongScoreDefinition(5, 0).getFeasibleLevelsSize()).isEqualTo(5);
     }
 
     @Test(expected = IllegalArgumentException.class)

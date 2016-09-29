@@ -57,11 +57,11 @@ public class CompositeAcceptorTest {
 
     @Test
     public void isAccepted() {
-        assertEquals(true, isCompositeAccepted(true, true, true));
-        assertEquals(false, isCompositeAccepted(false, true, true));
-        assertEquals(false, isCompositeAccepted(true, false, true));
-        assertEquals(false, isCompositeAccepted(true, true, false));
-        assertEquals(false, isCompositeAccepted(false, false, false));
+        assertThat(isCompositeAccepted(true, true, true)).isEqualTo(true);
+        assertThat(isCompositeAccepted(false, true, true)).isEqualTo(false);
+        assertThat(isCompositeAccepted(true, false, true)).isEqualTo(false);
+        assertThat(isCompositeAccepted(true, true, false)).isEqualTo(false);
+        assertThat(isCompositeAccepted(false, false, false)).isEqualTo(false);
     }
 
     private boolean isCompositeAccepted(boolean... childAccepts) {

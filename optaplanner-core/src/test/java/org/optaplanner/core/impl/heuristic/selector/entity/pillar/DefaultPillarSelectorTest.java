@@ -74,7 +74,7 @@ public class DefaultPillarSelectorTest {
 //        DefaultPillarSelector selector = new DefaultPillarSelector(
 //                entitySelector, Collections.singletonList(variableDescriptor), false,
 //                true, minimumPillarSize, maximumPillarSize);
-//        assertEquals(expected, selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d)));
+//        assertThat(selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d))).isEqualTo(expected);
 //    }
 
     @Test

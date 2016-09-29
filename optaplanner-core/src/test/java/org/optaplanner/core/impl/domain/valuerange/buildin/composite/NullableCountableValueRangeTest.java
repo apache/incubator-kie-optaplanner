@@ -32,29 +32,29 @@ public class NullableCountableValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(5L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).getSize());
-        assertEquals(6L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).getSize());
-        assertEquals(4L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).getSize());
-        assertEquals(4L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).getSize());
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).getSize()).isEqualTo(5L);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).getSize()).isEqualTo(6L);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).getSize()).isEqualTo(4L);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).getSize()).isEqualTo(4L);
         assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String>emptyList())).getSize()).isEqualTo(1L);
     }
 
     @Test
     public void get() {
-        assertEquals(5, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).get(2L).intValue());
-        assertEquals(null, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).get(4L));
-        assertEquals("c", new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(3L));
-        assertEquals(null, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(6L));
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).get(2L).intValue()).isEqualTo(5);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).get(4L)).isEqualTo(null);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(3L)).isEqualTo("c");
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(6L)).isEqualTo(null);
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(5));
-        assertEquals(false, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(4));
-        assertEquals(true, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(null));
-        assertEquals(true, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains("a"));
-        assertEquals(false, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains("n"));
-        assertEquals(true, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains(null));
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(5)).isEqualTo(true);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(4)).isEqualTo(false);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(null)).isEqualTo(true);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains("a")).isEqualTo(true);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains("n")).isEqualTo(false);
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains(null)).isEqualTo(true);
     }
 
     @Test

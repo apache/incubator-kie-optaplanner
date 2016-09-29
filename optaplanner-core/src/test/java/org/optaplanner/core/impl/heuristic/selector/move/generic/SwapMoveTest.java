@@ -204,11 +204,11 @@ public class SwapMoveTest {
         EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
         List<GenuineVariableDescriptor> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
 
-        assertEquals("a {null} <-> a {null}", new SwapMove(variableDescriptorList, a, a).toString());
-        assertEquals("a {null} <-> b {v1}", new SwapMove(variableDescriptorList, a, b).toString());
-        assertEquals("a {null} <-> c {v2}", new SwapMove(variableDescriptorList, a, c).toString());
-        assertEquals("b {v1} <-> c {v2}", new SwapMove(variableDescriptorList, b, c).toString());
-        assertEquals("c {v2} <-> b {v1}", new SwapMove(variableDescriptorList, c, b).toString());
+        assertThat(new SwapMove(variableDescriptorList, a, a).toString()).isEqualTo("a {null} <-> a {null}");
+        assertThat(new SwapMove(variableDescriptorList, a, b).toString()).isEqualTo("a {null} <-> b {v1}");
+        assertThat(new SwapMove(variableDescriptorList, a, c).toString()).isEqualTo("a {null} <-> c {v2}");
+        assertThat(new SwapMove(variableDescriptorList, b, c).toString()).isEqualTo("b {v1} <-> c {v2}");
+        assertThat(new SwapMove(variableDescriptorList, c, b).toString()).isEqualTo("c {v2} <-> b {v1}");
     }
 
     @Test

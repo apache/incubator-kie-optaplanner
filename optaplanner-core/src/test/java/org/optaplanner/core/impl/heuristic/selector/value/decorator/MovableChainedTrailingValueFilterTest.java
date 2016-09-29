@@ -65,18 +65,18 @@ public class MovableChainedTrailingValueFilterTest {
 
         MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
 
-        assertEquals(false, filter.accept(scoreDirector, a0));
-        assertEquals(true, filter.accept(scoreDirector, a1));
-        assertEquals(true, filter.accept(scoreDirector, a2));
-        assertEquals(true, filter.accept(scoreDirector, a3));
+        assertThat(filter.accept(scoreDirector, a0)).isEqualTo(false);
+        assertThat(filter.accept(scoreDirector, a1)).isEqualTo(true);
+        assertThat(filter.accept(scoreDirector, a2)).isEqualTo(true);
+        assertThat(filter.accept(scoreDirector, a3)).isEqualTo(true);
 
-        assertEquals(true, filter.accept(scoreDirector, b0));
-        assertEquals(true, filter.accept(scoreDirector, b1));
-        assertEquals(true, filter.accept(scoreDirector, b2));
+        assertThat(filter.accept(scoreDirector, b0)).isEqualTo(true);
+        assertThat(filter.accept(scoreDirector, b1)).isEqualTo(true);
+        assertThat(filter.accept(scoreDirector, b2)).isEqualTo(true);
 
-        assertEquals(false, filter.accept(scoreDirector, c0));
-        assertEquals(false, filter.accept(scoreDirector, c1));
-        assertEquals(true, filter.accept(scoreDirector, c2));
+        assertThat(filter.accept(scoreDirector, c0)).isEqualTo(false);
+        assertThat(filter.accept(scoreDirector, c1)).isEqualTo(false);
+        assertThat(filter.accept(scoreDirector, c2)).isEqualTo(true);
     }
 
 }
