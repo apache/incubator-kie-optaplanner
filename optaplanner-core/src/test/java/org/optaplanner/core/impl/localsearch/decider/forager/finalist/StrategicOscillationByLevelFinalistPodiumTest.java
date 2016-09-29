@@ -50,7 +50,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000));
-        assertSame(moveScope0, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -64,7 +64,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000));
-        assertSame(moveScope1, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -78,7 +78,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500));
-        assertSame(moveScope2, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
@@ -103,7 +103,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000));
-        assertSame(moveScope0, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -118,7 +118,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000));
-        assertSame(moveScope1, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -133,7 +133,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500));
-        assertSame(moveScope2, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
@@ -168,7 +168,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100, -5));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000, -10));
-        assertSame(moveScope0, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -182,7 +182,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000, -10));
-        assertSame(moveScope1, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -196,7 +196,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500, -10));
-        assertSame(moveScope2, extractSingleton(finalistPodium.getFinalistList()));
+        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);

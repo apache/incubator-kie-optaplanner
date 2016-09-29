@@ -133,20 +133,20 @@ public class CompositeMoveTest {
         Move second = new ChangeMove(e1, variableDescriptor, v3);
         Move move = CompositeMove.buildMove(first, second);
 
-        assertSame(v1, e1.getValue());
-        assertSame(v2, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v1);
+        assertThat(e2.getValue()).isSameAs(v2);
 
         ScoreDirector scoreDirector = mockScoreDirector(variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
-        assertSame(v3, e1.getValue());
-        assertSame(v1, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v3);
+        assertThat(e2.getValue()).isSameAs(v1);
 
         undoMove.doMove(scoreDirector);
 
-        assertSame(v1, e1.getValue());
-        assertSame(v2, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v1);
+        assertThat(e2.getValue()).isSameAs(v2);
     }
 
 }

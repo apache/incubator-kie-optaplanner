@@ -36,9 +36,9 @@ public class FieldMemberAccessorTest {
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
         TestdataFieldAnnotatedEntity e1 = new TestdataFieldAnnotatedEntity("e1", v1);
-        assertSame(v1, memberAccessor.executeGetter(e1));
+        assertThat(memberAccessor.executeGetter(e1)).isSameAs(v1);
         memberAccessor.executeSetter(e1, v2);
-        assertSame(v2, e1.getValue());
+        assertThat(e1.getValue()).isSameAs(v2);
     }
 
 }

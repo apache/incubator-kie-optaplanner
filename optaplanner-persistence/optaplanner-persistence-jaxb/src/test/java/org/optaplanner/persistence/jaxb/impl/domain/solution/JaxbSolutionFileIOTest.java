@@ -54,14 +54,14 @@ public class JaxbSolutionFileIOTest {
         solutionFileIO.write(original, file);
         JaxbTestdataSolution copy = solutionFileIO.read(file);
 
-        assertNotSame(original, copy);
+        assertThat(copy).isNotSameAs(original);
         assertCode("s1", copy);
         assertAllCodesOfIterator(copy.getValueList().iterator(), "v1", "v2");
         assertAllCodesOfIterator(copy.getEntityList().iterator(), "e1", "e2", "e3");
         JaxbTestdataValue copyV1 = copy.getValueList().get(0);
         JaxbTestdataEntity copyE2 = copy.getEntityList().get(1);
         assertCode("v1", copyE2.getValue());
-        assertSame(copyV1, copyE2.getValue());
+        assertThat(copyE2.getValue()).isSameAs(copyV1);
         assertThat(copy.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-123));
     }
 

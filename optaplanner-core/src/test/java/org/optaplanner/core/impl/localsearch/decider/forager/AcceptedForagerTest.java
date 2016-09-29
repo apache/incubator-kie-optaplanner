@@ -65,7 +65,7 @@ public class AcceptedForagerTest {
         assertThat(forager.isQuitEarly()).isFalse();
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         // Post conditions
-        assertSame(d, pickedScope);
+        assertThat(pickedScope).isSameAs(d);
         forager.phaseEnded(phaseScope);
     }
 
@@ -97,7 +97,7 @@ public class AcceptedForagerTest {
         assertThat(forager.isQuitEarly()).isFalse();
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         // Post conditions
-        assertSame(b, pickedScope);
+        assertThat(pickedScope).isSameAs(b);
         forager.phaseEnded(phaseScope);
     }
 
@@ -126,7 +126,7 @@ public class AcceptedForagerTest {
         assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
-        assertSame(d, pickedScope);
+        assertThat(pickedScope).isSameAs(d);
         forager.phaseEnded(phaseScope);
     }
 
@@ -155,7 +155,7 @@ public class AcceptedForagerTest {
         assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
-        assertSame(d, pickedScope);
+        assertThat(pickedScope).isSameAs(d);
         forager.phaseEnded(phaseScope);
     }
 
@@ -187,7 +187,7 @@ public class AcceptedForagerTest {
         assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
-        assertSame(c, pickedScope);
+        assertThat(pickedScope).isSameAs(c);
         forager.phaseEnded(phaseScope);
     }
 
@@ -219,7 +219,7 @@ public class AcceptedForagerTest {
         assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
-        assertSame(b, pickedScope);
+        assertThat(pickedScope).isSameAs(b);
         forager.phaseEnded(phaseScope);
     }
 

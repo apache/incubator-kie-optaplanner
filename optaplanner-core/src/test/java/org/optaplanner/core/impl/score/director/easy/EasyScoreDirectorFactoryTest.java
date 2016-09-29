@@ -32,7 +32,7 @@ public class EasyScoreDirectorFactoryTest {
     public void getEasyScoreCalculator() {
         EasyScoreCalculator scoreCalculator = mock(EasyScoreCalculator.class);
         EasyScoreDirectorFactory directorFactory = new EasyScoreDirectorFactory(scoreCalculator);
-        assertSame(scoreCalculator, directorFactory.getEasyScoreCalculator());
+        assertThat(directorFactory.getEasyScoreCalculator()).isSameAs(scoreCalculator);
     }
 
     @Test

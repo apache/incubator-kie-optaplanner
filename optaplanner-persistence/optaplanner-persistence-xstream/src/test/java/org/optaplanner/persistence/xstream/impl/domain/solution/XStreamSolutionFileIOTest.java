@@ -54,14 +54,14 @@ public class XStreamSolutionFileIOTest {
         solutionFileIO.write(original, file);
         XStreamTestdataSolution copy = solutionFileIO.read(file);
 
-        assertNotSame(original, copy);
+        assertThat(copy).isNotSameAs(original);
         assertCode("s1", copy);
         assertAllCodesOfIterator(copy.getValueList().iterator(), "v1", "v2");
         assertAllCodesOfIterator(copy.getEntityList().iterator(), "e1", "e2", "e3");
         XStreamTestdataValue copyV1 = copy.getValueList().get(0);
         XStreamTestdataEntity copyE2 = copy.getEntityList().get(1);
         assertCode("v1", copyE2.getValue());
-        assertSame(copyV1, copyE2.getValue());
+        assertThat(copyE2.getValue()).isSameAs(copyV1);
         assertThat(copy.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-123));
     }
 

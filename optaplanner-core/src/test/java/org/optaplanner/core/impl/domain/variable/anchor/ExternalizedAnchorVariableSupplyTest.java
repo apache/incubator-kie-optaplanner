@@ -54,10 +54,10 @@ public class ExternalizedAnchorVariableSupplyTest {
         nextVariableSupply.resetWorkingSolution(scoreDirector);
         supply.resetWorkingSolution(scoreDirector);
 
-        assertSame(a0, supply.getAnchor(a1));
-        assertSame(a0, supply.getAnchor(a2));
-        assertSame(a0, supply.getAnchor(a3));
-        assertSame(b0, supply.getAnchor(b1));
+        assertThat(supply.getAnchor(a1)).isSameAs(a0);
+        assertThat(supply.getAnchor(a2)).isSameAs(a0);
+        assertThat(supply.getAnchor(a3)).isSameAs(a0);
+        assertThat(supply.getAnchor(b1)).isSameAs(b0);
 
         nextVariableSupply.beforeVariableChanged(scoreDirector, a3);
         supply.beforeVariableChanged(scoreDirector, a3);
@@ -65,10 +65,10 @@ public class ExternalizedAnchorVariableSupplyTest {
         nextVariableSupply.afterVariableChanged(scoreDirector, a3);
         supply.afterVariableChanged(scoreDirector, a3);
 
-        assertSame(a0, supply.getAnchor(a1));
-        assertSame(a0, supply.getAnchor(a2));
-        assertSame(b0, supply.getAnchor(a3));
-        assertSame(b0, supply.getAnchor(b1));
+        assertThat(supply.getAnchor(a1)).isSameAs(a0);
+        assertThat(supply.getAnchor(a2)).isSameAs(a0);
+        assertThat(supply.getAnchor(a3)).isSameAs(b0);
+        assertThat(supply.getAnchor(b1)).isSameAs(b0);
 
         nextVariableSupply.clearWorkingSolution(scoreDirector);
         supply.clearWorkingSolution(scoreDirector);
