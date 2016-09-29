@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChaine
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class IncrementalScoreDirectorTest {

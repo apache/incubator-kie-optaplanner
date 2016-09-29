@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class FlatteningHardSoftScoreComparatorTest {

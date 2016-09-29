@@ -22,7 +22,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.optaplanner.core.api.score.Score;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 

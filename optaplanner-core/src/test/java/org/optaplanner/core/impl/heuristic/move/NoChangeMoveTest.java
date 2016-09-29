@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.move;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class NoChangeMoveTest {

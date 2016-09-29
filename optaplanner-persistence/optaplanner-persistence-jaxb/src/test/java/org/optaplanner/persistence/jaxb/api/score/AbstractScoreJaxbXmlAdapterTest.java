@@ -28,7 +28,7 @@ import javax.xml.bind.Unmarshaller;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoft.HardSoftScoreJaxbXmlAdapter;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractScoreJaxbXmlAdapterTest {
 

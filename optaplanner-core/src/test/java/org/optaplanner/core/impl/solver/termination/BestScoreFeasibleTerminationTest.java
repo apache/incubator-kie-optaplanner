@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class BestScoreFeasibleTerminationTest {

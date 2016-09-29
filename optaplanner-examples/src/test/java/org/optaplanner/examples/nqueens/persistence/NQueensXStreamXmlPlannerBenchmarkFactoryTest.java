@@ -25,7 +25,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.XStreamXmlPlannerBenchmarkFactory;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NQueensXStreamXmlPlannerBenchmarkFactoryTest {
 

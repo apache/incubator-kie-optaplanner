@@ -21,7 +21,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

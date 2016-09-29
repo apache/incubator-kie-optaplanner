@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.domain.entity.descriptor;
 import org.junit.Test;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EntityDescriptorTest {
 

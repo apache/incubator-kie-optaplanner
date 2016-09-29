@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 import org.junit.Test;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class FixedTabuSizeStrategyTest {

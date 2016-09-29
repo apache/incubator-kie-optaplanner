@@ -22,7 +22,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RoadSegmentLocationTest {
 

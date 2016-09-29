@@ -18,7 +18,7 @@ package org.optaplanner.core.config.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.config.util.ConfigUtils.*;
 
 public class ConfigUtilsTest {

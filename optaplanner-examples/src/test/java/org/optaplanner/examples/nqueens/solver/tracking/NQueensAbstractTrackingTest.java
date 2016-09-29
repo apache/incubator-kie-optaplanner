@@ -2,7 +2,7 @@ package org.optaplanner.examples.nqueens.solver.tracking;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class NQueensAbstractTrackingTest {
 

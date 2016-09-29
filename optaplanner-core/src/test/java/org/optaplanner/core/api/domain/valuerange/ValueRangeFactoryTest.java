@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataValueRangeSo
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValueRangeFactoryTest {
 

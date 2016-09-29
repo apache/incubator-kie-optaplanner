@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.trend;
 import org.junit.Test;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InitializingScoreTrendTest {
 

@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmov
 import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmovableChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MovableChainedTrailingValueFilterTest {
 

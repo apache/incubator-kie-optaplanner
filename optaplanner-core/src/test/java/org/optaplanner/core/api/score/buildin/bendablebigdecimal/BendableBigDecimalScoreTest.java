@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDec
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 

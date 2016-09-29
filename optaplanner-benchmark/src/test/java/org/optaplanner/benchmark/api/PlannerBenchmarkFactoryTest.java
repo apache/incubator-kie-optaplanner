@@ -27,7 +27,7 @@ import org.optaplanner.core.api.solver.DivertingClassLoader;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.impl.phase.custom.DummyCustomPhaseCommand;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PlannerBenchmarkFactoryTest {
 

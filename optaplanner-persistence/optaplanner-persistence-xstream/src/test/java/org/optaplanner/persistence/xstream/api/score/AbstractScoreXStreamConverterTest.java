@@ -21,7 +21,7 @@ import java.io.Serializable;
 import com.thoughtworks.xstream.XStream;
 import org.optaplanner.core.api.score.Score;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractScoreXStreamConverterTest {
 
