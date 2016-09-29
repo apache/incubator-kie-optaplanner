@@ -49,7 +49,7 @@ public class EasyScoreDirectorFactoryTest {
         solution.setValueList(Collections.emptyList());
         solution.setEntityList(Collections.emptyList());
         director.setWorkingSolution(solution);
-        assertEquals(SimpleScore.valueOf(0, -10), director.calculateScore());
+        assertThat(director.calculateScore()).isEqualTo(SimpleScore.valueOf(0, -10));
     }
 
 }

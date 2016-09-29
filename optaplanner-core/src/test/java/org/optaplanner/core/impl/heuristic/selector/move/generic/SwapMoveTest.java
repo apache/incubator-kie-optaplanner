@@ -225,11 +225,11 @@ public class SwapMoveTest {
         EntityDescriptor entityDescriptor = TestdataMultiVarEntity.buildEntityDescriptor();
         List<GenuineVariableDescriptor> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
 
-        assertEquals("a {null, null, null} <-> a {null, null, null}", new SwapMove(variableDescriptorList, a, a).toString());
-        assertEquals("a {null, null, null} <-> b {v1, v3, w1}", new SwapMove(variableDescriptorList, a, b).toString());
-        assertEquals("a {null, null, null} <-> c {v2, v4, w2}", new SwapMove(variableDescriptorList, a, c).toString());
-        assertEquals("b {v1, v3, w1} <-> c {v2, v4, w2}", new SwapMove(variableDescriptorList, b, c).toString());
-        assertEquals("c {v2, v4, w2} <-> b {v1, v3, w1}", new SwapMove(variableDescriptorList, c, b).toString());
+        assertThat(new SwapMove(variableDescriptorList, a, a).toString()).isEqualTo("a {null, null, null} <-> a {null, null, null}");
+        assertThat(new SwapMove(variableDescriptorList, a, b).toString()).isEqualTo("a {null, null, null} <-> b {v1, v3, w1}");
+        assertThat(new SwapMove(variableDescriptorList, a, c).toString()).isEqualTo("a {null, null, null} <-> c {v2, v4, w2}");
+        assertThat(new SwapMove(variableDescriptorList, b, c).toString()).isEqualTo("b {v1, v3, w1} <-> c {v2, v4, w2}");
+        assertThat(new SwapMove(variableDescriptorList, c, b).toString()).isEqualTo("c {v2, v4, w2} <-> b {v1, v3, w1}");
     }
 
 }
