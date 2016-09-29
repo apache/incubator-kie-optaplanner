@@ -37,12 +37,11 @@ public class AbstractTxtSolutionImporterTest<Solution_> {
                 return null;
             }
         };
-        assertArrayEquals(new String[]{"one", "two", "three"},
-                inputBuilder.splitBySpace("one two three"));
-        assertArrayEquals(new String[]{"one", "two", "three"},
-                inputBuilder.splitBySpace("one two \"three\"", null, null, false, true));
-        assertArrayEquals(new String[]{"one", "two three"},
-                inputBuilder.splitBySpace("one \"two three\"", null, null, false, true));
+        assertThat(inputBuilder.splitBySpace("one two three")).containsExactly("one", "two", "three");
+        assertThat(inputBuilder.splitBySpace("one two \"three\"", null, null, false, true))
+                .containsExactly("one", "two", "three");
+        assertThat(inputBuilder.splitBySpace("one \"two three\"", null, null, false, true))
+                .containsExactly("one", "two three");
     }
 
 }
