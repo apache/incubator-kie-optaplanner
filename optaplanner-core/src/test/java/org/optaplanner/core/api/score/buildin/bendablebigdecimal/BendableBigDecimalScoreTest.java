@@ -67,22 +67,22 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(
-                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)),
-                scoreDefinitionHSS.parseScore("[-147]hard/[-258/-369]soft"));
-        assertEquals(scoreDefinitionHSS.createScore(-7,
-                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)),
-                scoreDefinitionHSS.parseScore("-7init/[-147]hard/[-258/-369]soft"));
+        assertThat(scoreDefinitionHSS.parseScore("[-147]hard/[-258/-369]soft")).isEqualTo(
+                scoreDefinitionHSS.createScoreInitialized(
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)));
+        assertThat(scoreDefinitionHSS.parseScore("-7init/[-147]hard/[-258/-369]soft")).isEqualTo(
+                scoreDefinitionHSS.createScore(-7,
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)));
     }
 
     @Test
     public void testToString() {
-        assertEquals("[-147]hard/[-258/-369]soft",
-                scoreDefinitionHSS.createScoreInitialized(
-                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString());
-        assertEquals("-7init/[-147]hard/[-258/-369]soft",
-                scoreDefinitionHSS.createScore(-7,
-                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString());
+        assertThat(scoreDefinitionHSS.createScoreInitialized(
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString())
+                .isEqualTo("[-147]hard/[-258/-369]soft");
+        assertThat(scoreDefinitionHSS.createScore(-7,
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString())
+                .isEqualTo("-7init/[-147]hard/[-258/-369]soft");
     }
 
     @Test(expected = IllegalArgumentException.class)

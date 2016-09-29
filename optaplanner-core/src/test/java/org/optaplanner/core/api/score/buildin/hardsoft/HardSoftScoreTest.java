@@ -27,14 +27,14 @@ public class HardSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(HardSoftScore.valueOfInitialized(-147, -258), HardSoftScore.parseScore("-147hard/-258soft"));
-        assertEquals(HardSoftScore.valueOf(-7, -147, -258), HardSoftScore.parseScore("-7init/-147hard/-258soft"));
+        assertThat(HardSoftScore.parseScore("-147hard/-258soft")).isEqualTo(HardSoftScore.valueOfInitialized(-147, -258));
+        assertThat(HardSoftScore.parseScore("-7init/-147hard/-258soft")).isEqualTo(HardSoftScore.valueOf(-7, -147, -258));
     }
 
     @Test
     public void testToString() {
-        assertEquals("-147hard/-258soft", HardSoftScore.valueOfInitialized(-147, -258).toString());
-        assertEquals("-7init/-147hard/-258soft", HardSoftScore.valueOf(-7, -147, -258).toString());
+        assertThat(HardSoftScore.valueOfInitialized(-147, -258).toString()).isEqualTo("-147hard/-258soft");
+        assertThat(HardSoftScore.valueOf(-7, -147, -258).toString()).isEqualTo("-7init/-147hard/-258soft");
     }
 
     @Test(expected = IllegalArgumentException.class)

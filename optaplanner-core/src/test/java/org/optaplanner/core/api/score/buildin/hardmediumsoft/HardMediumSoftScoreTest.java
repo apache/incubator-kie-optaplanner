@@ -35,10 +35,10 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void testToString() {
-        assertEquals("-147hard/-258medium/-369soft",
-                HardMediumSoftScore.valueOfInitialized(-147, -258, -369).toString());
-        assertEquals("-7init/-147hard/-258medium/-369soft",
-                HardMediumSoftScore.valueOf(-7, -147, -258, -369).toString());
+        assertThat(HardMediumSoftScore.valueOfInitialized(-147, -258, -369).toString())
+                .isEqualTo("-147hard/-258medium/-369soft");
+        assertThat(HardMediumSoftScore.valueOf(-7, -147, -258, -369).toString())
+                .isEqualTo("-7init/-147hard/-258medium/-369soft");
     }
 
     @Test(expected = IllegalArgumentException.class)

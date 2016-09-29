@@ -38,7 +38,7 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     @Test
     public void testToString() {
         assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")).toString()).isEqualTo("-147.2");
-        assertEquals("-7init/-147.2", SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")).toString());
+        assertThat(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")).toString()).isEqualTo("-7init/-147.2");
     }
 
     @Test(expected = IllegalArgumentException.class)

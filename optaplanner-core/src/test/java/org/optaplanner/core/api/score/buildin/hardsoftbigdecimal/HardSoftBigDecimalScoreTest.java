@@ -37,10 +37,10 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void testToString() {
-        assertEquals("-147.2hard/-258.3soft",
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")).toString());
-        assertEquals("-7init/-147.2hard/-258.3soft",
-                HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")).toString());
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")).toString())
+                .isEqualTo("-147.2hard/-258.3soft");
+        assertThat(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")).toString())
+                .isEqualTo("-7init/-147.2hard/-258.3soft");
     }
 
     @Test(expected = IllegalArgumentException.class)

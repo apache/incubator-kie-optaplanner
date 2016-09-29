@@ -28,13 +28,13 @@ public class SimpleScoreTest extends AbstractScoreTest {
     @Test
     public void parseScore() {
         assertThat(SimpleScore.parseScore("-147")).isEqualTo(SimpleScore.valueOfInitialized(-147));
-        assertEquals(SimpleScore.valueOf(-7, -147), SimpleScore.parseScore("-7init/-147"));
+        assertThat(SimpleScore.parseScore("-7init/-147")).isEqualTo(SimpleScore.valueOf(-7, -147));
     }
 
     @Test
     public void testToString() {
         assertThat(SimpleScore.valueOfInitialized(-147).toString()).isEqualTo("-147");
-        assertEquals("-7init/-147", SimpleScore.valueOf(-7, -147).toString());
+        assertThat(SimpleScore.valueOf(-7, -147).toString()).isEqualTo("-7init/-147");
     }
 
     @Test(expected = IllegalArgumentException.class)
