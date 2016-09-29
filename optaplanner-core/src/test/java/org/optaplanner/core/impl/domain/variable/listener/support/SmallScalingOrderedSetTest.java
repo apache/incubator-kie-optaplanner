@@ -27,85 +27,85 @@ public class SmallScalingOrderedSetTest {
     @Test
     public void addRemoveAroundThreshold() {
         SmallScalingOrderedSet<String> set = new SmallScalingOrderedSet<>();
-        assertTrue(set.add("s1"));
-        assertFalse(set.add("s1"));
-        assertTrue(set.add("s2"));
-        assertFalse(set.add("s1"));
-        assertFalse(set.add("s2"));
-        assertTrue(set.remove("s2"));
-        assertFalse(set.remove("s2"));
-        assertTrue(set.add("s2"));
+        assertThat(set.add("s1")).isTrue();
+        assertThat(set.add("s1")).isFalse();
+        assertThat(set.add("s2")).isTrue();
+        assertThat(set.add("s1")).isFalse();
+        assertThat(set.add("s2")).isFalse();
+        assertThat(set.remove("s2")).isTrue();
+        assertThat(set.remove("s2")).isFalse();
+        assertThat(set.add("s2")).isTrue();
         assertThat(set.size()).isEqualTo(2);
-        assertTrue(set.contains("s1"));
-        assertTrue(set.contains("s2"));
+        assertThat(set.contains("s1")).isTrue();
+        assertThat(set.contains("s2")).isTrue();
 
         for (int i = 0; i < SmallScalingOrderedSet.LIST_SIZE_THRESHOLD - 3; i++) {
             set.add("filler " + i);
         }
-        assertFalse(set.add("s2"));
-        assertTrue(set.add("s3"));
-        assertFalse(set.add("s2"));
+        assertThat(set.add("s2")).isFalse();
+        assertThat(set.add("s3")).isTrue();
+        assertThat(set.add("s2")).isFalse();
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD);
-        assertTrue(set.add("s4"));
-        assertFalse(set.add("s2"));
-        assertFalse(set.add("s3"));
-        assertFalse(set.add("s4"));
+        assertThat(set.add("s4")).isTrue();
+        assertThat(set.add("s2")).isFalse();
+        assertThat(set.add("s3")).isFalse();
+        assertThat(set.add("s4")).isFalse();
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD + 1);
-        assertTrue(set.remove("s4"));
-        assertFalse(set.add("s2"));
-        assertFalse(set.add("s3"));
+        assertThat(set.remove("s4")).isTrue();
+        assertThat(set.add("s2")).isFalse();
+        assertThat(set.add("s3")).isFalse();
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD);
-        assertTrue(set.add("s5"));
-        assertFalse(set.add("s2"));
-        assertFalse(set.add("s3"));
+        assertThat(set.add("s5")).isTrue();
+        assertThat(set.add("s2")).isFalse();
+        assertThat(set.add("s3")).isFalse();
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD + 1);
-        assertTrue(set.add("s6"));
-        assertFalse(set.add("s2"));
-        assertFalse(set.add("s3"));
+        assertThat(set.add("s6")).isTrue();
+        assertThat(set.add("s2")).isFalse();
+        assertThat(set.add("s3")).isFalse();
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD + 2);
-        assertTrue(set.contains("s1"));
-        assertTrue(set.contains("s2"));
-        assertTrue(set.contains("s3"));
-        assertFalse(set.contains("s4"));
-        assertTrue(set.contains("s5"));
-        assertTrue(set.contains("s6"));
+        assertThat(set.contains("s1")).isTrue();
+        assertThat(set.contains("s2")).isTrue();
+        assertThat(set.contains("s3")).isTrue();
+        assertThat(set.contains("s4")).isFalse();
+        assertThat(set.contains("s5")).isTrue();
+        assertThat(set.contains("s6")).isTrue();
     }
 
     @Test
     public void addAllAroundThreshold() {
         SmallScalingOrderedSet<String> set = new SmallScalingOrderedSet<>();
-        assertTrue(set.addAll(Arrays.asList("s1", "s2", "s3")));
+        assertThat(set.addAll(Arrays.asList("s1", "s2", "s3"))).isTrue();
         assertThat(set.size()).isEqualTo(3);
-        assertTrue(set.addAll(Arrays.asList("s1", "s3", "s4", "s5")));
-        assertFalse(set.addAll(Arrays.asList("s1", "s2", "s4")));
+        assertThat(set.addAll(Arrays.asList("s1", "s3", "s4", "s5"))).isTrue();
+        assertThat(set.addAll(Arrays.asList("s1", "s2", "s4"))).isFalse();
         assertThat(set.size()).isEqualTo(5);
-        assertTrue(set.contains("s1"));
-        assertTrue(set.contains("s2"));
-        assertTrue(set.contains("s3"));
-        assertTrue(set.contains("s4"));
-        assertTrue(set.contains("s5"));
+        assertThat(set.contains("s1")).isTrue();
+        assertThat(set.contains("s2")).isTrue();
+        assertThat(set.contains("s3")).isTrue();
+        assertThat(set.contains("s4")).isTrue();
+        assertThat(set.contains("s5")).isTrue();
 
         for (int i = 0; i < SmallScalingOrderedSet.LIST_SIZE_THRESHOLD - 7; i++) {
             set.add("filler " + i);
         }
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD - 2);
-        assertTrue(set.addAll(Arrays.asList("s6", "s7", "s2", "s3", "s8", "s9")));
+        assertThat(set.addAll(Arrays.asList("s6", "s7", "s2", "s3", "s8", "s9"))).isTrue();
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD + 2);
-        assertTrue(set.remove("s1"));
-        assertTrue(set.remove("s5"));
+        assertThat(set.remove("s1")).isTrue();
+        assertThat(set.remove("s5")).isTrue();
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD);
-        assertTrue(set.addAll(Arrays.asList("s1", "s2", "s10")));
+        assertThat(set.addAll(Arrays.asList("s1", "s2", "s10"))).isTrue();
         assertThat(set.size()).isEqualTo(SmallScalingOrderedSet.LIST_SIZE_THRESHOLD + 2);
-        assertTrue(set.contains("s1"));
-        assertTrue(set.contains("s2"));
-        assertTrue(set.contains("s3"));
-        assertTrue(set.contains("s4"));
-        assertFalse(set.contains("s5"));
-        assertTrue(set.contains("s6"));
-        assertTrue(set.contains("s7"));
-        assertTrue(set.contains("s8"));
-        assertTrue(set.contains("s9"));
-        assertTrue(set.contains("s10"));
+        assertThat(set.contains("s1")).isTrue();
+        assertThat(set.contains("s2")).isTrue();
+        assertThat(set.contains("s3")).isTrue();
+        assertThat(set.contains("s4")).isTrue();
+        assertThat(set.contains("s5")).isFalse();
+        assertThat(set.contains("s6")).isTrue();
+        assertThat(set.contains("s7")).isTrue();
+        assertThat(set.contains("s8")).isTrue();
+        assertThat(set.contains("s9")).isTrue();
+        assertThat(set.contains("s10")).isTrue();
     }
 
 }

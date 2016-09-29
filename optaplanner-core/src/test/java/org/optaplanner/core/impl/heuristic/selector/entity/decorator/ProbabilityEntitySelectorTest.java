@@ -78,17 +78,17 @@ public class ProbabilityEntitySelectorTest {
         assertThat(entitySelector.isNeverEnding()).isEqualTo(true);
         assertThat(entitySelector.getSize()).isEqualTo(4L);
         Iterator<Object> iterator = entitySelector.iterator();
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e3", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e4", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e2", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
 
         entitySelector.stepEnded(stepScopeA1);
         entitySelector.phaseEnded(phaseScopeA);
@@ -102,14 +102,14 @@ public class ProbabilityEntitySelectorTest {
     public void isCountable() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, null);
-        assertTrue(entitySelector.isCountable());
+        assertThat(entitySelector.isCountable()).isTrue();
     }
 
     @Test
     public void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, null);
-        assertTrue(entitySelector.isNeverEnding());
+        assertThat(entitySelector.isNeverEnding()).isTrue();
     }
 
     @Test

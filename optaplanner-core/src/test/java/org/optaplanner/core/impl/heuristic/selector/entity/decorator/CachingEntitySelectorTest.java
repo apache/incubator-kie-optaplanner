@@ -123,9 +123,9 @@ public class CachingEntitySelectorTest {
     public void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
-        assertTrue(cachingEntitySelector.isNeverEnding());
+        assertThat(cachingEntitySelector.isNeverEnding()).isTrue();
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
-        assertFalse(cachingEntitySelector.isNeverEnding());
+        assertThat(cachingEntitySelector.isNeverEnding()).isFalse();
     }
 
     @Test

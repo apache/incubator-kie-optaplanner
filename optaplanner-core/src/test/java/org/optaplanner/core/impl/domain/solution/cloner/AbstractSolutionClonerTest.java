@@ -407,7 +407,7 @@ public abstract class AbstractSolutionClonerTest {
 
         Set<TestdataSetBasedEntity> cloneEntitySet = clone.getEntitySet();
         assertNotSame(originalEntitySet, cloneEntitySet);
-        assertTrue(cloneEntitySet instanceof SortedSet);
+        assertThat(cloneEntitySet instanceof SortedSet).isTrue();
         assertSame(entityComparator, ((SortedSet) cloneEntitySet).comparator());
         assertCode("solution", clone);
         assertThat(cloneEntitySet.size()).isEqualTo(4);

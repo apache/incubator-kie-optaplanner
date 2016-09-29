@@ -51,9 +51,9 @@ public class ScoreDirectorFactoryConfigTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         assertThat(config.isGenerateDroolsTestOnError()).isNull();
         config.setGenerateDroolsTestOnError(true);
-        assertTrue(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isTrue();
         config.setGenerateDroolsTestOnError(Boolean.FALSE);
-        assertFalse(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isFalse();
         config.setGenerateDroolsTestOnError(null);
         assertThat(config.isGenerateDroolsTestOnError()).isNull();
     }

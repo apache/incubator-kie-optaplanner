@@ -54,15 +54,15 @@ public class AcceptedForagerTest {
         LocalSearchMoveScope e = createMoveScope(stepScope, SimpleScore.valueOfInitialized(-300), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(e);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         // Post conditions
         assertSame(d, pickedScope);
@@ -86,15 +86,15 @@ public class AcceptedForagerTest {
         LocalSearchMoveScope e = createMoveScope(stepScope, SimpleScore.valueOfInitialized(-300), false);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(e);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         // Post conditions
         assertSame(b, pickedScope);
@@ -117,13 +117,13 @@ public class AcceptedForagerTest {
         LocalSearchMoveScope d = createMoveScope(stepScope, SimpleScore.valueOfInitialized(-1), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertTrue(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         assertSame(d, pickedScope);
@@ -146,13 +146,13 @@ public class AcceptedForagerTest {
         LocalSearchMoveScope d = createMoveScope(stepScope, SimpleScore.valueOfInitialized(-20), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertTrue(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         assertSame(d, pickedScope);
@@ -176,15 +176,15 @@ public class AcceptedForagerTest {
         LocalSearchMoveScope e = createMoveScope(stepScope, SimpleScore.valueOfInitialized(-1), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(e);
-        assertTrue(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         assertSame(c, pickedScope);
@@ -208,15 +208,15 @@ public class AcceptedForagerTest {
         LocalSearchMoveScope e = createMoveScope(stepScope, SimpleScore.valueOfInitialized(-1), true);
         // Do stuff
         forager.addMove(a);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(b);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(c);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(d);
-        assertFalse(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.addMove(e);
-        assertTrue(forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
         // Post conditions
         LocalSearchMoveScope pickedScope = forager.pickMove(stepScope);
         assertSame(b, pickedScope);

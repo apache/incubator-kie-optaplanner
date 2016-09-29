@@ -36,13 +36,13 @@ public class ComparatorSelectionSorterTest {
         Collections.addAll(arrayToSort, baseArray);
         ComparatorSelectionSorter<TestdataSolution, Integer> selectionSorter = new ComparatorSelectionSorter<>(new TestComparator(), SelectionSorterOrder.ASCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertTrue(ascendingSort(arrayToSort));
+        assertThat(ascendingSort(arrayToSort)).isTrue();
 
         arrayToSort = new ArrayList<>();
         Collections.addAll(arrayToSort, baseArray);
         selectionSorter = new ComparatorSelectionSorter<>(new TestComparator(), SelectionSorterOrder.DESCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertTrue(descendingSort(arrayToSort));
+        assertThat(descendingSort(arrayToSort)).isTrue();
     }
 
     private boolean ascendingSort(List<Integer> list) {

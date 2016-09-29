@@ -521,15 +521,15 @@ public class DefaultSubChainSelectorTest {
             Integer count = subChainCountMap.remove(subChain);
             assertThat(count).as("The subChain (" + subChain + ") was not collected.").isNotNull();
         }
-        assertTrue(subChainCountMap.isEmpty());
-        assertTrue(iterator.hasNext());
+        assertThat(subChainCountMap.isEmpty()).isTrue();
+        assertThat(iterator.hasNext()).isTrue();
         assertThat(subChainSelector.isCountable()).isEqualTo(true);
         assertThat(subChainSelector.isNeverEnding()).isEqualTo(true);
         assertThat(subChainSelector.getSize()).isEqualTo((long) selectionSize);
     }
 
     private void collectNextSubChain(Iterator<SubChain> iterator, Map<SubChain, Integer> subChainCountMap) {
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         SubChain subChain = iterator.next();
         Integer count = subChainCountMap.get(subChain);
         if (count == null) {

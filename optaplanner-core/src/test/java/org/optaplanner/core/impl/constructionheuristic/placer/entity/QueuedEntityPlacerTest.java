@@ -70,28 +70,28 @@ public class QueuedEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertPlacement(placementIterator.next(), "a", "1", "2");
         placer.stepEnded(stepScopeA1);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertPlacement(placementIterator.next(), "b", "1", "2");
         placer.stepEnded(stepScopeA2);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
         assertPlacement(placementIterator.next(), "c", "1", "2");
         placer.stepEnded(stepScopeA3);
 
-        assertFalse(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isFalse();
         placer.phaseEnded(phaseScopeA);
 
         AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
@@ -99,7 +99,7 @@ public class QueuedEntityPlacerTest {
         placer.phaseStarted(phaseScopeB);
         placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);
@@ -146,35 +146,35 @@ public class QueuedEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertPlacement(placementIterator.next(), "a", "1", "2", "3");
         placer.stepEnded(stepScopeA1);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertPlacement(placementIterator.next(), "a", "8", "9");
         placer.stepEnded(stepScopeA2);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
         assertPlacement(placementIterator.next(), "b", "1", "2", "3");
         placer.stepEnded(stepScopeA3);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA4 = mock(AbstractStepScope.class);
         when(stepScopeA4.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA4);
         assertPlacement(placementIterator.next(), "b", "8", "9");
         placer.stepEnded(stepScopeA4);
 
-        assertFalse(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isFalse();
         placer.phaseEnded(phaseScopeA);
 
         placer.solvingEnded(solverScope);
@@ -188,12 +188,12 @@ public class QueuedEntityPlacerTest {
         Iterator<Move> iterator = placement.iterator();
         assertThat(iterator).isNotNull();
         for (String valueCode : valueCodes) {
-            assertTrue(iterator.hasNext());
+            assertThat(iterator.hasNext()).isTrue();
             ChangeMove move = (ChangeMove) iterator.next();
             assertCode(entityCode, move.getEntity());
             assertCode(valueCode, move.getToPlanningValue());
         }
-        assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isFalse();
     }
 
     @Test

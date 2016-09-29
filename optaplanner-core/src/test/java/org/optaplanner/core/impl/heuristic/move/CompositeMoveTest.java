@@ -108,13 +108,13 @@ public class CompositeMoveTest {
         Move second = new NoChangeMove();
         Move move = CompositeMove.buildMove(Arrays.asList(first, second));
         Move other = CompositeMove.buildMove(first, second);
-        assertTrue(move.equals(other));
+        assertThat(move.equals(other)).isTrue();
 
         move = CompositeMove.buildMove(first, second);
         other = CompositeMove.buildMove(second, first);
-        assertFalse(move.equals(other));
-        assertFalse(move.equals(new DummyMove()));
-        assertTrue(move.equals(move));
+        assertThat(move.equals(other)).isFalse();
+        assertThat(move.equals(new DummyMove())).isFalse();
+        assertThat(move.equals(move)).isTrue();
     }
 
     @Test @Ignore("PLANNER-611") // TODO https://issues.jboss.org/browse/PLANNER-611

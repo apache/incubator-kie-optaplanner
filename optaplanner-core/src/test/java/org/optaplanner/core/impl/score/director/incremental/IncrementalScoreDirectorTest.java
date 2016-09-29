@@ -114,7 +114,7 @@ public class IncrementalScoreDirectorTest {
         IncrementalScoreDirector<Object> director
                 = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), true,
                         mockIncrementalScoreCalculator(false));
-        assertFalse(director.isConstraintMatchEnabled());
+        assertThat(director.isConstraintMatchEnabled()).isFalse();
     }
 
     @SuppressWarnings("unchecked")

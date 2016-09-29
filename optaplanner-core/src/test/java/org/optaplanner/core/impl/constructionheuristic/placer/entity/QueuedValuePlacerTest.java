@@ -68,21 +68,21 @@ public class QueuedValuePlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertPlacement(placementIterator.next(), "1", "a", "b", "c");
         placer.stepEnded(stepScopeA1);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertPlacement(placementIterator.next(), "2", "a", "b", "c");
         placer.stepEnded(stepScopeA2);
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
@@ -90,7 +90,7 @@ public class QueuedValuePlacerTest {
         placer.stepEnded(stepScopeA3);
 
         // Requires adding ReinitializeVariableValueSelector complexity to work
-        // assertFalse(placementIterator.hasNext());
+        // assertThat(placementIterator.hasNext()).isFalse();
         placer.phaseEnded(phaseScopeA);
 
         AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
@@ -98,7 +98,7 @@ public class QueuedValuePlacerTest {
         placer.phaseStarted(phaseScopeB);
         placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);
@@ -117,12 +117,12 @@ public class QueuedValuePlacerTest {
         Iterator<Move> iterator = placement.iterator();
         assertThat(iterator).isNotNull();
         for (String entityCode : entityCodes) {
-            assertTrue(iterator.hasNext());
+            assertThat(iterator.hasNext()).isTrue();
             ChangeMove move = (ChangeMove) iterator.next();
             assertCode(entityCode, move.getEntity());
             assertCode(valueCode, move.getToPlanningValue());
         }
-        assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isFalse();
     }
 
 }
