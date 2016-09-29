@@ -75,22 +75,22 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("19"), new BigDecimal("-320")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("20"), new BigDecimal("-20")).add(
-                        HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-1"), new BigDecimal("-300"))));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-77, new BigDecimal("19"), new BigDecimal("-320")),
-                HardSoftBigDecimalScore.valueOf(-70, new BigDecimal("20"), new BigDecimal("-20")).add(
-                        HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300"))));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("20"), new BigDecimal("-20")).add(
+                        HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-1"), new BigDecimal("-300"))))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("19"), new BigDecimal("-320")));
+        assertThat(HardSoftBigDecimalScore.valueOf(-70, new BigDecimal("20"), new BigDecimal("-20")).add(
+                        HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300"))))
+                .isEqualTo(HardSoftBigDecimalScore.valueOf(-77, new BigDecimal("19"), new BigDecimal("-320")));
     }
 
     @Test
     public void subtract() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("21"), new BigDecimal("280")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("20"), new BigDecimal("-20")).subtract(
-                        HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-1"), new BigDecimal("-300"))));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-63, new BigDecimal("21"), new BigDecimal("280")),
-                HardSoftBigDecimalScore.valueOf(-70, new BigDecimal("20"), new BigDecimal("-20")).subtract(
-                        HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300"))));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("20"), new BigDecimal("-20")).subtract(
+                        HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-1"), new BigDecimal("-300"))))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("21"), new BigDecimal("280")));
+        assertThat(HardSoftBigDecimalScore.valueOf(-70, new BigDecimal("20"), new BigDecimal("-20")).subtract(
+                        HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300"))))
+                .isEqualTo(HardSoftBigDecimalScore.valueOf(-63, new BigDecimal("21"), new BigDecimal("280")));
     }
 
     @Test

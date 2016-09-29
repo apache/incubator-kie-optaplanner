@@ -81,22 +81,22 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void addHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(3333333333L, -320L, 0L),
-                scoreDefinitionHSS.createScoreInitialized(1111111111L, -20L, -9876543210L).add(
-                        scoreDefinitionHSS.createScoreInitialized(2222222222L, -300L, 9876543210L)));
-        assertEquals(scoreDefinitionHSS.createScore(-77, 3333333333L, -320L, 0L),
-                scoreDefinitionHSS.createScore(-70, 1111111111L, -20L, -9876543210L).add(
-                        scoreDefinitionHSS.createScore(-7, 2222222222L, -300L, 9876543210L)));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(1111111111L, -20L, -9876543210L).add(
+                        scoreDefinitionHSS.createScoreInitialized(2222222222L, -300L, 9876543210L)))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(3333333333L, -320L, 0L));
+        assertThat(scoreDefinitionHSS.createScore(-70, 1111111111L, -20L, -9876543210L).add(
+                        scoreDefinitionHSS.createScore(-7, 2222222222L, -300L, 9876543210L)))
+                .isEqualTo(scoreDefinitionHSS.createScore(-77, 3333333333L, -320L, 0L));
     }
 
     @Test
     public void subtractHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(2222222222L, 280L, -8888888888L),
-                scoreDefinitionHSS.createScoreInitialized(3333333333L, -20L, -5555555555L).subtract(
-                        scoreDefinitionHSS.createScoreInitialized(1111111111L, -300L, 3333333333L)));
-        assertEquals(scoreDefinitionHSS.createScore(-63, 2222222222L, 280L, -8888888888L),
-                scoreDefinitionHSS.createScore(-70, 3333333333L, -20L, -5555555555L).subtract(
-                        scoreDefinitionHSS.createScore(-7, 1111111111L, -300L, 3333333333L)));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(3333333333L, -20L, -5555555555L).subtract(
+                        scoreDefinitionHSS.createScoreInitialized(1111111111L, -300L, 3333333333L)))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(2222222222L, 280L, -8888888888L));
+        assertThat(scoreDefinitionHSS.createScore(-70, 3333333333L, -20L, -5555555555L).subtract(
+                        scoreDefinitionHSS.createScore(-7, 1111111111L, -300L, 3333333333L)))
+                .isEqualTo(scoreDefinitionHSS.createScore(-63, 2222222222L, 280L, -8888888888L));
     }
 
     @Test
@@ -205,16 +205,16 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void addHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(19000000000L, -320000000000L, 0L, 0L, 0L),
-                scoreDefinitionHHSSS.createScoreInitialized(20000000000L, -20000000000L, -4000000000000L, 0L, 0L).add(
-                        scoreDefinitionHHSSS.createScoreInitialized(-1000000000L, -300000000000L, 4000000000000L, 0L, 0L)));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(20000000000L, -20000000000L, -4000000000000L, 0L, 0L).add(
+                        scoreDefinitionHHSSS.createScoreInitialized(-1000000000L, -300000000000L, 4000000000000L, 0L, 0L)))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(19000000000L, -320000000000L, 0L, 0L, 0L));
     }
 
     @Test
     public void subtractHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(21000000000L, 280000000000L, -8000000000000L, 0L, 0L),
-                scoreDefinitionHHSSS.createScoreInitialized(20000000000L, -20000000000L, -4000000000000L, 0L, 0L).subtract(
-                        scoreDefinitionHHSSS.createScoreInitialized(-1000000000L, -300000000000L, 4000000000000L, 0L, 0L)));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(20000000000L, -20000000000L, -4000000000000L, 0L, 0L).subtract(
+                        scoreDefinitionHHSSS.createScoreInitialized(-1000000000L, -300000000000L, 4000000000000L, 0L, 0L)))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(21000000000L, 280000000000L, -8000000000000L, 0L, 0L));
     }
 
     @Test

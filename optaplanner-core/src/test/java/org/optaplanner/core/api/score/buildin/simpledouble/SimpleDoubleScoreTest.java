@@ -54,22 +54,22 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(SimpleDoubleScore.valueOfInitialized(19.0),
-                SimpleDoubleScore.valueOfInitialized(20.0).add(
-                        SimpleDoubleScore.valueOfInitialized(-1.0)));
-        assertEquals(SimpleDoubleScore.valueOf(-77, 19.0),
-                SimpleDoubleScore.valueOf(-70, 20.0).add(
-                        SimpleDoubleScore.valueOf(-7, -1.0)));
+        assertThat(SimpleDoubleScore.valueOfInitialized(20.0).add(
+                        SimpleDoubleScore.valueOfInitialized(-1.0)))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(19.0));
+        assertThat(SimpleDoubleScore.valueOf(-70, 20.0).add(
+                        SimpleDoubleScore.valueOf(-7, -1.0)))
+                .isEqualTo(SimpleDoubleScore.valueOf(-77, 19.0));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleDoubleScore.valueOfInitialized(21.0),
-                SimpleDoubleScore.valueOfInitialized(20.0).subtract(
-                        SimpleDoubleScore.valueOfInitialized(-1.0)));
-        assertEquals(SimpleDoubleScore.valueOf(-63, 21.0),
-                SimpleDoubleScore.valueOf(-70, 20.0).subtract(
-                        SimpleDoubleScore.valueOf(-7, -1.0)));
+        assertThat(SimpleDoubleScore.valueOfInitialized(20.0).subtract(
+                        SimpleDoubleScore.valueOfInitialized(-1.0)))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(21.0));
+        assertThat(SimpleDoubleScore.valueOf(-70, 20.0).subtract(
+                        SimpleDoubleScore.valueOf(-7, -1.0)))
+                .isEqualTo(SimpleDoubleScore.valueOf(-63, 21.0));
     }
 
     @Test

@@ -70,22 +70,22 @@ public class HardMediumSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(HardMediumSoftLongScore.valueOfInitialized(19L, -320L, 0L),
-                HardMediumSoftLongScore.valueOfInitialized(20L, -20L, -4000L).add(
-                        HardMediumSoftLongScore.valueOfInitialized(-1L, -300L, 4000L)));
-        assertEquals(HardMediumSoftLongScore.valueOf(-77, 19L, -320L, 0L),
-                HardMediumSoftLongScore.valueOf(-70, 20L, -20L, -4000L).add(
-                        HardMediumSoftLongScore.valueOf(-7, -1L, -300L, 4000L)));
+        assertThat(HardMediumSoftLongScore.valueOfInitialized(20L, -20L, -4000L).add(
+                        HardMediumSoftLongScore.valueOfInitialized(-1L, -300L, 4000L)))
+                .isEqualTo(HardMediumSoftLongScore.valueOfInitialized(19L, -320L, 0L));
+        assertThat(HardMediumSoftLongScore.valueOf(-70, 20L, -20L, -4000L).add(
+                        HardMediumSoftLongScore.valueOf(-7, -1L, -300L, 4000L)))
+                .isEqualTo(HardMediumSoftLongScore.valueOf(-77, 19L, -320L, 0L));
     }
 
     @Test
     public void subtract() {
-        assertEquals(HardMediumSoftLongScore.valueOfInitialized(21L, 280L, -8000L),
-                HardMediumSoftLongScore.valueOfInitialized(20L, -20L, -4000L).subtract(
-                        HardMediumSoftLongScore.valueOfInitialized(-1L, -300L, 4000L)));
-        assertEquals(HardMediumSoftLongScore.valueOf(-63, 21L, 280L, -8000L),
-                HardMediumSoftLongScore.valueOf(-70, 20L, -20L, -4000L).subtract(
-                        HardMediumSoftLongScore.valueOf(-7, -1L, -300L, 4000L)));
+        assertThat(HardMediumSoftLongScore.valueOfInitialized(20L, -20L, -4000L).subtract(
+                        HardMediumSoftLongScore.valueOfInitialized(-1L, -300L, 4000L)))
+                .isEqualTo(HardMediumSoftLongScore.valueOfInitialized(21L, 280L, -8000L));
+        assertThat(HardMediumSoftLongScore.valueOf(-70, 20L, -20L, -4000L).subtract(
+                        HardMediumSoftLongScore.valueOf(-7, -1L, -300L, 4000L)))
+                .isEqualTo(HardMediumSoftLongScore.valueOf(-63, 21L, 280L, -8000L));
     }
 
     @Test

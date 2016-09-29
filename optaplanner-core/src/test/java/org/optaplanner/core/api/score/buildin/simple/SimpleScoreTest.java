@@ -52,22 +52,22 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(SimpleScore.valueOfInitialized(19),
-                SimpleScore.valueOfInitialized(20).add(
-                        SimpleScore.valueOfInitialized(-1)));
-        assertEquals(SimpleScore.valueOf(-77, 19),
-                SimpleScore.valueOf(-70, 20).add(
-                        SimpleScore.valueOf(-7, -1)));
+        assertThat(SimpleScore.valueOfInitialized(20).add(
+                        SimpleScore.valueOfInitialized(-1)))
+                .isEqualTo(SimpleScore.valueOfInitialized(19));
+        assertThat(SimpleScore.valueOf(-70, 20).add(
+                        SimpleScore.valueOf(-7, -1)))
+                .isEqualTo(SimpleScore.valueOf(-77, 19));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleScore.valueOfInitialized(21),
-                SimpleScore.valueOfInitialized(20).subtract(
-                        SimpleScore.valueOfInitialized(-1)));
-        assertEquals(SimpleScore.valueOf(-63, 21),
-                SimpleScore.valueOf(-70, 20).subtract(
-                        SimpleScore.valueOf(-7, -1)));
+        assertThat(SimpleScore.valueOfInitialized(20).subtract(
+                        SimpleScore.valueOfInitialized(-1)))
+                .isEqualTo(SimpleScore.valueOfInitialized(21));
+        assertThat(SimpleScore.valueOf(-70, 20).subtract(
+                        SimpleScore.valueOf(-7, -1)))
+                .isEqualTo(SimpleScore.valueOf(-63, 21));
     }
 
     @Test

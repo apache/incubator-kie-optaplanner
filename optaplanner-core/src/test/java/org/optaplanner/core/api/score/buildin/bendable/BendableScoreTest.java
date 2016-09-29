@@ -87,22 +87,22 @@ public class BendableScoreTest extends AbstractScoreTest {
 
     @Test
     public void addHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(19, -320, 0),
-                scoreDefinitionHSS.createScoreInitialized(20, -20, -4000).add(
-                        scoreDefinitionHSS.createScoreInitialized(-1, -300, 4000)));
-        assertEquals(scoreDefinitionHSS.createScore(-77, 19, -320, 0),
-                scoreDefinitionHSS.createScore(-70, 20, -20, -4000).add(
-                        scoreDefinitionHSS.createScore(-7, -1, -300, 4000)));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(20, -20, -4000).add(
+                        scoreDefinitionHSS.createScoreInitialized(-1, -300, 4000)))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(19, -320, 0));
+        assertThat(scoreDefinitionHSS.createScore(-70, 20, -20, -4000).add(
+                        scoreDefinitionHSS.createScore(-7, -1, -300, 4000)))
+                .isEqualTo(scoreDefinitionHSS.createScore(-77, 19, -320, 0));
     }
 
     @Test
     public void subtractHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(21, 280, -8000),
-                scoreDefinitionHSS.createScoreInitialized(20, -20, -4000).subtract(
-                        scoreDefinitionHSS.createScoreInitialized(-1, -300, 4000)));
-        assertEquals(scoreDefinitionHSS.createScore(-63, 21, 280, -8000),
-                scoreDefinitionHSS.createScore(-70, 20, -20, -4000).subtract(
-                        scoreDefinitionHSS.createScore(-7, -1, -300, 4000)));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(20, -20, -4000).subtract(
+                        scoreDefinitionHSS.createScoreInitialized(-1, -300, 4000)))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(21, 280, -8000));
+        assertThat(scoreDefinitionHSS.createScore(-70, 20, -20, -4000).subtract(
+                        scoreDefinitionHSS.createScore(-7, -1, -300, 4000)))
+                .isEqualTo(scoreDefinitionHSS.createScore(-63, 21, 280, -8000));
     }
 
     @Test
@@ -211,16 +211,16 @@ public class BendableScoreTest extends AbstractScoreTest {
 
     @Test
     public void addHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(19, -320, 0, 0, 0),
-                scoreDefinitionHHSSS.createScoreInitialized(20, -20, -4000, 0, 0).add(
-                        scoreDefinitionHHSSS.createScoreInitialized(-1, -300, 4000, 0, 0)));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(20, -20, -4000, 0, 0).add(
+                        scoreDefinitionHHSSS.createScoreInitialized(-1, -300, 4000, 0, 0)))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(19, -320, 0, 0, 0));
     }
 
     @Test
     public void subtractHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(21, 280, -8000, 0, 0),
-                scoreDefinitionHHSSS.createScoreInitialized(20, -20, -4000, 0, 0).subtract(
-                        scoreDefinitionHHSSS.createScoreInitialized(-1, -300, 4000, 0, 0)));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(20, -20, -4000, 0, 0).subtract(
+                        scoreDefinitionHHSSS.createScoreInitialized(-1, -300, 4000, 0, 0)))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(21, 280, -8000, 0, 0));
     }
 
     @Test

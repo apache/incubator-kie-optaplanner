@@ -54,22 +54,22 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(SimpleLongScore.valueOfInitialized(19L),
-                SimpleLongScore.valueOfInitialized(20L).add(
-                        SimpleLongScore.valueOfInitialized(-1L)));
-        assertEquals(SimpleLongScore.valueOf(-77, 19L),
-                SimpleLongScore.valueOf(-70, 20L).add(
-                        SimpleLongScore.valueOf(-7, -1L)));
+        assertThat(SimpleLongScore.valueOfInitialized(20L).add(
+                        SimpleLongScore.valueOfInitialized(-1L)))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(19L));
+        assertThat(SimpleLongScore.valueOf(-70, 20L).add(
+                        SimpleLongScore.valueOf(-7, -1L)))
+                .isEqualTo(SimpleLongScore.valueOf(-77, 19L));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleLongScore.valueOfInitialized(21L),
-                SimpleLongScore.valueOfInitialized(20L).subtract(
-                        SimpleLongScore.valueOfInitialized(-1L)));
-        assertEquals(SimpleLongScore.valueOf(-63, 21L),
-                SimpleLongScore.valueOf(-70, 20L).subtract(
-                        SimpleLongScore.valueOf(-7, -1L)));
+        assertThat(SimpleLongScore.valueOfInitialized(20L).subtract(
+                        SimpleLongScore.valueOfInitialized(-1L)))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(21L));
+        assertThat(SimpleLongScore.valueOf(-70, 20L).subtract(
+                        SimpleLongScore.valueOf(-7, -1L)))
+                .isEqualTo(SimpleLongScore.valueOf(-63, 21L));
     }
 
     @Test

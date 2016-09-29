@@ -70,22 +70,22 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(HardMediumSoftScore.valueOfInitialized(19, -320, 0),
-                HardMediumSoftScore.valueOfInitialized(20, -20, -4000).add(
-                        HardMediumSoftScore.valueOfInitialized(-1, -300, 4000)));
-        assertEquals(HardMediumSoftScore.valueOf(-77, 19, -320, 0),
-                HardMediumSoftScore.valueOf(-70, 20, -20, -4000).add(
-                        HardMediumSoftScore.valueOf(-7, -1, -300, 4000)));
+        assertThat(HardMediumSoftScore.valueOfInitialized(20, -20, -4000).add(
+                        HardMediumSoftScore.valueOfInitialized(-1, -300, 4000)))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(19, -320, 0));
+        assertThat(HardMediumSoftScore.valueOf(-70, 20, -20, -4000).add(
+                        HardMediumSoftScore.valueOf(-7, -1, -300, 4000)))
+                .isEqualTo(HardMediumSoftScore.valueOf(-77, 19, -320, 0));
     }
 
     @Test
     public void subtract() {
-        assertEquals(HardMediumSoftScore.valueOfInitialized(21, 280, -8000),
-                HardMediumSoftScore.valueOfInitialized(20, -20, -4000).subtract(
-                        HardMediumSoftScore.valueOfInitialized(-1, -300, 4000)));
-        assertEquals(HardMediumSoftScore.valueOf(-63, 21, 280, -8000),
-                HardMediumSoftScore.valueOf(-70, 20, -20, -4000).subtract(
-                        HardMediumSoftScore.valueOf(-7, -1, -300, 4000)));
+        assertThat(HardMediumSoftScore.valueOfInitialized(20, -20, -4000).subtract(
+                        HardMediumSoftScore.valueOfInitialized(-1, -300, 4000)))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(21, 280, -8000));
+        assertThat(HardMediumSoftScore.valueOf(-70, 20, -20, -4000).subtract(
+                        HardMediumSoftScore.valueOf(-7, -1, -300, 4000)))
+                .isEqualTo(HardMediumSoftScore.valueOf(-63, 21, 280, -8000));
     }
 
     @Test

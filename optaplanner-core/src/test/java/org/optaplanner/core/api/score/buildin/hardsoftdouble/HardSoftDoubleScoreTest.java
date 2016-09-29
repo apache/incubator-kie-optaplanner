@@ -71,22 +71,22 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(HardSoftDoubleScore.valueOfInitialized(19.0, -320.0),
-                HardSoftDoubleScore.valueOfInitialized(20.0, -20.0).add(
-                        HardSoftDoubleScore.valueOfInitialized(-1.0, -300.0)));
-        assertEquals(HardSoftDoubleScore.valueOf(-77, 19.0, -320.0),
-                HardSoftDoubleScore.valueOf(-70, 20.0, -20.0).add(
-                        HardSoftDoubleScore.valueOf(-7, -1.0, -300.0)));
+        assertThat(HardSoftDoubleScore.valueOfInitialized(20.0, -20.0).add(
+                        HardSoftDoubleScore.valueOfInitialized(-1.0, -300.0)))
+                .isEqualTo(HardSoftDoubleScore.valueOfInitialized(19.0, -320.0));
+        assertThat(HardSoftDoubleScore.valueOf(-70, 20.0, -20.0).add(
+                        HardSoftDoubleScore.valueOf(-7, -1.0, -300.0)))
+                .isEqualTo(HardSoftDoubleScore.valueOf(-77, 19.0, -320.0));
     }
 
     @Test
     public void subtract() {
-        assertEquals(HardSoftDoubleScore.valueOfInitialized(21.0, 280.0),
-                HardSoftDoubleScore.valueOfInitialized(20.0, -20.0).subtract(
-                        HardSoftDoubleScore.valueOfInitialized(-1.0, -300.0)));
-        assertEquals(HardSoftDoubleScore.valueOf(-63, 21.0, 280.0),
-                HardSoftDoubleScore.valueOf(-70, 20.0, -20.0).subtract(
-                        HardSoftDoubleScore.valueOf(-7, -1.0, -300.0)));
+        assertThat(HardSoftDoubleScore.valueOfInitialized(20.0, -20.0).subtract(
+                        HardSoftDoubleScore.valueOfInitialized(-1.0, -300.0)))
+                .isEqualTo(HardSoftDoubleScore.valueOfInitialized(21.0, 280.0));
+        assertThat(HardSoftDoubleScore.valueOf(-70, 20.0, -20.0).subtract(
+                        HardSoftDoubleScore.valueOf(-7, -1.0, -300.0)))
+                .isEqualTo(HardSoftDoubleScore.valueOf(-63, 21.0, 280.0));
     }
 
     @Test

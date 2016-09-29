@@ -56,22 +56,22 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("19")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).add(
-                        SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1"))));
-        assertEquals(SimpleBigDecimalScore.valueOf(-77, new BigDecimal("19")),
-                SimpleBigDecimalScore.valueOf(-70, new BigDecimal("20")).add(
-                        SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1"))));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).add(
+                        SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1"))))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("19")));
+        assertThat(SimpleBigDecimalScore.valueOf(-70, new BigDecimal("20")).add(
+                        SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1"))))
+                .isEqualTo(SimpleBigDecimalScore.valueOf(-77, new BigDecimal("19")));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("21")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).subtract(
-                        SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1"))));
-        assertEquals(SimpleBigDecimalScore.valueOf(-63, new BigDecimal("21")),
-                SimpleBigDecimalScore.valueOf(-70, new BigDecimal("20")).subtract(
-                        SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1"))));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).subtract(
+                        SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1"))))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("21")));
+        assertThat(SimpleBigDecimalScore.valueOf(-70, new BigDecimal("20")).subtract(
+                        SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1"))))
+                .isEqualTo(SimpleBigDecimalScore.valueOf(-63, new BigDecimal("21")));
     }
 
     @Test
