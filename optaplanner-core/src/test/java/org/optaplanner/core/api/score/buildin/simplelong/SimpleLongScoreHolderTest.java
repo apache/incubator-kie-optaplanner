@@ -47,8 +47,8 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addConstraintMatch(ruleContext3, -30L);
         scoreHolder.addConstraintMatch(ruleContext3, -3L); // Overwrite existing
 
-        assertEquals(SimpleLongScore.valueOf(0, -1003L), scoreHolder.extractScore(0));
-        assertEquals(SimpleLongScore.valueOf(-7, -1003L), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleLongScore.valueOf(0, -1003L));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleLongScore.valueOf(-7, -1003L));
         if (constraintMatchEnabled) {
             assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(3);
         }

@@ -57,10 +57,12 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addHardConstraintMatch(ruleContext5, 0, BigDecimal.valueOf(-900));
         scoreHolder.addSoftConstraintMatch(ruleContext5, 0, BigDecimal.valueOf(-9)); // Different score level
         callUnMatch(ruleContext5);
-        assertEquals(BendableBigDecimalScore.valueOf(0, new BigDecimal[]{BigDecimal.valueOf(-10300)},
-                new BigDecimal[]{BigDecimal.valueOf(-40), BigDecimal.valueOf(-5)}), scoreHolder.extractScore(0));
-        assertEquals(BendableBigDecimalScore.valueOf(-7, new BigDecimal[]{BigDecimal.valueOf(-10300)},
-                new BigDecimal[]{BigDecimal.valueOf(-40), BigDecimal.valueOf(-5)}), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(
+                BendableBigDecimalScore.valueOf(0, new BigDecimal[]{BigDecimal.valueOf(-10300)},
+                new BigDecimal[]{BigDecimal.valueOf(-40), BigDecimal.valueOf(-5)}));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(
+                BendableBigDecimalScore.valueOf(-7, new BigDecimal[]{BigDecimal.valueOf(-10300)},
+                new BigDecimal[]{BigDecimal.valueOf(-40), BigDecimal.valueOf(-5)}));
 
         if (constraintMatchEnabled) {
             assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(7);

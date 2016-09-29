@@ -56,10 +56,10 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(ruleContext5, 0, 1000000000001L); // Different score level
         callUnMatch(ruleContext5);
 
-        assertEquals(BendableLongScore.valueOf(0, new long[]{2000000000401L},
-                new long[]{1000000040000L, -1000000500000L}), scoreHolder.extractScore(0));
-        assertEquals(BendableLongScore.valueOf(-7, new long[]{2000000000401L},
-                new long[]{1000000040000L, -1000000500000L}), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(BendableLongScore.valueOf(0, new long[]{2000000000401L},
+                new long[]{1000000040000L, -1000000500000L}));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(BendableLongScore.valueOf(-7, new long[]{2000000000401L},
+                new long[]{1000000040000L, -1000000500000L}));
         if (constraintMatchEnabled) {
             assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(7);
         }
