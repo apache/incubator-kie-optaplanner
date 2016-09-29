@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
 
 public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
@@ -178,16 +179,16 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
                 HardSoftDoubleScore.valueOfInitialized(-12.3, 3400.5),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(0);
-                    assertEquals(-12.3, output.getHardScore(), 0.0);
-                    assertEquals(3400.5, output.getSoftScore(), 0.0);
+                    assertThat(output.getHardScore()).isEqualTo(-12.3, offset(0.0));
+                    assertThat(output.getSoftScore()).isEqualTo(3400.5, offset(0.0));
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftDoubleScore.valueOf(-7, -12.3, 3400.5),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertEquals(-12.3, output.getHardScore(), 0.0);
-                    assertEquals(3400.5, output.getSoftScore(), 0.0);
+                    assertThat(output.getHardScore()).isEqualTo(-12.3, offset(0.0));
+                    assertThat(output.getSoftScore()).isEqualTo(3400.5, offset(0.0));
                 }
         );
     }

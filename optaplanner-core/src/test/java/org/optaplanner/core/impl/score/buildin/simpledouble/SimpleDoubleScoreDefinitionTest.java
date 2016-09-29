@@ -22,6 +22,7 @@ import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
 
 public class SimpleDoubleScoreDefinitionTest {
 
@@ -42,7 +43,7 @@ public class SimpleDoubleScoreDefinitionTest {
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
         assertThat(optimisticBound.getInitScore()).isEqualTo(0);
-        assertEquals(Double.POSITIVE_INFINITY, optimisticBound.getScore(), 0.0);
+        assertThat(optimisticBound.getScore()).isEqualTo(Double.POSITIVE_INFINITY, offset(0.0));
     }
 
     @Test
@@ -52,7 +53,7 @@ public class SimpleDoubleScoreDefinitionTest {
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
         assertThat(optimisticBound.getInitScore()).isEqualTo(0);
-        assertEquals(-1.7, optimisticBound.getScore(), 0.0);
+        assertThat(optimisticBound.getScore()).isEqualTo(-1.7, offset(0.0));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class SimpleDoubleScoreDefinitionTest {
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
         assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
-        assertEquals(-1.7, pessimisticBound.getScore(), 0.0);
+        assertThat(pessimisticBound.getScore()).isEqualTo(-1.7, offset(0.0));
     }
 
     @Test
@@ -72,7 +73,7 @@ public class SimpleDoubleScoreDefinitionTest {
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
         assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
-        assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getScore(), 0.0);
+        assertThat(pessimisticBound.getScore()).isEqualTo(Double.NEGATIVE_INFINITY, offset(0.0));
     }
 
 }

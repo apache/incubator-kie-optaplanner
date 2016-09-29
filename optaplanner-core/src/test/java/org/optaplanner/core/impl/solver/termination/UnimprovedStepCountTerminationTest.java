@@ -21,6 +21,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
 import static org.mockito.Mockito.*;
 
 public class UnimprovedStepCountTerminationTest {
@@ -36,27 +37,27 @@ public class UnimprovedStepCountTerminationTest {
         when(lastCompletedStepScope.getStepIndex()).thenReturn(10);
         when(phaseScope.getNextStepIndex()).thenReturn(11);
         assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
-        assertEquals(0.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.0, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(11);
         when(phaseScope.getNextStepIndex()).thenReturn(12);
         assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
-        assertEquals(0.25, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.25, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(12);
         when(phaseScope.getNextStepIndex()).thenReturn(13);
         assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
-        assertEquals(0.5, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.5, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(13);
         when(phaseScope.getNextStepIndex()).thenReturn(14);
         assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
-        assertEquals(0.75, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.75, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(14);
         when(phaseScope.getNextStepIndex()).thenReturn(15);
         assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
-        assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(15);
         when(phaseScope.getNextStepIndex()).thenReturn(16);
         assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
-        assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
+        assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
     }
 
 }

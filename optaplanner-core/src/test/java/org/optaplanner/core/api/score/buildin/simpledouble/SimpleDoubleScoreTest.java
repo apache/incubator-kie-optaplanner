@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
 
 public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
@@ -157,14 +158,14 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
                 SimpleDoubleScore.valueOfInitialized(123.4),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(0);
-                    assertEquals(123.4, output.getScore(), 0.0);
+                    assertThat(output.getScore()).isEqualTo(123.4, offset(0.0));
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleDoubleScore.valueOf(-7, 123.4),
                 output -> {
                     assertThat(output.getInitScore()).isEqualTo(-7);
-                    assertEquals(123.4, output.getScore(), 0.0);
+                    assertThat(output.getScore()).isEqualTo(123.4, offset(0.0));
                 }
         );
     }
