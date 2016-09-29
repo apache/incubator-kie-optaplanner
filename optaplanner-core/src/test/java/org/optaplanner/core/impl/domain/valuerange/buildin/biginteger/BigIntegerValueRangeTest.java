@@ -30,7 +30,7 @@ public class BigIntegerValueRangeTest {
 
     @Test
     public void getSize() {
-        Assert.assertEquals(10L, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).getSize());
+        assertEquals(10L, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).getSize());
         assertEquals(20L, new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).getSize());
         assertEquals(40L, new BigIntegerValueRange(new BigInteger("-15"), new BigInteger("25")).getSize());
         assertEquals(0L, new BigIntegerValueRange(new BigInteger("7"), new BigInteger("7")).getSize());
