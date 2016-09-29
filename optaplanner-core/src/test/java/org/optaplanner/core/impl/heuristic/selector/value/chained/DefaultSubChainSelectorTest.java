@@ -83,8 +83,8 @@ public class DefaultSubChainSelectorTest {
                 a0, a1, a2, a3, a4, b0, b1, b2);
         DefaultSubChainSelector selector = new DefaultSubChainSelector(
                 valueSelector, false, minimumSubChainSize, maximumSubChainSize);
-        assertEquals(expected, selector.calculateSubChainSelectionSize(
-                new SubChain(Arrays.<Object>asList(a1, a2, a3, a4))));
+        assertThat(selector.calculateSubChainSelectionSize(new SubChain(Arrays.<Object>asList(a1, a2, a3, a4))))
+                .isEqualTo(expected);
     }
 
     @Test

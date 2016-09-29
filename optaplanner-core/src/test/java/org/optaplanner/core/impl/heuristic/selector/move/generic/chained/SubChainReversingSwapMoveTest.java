@@ -246,12 +246,18 @@ public class SubChainReversingSwapMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1, b2, b3});
 
-        assertEquals("[a2..a4] {a1} <-reversing-> [b1..b3] {b0}", new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
-                new SubChain(Arrays.<Object>asList(a2, a3, a4)), new SubChain(Arrays.<Object>asList(b1, b2, b3))).toString());
-        assertEquals("[a1..a2] {a0} <-reversing-> [a4..a5] {a3}", new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
-                new SubChain(Arrays.<Object>asList(a1, a2)), new SubChain(Arrays.<Object>asList(a4, a5))).toString());
-        assertEquals("[a3..a3] {a2} <-reversing-> [b2..b2] {b1}", new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
-                new SubChain(Arrays.<Object>asList(a3)), new SubChain(Arrays.<Object>asList(b2))).toString());
+        assertThat(new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
+                new SubChain(Arrays.<Object>asList(a2, a3, a4)),
+                new SubChain(Arrays.<Object>asList(b1, b2, b3))).toString())
+                .isEqualTo("[a2..a4] {a1} <-reversing-> [b1..b3] {b0}");
+        assertThat(new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
+                new SubChain(Arrays.<Object>asList(a1, a2)),
+                new SubChain(Arrays.<Object>asList(a4, a5))).toString())
+                .isEqualTo("[a1..a2] {a0} <-reversing-> [a4..a5] {a3}");
+        assertThat(new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
+                new SubChain(Arrays.<Object>asList(a3)),
+                new SubChain(Arrays.<Object>asList(b2))).toString())
+                .isEqualTo("[a3..a3] {a2} <-reversing-> [b2..b2] {b1}");
     }
 
 }

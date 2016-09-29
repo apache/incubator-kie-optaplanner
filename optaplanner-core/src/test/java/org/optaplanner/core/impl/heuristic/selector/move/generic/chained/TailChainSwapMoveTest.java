@@ -220,16 +220,16 @@ public class TailChainSwapMoveTest {
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new AnchorVariableDemand(variableDescriptor));
 
-        assertEquals("a1 {a0} <-tailChainSwap-> b1 {b0}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, b0).toString());
-        assertEquals("a1 {a0} <-tailChainSwap-> null {b1}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, b1).toString());
-        assertEquals("b1 {b0} <-tailChainSwap-> a1 {a0}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, b1, a0).toString());
-        assertEquals("a1 {a0} <-tailChainSwap-> null {a3}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, a3).toString());
-        assertEquals("a2 {a1} <-tailChainSwap-> a1 {a0}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a2, a0).toString());
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, b0).toString())
+                .isEqualTo("a1 {a0} <-tailChainSwap-> b1 {b0}");
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, b1).toString())
+                .isEqualTo("a1 {a0} <-tailChainSwap-> null {b1}");
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, b1, a0).toString())
+                .isEqualTo("b1 {b0} <-tailChainSwap-> a1 {a0}");
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a3).toString())
+                .isEqualTo("a1 {a0} <-tailChainSwap-> null {a3}");
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a0).toString())
+                .isEqualTo("a2 {a1} <-tailChainSwap-> a1 {a0}");
     }
 
 }

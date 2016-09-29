@@ -70,8 +70,8 @@ public class FlatteningHardSoftScoreComparatorTest {
 
     @Test
     public void compare() {
-        assertEquals(expectedResult, new FlatteningHardSoftScoreComparator(modifier)
+        assertThat(new FlatteningHardSoftScoreComparator(modifier)
                 .compare(new HardSoftScoreDefinition().parseScore(firstScore),
-                        new HardSoftScoreDefinition().parseScore(secondScore)));
+                        new HardSoftScoreDefinition().parseScore(secondScore))).isEqualTo(expectedResult);
     }
 }
