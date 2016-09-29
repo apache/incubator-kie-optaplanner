@@ -92,7 +92,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(UnionMoveSelector.class, moveSelector);
-        assertEquals(2, ((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size());
+        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(UnionMoveSelector.class, moveSelector);
-        assertEquals(2, ((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size());
+        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
     }
 
 }

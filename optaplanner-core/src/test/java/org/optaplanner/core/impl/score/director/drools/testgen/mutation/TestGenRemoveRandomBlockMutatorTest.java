@@ -58,7 +58,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
         List<Integer> removedBlock = m.getRemovedBlock();
         m.revert();
         assertTrue(m.getResult().containsAll(removedBlock));
-        assertEquals(LIST_SIZE, m.getResult().size());
+        assertThat(m.getResult().size()).isEqualTo(LIST_SIZE);
     }
 
     @Test

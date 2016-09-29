@@ -42,8 +42,8 @@ public class ScoreDirectorFactoryConfigTest {
         config.setBendableHardLevelsSize(2);
         config.setBendableSoftLevelsSize(3);
         BendableScoreDefinition scoreDefinition = (BendableScoreDefinition) config.buildDeprecatedScoreDefinition();
-        assertEquals(2, scoreDefinition.getHardLevelsSize());
-        assertEquals(3, scoreDefinition.getSoftLevelsSize());
+        assertThat(scoreDefinition.getHardLevelsSize()).isEqualTo(2);
+        assertThat(scoreDefinition.getSoftLevelsSize()).isEqualTo(3);
     }
 
     @Test

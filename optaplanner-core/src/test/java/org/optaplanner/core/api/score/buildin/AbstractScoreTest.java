@@ -26,9 +26,9 @@ public abstract class AbstractScoreTest {
     public static void assertScoresEqualsAndHashCode(Score... scores) {
         for (int i = 0; i < scores.length; i++) {
             for (int j = i + 1; j < scores.length; j++) {
-                assertEquals(scores[i], scores[j]);
-                assertEquals(scores[i].hashCode(), scores[j].hashCode());
-                assertEquals(0, scores[i].compareTo(scores[j]));
+                assertThat(scores[j]).isEqualTo(scores[i]);
+                assertThat(scores[j].hashCode()).isEqualTo(scores[i].hashCode());
+                assertThat(scores[i].compareTo(scores[j])).isEqualTo(0);
             }
         }
     }
@@ -36,8 +36,8 @@ public abstract class AbstractScoreTest {
     public static void assertScoresNotEquals(Score... scores) {
         for (int i = 0; i < scores.length; i++) {
             for (int j = i + 1; j < scores.length; j++) {
-                assertNotEquals(scores[i], scores[j]);
-                assertNotEquals(0, scores[i].compareTo(scores[j]));
+                assertThat(scores[j]).isNotEqualTo(scores[i]);
+                assertThat(scores[i].compareTo(scores[j])).isNotEqualTo(0);
             }
         }
     }

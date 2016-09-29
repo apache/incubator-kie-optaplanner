@@ -27,7 +27,7 @@ public class SimpleDoubleScoreDefinitionTest {
 
     @Test
     public void getLevelSize() {
-        assertEquals(1, new SimpleDoubleScoreDefinition().getLevelsSize());
+        assertThat(new SimpleDoubleScoreDefinition().getLevelsSize()).isEqualTo(1);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class SimpleDoubleScoreDefinitionTest {
         SimpleDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
-        assertEquals(0, optimisticBound.getInitScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
         assertEquals(Double.POSITIVE_INFINITY, optimisticBound.getScore(), 0.0);
     }
 
@@ -51,7 +51,7 @@ public class SimpleDoubleScoreDefinitionTest {
         SimpleDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
-        assertEquals(0, optimisticBound.getInitScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
         assertEquals(-1.7, optimisticBound.getScore(), 0.0);
     }
 
@@ -61,7 +61,7 @@ public class SimpleDoubleScoreDefinitionTest {
         SimpleDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
-        assertEquals(0, pessimisticBound.getInitScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
         assertEquals(-1.7, pessimisticBound.getScore(), 0.0);
     }
 
@@ -71,7 +71,7 @@ public class SimpleDoubleScoreDefinitionTest {
         SimpleDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
-        assertEquals(0, pessimisticBound.getInitScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
         assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getScore(), 0.0);
     }
 

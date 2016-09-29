@@ -36,7 +36,7 @@ public abstract class AbstractScoreXStreamConverterTest {
         String xmlString = xStream.toXML(input);
         W output = (W) xStream.fromXML(xmlString);
 
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<([\\w\\-\\.]+)( id=\"\\d+\")?>" // Start of element

@@ -36,7 +36,7 @@ public class NullableCountableValueRangeTest {
         assertEquals(6L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).getSize());
         assertEquals(4L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).getSize());
         assertEquals(4L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).getSize());
-        assertEquals(1L, new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String>emptyList())).getSize());
+        assertThat(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String>emptyList())).getSize()).isEqualTo(1L);
     }
 
     @Test

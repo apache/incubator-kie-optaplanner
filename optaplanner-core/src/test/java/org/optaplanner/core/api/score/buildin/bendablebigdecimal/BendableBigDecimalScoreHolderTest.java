@@ -63,7 +63,7 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
                 new BigDecimal[]{BigDecimal.valueOf(-40), BigDecimal.valueOf(-5)}), scoreHolder.extractScore(-7));
 
         if (constraintMatchEnabled) {
-            assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
+            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(7);
         }
     }
 

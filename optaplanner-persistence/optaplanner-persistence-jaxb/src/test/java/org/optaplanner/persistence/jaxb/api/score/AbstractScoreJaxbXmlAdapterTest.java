@@ -51,7 +51,7 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<\\?[^\\?]*\\?>" // XML header

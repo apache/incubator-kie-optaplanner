@@ -69,13 +69,13 @@ public class BendableBigDecimalScoreDefinitionTest {
                 }
                 BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(hardLevelSize, softLevelSize);
                 BendableBigDecimalScore bendableScore = bendableScoreDefinition.createScoreInitialized(scores);
-                assertEquals(hardLevelSize, bendableScore.getHardLevelsSize());
-                assertEquals(softLevelSize, bendableScore.getSoftLevelsSize());
+                assertThat(bendableScore.getHardLevelsSize()).isEqualTo(hardLevelSize);
+                assertThat(bendableScore.getSoftLevelsSize()).isEqualTo(softLevelSize);
                 for (int i = 0; i < levelSize; i++) {
                     if (i < hardLevelSize) {
-                        assertEquals(scores[i], bendableScore.getHardScore(i));
+                        assertThat(bendableScore.getHardScore(i)).isEqualTo(scores[i]);
                     } else {
-                        assertEquals(scores[i], bendableScore.getSoftScore(i - hardLevelSize));
+                        assertThat(bendableScore.getSoftScore(i - hardLevelSize)).isEqualTo(scores[i]);
                     }
                 }
             }

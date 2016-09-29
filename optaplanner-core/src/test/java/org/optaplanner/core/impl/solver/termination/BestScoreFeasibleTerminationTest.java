@@ -39,22 +39,22 @@ public class BestScoreFeasibleTerminationTest {
         when(solverScope.isBestSolutionInitialized()).thenReturn(true);
 
         when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-100, -100));
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-80, -100));
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.2, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-60, -100));
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.4, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-40, -100));
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.6, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-20, -100));
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.8, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(solverScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(0, -100));
-        assertEquals(true, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(true);
         assertEquals(1.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
     }
 
@@ -69,22 +69,22 @@ public class BestScoreFeasibleTerminationTest {
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
 
         when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-100, -100));
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-80, -100));
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.2, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-60, -100));
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.4, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-40, -100));
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.6, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(-20, -100));
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.8, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(phaseScope.getBestScore()).thenReturn(HardSoftScore.valueOfInitialized(0, -100));
-        assertEquals(true, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
         assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
     }
 

@@ -65,7 +65,7 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableScore.valueOf(-7, new int[]{-10300}, new int[]{-40, -5}), scoreHolder.extractScore(-7));
 
         if (constraintMatchEnabled) {
-            assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
+            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(7);
         }
     }
 

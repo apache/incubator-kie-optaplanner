@@ -44,7 +44,7 @@ public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
         LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -500);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900)));
-        assertEquals(true, acceptor.isAccepted(moveScope0));
+        assertThat(acceptor.isAccepted(moveScope0)).isEqualTo(true);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -800)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -2000)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -1000)));
@@ -62,7 +62,7 @@ public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -2000)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -700)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -1000)));
-        assertEquals(true, acceptor.isAccepted(moveScope1));
+        assertThat(acceptor.isAccepted(moveScope1)).isEqualTo(true);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -500)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -501)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call

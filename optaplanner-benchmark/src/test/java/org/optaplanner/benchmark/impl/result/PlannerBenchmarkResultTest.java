@@ -86,16 +86,16 @@ public class PlannerBenchmarkResultTest {
         PlannerBenchmarkResult mergedResult = PlannerBenchmarkResult.createMergedResult(Arrays.asList(
                 p1SolverXProblemA, p1SolverXProblemB, p1SolverYProblemA, p1SolverYProblemB, p2SolverZProblemA));
 
-        assertEquals(true, mergedResult.getAggregation());
+        assertThat(mergedResult.getAggregation()).isEqualTo(true);
         List<ProblemBenchmarkResult> mergedProblemBenchmarkResultList = mergedResult.getUnifiedProblemBenchmarkResultList();
         List<SolverBenchmarkResult> mergedSolverBenchmarkResultList = mergedResult.getSolverBenchmarkResultList();
-        assertEquals(3, mergedSolverBenchmarkResultList.size());
-        assertEquals("Solver X", mergedSolverBenchmarkResultList.get(0).getName());
-        assertEquals("Solver Y", mergedSolverBenchmarkResultList.get(1).getName());
-        assertEquals("Solver Z", mergedSolverBenchmarkResultList.get(2).getName());
-        assertEquals(2, mergedProblemBenchmarkResultList.size());
-        assertEquals("problemA.xml", mergedProblemBenchmarkResultList.get(0).getInputSolutionFile().getName());
-        assertEquals("problemB.xml", mergedProblemBenchmarkResultList.get(1).getInputSolutionFile().getName());
+        assertThat(mergedSolverBenchmarkResultList.size()).isEqualTo(3);
+        assertThat(mergedSolverBenchmarkResultList.get(0).getName()).isEqualTo("Solver X");
+        assertThat(mergedSolverBenchmarkResultList.get(1).getName()).isEqualTo("Solver Y");
+        assertThat(mergedSolverBenchmarkResultList.get(2).getName()).isEqualTo("Solver Z");
+        assertThat(mergedProblemBenchmarkResultList.size()).isEqualTo(2);
+        assertThat(mergedProblemBenchmarkResultList.get(0).getInputSolutionFile().getName()).isEqualTo("problemA.xml");
+        assertThat(mergedProblemBenchmarkResultList.get(1).getInputSolutionFile().getName()).isEqualTo("problemB.xml");
     }
 
     protected SingleBenchmarkResult createSingleBenchmarkResult(

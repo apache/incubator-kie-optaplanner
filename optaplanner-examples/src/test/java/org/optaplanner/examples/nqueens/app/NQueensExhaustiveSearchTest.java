@@ -52,7 +52,7 @@ public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQ
     @Override
     protected void assertSolution(NQueens bestSolution) {
         super.assertSolution(bestSolution);
-        assertEquals(0, ((NQueens) bestSolution).getScore().getScore());
+        assertThat(((NQueens) bestSolution).getScore().getScore()).isEqualTo(0);
     }
 
 }

@@ -318,7 +318,7 @@ public class TemporalValueRangeTest {
         LocalDate to = LocalDate.of(2016, 7, 31);
         TemporalValueRange<LocalDate> temporalValueRange = new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS);
 
-        assertEquals(6, temporalValueRange.getSize());
+        assertThat(temporalValueRange.getSize()).isEqualTo(6);
         assertEquals(LocalDate.of(2016, 1, 31), temporalValueRange.get(0));
         assertEquals(LocalDate.of(2016, 2, 29), temporalValueRange.get(1));
         assertEquals(LocalDate.of(2016, 3, 31), temporalValueRange.get(2));

@@ -378,15 +378,15 @@ public class DefaultPillarSelectorTest {
 
     private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(false, pillarSelector.isNeverEnding());
-        assertEquals(codes.length, pillarSelector.getSize());
+        assertThat(pillarSelector.isCountable()).isEqualTo(true);
+        assertThat(pillarSelector.isNeverEnding()).isEqualTo(false);
+        assertThat(pillarSelector.getSize()).isEqualTo(codes.length);
     }
 
     private void assertCodesOfNeverEndingPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(true, pillarSelector.isNeverEnding());
+        assertThat(pillarSelector.isCountable()).isEqualTo(true);
+        assertThat(pillarSelector.isNeverEnding()).isEqualTo(true);
     }
 
 }

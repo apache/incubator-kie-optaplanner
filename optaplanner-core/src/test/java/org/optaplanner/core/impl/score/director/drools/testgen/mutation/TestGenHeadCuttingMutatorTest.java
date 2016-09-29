@@ -39,45 +39,45 @@ public class TestGenHeadCuttingMutatorTest {
         assertTrue(m.canMutate());
 
         // 0.8 * 25 = 20 cut
-        assertEquals(5, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(5);
         assertTrue(m.canMutate());
         m.revert();
-        assertEquals(25, m.getResult().size());
+        assertThat(m.getResult().size()).isEqualTo(25);
 
         assertTrue(m.canMutate());
         // 0.4 * 25 = 10 cut
-        assertEquals(15, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(15);
         assertTrue(m.canMutate());
         // 10 + 0.4 * 15 = 16 cut
-        assertEquals(9, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(9);
         assertTrue(m.canMutate());
         // 16 + 0.4 * 9 = 19 cut
-        assertEquals(6, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(6);
         assertTrue(m.canMutate());
         m.revert();
-        assertEquals(9, m.getResult().size());
+        assertThat(m.getResult().size()).isEqualTo(9);
 
         assertTrue(m.canMutate());
         // 16 + 0.2 * 9 = 17 cut
-        assertEquals(8, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(8);
         assertTrue(m.canMutate());
-        assertEquals(7, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(7);
         assertTrue(m.canMutate());
-        assertEquals(6, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(6);
         assertTrue(m.canMutate());
-        assertEquals(5, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(5);
         assertTrue(m.canMutate());
-        assertEquals(4, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(4);
         assertTrue(m.canMutate());
-        assertEquals(3, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(3);
         assertTrue(m.canMutate());
-        assertEquals(2, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(2);
         assertTrue(m.canMutate());
-        assertEquals(1, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(1);
         assertTrue(m.canMutate());
-        assertEquals(0, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(0);
         assertFalse(m.canMutate());
-        assertEquals(0, m.getResult().size());
+        assertThat(m.getResult().size()).isEqualTo(0);
     }
 
     @Test
@@ -87,31 +87,31 @@ public class TestGenHeadCuttingMutatorTest {
 
         assertTrue(m.canMutate());
         // 0.8 * 25 = 20 cut
-        assertEquals(5, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(5);
         m.revert();
 
         assertTrue(m.canMutate());
         // 0.4 * 25 = 10 cut
-        assertEquals(15, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(15);
         m.revert();
 
         assertTrue(m.canMutate());
         // 0.2 * 25 = 5 cut
-        assertEquals(20, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(20);
         m.revert();
 
         assertTrue(m.canMutate());
         // 0.1 * 25 = 2 cut
-        assertEquals(23, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(23);
         m.revert();
 
         assertTrue(m.canMutate());
         // 0.05 * 25 = 1 cut
-        assertEquals(24, m.mutate().size());
+        assertThat(m.mutate().size()).isEqualTo(24);
         m.revert();
 
         // impossible to mutate to full list
         assertFalse(m.canMutate());
-        assertEquals(25, m.getResult().size());
+        assertThat(m.getResult().size()).isEqualTo(25);
     }
 }

@@ -24,7 +24,7 @@ public class HardSoftBigDecimalScoreDefinitionTest {
 
     @Test
     public void getLevelsSize() {
-        assertEquals(2, new HardSoftBigDecimalScoreDefinition().getLevelsSize());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getLevelsSize()).isEqualTo(2);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class HardSoftBigDecimalScoreDefinitionTest {
 
     @Test
     public void getFeasibleLevelsSize() {
-        assertEquals(1, new HardSoftBigDecimalScoreDefinition().getFeasibleLevelsSize());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getFeasibleLevelsSize()).isEqualTo(1);
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition

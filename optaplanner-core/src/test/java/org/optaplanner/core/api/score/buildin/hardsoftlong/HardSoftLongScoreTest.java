@@ -170,17 +170,17 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftLongScore.valueOfInitialized(-12, 3400L),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(-12L, output.getHardScore());
-                    assertEquals(3400L, output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getHardScore()).isEqualTo(-12L);
+                    assertThat(output.getSoftScore()).isEqualTo(3400L);
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftLongScore.valueOf(-7, -12L, 3400L),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(-12L, output.getHardScore());
-                    assertEquals(3400L, output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getHardScore()).isEqualTo(-12L);
+                    assertThat(output.getSoftScore()).isEqualTo(3400L);
                 }
         );
     }

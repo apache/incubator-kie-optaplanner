@@ -35,7 +35,7 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void testToString() {
-        assertEquals("-147.2", SimpleDoubleScore.valueOfInitialized(-147.2).toString());
+        assertThat(SimpleDoubleScore.valueOfInitialized(-147.2).toString()).isEqualTo("-147.2");
         assertEquals("-7init/-147.2", SimpleDoubleScore.valueOf(-7, -147.2).toString());
     }
 
@@ -156,14 +156,14 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleDoubleScore.valueOfInitialized(123.4),
                 output -> {
-                    assertEquals(0, output.getInitScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
                     assertEquals(123.4, output.getScore(), 0.0);
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleDoubleScore.valueOf(-7, 123.4),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
                     assertEquals(123.4, output.getScore(), 0.0);
                 }
         );

@@ -177,7 +177,7 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftDoubleScore.valueOfInitialized(-12.3, 3400.5),
                 output -> {
-                    assertEquals(0, output.getInitScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
                     assertEquals(-12.3, output.getHardScore(), 0.0);
                     assertEquals(3400.5, output.getSoftScore(), 0.0);
                 }
@@ -185,7 +185,7 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftDoubleScore.valueOf(-7, -12.3, 3400.5),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
                     assertEquals(-12.3, output.getHardScore(), 0.0);
                     assertEquals(3400.5, output.getSoftScore(), 0.0);
                 }

@@ -74,9 +74,9 @@ public class ProbabilityEntitySelectorTest {
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.stepStarted(stepScopeA1);
 
-        assertEquals(true, entitySelector.isCountable());
-        assertEquals(true, entitySelector.isNeverEnding());
-        assertEquals(4L, entitySelector.getSize());
+        assertThat(entitySelector.isCountable()).isEqualTo(true);
+        assertThat(entitySelector.isNeverEnding()).isEqualTo(true);
+        assertThat(entitySelector.getSize()).isEqualTo(4L);
         Iterator<Object> iterator = entitySelector.iterator();
         assertTrue(iterator.hasNext());
         assertCode("e3", iterator.next());
@@ -134,7 +134,7 @@ public class ProbabilityEntitySelectorTest {
         ProbabilityEntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP,
                 probabilityWeightFactory);
         entitySelector.constructCache(mock(DefaultSolverScope.class));
-        assertEquals(4, entitySelector.getSize());
+        assertThat(entitySelector.getSize()).isEqualTo(4);
     }
 
     @Test(expected = IllegalStateException.class)

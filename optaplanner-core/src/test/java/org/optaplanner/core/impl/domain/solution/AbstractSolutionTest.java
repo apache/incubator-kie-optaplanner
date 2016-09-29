@@ -37,11 +37,11 @@ public class AbstractSolutionTest {
     public void getScore() {
         TestdataAbstractSolutionBasedSolution solution = new TestdataAbstractSolutionBasedSolution();
         solution.setScore(null);
-        assertEquals(null, solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(null);
         solution.setScore(SimpleScore.valueOfInitialized(-10));
-        assertEquals(SimpleScore.valueOfInitialized(-10), solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-10));
         solution.setScore(SimpleScore.valueOfInitialized(-2));
-        assertEquals(SimpleScore.valueOfInitialized(-2), solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-2));
     }
 
     @Test

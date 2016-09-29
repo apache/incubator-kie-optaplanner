@@ -28,7 +28,7 @@ public class EmptyValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(0L, new EmptyValueRange<Integer>().getSize());
+        assertThat(new EmptyValueRange<Integer>().getSize()).isEqualTo(0L);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -38,8 +38,8 @@ public class EmptyValueRangeTest {
 
     @Test
     public void contains() {
-        assertEquals(false, new EmptyValueRange<Integer>().contains(5));
-        assertEquals(false, new EmptyValueRange<Integer>().contains(null));
+        assertThat(new EmptyValueRange<Integer>().contains(5)).isEqualTo(false);
+        assertThat(new EmptyValueRange<Integer>().contains(null)).isEqualTo(false);
     }
 
     @Test

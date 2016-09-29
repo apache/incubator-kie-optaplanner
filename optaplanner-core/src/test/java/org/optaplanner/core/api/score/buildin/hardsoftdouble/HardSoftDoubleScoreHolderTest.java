@@ -57,7 +57,7 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(HardSoftDoubleScore.valueOf(0, -14.00, -0.06), scoreHolder.extractScore(0));
         assertEquals(HardSoftDoubleScore.valueOf(-7, -14.00, -0.06), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(6, scoreHolder.getConstraintMatchTotals().size());
+            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(6);
         }
     }
 

@@ -35,7 +35,7 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void testToString() {
-        assertEquals("-147", SimpleLongScore.valueOfInitialized(-147L).toString());
+        assertThat(SimpleLongScore.valueOfInitialized(-147L).toString()).isEqualTo("-147");
         assertEquals("-7init/-147", SimpleLongScore.valueOf(-7, -147L).toString());
     }
 
@@ -155,15 +155,15 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleLongScore.valueOfInitialized(123L),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(123L, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getScore()).isEqualTo(123L);
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleLongScore.valueOf(-7, 123L),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(123L, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getScore()).isEqualTo(123L);
                 }
         );
     }

@@ -93,9 +93,9 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     @Test
     public void getHardOrSoftScore() {
         BendableBigDecimalScore initializedScore = scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-5), BigDecimal.valueOf(-10), BigDecimal.valueOf(-200));
-        assertEquals(BigDecimal.valueOf(-5), initializedScore.getHardOrSoftScore(0));
-        assertEquals(BigDecimal.valueOf(-10), initializedScore.getHardOrSoftScore(1));
-        assertEquals(BigDecimal.valueOf(-200), initializedScore.getHardOrSoftScore(2));
+        assertThat(initializedScore.getHardOrSoftScore(0)).isEqualTo(BigDecimal.valueOf(-5));
+        assertThat(initializedScore.getHardOrSoftScore(1)).isEqualTo(BigDecimal.valueOf(-10));
+        assertThat(initializedScore.getHardOrSoftScore(2)).isEqualTo(BigDecimal.valueOf(-200));
     }
 
     @Test
@@ -316,19 +316,19 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 scoreDefinitionHSS.createScoreInitialized(new BigDecimal("-12"), new BigDecimal("3400"), new BigDecimal("-56")),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(new BigDecimal("-12"), output.getHardScore(0));
-                    assertEquals(new BigDecimal("3400"), output.getSoftScore(0));
-                    assertEquals(new BigDecimal("-56"), output.getSoftScore(1));
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getHardScore(0)).isEqualTo(new BigDecimal("-12"));
+                    assertThat(output.getSoftScore(0)).isEqualTo(new BigDecimal("3400"));
+                    assertThat(output.getSoftScore(1)).isEqualTo(new BigDecimal("-56"));
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 scoreDefinitionHSS.createScore(-7, new BigDecimal("-12"), new BigDecimal("3400"), new BigDecimal("-56")),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(new BigDecimal("-12"), output.getHardScore(0));
-                    assertEquals(new BigDecimal("3400"), output.getSoftScore(0));
-                    assertEquals(new BigDecimal("-56"), output.getSoftScore(1));
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getHardScore(0)).isEqualTo(new BigDecimal("-12"));
+                    assertThat(output.getSoftScore(0)).isEqualTo(new BigDecimal("3400"));
+                    assertThat(output.getSoftScore(1)).isEqualTo(new BigDecimal("-56"));
                 }
         );
     }

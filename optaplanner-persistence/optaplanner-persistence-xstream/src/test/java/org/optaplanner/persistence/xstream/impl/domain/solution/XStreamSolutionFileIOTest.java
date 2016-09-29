@@ -62,7 +62,7 @@ public class XStreamSolutionFileIOTest {
         XStreamTestdataEntity copyE2 = copy.getEntityList().get(1);
         assertCode("v1", copyE2.getValue());
         assertSame(copyV1, copyE2.getValue());
-        assertEquals(SimpleScore.valueOfInitialized(-123), copy.getScore());
+        assertThat(copy.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-123));
     }
 
 }

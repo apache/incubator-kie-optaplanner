@@ -54,7 +54,7 @@ public class EntityTabuAcceptorTest {
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
         LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope0, e1);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0)));
-        assertEquals(true, acceptor.isAccepted(moveScope1));
+        assertThat(acceptor.isAccepted(moveScope1)).isEqualTo(true);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e3)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e4)));
@@ -67,7 +67,7 @@ public class EntityTabuAcceptorTest {
         LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope1, e2);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e1)));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
+        assertThat(acceptor.isAccepted(moveScope2)).isEqualTo(true);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e3)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e4)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e2))); // repeated call
@@ -81,7 +81,7 @@ public class EntityTabuAcceptorTest {
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e3)));
-        assertEquals(true, acceptor.isAccepted(moveScope4));
+        assertThat(acceptor.isAccepted(moveScope4)).isEqualTo(true);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2))); // repeated call
         stepScope2.setStep(moveScope4.getMove());
         acceptor.stepEnded(stepScope2);
@@ -92,7 +92,7 @@ public class EntityTabuAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e1)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2)));
-        assertEquals(true, acceptor.isAccepted(moveScope3));
+        assertThat(acceptor.isAccepted(moveScope3)).isEqualTo(true);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e4)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2))); // repeated call
         stepScope3.setStep(moveScope3.getMove());
@@ -102,7 +102,7 @@ public class EntityTabuAcceptorTest {
         LocalSearchStepScope stepScope4 = new LocalSearchStepScope(phaseScope);
         LocalSearchMoveScope moveScope1Again = buildMoveScope(stepScope4, e1);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e0)));
-        assertEquals(true, acceptor.isAccepted(moveScope1Again));
+        assertThat(acceptor.isAccepted(moveScope1Again)).isEqualTo(true);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e2)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, e3)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, e4)));

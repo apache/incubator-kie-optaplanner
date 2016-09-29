@@ -52,9 +52,9 @@ public class BendableLongScoreTest extends AbstractScoreTest {
     @Test
     public void getHardOrSoftScore() {
         BendableLongScore initializedScore = scoreDefinitionHSS.createScoreInitialized(-5L, -10L, -200L);
-        assertEquals(-5L, initializedScore.getHardOrSoftScore(0));
-        assertEquals(-10L, initializedScore.getHardOrSoftScore(1));
-        assertEquals(-200L, initializedScore.getHardOrSoftScore(2));
+        assertThat(initializedScore.getHardOrSoftScore(0)).isEqualTo(-5L);
+        assertThat(initializedScore.getHardOrSoftScore(1)).isEqualTo(-10L);
+        assertThat(initializedScore.getHardOrSoftScore(2)).isEqualTo(-200L);
     }
 
     @Test
@@ -287,19 +287,19 @@ public class BendableLongScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 scoreDefinitionHSS.createScoreInitialized(-12L, 3400L, -56L),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(-12L, output.getHardScore(0));
-                    assertEquals(3400L, output.getSoftScore(0));
-                    assertEquals(-56L, output.getSoftScore(1));
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getHardScore(0)).isEqualTo(-12L);
+                    assertThat(output.getSoftScore(0)).isEqualTo(3400L);
+                    assertThat(output.getSoftScore(1)).isEqualTo(-56L);
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 scoreDefinitionHSS.createScore(-7, -12L, 3400L, -56L),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(-12L, output.getHardScore(0));
-                    assertEquals(3400L, output.getSoftScore(0));
-                    assertEquals(-56L, output.getSoftScore(1));
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getHardScore(0)).isEqualTo(-12L);
+                    assertThat(output.getSoftScore(0)).isEqualTo(3400L);
+                    assertThat(output.getSoftScore(1)).isEqualTo(-56L);
                 }
         );
     }

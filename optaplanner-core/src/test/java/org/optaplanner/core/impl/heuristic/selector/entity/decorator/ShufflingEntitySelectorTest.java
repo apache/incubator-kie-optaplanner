@@ -28,13 +28,13 @@ public class ShufflingEntitySelectorTest {
     @Test
     public void isNeverEnding() {
         ShufflingEntitySelector selector = new ShufflingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE);
-        assertEquals(false, selector.isNeverEnding());
+        assertThat(selector.isNeverEnding()).isEqualTo(false);
     }
 
     @Test
     public void isCountable() {
         ShufflingEntitySelector selector = new ShufflingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE);
-        assertEquals(true, selector.isCountable());
+        assertThat(selector.isCountable()).isEqualTo(true);
     }
 
 }

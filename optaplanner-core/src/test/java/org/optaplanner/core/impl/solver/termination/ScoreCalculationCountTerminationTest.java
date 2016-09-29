@@ -34,22 +34,22 @@ public class ScoreCalculationCountTerminationTest {
         when(solverScope.getScoreDirector()).thenReturn(scoreDirector);
 
         when(scoreDirector.getCalculationCount()).thenReturn(0L);
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(100L);
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.1, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(500L);
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.5, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(700L);
-        assertEquals(false, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(false);
         assertEquals(0.7, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(1000L);
-        assertEquals(true, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(true);
         assertEquals(1.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(1200L);
-        assertEquals(true, termination.isSolverTerminated(solverScope));
+        assertThat(termination.isSolverTerminated(solverScope)).isEqualTo(true);
         assertEquals(1.0, termination.calculateSolverTimeGradient(solverScope), 0.0);
     }
 
@@ -61,22 +61,22 @@ public class ScoreCalculationCountTerminationTest {
         when(phaseScope.getScoreDirector()).thenReturn(scoreDirector);
 
         when(scoreDirector.getCalculationCount()).thenReturn(0L);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(100L);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.1, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(500L);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.5, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(700L);
-        assertEquals(false, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
         assertEquals(0.7, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(1000L);
-        assertEquals(true, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
         assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
         when(scoreDirector.getCalculationCount()).thenReturn(1200L);
-        assertEquals(true, termination.isPhaseTerminated(phaseScope));
+        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
         assertEquals(1.0, termination.calculatePhaseTimeGradient(phaseScope), 0.0);
     }
 

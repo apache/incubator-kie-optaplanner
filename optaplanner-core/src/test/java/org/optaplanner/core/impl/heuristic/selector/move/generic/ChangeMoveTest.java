@@ -47,13 +47,13 @@ public class ChangeMoveTest {
 
         ChangeMove aMove = new ChangeMove(a, entityDescriptor.getGenuineVariableDescriptor("value"), v2);
         a.setValue(v1);
-        assertEquals(true, aMove.isMoveDoable(scoreDirector));
+        assertThat(aMove.isMoveDoable(scoreDirector)).isEqualTo(true);
 
         a.setValue(v2);
-        assertEquals(false, aMove.isMoveDoable(scoreDirector));
+        assertThat(aMove.isMoveDoable(scoreDirector)).isEqualTo(false);
 
         a.setValue(v3);
-        assertEquals(true, aMove.isMoveDoable(scoreDirector));
+        assertThat(aMove.isMoveDoable(scoreDirector)).isEqualTo(true);
     }
 
     @Test
@@ -70,15 +70,15 @@ public class ChangeMoveTest {
         ChangeMove aMove = new ChangeMove(a, entityDescriptor.getGenuineVariableDescriptor("value"), v2);
         a.setValue(v1);
         aMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
 
         a.setValue(v2);
         aMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
 
         a.setValue(v3);
         aMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
     }
 
     @Test
@@ -86,13 +86,13 @@ public class ChangeMoveTest {
         ChangeMove move = new ChangeMove(new TestdataMultiVarEntity("a"),
                 TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue(), null);
         assertCode("a", move.getEntity());
-        assertEquals("primaryValue", move.getVariableName());
+        assertThat(move.getVariableName()).isEqualTo("primaryValue");
         assertCode(null, move.getToPlanningValue());
 
         move = new ChangeMove(new TestdataMultiVarEntity("b"),
                 TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue(), new TestdataValue("1"));
         assertCode("b", move.getEntity());
-        assertEquals("secondaryValue", move.getVariableName());
+        assertThat(move.getVariableName()).isEqualTo("secondaryValue");
         assertCode("1", move.getToPlanningValue());
     }
 

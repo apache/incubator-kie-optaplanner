@@ -67,11 +67,11 @@ public class DefaultConstructionHeuristicPhaseTest {
         assertThat(solvedE1.getValue()).isNotNull();
         TestdataEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(v1, solvedE3.getValue());
-        assertEquals(0, solution.getScore().getInitScore());
+        assertThat(solvedE3.getValue()).isEqualTo(v1);
+        assertThat(solution.getScore().getInitScore()).isEqualTo(0);
     }
 
     @Test
@@ -99,11 +99,11 @@ public class DefaultConstructionHeuristicPhaseTest {
         assertThat(solvedE1.getValue()).isNotNull();
         TestdataImmovableEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataImmovableEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(null, solvedE3.getValue());
-        assertEquals(-1, solution.getScore().getInitScore());
+        assertThat(solvedE3.getValue()).isEqualTo(null);
+        assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
     @Test
@@ -135,11 +135,11 @@ public class DefaultConstructionHeuristicPhaseTest {
         assertThat(solvedE2.getValue()).isNotNull();
         TestdataReinitializeEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(v2, solvedE3.getValue());
+        assertThat(solvedE3.getValue()).isEqualTo(v2);
         TestdataReinitializeEntity solvedE4 = solution.getEntityList().get(3);
         assertCode("e4", solvedE4);
-        assertEquals(null, solvedE4.getValue());
-        assertEquals(-1, solution.getScore().getInitScore());
+        assertThat(solvedE4.getValue()).isEqualTo(null);
+        assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
 }

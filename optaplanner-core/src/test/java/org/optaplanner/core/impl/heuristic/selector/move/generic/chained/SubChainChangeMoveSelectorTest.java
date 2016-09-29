@@ -77,19 +77,19 @@ public class SubChainChangeMoveSelectorTest {
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isEqualTo(false);
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isEqualTo(false);
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertEquals(true, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isEqualTo(true);
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isEqualTo(false);
     }
 
     @Test
@@ -104,11 +104,11 @@ public class SubChainChangeMoveSelectorTest {
 
         when(subChainSelector.getSize()).thenReturn(1L);
         when(valueSelector.getSize()).thenReturn(2L);
-        assertEquals(2, testedSelector.getSize());
+        assertThat(testedSelector.getSize()).isEqualTo(2);
 
         when(subChainSelector.getSize()).thenReturn(100L);
         when(valueSelector.getSize()).thenReturn(200L);
-        assertEquals(20000, testedSelector.getSize());
+        assertThat(testedSelector.getSize()).isEqualTo(20000);
     }
 
 }

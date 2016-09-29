@@ -40,7 +40,7 @@ public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest {
         } catch (IOException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "\\{\\s*" // Start of element

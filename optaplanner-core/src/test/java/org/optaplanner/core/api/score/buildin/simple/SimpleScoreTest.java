@@ -27,13 +27,13 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleScore.valueOfInitialized(-147), SimpleScore.parseScore("-147"));
+        assertThat(SimpleScore.parseScore("-147")).isEqualTo(SimpleScore.valueOfInitialized(-147));
         assertEquals(SimpleScore.valueOf(-7, -147), SimpleScore.parseScore("-7init/-147"));
     }
 
     @Test
     public void testToString() {
-        assertEquals("-147", SimpleScore.valueOfInitialized(-147).toString());
+        assertThat(SimpleScore.valueOfInitialized(-147).toString()).isEqualTo("-147");
         assertEquals("-7init/-147", SimpleScore.valueOf(-7, -147).toString());
     }
 
@@ -151,15 +151,15 @@ public class SimpleScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleScore.valueOfInitialized(123),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(123, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getScore()).isEqualTo(123);
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleScore.valueOf(-7, 123),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(123, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getScore()).isEqualTo(123);
                 }
         );
     }

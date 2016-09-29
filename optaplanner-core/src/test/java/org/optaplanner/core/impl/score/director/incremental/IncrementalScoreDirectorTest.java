@@ -73,13 +73,13 @@ public class IncrementalScoreDirectorTest {
         scoreDirector.setWorkingSolution(solution);
         reset(incrementalScoreCalculator);
 
-        assertEquals(null, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(null);
 
         scoreDirector.beforeVariableChanged(a3, "chainedObject");
         a3.setChainedObject(b1);
         scoreDirector.afterVariableChanged(a3, "chainedObject");
         scoreDirector.triggerVariableListeners();
-        assertEquals(a3, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(a3);
 
         InOrder inOrder = inOrder(incrementalScoreCalculator);
         inOrder.verify(incrementalScoreCalculator, times(1)).beforeVariableChanged(a3, "chainedObject");

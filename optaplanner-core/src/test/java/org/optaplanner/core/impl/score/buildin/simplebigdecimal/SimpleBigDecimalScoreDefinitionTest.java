@@ -24,7 +24,7 @@ public class SimpleBigDecimalScoreDefinitionTest {
 
     @Test
     public void getLevelsSize() {
-        assertEquals(1, new SimpleBigDecimalScoreDefinition().getLevelsSize());
+        assertThat(new SimpleBigDecimalScoreDefinition().getLevelsSize()).isEqualTo(1);
     }
 
     @Test

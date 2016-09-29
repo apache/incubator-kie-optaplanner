@@ -45,7 +45,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
         // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         // cacheType gets upgraded to STEP
-        // assertEquals(SelectionCacheType.JUST_IN_TIME, valueSelector.getCacheType());
+        // assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.JUST_IN_TIME);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
         // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         // cacheType gets upgraded to STEP
-        // assertEquals(SelectionCacheType.JUST_IN_TIME, valueSelector.getCacheType());
+        // assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.JUST_IN_TIME);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         assertInstanceOf(ShufflingValueSelector.class, valueSelector);
         assertInstanceOf(FromSolutionPropertyValueSelector.class,
                 ((ShufflingValueSelector) valueSelector).getChildValueSelector());
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         assertInstanceOf(ShufflingValueSelector.class, valueSelector);
         assertInstanceOf(FromSolutionPropertyValueSelector.class,
                 ((ShufflingValueSelector) valueSelector).getChildValueSelector());
-        assertEquals(SelectionCacheType.STEP, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }
 
     @Test(expected = IllegalArgumentException.class)

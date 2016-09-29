@@ -182,19 +182,19 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardMediumSoftScore.valueOfInitialized(-12, 3400, -56),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(-12, output.getHardScore());
-                    assertEquals(3400, output.getMediumScore());
-                    assertEquals(-56, output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getHardScore()).isEqualTo(-12);
+                    assertThat(output.getMediumScore()).isEqualTo(3400);
+                    assertThat(output.getSoftScore()).isEqualTo(-56);
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardMediumSoftScore.valueOf(-7, -12, 3400, -56),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(-12, output.getHardScore());
-                    assertEquals(3400, output.getMediumScore());
-                    assertEquals(-56, output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getHardScore()).isEqualTo(-12);
+                    assertThat(output.getMediumScore()).isEqualTo(3400);
+                    assertThat(output.getSoftScore()).isEqualTo(-56);
                 }
         );
     }

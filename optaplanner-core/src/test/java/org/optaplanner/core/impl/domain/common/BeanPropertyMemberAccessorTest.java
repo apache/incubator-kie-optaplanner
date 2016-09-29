@@ -30,9 +30,9 @@ public class BeanPropertyMemberAccessorTest {
     public void methodAnnotatedEntity() throws NoSuchMethodException {
         BeanPropertyMemberAccessor memberAccessor = new BeanPropertyMemberAccessor(
                 TestdataEntity.class.getMethod("getValue"));
-        assertEquals("value", memberAccessor.getName());
-        assertEquals(TestdataValue.class, memberAccessor.getType());
-        assertEquals(true, memberAccessor.isAnnotationPresent(PlanningVariable.class));
+        assertThat(memberAccessor.getName()).isEqualTo("value");
+        assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);
+        assertThat(memberAccessor.isAnnotationPresent(PlanningVariable.class)).isEqualTo(true);
 
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");

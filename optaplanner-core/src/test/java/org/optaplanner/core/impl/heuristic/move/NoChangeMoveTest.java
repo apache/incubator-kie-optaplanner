@@ -25,7 +25,7 @@ public class NoChangeMoveTest {
 
     @Test
     public void isMoveDoable() {
-        assertEquals(true, new NoChangeMove().isMoveDoable(null));
+        assertThat(new NoChangeMove().isMoveDoable(null)).isEqualTo(true);
     }
 
     @Test
@@ -35,12 +35,12 @@ public class NoChangeMoveTest {
 
     @Test
     public void getPlanningEntities() {
-        assertEquals(true, new NoChangeMove().getPlanningEntities().isEmpty());
+        assertThat(new NoChangeMove().getPlanningEntities().isEmpty()).isEqualTo(true);
     }
 
     @Test
     public void getPlanningValues() {
-        assertEquals(true, new NoChangeMove().getPlanningValues().isEmpty());
+        assertThat(new NoChangeMove().getPlanningValues().isEmpty()).isEqualTo(true);
     }
 
 }

@@ -50,19 +50,19 @@ public class PillarChangeMoveTest {
         a.setValue(v2);
         b.setValue(v2);
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v1);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
         a.setValue(v2);
         b.setValue(v2);
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v2);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
         a.setValue(v2);
         b.setValue(v2);
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v3);
-        assertEquals(true, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(true);
         a.setValue(v2);
         b.setValue(v2);
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v4);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
     }
 
     @Test
@@ -85,14 +85,14 @@ public class PillarChangeMoveTest {
         a.setValue(v3);
         b.setValue(v3);
         abMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
 
         a.setValue(v2);
         b.setValue(v2);
         abMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
 
         PillarChangeMove abcMove = new PillarChangeMove(Arrays.<Object>asList(a, b, c), variableDescriptor, v2);
 
@@ -100,17 +100,17 @@ public class PillarChangeMoveTest {
         b.setValue(v2);
         c.setValue(v2);
         abcMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
-        assertEquals(v2, c.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
+        assertThat(c.getValue()).isEqualTo(v2);
 
         a.setValue(v3);
         b.setValue(v3);
         c.setValue(v3);
         abcMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
-        assertEquals(v2, c.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
+        assertThat(c.getValue()).isEqualTo(v2);
     }
 
     @Test
@@ -119,14 +119,14 @@ public class PillarChangeMoveTest {
                 Arrays.<Object>asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
                 TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue(), null);
         assertAllCodesOfCollection(move.getPillar(), "a", "b");
-        assertEquals("primaryValue", move.getVariableName());
+        assertThat(move.getVariableName()).isEqualTo("primaryValue");
         assertCode(null, move.getToPlanningValue());
 
         move = new PillarChangeMove(
                 Arrays.<Object>asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")),
                 TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue(), new TestdataValue("1"));
         assertAllCodesOfCollection(move.getPillar(), "c", "d");
-        assertEquals("secondaryValue", move.getVariableName());
+        assertThat(move.getVariableName()).isEqualTo("secondaryValue");
         assertCode("1", move.getToPlanningValue());
     }
 

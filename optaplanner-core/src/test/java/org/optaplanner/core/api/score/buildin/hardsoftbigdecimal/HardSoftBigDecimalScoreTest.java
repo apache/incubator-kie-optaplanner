@@ -178,17 +178,17 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-12.3"), new BigDecimal("3400.5")),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(new BigDecimal("-12.3"), output.getHardScore());
-                    assertEquals(new BigDecimal("3400.5"), output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getHardScore()).isEqualTo(new BigDecimal("-12.3"));
+                    assertThat(output.getSoftScore()).isEqualTo(new BigDecimal("3400.5"));
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-12.3"), new BigDecimal("3400.5")),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(new BigDecimal("-12.3"), output.getHardScore());
-                    assertEquals(new BigDecimal("3400.5"), output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getHardScore()).isEqualTo(new BigDecimal("-12.3"));
+                    assertThat(output.getSoftScore()).isEqualTo(new BigDecimal("3400.5"));
                 }
         );
     }

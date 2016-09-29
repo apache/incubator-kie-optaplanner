@@ -70,8 +70,8 @@ public class SolverFactoryTest {
         assertNotSame(solverFactory1, solverFactory2);
         solverFactory1.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(1L);
         solverFactory2.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(2L);
-        assertEquals((Long) 1L, solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
-        assertEquals((Long) 2L, solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
+        assertThat(solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit()).isEqualTo(1L);
+        assertThat(solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit()).isEqualTo(2L);
         Solver<TestdataSolution> solver1 = solverFactory1.buildSolver();
         Solver<TestdataSolution> solver2 = solverFactory2.buildSolver();
         assertNotSame(solver1, solver2);

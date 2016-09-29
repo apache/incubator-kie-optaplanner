@@ -29,19 +29,19 @@ public class BooleanValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(2L, new BooleanValueRange().getSize());
+        assertThat(new BooleanValueRange().getSize()).isEqualTo(2L);
     }
 
     @Test
     public void get() {
-        assertEquals(Boolean.FALSE, new BooleanValueRange().get(0L));
-        assertEquals(Boolean.TRUE, new BooleanValueRange().get(1L));
+        assertThat(new BooleanValueRange().get(0L)).isEqualTo(Boolean.FALSE);
+        assertThat(new BooleanValueRange().get(1L)).isEqualTo(Boolean.TRUE);
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new BooleanValueRange().contains(Boolean.FALSE));
-        assertEquals(true, new BooleanValueRange().contains(Boolean.TRUE));
+        assertThat(new BooleanValueRange().contains(Boolean.FALSE)).isEqualTo(true);
+        assertThat(new BooleanValueRange().contains(Boolean.TRUE)).isEqualTo(true);
     }
 
     @Test

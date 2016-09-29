@@ -58,17 +58,18 @@ public class StatisticUtilsTest {
             averageScore = averageScore.add(current);
         }
         averageScore = averageScore.divide(subSingleBenchmarkScores.length);
-        assertArrayEquals(new double[]{160338212.294}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, subSingleBenchmarkResultList.size()), DELTA);
+        assertThat(StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, subSingleBenchmarkResultList.size()))
+                .containsExactly(new double[]{160338212.294}, Assertions.offset(DELTA));
     }
 
     @Test
     public void getStandardDeviationString() throws Exception {
-        assertEquals(null, StatisticUtils.getStandardDeviationString(null));
-        assertEquals("2.0", StatisticUtils.getStandardDeviationString(new double[]{2.0}));
-        assertEquals("1.41", StatisticUtils.getStandardDeviationString(new double[]{Math.sqrt(2.0)}));
-        assertEquals("1.6E8", StatisticUtils.getStandardDeviationString(new double[]{160338212.294}));
-        assertEquals("2.0E9", StatisticUtils.getStandardDeviationString(new double[]{2000000000.0}));
-        assertEquals("2.0E10", StatisticUtils.getStandardDeviationString(new double[]{20000000000.0}));
+        assertThat(StatisticUtils.getStandardDeviationString(null)).isEqualTo(null);
+        assertThat(StatisticUtils.getStandardDeviationString(new double[]{2.0})).isEqualTo("2.0");
+        assertThat(StatisticUtils.getStandardDeviationString(new double[]{Math.sqrt(2.0)})).isEqualTo("1.41");
+        assertThat(StatisticUtils.getStandardDeviationString(new double[]{160338212.294})).isEqualTo("1.6E8");
+        assertThat(StatisticUtils.getStandardDeviationString(new double[]{2000000000.0})).isEqualTo("2.0E9");
+        assertThat(StatisticUtils.getStandardDeviationString(new double[]{20000000000.0})).isEqualTo("2.0E10");
     }
 
     private SubSingleBenchmarkResult createSubSingleBenchmarkResult(Score score, int index) {

@@ -37,7 +37,7 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void testToString() {
-        assertEquals("-147.2", SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")).toString());
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")).toString()).isEqualTo("-147.2");
         assertEquals("-7init/-147.2", SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")).toString());
     }
 
@@ -156,15 +156,15 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("123.4")),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(new BigDecimal("123.4"), output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getScore()).isEqualTo(new BigDecimal("123.4"));
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleBigDecimalScore.valueOf(-7, new BigDecimal("123.4")),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(new BigDecimal("123.4"), output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getScore()).isEqualTo(new BigDecimal("123.4"));
                 }
         );
     }

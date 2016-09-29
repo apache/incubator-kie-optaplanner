@@ -57,7 +57,7 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -1200)));
         when(workingRandom.nextDouble()).thenReturn(0.4);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -1200)));
-        assertEquals(true, acceptor.isAccepted(moveScope0));
+        assertThat(acceptor.isAccepted(moveScope0)).isEqualTo(true);
         stepScope0.setStep(moveScope0.getMove());
         stepScope0.setScore(moveScope0.getScore());
         solverScope.setBestScore(moveScope0.getScore());
@@ -73,7 +73,7 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         when(workingRandom.nextDouble()).thenReturn(0.14);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -700)));
         when(workingRandom.nextDouble()).thenReturn(0.04);
-        assertEquals(true, acceptor.isAccepted(moveScope1));
+        assertThat(acceptor.isAccepted(moveScope1)).isEqualTo(true);
         stepScope1.setStep(moveScope1.getMove());
         stepScope1.setScore(moveScope1.getScore());
         // bestScore unchanged
@@ -91,7 +91,7 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         when(workingRandom.nextDouble()).thenReturn(0.01);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -1200)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -700)));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
+        assertThat(acceptor.isAccepted(moveScope2)).isEqualTo(true);
         stepScope2.setStep(moveScope2.getMove());
         stepScope2.setScore(moveScope2.getScore());
         solverScope.setBestScore(moveScope2.getScore());

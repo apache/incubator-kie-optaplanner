@@ -41,7 +41,7 @@ public class XStreamXmlSolverFactoryTest {
         configContext.setClassLoader(getClass().getClassLoader());
         solverConfig.buildSolver(configContext);
         String savedXml = solverFactory.getXStream().toXML(solverConfig);
-        assertEquals(originalXml.trim(), savedXml.trim());
+        assertThat(savedXml.trim()).isEqualTo(originalXml.trim());
         originalConfigInputStream.close();
     }
 

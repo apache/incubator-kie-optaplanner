@@ -34,7 +34,7 @@ public class ListValueRangeTest {
         assertEquals(5L, new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).getSize());
         assertEquals(3L, new ListValueRange<>(Arrays.asList(-15, 25, 0)).getSize());
         assertEquals(3L, new ListValueRange<>(Arrays.asList("b", "z", "a")).getSize());
-        assertEquals(0L, new ListValueRange<>(Collections.<String>emptyList()).getSize());
+        assertThat(new ListValueRange<>(Collections.<String>emptyList()).getSize()).isEqualTo(0L);
     }
 
     @Test
