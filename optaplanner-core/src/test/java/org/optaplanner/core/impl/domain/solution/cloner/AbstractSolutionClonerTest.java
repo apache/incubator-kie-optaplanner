@@ -518,8 +518,8 @@ public abstract class AbstractSolutionClonerTest {
         assertThat(cloneB.getEntityList().size()).isEqualTo(0);
         assertThat(cloneB.getEntitySet().size()).isEqualTo(0);
         assertThat(cloneB.getStringToEntityMap().size()).isEqualTo(0);
-        assertNull(cloneB.getEntityToStringMap());
-        assertNull(cloneB.getStringToEntityListMap());
+        assertThat(cloneB.getEntityToStringMap()).isNull();
+        assertThat(cloneB.getStringToEntityListMap()).isNull();
 
         assertEntityCollectionPropertyEntityClone(c, cloneC, "c", "3");
         assertThat(cloneC.getEntityList().size()).isEqualTo(2);
@@ -529,8 +529,8 @@ public abstract class AbstractSolutionClonerTest {
         assertThat(cloneC.getStringToEntityMap().size()).isEqualTo(2);
         assertSame(cloneA, cloneC.getStringToEntityMap().get("a"));
         assertSame(cloneC, cloneC.getStringToEntityMap().get("c"));
-        assertNull(cloneC.getEntityToStringMap());
-        assertNull(cloneC.getStringToEntityListMap());
+        assertThat(cloneC.getEntityToStringMap()).isNull();
+        assertThat(cloneC.getStringToEntityListMap()).isNull();
     }
 
     private void assertEntityCollectionPropertyEntityClone(TestdataEntityCollectionPropertyEntity originalEntity,
@@ -615,7 +615,7 @@ public abstract class AbstractSolutionClonerTest {
         List<String> originalShadowVariableList = originalEntity.getShadowVariableList();
         List<String> cloneShadowVariableList = cloneEntity.getShadowVariableList();
         if (originalShadowVariableList == null) {
-            assertNull(cloneShadowVariableList);
+            assertThat(cloneShadowVariableList).isNull();
         } else {
             assertNotSame(originalShadowVariableList, cloneShadowVariableList);
             assertThat(cloneShadowVariableList.size()).isEqualTo(originalShadowVariableList.size());
@@ -627,7 +627,7 @@ public abstract class AbstractSolutionClonerTest {
         Map<String, String> originalShadowVariableMap = originalEntity.getShadowVariableMap();
         Map<String, String> cloneShadowVariableMap = cloneEntity.getShadowVariableMap();
         if (originalShadowVariableMap == null) {
-            assertNull(cloneShadowVariableMap);
+            assertThat(cloneShadowVariableMap).isNull();
         } else {
             assertNotSame(originalShadowVariableMap, cloneShadowVariableMap);
             assertThat(cloneShadowVariableMap.size()).isEqualTo(originalShadowVariableMap.size());
@@ -711,7 +711,7 @@ public abstract class AbstractSolutionClonerTest {
         List<String> originalShadowVariableList = originalEntity.getShadowVariableList();
         List<String> cloneShadowVariableList = cloneEntity.getShadowVariableList();
         if (originalShadowVariableList == null) {
-            assertNull(cloneShadowVariableList);
+            assertThat(cloneShadowVariableList).isNull();
         } else {
             assertNotSame(originalShadowVariableList, cloneShadowVariableList);
             assertThat(cloneShadowVariableList.size()).isEqualTo(originalShadowVariableList.size());
@@ -723,7 +723,7 @@ public abstract class AbstractSolutionClonerTest {
         Map<String, String> originalShadowVariableMap = originalEntity.getShadowVariableMap();
         Map<String, String> cloneShadowVariableMap = cloneEntity.getShadowVariableMap();
         if (originalShadowVariableMap == null) {
-            assertNull(cloneShadowVariableMap);
+            assertThat(cloneShadowVariableMap).isNull();
         } else {
             assertNotSame(originalShadowVariableMap, cloneShadowVariableMap);
             assertThat(cloneShadowVariableMap.size()).isEqualTo(originalShadowVariableMap.size());
