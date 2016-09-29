@@ -98,9 +98,9 @@ public class BestScoreFeasibleTerminationTest {
 
         // Normal cases
         // Smack in the middle
-        assertEquals(0.6, termination.calculateFeasibilityTimeGradient(
+        assertThat(termination.calculateFeasibilityTimeGradient(
                 BendableScore.valueOfInitialized(new int[]{-10, -100}, new int[]{-50, -60, -70}),
-                BendableScore.valueOfInitialized(new int[]{-4, -40}, new int[]{-50, -60, -70})), 0.0);
+                BendableScore.valueOfInitialized(new int[]{-4, -40}, new int[]{-50, -60, -70}))).isEqualTo(0.6, offset(0.0));
     }
 
 }
