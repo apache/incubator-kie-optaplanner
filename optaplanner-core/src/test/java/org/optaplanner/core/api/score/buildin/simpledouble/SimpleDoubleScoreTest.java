@@ -27,10 +27,10 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleDoubleScore.valueOfInitialized(-147.2),
-                SimpleDoubleScore.parseScore("-147.2"));
-        assertEquals(SimpleDoubleScore.valueOf(-7, -147.2),
-                SimpleDoubleScore.parseScore("-7init/-147.2"));
+        assertThat(SimpleDoubleScore.parseScore("-147.2"))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(-147.2));
+        assertThat(SimpleDoubleScore.parseScore("-7init/-147.2"))
+                .isEqualTo(SimpleDoubleScore.valueOf(-7, -147.2));
     }
 
     @Test
@@ -46,10 +46,10 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(SimpleDoubleScore.valueOfInitialized(-147.2),
-                SimpleDoubleScore.valueOfInitialized(-147.2).toInitializedScore());
-        assertEquals(SimpleDoubleScore.valueOfInitialized(-147.2),
-                SimpleDoubleScore.valueOf(-7, -147.2).toInitializedScore());
+        assertThat(SimpleDoubleScore.valueOfInitialized(-147.2).toInitializedScore())
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(-147.2));
+        assertThat(SimpleDoubleScore.valueOf(-7, -147.2).toInitializedScore())
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(-147.2));
     }
 
     @Test
@@ -74,44 +74,44 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void multiply() {
-        assertEquals(SimpleDoubleScore.valueOfInitialized(6.0),
-                SimpleDoubleScore.valueOfInitialized(5.0).multiply(1.2));
-        assertEquals(SimpleDoubleScore.valueOfInitialized(1.2),
-                SimpleDoubleScore.valueOfInitialized(1.0).multiply(1.2));
-        assertEquals(SimpleDoubleScore.valueOfInitialized(4.8),
-                SimpleDoubleScore.valueOfInitialized(4.0).multiply(1.2));
-        assertEquals(SimpleDoubleScore.valueOf(-14, 8.6),
-                SimpleDoubleScore.valueOf(-7, 4.3).multiply(2.0));
+        assertThat(SimpleDoubleScore.valueOfInitialized(5.0).multiply(1.2))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(6.0));
+        assertThat(SimpleDoubleScore.valueOfInitialized(1.0).multiply(1.2))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(1.2));
+        assertThat(SimpleDoubleScore.valueOfInitialized(4.0).multiply(1.2))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(4.8));
+        assertThat(SimpleDoubleScore.valueOf(-7, 4.3).multiply(2.0))
+                .isEqualTo(SimpleDoubleScore.valueOf(-14, 8.6));
     }
 
     @Test
     public void divide() {
-        assertEquals(SimpleDoubleScore.valueOfInitialized(5.0),
-                SimpleDoubleScore.valueOfInitialized(25.0).divide(5.0));
-        assertEquals(SimpleDoubleScore.valueOfInitialized(4.2),
-                SimpleDoubleScore.valueOfInitialized(21.0).divide(5.0));
-        assertEquals(SimpleDoubleScore.valueOfInitialized(4.8),
-                SimpleDoubleScore.valueOfInitialized(24.0).divide(5.0));
-        assertEquals(SimpleDoubleScore.valueOf(-7, 4.3),
-                SimpleDoubleScore.valueOf(-14, 8.6).divide(2.0));
+        assertThat(SimpleDoubleScore.valueOfInitialized(25.0).divide(5.0))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(5.0));
+        assertThat(SimpleDoubleScore.valueOfInitialized(21.0).divide(5.0))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(4.2));
+        assertThat(SimpleDoubleScore.valueOfInitialized(24.0).divide(5.0))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(4.8));
+        assertThat(SimpleDoubleScore.valueOf(-14, 8.6).divide(2.0))
+                .isEqualTo(SimpleDoubleScore.valueOf(-7, 4.3));
     }
 
     @Test
     public void power() {
-        assertEquals(SimpleDoubleScore.valueOfInitialized(2.25),
-                SimpleDoubleScore.valueOfInitialized(1.5).power(2.0));
-        assertEquals(SimpleDoubleScore.valueOfInitialized(1.5),
-                SimpleDoubleScore.valueOfInitialized(2.25).power(0.5));
-        assertEquals(SimpleDoubleScore.valueOf(-343, 125.0),
-                SimpleDoubleScore.valueOf(-7, 5.0).power(3.0));
+        assertThat(SimpleDoubleScore.valueOfInitialized(1.5).power(2.0))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(2.25));
+        assertThat(SimpleDoubleScore.valueOfInitialized(2.25).power(0.5))
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(1.5));
+        assertThat(SimpleDoubleScore.valueOf(-7, 5.0).power(3.0))
+                .isEqualTo(SimpleDoubleScore.valueOf(-343, 125.0));
     }
 
     @Test
     public void negate() {
-        assertEquals(SimpleDoubleScore.valueOfInitialized(-1.5),
-                SimpleDoubleScore.valueOfInitialized(1.5).negate());
-        assertEquals(SimpleDoubleScore.valueOfInitialized(1.5),
-                SimpleDoubleScore.valueOfInitialized(-1.5).negate());
+        assertThat(SimpleDoubleScore.valueOfInitialized(1.5).negate())
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(-1.5));
+        assertThat(SimpleDoubleScore.valueOfInitialized(-1.5).negate())
+                .isEqualTo(SimpleDoubleScore.valueOfInitialized(1.5));
     }
 
     @Test

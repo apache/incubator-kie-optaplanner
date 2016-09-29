@@ -27,10 +27,10 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleLongScore.valueOfInitialized(-147L),
-                SimpleLongScore.parseScore("-147"));
-        assertEquals(SimpleLongScore.valueOf(-7, -147L),
-                SimpleLongScore.parseScore("-7init/-147"));
+        assertThat(SimpleLongScore.parseScore("-147"))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(-147L));
+        assertThat(SimpleLongScore.parseScore("-7init/-147"))
+                .isEqualTo(SimpleLongScore.valueOf(-7, -147L));
     }
 
     @Test
@@ -46,10 +46,10 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(SimpleLongScore.valueOfInitialized(-147L),
-                SimpleLongScore.valueOfInitialized(-147L).toInitializedScore());
-        assertEquals(SimpleLongScore.valueOfInitialized(-147L),
-                SimpleLongScore.valueOf(-7, -147L).toInitializedScore());
+        assertThat(SimpleLongScore.valueOfInitialized(-147L).toInitializedScore())
+                .isEqualTo(SimpleLongScore.valueOfInitialized(-147L));
+        assertThat(SimpleLongScore.valueOf(-7, -147L).toInitializedScore())
+                .isEqualTo(SimpleLongScore.valueOfInitialized(-147L));
     }
 
     @Test
@@ -74,44 +74,44 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void multiply() {
-        assertEquals(SimpleLongScore.valueOfInitialized(6L),
-                SimpleLongScore.valueOfInitialized(5L).multiply(1.2));
-        assertEquals(SimpleLongScore.valueOfInitialized(1L),
-                SimpleLongScore.valueOfInitialized(1L).multiply(1.2));
-        assertEquals(SimpleLongScore.valueOfInitialized(4L),
-                SimpleLongScore.valueOfInitialized(4L).multiply(1.2));
-        assertEquals(SimpleLongScore.valueOf(-14, 8L),
-                SimpleLongScore.valueOf(-7, 4L).multiply(2.0));
+        assertThat(SimpleLongScore.valueOfInitialized(5L).multiply(1.2))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(6L));
+        assertThat(SimpleLongScore.valueOfInitialized(1L).multiply(1.2))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(1L));
+        assertThat(SimpleLongScore.valueOfInitialized(4L).multiply(1.2))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(4L));
+        assertThat(SimpleLongScore.valueOf(-7, 4L).multiply(2.0))
+                .isEqualTo(SimpleLongScore.valueOf(-14, 8L));
     }
 
     @Test
     public void divide() {
-        assertEquals(SimpleLongScore.valueOfInitialized(5L),
-                SimpleLongScore.valueOfInitialized(25L).divide(5.0));
-        assertEquals(SimpleLongScore.valueOfInitialized(4L),
-                SimpleLongScore.valueOfInitialized(21L).divide(5.0));
-        assertEquals(SimpleLongScore.valueOfInitialized(4L),
-                SimpleLongScore.valueOfInitialized(24L).divide(5.0));
-        assertEquals(SimpleLongScore.valueOf(-7, 4L),
-                SimpleLongScore.valueOf(-14, 8L).divide(2.0));
+        assertThat(SimpleLongScore.valueOfInitialized(25L).divide(5.0))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(5L));
+        assertThat(SimpleLongScore.valueOfInitialized(21L).divide(5.0))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(4L));
+        assertThat(SimpleLongScore.valueOfInitialized(24L).divide(5.0))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(4L));
+        assertThat(SimpleLongScore.valueOf(-14, 8L).divide(2.0))
+                .isEqualTo(SimpleLongScore.valueOf(-7, 4L));
     }
 
     @Test
     public void power() {
-        assertEquals(SimpleLongScore.valueOfInitialized(25L),
-                SimpleLongScore.valueOfInitialized(5L).power(2.0));
-        assertEquals(SimpleLongScore.valueOfInitialized(5L),
-                SimpleLongScore.valueOfInitialized(25L).power(0.5));
-        assertEquals(SimpleLongScore.valueOf(-343, 125L),
-                SimpleLongScore.valueOf(-7, 5L).power(3.0));
+        assertThat(SimpleLongScore.valueOfInitialized(5L).power(2.0))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(25L));
+        assertThat(SimpleLongScore.valueOfInitialized(25L).power(0.5))
+                .isEqualTo(SimpleLongScore.valueOfInitialized(5L));
+        assertThat(SimpleLongScore.valueOf(-7, 5L).power(3.0))
+                .isEqualTo(SimpleLongScore.valueOf(-343, 125L));
     }
 
     @Test
     public void negate() {
-        assertEquals(SimpleLongScore.valueOfInitialized(-5L),
-                SimpleLongScore.valueOfInitialized(5L).negate());
-        assertEquals(SimpleLongScore.valueOfInitialized(5L),
-                SimpleLongScore.valueOfInitialized(-5L).negate());
+        assertThat(SimpleLongScore.valueOfInitialized(5L).negate())
+                .isEqualTo(SimpleLongScore.valueOfInitialized(-5L));
+        assertThat(SimpleLongScore.valueOfInitialized(-5L).negate())
+                .isEqualTo(SimpleLongScore.valueOfInitialized(5L));
     }
 
     @Test

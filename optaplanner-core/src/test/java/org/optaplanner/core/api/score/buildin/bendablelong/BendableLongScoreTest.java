@@ -30,10 +30,10 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L),
-                scoreDefinitionHSS.parseScore("[-5432109876]hard/[-9876543210/-3456789012]soft"));
-        assertEquals(scoreDefinitionHSS.createScore(-7, -5432109876L, -9876543210L, -3456789012L),
-                scoreDefinitionHSS.parseScore("-7init/[-5432109876]hard/[-9876543210/-3456789012]soft"));
+        assertThat(scoreDefinitionHSS.parseScore("[-5432109876]hard/[-9876543210/-3456789012]soft"))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L));
+        assertThat(scoreDefinitionHSS.parseScore("-7init/[-5432109876]hard/[-9876543210/-3456789012]soft"))
+                .isEqualTo(scoreDefinitionHSS.createScore(-7, -5432109876L, -9876543210L, -3456789012L));
     }
 
     @Test
@@ -59,10 +59,10 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScoreHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L),
-                scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L).toInitializedScore());
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L),
-                scoreDefinitionHSS.createScore(-7, -5432109876L, -9876543210L, -3456789012L).toInitializedScore());
+        assertThat(scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L).toInitializedScore())
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L));
+        assertThat(scoreDefinitionHSS.createScore(-7, -5432109876L, -9876543210L, -3456789012L).toInitializedScore())
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L));
     }
 
     @Test
@@ -101,44 +101,44 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void multiplyHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(6000000000L, -6000000000L, 6000000000L),
-                scoreDefinitionHSS.createScoreInitialized(5000000000L, -5000000000L, 5000000000L).multiply(1.2));
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(1L, -2L, 1L),
-                scoreDefinitionHSS.createScoreInitialized(1L, -1L, 1L).multiply(1.2));
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(4L, -5L, 4L),
-                scoreDefinitionHSS.createScoreInitialized(4L, -4L, 4L).multiply(1.2));
-        assertEquals(scoreDefinitionHSS.createScore(-14, 8L, -10L, 12L),
-                scoreDefinitionHSS.createScore(-7, 4L, -5L, 6L).multiply(2.0));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(5000000000L, -5000000000L, 5000000000L).multiply(1.2))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(6000000000L, -6000000000L, 6000000000L));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(1L, -1L, 1L).multiply(1.2))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(1L, -2L, 1L));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(4L, -4L, 4L).multiply(1.2))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(4L, -5L, 4L));
+        assertThat(scoreDefinitionHSS.createScore(-7, 4L, -5L, 6L).multiply(2.0))
+                .isEqualTo(scoreDefinitionHSS.createScore(-14, 8L, -10L, 12L));
     }
 
     @Test
     public void divideHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(5000000000L, -5000000000L, 5000000000L),
-                scoreDefinitionHSS.createScoreInitialized(25000000000L, -25000000000L, 25000000000L).divide(5.0));
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(4L, -5L, 4L),
-                scoreDefinitionHSS.createScoreInitialized(21L, -21L, 21L).divide(5.0));
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(4L, -5L, 4L),
-                scoreDefinitionHSS.createScoreInitialized(24L, -24L, 24L).divide(5.0));
-        assertEquals(scoreDefinitionHSS.createScore(-7, 4L, -5L, 6L),
-                scoreDefinitionHSS.createScore(-14, 8L, -10L, 12L).divide(2.0));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(25000000000L, -25000000000L, 25000000000L).divide(5.0))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(5000000000L, -5000000000L, 5000000000L));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(21L, -21L, 21L).divide(5.0))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(4L, -5L, 4L));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(24L, -24L, 24L).divide(5.0))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(4L, -5L, 4L));
+        assertThat(scoreDefinitionHSS.createScore(-14, 8L, -10L, 12L).divide(2.0))
+                .isEqualTo(scoreDefinitionHSS.createScore(-7, 4L, -5L, 6L));
     }
 
     @Test
     public void powerHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(90000000000L, 160000000000L, 250000000000L),
-                scoreDefinitionHSS.createScoreInitialized(300000L, -400000L, 500000L).power(2.0));
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(300000L, 400000L, 500000L),
-                scoreDefinitionHSS.createScoreInitialized(90000000000L, 160000000000L, 250000000000L).power(0.5));
-        assertEquals(scoreDefinitionHSS.createScore(-343, 27L, -64L, 125L),
-                scoreDefinitionHSS.createScore(-7, 3L, -4L, 5L).power(3.0));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(300000L, -400000L, 500000L).power(2.0))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(90000000000L, 160000000000L, 250000000000L));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(90000000000L, 160000000000L, 250000000000L).power(0.5))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(300000L, 400000L, 500000L));
+        assertThat(scoreDefinitionHSS.createScore(-7, 3L, -4L, 5L).power(3.0))
+                .isEqualTo(scoreDefinitionHSS.createScore(-343, 27L, -64L, 125L));
     }
 
     @Test
     public void negateHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(-3000000000L, 4000000000L, -5000000000L),
-                scoreDefinitionHSS.createScoreInitialized(3000000000L, -4000000000L, 5000000000L).negate());
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(3000000000L, -4000000000L, 5000000000L),
-                scoreDefinitionHSS.createScoreInitialized(-3000000000L, 4000000000L, -5000000000L).negate());
+        assertThat(scoreDefinitionHSS.createScoreInitialized(3000000000L, -4000000000L, 5000000000L).negate())
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(-3000000000L, 4000000000L, -5000000000L));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(-3000000000L, 4000000000L, -5000000000L).negate())
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(3000000000L, -4000000000L, 5000000000L));
     }
 
     @Test
@@ -219,38 +219,38 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void multiplyHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(6000000000L, -6000000000L, 6000000000L, 0L, 0L),
-                scoreDefinitionHHSSS.createScoreInitialized(5000000000L, -5000000000L, 5000000000L, 0L, 0L).multiply(1.2));
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(1, -2, 1, 0, 0),
-                scoreDefinitionHHSSS.createScoreInitialized(1, -1, 1, 0, 0).multiply(1.2));
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(4, -5, 4, 0, 0),
-                scoreDefinitionHHSSS.createScoreInitialized(4, -4, 4, 0, 0).multiply(1.2));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(5000000000L, -5000000000L, 5000000000L, 0L, 0L).multiply(1.2))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(6000000000L, -6000000000L, 6000000000L, 0L, 0L));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(1, -1, 1, 0, 0).multiply(1.2))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(1, -2, 1, 0, 0));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(4, -4, 4, 0, 0).multiply(1.2))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(4, -5, 4, 0, 0));
     }
 
     @Test
     public void divideHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(5000000000L, -5000000000L, 5000000000L, 0L, 0L),
-                scoreDefinitionHHSSS.createScoreInitialized(25000000000L, -25000000000L, 25000000000L, 0L, 0L).divide(5.0));
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(4, -5, 4, 0, 0),
-                scoreDefinitionHHSSS.createScoreInitialized(21, -21, 21, 0, 0).divide(5.0));
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(4, -5, 4, 0, 0),
-                scoreDefinitionHHSSS.createScoreInitialized(24, -24, 24, 0, 0).divide(5.0));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(25000000000L, -25000000000L, 25000000000L, 0L, 0L).divide(5.0))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(5000000000L, -5000000000L, 5000000000L, 0L, 0L));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(21, -21, 21, 0, 0).divide(5.0))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(4, -5, 4, 0, 0));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(24, -24, 24, 0, 0).divide(5.0))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(4, -5, 4, 0, 0));
     }
 
     @Test
     public void powerHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(40000000000L, 160000000000L, 250000000000L, 0L, 0L),
-                scoreDefinitionHHSSS.createScoreInitialized(200000L, -400000L, 500000L, 0L, 0L).power(2.0));
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(3L, 4L, 5L, 0L, 0L),
-                scoreDefinitionHHSSS.createScoreInitialized(9L, 16L, 25L, 0L, 0L).power(0.5));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(200000L, -400000L, 500000L, 0L, 0L).power(2.0))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(40000000000L, 160000000000L, 250000000000L, 0L, 0L));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(9L, 16L, 25L, 0L, 0L).power(0.5))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(3L, 4L, 5L, 0L, 0L));
     }
 
     @Test
     public void negateHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(-3000000000L, 4000000000L, -5000000000L, 0L, 0L),
-                scoreDefinitionHHSSS.createScoreInitialized(3000000000L, -4000000000L, 5000000000L, 0L, 0L).negate());
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(3L, -4L, 5L, 0L, 0L),
-                scoreDefinitionHHSSS.createScoreInitialized(-3L, 4L, -5L, 0L, 0L).negate());
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(3000000000L, -4000000000L, 5000000000L, 0L, 0L).negate())
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(-3000000000L, 4000000000L, -5000000000L, 0L, 0L));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(-3L, 4L, -5L, 0L, 0L).negate())
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(3L, -4L, 5L, 0L, 0L));
     }
 
     @Test

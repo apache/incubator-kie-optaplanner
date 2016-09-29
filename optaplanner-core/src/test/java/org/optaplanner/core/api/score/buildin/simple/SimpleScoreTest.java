@@ -44,10 +44,10 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(SimpleScore.valueOfInitialized(-147),
-                SimpleScore.valueOfInitialized(-147).toInitializedScore());
-        assertEquals(SimpleScore.valueOfInitialized(-147),
-                SimpleScore.valueOf(-7, -147).toInitializedScore());
+        assertThat(SimpleScore.valueOfInitialized(-147).toInitializedScore())
+                .isEqualTo(SimpleScore.valueOfInitialized(-147));
+        assertThat(SimpleScore.valueOf(-7, -147).toInitializedScore())
+                .isEqualTo(SimpleScore.valueOfInitialized(-147));
     }
 
     @Test
@@ -72,44 +72,44 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void multiply() {
-        assertEquals(SimpleScore.valueOfInitialized(6),
-                SimpleScore.valueOfInitialized(5).multiply(1.2));
-        assertEquals(SimpleScore.valueOfInitialized(1),
-                SimpleScore.valueOfInitialized(1).multiply(1.2));
-        assertEquals(SimpleScore.valueOfInitialized(4),
-                SimpleScore.valueOfInitialized(4).multiply(1.2));
-        assertEquals(SimpleScore.valueOf(-14, 8),
-                SimpleScore.valueOf(-7, 4).multiply(2.0));
+        assertThat(SimpleScore.valueOfInitialized(5).multiply(1.2))
+                .isEqualTo(SimpleScore.valueOfInitialized(6));
+        assertThat(SimpleScore.valueOfInitialized(1).multiply(1.2))
+                .isEqualTo(SimpleScore.valueOfInitialized(1));
+        assertThat(SimpleScore.valueOfInitialized(4).multiply(1.2))
+                .isEqualTo(SimpleScore.valueOfInitialized(4));
+        assertThat(SimpleScore.valueOf(-7, 4).multiply(2.0))
+                .isEqualTo(SimpleScore.valueOf(-14, 8));
     }
 
     @Test
     public void divide() {
-        assertEquals(SimpleScore.valueOfInitialized(5),
-                SimpleScore.valueOfInitialized(25).divide(5.0));
-        assertEquals(SimpleScore.valueOfInitialized(4),
-                SimpleScore.valueOfInitialized(21).divide(5.0));
-        assertEquals(SimpleScore.valueOfInitialized(4),
-                SimpleScore.valueOfInitialized(24).divide(5.0));
-        assertEquals(SimpleScore.valueOf(-7, 4),
-                SimpleScore.valueOf(-14, 8).divide(2.0));
+        assertThat(SimpleScore.valueOfInitialized(25).divide(5.0))
+                .isEqualTo(SimpleScore.valueOfInitialized(5));
+        assertThat(SimpleScore.valueOfInitialized(21).divide(5.0))
+                .isEqualTo(SimpleScore.valueOfInitialized(4));
+        assertThat(SimpleScore.valueOfInitialized(24).divide(5.0))
+                .isEqualTo(SimpleScore.valueOfInitialized(4));
+        assertThat(SimpleScore.valueOf(-14, 8).divide(2.0))
+                .isEqualTo(SimpleScore.valueOf(-7, 4));
     }
 
     @Test
     public void power() {
-        assertEquals(SimpleScore.valueOfInitialized(25),
-                SimpleScore.valueOfInitialized(5).power(2.0));
-        assertEquals(SimpleScore.valueOfInitialized(5),
-                SimpleScore.valueOfInitialized(25).power(0.5));
-        assertEquals(SimpleScore.valueOf(-343, 125),
-                SimpleScore.valueOf(-7, 5).power(3.0));
+        assertThat(SimpleScore.valueOfInitialized(5).power(2.0))
+                .isEqualTo(SimpleScore.valueOfInitialized(25));
+        assertThat(SimpleScore.valueOfInitialized(25).power(0.5))
+                .isEqualTo(SimpleScore.valueOfInitialized(5));
+        assertThat(SimpleScore.valueOf(-7, 5).power(3.0))
+                .isEqualTo(SimpleScore.valueOf(-343, 125));
     }
 
     @Test
     public void negate() {
-        assertEquals(SimpleScore.valueOfInitialized(-5),
-                SimpleScore.valueOfInitialized(5).negate());
-        assertEquals(SimpleScore.valueOfInitialized(5),
-                SimpleScore.valueOfInitialized(-5).negate());
+        assertThat(SimpleScore.valueOfInitialized(5).negate())
+                .isEqualTo(SimpleScore.valueOfInitialized(-5));
+        assertThat(SimpleScore.valueOfInitialized(-5).negate())
+                .isEqualTo(SimpleScore.valueOfInitialized(5));
     }
 
     @Test

@@ -100,10 +100,10 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScoreHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)),
-                scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toInitializedScore());
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)),
-                scoreDefinitionHSS.createScore(-7, BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toInitializedScore());
+        assertThat(scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toInitializedScore())
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)));
+        assertThat(scoreDefinitionHSS.createScore(-7, BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toInitializedScore())
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)));
     }
 
     @Test
@@ -142,40 +142,40 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void multiplyHSS() {
-        assertEquals(scoreDefinitionHSS.createScore(-14, new BigDecimal("8.6"), new BigDecimal("-10.4"), new BigDecimal("-12.2")),
-                scoreDefinitionHSS.createScore(-7, new BigDecimal("4.3"), new BigDecimal("-5.2"), new BigDecimal("-6.1")).multiply(2.0));
+        assertThat(scoreDefinitionHSS.createScore(-7, new BigDecimal("4.3"), new BigDecimal("-5.2"), new BigDecimal("-6.1")).multiply(2.0))
+                .isEqualTo(scoreDefinitionHSS.createScore(-14, new BigDecimal("8.6"), new BigDecimal("-10.4"), new BigDecimal("-12.2")));
     }
 
     @Test
     public void divideHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(FIVE, MINUS_FIVE, FIVE),
-                scoreDefinitionHSS.createScoreInitialized(PLUS_25, MINUS_25, PLUS_25).divide(5.0));
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(FOUR, MINUS_FIVE, FOUR),
-                scoreDefinitionHSS.createScoreInitialized(PLUS_21, MINUS_21, PLUS_21).divide(5.0));
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(FOUR, MINUS_FIVE, FOUR),
-                scoreDefinitionHSS.createScoreInitialized(PLUS_24, MINUS_24, PLUS_24).divide(5.0));
-        assertEquals(scoreDefinitionHSS.createScore(-7, new BigDecimal("4.3"), new BigDecimal("-5.2"), new BigDecimal("-6.1")),
-                scoreDefinitionHSS.createScore(-14, new BigDecimal("8.6"), new BigDecimal("-10.4"), new BigDecimal("-12.2")).divide(2.0));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(PLUS_25, MINUS_25, PLUS_25).divide(5.0))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(FIVE, MINUS_FIVE, FIVE));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(PLUS_21, MINUS_21, PLUS_21).divide(5.0))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(FOUR, MINUS_FIVE, FOUR));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(PLUS_24, MINUS_24, PLUS_24).divide(5.0))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(FOUR, MINUS_FIVE, FOUR));
+        assertThat(scoreDefinitionHSS.createScore(-14, new BigDecimal("8.6"), new BigDecimal("-10.4"), new BigDecimal("-12.2")).divide(2.0))
+                .isEqualTo(scoreDefinitionHSS.createScore(-7, new BigDecimal("4.3"), new BigDecimal("-5.2"), new BigDecimal("-6.1")));
     }
 
     @Test
     @Ignore("The problem of BigDecimal ^ BigDecimal.")
     public void powerHSS() {
         // .multiply(1.0) is there to get the proper BigDecimal scale
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(NINE, PLUS_16, PLUS_25),
-                scoreDefinitionHSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE).power(2.0));
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(THREE, FOUR, FIVE),
-                scoreDefinitionHSS.createScoreInitialized(NINE, PLUS_16, PLUS_25).power(0.5));
-        assertEquals(scoreDefinitionHSS.createScore(-343, new BigDecimal("27"), new BigDecimal("-64"), new BigDecimal("125")),
-                scoreDefinitionHSS.createScore(-7, THREE, MINUS_FOUR, FIVE).power(3.0));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE).power(2.0))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(NINE, PLUS_16, PLUS_25));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(NINE, PLUS_16, PLUS_25).power(0.5))
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(THREE, FOUR, FIVE));
+        assertThat(scoreDefinitionHSS.createScore(-7, THREE, MINUS_FOUR, FIVE).power(3.0))
+                .isEqualTo(scoreDefinitionHSS.createScore(-343, new BigDecimal("27"), new BigDecimal("-64"), new BigDecimal("125")));
     }
 
     @Test
     public void negateHSS() {
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(MINUS_THREE, FOUR, MINUS_FIVE),
-                scoreDefinitionHSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE).negate());
-        assertEquals(scoreDefinitionHSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE),
-                scoreDefinitionHSS.createScoreInitialized(MINUS_THREE, FOUR, MINUS_FIVE).negate());
+        assertThat(scoreDefinitionHSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE).negate())
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(MINUS_THREE, FOUR, MINUS_FIVE));
+        assertThat(scoreDefinitionHSS.createScoreInitialized(MINUS_THREE, FOUR, MINUS_FIVE).negate())
+                .isEqualTo(scoreDefinitionHSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE));
     }
 
     @Test
@@ -256,30 +256,30 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void divideHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(FIVE, MINUS_FIVE, FIVE, ZERO, ZERO),
-                scoreDefinitionHHSSS.createScoreInitialized(PLUS_25, MINUS_25, PLUS_25, ZERO, ZERO).divide(5.0));
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(FOUR, MINUS_FIVE, FOUR, ZERO, ZERO),
-                scoreDefinitionHHSSS.createScoreInitialized(PLUS_21, MINUS_21, PLUS_21, ZERO, ZERO).divide(5.0));
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(FOUR, MINUS_FIVE, FOUR, ZERO, ZERO),
-                scoreDefinitionHHSSS.createScoreInitialized(PLUS_24, MINUS_24, PLUS_24, ZERO, ZERO).divide(5.0));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(PLUS_25, MINUS_25, PLUS_25, ZERO, ZERO).divide(5.0))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(FIVE, MINUS_FIVE, FIVE, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(PLUS_21, MINUS_21, PLUS_21, ZERO, ZERO).divide(5.0))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(FOUR, MINUS_FIVE, FOUR, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(PLUS_24, MINUS_24, PLUS_24, ZERO, ZERO).divide(5.0))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(FOUR, MINUS_FIVE, FOUR, ZERO, ZERO));
     }
 
     @Test
     @Ignore("The problem of BigDecimal ^ BigDecimal.")
     public void powerHHSSS() {
         // .multiply(1.0) is there to get the proper BigDecimal scale
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(NINE, PLUS_16, PLUS_25, ZERO, ZERO),
-                scoreDefinitionHHSSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE, ZERO, ZERO).power(2.0));
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(THREE, FOUR, FIVE, ZERO, ZERO),
-                scoreDefinitionHHSSS.createScoreInitialized(NINE, PLUS_16, PLUS_25, ZERO, ZERO).power(0.5));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE, ZERO, ZERO).power(2.0))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(NINE, PLUS_16, PLUS_25, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(NINE, PLUS_16, PLUS_25, ZERO, ZERO).power(0.5))
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(THREE, FOUR, FIVE, ZERO, ZERO));
     }
 
     @Test
     public void negateHHSSS() {
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(MINUS_THREE, FOUR, MINUS_FIVE, ZERO, ZERO),
-                scoreDefinitionHHSSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE, ZERO, ZERO).negate());
-        assertEquals(scoreDefinitionHHSSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE, ZERO, ZERO),
-                scoreDefinitionHHSSS.createScoreInitialized(MINUS_THREE, FOUR, MINUS_FIVE, ZERO, ZERO).negate());
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE, ZERO, ZERO).negate())
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(MINUS_THREE, FOUR, MINUS_FIVE, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScoreInitialized(MINUS_THREE, FOUR, MINUS_FIVE, ZERO, ZERO).negate())
+                .isEqualTo(scoreDefinitionHHSSS.createScoreInitialized(THREE, MINUS_FOUR, FIVE, ZERO, ZERO));
     }
 
     @Test

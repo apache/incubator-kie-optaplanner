@@ -27,10 +27,10 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(HardMediumSoftScore.valueOfInitialized(-147, -258, -369),
-                HardMediumSoftScore.parseScore("-147hard/-258medium/-369soft"));
-        assertEquals(HardMediumSoftScore.valueOf(-7, -147, -258, -369),
-                HardMediumSoftScore.parseScore("-7init/-147hard/-258medium/-369soft"));
+        assertThat(HardMediumSoftScore.parseScore("-147hard/-258medium/-369soft"))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(-147, -258, -369));
+        assertThat(HardMediumSoftScore.parseScore("-7init/-147hard/-258medium/-369soft"))
+                .isEqualTo(HardMediumSoftScore.valueOf(-7, -147, -258, -369));
     }
 
     @Test
@@ -48,10 +48,10 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(HardMediumSoftScore.valueOfInitialized(-147, -258, -369),
-                HardMediumSoftScore.valueOfInitialized(-147, -258, -369).toInitializedScore());
-        assertEquals(HardMediumSoftScore.valueOfInitialized(-147, -258, -369),
-                HardMediumSoftScore.valueOf(-7, -147, -258, -369).toInitializedScore());
+        assertThat(HardMediumSoftScore.valueOfInitialized(-147, -258, -369).toInitializedScore())
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(-147, -258, -369));
+        assertThat(HardMediumSoftScore.valueOf(-7, -147, -258, -369).toInitializedScore())
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(-147, -258, -369));
     }
 
     @Test
@@ -90,44 +90,44 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void multiply() {
-        assertEquals(HardMediumSoftScore.valueOfInitialized(6, -6, 6),
-                HardMediumSoftScore.valueOfInitialized(5, -5, 5).multiply(1.2));
-        assertEquals(HardMediumSoftScore.valueOfInitialized(1, -2, 1),
-                HardMediumSoftScore.valueOfInitialized(1, -1, 1).multiply(1.2));
-        assertEquals(HardMediumSoftScore.valueOfInitialized(4, -5, 4),
-                HardMediumSoftScore.valueOfInitialized(4, -4, 4).multiply(1.2));
-        assertEquals(HardMediumSoftScore.valueOf(-14, 8, -10, 12),
-                HardMediumSoftScore.valueOf(-7, 4, -5, 6).multiply(2.0));
+        assertThat(HardMediumSoftScore.valueOfInitialized(5, -5, 5).multiply(1.2))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(6, -6, 6));
+        assertThat(HardMediumSoftScore.valueOfInitialized(1, -1, 1).multiply(1.2))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(1, -2, 1));
+        assertThat(HardMediumSoftScore.valueOfInitialized(4, -4, 4).multiply(1.2))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(4, -5, 4));
+        assertThat(HardMediumSoftScore.valueOf(-7, 4, -5, 6).multiply(2.0))
+                .isEqualTo(HardMediumSoftScore.valueOf(-14, 8, -10, 12));
     }
 
     @Test
     public void divide() {
-        assertEquals(HardMediumSoftScore.valueOfInitialized(5, -5, 5),
-                HardMediumSoftScore.valueOfInitialized(25, -25, 25).divide(5.0));
-        assertEquals(HardMediumSoftScore.valueOfInitialized(4, -5, 4),
-                HardMediumSoftScore.valueOfInitialized(21, -21, 21).divide(5.0));
-        assertEquals(HardMediumSoftScore.valueOfInitialized(4, -5, 4),
-                HardMediumSoftScore.valueOfInitialized(24, -24, 24).divide(5.0));
-        assertEquals(HardMediumSoftScore.valueOf(-7, 4, -5, 6),
-                HardMediumSoftScore.valueOf(-14, 8, -10, 12).divide(2.0));
+        assertThat(HardMediumSoftScore.valueOfInitialized(25, -25, 25).divide(5.0))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(5, -5, 5));
+        assertThat(HardMediumSoftScore.valueOfInitialized(21, -21, 21).divide(5.0))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(4, -5, 4));
+        assertThat(HardMediumSoftScore.valueOfInitialized(24, -24, 24).divide(5.0))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(4, -5, 4));
+        assertThat(HardMediumSoftScore.valueOf(-14, 8, -10, 12).divide(2.0))
+                .isEqualTo(HardMediumSoftScore.valueOf(-7, 4, -5, 6));
     }
 
     @Test
     public void power() {
-        assertEquals(HardMediumSoftScore.valueOfInitialized(9, 16, 25),
-                HardMediumSoftScore.valueOfInitialized(3, -4, 5).power(2.0));
-        assertEquals(HardMediumSoftScore.valueOfInitialized(3, 4, 5),
-                HardMediumSoftScore.valueOfInitialized(9, 16, 25).power(0.5));
-        assertEquals(HardMediumSoftScore.valueOf(-343, 27, -64, 125),
-                HardMediumSoftScore.valueOf(-7, 3, -4, 5).power(3.0));
+        assertThat(HardMediumSoftScore.valueOfInitialized(3, -4, 5).power(2.0))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(9, 16, 25));
+        assertThat(HardMediumSoftScore.valueOfInitialized(9, 16, 25).power(0.5))
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(3, 4, 5));
+        assertThat(HardMediumSoftScore.valueOf(-7, 3, -4, 5).power(3.0))
+                .isEqualTo(HardMediumSoftScore.valueOf(-343, 27, -64, 125));
     }
 
     @Test
     public void negate() {
-        assertEquals(HardMediumSoftScore.valueOfInitialized(-3, 4, -5),
-                HardMediumSoftScore.valueOfInitialized(3, -4, 5).negate());
-        assertEquals(HardMediumSoftScore.valueOfInitialized(3, -4, 5),
-                HardMediumSoftScore.valueOfInitialized(-3, 4, -5).negate());
+        assertThat(HardMediumSoftScore.valueOfInitialized(3, -4, 5).negate())
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(-3, 4, -5));
+        assertThat(HardMediumSoftScore.valueOfInitialized(-3, 4, -5).negate())
+                .isEqualTo(HardMediumSoftScore.valueOfInitialized(3, -4, 5));
     }
 
     @Test
