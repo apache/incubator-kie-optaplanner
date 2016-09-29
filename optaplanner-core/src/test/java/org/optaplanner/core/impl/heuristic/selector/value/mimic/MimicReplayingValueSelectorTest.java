@@ -96,9 +96,9 @@ public class MimicReplayingValueSelectorTest {
     private void runOriginalAsserts(MimicRecordingValueSelector recordingValueSelector,
             MimicReplayingValueSelector replayingValueSelector) {
         Iterator<Object> recordingIterator = recordingValueSelector.iterator();
-        assertNotNull(recordingIterator);
+        assertThat(recordingIterator).isNotNull();
         Iterator<Object> replayingIterator = replayingValueSelector.iterator();
-        assertNotNull(replayingIterator);
+        assertThat(replayingIterator).isNotNull();
 
         assertEquals(true, recordingIterator.hasNext());
         assertEquals(true, replayingIterator.hasNext());

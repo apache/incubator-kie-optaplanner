@@ -45,7 +45,7 @@ public class ValueRangeFactoryTest {
         solution.setEntityList(Arrays.asList(new TestdataValueRangeEntity("e1"), new TestdataValueRangeEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
     }
 
 }

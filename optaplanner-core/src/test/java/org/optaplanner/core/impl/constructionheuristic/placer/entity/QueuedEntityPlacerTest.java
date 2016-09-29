@@ -186,7 +186,7 @@ public class QueuedEntityPlacerTest {
 
     private void assertPlacement(Placement placement, String entityCode, String... valueCodes) {
         Iterator<Move> iterator = placement.iterator();
-        assertNotNull(iterator);
+        assertThat(iterator).isNotNull();
         for (String valueCode : valueCodes) {
             assertTrue(iterator.hasNext());
             ChangeMove move = (ChangeMove) iterator.next();

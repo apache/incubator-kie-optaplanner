@@ -37,7 +37,7 @@ public class ScoreHolderTest {
 
     @Test
     public void constraintMatchTotalsNeverNull() {
-        assertNotNull(buildScoreHolder(true).getConstraintMatchTotals());
+        assertThat(buildScoreHolder(true).getConstraintMatchTotals()).isNotNull();
     }
 
     private ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

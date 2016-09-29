@@ -76,7 +76,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
     }
 
     private void assertBestSolution(Solver<Solution_> solver, Solution_ bestSolution, String bestScoreLimitString) {
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
         InnerScoreDirectorFactory<Solution_> scoreDirectorFactory
                 = (InnerScoreDirectorFactory<Solution_>) solver.getScoreDirectorFactory();
         Score bestScore = scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);

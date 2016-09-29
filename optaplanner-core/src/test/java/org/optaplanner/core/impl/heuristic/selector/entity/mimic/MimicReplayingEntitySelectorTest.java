@@ -94,9 +94,9 @@ public class MimicReplayingEntitySelectorTest {
     private void runOriginalAsserts(MimicRecordingEntitySelector recordingEntitySelector,
             MimicReplayingEntitySelector replayingEntitySelector) {
         Iterator<Object> recordingIterator = recordingEntitySelector.iterator();
-        assertNotNull(recordingIterator);
+        assertThat(recordingIterator).isNotNull();
         Iterator<Object> replayingIterator = replayingEntitySelector.iterator();
-        assertNotNull(replayingIterator);
+        assertThat(replayingIterator).isNotNull();
 
         assertEquals(true, recordingIterator.hasNext());
         assertEquals(true, replayingIterator.hasNext());

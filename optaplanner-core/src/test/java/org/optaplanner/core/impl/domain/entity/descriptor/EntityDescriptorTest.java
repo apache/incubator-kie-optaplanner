@@ -26,7 +26,7 @@ public class EntityDescriptorTest {
     @Test
     public void movableEntitySelectionFilter() {
         EntityDescriptor entityDescriptor = TestdataImmovableEntity.buildEntityDescriptor();
-        assertNotNull(entityDescriptor.getMovableEntitySelectionFilter());
+        assertThat(entityDescriptor.getMovableEntitySelectionFilter()).isNotNull();
     }
 
 }

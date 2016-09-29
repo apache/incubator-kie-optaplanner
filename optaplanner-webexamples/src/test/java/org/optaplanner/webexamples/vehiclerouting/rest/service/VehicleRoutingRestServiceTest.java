@@ -36,7 +36,7 @@ public class VehicleRoutingRestServiceTest extends AbstractClientArquillianTest 
         VehicleRoutingRestService vehicleRoutingRestService
                 = ProxyFactory.create(VehicleRoutingRestService.class, baseUrl.toExternalForm() + "rest");
         JsonVehicleRoutingSolution solution = vehicleRoutingRestService.getSolution();
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
     }
 
 }

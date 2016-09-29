@@ -48,7 +48,7 @@ public class DefaultSolverTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         assertEquals(true, solution.getScore().isSolutionInitialized());
         assertSame(solution, solver.getBestSolution());
     }
@@ -66,7 +66,7 @@ public class DefaultSolverTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         assertSame(solution, solver.getBestSolution());
     }
 
@@ -85,7 +85,7 @@ public class DefaultSolverTest {
                 new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         assertEquals(false, solution.getScore().isSolutionInitialized());
         assertSame(solution, solver.getBestSolution());
     }
@@ -107,7 +107,7 @@ public class DefaultSolverTest {
                 new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         assertEquals(false, solution.getScore().isSolutionInitialized());
         assertSame(solution, solver.getBestSolution());
     }

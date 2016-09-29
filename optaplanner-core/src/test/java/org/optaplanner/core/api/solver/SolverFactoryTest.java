@@ -31,7 +31,7 @@ public class SolverFactoryTest {
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -39,7 +39,7 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -47,7 +47,7 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/nonExistingSolverConfig.xml");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml", classLoader);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test

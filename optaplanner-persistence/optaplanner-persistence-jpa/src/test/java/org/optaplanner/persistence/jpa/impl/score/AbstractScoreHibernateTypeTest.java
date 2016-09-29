@@ -66,7 +66,7 @@ public abstract class AbstractScoreHibernateTypeTest {
             throw new RuntimeException("Transaction failed.", e);
         }
         Long id = jpaEntity.getId();
-        assertNotNull(id);
+        assertThat(id).isNotNull();
         return id;
     }
 

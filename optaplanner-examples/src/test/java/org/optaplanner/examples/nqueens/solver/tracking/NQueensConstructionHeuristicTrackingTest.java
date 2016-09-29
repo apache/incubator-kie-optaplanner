@@ -75,7 +75,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
         solver.addPhaseLifecycleListener(listener);
         NQueens bestSolution = solver.solve(planningProblem);
 
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
         assertTrackingList(expectedCoordinates, listener.getTrackingList());
     }
 

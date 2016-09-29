@@ -28,7 +28,7 @@ public class NQueensAppTest {
     public void createSolverByApi() {
         NQueensApp nQueensApp = new NQueensApp();
         Solver<NQueens> solver = nQueensApp.createSolverByApi();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
 }

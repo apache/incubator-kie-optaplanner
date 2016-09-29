@@ -61,10 +61,10 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataEntity("e3", v1)));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
         assertEquals(v2, solvedE2.getValue());
@@ -93,10 +93,10 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataImmovableEntity("e3", null, true)));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataImmovableEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataImmovableEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
         assertEquals(v2, solvedE2.getValue());
@@ -126,13 +126,13 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataReinitializeEntity("e4", null, true)));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataReinitializeEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataReinitializeEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertNotNull(solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isNotNull();
         TestdataReinitializeEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
         assertEquals(v2, solvedE3.getValue());

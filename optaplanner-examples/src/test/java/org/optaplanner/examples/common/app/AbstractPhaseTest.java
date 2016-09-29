@@ -78,11 +78,11 @@ public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
 
         Solution_ bestSolution = solver.solve(planningProblem);
         assertSolution(bestSolution);
-        assertNotNull(solver.getBestScore());
+        assertThat(solver.getBestScore()).isNotNull();
     }
 
     protected void assertSolution(Solution_ bestSolution) {
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
     }
 
     protected abstract SolverFactory<Solution_> buildSolverFactory();

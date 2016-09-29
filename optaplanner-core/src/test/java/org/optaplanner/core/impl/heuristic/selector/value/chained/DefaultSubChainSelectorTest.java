@@ -511,7 +511,7 @@ public class DefaultSubChainSelectorTest {
     private void assertContainsCodesOfNeverEndingSubChainSelector(
             DefaultSubChainSelector subChainSelector, SubChain... subChains) {
         Iterator<SubChain> iterator = subChainSelector.iterator();
-        assertNotNull(iterator);
+        assertThat(iterator).isNotNull();
         int selectionSize = subChains.length;
         Map<SubChain, Integer> subChainCountMap = new HashMap<>(selectionSize);
         for (int i = 0; i < selectionSize * 10; i++) {
@@ -519,7 +519,7 @@ public class DefaultSubChainSelectorTest {
         }
         for (SubChain subChain : subChains) {
             Integer count = subChainCountMap.remove(subChain);
-            assertNotNull("The subChain (" + subChain + ") was not collected.", count);
+            assertThat(count).as("The subChain (" + subChain + ") was not collected.").isNotNull();
         }
         assertTrue(subChainCountMap.isEmpty());
         assertTrue(iterator.hasNext());

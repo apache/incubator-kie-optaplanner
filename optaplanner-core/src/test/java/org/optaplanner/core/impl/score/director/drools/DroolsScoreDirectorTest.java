@@ -43,7 +43,7 @@ public class DroolsScoreDirectorTest {
     public void constraintMatchTotalsNeverNull() {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), true);
         director.setWorkingSolution(new Object());
-        assertNotNull(director.getConstraintMatchTotals());
+        assertThat(director.getConstraintMatchTotals()).isNotNull();
     }
 
     @SuppressWarnings("unchecked")
