@@ -50,7 +50,7 @@ public class SimpleScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleScore.valueOf(0, -1003));
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleScore.valueOf(-7, -1003));
         if (constraintMatchEnabled) {
-            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(3);
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(3);
         }
     }
 

@@ -65,7 +65,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
-        assertThat((solver.getBestSolution()).getProcessList().size()).isEqualTo(8);
+        assertThat((solver.getBestSolution()).getProcessList()).hasSize(8);
 
         // Give the solver thread some time to solve, terminate and get into the daemon waiting state
         Thread.sleep(1000);
@@ -85,7 +85,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             throw new IllegalStateException("SolverThread did not die yet due to an interruption.", e);
         }
         assertThat(solver.isEveryProblemFactChangeProcessed()).isEqualTo(true);
-        assertThat((solver.getBestSolution()).getProcessList().size()).isEqualTo(12);
+        assertThat((solver.getBestSolution()).getProcessList()).hasSize(12);
     }
 
     private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {

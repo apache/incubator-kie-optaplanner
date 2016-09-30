@@ -57,7 +57,7 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftLongScore.valueOf(0, -1400L, -3L));
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(HardSoftLongScore.valueOf(-7, -1400L, -3L));
         if (constraintMatchEnabled) {
-            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(6);
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(6);
         }
     }
 

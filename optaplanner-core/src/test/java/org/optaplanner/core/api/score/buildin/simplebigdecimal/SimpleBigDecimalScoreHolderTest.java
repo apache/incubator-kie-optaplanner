@@ -52,7 +52,7 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleBigDecimalScore.valueOf(0, new BigDecimal("-10.03")));
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-10.03")));
         if (constraintMatchEnabled) {
-            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(3);
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(3);
         }
     }
 

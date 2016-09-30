@@ -61,7 +61,7 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(BendableLongScore.valueOf(-7, new long[]{2000000000401L},
                 new long[]{1000000040000L, -1000000500000L}));
         if (constraintMatchEnabled) {
-            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(7);
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(7);
         }
     }
 

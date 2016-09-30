@@ -62,7 +62,7 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(
                 HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-14.00"), new BigDecimal("-0.03")));
         if (constraintMatchEnabled) {
-            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(6);
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(6);
         }
     }
 

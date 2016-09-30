@@ -59,7 +59,7 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(0)).isEqualTo(HardMediumSoftScore.valueOf(0, -1400, -3, -4));
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(HardMediumSoftScore.valueOf(-7, -1400, -3, -4));
         if (constraintMatchEnabled) {
-            assertThat(scoreHolder.getConstraintMatchTotals().size()).isEqualTo(7);
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(7);
         }
     }
 
