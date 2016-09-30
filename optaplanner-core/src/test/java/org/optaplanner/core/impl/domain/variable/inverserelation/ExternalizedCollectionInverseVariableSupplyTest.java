@@ -52,17 +52,17 @@ public class ExternalizedCollectionInverseVariableSupplyTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         supply.resetWorkingSolution(scoreDirector);
 
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val1), a, b);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val2));
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val3), c, d);
+        assertThat((Collection<Object>) supply.getInverseCollection(val1)).containsExactly(a, b);
+        assertThat((Collection<Object>) supply.getInverseCollection(val2)).isEmpty();
+        assertThat((Collection<Object>) supply.getInverseCollection(val3)).containsExactly(c, d);
 
         supply.beforeVariableChanged(scoreDirector, c);
         c.setValue(val2);
         supply.afterVariableChanged(scoreDirector, c);
 
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val1), a, b);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val2), c);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val3), d);
+        assertThat((Collection<Object>) supply.getInverseCollection(val1)).containsExactly(a, b);
+        assertThat((Collection<Object>) supply.getInverseCollection(val2)).containsExactly(c);
+        assertThat((Collection<Object>) supply.getInverseCollection(val3)).containsExactly(d);
 
         supply.clearWorkingSolution(scoreDirector);
     }

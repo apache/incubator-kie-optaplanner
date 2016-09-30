@@ -78,20 +78,6 @@ public class PlannerAssert extends Assert {
         }
     }
 
-    public static <E> void assertCollectionContainsExactly(Collection<E> collection, E... elements) {
-        assertCollectionContains(collection, elements);
-        assertEquals(elements.length, collection.size());
-    }
-
-    public static <E> void assertCollectionContains(Collection<E> collection, E... elements) {
-        for (int i = 0; i < elements.length; i++) {
-            if (!collection.contains(elements[i])) {
-                fail("The asserted collection (" + collection
-                        + ") does not contain expected element (" + elements[i] + ")");
-            }
-        }
-    }
-
     public static <K, V> void assertMapContainsKeysExactly(Map<K, V> map, K... keys) {
         assertMapContainsKeys(map, keys);
         assertEquals(keys.length, map.size());

@@ -182,13 +182,13 @@ public class SwapMoveTest {
         GenuineVariableDescriptor secondaryDescriptor = TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue();
         SwapMove move = new SwapMove(Arrays.asList(primaryDescriptor),
                 new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));
-        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue");
+        assertThat(move.getVariableNameList()).containsExactly("primaryValue");
         assertCode("a", move.getLeftEntity());
         assertCode("b", move.getRightEntity());
 
         move = new SwapMove(Arrays.asList(primaryDescriptor, secondaryDescriptor),
                 new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d"));
-        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue", "secondaryValue");
+        assertThat(move.getVariableNameList()).containsExactly("primaryValue", "secondaryValue");
         assertCode("c", move.getLeftEntity());
         assertCode("d", move.getRightEntity());
     }

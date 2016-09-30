@@ -60,7 +60,7 @@ public class AbstractSolutionTest {
         solution.setSingleEntity(singleEntity);
         SimpleScore score = SimpleScore.valueOfInitialized(-10);
         solution.setScore(score);
-        assertCollectionContainsExactly(solution.getProblemFactList(), singleValue, v1, v2, v3);
+        assertThat(solution.getProblemFactList()).containsExactly(singleValue, v1, v2, v3);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class AbstractSolutionTest {
         solution.setEntityList(null);
         solution.setSingleEntity(null);
         solution.setScore(null);
-        assertCollectionContainsExactly(solution.getProblemFactList(), v1, v2, v3);
+        assertThat(solution.getProblemFactList()).containsExactly(v1, v2, v3);
     }
 
     public static class TestdataAbstractSolutionBasedSolution extends AbstractSolution<SimpleScore> {

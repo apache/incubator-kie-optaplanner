@@ -224,14 +224,14 @@ public class PillarSwapMoveTest {
         PillarSwapMove move = new PillarSwapMove(Arrays.asList(primaryDescriptor),
                 Arrays.<Object>asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
                 Arrays.<Object>asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")));
-        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue");
+        assertThat(move.getVariableNameList()).containsExactly("primaryValue");
         assertAllCodesOfCollection(move.getLeftPillar(), "a", "b");
         assertAllCodesOfCollection(move.getRightPillar(), "c", "d");
 
         move = new PillarSwapMove(Arrays.asList(primaryDescriptor, secondaryDescriptor),
                 Arrays.<Object>asList(new TestdataMultiVarEntity("e"), new TestdataMultiVarEntity("f")),
                 Arrays.<Object>asList(new TestdataMultiVarEntity("g"), new TestdataMultiVarEntity("h")));
-        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue", "secondaryValue");
+        assertThat(move.getVariableNameList()).containsExactly("primaryValue", "secondaryValue");
         assertAllCodesOfCollection(move.getLeftPillar(), "e", "f");
         assertAllCodesOfCollection(move.getRightPillar(), "g", "h");
     }
