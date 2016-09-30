@@ -16,10 +16,11 @@
 
 package org.optaplanner.core.api.score.buildin.bendablelong;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -163,7 +164,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareToHSS() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 scoreDefinitionHSS.createScore(-8, 0L, 0L, 0L),
                 scoreDefinitionHSS.createScore(-7, -20L, -20L, -20L),
                 scoreDefinitionHSS.createScore(-7, -1L, -300L, -4000L),
@@ -185,7 +186,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                 scoreDefinitionHSS.createScoreInitialized(-1L, -20L, -300L),
                 scoreDefinitionHSS.createScoreInitialized(1L, Long.MIN_VALUE, -20L),
                 scoreDefinitionHSS.createScoreInitialized(1L, -20L, Long.MIN_VALUE)
-        );
+        )).isSorted();
     }
 
     private BendableLongScoreDefinition scoreDefinitionHHSSS = new BendableLongScoreDefinition(2, 3);
@@ -263,7 +264,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareToHHSSS() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 scoreDefinitionHHSSS.createScoreInitialized(-20L, Long.MIN_VALUE, Long.MIN_VALUE, 0L, 0L),
                 scoreDefinitionHHSSS.createScoreInitialized(-20L, Long.MIN_VALUE, -20L, 0L, 0L),
                 scoreDefinitionHHSSS.createScoreInitialized(-20L, Long.MIN_VALUE, 1L, 0L, 0L),
@@ -279,7 +280,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScoreInitialized(-1L, -20L, -300L, 0L, 0L),
                 scoreDefinitionHHSSS.createScoreInitialized(1L, Long.MIN_VALUE, -20L, 0L, 0L),
                 scoreDefinitionHHSSS.createScoreInitialized(1L, -20L, Long.MIN_VALUE, 0L, 0L)
-        );
+        )).isSorted();
     }
 
     @Test

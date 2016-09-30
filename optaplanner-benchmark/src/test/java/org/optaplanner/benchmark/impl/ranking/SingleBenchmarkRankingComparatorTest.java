@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -42,7 +44,7 @@ public class SingleBenchmarkRankingComparatorTest {
         SingleBenchmarkResult d = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         d.setFailureCount(0);
         d.setAverageScore(SimpleScore.valueOfInitialized(-20));
-        assertCompareToOrder(comparator, a, b, c, d);
+        assertThat(Arrays.asList(a, b, c, d)).isSortedAccordingTo(comparator);
     }
 
 }

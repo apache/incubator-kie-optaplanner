@@ -16,9 +16,10 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoft;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -147,7 +148,7 @@ public class HardSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 HardSoftScore.valueOf(-8, 0, 0),
                 HardSoftScore.valueOf(-7, -20, -20),
                 HardSoftScore.valueOf(-7, -1, -300),
@@ -160,7 +161,7 @@ public class HardSoftScoreTest extends AbstractScoreTest {
                 HardSoftScore.valueOfInitialized(0, -1),
                 HardSoftScore.valueOfInitialized(0, 0),
                 HardSoftScore.valueOfInitialized(0, 1)
-        );
+        )).isSorted();
     }
 
     @Test

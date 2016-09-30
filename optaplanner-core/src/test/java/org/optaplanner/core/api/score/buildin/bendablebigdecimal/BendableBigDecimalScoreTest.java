@@ -17,12 +17,12 @@
 package org.optaplanner.core.api.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -200,7 +200,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareToHSS() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 scoreDefinitionHSS.createScore(-8, new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")),
                 scoreDefinitionHSS.createScore(-7, new BigDecimal("-20"), new BigDecimal("-20"), new BigDecimal("-20")),
                 scoreDefinitionHSS.createScore(-7, new BigDecimal("-1"), new BigDecimal("-300"), new BigDecimal("-4000")),
@@ -222,7 +222,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
                 scoreDefinitionHSS.createScoreInitialized(MINUS_ONE, MINUS_20, MINUS_300),
                 scoreDefinitionHSS.createScoreInitialized(ONE, MIN_INTEGER, MINUS_20),
                 scoreDefinitionHSS.createScoreInitialized(ONE, MINUS_20, MIN_INTEGER)
-        );
+        )).isSorted();
     }
 
     private BendableBigDecimalScoreDefinition scoreDefinitionHHSSS = new BendableBigDecimalScoreDefinition(2, 3);
@@ -292,7 +292,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareToHHSSS() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 scoreDefinitionHHSSS.createScoreInitialized(MINUS_20, MIN_INTEGER, MIN_INTEGER, ZERO, ZERO),
                 scoreDefinitionHHSSS.createScoreInitialized(MINUS_20, MIN_INTEGER, MINUS_20, ZERO, ZERO),
                 scoreDefinitionHHSSS.createScoreInitialized(MINUS_20, MIN_INTEGER, ONE, ZERO, ZERO),
@@ -308,7 +308,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScoreInitialized(MINUS_ONE, MINUS_20, MINUS_300, ZERO, ZERO),
                 scoreDefinitionHHSSS.createScoreInitialized(ONE, MIN_INTEGER, MINUS_20, ZERO, ZERO),
                 scoreDefinitionHHSSS.createScoreInitialized(ONE, MINUS_20, MIN_INTEGER, ZERO, ZERO)
-        );
+        )).isSorted();
     }
 
     @Test

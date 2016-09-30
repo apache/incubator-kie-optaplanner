@@ -71,7 +71,7 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
         Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
-        assertCompareToOrder(aWeight, bWeight);
+        assertThat(Arrays.asList(aWeight, bWeight)).isSorted();
     }
 
     @Test
@@ -105,7 +105,7 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
         Comparable cWeight = factory.createRankingWeight(solverBenchmarkResultList, c);
 
-        assertCompareToOrder(aWeight, bWeight, cWeight);
+        assertThat(Arrays.asList(aWeight, bWeight, cWeight)).isSorted();
     }
 
     @Test
@@ -141,12 +141,12 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
         b1.setAverageScore(SimpleScore.valueOf(-100, -400));
         b.accumulateResults(benchmarkReport);
         // ranks, uninitialized variable counts and total scores are equal, A loses on worst score (tie-breaker)
-        assertCompareToOrder(aWeight, bWeight);
+        assertThat(Arrays.asList(aWeight, bWeight)).isSorted();
 
         b1.setAverageScore(SimpleScore.valueOf(-101, -400));
         b.accumulateResults(benchmarkReport);
         // ranks are equal, uninitialized variable count is bigger in B
-        assertCompareToOrder(bWeight, aWeight);
+        assertThat(Arrays.asList(bWeight, aWeight)).isSorted();
     }
 
     @Test
@@ -168,7 +168,7 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
         Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
-        assertCompareToOrder(aWeight, bWeight);
+        assertThat(Arrays.asList(aWeight, bWeight)).isSorted();
     }
 
     @Test
@@ -219,7 +219,7 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
         Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
         // Tie-breaker, A wins on total score
-        assertCompareToOrder(bWeight, aWeight);
+        assertThat(Arrays.asList(bWeight, aWeight)).isSorted();
     }
 
     @Test
@@ -279,7 +279,7 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
         aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
         bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
         // A looses on score: a0 vs b1
-        assertCompareToOrder(aWeight, bWeight);
+        assertThat(Arrays.asList(aWeight, bWeight)).isSorted();
     }
 
 }

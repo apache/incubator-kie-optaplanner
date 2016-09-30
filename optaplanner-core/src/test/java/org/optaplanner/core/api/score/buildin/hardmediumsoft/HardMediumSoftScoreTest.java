@@ -16,9 +16,10 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -152,7 +153,7 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 HardMediumSoftScore.valueOf(-8, 0, 0, 0),
                 HardMediumSoftScore.valueOf(-7, -20, -20, -20),
                 HardMediumSoftScore.valueOf(-7, -1, -300, -4000),
@@ -174,7 +175,7 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.valueOfInitialized(-1, -20, -300),
                 HardMediumSoftScore.valueOfInitialized(1, Integer.MIN_VALUE, -20),
                 HardMediumSoftScore.valueOfInitialized(1, -20, Integer.MIN_VALUE)
-        );
+        )).isSorted();
     }
 
     @Test
