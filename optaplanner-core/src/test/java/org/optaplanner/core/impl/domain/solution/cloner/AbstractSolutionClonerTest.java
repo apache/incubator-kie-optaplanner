@@ -56,6 +56,7 @@ import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnno
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedSolution;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 public abstract class AbstractSolutionClonerTest {
 

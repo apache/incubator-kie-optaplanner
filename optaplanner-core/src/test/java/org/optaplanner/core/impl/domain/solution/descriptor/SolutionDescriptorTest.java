@@ -40,6 +40,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.Test
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
 
 public class SolutionDescriptorTest {
 
