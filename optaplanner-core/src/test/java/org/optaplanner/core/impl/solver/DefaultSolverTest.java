@@ -49,7 +49,7 @@ public class DefaultSolverTest {
 
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
-        assertThat(solution.getScore().isSolutionInitialized()).isEqualTo(true);
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
         assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
@@ -86,7 +86,7 @@ public class DefaultSolverTest {
 
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
-        assertThat(solution.getScore().isSolutionInitialized()).isEqualTo(false);
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
         assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
@@ -108,7 +108,7 @@ public class DefaultSolverTest {
 
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
-        assertThat(solution.getScore().isSolutionInitialized()).isEqualTo(false);
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
         assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 

@@ -36,27 +36,27 @@ public class UnimprovedStepCountTerminationTest {
         when(phaseScope.getBestSolutionStepIndex()).thenReturn(10);
         when(lastCompletedStepScope.getStepIndex()).thenReturn(10);
         when(phaseScope.getNextStepIndex()).thenReturn(11);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.0, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(11);
         when(phaseScope.getNextStepIndex()).thenReturn(12);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.25, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(12);
         when(phaseScope.getNextStepIndex()).thenReturn(13);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.5, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(13);
         when(phaseScope.getNextStepIndex()).thenReturn(14);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.75, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(14);
         when(phaseScope.getNextStepIndex()).thenReturn(15);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
         when(lastCompletedStepScope.getStepIndex()).thenReturn(15);
         when(phaseScope.getNextStepIndex()).thenReturn(16);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
     }
 

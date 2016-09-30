@@ -54,20 +54,20 @@ public class LongValueRangeTest {
 
     @Test
     public void contains() {
-        assertThat(new LongValueRange(0L, 10L).contains(3L)).isEqualTo(true);
-        assertThat(new LongValueRange(0L, 10L).contains(10L)).isEqualTo(false);
-        assertThat(new LongValueRange(0L, 10L).contains(null)).isEqualTo(false);
-        assertThat(new LongValueRange(100L, 120L).contains(100L)).isEqualTo(true);
-        assertThat(new LongValueRange(100L, 120L).contains(99L)).isEqualTo(false);
-        assertThat(new LongValueRange(-5L, 25L).contains(-4L)).isEqualTo(true);
-        assertThat(new LongValueRange(-5L, 25L).contains(-20L)).isEqualTo(false);
+        assertThat(new LongValueRange(0L, 10L).contains(3L)).isTrue();
+        assertThat(new LongValueRange(0L, 10L).contains(10L)).isFalse();
+        assertThat(new LongValueRange(0L, 10L).contains(null)).isFalse();
+        assertThat(new LongValueRange(100L, 120L).contains(100L)).isTrue();
+        assertThat(new LongValueRange(100L, 120L).contains(99L)).isFalse();
+        assertThat(new LongValueRange(-5L, 25L).contains(-4L)).isTrue();
+        assertThat(new LongValueRange(-5L, 25L).contains(-20L)).isFalse();
         // IncrementUnit
-        assertThat(new LongValueRange(0L, 10L, 2L).contains(2L)).isEqualTo(true);
-        assertThat(new LongValueRange(0L, 10L, 2L).contains(3L)).isEqualTo(false);
-        assertThat(new LongValueRange(-1L, 9L, 2L).contains(1L)).isEqualTo(true);
-        assertThat(new LongValueRange(-1L, 9L, 2L).contains(2L)).isEqualTo(false);
-        assertThat(new LongValueRange(100L, 120L, 5L).contains(115L)).isEqualTo(true);
-        assertThat(new LongValueRange(100L, 120L, 5L).contains(114L)).isEqualTo(false);
+        assertThat(new LongValueRange(0L, 10L, 2L).contains(2L)).isTrue();
+        assertThat(new LongValueRange(0L, 10L, 2L).contains(3L)).isFalse();
+        assertThat(new LongValueRange(-1L, 9L, 2L).contains(1L)).isTrue();
+        assertThat(new LongValueRange(-1L, 9L, 2L).contains(2L)).isFalse();
+        assertThat(new LongValueRange(100L, 120L, 5L).contains(115L)).isTrue();
+        assertThat(new LongValueRange(100L, 120L, 5L).contains(114L)).isFalse();
     }
 
     @Test

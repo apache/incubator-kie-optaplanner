@@ -43,12 +43,12 @@ public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
         // lastCompletedStepScore = -1000
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
         LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -500);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -900))).isEqualTo(true);
-        assertThat(acceptor.isAccepted(moveScope0)).isEqualTo(true);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -800))).isEqualTo(true);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -2000))).isEqualTo(false);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -1000))).isEqualTo(true);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -900))).isEqualTo(true); // Repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -900))).isTrue();
+        assertThat(acceptor.isAccepted(moveScope0)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -800))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -2000))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -1000))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -900))).isTrue(); // Repeated call
         stepScope0.setStep(moveScope0.getMove());
         stepScope0.setScore(moveScope0.getScore());
         solverScope.setBestScore(moveScope0.getScore());
@@ -58,14 +58,14 @@ public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
         // lastCompletedStepScore = -500
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
         LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope1, 600);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -900))).isEqualTo(false);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -2000))).isEqualTo(false);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -700))).isEqualTo(false);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -1000))).isEqualTo(false);
-        assertThat(acceptor.isAccepted(moveScope1)).isEqualTo(true);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -500))).isEqualTo(true);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -501))).isEqualTo(false);
-        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -900))).isEqualTo(false); // Repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -900))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -2000))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -700))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -1000))).isFalse();
+        assertThat(acceptor.isAccepted(moveScope1)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -500))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -501))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -900))).isFalse(); // Repeated call
         stepScope1.setStep(moveScope1.getMove());
         stepScope1.setScore(moveScope1.getScore());
         // bestScore unchanged

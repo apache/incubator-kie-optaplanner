@@ -40,8 +40,8 @@ public class BooleanValueRangeTest {
 
     @Test
     public void contains() {
-        assertThat(new BooleanValueRange().contains(Boolean.FALSE)).isEqualTo(true);
-        assertThat(new BooleanValueRange().contains(Boolean.TRUE)).isEqualTo(true);
+        assertThat(new BooleanValueRange().contains(Boolean.FALSE)).isTrue();
+        assertThat(new BooleanValueRange().contains(Boolean.TRUE)).isTrue();
     }
 
     @Test

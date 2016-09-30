@@ -61,12 +61,12 @@ public class TailChainSwapMoveTest {
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new AnchorVariableDemand(variableDescriptor));
 
-        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, b0).isMoveDoable(scoreDirector)).isEqualTo(true);
-        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, b1, a1).isMoveDoable(scoreDirector)).isEqualTo(true);
-        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a2).isMoveDoable(scoreDirector)).isEqualTo(true);
-        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, a0).isMoveDoable(scoreDirector)).isEqualTo(true);
-        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a1).isMoveDoable(scoreDirector)).isEqualTo(false);
-        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a0).isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, b0).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, b1, a1).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a2).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, a0).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a1).isMoveDoable(scoreDirector)).isFalse();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a0).isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test

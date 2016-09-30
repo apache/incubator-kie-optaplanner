@@ -44,13 +44,13 @@ public abstract class AbstractScoreTest {
 
     public static void assertScoreNotFeasible(FeasibilityScore... scores) {
         for (FeasibilityScore score : scores) {
-            assertThat(score.isFeasible()).as(score + " should not be feasible.").isEqualTo(false);
+            assertThat(score.isFeasible()).as(score + " should not be feasible.").isFalse();
         }
     }
 
     public static void assertScoreFeasible(FeasibilityScore ... scores) {
         for (FeasibilityScore score : scores) {
-            assertThat(score.isFeasible()).as(score + " should be feasible.").isEqualTo(true);
+            assertThat(score.isFeasible()).as(score + " should be feasible.").isTrue();
         }
     }
 

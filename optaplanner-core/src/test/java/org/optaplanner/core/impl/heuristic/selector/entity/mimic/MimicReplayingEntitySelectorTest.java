@@ -98,28 +98,28 @@ public class MimicReplayingEntitySelectorTest {
         Iterator<Object> replayingIterator = replayingEntitySelector.iterator();
         assertThat(replayingIterator).isNotNull();
 
-        assertThat(recordingIterator.hasNext()).isEqualTo(true);
-        assertThat(replayingIterator.hasNext()).isEqualTo(true);
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("e1", recordingIterator.next());
         assertCode("e1", replayingIterator.next());
-        assertThat(recordingIterator.hasNext()).isEqualTo(true);
-        assertThat(replayingIterator.hasNext()).isEqualTo(true);
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("e2", recordingIterator.next());
         assertCode("e2", replayingIterator.next());
-        assertThat(replayingIterator.hasNext()).isEqualTo(false); // Extra call
-        assertThat(recordingIterator.hasNext()).isEqualTo(true);
-        assertThat(replayingIterator.hasNext()).isEqualTo(true);
-        assertThat(replayingIterator.hasNext()).isEqualTo(true); // Duplicated call
+        assertThat(replayingIterator.hasNext()).isFalse(); // Extra call
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue(); // Duplicated call
         assertCode("e3", recordingIterator.next());
         assertCode("e3", replayingIterator.next());
-        assertThat(recordingIterator.hasNext()).isEqualTo(false);
-        assertThat(replayingIterator.hasNext()).isEqualTo(false);
-        assertThat(replayingIterator.hasNext()).isEqualTo(false); // Duplicated call
+        assertThat(recordingIterator.hasNext()).isFalse();
+        assertThat(replayingIterator.hasNext()).isFalse();
+        assertThat(replayingIterator.hasNext()).isFalse(); // Duplicated call
 
-        assertThat(recordingEntitySelector.isCountable()).isEqualTo(true);
-        assertThat(replayingEntitySelector.isCountable()).isEqualTo(true);
-        assertThat(recordingEntitySelector.isNeverEnding()).isEqualTo(false);
-        assertThat(replayingEntitySelector.isNeverEnding()).isEqualTo(false);
+        assertThat(recordingEntitySelector.isCountable()).isTrue();
+        assertThat(replayingEntitySelector.isCountable()).isTrue();
+        assertThat(recordingEntitySelector.isNeverEnding()).isFalse();
+        assertThat(replayingEntitySelector.isNeverEnding()).isFalse();
         assertThat(recordingEntitySelector.getSize()).isEqualTo(3L);
         assertThat(replayingEntitySelector.getSize()).isEqualTo(3L);
     }

@@ -100,28 +100,28 @@ public class MimicReplayingValueSelectorTest {
         Iterator<Object> replayingIterator = replayingValueSelector.iterator();
         assertThat(replayingIterator).isNotNull();
 
-        assertThat(recordingIterator.hasNext()).isEqualTo(true);
-        assertThat(replayingIterator.hasNext()).isEqualTo(true);
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("v1", recordingIterator.next());
         assertCode("v1", replayingIterator.next());
-        assertThat(recordingIterator.hasNext()).isEqualTo(true);
-        assertThat(replayingIterator.hasNext()).isEqualTo(true);
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("v2", recordingIterator.next());
         assertCode("v2", replayingIterator.next());
-        assertThat(replayingIterator.hasNext()).isEqualTo(false); // Extra call
-        assertThat(recordingIterator.hasNext()).isEqualTo(true);
-        assertThat(replayingIterator.hasNext()).isEqualTo(true);
-        assertThat(replayingIterator.hasNext()).isEqualTo(true); // Duplicated call
+        assertThat(replayingIterator.hasNext()).isFalse(); // Extra call
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue(); // Duplicated call
         assertCode("v3", recordingIterator.next());
         assertCode("v3", replayingIterator.next());
-        assertThat(recordingIterator.hasNext()).isEqualTo(false);
-        assertThat(replayingIterator.hasNext()).isEqualTo(false);
-        assertThat(replayingIterator.hasNext()).isEqualTo(false); // Duplicated call
+        assertThat(recordingIterator.hasNext()).isFalse();
+        assertThat(replayingIterator.hasNext()).isFalse();
+        assertThat(replayingIterator.hasNext()).isFalse(); // Duplicated call
 
-        assertThat(recordingValueSelector.isCountable()).isEqualTo(true);
-        assertThat(replayingValueSelector.isCountable()).isEqualTo(true);
-        assertThat(recordingValueSelector.isNeverEnding()).isEqualTo(false);
-        assertThat(replayingValueSelector.isNeverEnding()).isEqualTo(false);
+        assertThat(recordingValueSelector.isCountable()).isTrue();
+        assertThat(replayingValueSelector.isCountable()).isTrue();
+        assertThat(recordingValueSelector.isNeverEnding()).isFalse();
+        assertThat(replayingValueSelector.isNeverEnding()).isFalse();
         assertThat(recordingValueSelector.getSize()).isEqualTo(3L);
         assertThat(replayingValueSelector.getSize()).isEqualTo(3L);
     }

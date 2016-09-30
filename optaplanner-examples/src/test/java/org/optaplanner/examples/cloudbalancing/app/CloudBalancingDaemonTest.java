@@ -84,7 +84,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("SolverThread did not die yet due to an interruption.", e);
         }
-        assertThat(solver.isEveryProblemFactChangeProcessed()).isEqualTo(true);
+        assertThat(solver.isEveryProblemFactChangeProcessed()).isTrue();
         assertThat((solver.getBestSolution()).getProcessList()).hasSize(12);
     }
 

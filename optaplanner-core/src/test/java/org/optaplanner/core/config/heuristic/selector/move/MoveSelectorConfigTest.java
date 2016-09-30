@@ -40,7 +40,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertThat(minimumCacheType).isEqualTo(SelectionCacheType.PHASE);
-                assertThat(randomSelection).isEqualTo(false);
+                assertThat(randomSelection).isFalse();
                 return baseMoveSelector;
             }
         };
@@ -64,7 +64,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertThat(minimumCacheType).isEqualTo(SelectionCacheType.STEP);
-                assertThat(randomSelection).isEqualTo(false);
+                assertThat(randomSelection).isFalse();
                 return baseMoveSelector;
             }
         };
@@ -88,7 +88,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertThat(minimumCacheType).isEqualTo(SelectionCacheType.JUST_IN_TIME);
-                assertThat(randomSelection).isEqualTo(false);
+                assertThat(randomSelection).isFalse();
                 return baseMoveSelector;
             }
         };
@@ -110,7 +110,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertThat(minimumCacheType).isEqualTo(SelectionCacheType.PHASE);
-                assertThat(randomSelection).isEqualTo(false);
+                assertThat(randomSelection).isFalse();
                 return baseMoveSelector;
             }
         };
@@ -134,7 +134,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertThat(minimumCacheType).isEqualTo(SelectionCacheType.STEP);
-                assertThat(randomSelection).isEqualTo(false);
+                assertThat(randomSelection).isFalse();
                 return baseMoveSelector;
             }
         };
@@ -158,7 +158,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertThat(minimumCacheType).isEqualTo(SelectionCacheType.JUST_IN_TIME);
-                assertThat(randomSelection).isEqualTo(true);
+                assertThat(randomSelection).isTrue();
                 return baseMoveSelector;
             }
         };
@@ -180,7 +180,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertThat(minimumCacheType).isEqualTo(SelectionCacheType.PHASE);
-                assertThat(randomSelection).isEqualTo(false);
+                assertThat(randomSelection).isFalse();
                 return baseMoveSelector;
             }
         };
@@ -203,7 +203,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertThat(minimumCacheType).isEqualTo(SelectionCacheType.STEP);
-                assertThat(randomSelection).isEqualTo(false);
+                assertThat(randomSelection).isFalse();
                 return baseMoveSelector;
             }
         };

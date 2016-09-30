@@ -24,7 +24,7 @@ public class NoChangeMoveTest {
 
     @Test
     public void isMoveDoable() {
-        assertThat(new NoChangeMove().isMoveDoable(null)).isEqualTo(true);
+        assertThat(new NoChangeMove().isMoveDoable(null)).isTrue();
     }
 
     @Test

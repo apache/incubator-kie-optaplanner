@@ -50,19 +50,19 @@ public class PillarChangeMoveTest {
         a.setValue(v2);
         b.setValue(v2);
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v1);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v2);
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v2);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v2);
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v3);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(true);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isTrue();
         a.setValue(v2);
         b.setValue(v2);
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v4);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test

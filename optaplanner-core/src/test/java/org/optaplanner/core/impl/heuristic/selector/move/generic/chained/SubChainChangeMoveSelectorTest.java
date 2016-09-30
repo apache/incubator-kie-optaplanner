@@ -77,19 +77,19 @@ public class SubChainChangeMoveSelectorTest {
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertThat(testedSelector.isCountable()).isEqualTo(false);
+        assertThat(testedSelector.isCountable()).isFalse();
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertThat(testedSelector.isCountable()).isEqualTo(false);
+        assertThat(testedSelector.isCountable()).isFalse();
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertThat(testedSelector.isCountable()).isEqualTo(true);
+        assertThat(testedSelector.isCountable()).isTrue();
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertThat(testedSelector.isCountable()).isEqualTo(false);
+        assertThat(testedSelector.isCountable()).isFalse();
     }
 
     @Test

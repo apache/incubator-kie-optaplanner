@@ -154,77 +154,77 @@ public class TemporalValueRangeTest {
     public void containsForLocalDate() {
         LocalDate from = LocalDate.of(2016, 7, 1);
         LocalDate to = LocalDate.of(2016, 9, 8);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 6, 30))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2015, 7, 1))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 7, 1))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 7, 3))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 9, 7))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 9, 8))).isEqualTo(false);
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 6, 30))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2015, 7, 1))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 7, 1))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 7, 3))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 9, 7))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).contains(LocalDate.of(2016, 9, 8))).isFalse();
 
         from = LocalDate.of(2016, 7, 1);
         to = LocalDate.of(2016, 9, 1);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 6, 1))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 7, 1))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 8, 1))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 9, 1))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 7, 7))).isEqualTo(false);
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 6, 1))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 7, 1))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 8, 1))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 9, 1))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2016, 7, 7))).isFalse();
 
         from = LocalDate.of(2017, 1, 31);
         to = LocalDate.of(2017, 2, 28);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 30))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 31))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 1))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 27))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 28))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 1))).isEqualTo(false);
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 30))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 31))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 1))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 27))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 28))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 1))).isFalse();
 
         from = LocalDate.of(2017, 1, 31);
         to = LocalDate.of(2017, 3, 31);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 30))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 31))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 1))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 27))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 28))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 1))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 30))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 31))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 4, 1))).isEqualTo(false);
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 30))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 31))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 1))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 27))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 28))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 1))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 30))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 31))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 4, 1))).isFalse();
 
         from = LocalDate.of(2017, 1, 31);
         to = LocalDate.of(2017, 4, 30);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 30))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 31))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 1))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 27))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 28))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 1))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 30))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 31))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 4, 1))).isEqualTo(false);
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 30))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 1, 31))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 1))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 27))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 2, 28))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 1))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 30))).isFalse();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 3, 31))).isTrue();
+        assertThat(new TemporalValueRange<>(from, to, 1, ChronoUnit.MONTHS).contains(LocalDate.of(2017, 4, 1))).isFalse();
     }
 
     @Test
     public void containsForLocalDateTime() {
         LocalDateTime fromTime = LocalDateTime.of(2016, 7, 7, 1, 1, 1);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 7, 7, 1, 1);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 6, 23, 59, 59))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 6, 1, 1))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 7))).isEqualTo(false);
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 6, 23, 59, 59))).isFalse();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1))).isTrue();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 6, 1, 1))).isTrue();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 7))).isFalse();
 
         fromTime = LocalDateTime.of(2016, 7, 7, 1, 1, 1);
         toTime = LocalDateTime.of(2016, 7, 7, 7, 7, 1);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 0, 59, 59))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 7, 6, 1))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 1))).isEqualTo(false);
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 0, 59, 59))).isFalse();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1))).isTrue();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 7, 6, 1))).isTrue();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 1))).isFalse();
 
         fromTime = LocalDateTime.of(2016, 7, 7, 1, 1, 1);
         toTime = LocalDateTime.of(2016, 7, 7, 7, 7, 7);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 1, 0, 59))).isEqualTo(false);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 6))).isEqualTo(true);
-        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 7))).isEqualTo(false);
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 1, 0, 59))).isFalse();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1))).isTrue();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 6))).isTrue();
+        assertThat(new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 7))).isFalse();
     }
 
     @Test

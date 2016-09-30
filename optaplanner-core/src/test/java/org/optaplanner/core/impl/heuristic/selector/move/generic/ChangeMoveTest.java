@@ -47,13 +47,13 @@ public class ChangeMoveTest {
 
         ChangeMove aMove = new ChangeMove(a, entityDescriptor.getGenuineVariableDescriptor("value"), v2);
         a.setValue(v1);
-        assertThat(aMove.isMoveDoable(scoreDirector)).isEqualTo(true);
+        assertThat(aMove.isMoveDoable(scoreDirector)).isTrue();
 
         a.setValue(v2);
-        assertThat(aMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(aMove.isMoveDoable(scoreDirector)).isFalse();
 
         a.setValue(v3);
-        assertThat(aMove.isMoveDoable(scoreDirector)).isEqualTo(true);
+        assertThat(aMove.isMoveDoable(scoreDirector)).isTrue();
     }
 
     @Test

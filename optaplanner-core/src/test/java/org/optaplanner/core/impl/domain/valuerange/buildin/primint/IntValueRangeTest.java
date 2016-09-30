@@ -54,20 +54,20 @@ public class IntValueRangeTest {
 
     @Test
     public void contains() {
-        assertThat(new IntValueRange(0, 10).contains(3)).isEqualTo(true);
-        assertThat(new IntValueRange(0, 10).contains(10)).isEqualTo(false);
-        assertThat(new IntValueRange(0, 10).contains(null)).isEqualTo(false);
-        assertThat(new IntValueRange(100, 120).contains(100)).isEqualTo(true);
-        assertThat(new IntValueRange(100, 120).contains(99)).isEqualTo(false);
-        assertThat(new IntValueRange(-5, 25).contains(-4)).isEqualTo(true);
-        assertThat(new IntValueRange(-5, 25).contains(-20)).isEqualTo(false);
+        assertThat(new IntValueRange(0, 10).contains(3)).isTrue();
+        assertThat(new IntValueRange(0, 10).contains(10)).isFalse();
+        assertThat(new IntValueRange(0, 10).contains(null)).isFalse();
+        assertThat(new IntValueRange(100, 120).contains(100)).isTrue();
+        assertThat(new IntValueRange(100, 120).contains(99)).isFalse();
+        assertThat(new IntValueRange(-5, 25).contains(-4)).isTrue();
+        assertThat(new IntValueRange(-5, 25).contains(-20)).isFalse();
         // IncrementUnit
-        assertThat(new IntValueRange(0, 10, 2).contains(2)).isEqualTo(true);
-        assertThat(new IntValueRange(0, 10, 2).contains(3)).isEqualTo(false);
-        assertThat(new IntValueRange(-1, 9, 2).contains(1)).isEqualTo(true);
-        assertThat(new IntValueRange(-1, 9, 2).contains(2)).isEqualTo(false);
-        assertThat(new IntValueRange(100, 120, 5).contains(115)).isEqualTo(true);
-        assertThat(new IntValueRange(100, 120, 5).contains(114)).isEqualTo(false);
+        assertThat(new IntValueRange(0, 10, 2).contains(2)).isTrue();
+        assertThat(new IntValueRange(0, 10, 2).contains(3)).isFalse();
+        assertThat(new IntValueRange(-1, 9, 2).contains(1)).isTrue();
+        assertThat(new IntValueRange(-1, 9, 2).contains(2)).isFalse();
+        assertThat(new IntValueRange(100, 120, 5).contains(115)).isTrue();
+        assertThat(new IntValueRange(100, 120, 5).contains(114)).isFalse();
     }
 
     @Test

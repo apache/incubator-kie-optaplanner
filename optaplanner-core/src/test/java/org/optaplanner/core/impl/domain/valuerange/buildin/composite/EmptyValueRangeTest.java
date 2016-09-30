@@ -38,8 +38,8 @@ public class EmptyValueRangeTest {
 
     @Test
     public void contains() {
-        assertThat(new EmptyValueRange<Integer>().contains(5)).isEqualTo(false);
-        assertThat(new EmptyValueRange<Integer>().contains(null)).isEqualTo(false);
+        assertThat(new EmptyValueRange<Integer>().contains(5)).isFalse();
+        assertThat(new EmptyValueRange<Integer>().contains(null)).isFalse();
     }
 
     @Test

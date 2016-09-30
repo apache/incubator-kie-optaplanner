@@ -100,7 +100,7 @@ public class CompositeMoveTest {
         Move second = mock(DummyMove.class);
         when(second.isMoveDoable(scoreDirector)).thenReturn(false);
         Move move = CompositeMove.buildMove(first, second);
-        assertThat(move.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test

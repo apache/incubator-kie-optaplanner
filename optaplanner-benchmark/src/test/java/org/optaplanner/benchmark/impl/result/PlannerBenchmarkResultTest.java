@@ -86,7 +86,7 @@ public class PlannerBenchmarkResultTest {
         PlannerBenchmarkResult mergedResult = PlannerBenchmarkResult.createMergedResult(Arrays.asList(
                 p1SolverXProblemA, p1SolverXProblemB, p1SolverYProblemA, p1SolverYProblemB, p2SolverZProblemA));
 
-        assertThat(mergedResult.getAggregation()).isEqualTo(true);
+        assertThat(mergedResult.getAggregation()).isTrue();
         List<ProblemBenchmarkResult> mergedProblemBenchmarkResultList = mergedResult.getUnifiedProblemBenchmarkResultList();
         List<SolverBenchmarkResult> mergedSolverBenchmarkResultList = mergedResult.getSolverBenchmarkResultList();
         assertThat(mergedSolverBenchmarkResultList).hasSize(3);

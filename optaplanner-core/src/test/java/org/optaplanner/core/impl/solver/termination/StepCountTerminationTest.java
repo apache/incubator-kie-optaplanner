@@ -31,22 +31,22 @@ public class StepCountTerminationTest {
         AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
 
         when(phaseScope.getNextStepIndex()).thenReturn(0);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.0, offset(0.0));
         when(phaseScope.getNextStepIndex()).thenReturn(1);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.25, offset(0.0));
         when(phaseScope.getNextStepIndex()).thenReturn(2);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.5, offset(0.0));
         when(phaseScope.getNextStepIndex()).thenReturn(3);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(false);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.75, offset(0.0));
         when(phaseScope.getNextStepIndex()).thenReturn(4);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
         when(phaseScope.getNextStepIndex()).thenReturn(5);
-        assertThat(termination.isPhaseTerminated(phaseScope)).isEqualTo(true);
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
     }
 

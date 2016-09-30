@@ -65,18 +65,18 @@ public class MovableChainedTrailingValueFilterTest {
 
         MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
 
-        assertThat(filter.accept(scoreDirector, a0)).isEqualTo(false);
-        assertThat(filter.accept(scoreDirector, a1)).isEqualTo(true);
-        assertThat(filter.accept(scoreDirector, a2)).isEqualTo(true);
-        assertThat(filter.accept(scoreDirector, a3)).isEqualTo(true);
+        assertThat(filter.accept(scoreDirector, a0)).isFalse();
+        assertThat(filter.accept(scoreDirector, a1)).isTrue();
+        assertThat(filter.accept(scoreDirector, a2)).isTrue();
+        assertThat(filter.accept(scoreDirector, a3)).isTrue();
 
-        assertThat(filter.accept(scoreDirector, b0)).isEqualTo(true);
-        assertThat(filter.accept(scoreDirector, b1)).isEqualTo(true);
-        assertThat(filter.accept(scoreDirector, b2)).isEqualTo(true);
+        assertThat(filter.accept(scoreDirector, b0)).isTrue();
+        assertThat(filter.accept(scoreDirector, b1)).isTrue();
+        assertThat(filter.accept(scoreDirector, b2)).isTrue();
 
-        assertThat(filter.accept(scoreDirector, c0)).isEqualTo(false);
-        assertThat(filter.accept(scoreDirector, c1)).isEqualTo(false);
-        assertThat(filter.accept(scoreDirector, c2)).isEqualTo(true);
+        assertThat(filter.accept(scoreDirector, c0)).isFalse();
+        assertThat(filter.accept(scoreDirector, c1)).isFalse();
+        assertThat(filter.accept(scoreDirector, c2)).isTrue();
     }
 
 }

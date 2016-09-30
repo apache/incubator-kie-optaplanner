@@ -230,7 +230,7 @@ public class QueuedEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertThat(placementIterator.hasNext()).isEqualTo(true);
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
@@ -238,7 +238,7 @@ public class QueuedEntityPlacerTest {
                 "a->1+a->8", "a->1+a->9", "a->2+a->8", "a->2+a->9", "a->3+a->8", "a->3+a->9");
         placer.stepEnded(stepScopeA1);
 
-        assertThat(placementIterator.hasNext()).isEqualTo(true);
+        assertThat(placementIterator.hasNext()).isTrue();
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
@@ -246,7 +246,7 @@ public class QueuedEntityPlacerTest {
                 "b->1+b->8", "b->1+b->9", "b->2+b->8", "b->2+b->9", "b->3+b->8", "b->3+b->9");
         placer.stepEnded(stepScopeA2);
 
-        assertThat(placementIterator.hasNext()).isEqualTo(false);
+        assertThat(placementIterator.hasNext()).isFalse();
         placer.phaseEnded(phaseScopeA);
 
         placer.solvingEnded(solverScope);

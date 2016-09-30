@@ -120,14 +120,14 @@ public class SortingEntitySelectorTest {
     public void isNeverEnding() {
         EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
                 mock(SelectionSorter.class));
-        assertThat(entitySelector.isNeverEnding()).isEqualTo(false);
+        assertThat(entitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
     public void isCountable() {
         EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
                 mock(SelectionSorter.class));
-        assertThat(entitySelector.isCountable()).isEqualTo(true);
+        assertThat(entitySelector.isCountable()).isTrue();
     }
 
 }

@@ -31,7 +31,7 @@ public class FieldMemberAccessorTest {
         FieldMemberAccessor memberAccessor = new FieldMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"));
         assertThat(memberAccessor.getName()).isEqualTo("value");
         assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);
-        assertThat(memberAccessor.isAnnotationPresent(PlanningVariable.class)).isEqualTo(true);
+        assertThat(memberAccessor.isAnnotationPresent(PlanningVariable.class)).isTrue();
 
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");

@@ -53,44 +53,44 @@ public class SwapMoveTest {
         SwapMove abMove = new SwapMove(entityDescriptor.getGenuineVariableDescriptorList(), a, b);
         a.setValue(v1);
         b.setValue(v2);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v2);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v3);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(true);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isTrue();
         a.setValue(v3);
         b.setValue(v2);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(true);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isTrue();
         a.setValue(v3);
         b.setValue(v3);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v4);
-        assertThat(abMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
 
         SwapMove acMove = new SwapMove(entityDescriptor.getGenuineVariableDescriptorList(), a, c);
         a.setValue(v1);
         c.setValue(v4);
-        assertThat(acMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(acMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         c.setValue(v5);
-        assertThat(acMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(acMove.isMoveDoable(scoreDirector)).isFalse();
 
         SwapMove bcMove = new SwapMove(entityDescriptor.getGenuineVariableDescriptorList(), b, c);
         b.setValue(v2);
         c.setValue(v4);
-        assertThat(bcMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(bcMove.isMoveDoable(scoreDirector)).isFalse();
         b.setValue(v4);
         c.setValue(v5);
-        assertThat(bcMove.isMoveDoable(scoreDirector)).isEqualTo(true);
+        assertThat(bcMove.isMoveDoable(scoreDirector)).isTrue();
         b.setValue(v5);
         c.setValue(v4);
-        assertThat(bcMove.isMoveDoable(scoreDirector)).isEqualTo(true);
+        assertThat(bcMove.isMoveDoable(scoreDirector)).isTrue();
         b.setValue(v5);
         c.setValue(v5);
-        assertThat(bcMove.isMoveDoable(scoreDirector)).isEqualTo(false);
+        assertThat(bcMove.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test

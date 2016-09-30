@@ -46,15 +46,15 @@ public class ListValueRangeTest {
 
     @Test
     public void contains() {
-        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(5)).isEqualTo(true);
-        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(4)).isEqualTo(false);
-        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(null)).isEqualTo(false);
-        assertThat(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(7)).isEqualTo(true);
-        assertThat(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(9)).isEqualTo(false);
-        assertThat(new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-15)).isEqualTo(true);
-        assertThat(new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-14)).isEqualTo(false);
-        assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("a")).isEqualTo(true);
-        assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("n")).isEqualTo(false);
+        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(5)).isTrue();
+        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(4)).isFalse();
+        assertThat(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(null)).isFalse();
+        assertThat(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(7)).isTrue();
+        assertThat(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(9)).isFalse();
+        assertThat(new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-15)).isTrue();
+        assertThat(new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-14)).isFalse();
+        assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("a")).isTrue();
+        assertThat(new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("n")).isFalse();
     }
 
     @Test

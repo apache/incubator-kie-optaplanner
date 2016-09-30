@@ -54,20 +54,20 @@ public class BigIntegerValueRangeTest {
 
     @Test
     public void contains() {
-        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(new BigInteger("3"))).isEqualTo(true);
-        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(new BigInteger("10"))).isEqualTo(false);
-        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(null)).isEqualTo(false);
-        assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).contains(new BigInteger("100"))).isEqualTo(true);
-        assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).contains(new BigInteger("99"))).isEqualTo(false);
-        assertThat(new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).contains(new BigInteger("-4"))).isEqualTo(true);
-        assertThat(new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).contains(new BigInteger("-20"))).isEqualTo(false);
+        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(new BigInteger("3"))).isTrue();
+        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(new BigInteger("10"))).isFalse();
+        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(null)).isFalse();
+        assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).contains(new BigInteger("100"))).isTrue();
+        assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).contains(new BigInteger("99"))).isFalse();
+        assertThat(new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).contains(new BigInteger("-4"))).isTrue();
+        assertThat(new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).contains(new BigInteger("-20"))).isFalse();
         // IncrementUnit
-        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2")).contains(new BigInteger("2"))).isEqualTo(true);
-        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2")).contains(new BigInteger("3"))).isEqualTo(false);
-        assertThat(new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2")).contains(new BigInteger("1"))).isEqualTo(true);
-        assertThat(new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2")).contains(new BigInteger("2"))).isEqualTo(false);
-        assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5")).contains(new BigInteger("115"))).isEqualTo(true);
-        assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5")).contains(new BigInteger("114"))).isEqualTo(false);
+        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2")).contains(new BigInteger("2"))).isTrue();
+        assertThat(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2")).contains(new BigInteger("3"))).isFalse();
+        assertThat(new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2")).contains(new BigInteger("1"))).isTrue();
+        assertThat(new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2")).contains(new BigInteger("2"))).isFalse();
+        assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5")).contains(new BigInteger("115"))).isTrue();
+        assertThat(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5")).contains(new BigInteger("114"))).isFalse();
     }
 
     @Test
