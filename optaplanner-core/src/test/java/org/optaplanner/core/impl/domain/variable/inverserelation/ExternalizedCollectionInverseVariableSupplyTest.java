@@ -52,17 +52,17 @@ public class ExternalizedCollectionInverseVariableSupplyTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         supply.resetWorkingSolution(scoreDirector);
 
-        assertThat((Collection<Object>) supply.getInverseCollection(val1)).containsExactly(a, b);
+        assertThat((Collection<Object>) supply.getInverseCollection(val1)).containsOnly(a, b);
         assertThat((Collection<Object>) supply.getInverseCollection(val2)).isEmpty();
-        assertThat((Collection<Object>) supply.getInverseCollection(val3)).containsExactly(c, d);
+        assertThat((Collection<Object>) supply.getInverseCollection(val3)).containsOnly(c, d);
 
         supply.beforeVariableChanged(scoreDirector, c);
         c.setValue(val2);
         supply.afterVariableChanged(scoreDirector, c);
 
-        assertThat((Collection<Object>) supply.getInverseCollection(val1)).containsExactly(a, b);
-        assertThat((Collection<Object>) supply.getInverseCollection(val2)).containsExactly(c);
-        assertThat((Collection<Object>) supply.getInverseCollection(val3)).containsExactly(d);
+        assertThat((Collection<Object>) supply.getInverseCollection(val1)).containsOnly(a, b);
+        assertThat((Collection<Object>) supply.getInverseCollection(val2)).containsOnly(c);
+        assertThat((Collection<Object>) supply.getInverseCollection(val3)).containsOnly(d);
 
         supply.clearWorkingSolution(scoreDirector);
     }

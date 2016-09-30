@@ -41,15 +41,15 @@ public class LongValueRangeTest {
 
     @Test
     public void get() {
-        assertThat(new LongValueRange(0L, 10L).get(3L).intValue()).isEqualTo(3L);
-        assertThat(new LongValueRange(100L, 120L).get(3L).intValue()).isEqualTo(103L);
-        assertThat(new LongValueRange(-5L, 25L).get(1L).intValue()).isEqualTo(-4L);
-        assertThat(new LongValueRange(-5L, 25L).get(6L).intValue()).isEqualTo(1L);
-        assertThat(new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).get(1004L).intValue()).isEqualTo(4L);
+        assertThat(new LongValueRange(0L, 10L).get(3L)).isEqualTo(3L);
+        assertThat(new LongValueRange(100L, 120L).get(3L)).isEqualTo(103L);
+        assertThat(new LongValueRange(-5L, 25L).get(1L)).isEqualTo(-4L);
+        assertThat(new LongValueRange(-5L, 25L).get(6L)).isEqualTo(1L);
+        assertThat(new LongValueRange(-1000L, Long.MAX_VALUE - 3000L).get(1004L)).isEqualTo(4L);
         // IncrementUnit
-        assertThat(new LongValueRange(0L, 10L, 2L).get(3L).intValue()).isEqualTo(6L);
-        assertThat(new LongValueRange(-1L, 9L, 2L).get(3L).intValue()).isEqualTo(5L);
-        assertThat(new LongValueRange(100L, 120L, 5L).get(3L).intValue()).isEqualTo(115L);
+        assertThat(new LongValueRange(0L, 10L, 2L).get(3L)).isEqualTo(6L);
+        assertThat(new LongValueRange(-1L, 9L, 2L).get(3L)).isEqualTo(5L);
+        assertThat(new LongValueRange(100L, 120L, 5L).get(3L)).isEqualTo(115L);
     }
 
     @Test
