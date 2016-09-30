@@ -176,7 +176,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataImmovableEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertThat(solvedE3.getValue()).isEqualTo(null);
+        assertThat(solvedE3.getValue()).isNull();
         assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
@@ -212,7 +212,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         assertThat(solvedE3.getValue()).isEqualTo(v2);
         TestdataReinitializeEntity solvedE4 = solution.getEntityList().get(3);
         assertCode("e4", solvedE4);
-        assertThat(solvedE4.getValue()).isEqualTo(null);
+        assertThat(solvedE4.getValue()).isNull();
         assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 

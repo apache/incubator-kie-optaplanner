@@ -27,22 +27,22 @@ public class ConfigUtilsTest {
     public void testMergeProperty() {
         Integer a = null;
         Integer b = null;
-        assertThat(mergeProperty(a, b)).isEqualTo(null);
+        assertThat(mergeProperty(a, b)).isNull();
         a = Integer.valueOf(1);
-        assertThat(mergeProperty(a, b)).isEqualTo(null);
+        assertThat(mergeProperty(a, b)).isNull();
         b = Integer.valueOf(10);
-        assertThat(mergeProperty(a, b)).isEqualTo(null);
+        assertThat(mergeProperty(a, b)).isNull();
         b = Integer.valueOf(1);
         assertThat(mergeProperty(a, b)).isEqualTo(Integer.valueOf(1));
         a = null;
-        assertThat(mergeProperty(a, b)).isEqualTo(null);
+        assertThat(mergeProperty(a, b)).isNull();
     }
 
     @Test
     public void testMeldProperty() {
         Integer a = null;
         Integer b = null;
-        assertThat(meldProperty(a, b)).isEqualTo(null);
+        assertThat(meldProperty(a, b)).isNull();
         a = Integer.valueOf(1);
         assertThat(meldProperty(a, b)).isEqualTo(Integer.valueOf(1));
         b = Integer.valueOf(10);

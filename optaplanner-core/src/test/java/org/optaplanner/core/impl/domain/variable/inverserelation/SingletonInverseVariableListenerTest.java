@@ -63,7 +63,7 @@ public class SingletonInverseVariableListenerTest {
         solution.setChainedAnchorList(Arrays.asList(a0, b0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
-        assertThat(b1.getNextEntity()).isEqualTo(null);
+        assertThat(b1.getNextEntity()).isNull();
 
         variableListener.beforeVariableChanged(scoreDirector, a3);
         a3.setChainedObject(b1);

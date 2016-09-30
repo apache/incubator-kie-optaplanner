@@ -70,7 +70,7 @@ public class StatisticUtilsTest {
 
     @Test
     public void getStandardDeviationString() throws Exception {
-        assertThat(StatisticUtils.getStandardDeviationString(null)).isEqualTo(null);
+        assertThat(StatisticUtils.getStandardDeviationString(null)).isNull();
         assertThat(StatisticUtils.getStandardDeviationString(new double[]{2.0})).isEqualTo("2.0");
         assertThat(StatisticUtils.getStandardDeviationString(new double[]{Math.sqrt(2.0)})).isEqualTo("1.41");
         assertThat(StatisticUtils.getStandardDeviationString(new double[]{160338212.294})).isEqualTo("1.6E8");

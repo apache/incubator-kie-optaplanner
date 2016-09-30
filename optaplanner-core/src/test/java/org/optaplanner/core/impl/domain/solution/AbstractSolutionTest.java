@@ -36,7 +36,7 @@ public class AbstractSolutionTest {
     public void getScore() {
         TestdataAbstractSolutionBasedSolution solution = new TestdataAbstractSolutionBasedSolution();
         solution.setScore(null);
-        assertThat(solution.getScore()).isEqualTo(null);
+        assertThat(solution.getScore()).isNull();
         solution.setScore(SimpleScore.valueOfInitialized(-10));
         assertThat(solution.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-10));
         solution.setScore(SimpleScore.valueOfInitialized(-2));

@@ -235,7 +235,7 @@ public abstract class AbstractSolutionClonerTest {
         TestdataUnannotatedExtendedEntity cloneC = (TestdataUnannotatedExtendedEntity) cloneEntityList.get(2);
         TestdataUnannotatedExtendedEntity cloneD = (TestdataUnannotatedExtendedEntity) cloneEntityList.get(3);
         assertEntityClone(a, cloneA, "a", "1");
-        assertThat(cloneA.getExtraObject()).isEqualTo(null);
+        assertThat(cloneA.getExtraObject()).isNull();
         assertEntityClone(b, cloneB, "b", "1");
         assertThat(cloneB.getExtraObject()).isEqualTo("extraObjectOnEntity");
         assertEntityClone(c, cloneC, "c", "3");
@@ -285,7 +285,7 @@ public abstract class AbstractSolutionClonerTest {
         TestdataExtendedThirdPartyEntity cloneC = (TestdataExtendedThirdPartyEntity) cloneEntityList.get(2);
         TestdataExtendedThirdPartyEntity cloneD = (TestdataExtendedThirdPartyEntity) cloneEntityList.get(3);
         assertEntityClone(a, cloneA, "a", "1");
-        assertThat(cloneA.getExtraObject()).isEqualTo(null);
+        assertThat(cloneA.getExtraObject()).isNull();
         assertEntityClone(b, cloneB, "b", "1");
         assertThat(cloneB.getExtraObject()).isEqualTo("extraObjectOnEntity");
         assertEntityClone(c, cloneC, "c", "3");
