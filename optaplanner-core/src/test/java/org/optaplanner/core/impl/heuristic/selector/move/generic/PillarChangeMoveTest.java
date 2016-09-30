@@ -141,11 +141,11 @@ public class PillarChangeMoveTest {
         TestdataEntity e = new TestdataEntity("e", v1);
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
 
-        assertThat(new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v1).toString()).isEqualTo("[a, b] {null -> v1}");
-        assertThat(new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v2).toString()).isEqualTo("[a, b] {null -> v2}");
-        assertThat(new PillarChangeMove(Arrays.<Object>asList(c, d, e), variableDescriptor, null).toString()).isEqualTo("[c, d, e] {v1 -> null}");
-        assertThat(new PillarChangeMove(Arrays.<Object>asList(c, d, e), variableDescriptor, v2).toString()).isEqualTo("[c, d, e] {v1 -> v2}");
-        assertThat(new PillarChangeMove(Arrays.<Object>asList(d), variableDescriptor, v2).toString()).isEqualTo("[d] {v1 -> v2}");
+        assertThat(new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v1)).hasToString("[a, b] {null -> v1}");
+        assertThat(new PillarChangeMove(Arrays.<Object>asList(a, b), variableDescriptor, v2)).hasToString("[a, b] {null -> v2}");
+        assertThat(new PillarChangeMove(Arrays.<Object>asList(c, d, e), variableDescriptor, null)).hasToString("[c, d, e] {v1 -> null}");
+        assertThat(new PillarChangeMove(Arrays.<Object>asList(c, d, e), variableDescriptor, v2)).hasToString("[c, d, e] {v1 -> v2}");
+        assertThat(new PillarChangeMove(Arrays.<Object>asList(d), variableDescriptor, v2)).hasToString("[d] {v1 -> v2}");
     }
 
 }

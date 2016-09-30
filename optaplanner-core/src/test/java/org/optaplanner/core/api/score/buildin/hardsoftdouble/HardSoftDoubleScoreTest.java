@@ -37,8 +37,8 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void testToString() {
-        assertThat(HardSoftDoubleScore.valueOfInitialized(-147.2, -258.3).toString()).isEqualTo("-147.2hard/-258.3soft");
-        assertThat(HardSoftDoubleScore.valueOf(-7, -147.2, -258.3).toString()).isEqualTo("-7init/-147.2hard/-258.3soft");
+        assertThat(HardSoftDoubleScore.valueOfInitialized(-147.2, -258.3)).hasToString("-147.2hard/-258.3soft");
+        assertThat(HardSoftDoubleScore.valueOf(-7, -147.2, -258.3)).hasToString("-7init/-147.2hard/-258.3soft");
     }
 
     @Test(expected = IllegalArgumentException.class)

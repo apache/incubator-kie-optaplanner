@@ -252,11 +252,11 @@ public class PillarSwapMoveTest {
                 .getGenuineVariableDescriptorList();
 
         assertThat(new PillarSwapMove(variableDescriptorList, Arrays.<Object>asList(a, b),
-                Arrays.<Object>asList(c, d, e)).toString()).isEqualTo("[a, b] {null} <-> [c, d, e] {v1}");
+                Arrays.<Object>asList(c, d, e))).hasToString("[a, b] {null} <-> [c, d, e] {v1}");
         assertThat(new PillarSwapMove(variableDescriptorList, Arrays.<Object>asList(b),
-                Arrays.<Object>asList(c)).toString()).isEqualTo("[b] {null} <-> [c] {v1}");
+                Arrays.<Object>asList(c))).hasToString("[b] {null} <-> [c] {v1}");
         assertThat(new PillarSwapMove(variableDescriptorList, Arrays.<Object>asList(f, g),
-                Arrays.<Object>asList(c, d, e)).toString()).isEqualTo("[f, g] {v2} <-> [c, d, e] {v1}");
+                Arrays.<Object>asList(c, d, e))).hasToString("[f, g] {v2} <-> [c, d, e] {v1}");
     }
 
 }

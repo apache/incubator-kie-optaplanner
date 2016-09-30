@@ -270,9 +270,9 @@ public class KOptMoveTest {
                 .demand(new AnchorVariableDemand(variableDescriptor));
 
         assertThat(new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2,
-                new Object[]{b0, c1}).toString()).isEqualTo("a2 {a1} -kOpt-> b1 {b0} -kOpt-> c2 {c1}");
+                new Object[]{b0, c1})).hasToString("a2 {a1} -kOpt-> b1 {b0} -kOpt-> c2 {c1}");
         assertThat(new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2,
-                new Object[]{b2, c2}).toString()).isEqualTo("a2 {a1} -kOpt-> null {b2} -kOpt-> null {c2}");
+                new Object[]{b2, c2})).hasToString("a2 {a1} -kOpt-> null {b2} -kOpt-> null {c2}");
     }
 
 }

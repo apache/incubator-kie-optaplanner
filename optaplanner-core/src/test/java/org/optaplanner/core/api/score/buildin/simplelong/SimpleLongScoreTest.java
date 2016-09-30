@@ -36,8 +36,8 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void testToString() {
-        assertThat(SimpleLongScore.valueOfInitialized(-147L).toString()).isEqualTo("-147");
-        assertThat(SimpleLongScore.valueOf(-7, -147L).toString()).isEqualTo("-7init/-147");
+        assertThat(SimpleLongScore.valueOfInitialized(-147L)).hasToString("-147");
+        assertThat(SimpleLongScore.valueOf(-7, -147L)).hasToString("-7init/-147");
     }
 
     @Test(expected = IllegalArgumentException.class)
