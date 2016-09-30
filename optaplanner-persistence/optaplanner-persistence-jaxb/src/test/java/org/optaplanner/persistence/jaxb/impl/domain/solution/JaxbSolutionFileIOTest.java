@@ -28,7 +28,6 @@ import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataSolutio
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataValue;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class JaxbSolutionFileIOTest {
 

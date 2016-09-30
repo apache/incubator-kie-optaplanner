@@ -34,7 +34,6 @@ import org.optaplanner.core.impl.testdata.domain.multientity.TestdataMultiEntity
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
 

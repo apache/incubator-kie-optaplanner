@@ -28,8 +28,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSe
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
 
 public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
 

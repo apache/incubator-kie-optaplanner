@@ -28,7 +28,6 @@ import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataS
 import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataValue;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class XStreamSolutionFileIOTest {
 
