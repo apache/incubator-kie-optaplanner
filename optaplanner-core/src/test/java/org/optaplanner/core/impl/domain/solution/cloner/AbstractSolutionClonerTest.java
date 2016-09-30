@@ -617,7 +617,7 @@ public abstract class AbstractSolutionClonerTest {
             assertThat(cloneShadowVariableList).isNull();
         } else {
             assertThat(cloneShadowVariableList).isNotSameAs(originalShadowVariableList);
-            assertThat(cloneShadowVariableList.size()).isEqualTo(originalShadowVariableList.size());
+            assertThat(cloneShadowVariableList).hasSameSizeAs(originalShadowVariableList);
             for (int i = 0; i < originalShadowVariableList.size(); i++) {
                 assertThat(cloneShadowVariableList.get(i)).isSameAs(originalShadowVariableList.get(i));
             }
@@ -629,7 +629,7 @@ public abstract class AbstractSolutionClonerTest {
             assertThat(cloneShadowVariableMap).isNull();
         } else {
             assertThat(cloneShadowVariableMap).isNotSameAs(originalShadowVariableMap);
-            assertThat(cloneShadowVariableMap.size()).isEqualTo(originalShadowVariableMap.size());
+            assertThat(cloneShadowVariableMap).hasSameSizeAs(originalShadowVariableMap);
             for (String key : originalShadowVariableMap.keySet()) {
                 assertThat(cloneShadowVariableMap.get(key)).isSameAs(originalShadowVariableMap.get(key));
             }
@@ -713,7 +713,7 @@ public abstract class AbstractSolutionClonerTest {
             assertThat(cloneShadowVariableList).isNull();
         } else {
             assertThat(cloneShadowVariableList).isNotSameAs(originalShadowVariableList);
-            assertThat(cloneShadowVariableList.size()).isEqualTo(originalShadowVariableList.size());
+            assertThat(cloneShadowVariableList).hasSameSizeAs(originalShadowVariableList);
             for (int i = 0; i < originalShadowVariableList.size(); i++) {
                 assertThat(cloneShadowVariableList.get(i)).isSameAs(originalShadowVariableList.get(i));
             }
@@ -725,7 +725,7 @@ public abstract class AbstractSolutionClonerTest {
             assertThat(cloneShadowVariableMap).isNull();
         } else {
             assertThat(cloneShadowVariableMap).isNotSameAs(originalShadowVariableMap);
-            assertThat(cloneShadowVariableMap.size()).isEqualTo(originalShadowVariableMap.size());
+            assertThat(cloneShadowVariableMap).hasSameSizeAs(originalShadowVariableMap);
             for (String key : originalShadowVariableMap.keySet()) {
                 assertThat(cloneShadowVariableMap.get(key)).isSameAs(originalShadowVariableMap.get(key));
             }
