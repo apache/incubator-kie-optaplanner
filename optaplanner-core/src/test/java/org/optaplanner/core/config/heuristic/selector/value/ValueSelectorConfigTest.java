@@ -42,8 +42,8 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
-        assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
+        assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
+        assertThat(valueSelector).isNotInstanceOf(ShufflingValueSelector.class);
         assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
@@ -58,8 +58,8 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
-        assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
+        assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
+        assertThat(valueSelector).isNotInstanceOf(ShufflingValueSelector.class);
         // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
         assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
@@ -75,7 +75,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
+        assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
         // cacheType gets upgraded to STEP
         // assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.JUST_IN_TIME);
     }
@@ -91,8 +91,8 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
-        assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
+        assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
+        assertThat(valueSelector).isNotInstanceOf(ShufflingValueSelector.class);
         assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
@@ -107,8 +107,8 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
-        assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
+        assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
+        assertThat(valueSelector).isNotInstanceOf(ShufflingValueSelector.class);
         // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
         assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
@@ -124,7 +124,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
+        assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
         // cacheType gets upgraded to STEP
         // assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.JUST_IN_TIME);
     }
@@ -140,9 +140,9 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class,
-                ((ShufflingValueSelector) valueSelector).getChildValueSelector());
+        assertThat(valueSelector).isInstanceOf(ShufflingValueSelector.class);
+        assertThat(((ShufflingValueSelector) valueSelector).getChildValueSelector())
+                .isInstanceOf(FromSolutionPropertyValueSelector.class);
         assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
@@ -157,9 +157,9 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(ShufflingValueSelector.class, valueSelector);
-        assertInstanceOf(FromSolutionPropertyValueSelector.class,
-                ((ShufflingValueSelector) valueSelector).getChildValueSelector());
+        assertThat(valueSelector).isInstanceOf(ShufflingValueSelector.class);
+        assertThat(((ShufflingValueSelector) valueSelector).getChildValueSelector())
+                .isInstanceOf(FromSolutionPropertyValueSelector.class);
         assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }
 

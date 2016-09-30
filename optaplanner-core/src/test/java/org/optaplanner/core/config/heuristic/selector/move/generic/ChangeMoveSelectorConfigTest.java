@@ -42,7 +42,7 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(ChangeMoveSelector.class, moveSelector);
+        assertThat(moveSelector).isInstanceOf(ChangeMoveSelector.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -60,7 +60,7 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(UnionMoveSelector.class, moveSelector);
+        assertThat(moveSelector).isInstanceOf(UnionMoveSelector.class);
         assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(3);
     }
 
@@ -71,7 +71,7 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(ChangeMoveSelector.class, moveSelector);
+        assertThat(moveSelector).isInstanceOf(ChangeMoveSelector.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -89,7 +89,7 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(UnionMoveSelector.class, moveSelector);
+        assertThat(moveSelector).isInstanceOf(UnionMoveSelector.class);
         assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
     }
 

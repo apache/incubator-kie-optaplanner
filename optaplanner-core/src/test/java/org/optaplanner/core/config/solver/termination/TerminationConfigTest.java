@@ -36,7 +36,7 @@ public class TerminationConfigTest {
         terminationConfig.setHoursSpentLimit(2L);
         terminationConfig.setDaysSpentLimit(1L);
         Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(TimeMillisSpentTermination.class, termination);
+        assertThat(termination).isInstanceOf(TimeMillisSpentTermination.class);
         assertThat(((TimeMillisSpentTermination) termination).getTimeMillisSpentLimit()).isEqualTo(93784005L);
     }
 
@@ -49,7 +49,7 @@ public class TerminationConfigTest {
         terminationConfig.setUnimprovedHoursSpentLimit(2L);
         terminationConfig.setUnimprovedDaysSpentLimit(1L);
         Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(UnimprovedTimeMillisSpentTermination.class, termination);
+        assertThat(termination).isInstanceOf(UnimprovedTimeMillisSpentTermination.class);
         assertThat(((UnimprovedTimeMillisSpentTermination) termination).getUnimprovedTimeMillisSpentLimit()).isEqualTo(93784005L);
     }
 

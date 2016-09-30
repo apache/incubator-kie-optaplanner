@@ -63,18 +63,18 @@ public class CompositeMoveTest {
 
     @Test
     public void buildEmptyMove() {
-        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove(new ArrayList<>()));
-        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove());
+        assertThat(CompositeMove.buildMove(new ArrayList<>())).isInstanceOf(NoChangeMove.class);
+        assertThat(CompositeMove.buildMove()).isInstanceOf(NoChangeMove.class);
     }
 
     @Test
     public void buildOneElemMove() {
         Move tmpMove = new DummyMove();
         Move move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
-        assertInstanceOf(DummyMove.class, move);
+        assertThat(move).isInstanceOf(DummyMove.class);
 
         move = CompositeMove.buildMove(tmpMove);
-        assertInstanceOf(DummyMove.class, move);
+        assertThat(move).isInstanceOf(DummyMove.class);
     }
 
     @Test
@@ -82,14 +82,14 @@ public class CompositeMoveTest {
         Move first = new DummyMove();
         Move second = new NoChangeMove();
         Move move = CompositeMove.buildMove(Arrays.asList(first, second));
-        assertInstanceOf(CompositeMove.class, move);
-        assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
-        assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
+        assertThat(move).isInstanceOf(CompositeMove.class);
+        assertThat(((CompositeMove) move).getMoves()[0]).isInstanceOf(DummyMove.class);
+        assertThat(((CompositeMove) move).getMoves()[1]).isInstanceOf(NoChangeMove.class);
 
         move = CompositeMove.buildMove(first, second);
-        assertInstanceOf(CompositeMove.class, move);
-        assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
-        assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
+        assertThat(move).isInstanceOf(CompositeMove.class);
+        assertThat(((CompositeMove) move).getMoves()[0]).isInstanceOf(DummyMove.class);
+        assertThat(((CompositeMove) move).getMoves()[1]).isInstanceOf(NoChangeMove.class);
     }
 
     @Test

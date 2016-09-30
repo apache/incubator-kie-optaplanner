@@ -31,7 +31,7 @@ public class ScoreDirectorFactoryConfigTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         config.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         ScoreDefinition scoreDefinition = config.buildDeprecatedScoreDefinition();
-        assertInstanceOf(SimpleScoreDefinition.class, scoreDefinition);
+        assertThat(scoreDefinition).isInstanceOf(SimpleScoreDefinition.class);
     }
 
     @Test

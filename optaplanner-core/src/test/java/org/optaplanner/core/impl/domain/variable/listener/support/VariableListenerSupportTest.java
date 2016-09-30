@@ -80,7 +80,7 @@ public class VariableListenerSupportTest {
 
         SingletonInverseVariableSupply supply1
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertInstanceOf(ExternalizedSingletonInverseVariableSupply.class, supply1);
+        assertThat(supply1).isInstanceOf(ExternalizedSingletonInverseVariableSupply.class);
         SingletonInverseVariableSupply supply2
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
         assertThat(supply2).isSameAs(supply1);
@@ -105,7 +105,7 @@ public class VariableListenerSupportTest {
 
         SingletonInverseVariableSupply supply1
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertInstanceOf(SingletonInverseVariableListener.class, supply1);
+        assertThat(supply1).isInstanceOf(SingletonInverseVariableListener.class);
         SingletonInverseVariableSupply supply2
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
         assertThat(supply2).isSameAs(supply1);

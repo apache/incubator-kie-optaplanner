@@ -135,11 +135,11 @@ public class CachingEntitySelectorTest {
 
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
         cachingEntitySelector.constructCache(null);
-        assertInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
+        assertThat(cachingEntitySelector.iterator()).isInstanceOf(CachedListRandomIterator.class);
 
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
         cachingEntitySelector.constructCache(null);
-        assertNotInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
+        assertThat(cachingEntitySelector.iterator()).isNotInstanceOf(CachedListRandomIterator.class);
     }
 
 }
