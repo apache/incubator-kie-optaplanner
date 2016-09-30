@@ -78,20 +78,6 @@ public class PlannerAssert extends Assert {
         }
     }
 
-    public static <K, V> void assertMapContainsKeysExactly(Map<K, V> map, K... keys) {
-        assertMapContainsKeys(map, keys);
-        assertEquals(keys.length, map.size());
-    }
-
-    public static <K, V> void assertMapContainsKeys(Map<K, V> map, K... keys) {
-        for (int i = 0; i < keys.length; i++) {
-            if (!map.containsKey(keys[i])) {
-                fail("The asserted map (" + map
-                        + ") does not contain expected key (" + keys[i] + ")");
-            }
-        }
-    }
-
     // ************************************************************************
     // PhaseLifecycleListener methods
     // ************************************************************************
