@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager.finalist;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
@@ -49,7 +51,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -63,7 +65,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -77,7 +79,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
@@ -102,7 +104,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -117,7 +119,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -132,7 +134,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
@@ -167,7 +169,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100, -5));
         finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000, -10));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope0);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope0);
         stepScope0.setScore(moveScope0.getScore());
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
@@ -181,7 +183,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope1);
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000, -10));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope1);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope1);
         stepScope1.setScore(moveScope1.getScore());
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
@@ -195,7 +197,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.addMove(moveScope2);
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500, -10));
-        assertThat(extractSingleton(finalistPodium.getFinalistList())).isSameAs(moveScope2);
+        verifyListContainsExactlyOneInstance(finalistPodium.getFinalistList(), moveScope2);
         stepScope2.setScore(moveScope2.getScore());
         finalistPodium.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
@@ -211,4 +213,8 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         return moveScope;
     }
 
+    private static <E> void verifyListContainsExactlyOneInstance(List<E> list, E instance) {
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isSameAs(instance);
+    }
 }
