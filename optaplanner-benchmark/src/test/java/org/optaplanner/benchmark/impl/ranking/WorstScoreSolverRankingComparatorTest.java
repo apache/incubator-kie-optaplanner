@@ -106,7 +106,8 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertCompareToEquals(comparator, a, b);
+        assertThat(comparator.compare(a, b)).isZero();
+        assertThat(comparator.compare(b, a)).isZero();
 
         a0.setAverageScore(SimpleScore.valueOf(-100, -1000));
         b0.setAverageScore(SimpleScore.valueOf(-100, -1000));

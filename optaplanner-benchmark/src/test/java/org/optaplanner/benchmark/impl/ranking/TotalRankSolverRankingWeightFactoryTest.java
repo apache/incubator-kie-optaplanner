@@ -128,14 +128,16 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
         Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
-        assertCompareToEquals(aWeight, bWeight);
+        assertThat(aWeight).isEqualByComparingTo(bWeight);
+        assertThat(bWeight).isEqualByComparingTo(aWeight);
 
         a0.setAverageScore(SimpleScore.valueOf(-100, -1000));
         b0.setAverageScore(SimpleScore.valueOf(-100, -1000));
         a.accumulateResults(benchmarkReport);
         b.accumulateResults(benchmarkReport);
         // ranks, uninitialized variable counts, total scores and worst scores are equal
-        assertCompareToEquals(aWeight, bWeight);
+        assertThat(aWeight).isEqualByComparingTo(bWeight);
+        assertThat(bWeight).isEqualByComparingTo(aWeight);
 
         b0.setAverageScore(SimpleScore.valueOfInitialized(-1000));
         b1.setAverageScore(SimpleScore.valueOf(-100, -400));
@@ -192,7 +194,8 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
         Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
-        assertCompareToEquals(aWeight, bWeight);
+        assertThat(aWeight).isEqualByComparingTo(bWeight);
+        assertThat(bWeight).isEqualByComparingTo(aWeight);
     }
 
     @Test
@@ -246,7 +249,8 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
         Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
         // Tie-breaker (total score) is equal
-        assertCompareToEquals(aWeight, bWeight);
+        assertThat(aWeight).isEqualByComparingTo(bWeight);
+        assertThat(bWeight).isEqualByComparingTo(aWeight);
     }
 
     @Test
@@ -269,7 +273,8 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
         Comparable aWeight = factory.createRankingWeight(solverBenchmarkResultList, a);
         Comparable bWeight = factory.createRankingWeight(solverBenchmarkResultList, b);
-        assertCompareToEquals(aWeight, bWeight);
+        assertThat(aWeight).isEqualByComparingTo(bWeight);
+        assertThat(bWeight).isEqualByComparingTo(aWeight);
 
         addProblemBenchmark(Arrays.asList(a1));
         addProblemBenchmark(Arrays.asList(a2));

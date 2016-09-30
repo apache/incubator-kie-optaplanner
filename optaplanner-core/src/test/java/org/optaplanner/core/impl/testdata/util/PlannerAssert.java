@@ -60,25 +60,6 @@ public class PlannerAssert extends Assert {
     public static final long DO_NOT_ASSERT_SIZE = Long.MIN_VALUE;
 
     // ************************************************************************
-    // Missing JUnit methods
-    // ************************************************************************
-
-    public static <C extends Comparable<C>> void assertCompareToEquals(C... comparables) {
-        assertCompareToEquals(Comparator.naturalOrder(), comparables);
-    }
-
-    public static <T> void assertCompareToEquals(Comparator<T> comperator, T... objects) {
-        for (int i = 0; i < objects.length; i++) {
-            for (int j = i + 1; j < objects.length; j++) {
-                T a = objects[i];
-                T b = objects[j];
-                assertTrue("Object (" + a + ") must compare equal to object (" + b + ").", comperator.compare(a, b) == 0);
-                assertTrue("Object (" + b + ") must compare equal to object (" + a + ").", comperator.compare(b, a) == 0);
-            }
-        }
-    }
-
-    // ************************************************************************
     // PhaseLifecycleListener methods
     // ************************************************************************
 
