@@ -34,12 +34,12 @@ public class NoChangeMoveTest {
 
     @Test
     public void getPlanningEntities() {
-        assertThat(new NoChangeMove().getPlanningEntities().isEmpty()).isEqualTo(true);
+        assertThat(new NoChangeMove().getPlanningEntities()).isEmpty();
     }
 
     @Test
     public void getPlanningValues() {
-        assertThat(new NoChangeMove().getPlanningValues().isEmpty()).isEqualTo(true);
+        assertThat(new NoChangeMove().getPlanningValues()).isEmpty();
     }
 
 }

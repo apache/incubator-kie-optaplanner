@@ -519,7 +519,7 @@ public class DefaultSubChainSelectorTest {
             Integer count = subChainCountMap.remove(subChain);
             assertThat(count).as("The subChain (" + subChain + ") was not collected.").isNotNull();
         }
-        assertThat(subChainCountMap.isEmpty()).isTrue();
+        assertThat(subChainCountMap).isEmpty();
         assertThat(iterator.hasNext()).isTrue();
         assertThat(subChainSelector.isCountable()).isEqualTo(true);
         assertThat(subChainSelector.isNeverEnding()).isEqualTo(true);
