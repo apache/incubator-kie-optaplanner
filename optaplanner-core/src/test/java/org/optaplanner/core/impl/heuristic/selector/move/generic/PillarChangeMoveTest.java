@@ -119,7 +119,7 @@ public class PillarChangeMoveTest {
                 TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue(), null);
         assertAllCodesOfCollection(move.getPillar(), "a", "b");
         assertThat(move.getVariableName()).isEqualTo("primaryValue");
-        assertCode(null, move.getToPlanningValue());
+        assertThat(move.getToPlanningValue()).isNull();
 
         move = new PillarChangeMove(
                 Arrays.<Object>asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")),

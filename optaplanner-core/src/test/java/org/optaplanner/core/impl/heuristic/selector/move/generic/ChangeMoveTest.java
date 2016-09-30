@@ -86,7 +86,7 @@ public class ChangeMoveTest {
                 TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue(), null);
         assertCode("a", move.getEntity());
         assertThat(move.getVariableName()).isEqualTo("primaryValue");
-        assertCode(null, move.getToPlanningValue());
+        assertThat(move.getToPlanningValue()).isNull();
 
         move = new ChangeMove(new TestdataMultiVarEntity("b"),
                 TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue(), new TestdataValue("1"));
