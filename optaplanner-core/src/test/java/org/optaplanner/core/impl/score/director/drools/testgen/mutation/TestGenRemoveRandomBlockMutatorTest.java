@@ -47,7 +47,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
         assertThat(m.canMutate()).isFalse();
 
         for (int i = 0; i < LIST_SIZE; i++) {
-            assertThat(removed.contains(list.get(i))).isTrue();
+            assertThat(removed).contains(list.get(i));
         }
     }
 
@@ -72,7 +72,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
         }
 
         for (int i = 0; i < LIST_SIZE; i++) {
-            assertThat(removed.contains(list.get(i))).isTrue();
+            assertThat(removed).contains(list.get(i));
         }
     }
 
