@@ -32,7 +32,7 @@ public class SimpleLongScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"score"}, new SimpleLongScoreDefinition().getLevelLabels());
+        assertThat(new SimpleLongScoreDefinition().getLevelLabels()).containsExactly("score");
     }
 
     @Test

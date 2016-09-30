@@ -32,7 +32,7 @@ public class HardMediumSoftScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard score", "medium score", "soft score"}, new HardMediumSoftScoreDefinition().getLevelLabels());
+        assertThat(new HardMediumSoftScoreDefinition().getLevelLabels()).containsExactly("hard score", "medium score", "soft score");
     }
 
     @Test

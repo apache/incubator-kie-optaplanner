@@ -36,11 +36,11 @@ public class BendableBigDecimalScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard 0 score", "soft 0 score"}, new BendableBigDecimalScoreDefinition(1, 1).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score"}, new BendableBigDecimalScoreDefinition(3, 4).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "soft 0 score", "soft 1 score", "soft 2 score"}, new BendableBigDecimalScoreDefinition(4, 3).getLevelLabels());
-        assertArrayEquals(new String[]{"soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score", "soft 4 score"}, new BendableBigDecimalScoreDefinition(0, 5).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "hard 4 score"}, new BendableBigDecimalScoreDefinition(5, 0).getLevelLabels());
+        assertThat(new BendableBigDecimalScoreDefinition(1, 1).getLevelLabels()).containsExactly("hard 0 score", "soft 0 score");
+        assertThat(new BendableBigDecimalScoreDefinition(3, 4).getLevelLabels()).containsExactly("hard 0 score", "hard 1 score", "hard 2 score", "soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score");
+        assertThat(new BendableBigDecimalScoreDefinition(4, 3).getLevelLabels()).containsExactly("hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "soft 0 score", "soft 1 score", "soft 2 score");
+        assertThat(new BendableBigDecimalScoreDefinition(0, 5).getLevelLabels()).containsExactly("soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score", "soft 4 score");
+        assertThat(new BendableBigDecimalScoreDefinition(5, 0).getLevelLabels()).containsExactly("hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "hard 4 score");
     }
 
     @Test

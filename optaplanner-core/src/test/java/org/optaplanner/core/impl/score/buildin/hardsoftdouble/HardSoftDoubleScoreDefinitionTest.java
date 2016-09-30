@@ -33,7 +33,7 @@ public class HardSoftDoubleScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard score", "soft score"}, new HardSoftDoubleScoreDefinition().getLevelLabels());
+        assertThat(new HardSoftDoubleScoreDefinition().getLevelLabels()).containsExactly("hard score", "soft score");
     }
 
     @Test

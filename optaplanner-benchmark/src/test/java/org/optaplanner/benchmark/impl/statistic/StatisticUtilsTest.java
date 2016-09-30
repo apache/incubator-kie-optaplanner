@@ -20,23 +20,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class StatisticUtilsTest {
 
-    private static final double DELTA = 0.001;
+    private static final Offset<Double> DELTA = offset(0.001);
 
     @Test
     public void singleDetermineStandardDeviationDoubles() throws Exception {
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = Arrays.asList(createSubSingleBenchmarkResult(SimpleScore.valueOfInitialized(0), 0));
-        assertArrayEquals(new double[]{0d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, SimpleScore.valueOfInitialized(0), subSingleBenchmarkResultList.size()), DELTA);
+        assertThat(StatisticUtils.determineStandardDeviationDoubles(
+                subSingleBenchmarkResultList, SimpleScore.valueOfInitialized(0), subSingleBenchmarkResultList.size())
+        ).containsExactly(new double[]{0d}, DELTA);
     }
 
     @Test
@@ -44,7 +47,9 @@ public class StatisticUtilsTest {
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<>(2);
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.valueOfInitialized(-2), 0));
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.valueOfInitialized(-4), 1));
-        assertArrayEquals(new double[]{1d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, SimpleScore.valueOfInitialized(-3), subSingleBenchmarkResultList.size()), DELTA);
+        assertThat(StatisticUtils.determineStandardDeviationDoubles(
+                subSingleBenchmarkResultList, SimpleScore.valueOfInitialized(-3), subSingleBenchmarkResultList.size())
+        ).containsExactly(new double[]{1d}, DELTA);
     }
 
     @Test
@@ -58,8 +63,9 @@ public class StatisticUtilsTest {
             averageScore = averageScore.add(current);
         }
         averageScore = averageScore.divide(subSingleBenchmarkScores.length);
-        assertThat(StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, subSingleBenchmarkResultList.size()))
-                .containsExactly(new double[]{160338212.294}, Assertions.offset(DELTA));
+        assertThat(StatisticUtils.determineStandardDeviationDoubles(
+                subSingleBenchmarkResultList, averageScore, subSingleBenchmarkResultList.size())
+        ).containsExactly(new double[]{160338212.294}, DELTA);
     }
 
     @Test

@@ -33,7 +33,7 @@ public class SimpleDoubleScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"score"}, new SimpleDoubleScoreDefinition().getLevelLabels());
+        assertThat(new SimpleDoubleScoreDefinition().getLevelLabels()).containsExactly("score");
     }
 
     @Test

@@ -29,7 +29,7 @@ public class SimpleBigDecimalScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"score"}, new SimpleBigDecimalScoreDefinition().getLevelLabels());
+        assertThat(new SimpleBigDecimalScoreDefinition().getLevelLabels()).containsExactly("score");
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition

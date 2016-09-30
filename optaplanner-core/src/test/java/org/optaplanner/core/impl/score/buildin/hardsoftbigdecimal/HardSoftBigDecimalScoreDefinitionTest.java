@@ -29,7 +29,7 @@ public class HardSoftBigDecimalScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard score", "soft score"}, new HardSoftBigDecimalScoreDefinition().getLevelLabels());
+        assertThat(new HardSoftBigDecimalScoreDefinition().getLevelLabels()).containsExactly("hard score", "soft score");
     }
 
     @Test
