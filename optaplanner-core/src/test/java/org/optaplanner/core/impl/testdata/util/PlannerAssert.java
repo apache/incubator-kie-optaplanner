@@ -50,12 +50,13 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
  * @see PlannerTestUtils
  */
-public class PlannerAssert extends Assert {
+public class PlannerAssert {
 
     public static final long DO_NOT_ASSERT_SIZE = Long.MIN_VALUE;
 
@@ -94,16 +95,16 @@ public class PlannerAssert extends Assert {
     }
 
     public static <O> void assertElementsOfIterator(Iterator<O> iterator, O... elements) {
-        assertNotNull(iterator);
+        assertThat(iterator).isNotNull();
         for (O element : elements) {
-            assertTrue(iterator.hasNext());
-            assertEquals(element, iterator.next());
+            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator.next()).isEqualTo(element);
         }
     }
 
     public static <O> void assertAllElementsOfIterator(Iterator<O> iterator, O... elements) {
         assertElementsOfIterator(iterator, elements);
-        assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isFalse();
         try {
             iterator.next();
             fail("The iterator with hasNext() (" + false + ") is expected to throw a "
@@ -118,7 +119,7 @@ public class PlannerAssert extends Assert {
     // ************************************************************************
 
     private static CodeAssertable convertToCodeAssertable(Object o) {
-        assertNotNull(o);
+        assertThat(o).isNotNull();
         if (o instanceof CodeAssertable) {
             return (CodeAssertable) o;
         } else if (o instanceof ChangeMove) {
@@ -164,7 +165,7 @@ public class PlannerAssert extends Assert {
 
     public static void assertCode(String expectedCode, Object o) {
         if (expectedCode == null) {
-            assertNull(o);
+            assertThat(o).isNull();
         } else {
             CodeAssertable codeAssertable = convertToCodeAssertable(o);
             assertCode(expectedCode, codeAssertable);
@@ -177,23 +178,23 @@ public class PlannerAssert extends Assert {
     }
 
     public static void assertCode(String expectedCode, CodeAssertable codeAssertable) {
-        assertEquals(expectedCode, codeAssertable.getCode());
+        assertThat(codeAssertable.getCode()).isEqualTo(expectedCode);
     }
 
     public static void assertCode(String message, String expectedCode, CodeAssertable codeAssertable) {
-        assertEquals(message, expectedCode, codeAssertable.getCode());
+        assertThat(codeAssertable.getCode()).as(message).isEqualTo(expectedCode);
     }
 
     public static <O> void assertAllCodesOfArray(O[] array, String... codes) {
-        assertNotNull(array);
-        assertEquals(codes.length, array.length);
+        assertThat(array).isNotNull();
+        assertThat(array).hasSameSizeAs(codes);
         for (int i = 0; i < array.length; i++) {
             assertCode(codes[i], array[i]);
         }
     }
 
     public static <O> void assertCodesOfIterator(Iterator<O> iterator, String... codes) {
-        assertNotNull(iterator);
+        assertThat(iterator).isNotNull();
         for (String code : codes) {
             if (!iterator.hasNext()) {
                 fail("The asserted iterator ends too soon, instead it should return selection (" + code + ").");
@@ -204,7 +205,7 @@ public class PlannerAssert extends Assert {
 
     public static <O> void assertAllCodesOfIterator(Iterator<O> iterator, String... codes) {
         assertCodesOfIterator(iterator, codes);
-        assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isFalse();
     }
 
     public static <O> void assertAllCodesOfCollection(Collection<O> collection, String... codes) {
@@ -217,10 +218,10 @@ public class PlannerAssert extends Assert {
 
     public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, long size, String... codes) {
         assertAllCodesOfIterator(moveSelector.iterator(), codes);
-        assertEquals(true, moveSelector.isCountable());
-        assertEquals(false, moveSelector.isNeverEnding());
+        assertThat(moveSelector.isCountable()).isTrue();
+        assertThat(moveSelector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, moveSelector.getSize());
+            assertThat(moveSelector.getSize()).isEqualTo(size);
         }
     }
 
@@ -231,11 +232,11 @@ public class PlannerAssert extends Assert {
     public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, long size, String... codes) {
         Iterator<Move> iterator = moveSelector.iterator();
         assertCodesOfIterator(iterator, codes);
-        assertTrue(iterator.hasNext());
-        assertEquals(true, moveSelector.isCountable());
-        assertEquals(true, moveSelector.isNeverEnding());
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(moveSelector.isCountable()).isTrue();
+        assertThat(moveSelector.isNeverEnding()).isTrue();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, moveSelector.getSize());
+            assertThat(moveSelector.getSize()).isEqualTo(size);
         }
     }
 
@@ -245,11 +246,11 @@ public class PlannerAssert extends Assert {
 
     public static void assertEmptyNeverEndingMoveSelector(MoveSelector moveSelector, long size) {
         Iterator<Move> iterator = moveSelector.iterator();
-        assertFalse(iterator.hasNext());
-        assertEquals(true, moveSelector.isCountable());
-        assertEquals(true, moveSelector.isNeverEnding());
+        assertThat(iterator.hasNext()).isFalse();
+        assertThat(moveSelector.isCountable()).isTrue();
+        assertThat(moveSelector.isNeverEnding()).isTrue();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, moveSelector.getSize());
+            assertThat(moveSelector.getSize()).isEqualTo(size);
         }
     }
 
@@ -259,10 +260,10 @@ public class PlannerAssert extends Assert {
 
     public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, long size, String... codes) {
         assertAllCodesOfIterator(entitySelector.iterator(), codes);
-        assertEquals(true, entitySelector.isCountable());
-        assertEquals(false, entitySelector.isNeverEnding());
+        assertThat(entitySelector.isCountable()).isTrue();
+        assertThat(entitySelector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, entitySelector.getSize());
+            assertThat(entitySelector.getSize()).isEqualTo(size);
         }
     }
 
@@ -273,11 +274,11 @@ public class PlannerAssert extends Assert {
     public static void assertCodesOfNeverEndingOfEntitySelector(EntitySelector entitySelector, long size, String... codes) {
         Iterator<Object> iterator = entitySelector.iterator();
         assertCodesOfIterator(iterator, codes);
-        assertTrue(iterator.hasNext());
-        assertEquals(true, entitySelector.isCountable());
-        assertEquals(true, entitySelector.isNeverEnding());
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(entitySelector.isCountable()).isTrue();
+        assertThat(entitySelector.isNeverEnding()).isTrue();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, entitySelector.getSize());
+            assertThat(entitySelector.getSize()).isEqualTo(size);
         }
     }
 
@@ -287,10 +288,10 @@ public class PlannerAssert extends Assert {
 
     public static void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, long size, String... codes) {
         assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(false, pillarSelector.isNeverEnding());
+        assertThat(pillarSelector.isCountable()).isTrue();
+        assertThat(pillarSelector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, pillarSelector.getSize());
+            assertThat(pillarSelector.getSize()).isEqualTo(size);
         }
     }
 
@@ -302,10 +303,10 @@ public class PlannerAssert extends Assert {
     public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector, long size,
             String... codes) {
         assertAllCodesOfIterator(valueSelector.iterator(), codes);
-        assertEquals(true, valueSelector.isCountable());
-        assertEquals(false, valueSelector.isNeverEnding());
+        assertThat(valueSelector.isCountable()).isTrue();
+        assertThat(valueSelector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, valueSelector.getSize());
+            assertThat(valueSelector.getSize()).isEqualTo(size);
         }
     }
 
@@ -317,10 +318,10 @@ public class PlannerAssert extends Assert {
     public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
             long size,  String... codes) {
         assertAllCodesOfIterator(valueSelector.iterator(entity), codes);
-        assertEquals(true, valueSelector.isCountable());
-        assertEquals(false, valueSelector.isNeverEnding());
+        assertThat(valueSelector.isCountable()).isTrue();
+        assertThat(valueSelector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, valueSelector.getSize(entity));
+            assertThat(valueSelector.getSize(entity)).isEqualTo(size);
         }
     }
 
@@ -332,10 +333,10 @@ public class PlannerAssert extends Assert {
     public static void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, long size,
             String... codes) {
         assertAllCodesOfIterator(subChainSelector.iterator(), codes);
-        assertEquals(true, subChainSelector.isCountable());
-        assertEquals(false, subChainSelector.isNeverEnding());
+        assertThat(subChainSelector.isCountable()).isTrue();
+        assertThat(subChainSelector.isNeverEnding()).isFalse();
         if (size != DO_NOT_ASSERT_SIZE) {
-            assertEquals(size, subChainSelector.getSize());
+            assertThat(subChainSelector.getSize()).isEqualTo(size);
         }
     }
 
