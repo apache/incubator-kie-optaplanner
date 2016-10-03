@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Used in unit tests to assert that 1 particular solution has a specific weight for a specific score rule.
@@ -91,27 +91,27 @@ public abstract class AbstractScoreVerifier<Solution_> {
         }
         if (matchTotal == null) {
             if (expectedWeight instanceof Byte) {
-                assertEquals(expectedWeight, (byte) 0);
+                assertThat((byte) 0).isEqualTo(expectedWeight);
             } else if (expectedWeight instanceof Short) {
-                assertEquals(expectedWeight, (short) 0);
+                assertThat((short) 0).isEqualTo(expectedWeight);
             } else if (expectedWeight instanceof Integer) {
-                assertEquals(expectedWeight, 0);
+                assertThat(0).isEqualTo(expectedWeight);
             } else if (expectedWeight instanceof Long) {
-                assertEquals(expectedWeight, 0L);
+                assertThat(0L).isEqualTo(expectedWeight);
             } else if (expectedWeight instanceof Float) {
-                assertEquals(expectedWeight, 0F);
+                assertThat(0F).isEqualTo(expectedWeight);
             } else if (expectedWeight instanceof Double) {
-                assertEquals(expectedWeight, 0D);
+                assertThat(0D).isEqualTo(expectedWeight);
             } else if (expectedWeight instanceof BigInteger) {
-                assertEquals(expectedWeight, BigInteger.ZERO);
+                assertThat(BigInteger.ZERO).isEqualTo(expectedWeight);
             } else if (expectedWeight instanceof BigDecimal) {
-                assertEquals(expectedWeight, BigDecimal.ZERO);
+                assertThat(BigDecimal.ZERO).isEqualTo(expectedWeight);
             } else {
                 throw new IllegalStateException("Unsupported " + Number.class.getSimpleName()
                         + " type (" + expectedWeight.getClass() + ") for expectedWeight (" + expectedWeight + ").");
             }
         } else {
-            assertEquals(expectedWeight, matchTotal.getWeightTotalAsNumber());
+            assertThat(matchTotal.getWeightTotalAsNumber()).isEqualTo(expectedWeight);
         }
     }
 
