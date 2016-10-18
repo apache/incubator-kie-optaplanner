@@ -17,11 +17,12 @@
 package org.optaplanner.persistence.xstream.api.score;
 
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.XStream;
 import org.optaplanner.core.api.score.Score;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractScoreXStreamConverterTest {
 
@@ -36,7 +37,7 @@ public abstract class AbstractScoreXStreamConverterTest {
         String xmlString = xStream.toXML(input);
         W output = (W) xStream.fromXML(xmlString);
 
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<([\\w\\-\\.]+)( id=\"\\d+\")?>" // Start of element
@@ -47,9 +48,7 @@ public abstract class AbstractScoreXStreamConverterTest {
         } else {
             regex = "<([\\w\\-\\.]+)( id=\"\\d+\")?/>"; // Start and end of element
         }
-        if (!xmlString.matches(regex)) {
-            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + xmlString);
-        }
+        assertThat(xmlString).matches(Pattern.compile(regex));
     }
 
     public static abstract class TestScoreWrapper<S extends Score> implements Serializable {

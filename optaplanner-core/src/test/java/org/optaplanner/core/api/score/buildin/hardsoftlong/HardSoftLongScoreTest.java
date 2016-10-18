@@ -16,27 +16,28 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftlong;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HardSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(HardSoftLongScore.valueOfInitialized(-147L, -258L),
-                HardSoftLongScore.parseScore("-147hard/-258soft"));
-        assertEquals(HardSoftLongScore.valueOf(-7, -147L, -258L),
-                HardSoftLongScore.parseScore("-7init/-147hard/-258soft"));
+        assertThat(HardSoftLongScore.parseScore("-147hard/-258soft"))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(-147L, -258L));
+        assertThat(HardSoftLongScore.parseScore("-7init/-147hard/-258soft"))
+                .isEqualTo(HardSoftLongScore.valueOf(-7, -147L, -258L));
     }
 
     @Test
     public void testToString() {
-        assertEquals("-147hard/-258soft", HardSoftLongScore.valueOfInitialized(-147L, -258L).toString());
-        assertEquals("-7init/-147hard/-258soft", HardSoftLongScore.valueOf(-7, -147L, -258L).toString());
+        assertThat(HardSoftLongScore.valueOfInitialized(-147L, -258L)).hasToString("-147hard/-258soft");
+        assertThat(HardSoftLongScore.valueOf(-7, -147L, -258L)).hasToString("-7init/-147hard/-258soft");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -46,10 +47,10 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(HardSoftLongScore.valueOfInitialized(-147L, -258L),
-                HardSoftLongScore.valueOfInitialized(-147L, -258L).toInitializedScore());
-        assertEquals(HardSoftLongScore.valueOfInitialized(-147L, -258L),
-                HardSoftLongScore.valueOf(-7, -147L, -258L).toInitializedScore());
+        assertThat(HardSoftLongScore.valueOfInitialized(-147L, -258L).toInitializedScore())
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(-147L, -258L));
+        assertThat(HardSoftLongScore.valueOf(-7, -147L, -258L).toInitializedScore())
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(-147L, -258L));
     }
 
     @Test
@@ -68,64 +69,64 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(HardSoftLongScore.valueOfInitialized(19L, -320L),
-                HardSoftLongScore.valueOfInitialized(20L, -20L).add(
-                        HardSoftLongScore.valueOfInitialized(-1L, -300L)));
-        assertEquals(HardSoftLongScore.valueOf(-77, 19L, -320L),
-                HardSoftLongScore.valueOf(-70, 20L, -20L).add(
-                        HardSoftLongScore.valueOf(-7, -1L, -300L)));
+        assertThat(HardSoftLongScore.valueOfInitialized(20L, -20L).add(
+                        HardSoftLongScore.valueOfInitialized(-1L, -300L)))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(19L, -320L));
+        assertThat(HardSoftLongScore.valueOf(-70, 20L, -20L).add(
+                        HardSoftLongScore.valueOf(-7, -1L, -300L)))
+                .isEqualTo(HardSoftLongScore.valueOf(-77, 19L, -320L));
     }
 
     @Test
     public void subtract() {
-        assertEquals(HardSoftLongScore.valueOfInitialized(21L, 280L),
-                HardSoftLongScore.valueOfInitialized(20L, -20L).subtract(
-                        HardSoftLongScore.valueOfInitialized(-1L, -300L)));
-        assertEquals(HardSoftLongScore.valueOf(-63, 21L, 280L),
-                HardSoftLongScore.valueOf(-70, 20L, -20L).subtract(
-                        HardSoftLongScore.valueOf(-7, -1L, -300L)));
+        assertThat(HardSoftLongScore.valueOfInitialized(20L, -20L).subtract(
+                        HardSoftLongScore.valueOfInitialized(-1L, -300L)))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(21L, 280L));
+        assertThat(HardSoftLongScore.valueOf(-70, 20L, -20L).subtract(
+                        HardSoftLongScore.valueOf(-7, -1L, -300L)))
+                .isEqualTo(HardSoftLongScore.valueOf(-63, 21L, 280L));
     }
 
     @Test
     public void multiply() {
-        assertEquals(HardSoftLongScore.valueOfInitialized(6L, -6L),
-                HardSoftLongScore.valueOfInitialized(5L, -5L).multiply(1.2));
-        assertEquals(HardSoftLongScore.valueOfInitialized(1L, -2L),
-                HardSoftLongScore.valueOfInitialized(1L, -1L).multiply(1.2));
-        assertEquals(HardSoftLongScore.valueOfInitialized(4L, -5L),
-                HardSoftLongScore.valueOfInitialized(4L, -4L).multiply(1.2));
-        assertEquals(HardSoftLongScore.valueOf(-14, 8L, -10L),
-                HardSoftLongScore.valueOf(-7, 4L, -5L).multiply(2.0));
+        assertThat(HardSoftLongScore.valueOfInitialized(5L, -5L).multiply(1.2))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(6L, -6L));
+        assertThat(HardSoftLongScore.valueOfInitialized(1L, -1L).multiply(1.2))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(1L, -2L));
+        assertThat(HardSoftLongScore.valueOfInitialized(4L, -4L).multiply(1.2))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(4L, -5L));
+        assertThat(HardSoftLongScore.valueOf(-7, 4L, -5L).multiply(2.0))
+                .isEqualTo(HardSoftLongScore.valueOf(-14, 8L, -10L));
     }
 
     @Test
     public void divide() {
-        assertEquals(HardSoftLongScore.valueOfInitialized(5L, -5L),
-                HardSoftLongScore.valueOfInitialized(25L, -25L).divide(5.0));
-        assertEquals(HardSoftLongScore.valueOfInitialized(4L, -5L),
-                HardSoftLongScore.valueOfInitialized(21L, -21L).divide(5.0));
-        assertEquals(HardSoftLongScore.valueOfInitialized(4L, -5L),
-                HardSoftLongScore.valueOfInitialized(24L, -24L).divide(5.0));
-        assertEquals(HardSoftLongScore.valueOf(-7, 4L, -5L),
-                HardSoftLongScore.valueOf(-14, 8L, -10L).divide(2.0));
+        assertThat(HardSoftLongScore.valueOfInitialized(25L, -25L).divide(5.0))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(5L, -5L));
+        assertThat(HardSoftLongScore.valueOfInitialized(21L, -21L).divide(5.0))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(4L, -5L));
+        assertThat(HardSoftLongScore.valueOfInitialized(24L, -24L).divide(5.0))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(4L, -5L));
+        assertThat(HardSoftLongScore.valueOf(-14, 8L, -10L).divide(2.0))
+                .isEqualTo(HardSoftLongScore.valueOf(-7, 4L, -5L));
     }
 
     @Test
     public void power() {
-        assertEquals(HardSoftLongScore.valueOfInitialized(16L, 25L),
-                HardSoftLongScore.valueOfInitialized(-4L, 5L).power(2.0));
-        assertEquals(HardSoftLongScore.valueOfInitialized(4L, 5L),
-                HardSoftLongScore.valueOfInitialized(16L, 25L).power(0.5));
-        assertEquals(HardSoftLongScore.valueOf(-343, -64L, 125L),
-                HardSoftLongScore.valueOf(-7, -4L, 5L).power(3.0));
+        assertThat(HardSoftLongScore.valueOfInitialized(-4L, 5L).power(2.0))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(16L, 25L));
+        assertThat(HardSoftLongScore.valueOfInitialized(16L, 25L).power(0.5))
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(4L, 5L));
+        assertThat(HardSoftLongScore.valueOf(-7, -4L, 5L).power(3.0))
+                .isEqualTo(HardSoftLongScore.valueOf(-343, -64L, 125L));
     }
 
     @Test
     public void negate() {
-        assertEquals(HardSoftLongScore.valueOfInitialized(-4L, 5L),
-                HardSoftLongScore.valueOfInitialized(4L, -5L).negate());
-        assertEquals(HardSoftLongScore.valueOfInitialized(4L, -5L),
-                HardSoftLongScore.valueOfInitialized(-4L, 5L).negate());
+        assertThat(HardSoftLongScore.valueOfInitialized(4L, -5L).negate())
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(-4L, 5L));
+        assertThat(HardSoftLongScore.valueOfInitialized(-4L, 5L).negate())
+                .isEqualTo(HardSoftLongScore.valueOfInitialized(4L, -5L));
     }
 
     @Test
@@ -149,7 +150,7 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 HardSoftLongScore.valueOf(-8, 0L, 0L),
                 HardSoftLongScore.valueOf(-7, -20L, -20L),
                 HardSoftLongScore.valueOf(-7, -1L, -300L),
@@ -162,7 +163,7 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
                 HardSoftLongScore.valueOfInitialized(0L, -1L),
                 HardSoftLongScore.valueOfInitialized(0L, 0L),
                 HardSoftLongScore.valueOfInitialized(0L, 1L)
-        );
+        )).isSorted();
     }
 
     @Test
@@ -170,17 +171,17 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftLongScore.valueOfInitialized(-12, 3400L),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(-12L, output.getHardScore());
-                    assertEquals(3400L, output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getHardScore()).isEqualTo(-12L);
+                    assertThat(output.getSoftScore()).isEqualTo(3400L);
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftLongScore.valueOf(-7, -12L, 3400L),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(-12L, output.getHardScore());
-                    assertEquals(3400L, output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getHardScore()).isEqualTo(-12L);
+                    assertThat(output.getSoftScore()).isEqualTo(3400L);
                 }
         );
     }

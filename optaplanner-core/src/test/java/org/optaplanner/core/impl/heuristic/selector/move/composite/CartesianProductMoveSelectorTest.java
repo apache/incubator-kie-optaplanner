@@ -34,6 +34,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -111,7 +112,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void emptyOriginSelection(boolean ignoreEmptyChildIterators, boolean emptyFirst, boolean emptySecond) {
-        assertTrue(emptyFirst || emptySecond);
+        assertThat(emptyFirst || emptySecond).isTrue();
         MoveSelector nonEmptyChildMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")); // One side is not empty
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();

@@ -21,7 +21,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -37,12 +37,11 @@ public class AbstractTxtSolutionImporterTest<Solution_> {
                 return null;
             }
         };
-        assertArrayEquals(new String[]{"one", "two", "three"},
-                inputBuilder.splitBySpace("one two three"));
-        assertArrayEquals(new String[]{"one", "two", "three"},
-                inputBuilder.splitBySpace("one two \"three\"", null, null, false, true));
-        assertArrayEquals(new String[]{"one", "two three"},
-                inputBuilder.splitBySpace("one \"two three\"", null, null, false, true));
+        assertThat(inputBuilder.splitBySpace("one two three")).containsExactly("one", "two", "three");
+        assertThat(inputBuilder.splitBySpace("one two \"three\"", null, null, false, true))
+                .containsExactly("one", "two", "three");
+        assertThat(inputBuilder.splitBySpace("one \"two three\"", null, null, false, true))
+                .containsExactly("one", "two three");
     }
 
 }

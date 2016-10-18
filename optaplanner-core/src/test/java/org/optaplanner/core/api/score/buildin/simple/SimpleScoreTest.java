@@ -16,25 +16,26 @@
 
 package org.optaplanner.core.api.score.buildin.simple;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleScore.valueOfInitialized(-147), SimpleScore.parseScore("-147"));
-        assertEquals(SimpleScore.valueOf(-7, -147), SimpleScore.parseScore("-7init/-147"));
+        assertThat(SimpleScore.parseScore("-147")).isEqualTo(SimpleScore.valueOfInitialized(-147));
+        assertThat(SimpleScore.parseScore("-7init/-147")).isEqualTo(SimpleScore.valueOf(-7, -147));
     }
 
     @Test
     public void testToString() {
-        assertEquals("-147", SimpleScore.valueOfInitialized(-147).toString());
-        assertEquals("-7init/-147", SimpleScore.valueOf(-7, -147).toString());
+        assertThat(SimpleScore.valueOfInitialized(-147)).hasToString("-147");
+        assertThat(SimpleScore.valueOf(-7, -147)).hasToString("-7init/-147");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -44,72 +45,72 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(SimpleScore.valueOfInitialized(-147),
-                SimpleScore.valueOfInitialized(-147).toInitializedScore());
-        assertEquals(SimpleScore.valueOfInitialized(-147),
-                SimpleScore.valueOf(-7, -147).toInitializedScore());
+        assertThat(SimpleScore.valueOfInitialized(-147).toInitializedScore())
+                .isEqualTo(SimpleScore.valueOfInitialized(-147));
+        assertThat(SimpleScore.valueOf(-7, -147).toInitializedScore())
+                .isEqualTo(SimpleScore.valueOfInitialized(-147));
     }
 
     @Test
     public void add() {
-        assertEquals(SimpleScore.valueOfInitialized(19),
-                SimpleScore.valueOfInitialized(20).add(
-                        SimpleScore.valueOfInitialized(-1)));
-        assertEquals(SimpleScore.valueOf(-77, 19),
-                SimpleScore.valueOf(-70, 20).add(
-                        SimpleScore.valueOf(-7, -1)));
+        assertThat(SimpleScore.valueOfInitialized(20).add(
+                        SimpleScore.valueOfInitialized(-1)))
+                .isEqualTo(SimpleScore.valueOfInitialized(19));
+        assertThat(SimpleScore.valueOf(-70, 20).add(
+                        SimpleScore.valueOf(-7, -1)))
+                .isEqualTo(SimpleScore.valueOf(-77, 19));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleScore.valueOfInitialized(21),
-                SimpleScore.valueOfInitialized(20).subtract(
-                        SimpleScore.valueOfInitialized(-1)));
-        assertEquals(SimpleScore.valueOf(-63, 21),
-                SimpleScore.valueOf(-70, 20).subtract(
-                        SimpleScore.valueOf(-7, -1)));
+        assertThat(SimpleScore.valueOfInitialized(20).subtract(
+                        SimpleScore.valueOfInitialized(-1)))
+                .isEqualTo(SimpleScore.valueOfInitialized(21));
+        assertThat(SimpleScore.valueOf(-70, 20).subtract(
+                        SimpleScore.valueOf(-7, -1)))
+                .isEqualTo(SimpleScore.valueOf(-63, 21));
     }
 
     @Test
     public void multiply() {
-        assertEquals(SimpleScore.valueOfInitialized(6),
-                SimpleScore.valueOfInitialized(5).multiply(1.2));
-        assertEquals(SimpleScore.valueOfInitialized(1),
-                SimpleScore.valueOfInitialized(1).multiply(1.2));
-        assertEquals(SimpleScore.valueOfInitialized(4),
-                SimpleScore.valueOfInitialized(4).multiply(1.2));
-        assertEquals(SimpleScore.valueOf(-14, 8),
-                SimpleScore.valueOf(-7, 4).multiply(2.0));
+        assertThat(SimpleScore.valueOfInitialized(5).multiply(1.2))
+                .isEqualTo(SimpleScore.valueOfInitialized(6));
+        assertThat(SimpleScore.valueOfInitialized(1).multiply(1.2))
+                .isEqualTo(SimpleScore.valueOfInitialized(1));
+        assertThat(SimpleScore.valueOfInitialized(4).multiply(1.2))
+                .isEqualTo(SimpleScore.valueOfInitialized(4));
+        assertThat(SimpleScore.valueOf(-7, 4).multiply(2.0))
+                .isEqualTo(SimpleScore.valueOf(-14, 8));
     }
 
     @Test
     public void divide() {
-        assertEquals(SimpleScore.valueOfInitialized(5),
-                SimpleScore.valueOfInitialized(25).divide(5.0));
-        assertEquals(SimpleScore.valueOfInitialized(4),
-                SimpleScore.valueOfInitialized(21).divide(5.0));
-        assertEquals(SimpleScore.valueOfInitialized(4),
-                SimpleScore.valueOfInitialized(24).divide(5.0));
-        assertEquals(SimpleScore.valueOf(-7, 4),
-                SimpleScore.valueOf(-14, 8).divide(2.0));
+        assertThat(SimpleScore.valueOfInitialized(25).divide(5.0))
+                .isEqualTo(SimpleScore.valueOfInitialized(5));
+        assertThat(SimpleScore.valueOfInitialized(21).divide(5.0))
+                .isEqualTo(SimpleScore.valueOfInitialized(4));
+        assertThat(SimpleScore.valueOfInitialized(24).divide(5.0))
+                .isEqualTo(SimpleScore.valueOfInitialized(4));
+        assertThat(SimpleScore.valueOf(-14, 8).divide(2.0))
+                .isEqualTo(SimpleScore.valueOf(-7, 4));
     }
 
     @Test
     public void power() {
-        assertEquals(SimpleScore.valueOfInitialized(25),
-                SimpleScore.valueOfInitialized(5).power(2.0));
-        assertEquals(SimpleScore.valueOfInitialized(5),
-                SimpleScore.valueOfInitialized(25).power(0.5));
-        assertEquals(SimpleScore.valueOf(-343, 125),
-                SimpleScore.valueOf(-7, 5).power(3.0));
+        assertThat(SimpleScore.valueOfInitialized(5).power(2.0))
+                .isEqualTo(SimpleScore.valueOfInitialized(25));
+        assertThat(SimpleScore.valueOfInitialized(25).power(0.5))
+                .isEqualTo(SimpleScore.valueOfInitialized(5));
+        assertThat(SimpleScore.valueOf(-7, 5).power(3.0))
+                .isEqualTo(SimpleScore.valueOf(-343, 125));
     }
 
     @Test
     public void negate() {
-        assertEquals(SimpleScore.valueOfInitialized(-5),
-                SimpleScore.valueOfInitialized(5).negate());
-        assertEquals(SimpleScore.valueOfInitialized(5),
-                SimpleScore.valueOfInitialized(-5).negate());
+        assertThat(SimpleScore.valueOfInitialized(5).negate())
+                .isEqualTo(SimpleScore.valueOfInitialized(-5));
+        assertThat(SimpleScore.valueOfInitialized(-5).negate())
+                .isEqualTo(SimpleScore.valueOfInitialized(5));
     }
 
     @Test
@@ -132,7 +133,7 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 SimpleScore.valueOf(-8, 0),
                 SimpleScore.valueOf(-7, -20),
                 SimpleScore.valueOf(-7, -1),
@@ -143,7 +144,7 @@ public class SimpleScoreTest extends AbstractScoreTest {
                 SimpleScore.valueOfInitialized(-1),
                 SimpleScore.valueOfInitialized(0),
                 SimpleScore.valueOfInitialized(1)
-        );
+        )).isSorted();
     }
 
     @Test
@@ -151,15 +152,15 @@ public class SimpleScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleScore.valueOfInitialized(123),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(123, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getScore()).isEqualTo(123);
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleScore.valueOf(-7, 123),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(123, output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getScore()).isEqualTo(123);
                 }
         );
     }

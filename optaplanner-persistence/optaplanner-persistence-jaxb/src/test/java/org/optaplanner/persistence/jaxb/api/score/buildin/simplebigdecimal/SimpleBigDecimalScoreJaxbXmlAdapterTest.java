@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapterTest;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleBigDecimalScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTest {
 

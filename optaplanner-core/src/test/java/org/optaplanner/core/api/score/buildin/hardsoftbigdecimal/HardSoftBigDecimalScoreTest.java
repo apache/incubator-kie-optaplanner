@@ -17,30 +17,30 @@
 package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")),
-                HardSoftBigDecimalScore.parseScore("-147.2hard/-258.3soft"));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")),
-                HardSoftBigDecimalScore.parseScore("-7init/-147.2hard/-258.3soft"));
+        assertThat(HardSoftBigDecimalScore.parseScore("-147.2hard/-258.3soft"))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")));
+        assertThat(HardSoftBigDecimalScore.parseScore("-7init/-147.2hard/-258.3soft"))
+                .isEqualTo(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")));
     }
 
     @Test
     public void testToString() {
-        assertEquals("-147.2hard/-258.3soft",
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")).toString());
-        assertEquals("-7init/-147.2hard/-258.3soft",
-                HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")).toString());
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")).toString())
+                .isEqualTo("-147.2hard/-258.3soft");
+        assertThat(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")).toString())
+                .isEqualTo("-7init/-147.2hard/-258.3soft");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -50,10 +50,10 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")).toInitializedScore());
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")),
-                HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")).toInitializedScore());
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")).toInitializedScore())
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")));
+        assertThat(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")).toInitializedScore())
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"), new BigDecimal("-258.3")));
     }
 
     @Test
@@ -75,62 +75,62 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void add() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("19"), new BigDecimal("-320")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("20"), new BigDecimal("-20")).add(
-                        HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-1"), new BigDecimal("-300"))));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-77, new BigDecimal("19"), new BigDecimal("-320")),
-                HardSoftBigDecimalScore.valueOf(-70, new BigDecimal("20"), new BigDecimal("-20")).add(
-                        HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300"))));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("20"), new BigDecimal("-20")).add(
+                        HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-1"), new BigDecimal("-300"))))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("19"), new BigDecimal("-320")));
+        assertThat(HardSoftBigDecimalScore.valueOf(-70, new BigDecimal("20"), new BigDecimal("-20")).add(
+                        HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300"))))
+                .isEqualTo(HardSoftBigDecimalScore.valueOf(-77, new BigDecimal("19"), new BigDecimal("-320")));
     }
 
     @Test
     public void subtract() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("21"), new BigDecimal("280")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("20"), new BigDecimal("-20")).subtract(
-                        HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-1"), new BigDecimal("-300"))));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-63, new BigDecimal("21"), new BigDecimal("280")),
-                HardSoftBigDecimalScore.valueOf(-70, new BigDecimal("20"), new BigDecimal("-20")).subtract(
-                        HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300"))));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("20"), new BigDecimal("-20")).subtract(
+                        HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-1"), new BigDecimal("-300"))))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("21"), new BigDecimal("280")));
+        assertThat(HardSoftBigDecimalScore.valueOf(-70, new BigDecimal("20"), new BigDecimal("-20")).subtract(
+                        HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300"))))
+                .isEqualTo(HardSoftBigDecimalScore.valueOf(-63, new BigDecimal("21"), new BigDecimal("280")));
     }
 
     @Test
     public void multiply() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("6.0"), new BigDecimal("-6.0")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("5.0"), new BigDecimal("-5.0")).multiply(1.2));
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("1.2"), new BigDecimal("-1.2")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("1.0"), new BigDecimal("-1.0")).multiply(1.2));
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.8"), new BigDecimal("-4.8")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.0"), new BigDecimal("-4.0")).multiply(1.2));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-14, new BigDecimal("8.6"), new BigDecimal("-10.4")),
-                HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("4.3"), new BigDecimal("-5.2")).multiply(2.0));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("5.0"), new BigDecimal("-5.0")).multiply(1.2))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("6.0"), new BigDecimal("-6.0")));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("1.0"), new BigDecimal("-1.0")).multiply(1.2))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("1.2"), new BigDecimal("-1.2")));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.0"), new BigDecimal("-4.0")).multiply(1.2))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.8"), new BigDecimal("-4.8")));
+        assertThat(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("4.3"), new BigDecimal("-5.2")).multiply(2.0))
+                .isEqualTo(HardSoftBigDecimalScore.valueOf(-14, new BigDecimal("8.6"), new BigDecimal("-10.4")));
     }
 
     @Test
     public void divide() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("5.0"), new BigDecimal("-5.0")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("25.0"), new BigDecimal("-25.0")).divide(5.0));
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.2"), new BigDecimal("-4.2")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("21.0"), new BigDecimal("-21.0")).divide(5.0));
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.8"), new BigDecimal("-4.8")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("24.0"), new BigDecimal("-24.0")).divide(5.0));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("4.3"), new BigDecimal("-5.2")),
-                HardSoftBigDecimalScore.valueOf(-14, new BigDecimal("8.6"), new BigDecimal("-10.4")).divide(2.0));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("25.0"), new BigDecimal("-25.0")).divide(5.0))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("5.0"), new BigDecimal("-5.0")));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("21.0"), new BigDecimal("-21.0")).divide(5.0))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.2"), new BigDecimal("-4.2")));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("24.0"), new BigDecimal("-24.0")).divide(5.0))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.8"), new BigDecimal("-4.8")));
+        assertThat(HardSoftBigDecimalScore.valueOf(-14, new BigDecimal("8.6"), new BigDecimal("-10.4")).divide(2.0))
+                .isEqualTo(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("4.3"), new BigDecimal("-5.2")));
     }
 
     @Test
     public void power() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("16.0"), new BigDecimal("25.0")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-4.0"), new BigDecimal("5.0")).power(2.0));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-343, new BigDecimal("-64.0"), new BigDecimal("125.0")),
-                HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-4.0"), new BigDecimal("5.0")).power(3.0));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-4.0"), new BigDecimal("5.0")).power(2.0))
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("16.0"), new BigDecimal("25.0")));
+        assertThat(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-4.0"), new BigDecimal("5.0")).power(3.0))
+                .isEqualTo(HardSoftBigDecimalScore.valueOf(-343, new BigDecimal("-64.0"), new BigDecimal("125.0")));
     }
 
     @Test
     public void negate() {
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-4.0"), new BigDecimal("5.0")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.0"), new BigDecimal("-5.0")).negate());
-        assertEquals(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.0"), new BigDecimal("-5.0")),
-                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-4.0"), new BigDecimal("5.0")).negate());
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.0"), new BigDecimal("-5.0")).negate())
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-4.0"), new BigDecimal("5.0")));
+        assertThat(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-4.0"), new BigDecimal("5.0")).negate())
+                .isEqualTo(HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("4.0"), new BigDecimal("-5.0")));
     }
 
     @Test
@@ -154,7 +154,7 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 HardSoftBigDecimalScore.valueOf(-8, new BigDecimal("0"), new BigDecimal("0")),
                 HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-20"), new BigDecimal("-20")),
                 HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300")),
@@ -170,7 +170,7 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
                 HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("0"), new BigDecimal("-1")),
                 HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("0"), new BigDecimal("0")),
                 HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("0"), new BigDecimal("1"))
-        );
+        )).isSorted();
     }
 
     @Test
@@ -178,17 +178,17 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-12.3"), new BigDecimal("3400.5")),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(new BigDecimal("-12.3"), output.getHardScore());
-                    assertEquals(new BigDecimal("3400.5"), output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getHardScore()).isEqualTo(new BigDecimal("-12.3"));
+                    assertThat(output.getSoftScore()).isEqualTo(new BigDecimal("3400.5"));
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-12.3"), new BigDecimal("3400.5")),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(new BigDecimal("-12.3"), output.getHardScore());
-                    assertEquals(new BigDecimal("3400.5"), output.getSoftScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getHardScore()).isEqualTo(new BigDecimal("-12.3"));
+                    assertThat(output.getSoftScore()).isEqualTo(new BigDecimal("3400.5"));
                 }
         );
     }

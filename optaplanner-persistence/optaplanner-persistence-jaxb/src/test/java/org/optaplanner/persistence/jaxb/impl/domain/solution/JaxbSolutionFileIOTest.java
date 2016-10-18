@@ -27,7 +27,7 @@ import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataEntity;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataSolution;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataValue;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class JaxbSolutionFileIOTest {
@@ -54,15 +54,15 @@ public class JaxbSolutionFileIOTest {
         solutionFileIO.write(original, file);
         JaxbTestdataSolution copy = solutionFileIO.read(file);
 
-        assertNotSame(original, copy);
+        assertThat(copy).isNotSameAs(original);
         assertCode("s1", copy);
         assertAllCodesOfIterator(copy.getValueList().iterator(), "v1", "v2");
         assertAllCodesOfIterator(copy.getEntityList().iterator(), "e1", "e2", "e3");
         JaxbTestdataValue copyV1 = copy.getValueList().get(0);
         JaxbTestdataEntity copyE2 = copy.getEntityList().get(1);
         assertCode("v1", copyE2.getValue());
-        assertSame(copyV1, copyE2.getValue());
-        assertEquals(SimpleScore.valueOfInitialized(-123), copy.getScore());
+        assertThat(copyE2.getValue()).isSameAs(copyV1);
+        assertThat(copy.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-123));
     }
 
 }

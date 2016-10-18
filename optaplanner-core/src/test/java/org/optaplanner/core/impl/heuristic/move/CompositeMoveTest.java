@@ -30,8 +30,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfArray;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 public class CompositeMoveTest {
@@ -63,18 +64,18 @@ public class CompositeMoveTest {
 
     @Test
     public void buildEmptyMove() {
-        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove(new ArrayList<>()));
-        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove());
+        assertThat(CompositeMove.buildMove(new ArrayList<>())).isInstanceOf(NoChangeMove.class);
+        assertThat(CompositeMove.buildMove()).isInstanceOf(NoChangeMove.class);
     }
 
     @Test
     public void buildOneElemMove() {
         Move tmpMove = new DummyMove();
         Move move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
-        assertInstanceOf(DummyMove.class, move);
+        assertThat(move).isInstanceOf(DummyMove.class);
 
         move = CompositeMove.buildMove(tmpMove);
-        assertInstanceOf(DummyMove.class, move);
+        assertThat(move).isInstanceOf(DummyMove.class);
     }
 
     @Test
@@ -82,14 +83,14 @@ public class CompositeMoveTest {
         Move first = new DummyMove();
         Move second = new NoChangeMove();
         Move move = CompositeMove.buildMove(Arrays.asList(first, second));
-        assertInstanceOf(CompositeMove.class, move);
-        assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
-        assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
+        assertThat(move).isInstanceOf(CompositeMove.class);
+        assertThat(((CompositeMove) move).getMoves()[0]).isInstanceOf(DummyMove.class);
+        assertThat(((CompositeMove) move).getMoves()[1]).isInstanceOf(NoChangeMove.class);
 
         move = CompositeMove.buildMove(first, second);
-        assertInstanceOf(CompositeMove.class, move);
-        assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
-        assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
+        assertThat(move).isInstanceOf(CompositeMove.class);
+        assertThat(((CompositeMove) move).getMoves()[0]).isInstanceOf(DummyMove.class);
+        assertThat(((CompositeMove) move).getMoves()[1]).isInstanceOf(NoChangeMove.class);
     }
 
     @Test
@@ -99,7 +100,7 @@ public class CompositeMoveTest {
         Move second = mock(DummyMove.class);
         when(second.isMoveDoable(scoreDirector)).thenReturn(false);
         Move move = CompositeMove.buildMove(first, second);
-        assertEquals(false, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test
@@ -108,13 +109,13 @@ public class CompositeMoveTest {
         Move second = new NoChangeMove();
         Move move = CompositeMove.buildMove(Arrays.asList(first, second));
         Move other = CompositeMove.buildMove(first, second);
-        assertTrue(move.equals(other));
+        assertThat(move.equals(other)).isTrue();
 
         move = CompositeMove.buildMove(first, second);
         other = CompositeMove.buildMove(second, first);
-        assertFalse(move.equals(other));
-        assertFalse(move.equals(new DummyMove()));
-        assertTrue(move.equals(move));
+        assertThat(move.equals(other)).isFalse();
+        assertThat(move.equals(new DummyMove())).isFalse();
+        assertThat(move.equals(move)).isTrue();
     }
 
     @Test @Ignore("PLANNER-611") // TODO https://issues.jboss.org/browse/PLANNER-611
@@ -133,20 +134,20 @@ public class CompositeMoveTest {
         Move second = new ChangeMove(e1, variableDescriptor, v3);
         Move move = CompositeMove.buildMove(first, second);
 
-        assertSame(v1, e1.getValue());
-        assertSame(v2, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v1);
+        assertThat(e2.getValue()).isSameAs(v2);
 
         ScoreDirector scoreDirector = mockScoreDirector(variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
-        assertSame(v3, e1.getValue());
-        assertSame(v1, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v3);
+        assertThat(e2.getValue()).isSameAs(v1);
 
         undoMove.doMove(scoreDirector);
 
-        assertSame(v1, e1.getValue());
-        assertSame(v2, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v1);
+        assertThat(e2.getValue()).isSameAs(v2);
     }
 
 }

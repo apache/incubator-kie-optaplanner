@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 
 import com.google.common.io.Resources;
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -102,7 +103,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 releaseId, "testdata/kjar/solverConfig.solver");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        Assertions.assertThat(solver).isNotNull();
         assertNewKieSessionSucceeds(solver);
     }
 
@@ -116,7 +117,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 kieContainer, "testdata/kjar/solverConfig.solver");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        Assertions.assertThat(solver).isNotNull();
         assertNewKieSessionSucceeds(solver);
     }
 
@@ -129,7 +130,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 releaseId, "testdata/kjar/solverConfig.solver");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        Assertions.assertThat(solver).isNotNull();
         assertNewKieSessionSucceeds(solver);
     }
 
@@ -142,7 +143,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 releaseId, "testdata/kjar/solverConfig.solver");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        Assertions.assertThat(solver).isNotNull();
         assertNewKieSessionSucceeds(solver);
     }
 
@@ -155,7 +156,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 releaseId, "testdata/kjar/solverConfig.solver");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        Assertions.assertThat(solver).isNotNull();
         assertNewKieSessionSucceeds(solver);
     }
 
@@ -175,7 +176,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         scoreDirectorFactoryConfig.setKsessionName("testdataKsession");
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        Assertions.assertThat(solver).isNotNull();
         assertNewKieSessionSucceeds(solver);
     }
 

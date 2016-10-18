@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HardSoftScoreHolderTest extends AbstractScoreHolderTest {
 
@@ -54,10 +54,10 @@ public class HardSoftScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(ruleContext4, -1);
         callUnMatch(ruleContext4);
 
-        assertEquals(HardSoftScore.valueOf(0, -1400, -3), scoreHolder.extractScore(0));
-        assertEquals(HardSoftScore.valueOf(-7, -1400, -3), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(HardSoftScore.valueOf(0, -1400, -3));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(HardSoftScore.valueOf(-7, -1400, -3));
         if (constraintMatchEnabled) {
-            assertEquals(6, scoreHolder.getConstraintMatchTotals().size());
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(6);
         }
     }
 

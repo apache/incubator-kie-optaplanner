@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class EasyScoreDirectorTest {
@@ -32,7 +32,7 @@ public class EasyScoreDirectorTest {
     public void constraintMatchTotalsUnsupported() {
         EasyScoreDirector<Object> director
                 = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), true, null);
-        assertFalse(director.isConstraintMatchEnabled());
+        assertThat(director.isConstraintMatchEnabled()).isFalse();
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("not supported");
         director.getConstraintMatchTotals();

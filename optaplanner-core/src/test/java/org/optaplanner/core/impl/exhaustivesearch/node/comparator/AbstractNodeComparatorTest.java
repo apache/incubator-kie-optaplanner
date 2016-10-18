@@ -21,7 +21,7 @@ import java.util.Comparator;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public abstract class AbstractNodeComparatorTest {
@@ -55,8 +55,8 @@ public abstract class AbstractNodeComparatorTest {
 
     protected static void assertLesser(Comparator<ExhaustiveSearchNode> comparator,
             ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
-        assertTrue("Node (" + a + ") must be lesser than node (" + b + ").", comparator.compare(a, b) < 0);
-        assertTrue("Node (" + b + ") must be greater than node (" + a + ").", comparator.compare(b, a) > 0);
+        assertThat(comparator.compare(a, b) < 0).as("Node (" + a + ") must be lesser than node (" + b + ").").isTrue();
+        assertThat(comparator.compare(b, a) > 0).as("Node (" + b + ") must be greater than node (" + a + ").").isTrue();
     }
 
     protected static void assertScoreCompareToOrder(Comparator<ExhaustiveSearchNode> comparator,

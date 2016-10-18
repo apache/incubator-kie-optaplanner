@@ -20,7 +20,7 @@ import java.util.Comparator;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlphaNumericStringComparatorTest {
 
@@ -45,13 +45,13 @@ public class AlphaNumericStringComparatorTest {
     }
 
     public <T> void assertCompareEquals(Comparator<T> comparator, T a, T b) {
-        assertEquals(0, comparator.compare(a, b));
-        assertEquals(0, comparator.compare(b, a));
+        assertThat(comparator.compare(a, b)).isEqualTo(0);
+        assertThat(comparator.compare(b, a)).isEqualTo(0);
     }
 
     public <T> void assertCompareLower(Comparator<T> comparator, T a, T b) {
-        assertEquals(-1, comparator.compare(a, b));
-        assertEquals(1, comparator.compare(b, a));
+        assertThat(comparator.compare(a, b)).isEqualTo(-1);
+        assertThat(comparator.compare(b, a)).isEqualTo(1);
     }
 
 }

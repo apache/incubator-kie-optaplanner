@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.reinitialize.TestdataReinitiali
 import org.optaplanner.core.impl.testdata.domain.reinitialize.TestdataReinitializeSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 public class DefaultConstructionHeuristicPhaseTest {
@@ -61,17 +61,17 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataEntity("e3", v1)));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(v1, solvedE3.getValue());
-        assertEquals(0, solution.getScore().getInitScore());
+        assertThat(solvedE3.getValue()).isEqualTo(v1);
+        assertThat(solution.getScore().getInitScore()).isEqualTo(0);
     }
 
     @Test
@@ -93,17 +93,17 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataImmovableEntity("e3", null, true)));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataImmovableEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataImmovableEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertEquals(v2, solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isEqualTo(v2);
         TestdataImmovableEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(null, solvedE3.getValue());
-        assertEquals(-1, solution.getScore().getInitScore());
+        assertThat(solvedE3.getValue()).isNull();
+        assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
     @Test
@@ -126,20 +126,20 @@ public class DefaultConstructionHeuristicPhaseTest {
                 new TestdataReinitializeEntity("e4", null, true)));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
         TestdataReinitializeEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
-        assertNotNull(solvedE1.getValue());
+        assertThat(solvedE1.getValue()).isNotNull();
         TestdataReinitializeEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
-        assertNotNull(solvedE2.getValue());
+        assertThat(solvedE2.getValue()).isNotNull();
         TestdataReinitializeEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
-        assertEquals(v2, solvedE3.getValue());
+        assertThat(solvedE3.getValue()).isEqualTo(v2);
         TestdataReinitializeEntity solvedE4 = solution.getEntityList().get(3);
         assertCode("e4", solvedE4);
-        assertEquals(null, solvedE4.getValue());
-        assertEquals(-1, solution.getScore().getInitScore());
+        assertThat(solvedE4.getValue()).isNull();
+        assertThat(solution.getScore().getInitScore()).isEqualTo(-1);
     }
 
 }

@@ -34,9 +34,8 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class VariableListenerSupportTest {
 
@@ -59,7 +58,7 @@ public class VariableListenerSupportTest {
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
         SingletonInverseVariableSupply supply2
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertSame(supply1, supply2);
+        assertThat(supply2).isSameAs(supply1);
     }
 
     @Test
@@ -81,10 +80,10 @@ public class VariableListenerSupportTest {
 
         SingletonInverseVariableSupply supply1
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertInstanceOf(ExternalizedSingletonInverseVariableSupply.class, supply1);
+        assertThat(supply1).isInstanceOf(ExternalizedSingletonInverseVariableSupply.class);
         SingletonInverseVariableSupply supply2
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertSame(supply1, supply2);
+        assertThat(supply2).isSameAs(supply1);
     }
 
     @Test
@@ -106,10 +105,10 @@ public class VariableListenerSupportTest {
 
         SingletonInverseVariableSupply supply1
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertInstanceOf(SingletonInverseVariableListener.class, supply1);
+        assertThat(supply1).isInstanceOf(SingletonInverseVariableListener.class);
         SingletonInverseVariableSupply supply2
                 = variableListenerSupport.demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertSame(supply1, supply2);
+        assertThat(supply2).isSameAs(supply1);
     }
 
 }

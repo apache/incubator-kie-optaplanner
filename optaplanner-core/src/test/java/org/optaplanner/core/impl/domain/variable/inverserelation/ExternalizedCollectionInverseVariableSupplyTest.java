@@ -26,8 +26,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ExternalizedCollectionInverseVariableSupplyTest {
 
@@ -52,17 +52,17 @@ public class ExternalizedCollectionInverseVariableSupplyTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         supply.resetWorkingSolution(scoreDirector);
 
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val1), a, b);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val2));
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val3), c, d);
+        assertThat((Collection<Object>) supply.getInverseCollection(val1)).containsOnly(a, b);
+        assertThat((Collection<Object>) supply.getInverseCollection(val2)).isEmpty();
+        assertThat((Collection<Object>) supply.getInverseCollection(val3)).containsOnly(c, d);
 
         supply.beforeVariableChanged(scoreDirector, c);
         c.setValue(val2);
         supply.afterVariableChanged(scoreDirector, c);
 
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val1), a, b);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val2), c);
-        assertCollectionContainsExactly((Collection<Object>) supply.getInverseCollection(val3), d);
+        assertThat((Collection<Object>) supply.getInverseCollection(val1)).containsOnly(a, b);
+        assertThat((Collection<Object>) supply.getInverseCollection(val2)).containsOnly(c);
+        assertThat((Collection<Object>) supply.getInverseCollection(val3)).containsOnly(d);
 
         supply.clearWorkingSolution(scoreDirector);
     }

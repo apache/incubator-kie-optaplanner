@@ -21,18 +21,19 @@ import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
 
 public class SimpleDoubleScoreDefinitionTest {
 
     @Test
     public void getLevelSize() {
-        assertEquals(1, new SimpleDoubleScoreDefinition().getLevelsSize());
+        assertThat(new SimpleDoubleScoreDefinition().getLevelsSize()).isEqualTo(1);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"score"}, new SimpleDoubleScoreDefinition().getLevelLabels());
+        assertThat(new SimpleDoubleScoreDefinition().getLevelLabels()).containsExactly("score");
     }
 
     @Test
@@ -41,8 +42,8 @@ public class SimpleDoubleScoreDefinitionTest {
         SimpleDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(Double.POSITIVE_INFINITY, optimisticBound.getScore(), 0.0);
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getScore()).isEqualTo(Double.POSITIVE_INFINITY, offset(0.0));
     }
 
     @Test
@@ -51,8 +52,8 @@ public class SimpleDoubleScoreDefinitionTest {
         SimpleDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(-1.7, optimisticBound.getScore(), 0.0);
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getScore()).isEqualTo(-1.7, offset(0.0));
     }
 
     @Test
@@ -61,8 +62,8 @@ public class SimpleDoubleScoreDefinitionTest {
         SimpleDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(-1.7, pessimisticBound.getScore(), 0.0);
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getScore()).isEqualTo(-1.7, offset(0.0));
     }
 
     @Test
@@ -71,8 +72,8 @@ public class SimpleDoubleScoreDefinitionTest {
         SimpleDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleDoubleScore.valueOfInitialized(-1.7));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getScore(), 0.0);
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getScore()).isEqualTo(Double.NEGATIVE_INFINITY, offset(0.0));
     }
 
 }

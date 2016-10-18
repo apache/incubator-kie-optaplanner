@@ -20,7 +20,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -28,13 +28,13 @@ public class DoubleValueRangeTest {
 
     @Test
     public void contains() {
-        assertEquals(true, new DoubleValueRange(0.0, 10.0).contains(3.0));
-        assertEquals(false, new DoubleValueRange(0.0, 10.0).contains(10.0));
-        assertEquals(false, new DoubleValueRange(0.0, 10.0).contains(null));
-        assertEquals(true, new DoubleValueRange(100.0, 120.0).contains(100.0));
-        assertEquals(false, new DoubleValueRange(100.0, 120.0).contains(99.9));
-        assertEquals(true, new DoubleValueRange(-5.3, 25.2).contains(-5.2));
-        assertEquals(false, new DoubleValueRange(-5.3, 25.2).contains(-5.4));
+        assertThat(new DoubleValueRange(0.0, 10.0).contains(3.0)).isTrue();
+        assertThat(new DoubleValueRange(0.0, 10.0).contains(10.0)).isFalse();
+        assertThat(new DoubleValueRange(0.0, 10.0).contains(null)).isFalse();
+        assertThat(new DoubleValueRange(100.0, 120.0).contains(100.0)).isTrue();
+        assertThat(new DoubleValueRange(100.0, 120.0).contains(99.9)).isFalse();
+        assertThat(new DoubleValueRange(-5.3, 25.2).contains(-5.2)).isTrue();
+        assertThat(new DoubleValueRange(-5.3, 25.2).contains(-5.4)).isFalse();
     }
 
     @Test

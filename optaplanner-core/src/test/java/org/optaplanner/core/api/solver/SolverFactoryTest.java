@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SolverFactoryTest {
 
@@ -31,7 +31,7 @@ public class SolverFactoryTest {
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -39,7 +39,7 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -47,7 +47,7 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/nonExistingSolverConfig.xml");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class SolverFactoryTest {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml", classLoader);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThat(solver).isNotNull();
     }
 
     @Test
@@ -67,14 +67,14 @@ public class SolverFactoryTest {
         solverFactoryTemplate.getSolverConfig().setTerminationConfig(new TerminationConfig());
         SolverFactory<TestdataSolution> solverFactory1 = solverFactoryTemplate.cloneSolverFactory();
         SolverFactory<TestdataSolution> solverFactory2 = solverFactoryTemplate.cloneSolverFactory();
-        assertNotSame(solverFactory1, solverFactory2);
+        assertThat(solverFactory2).isNotSameAs(solverFactory1);
         solverFactory1.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(1L);
         solverFactory2.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(2L);
-        assertEquals((Long) 1L, solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
-        assertEquals((Long) 2L, solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
+        assertThat(solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit()).isEqualTo(1L);
+        assertThat(solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit()).isEqualTo(2L);
         Solver<TestdataSolution> solver1 = solverFactory1.buildSolver();
         Solver<TestdataSolution> solver2 = solverFactory2.buildSolver();
-        assertNotSame(solver1, solver2);
+        assertThat(solver2).isNotSameAs(solver1);
     }
 
 }

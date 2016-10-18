@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class XStreamXmlSolverFactoryTest {
 
@@ -41,7 +41,7 @@ public class XStreamXmlSolverFactoryTest {
         configContext.setClassLoader(getClass().getClassLoader());
         solverConfig.buildSolver(configContext);
         String savedXml = solverFactory.getXStream().toXML(solverConfig);
-        assertEquals(originalXml.trim(), savedXml.trim());
+        assertThat(savedXml.trim()).isEqualTo(originalXml.trim());
         originalConfigInputStream.close();
     }
 

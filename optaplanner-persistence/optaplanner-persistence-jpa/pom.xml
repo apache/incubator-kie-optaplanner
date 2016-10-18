@@ -65,7 +65,12 @@
       <!-- Used at compile time by *ScoreHibernateType -->
       <optional>true</optional>
     </dependency>
-    <!-- Test -->
+    <!-- Tests -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>

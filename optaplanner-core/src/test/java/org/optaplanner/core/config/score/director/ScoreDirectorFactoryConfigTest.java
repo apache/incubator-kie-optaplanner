@@ -22,8 +22,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-import static org.junit.Assert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScoreDirectorFactoryConfigTest {
 
@@ -32,7 +31,7 @@ public class ScoreDirectorFactoryConfigTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         config.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         ScoreDefinition scoreDefinition = config.buildDeprecatedScoreDefinition();
-        assertInstanceOf(SimpleScoreDefinition.class, scoreDefinition);
+        assertThat(scoreDefinition).isInstanceOf(SimpleScoreDefinition.class);
     }
 
     @Test
@@ -42,19 +41,19 @@ public class ScoreDirectorFactoryConfigTest {
         config.setBendableHardLevelsSize(2);
         config.setBendableSoftLevelsSize(3);
         BendableScoreDefinition scoreDefinition = (BendableScoreDefinition) config.buildDeprecatedScoreDefinition();
-        assertEquals(2, scoreDefinition.getHardLevelsSize());
-        assertEquals(3, scoreDefinition.getSoftLevelsSize());
+        assertThat(scoreDefinition.getHardLevelsSize()).isEqualTo(2);
+        assertThat(scoreDefinition.getSoftLevelsSize()).isEqualTo(3);
     }
 
     @Test
     public void testGenerateDroolsTestOption() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        assertNull(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isNull();
         config.setGenerateDroolsTestOnError(true);
-        assertTrue(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isTrue();
         config.setGenerateDroolsTestOnError(Boolean.FALSE);
-        assertFalse(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isFalse();
         config.setGenerateDroolsTestOnError(null);
-        assertNull(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isNull();
     }
 }

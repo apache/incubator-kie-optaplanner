@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.kie.test.util.db.PersistenceUtil;
 import org.optaplanner.core.api.score.Score;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractScoreHibernateTypeTest {
 
@@ -66,7 +66,7 @@ public abstract class AbstractScoreHibernateTypeTest {
             throw new RuntimeException("Transaction failed.", e);
         }
         Long id = jpaEntity.getId();
-        assertNotNull(id);
+        assertThat(id).isNotNull();
         return id;
     }
 
@@ -89,7 +89,7 @@ public abstract class AbstractScoreHibernateTypeTest {
             EntityManager em = entityManagerFactory.createEntityManager();
             E jpaEntity = em.find(jpaEntityClass, id);
             em.persist(jpaEntity);
-            assertEquals(oldScore, jpaEntity.getScore());
+            assertThat(jpaEntity.getScore()).isEqualTo(oldScore);
             jpaEntity.setScore(newScore);
             jpaEntity = em.merge(jpaEntity);
             transactionManager.commit();
@@ -104,7 +104,7 @@ public abstract class AbstractScoreHibernateTypeTest {
             transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
             E jpaEntity = em.find(jpaEntityClass, id);
-            assertEquals(score, jpaEntity.getScore());
+            assertThat(jpaEntity.getScore()).isEqualTo(score);
             transactionManager.commit();
         } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
             throw new RuntimeException("Transaction failed.", e);

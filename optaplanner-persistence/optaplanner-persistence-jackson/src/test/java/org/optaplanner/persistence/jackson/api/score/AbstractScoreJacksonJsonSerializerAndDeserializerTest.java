@@ -18,11 +18,12 @@ package org.optaplanner.persistence.jackson.api.score;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.optaplanner.core.api.score.Score;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 
@@ -40,7 +41,7 @@ public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest {
         } catch (IOException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "\\{\\s*" // Start of element
@@ -51,9 +52,7 @@ public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest {
         } else {
             regex = "\\{\"score\":null\\}"; // Start and end of element
         }
-        if (!jsonString.matches(regex)) {
-            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + jsonString);
-        }
+        assertThat(jsonString).matches(Pattern.compile(regex));
     }
 
     public static abstract class TestScoreWrapper<S extends Score> implements Serializable {

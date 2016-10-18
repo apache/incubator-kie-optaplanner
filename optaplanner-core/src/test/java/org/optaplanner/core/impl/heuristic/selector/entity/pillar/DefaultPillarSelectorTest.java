@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -74,7 +74,7 @@ public class DefaultPillarSelectorTest {
 //        DefaultPillarSelector selector = new DefaultPillarSelector(
 //                entitySelector, Collections.singletonList(variableDescriptor), false,
 //                true, minimumPillarSize, maximumPillarSize);
-//        assertEquals(expected, selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d)));
+//        assertThat(selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d))).isEqualTo(expected);
 //    }
 
     @Test
@@ -378,15 +378,15 @@ public class DefaultPillarSelectorTest {
 
     private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(false, pillarSelector.isNeverEnding());
-        assertEquals(codes.length, pillarSelector.getSize());
+        assertThat(pillarSelector.isCountable()).isTrue();
+        assertThat(pillarSelector.isNeverEnding()).isFalse();
+        assertThat(pillarSelector.getSize()).isEqualTo(codes.length);
     }
 
     private void assertCodesOfNeverEndingPillarSelector(PillarSelector pillarSelector, String... codes) {
         assertCodesOfIterator(pillarSelector.iterator(), codes);
-        assertEquals(true, pillarSelector.isCountable());
-        assertEquals(true, pillarSelector.isNeverEnding());
+        assertThat(pillarSelector.isCountable()).isTrue();
+        assertThat(pillarSelector.isNeverEnding()).isTrue();
     }
 
 }

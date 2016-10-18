@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -120,14 +120,14 @@ public class SortingEntitySelectorTest {
     public void isNeverEnding() {
         EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
                 mock(SelectionSorter.class));
-        assertEquals(false, entitySelector.isNeverEnding());
+        assertThat(entitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
     public void isCountable() {
         EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
                 mock(SelectionSorter.class));
-        assertEquals(true, entitySelector.isCountable());
+        assertThat(entitySelector.isCountable()).isTrue();
     }
 
 }

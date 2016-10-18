@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KOptMoveTest {
 
@@ -72,14 +72,14 @@ public class KOptMoveTest {
         SelectorTestUtils.assertChain(c0, c1, c2);
 
         KOptMove move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, new Object[]{b0, c1});
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, c2);
         SelectorTestUtils.assertChain(b0, a2, a3);
         SelectorTestUtils.assertChain(c0, c1, b1, b2);
 
-        assertEquals(true, undoMove.isMoveDoable(scoreDirector));
+        assertThat(undoMove.isMoveDoable(scoreDirector)).isTrue();
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3);
         SelectorTestUtils.assertChain(b0, b1, b2);
@@ -87,14 +87,14 @@ public class KOptMoveTest {
 
         // To tail value
         move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, new Object[]{b2, c2});
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1);
         SelectorTestUtils.assertChain(b0, b1, b2, a2, a3);
         SelectorTestUtils.assertChain(c0, c1, c2);
 
-        assertEquals(true, undoMove.isMoveDoable(scoreDirector));
+        assertThat(undoMove.isMoveDoable(scoreDirector)).isTrue();
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3);
         SelectorTestUtils.assertChain(b0, b1, b2);
@@ -132,50 +132,50 @@ public class KOptMoveTest {
         SelectorTestUtils.assertChain(b0, b1, b2, b3);
 
         KOptMove move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a4, new Object[]{a1, b2});
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a4);
         SelectorTestUtils.assertChain(b0, b1, b2, a2, a3, b3);
 
-        assertEquals(true, undoMove.isMoveDoable(scoreDirector));
+        assertThat(undoMove.isMoveDoable(scoreDirector)).isTrue();
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);
         SelectorTestUtils.assertChain(b0, b1, b2, b3);
 
         // Same move, different order
         move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, new Object[]{b2, a3});
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a4);
         SelectorTestUtils.assertChain(b0, b1, b2, a2, a3, b3);
 
-        assertEquals(true, undoMove.isMoveDoable(scoreDirector));
+        assertThat(undoMove.isMoveDoable(scoreDirector)).isTrue();
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);
         SelectorTestUtils.assertChain(b0, b1, b2, b3);
 
         // Same move, yet another order
         move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, b3, new Object[]{a3, a1});
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a4);
         SelectorTestUtils.assertChain(b0, b1, b2, a2, a3, b3);
 
-        assertEquals(true, undoMove.isMoveDoable(scoreDirector));
+        assertThat(undoMove.isMoveDoable(scoreDirector)).isTrue();
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);
         SelectorTestUtils.assertChain(b0, b1, b2, b3);
 
         // These moves would create a loop
         move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, new Object[]{a3, b2});
-        assertEquals(false, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
         move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a4, new Object[]{b2, a1});
-        assertEquals(false, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
         move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, b3, new Object[]{a1, a3});
-        assertEquals(false, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test @Ignore("Valid 1 chain moves aren't supported yet") // TODO
@@ -205,34 +205,34 @@ public class KOptMoveTest {
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6);
 
         KOptMove move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a6, new Object[]{a3, a1});
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a4, a5, a2, a3, a6);
 
-        assertEquals(true, undoMove.isMoveDoable(scoreDirector));
+        assertThat(undoMove.isMoveDoable(scoreDirector)).isTrue();
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6);
 
         // Same move, different order
         move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a4, new Object[]{a1, a5});
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a4, a5, a2, a3, a6);
 
-        assertEquals(true, undoMove.isMoveDoable(scoreDirector));
+        assertThat(undoMove.isMoveDoable(scoreDirector)).isTrue();
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6);
 
         // Same move, yet another order
         move = new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, new Object[]{a5, a3});
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a4, a5, a2, a3, a6);
 
-        assertEquals(true, undoMove.isMoveDoable(scoreDirector));
+        assertThat(undoMove.isMoveDoable(scoreDirector)).isTrue();
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6);
 
@@ -269,10 +269,10 @@ public class KOptMoveTest {
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new AnchorVariableDemand(variableDescriptor));
 
-        assertEquals("a2 {a1} -kOpt-> b1 {b0} -kOpt-> c2 {c1}", new KOptMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a2, new Object[]{b0, c1}).toString());
-        assertEquals("a2 {a1} -kOpt-> null {b2} -kOpt-> null {c2}", new KOptMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a2, new Object[]{b2, c2}).toString());
+        assertThat(new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2,
+                new Object[]{b0, c1})).hasToString("a2 {a1} -kOpt-> b1 {b0} -kOpt-> c2 {c1}");
+        assertThat(new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2,
+                new Object[]{b2, c2})).hasToString("a2 {a1} -kOpt-> null {b2} -kOpt-> null {c2}");
     }
 
 }

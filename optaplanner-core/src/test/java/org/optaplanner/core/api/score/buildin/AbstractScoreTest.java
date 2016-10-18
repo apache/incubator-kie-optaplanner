@@ -19,16 +19,16 @@ package org.optaplanner.core.api.score.buildin;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractScoreTest {
 
     public static void assertScoresEqualsAndHashCode(Score... scores) {
         for (int i = 0; i < scores.length; i++) {
             for (int j = i + 1; j < scores.length; j++) {
-                assertEquals(scores[i], scores[j]);
-                assertEquals(scores[i].hashCode(), scores[j].hashCode());
-                assertEquals(0, scores[i].compareTo(scores[j]));
+                assertThat(scores[j]).isEqualTo(scores[i]);
+                assertThat(scores[j].hashCode()).isEqualTo(scores[i].hashCode());
+                assertThat(scores[i].compareTo(scores[j])).isEqualTo(0);
             }
         }
     }
@@ -36,21 +36,21 @@ public abstract class AbstractScoreTest {
     public static void assertScoresNotEquals(Score... scores) {
         for (int i = 0; i < scores.length; i++) {
             for (int j = i + 1; j < scores.length; j++) {
-                assertNotEquals(scores[i], scores[j]);
-                assertNotEquals(0, scores[i].compareTo(scores[j]));
+                assertThat(scores[j]).isNotEqualTo(scores[i]);
+                assertThat(scores[i].compareTo(scores[j])).isNotEqualTo(0);
             }
         }
     }
 
     public static void assertScoreNotFeasible(FeasibilityScore... scores) {
         for (FeasibilityScore score : scores) {
-            assertEquals(score + " should not be feasible.", false, score.isFeasible());
+            assertThat(score.isFeasible()).as(score + " should not be feasible.").isFalse();
         }
     }
 
     public static void assertScoreFeasible(FeasibilityScore ... scores) {
         for (FeasibilityScore score : scores) {
-            assertEquals(score + " should be feasible.", true, score.isFeasible());
+            assertThat(score.isFeasible()).as(score + " should be feasible.").isTrue();
         }
     }
 

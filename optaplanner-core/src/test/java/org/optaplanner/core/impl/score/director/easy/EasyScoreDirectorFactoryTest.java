@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class EasyScoreDirectorFactoryTest {
@@ -32,7 +32,7 @@ public class EasyScoreDirectorFactoryTest {
     public void getEasyScoreCalculator() {
         EasyScoreCalculator scoreCalculator = mock(EasyScoreCalculator.class);
         EasyScoreDirectorFactory directorFactory = new EasyScoreDirectorFactory(scoreCalculator);
-        assertSame(scoreCalculator, directorFactory.getEasyScoreCalculator());
+        assertThat(directorFactory.getEasyScoreCalculator()).isSameAs(scoreCalculator);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class EasyScoreDirectorFactoryTest {
         solution.setValueList(Collections.emptyList());
         solution.setEntityList(Collections.emptyList());
         director.setWorkingSolution(solution);
-        assertEquals(SimpleScore.valueOf(0, -10), director.calculateScore());
+        assertThat(director.calculateScore()).isEqualTo(SimpleScore.valueOf(0, -10));
     }
 
 }

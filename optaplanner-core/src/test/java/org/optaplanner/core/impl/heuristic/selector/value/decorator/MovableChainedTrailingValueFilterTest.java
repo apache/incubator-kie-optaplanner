@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmov
 import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmovableChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MovableChainedTrailingValueFilterTest {
 
@@ -65,18 +65,18 @@ public class MovableChainedTrailingValueFilterTest {
 
         MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
 
-        assertEquals(false, filter.accept(scoreDirector, a0));
-        assertEquals(true, filter.accept(scoreDirector, a1));
-        assertEquals(true, filter.accept(scoreDirector, a2));
-        assertEquals(true, filter.accept(scoreDirector, a3));
+        assertThat(filter.accept(scoreDirector, a0)).isFalse();
+        assertThat(filter.accept(scoreDirector, a1)).isTrue();
+        assertThat(filter.accept(scoreDirector, a2)).isTrue();
+        assertThat(filter.accept(scoreDirector, a3)).isTrue();
 
-        assertEquals(true, filter.accept(scoreDirector, b0));
-        assertEquals(true, filter.accept(scoreDirector, b1));
-        assertEquals(true, filter.accept(scoreDirector, b2));
+        assertThat(filter.accept(scoreDirector, b0)).isTrue();
+        assertThat(filter.accept(scoreDirector, b1)).isTrue();
+        assertThat(filter.accept(scoreDirector, b2)).isTrue();
 
-        assertEquals(false, filter.accept(scoreDirector, c0));
-        assertEquals(false, filter.accept(scoreDirector, c1));
-        assertEquals(true, filter.accept(scoreDirector, c2));
+        assertThat(filter.accept(scoreDirector, c0)).isFalse();
+        assertThat(filter.accept(scoreDirector, c1)).isFalse();
+        assertThat(filter.accept(scoreDirector, c2)).isTrue();
     }
 
 }

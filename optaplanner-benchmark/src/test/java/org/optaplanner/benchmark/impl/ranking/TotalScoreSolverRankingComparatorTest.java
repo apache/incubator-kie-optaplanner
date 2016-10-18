@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.impl.ranking;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -26,9 +27,8 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRankingComparatorTest {
 
@@ -61,7 +61,7 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmark(bSingleBenchmarkResultList, -50, -50, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertCompareToOrder(comparator, a, b);
+        assertThat(Arrays.asList(a, b)).isSortedAccordingTo(comparator);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmark(bSingleBenchmarkResultList, -35, -35, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertCompareToOrder(comparator, a, b);
+        assertThat(Arrays.asList(a, b)).isSortedAccordingTo(comparator);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, -7, -50, 0, -50, -10, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertCompareToOrder(comparator, a, b);
+        assertThat(Arrays.asList(a, b)).isSortedAccordingTo(comparator);
     }
 
     @Test
@@ -106,25 +106,26 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertCompareToEquals(comparator, a, b);
+        assertThat(comparator.compare(a, b)).isZero();
+        assertThat(comparator.compare(b, a)).isZero();
 
         a0.setAverageScore(SimpleScore.valueOf(-100, -1000));
         b1.setAverageScore(SimpleScore.valueOf(-100, -400));
         a.accumulateResults(benchmarkReport);
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count and total score are equal, A is worse on worst score (tie-breaker)
-        assertCompareToOrder(comparator, a, b);
+        assertThat(Arrays.asList(a, b)).isSortedAccordingTo(comparator);
 
         b0.setAverageScore(SimpleScore.valueOf(-100, -1000));
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count is bigger in B
-        assertCompareToOrder(comparator, b, a);
+        assertThat(Arrays.asList(b, a)).isSortedAccordingTo(comparator);
 
         b0.setAverageScore(SimpleScore.valueOfInitialized(-1000));
         b1.setAverageScore(SimpleScore.valueOf(-99, -400));
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count is bigger in A
-        assertCompareToOrder(comparator, a, b);
+        assertThat(Arrays.asList(a, b)).isSortedAccordingTo(comparator);
     }
 
 }

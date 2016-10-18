@@ -21,18 +21,18 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleLongScoreDefinitionTest {
 
     @Test
     public void getLevelSize() {
-        assertEquals(1, new SimpleLongScoreDefinition().getLevelsSize());
+        assertThat(new SimpleLongScoreDefinition().getLevelsSize()).isEqualTo(1);
     }
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"score"}, new SimpleLongScoreDefinition().getLevelLabels());
+        assertThat(new SimpleLongScoreDefinition().getLevelLabels()).containsExactly("score");
     }
 
     @Test
@@ -41,8 +41,8 @@ public class SimpleLongScoreDefinitionTest {
         SimpleLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleLongScore.valueOfInitialized(-1L));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(Long.MAX_VALUE, optimisticBound.getScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getScore()).isEqualTo(Long.MAX_VALUE);
     }
 
     @Test
@@ -51,8 +51,8 @@ public class SimpleLongScoreDefinitionTest {
         SimpleLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleLongScore.valueOfInitialized(-1L));
-        assertEquals(0, optimisticBound.getInitScore());
-        assertEquals(-1L, optimisticBound.getScore());
+        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.getScore()).isEqualTo(-1L);
     }
 
     @Test
@@ -61,8 +61,8 @@ public class SimpleLongScoreDefinitionTest {
         SimpleLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleLongScore.valueOfInitialized(-1L));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(-1L, pessimisticBound.getScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getScore()).isEqualTo(-1L);
     }
 
     @Test
@@ -71,8 +71,8 @@ public class SimpleLongScoreDefinitionTest {
         SimpleLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleLongScore.valueOfInitialized(-1L));
-        assertEquals(0, pessimisticBound.getInitScore());
-        assertEquals(Long.MIN_VALUE, pessimisticBound.getScore());
+        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.getScore()).isEqualTo(Long.MIN_VALUE);
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class BetaDistributionNearbyRandomTest {
@@ -41,13 +41,13 @@ public class BetaDistributionNearbyRandomTest {
         NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 1.0);
 
         when(random.nextDouble()).thenReturn(0.0);
-        assertEquals(0, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
         when(random.nextDouble()).thenReturn(1.0 / 500.0);
-        assertEquals(1, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(1);
         when(random.nextDouble()).thenReturn(2.0 / 500.0);
-        assertEquals(2, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(2);
         when(random.nextDouble()).thenReturn(3.0 / 500.0);
-        assertEquals(3, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(3);
     }
 
 }

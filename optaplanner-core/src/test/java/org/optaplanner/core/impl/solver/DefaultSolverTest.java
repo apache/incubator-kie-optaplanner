@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultSolverTest {
 
@@ -48,9 +48,9 @@ public class DefaultSolverTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(true, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -66,8 +66,8 @@ public class DefaultSolverTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -85,9 +85,9 @@ public class DefaultSolverTest {
                 new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(false, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
     @Test
@@ -107,9 +107,9 @@ public class DefaultSolverTest {
                 new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
-        assertEquals(false, solution.getScore().isSolutionInitialized());
-        assertSame(solution, solver.getBestSolution());
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isFalse();
+        assertThat(solver.getBestSolution()).isSameAs(solution);
     }
 
 }

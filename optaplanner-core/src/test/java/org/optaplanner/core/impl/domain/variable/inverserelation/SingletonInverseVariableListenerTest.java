@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChaine
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class SingletonInverseVariableListenerTest {
@@ -63,12 +63,12 @@ public class SingletonInverseVariableListenerTest {
         solution.setChainedAnchorList(Arrays.asList(a0, b0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
-        assertEquals(null, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isNull();
 
         variableListener.beforeVariableChanged(scoreDirector, a3);
         a3.setChainedObject(b1);
         variableListener.afterVariableChanged(scoreDirector, a3);
-        assertEquals(a3, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(a3);
 
         InOrder inOrder = inOrder(scoreDirector);
         inOrder.verify(scoreDirector).beforeVariableChanged(nextEntityVariableDescriptor, b1);

@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChai
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 
@@ -77,19 +77,19 @@ public class SubChainChangeMoveSelectorTest {
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isFalse();
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isFalse();
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertEquals(true, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isTrue();
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertEquals(false, testedSelector.isCountable());
+        assertThat(testedSelector.isCountable()).isFalse();
     }
 
     @Test
@@ -104,11 +104,11 @@ public class SubChainChangeMoveSelectorTest {
 
         when(subChainSelector.getSize()).thenReturn(1L);
         when(valueSelector.getSize()).thenReturn(2L);
-        assertEquals(2, testedSelector.getSize());
+        assertThat(testedSelector.getSize()).isEqualTo(2);
 
         when(subChainSelector.getSize()).thenReturn(100L);
         when(valueSelector.getSize()).thenReturn(200L);
-        assertEquals(20000, testedSelector.getSize());
+        assertThat(testedSelector.getSize()).isEqualTo(20000);
     }
 
 }

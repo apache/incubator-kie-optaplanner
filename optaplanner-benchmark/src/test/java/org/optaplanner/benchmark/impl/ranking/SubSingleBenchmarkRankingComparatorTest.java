@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -24,9 +26,8 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
 public class SubSingleBenchmarkRankingComparatorTest {
 
@@ -46,7 +47,7 @@ public class SubSingleBenchmarkRankingComparatorTest {
         SubSingleBenchmarkResult d = new SubSingleBenchmarkResult(singleBenchmarkResult, 3);
         d.setSucceeded(true);
         d.setScore(SimpleScore.valueOfInitialized(-20));
-        assertCompareToOrder(comparator, a, b, c, d);
+        assertThat(Arrays.asList(a, b, c, d)).isSortedAccordingTo(comparator);
     }
 
 }

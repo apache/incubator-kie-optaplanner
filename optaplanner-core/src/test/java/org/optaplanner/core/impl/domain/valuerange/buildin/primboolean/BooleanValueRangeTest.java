@@ -20,7 +20,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -29,19 +29,19 @@ public class BooleanValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(2L, new BooleanValueRange().getSize());
+        assertThat(new BooleanValueRange().getSize()).isEqualTo(2L);
     }
 
     @Test
     public void get() {
-        assertEquals(Boolean.FALSE, new BooleanValueRange().get(0L));
-        assertEquals(Boolean.TRUE, new BooleanValueRange().get(1L));
+        assertThat(new BooleanValueRange().get(0L)).isEqualTo(Boolean.FALSE);
+        assertThat(new BooleanValueRange().get(1L)).isEqualTo(Boolean.TRUE);
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new BooleanValueRange().contains(Boolean.FALSE));
-        assertEquals(true, new BooleanValueRange().contains(Boolean.TRUE));
+        assertThat(new BooleanValueRange().contains(Boolean.FALSE)).isTrue();
+        assertThat(new BooleanValueRange().contains(Boolean.TRUE)).isTrue();
     }
 
     @Test

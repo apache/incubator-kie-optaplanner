@@ -30,7 +30,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -78,11 +78,11 @@ public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
 
         Solution_ bestSolution = solver.solve(planningProblem);
         assertSolution(bestSolution);
-        assertNotNull(solver.getBestScore());
+        assertThat(solver.getBestScore()).isNotNull();
     }
 
     protected void assertSolution(Solution_ bestSolution) {
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
     }
 
     protected abstract SolverFactory<Solution_> buildSolverFactory();

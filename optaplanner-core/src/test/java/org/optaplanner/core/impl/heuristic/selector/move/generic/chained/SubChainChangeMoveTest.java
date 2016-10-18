@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class SubChainChangeMoveTest {
@@ -154,14 +154,14 @@ public class SubChainChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1, b2, b3});
 
-        assertEquals("[a2..a4] {a1 -> b0}", new SubChainChangeMove(
-                new SubChain(Arrays.<Object>asList(a2, a3, a4)), variableDescriptor, inverseVariableSupply, b0).toString());
-        assertEquals("[a1..a5] {a0 -> b3}", new SubChainChangeMove(
-                new SubChain(Arrays.<Object>asList(a1, a2, a3, a4, a5)), variableDescriptor, inverseVariableSupply, b3).toString());
-        assertEquals("[a1..a3] {a0 -> a5}", new SubChainChangeMove(
-                new SubChain(Arrays.<Object>asList(a1, a2, a3)), variableDescriptor, inverseVariableSupply, a5).toString());
-        assertEquals("[a3..a3] {a2 -> b2}", new SubChainChangeMove(
-                new SubChain(Arrays.<Object>asList(a3)), variableDescriptor, inverseVariableSupply, b2).toString());
+        assertThat(new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a2, a3, a4)),
+                variableDescriptor, inverseVariableSupply, b0)).hasToString("[a2..a4] {a1 -> b0}");
+        assertThat(new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a1, a2, a3, a4, a5)),
+                variableDescriptor, inverseVariableSupply, b3)).hasToString("[a1..a5] {a0 -> b3}");
+        assertThat(new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a1, a2, a3)),
+                variableDescriptor, inverseVariableSupply, a5)).hasToString("[a1..a3] {a0 -> a5}");
+        assertThat(new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a3)),
+                variableDescriptor, inverseVariableSupply, b2)).hasToString("[a3..a3] {a2 -> b2}");
     }
 
 }

@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataValueRangeSo
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValueRangeFactoryTest {
 
@@ -45,7 +45,7 @@ public class ValueRangeFactoryTest {
         solution.setEntityList(Arrays.asList(new TestdataValueRangeEntity("e1"), new TestdataValueRangeEntity("e2")));
 
         solution = solver.solve(solution);
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
     }
 
 }

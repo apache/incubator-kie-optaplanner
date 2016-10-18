@@ -35,7 +35,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 import org.optaplanner.examples.common.app.LoggingTest;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CloudBalancingDaemonTest extends LoggingTest {
 
@@ -65,7 +65,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
-        assertEquals(8, (solver.getBestSolution()).getProcessList().size());
+        assertThat((solver.getBestSolution()).getProcessList()).hasSize(8);
 
         // Give the solver thread some time to solve, terminate and get into the daemon waiting state
         Thread.sleep(1000);
@@ -84,8 +84,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("SolverThread did not die yet due to an interruption.", e);
         }
-        assertEquals(true, solver.isEveryProblemFactChangeProcessed());
-        assertEquals(12, (solver.getBestSolution()).getProcessList().size());
+        assertThat(solver.isEveryProblemFactChangeProcessed()).isTrue();
+        assertThat((solver.getBestSolution()).getProcessList()).hasSize(12);
     }
 
     private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {

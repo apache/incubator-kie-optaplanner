@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -123,9 +124,9 @@ public class CachingEntitySelectorTest {
     public void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
-        assertTrue(cachingEntitySelector.isNeverEnding());
+        assertThat(cachingEntitySelector.isNeverEnding()).isTrue();
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
-        assertFalse(cachingEntitySelector.isNeverEnding());
+        assertThat(cachingEntitySelector.isNeverEnding()).isFalse();
     }
 
     @Test
@@ -135,11 +136,11 @@ public class CachingEntitySelectorTest {
 
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
         cachingEntitySelector.constructCache(null);
-        assertInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
+        assertThat((Object) cachingEntitySelector.iterator()).isInstanceOf(CachedListRandomIterator.class);
 
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
         cachingEntitySelector.constructCache(null);
-        assertNotInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
+        assertThat((Object) cachingEntitySelector.iterator()).isNotInstanceOf(CachedListRandomIterator.class);
     }
 
 }

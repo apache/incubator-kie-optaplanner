@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChaine
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class AnchorVariableListenerTest {
@@ -72,10 +72,10 @@ public class AnchorVariableListenerTest {
         solution.setChainedAnchorList(Arrays.asList(a0, b0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
-        assertSame(a0, a1.getAnchor());
-        assertSame(a0, a2.getAnchor());
-        assertSame(a0, a3.getAnchor());
-        assertSame(b0, b1.getAnchor());
+        assertThat(a1.getAnchor()).isSameAs(a0);
+        assertThat(a2.getAnchor()).isSameAs(a0);
+        assertThat(a3.getAnchor()).isSameAs(a0);
+        assertThat(b1.getAnchor()).isSameAs(b0);
 
         inverseVariableListener.beforeVariableChanged(scoreDirector, a3);
         variableListener.beforeVariableChanged(scoreDirector, a3);
@@ -83,10 +83,10 @@ public class AnchorVariableListenerTest {
         inverseVariableListener.afterVariableChanged(scoreDirector, a3);
         variableListener.afterVariableChanged(scoreDirector, a3);
 
-        assertSame(a0, a1.getAnchor());
-        assertSame(a0, a2.getAnchor());
-        assertSame(b0, a3.getAnchor());
-        assertSame(b0, b1.getAnchor());
+        assertThat(a1.getAnchor()).isSameAs(a0);
+        assertThat(a2.getAnchor()).isSameAs(a0);
+        assertThat(a3.getAnchor()).isSameAs(b0);
+        assertThat(b1.getAnchor()).isSameAs(b0);
 
         InOrder inOrder = inOrder(scoreDirector);
         inOrder.verify(scoreDirector).beforeVariableChanged(anchorVariableDescriptor, a3);

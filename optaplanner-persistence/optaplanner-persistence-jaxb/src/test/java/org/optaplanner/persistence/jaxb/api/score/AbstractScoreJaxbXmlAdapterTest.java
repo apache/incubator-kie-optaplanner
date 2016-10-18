@@ -19,6 +19,7 @@ package org.optaplanner.persistence.jaxb.api.score;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -28,7 +29,7 @@ import javax.xml.bind.Unmarshaller;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoft.HardSoftScoreJaxbXmlAdapter;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractScoreJaxbXmlAdapterTest {
 
@@ -51,7 +52,7 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
-        assertEquals(expectedScore, output.getScore());
+        assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
         if (expectedScore != null) {
             regex = "<\\?[^\\?]*\\?>" // XML header
@@ -64,9 +65,7 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
             regex = "<\\?[^\\?]*\\?>" // XML header
                     + "<([\\w\\-\\.]+)/>"; // Start and end of element
         }
-        if (!xmlString.matches(regex)) {
-            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + xmlString);
-        }
+        assertThat(xmlString).matches(Pattern.compile(regex));
     }
 
     public static abstract class TestScoreWrapper<S extends Score> implements Serializable {

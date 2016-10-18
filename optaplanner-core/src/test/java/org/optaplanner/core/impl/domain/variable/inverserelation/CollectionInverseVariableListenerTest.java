@@ -27,8 +27,8 @@ import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.Testdata
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationSolution;
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationValue;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class CollectionInverseVariableListenerTest {
 
@@ -55,17 +55,17 @@ public class CollectionInverseVariableListenerTest {
         solution.setEntityList(Arrays.asList(a, b, c, d));
         solution.setValueList(Arrays.asList(val1, val2, val3));
 
-        assertCollectionContainsExactly(val1.getEntities(), a, b);
-        assertCollectionContainsExactly(val2.getEntities());
-        assertCollectionContainsExactly(val3.getEntities(), c, d);
+        assertThat(val1.getEntities()).containsExactly(a, b);
+        assertThat(val2.getEntities()).isEmpty();
+        assertThat(val3.getEntities()).containsExactly(c, d);
 
         variableListener.beforeVariableChanged(scoreDirector, c);
         c.setValue(val2);
         variableListener.afterVariableChanged(scoreDirector, c);
 
-        assertCollectionContainsExactly(val1.getEntities(), a, b);
-        assertCollectionContainsExactly(val2.getEntities(), c);
-        assertCollectionContainsExactly(val3.getEntities(), d);
+        assertThat(val1.getEntities()).containsExactly(a, b);
+        assertThat(val2.getEntities()).containsExactly(c);
+        assertThat(val3.getEntities()).containsExactly(d);
     }
 
 }

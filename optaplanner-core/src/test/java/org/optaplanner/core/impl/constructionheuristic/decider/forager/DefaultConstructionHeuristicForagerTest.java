@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class DefaultConstructionHeuristicForagerTest<Solution_> {
@@ -36,11 +36,11 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
                 ConstructionHeuristicPickEarlyType.NEVER);
         ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(SimpleScore.valueOf(-8, -100));
         forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOf(-7, -110)));
-        assertEquals(false, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOf(-7, -100)));
-        assertEquals(false, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOf(-7, -90)));
-        assertEquals(false, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
     }
 
     @Test
@@ -49,9 +49,9 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
                 ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE);
         ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(SimpleScore.valueOf(-8, -100));
         forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOf(-7, -110)));
-        assertEquals(false, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.checkPickEarly(buildMoveScope(stepScope, SimpleScore.valueOf(-7, -100)));
-        assertEquals(true, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
     }
 
     @Test
@@ -60,11 +60,11 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
                 ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE);
         ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(HardSoftScore.valueOf(-8, 0, -100));
         forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOf(-7, -1, -110)));
-        assertEquals(false, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOf(-7, -1, -90)));
-        assertEquals(false, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOf(-7, 0, -110)));
-        assertEquals(true, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
     }
 
     @Test
@@ -73,11 +73,11 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
                 ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD);
         ConstructionHeuristicStepScope<Solution_> stepScope = buildStepScope(HardSoftScore.valueOf(-8, -10, -100));
         forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOf(-7, -11, -110)));
-        assertEquals(false, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOf(-7, -11, -90)));
-        assertEquals(false, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isFalse();
         forager.checkPickEarly(buildMoveScope(stepScope, HardSoftScore.valueOf(-7, -10, -110)));
-        assertEquals(true, forager.isQuitEarly());
+        assertThat(forager.isQuitEarly()).isTrue();
     }
 
 

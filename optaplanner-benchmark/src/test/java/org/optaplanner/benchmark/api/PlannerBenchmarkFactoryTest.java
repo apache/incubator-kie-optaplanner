@@ -27,7 +27,7 @@ import org.optaplanner.core.api.solver.DivertingClassLoader;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.impl.phase.custom.DummyCustomPhaseCommand;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PlannerBenchmarkFactoryTest {
 
@@ -44,7 +44,7 @@ public class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
     }
 
@@ -53,7 +53,7 @@ public class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "org/optaplanner/benchmark/api/nonExistingPlannerBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
     }
 
@@ -66,7 +66,7 @@ public class PlannerBenchmarkFactoryTest {
         phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(DummyCustomPhaseCommand.class));
         solverBenchmarkConfig.getSolverConfig() .setPhaseConfigList(Collections.singletonList(phaseConfig));
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
     }
 
@@ -77,7 +77,7 @@ public class PlannerBenchmarkFactoryTest {
         SolverBenchmarkConfig solverBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0);
         solverBenchmarkConfig.setSubSingleCount(3);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
     }
 
@@ -88,7 +88,7 @@ public class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml", classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
     }
 
@@ -97,7 +97,7 @@ public class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfigTemplate.xml.ftl");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
     }
 
@@ -106,7 +106,7 @@ public class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
                 "org/optaplanner/benchmark/api/nonExistingPlannerBenchmarkConfigTemplate.xml.ftl");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
     }
 
@@ -117,7 +117,7 @@ public class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
                 "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfigTemplate.xml.ftl", classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        assertThat(plannerBenchmark).isNotNull();
         plannerBenchmark.benchmark();
     }
 

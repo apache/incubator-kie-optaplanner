@@ -21,7 +21,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestGenRemoveRandomBlockMutatorTest {
 
@@ -40,14 +40,14 @@ public class TestGenRemoveRandomBlockMutatorTest {
         TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<Integer>(list);
         ArrayList<Integer> removed = new ArrayList<>();
         while (m.canMutate()) {
-            assertTrue(m.canMutate());
+            assertThat(m.canMutate()).isTrue();
             m.mutate();
             removed.addAll(m.getRemovedBlock());
         }
-        assertFalse(m.canMutate());
+        assertThat(m.canMutate()).isFalse();
 
         for (int i = 0; i < LIST_SIZE; i++) {
-            assertTrue(removed.contains(list.get(i)));
+            assertThat(removed).contains(list.get(i));
         }
     }
 
@@ -57,8 +57,8 @@ public class TestGenRemoveRandomBlockMutatorTest {
         m.mutate();
         List<Integer> removedBlock = m.getRemovedBlock();
         m.revert();
-        assertTrue(m.getResult().containsAll(removedBlock));
-        assertEquals(LIST_SIZE, m.getResult().size());
+        assertThat(m.getResult().containsAll(removedBlock)).isTrue();
+        assertThat(m.getResult()).hasSize(LIST_SIZE);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
         }
 
         for (int i = 0; i < LIST_SIZE; i++) {
-            assertTrue(removed.contains(list.get(i)));
+            assertThat(removed).contains(list.get(i));
         }
     }
 

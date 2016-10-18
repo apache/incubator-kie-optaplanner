@@ -28,8 +28,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractSolutionTest {
 
@@ -37,11 +36,11 @@ public class AbstractSolutionTest {
     public void getScore() {
         TestdataAbstractSolutionBasedSolution solution = new TestdataAbstractSolutionBasedSolution();
         solution.setScore(null);
-        assertEquals(null, solution.getScore());
+        assertThat(solution.getScore()).isNull();
         solution.setScore(SimpleScore.valueOfInitialized(-10));
-        assertEquals(SimpleScore.valueOfInitialized(-10), solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-10));
         solution.setScore(SimpleScore.valueOfInitialized(-2));
-        assertEquals(SimpleScore.valueOfInitialized(-2), solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(SimpleScore.valueOfInitialized(-2));
     }
 
     @Test
@@ -61,7 +60,7 @@ public class AbstractSolutionTest {
         solution.setSingleEntity(singleEntity);
         SimpleScore score = SimpleScore.valueOfInitialized(-10);
         solution.setScore(score);
-        assertCollectionContainsExactly(solution.getProblemFactList(), singleValue, v1, v2, v3);
+        assertThat(solution.getProblemFactList()).containsExactly(singleValue, v1, v2, v3);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class AbstractSolutionTest {
         solution.setEntityList(null);
         solution.setSingleEntity(null);
         solution.setScore(null);
-        assertCollectionContainsExactly(solution.getProblemFactList(), v1, v2, v3);
+        assertThat(solution.getProblemFactList()).containsExactly(v1, v2, v3);
     }
 
     public static class TestdataAbstractSolutionBasedSolution extends AbstractSolution<SimpleScore> {

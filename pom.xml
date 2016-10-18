@@ -178,6 +178,10 @@
                       <!-- Miscellaneous other checks. -->
                       <module name="ArrayTypeStyle"/>
                       <module name="UpperEll"/>
+                      <module name="RegexpSinglelineJava">
+                        <property name="format" value="^\s*import +(static)? *org\.junit\.Assert.*;.*$"/>
+                        <property name="message" value="Use AssertJ for assertions!"/>
+                      </module>
                     </module>
                   </module>
                 </checkstyleRules>

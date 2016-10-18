@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MutationCounterTest {
 
@@ -59,7 +59,7 @@ public class MutationCounterTest {
         b.setValueList(valueList);
         b.setEntityList(bEntityList);
 
-        assertEquals(0, mutationCounter.countMutations(a, b));
+        assertThat(mutationCounter.countMutations(a, b)).isEqualTo(0);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class MutationCounterTest {
         b.setValueList(valueList);
         b.setEntityList(bEntityList);
 
-        assertEquals(2, mutationCounter.countMutations(a, b));
+        assertThat(mutationCounter.countMutations(a, b)).isEqualTo(2);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class MutationCounterTest {
         b.setValueList(valueList);
         b.setEntityList(bEntityList);
 
-        assertEquals(4, mutationCounter.countMutations(a, b));
+        assertThat(mutationCounter.countMutations(a, b)).isEqualTo(4);
     }
 
 }

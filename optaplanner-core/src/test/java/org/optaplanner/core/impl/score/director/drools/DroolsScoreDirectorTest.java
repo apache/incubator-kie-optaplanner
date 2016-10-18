@@ -22,7 +22,7 @@ import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class DroolsScoreDirectorTest {
@@ -43,7 +43,7 @@ public class DroolsScoreDirectorTest {
     public void constraintMatchTotalsNeverNull() {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), true);
         director.setWorkingSolution(new Object());
-        assertNotNull(director.getConstraintMatchTotals());
+        assertThat(director.getConstraintMatchTotals()).isNotNull();
     }
 
     @SuppressWarnings("unchecked")

@@ -26,7 +26,7 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQueens> {
 
@@ -52,7 +52,7 @@ public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQ
     @Override
     protected void assertSolution(NQueens bestSolution) {
         super.assertSolution(bestSolution);
-        assertEquals(0, ((NQueens) bestSolution).getScore().getScore());
+        assertThat(((NQueens) bestSolution).getScore().getScore()).isEqualTo(0);
     }
 
 }

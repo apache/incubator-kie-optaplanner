@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class ExternalizedSingletonInverseVariableSupplyTest {
@@ -51,19 +51,19 @@ public class ExternalizedSingletonInverseVariableSupplyTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         supply.resetWorkingSolution(scoreDirector);
 
-        assertSame(a1, supply.getInverseSingleton(a0));
-        assertSame(a2, supply.getInverseSingleton(a1));
-        assertSame(a3, supply.getInverseSingleton(a2));
-        assertSame(null, supply.getInverseSingleton(a3));
-        assertSame(b1, supply.getInverseSingleton(b0));
-        assertSame(null, supply.getInverseSingleton(b1));
+        assertThat(supply.getInverseSingleton(a0)).isSameAs(a1);
+        assertThat(supply.getInverseSingleton(a1)).isSameAs(a2);
+        assertThat(supply.getInverseSingleton(a2)).isSameAs(a3);
+        assertThat(supply.getInverseSingleton(a3)).isSameAs(null);
+        assertThat(supply.getInverseSingleton(b0)).isSameAs(b1);
+        assertThat(supply.getInverseSingleton(b1)).isSameAs(null);
 
         supply.beforeVariableChanged(scoreDirector, a3);
         a3.setChainedObject(b1);
         supply.afterVariableChanged(scoreDirector, a3);
 
-        assertSame(null, supply.getInverseSingleton(a2));
-        assertSame(a3, supply.getInverseSingleton(b1));
+        assertThat(supply.getInverseSingleton(a2)).isSameAs(null);
+        assertThat(supply.getInverseSingleton(b1)).isSameAs(a3);
 
         supply.clearWorkingSolution(scoreDirector);
     }

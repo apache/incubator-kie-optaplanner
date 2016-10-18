@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.comparator.ScoreFirstNode
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
 
@@ -38,7 +38,7 @@ public class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
         phase.addExpandableNode(buildNode(0, "2", 0, 0));
         phase.setBestPessimisticBound(SimpleScore.valueOfInitialized(Integer.MIN_VALUE));
         phase.registerPessimisticBound(SimpleScore.valueOfInitialized(1));
-        assertEquals(1, phase.getExpandableNodeQueue().size());
+        assertThat(phase.getExpandableNodeQueue()).hasSize(1);
     }
 
 }

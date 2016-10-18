@@ -29,7 +29,7 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Runs an example {@link Solver}.
@@ -76,13 +76,14 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
     }
 
     private void assertBestSolution(Solver<Solution_> solver, Solution_ bestSolution, String bestScoreLimitString) {
-        assertNotNull(bestSolution);
+        assertThat(bestSolution).isNotNull();
         InnerScoreDirectorFactory<Solution_> scoreDirectorFactory
                 = (InnerScoreDirectorFactory<Solution_>) solver.getScoreDirectorFactory();
         Score bestScore = scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);
         Score bestScoreLimit = scoreDirectorFactory.getScoreDefinition().parseScore(bestScoreLimitString);
-        assertTrue("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").",
-                bestScore.compareTo(bestScoreLimit) >= 0);
+        assertThat(bestScore.compareTo(bestScoreLimit))
+                .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
+                .isGreaterThanOrEqualTo(0);
     }
 
 }

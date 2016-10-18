@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
@@ -57,12 +57,12 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(ruleContext4, new BigDecimal("-1.00"));
         callUnMatch(ruleContext4);
 
-        assertEquals(HardSoftBigDecimalScore.valueOf(0, new BigDecimal("-14.00"), new BigDecimal("-0.03")),
-                scoreHolder.extractScore(0));
-        assertEquals(HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-14.00"), new BigDecimal("-0.03")),
-                scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(
+                HardSoftBigDecimalScore.valueOf(0, new BigDecimal("-14.00"), new BigDecimal("-0.03")));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(
+                HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-14.00"), new BigDecimal("-0.03")));
         if (constraintMatchEnabled) {
-            assertEquals(6, scoreHolder.getConstraintMatchTotals().size());
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(6);
         }
     }
 

@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChaine
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class IncrementalScoreDirectorTest {
@@ -73,13 +73,13 @@ public class IncrementalScoreDirectorTest {
         scoreDirector.setWorkingSolution(solution);
         reset(incrementalScoreCalculator);
 
-        assertEquals(null, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isNull();
 
         scoreDirector.beforeVariableChanged(a3, "chainedObject");
         a3.setChainedObject(b1);
         scoreDirector.afterVariableChanged(a3, "chainedObject");
         scoreDirector.triggerVariableListeners();
-        assertEquals(a3, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(a3);
 
         InOrder inOrder = inOrder(incrementalScoreCalculator);
         inOrder.verify(incrementalScoreCalculator, times(1)).beforeVariableChanged(a3, "chainedObject");
@@ -106,7 +106,7 @@ public class IncrementalScoreDirectorTest {
                 = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), true,
                         mockIncrementalScoreCalculator(true));
         director.setWorkingSolution(new Object());
-        assertNotNull(director.getConstraintMatchTotals());
+        assertThat(director.getConstraintMatchTotals()).isNotNull();
     }
 
     @Test
@@ -114,7 +114,7 @@ public class IncrementalScoreDirectorTest {
         IncrementalScoreDirector<Object> director
                 = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), true,
                         mockIncrementalScoreCalculator(false));
-        assertFalse(director.isConstraintMatchEnabled());
+        assertThat(director.isConstraintMatchEnabled()).isFalse();
     }
 
     @SuppressWarnings("unchecked")

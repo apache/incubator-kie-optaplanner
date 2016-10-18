@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TailChainSwapMoveTest {
 
@@ -61,12 +61,12 @@ public class TailChainSwapMoveTest {
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new AnchorVariableDemand(variableDescriptor));
 
-        assertEquals(true, new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, b0).isMoveDoable(scoreDirector));
-        assertEquals(true, new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, b1, a1).isMoveDoable(scoreDirector));
-        assertEquals(true, new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a2).isMoveDoable(scoreDirector));
-        assertEquals(true, new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, a0).isMoveDoable(scoreDirector));
-        assertEquals(false, new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a1).isMoveDoable(scoreDirector));
-        assertEquals(false, new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a0).isMoveDoable(scoreDirector));
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, b0).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, b1, a1).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a2).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, a0).isMoveDoable(scoreDirector)).isTrue();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a1).isMoveDoable(scoreDirector)).isFalse();
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a0).isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test
@@ -220,16 +220,16 @@ public class TailChainSwapMoveTest {
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new AnchorVariableDemand(variableDescriptor));
 
-        assertEquals("a1 {a0} <-tailChainSwap-> b1 {b0}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, b0).toString());
-        assertEquals("a1 {a0} <-tailChainSwap-> null {b1}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, b1).toString());
-        assertEquals("b1 {b0} <-tailChainSwap-> a1 {a0}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, b1, a0).toString());
-        assertEquals("a1 {a0} <-tailChainSwap-> null {a3}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, a3).toString());
-        assertEquals("a2 {a1} <-tailChainSwap-> a1 {a0}", new TailChainSwapMove(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a2, a0).toString());
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, b0).toString())
+                .isEqualTo("a1 {a0} <-tailChainSwap-> b1 {b0}");
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, b1).toString())
+                .isEqualTo("a1 {a0} <-tailChainSwap-> null {b1}");
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, b1, a0).toString())
+                .isEqualTo("b1 {b0} <-tailChainSwap-> a1 {a0}");
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a3).toString())
+                .isEqualTo("a1 {a0} <-tailChainSwap-> null {a3}");
+        assertThat(new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a0).toString())
+                .isEqualTo("a2 {a1} <-tailChainSwap-> a1 {a0}");
     }
 
 }

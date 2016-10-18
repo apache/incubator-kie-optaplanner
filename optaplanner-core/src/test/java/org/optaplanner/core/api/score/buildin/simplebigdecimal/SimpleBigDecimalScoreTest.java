@@ -17,28 +17,28 @@
 package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")),
-                SimpleBigDecimalScore.parseScore("-147.2"));
-        assertEquals(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")),
-                SimpleBigDecimalScore.parseScore("-7init/-147.2"));
+        assertThat(SimpleBigDecimalScore.parseScore("-147.2"))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")));
+        assertThat(SimpleBigDecimalScore.parseScore("-7init/-147.2"))
+                .isEqualTo(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")));
     }
 
     @Test
     public void testToString() {
-        assertEquals("-147.2", SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")).toString());
-        assertEquals("-7init/-147.2", SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")).toString());
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2"))).hasToString("-147.2");
+        assertThat(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2"))).hasToString("-7init/-147.2");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -48,70 +48,70 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void toInitializedScore() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")).toInitializedScore());
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")),
-                SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")).toInitializedScore());
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")).toInitializedScore())
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")));
+        assertThat(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")).toInitializedScore())
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")));
     }
 
     @Test
     public void add() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("19")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).add(
-                        SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1"))));
-        assertEquals(SimpleBigDecimalScore.valueOf(-77, new BigDecimal("19")),
-                SimpleBigDecimalScore.valueOf(-70, new BigDecimal("20")).add(
-                        SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1"))));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).add(
+                        SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1"))))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("19")));
+        assertThat(SimpleBigDecimalScore.valueOf(-70, new BigDecimal("20")).add(
+                        SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1"))))
+                .isEqualTo(SimpleBigDecimalScore.valueOf(-77, new BigDecimal("19")));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("21")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).subtract(
-                        SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1"))));
-        assertEquals(SimpleBigDecimalScore.valueOf(-63, new BigDecimal("21")),
-                SimpleBigDecimalScore.valueOf(-70, new BigDecimal("20")).subtract(
-                        SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1"))));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).subtract(
+                        SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1"))))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("21")));
+        assertThat(SimpleBigDecimalScore.valueOf(-70, new BigDecimal("20")).subtract(
+                        SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1"))))
+                .isEqualTo(SimpleBigDecimalScore.valueOf(-63, new BigDecimal("21")));
     }
 
     @Test
     public void multiply() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("6.0")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")).multiply(1.2));
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("1.2")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("1.0")).multiply(1.2));
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("4.8")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("4.0")).multiply(1.2));
-        assertEquals(SimpleBigDecimalScore.valueOf(-14, new BigDecimal("8.6")),
-                SimpleBigDecimalScore.valueOf(-7, new BigDecimal("4.3")).multiply(2.0));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")).multiply(1.2))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("6.0")));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("1.0")).multiply(1.2))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("1.2")));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("4.0")).multiply(1.2))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("4.8")));
+        assertThat(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("4.3")).multiply(2.0))
+                .isEqualTo(SimpleBigDecimalScore.valueOf(-14, new BigDecimal("8.6")));
     }
 
     @Test
     public void divide() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("25.0")).divide(5.0));
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("4.2")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("21.0")).divide(5.0));
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("4.8")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("24.0")).divide(5.0));
-        assertEquals(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("4.3")),
-                SimpleBigDecimalScore.valueOf(-14, new BigDecimal("8.6")).divide(2.0));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("25.0")).divide(5.0))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("21.0")).divide(5.0))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("4.2")));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("24.0")).divide(5.0))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("4.8")));
+        assertThat(SimpleBigDecimalScore.valueOf(-14, new BigDecimal("8.6")).divide(2.0))
+                .isEqualTo(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("4.3")));
     }
 
     @Test
     public void power() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("25.0")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")).power(2.0));
-        assertEquals(SimpleBigDecimalScore.valueOf(-343, new BigDecimal("125.0")),
-                SimpleBigDecimalScore.valueOf(-7, new BigDecimal("5.0")).power(3.0));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")).power(2.0))
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("25.0")));
+        assertThat(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("5.0")).power(3.0))
+                .isEqualTo(SimpleBigDecimalScore.valueOf(-343, new BigDecimal("125.0")));
     }
 
     @Test
     public void negate() {
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-5.0")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")).negate());
-        assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")),
-                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-5.0")).negate());
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")).negate())
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-5.0")));
+        assertThat(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-5.0")).negate())
+                .isEqualTo(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("5.0")));
     }
 
     @Test
@@ -134,7 +134,7 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        PlannerAssert.assertCompareToOrder(
+        assertThat(Arrays.asList(
                 SimpleBigDecimalScore.valueOf(-8, new BigDecimal("0.0")),
                 SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-20.0")),
                 SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-1.0")),
@@ -148,7 +148,7 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-1")),
                 SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("0")),
                 SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("1"))
-        );
+        )).isSorted();
     }
 
     @Test
@@ -156,15 +156,15 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("123.4")),
                 output -> {
-                    assertEquals(0, output.getInitScore());
-                    assertEquals(new BigDecimal("123.4"), output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(0);
+                    assertThat(output.getScore()).isEqualTo(new BigDecimal("123.4"));
                 }
         );
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleBigDecimalScore.valueOf(-7, new BigDecimal("123.4")),
                 output -> {
-                    assertEquals(-7, output.getInitScore());
-                    assertEquals(new BigDecimal("123.4"), output.getScore());
+                    assertThat(output.getInitScore()).isEqualTo(-7);
+                    assertThat(output.getScore()).isEqualTo(new BigDecimal("123.4"));
                 }
         );
     }

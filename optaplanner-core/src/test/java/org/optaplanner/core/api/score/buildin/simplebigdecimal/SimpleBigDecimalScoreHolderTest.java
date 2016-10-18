@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
@@ -49,10 +49,10 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addConstraintMatch(ruleContext3, new BigDecimal("-0.30"));
         scoreHolder.addConstraintMatch(ruleContext3, new BigDecimal("-0.03")); // Overwrite existing
 
-        assertEquals(SimpleBigDecimalScore.valueOf(0, new BigDecimal("-10.03")), scoreHolder.extractScore(0));
-        assertEquals(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-10.03")), scoreHolder.extractScore(-7));
+        assertThat(scoreHolder.extractScore(0)).isEqualTo(SimpleBigDecimalScore.valueOf(0, new BigDecimal("-10.03")));
+        assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-10.03")));
         if (constraintMatchEnabled) {
-            assertEquals(3, scoreHolder.getConstraintMatchTotals().size());
+            assertThat(scoreHolder.getConstraintMatchTotals()).hasSize(3);
         }
     }
 

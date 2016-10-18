@@ -19,31 +19,30 @@ package org.optaplanner.core.impl.score.trend;
 import org.junit.Test;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InitializingScoreTrendTest {
 
     @Test
     public void parseTrend() {
-        assertArrayEquals(new InitializingScoreTrendLevel[]{
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_DOWN/ANY/ONLY_UP", 3).getTrendLevels()).containsExactly(
                 InitializingScoreTrendLevel.ONLY_DOWN,
                 InitializingScoreTrendLevel.ANY,
-                InitializingScoreTrendLevel.ONLY_UP},
-                InitializingScoreTrend.parseTrend("ONLY_DOWN/ANY/ONLY_UP", 3).getTrendLevels());
+                InitializingScoreTrendLevel.ONLY_UP);
     }
 
     @Test
     public void isOnlyUp() {
-        assertEquals(true, InitializingScoreTrend.parseTrend("ONLY_UP/ONLY_UP/ONLY_UP", 3).isOnlyUp());
-        assertEquals(false, InitializingScoreTrend.parseTrend("ONLY_UP/ANY/ONLY_UP", 3).isOnlyUp());
-        assertEquals(false, InitializingScoreTrend.parseTrend("ONLY_UP/ONLY_UP/ONLY_DOWN", 3).isOnlyUp());
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_UP/ONLY_UP/ONLY_UP", 3).isOnlyUp()).isTrue();
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_UP/ANY/ONLY_UP", 3).isOnlyUp()).isFalse();
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_UP/ONLY_UP/ONLY_DOWN", 3).isOnlyUp()).isFalse();
     }
 
     @Test
     public void isOnlyDown() {
-        assertEquals(true, InitializingScoreTrend.parseTrend("ONLY_DOWN/ONLY_DOWN/ONLY_DOWN", 3).isOnlyDown());
-        assertEquals(false, InitializingScoreTrend.parseTrend("ONLY_DOWN/ANY/ONLY_DOWN", 3).isOnlyDown());
-        assertEquals(false, InitializingScoreTrend.parseTrend("ONLY_DOWN/ONLY_DOWN/ONLY_UP", 3).isOnlyDown());
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_DOWN/ONLY_DOWN/ONLY_DOWN", 3).isOnlyDown()).isTrue();
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_DOWN/ANY/ONLY_DOWN", 3).isOnlyDown()).isFalse();
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_DOWN/ONLY_DOWN/ONLY_UP", 3).isOnlyDown()).isFalse();
     }
 
 }

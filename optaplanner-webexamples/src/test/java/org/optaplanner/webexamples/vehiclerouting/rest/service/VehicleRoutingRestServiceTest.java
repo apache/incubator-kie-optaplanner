@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.optaplanner.webexamples.common.rest.service.AbstractClientArquillianTest;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRoutingSolution;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class VehicleRoutingRestServiceTest extends AbstractClientArquillianTest {
 
@@ -36,7 +36,7 @@ public class VehicleRoutingRestServiceTest extends AbstractClientArquillianTest 
         VehicleRoutingRestService vehicleRoutingRestService
                 = ProxyFactory.create(VehicleRoutingRestService.class, baseUrl.toExternalForm() + "rest");
         JsonVehicleRoutingSolution solution = vehicleRoutingRestService.getSolution();
-        assertNotNull(solution);
+        assertThat(solution).isNotNull();
     }
 
 }

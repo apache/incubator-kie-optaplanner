@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.score.Score;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScoreHolderTest {
 
@@ -37,7 +37,7 @@ public class ScoreHolderTest {
 
     @Test
     public void constraintMatchTotalsNeverNull() {
-        assertNotNull(buildScoreHolder(true).getConstraintMatchTotals());
+        assertThat(buildScoreHolder(true).getConstraintMatchTotals()).isNotNull();
     }
 
     private ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
