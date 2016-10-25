@@ -138,8 +138,13 @@ public class TestGenValueFact implements TestGenFact {
 
     @Override
     public void printInitialization(StringBuilder sb) {
-        sb.append(String.format("    %s %s = new %s();%n",
-                instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName()));
+        if (instance.getClass().isEnum()) {
+            sb.append(String.format("    %s %s = %s.%s;%n",
+                    instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName(), ((Enum) instance).name()));
+        } else {
+            sb.append(String.format("    %s %s = new %s();%n",
+                    instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName()));
+        }
     }
 
     @Override
