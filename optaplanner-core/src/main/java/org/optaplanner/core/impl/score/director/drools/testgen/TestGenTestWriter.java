@@ -21,11 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Annotation;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
@@ -76,25 +74,8 @@ class TestGenTestWriter {
     }
 
     private void printInit() {
-        String domainPackage = null;
-        for (TestGenFact fact : journal.getFacts()) {
-            Class<? extends Object> factClass = fact.getInstance().getClass();
-            for (Annotation ann : factClass.getAnnotations()) {
-                if (PlanningEntity.class.equals(ann.annotationType())) {
-                    domainPackage = factClass.getPackage().getName();
-                }
-                break;
-            }
-            if (domainPackage != null) {
-                break;
-            }
-        }
-
-        if (domainPackage == null) {
-            throw new IllegalStateException("Cannot determine planning domain package.");
-        }
-
-        sb.append(String.format("package %s;%n%n", domainPackage));
+        sb.append("package org.optaplanner.testgen;").append(System.lineSeparator())
+                .append(System.lineSeparator());
         SortedSet<String> imports = new TreeSet<>();
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
@@ -113,7 +94,7 @@ class TestGenTestWriter {
         for (TestGenFact fact : journal.getFacts()) {
             for (Class<?> cls : fact.getImports()) {
                 String pkgName = cls.getPackage().getName();
-                if (!pkgName.equals(domainPackage) && !pkgName.equals("java.lang")) {
+                if (!pkgName.equals("java.lang")) {
                     imports.add(cls.getCanonicalName());
                 }
             }
