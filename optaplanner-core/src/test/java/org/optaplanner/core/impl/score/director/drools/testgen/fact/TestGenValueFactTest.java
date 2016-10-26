@@ -35,7 +35,7 @@ public class TestGenValueFactTest {
 
         StringBuilder sb = new StringBuilder(100);
         fact.printInitialization(sb);
-        assertEquals("    TestdataValue testdataValue_321 = new TestdataValue();\n", sb.toString());
+        assertEquals("    private final TestdataValue testdataValue_321 = new TestdataValue();\n", sb.toString());
     }
 
     @Test
