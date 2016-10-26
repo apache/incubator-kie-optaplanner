@@ -70,7 +70,6 @@ class TestGenTestWriter {
         }
         if (scoreDefinition != null) {
             imports.add("org.junit.Assert");
-            imports.add(Score.class.getCanonicalName());
             imports.add(ScoreHolder.class.getCanonicalName());
             imports.add(scoreDefinition.getClass().getCanonicalName());
         }
@@ -90,6 +89,15 @@ class TestGenTestWriter {
                 .append("public class DroolsReproducerTest {").append(System.lineSeparator())
                 .append(System.lineSeparator())
                 .append("    KieSession kieSession;").append(System.lineSeparator());
+        if (scoreDefinition != null) {
+            sb
+                    .append("    ScoreHolder scoreHolder = new ")
+                    .append(scoreDefinition.getClass().getSimpleName())
+                    .append("().buildScoreHolder(")
+                    .append(constraintMatchEnabled)
+                    .append(");").append(System.lineSeparator());
+        }
+
         for (TestGenFact fact : journal.getFacts()) {
             fact.printInitialization(sb);
         }
@@ -121,8 +129,7 @@ class TestGenTestWriter {
                 .append(System.lineSeparator());
         if (scoreDefinition != null) {
             sb.append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
-                    .append("\", new ").append(scoreDefinition.getClass().getSimpleName()).append("().buildScoreHolder(")
-                    .append(constraintMatchEnabled).append("));")
+                    .append("\", scoreHolder);")
                     .append(System.lineSeparator())
                     .append(System.lineSeparator());
         }
@@ -146,10 +153,7 @@ class TestGenTestWriter {
             op.print(sb);
         }
         if (scoreDefinition != null) {
-            sb.append("        Score<?> score = ((ScoreHolder) kieSession.getGlobal(\"")
-                    .append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY).append("\")).extractScore(0);")
-                    .append(System.lineSeparator());
-            sb.append("        Assert.assertEquals(\"").append(score).append("\", score.toString());")
+            sb.append("        Assert.assertEquals(\"").append(score).append("\", scoreHolder.extractScore(0).toString());")
                     .append(System.lineSeparator());
         }
         sb
