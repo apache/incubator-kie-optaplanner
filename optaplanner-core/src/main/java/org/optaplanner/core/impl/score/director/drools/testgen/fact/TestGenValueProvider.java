@@ -19,6 +19,8 @@ interface TestGenValueProvider<T> {
 
     T get();
 
+    T getUninitialized();
+
     void printSetup(StringBuilder sb);
 
 }

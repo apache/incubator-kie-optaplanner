@@ -42,7 +42,8 @@ public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemR
             if (areEqual(originalException, reproducedException)) {
                 return true;
             } else {
-                if (reproducedException.getMessage().startsWith("No fact handle for ")) {
+                if (reproducedException.getMessage() != null
+                        && reproducedException.getMessage().startsWith("No fact handle for ")) {
                     // this is common when removing insert of a fact that is later updated - not interesting
                     logger.debug("    Can't remove insert: {}", reproducedException.toString());
                 } else {

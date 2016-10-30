@@ -55,7 +55,7 @@ final class TestGenerator {
         pruneUpdates();
         pruneInserts();
         pruneFacts();
-        // TODO prune setup code
+        pruneSetup();
         assertOriginalExceptionReproduced("Cannot reproduce the original problem after pruning the journal. "
                 + "This is a bug!");
         return journal;
@@ -141,6 +141,23 @@ final class TestGenerator {
         for (TestGenFact dependency : f.getDependencies()) {
             addWithDependencies(dependency, factList);
         }
+    }
+
+    private void pruneSetup() {
+        logger.info("Pruning fact setup code...", journal.getFacts().size());
+        long disabled = journal.getFacts().stream()
+                .flatMap(fact -> fact.getFields().stream()) // for all fields of all facts
+                .filter(field -> {
+                    field.setActive(false); // when disabled
+                    if (reproduce(journal)) { // and the exception is still reproducible
+                        return true; // count it
+                    } else {
+                        // otherwise reset to active (the field must be set in order to reproduce the exception)
+                        field.setActive(true);
+                        return false;
+                    }
+                }).count();
+        logger.info("Disabled {} field setters.", disabled);
     }
 
     private boolean reproduce(TestGenKieSessionJournal testJournal) {

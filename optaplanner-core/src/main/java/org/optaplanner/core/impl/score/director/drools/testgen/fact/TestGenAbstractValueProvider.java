@@ -29,6 +29,11 @@ abstract class TestGenAbstractValueProvider<T> implements TestGenValueProvider<T
     }
 
     @Override
+    public T getUninitialized() {
+        return null;
+    }
+
+    @Override
     public void printSetup(StringBuilder sb) {
         // no setup required
     }

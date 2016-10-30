@@ -58,7 +58,7 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
         } catch (TestGenCorruptedScoreException e) {
             return true;
         } catch (RuntimeException e) {
-            if (e.getMessage().startsWith("No fact handle for ")) {
+            if (e.getMessage() != null && e.getMessage().startsWith("No fact handle for ")) {
                 // this is common when removing insert of a fact that is later updated - not interesting
                 logger.debug("    Can't remove insert: {}: {}", e.getClass().getSimpleName(), e.getMessage());
             } else {
