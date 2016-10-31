@@ -103,7 +103,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
                 minJournal.replay(createKieSession());
                 throw new IllegalStateException();
             } catch (TestGenCorruptedScoreException tgcse) {
-                writer.setScore(tgcse.getUncorruptedScore());
+                writer.setCorruptedScoreException(tgcse);
             }
             writer.print(minJournal, testFile);
             throw wrapOriginalException(e);

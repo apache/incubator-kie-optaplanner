@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedScoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ class TestGenTestWriter {
     private List<File> scoreDrlFileList;
     private ScoreDefinition<?> scoreDefinition;
     private boolean constraintMatchEnabled;
-    private Score<?> score;
+    private TestGenCorruptedScoreException scoreEx;
 
     public void print(TestGenKieSessionJournal journal, File testFile) {
         this.journal = journal;
@@ -88,6 +88,7 @@ class TestGenTestWriter {
         sb.append(System.lineSeparator())
                 .append("public class DroolsReproducerTest {").append(System.lineSeparator())
                 .append(System.lineSeparator())
+                .append("    KieContainer kieContainer;").append(System.lineSeparator())
                 .append("    KieSession kieSession;").append(System.lineSeparator());
         if (scoreDefinition != null) {
             sb
@@ -124,7 +125,7 @@ class TestGenTestWriter {
         });
         sb
                 .append("        kieServices.newKieBuilder(kfs).buildAll();").append(System.lineSeparator())
-                .append("        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());").append(System.lineSeparator())
+                .append("        kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());").append(System.lineSeparator())
                 .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
                 .append(System.lineSeparator());
         if (scoreDefinition != null) {
@@ -152,9 +153,30 @@ class TestGenTestWriter {
         for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
             op.print(sb);
         }
-        if (scoreDefinition != null) {
-            sb.append("        Assert.assertEquals(\"").append(score).append("\", scoreHolder.extractScore(0).toString());")
+        if (scoreEx != null) {
+            sb
+                    .append("        // This is the corrupted score, just to make sure the bug is reproducible")
+                    .append(System.lineSeparator())
+                    .append("        Assert.assertEquals(\"").append(scoreEx.getWorkingScore())
+                    .append("\", scoreHolder.extractScore(0).toString());").append(System.lineSeparator());
+            // demonstrate the uncorrupted score
+            sb
+                    .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
+                    .append("        scoreHolder = new ").append(scoreDefinition.getClass().getSimpleName())
+                    .append("().buildScoreHolder(").append(constraintMatchEnabled).append(");").append(System.lineSeparator())
+                    .append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
+                    .append("\", scoreHolder);").append(System.lineSeparator());
+
+            sb.append(System.lineSeparator()).append(System.lineSeparator())
+                    .append("        // Insert everything into a fresh session to see the uncorrupted score")
                     .append(System.lineSeparator());
+            for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
+                insert.print(sb);
+            }
+            sb
+                    .append("        kieSession.fireAllRules();").append(System.lineSeparator())
+                    .append("        Assert.assertEquals(\"").append(scoreEx.getUncorruptedScore())
+                    .append("\", scoreHolder.extractScore(0).toString());").append(System.lineSeparator());
         }
         sb
                 .append("    }").append(System.lineSeparator())
@@ -211,8 +233,8 @@ class TestGenTestWriter {
         this.constraintMatchEnabled = constraintMatchEnabled;
     }
 
-    public void setScore(Score<?> score) {
-        this.score = score;
+    public void setCorruptedScoreException(TestGenCorruptedScoreException ex) {
+        this.scoreEx = ex;
     }
 
 }
