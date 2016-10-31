@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 
-public class TestGenFactField {
+public class TestGenFactField implements Comparable<TestGenFactField> {
 
     private final TestGenValueFact fact;
     private final BeanPropertyMemberAccessor accessor;
@@ -58,4 +58,10 @@ public class TestGenFactField {
             }
         }
     }
+
+    @Override
+    public int compareTo(TestGenFactField o) {
+        return accessor.getName().compareTo(o.accessor.getName());
+    }
+
 }

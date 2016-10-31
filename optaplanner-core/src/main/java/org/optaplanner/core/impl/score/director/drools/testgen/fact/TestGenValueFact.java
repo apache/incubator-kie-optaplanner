@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class TestGenValueFact implements TestGenFact {
 
     @Override
     public void setUp(Map<Object, TestGenFact> existingInstances) {
+        fields.clear();
         dependencies.clear();
         imports.clear();
         imports.add(instance.getClass());
@@ -53,6 +55,7 @@ public class TestGenValueFact implements TestGenFact {
             }
             clazz = clazz.getSuperclass();
         }
+        Collections.sort(fields);
     }
 
     private void setUpField(Field field, Map<Object, TestGenFact> existingInstances) {
