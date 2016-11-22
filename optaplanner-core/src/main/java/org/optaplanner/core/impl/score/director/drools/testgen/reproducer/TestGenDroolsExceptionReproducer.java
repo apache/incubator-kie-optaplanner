@@ -49,8 +49,7 @@ public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemR
                 } else if (reproducedException.getMessage() != null
                         && reproducedException.getMessage().startsWith("Error evaluating constraint '")) {
                     // this is common after pruning setup code, which can lead to NPE during rule evaluation
-                    logger.debug("    Can't drop field setup: {}: {}",
-                            reproducedException.getClass().getSimpleName(), reproducedException.getMessage());
+                    logger.debug("    Can't drop field setup: {}", reproducedException.toString());
                 } else {
                     logger.info("Unexpected exception", reproducedException);
                 }
