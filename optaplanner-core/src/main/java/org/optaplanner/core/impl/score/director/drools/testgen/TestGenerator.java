@@ -130,7 +130,7 @@ final class TestGenerator {
                 addWithDependencies(f, minimal);
             }
         }
-        journal = new TestGenKieSessionJournal(minimal, journal.getInitialInserts(), journal.getMoveOperations());
+        journal.getFacts().retainAll(minimal);
         logger.info("{} facts remaining.", journal.getFacts().size());
     }
 
