@@ -39,7 +39,8 @@ class TestGenMapValueProvider extends TestGenAbstractValueProvider<Map<?, ?>> {
         imports.add((Class<?>) typeArguments[1]);
     }
 
-    public List<TestGenFact> getFacts() {
+    @Override
+    public List<TestGenFact> getRequiredFacts() {
         ArrayList<TestGenFact> facts = new ArrayList<>();
         for (Map.Entry<? extends Object, ? extends Object> entry : value.entrySet()) {
             addFact(facts, entry.getKey());

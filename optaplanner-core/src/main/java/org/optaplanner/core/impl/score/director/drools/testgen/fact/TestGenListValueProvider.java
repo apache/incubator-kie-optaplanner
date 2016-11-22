@@ -36,7 +36,8 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
         imports.add((Class<?>) genericType);
     }
 
-    public List<TestGenFact> getFacts() {
+    @Override
+    public List<TestGenFact> getRequiredFacts() {
         ArrayList<TestGenFact> facts = new ArrayList<>();
         for (Object o : value) {
             TestGenFact fact = existingInstances.get(o);

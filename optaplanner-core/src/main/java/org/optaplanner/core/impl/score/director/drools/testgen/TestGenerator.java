@@ -56,6 +56,7 @@ final class TestGenerator {
         pruneInserts();
         pruneFacts();
         pruneSetup();
+        pruneFacts();
         assertOriginalExceptionReproduced("Cannot reproduce the original problem after pruning the journal. "
                 + "This is a bug!");
         return journal;

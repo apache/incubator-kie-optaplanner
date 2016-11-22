@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
@@ -34,7 +35,6 @@ public class TestGenValueFact implements TestGenFact {
     private final String instanceToString;
     private final String variableName;
     private final List<TestGenFactField> fields = new ArrayList<>();
-    private final List<TestGenFact> dependencies = new ArrayList<>();
     private final List<Class<?>> imports = new ArrayList<>();
 
     public TestGenValueFact(int id, Object instance) {
@@ -47,7 +47,6 @@ public class TestGenValueFact implements TestGenFact {
     @Override
     public void setUp(Map<Object, TestGenFact> existingInstances) {
         fields.clear();
-        dependencies.clear();
         imports.clear();
         imports.add(instance.getClass());
         Class<?> clazz = instance.getClass();
@@ -77,21 +76,19 @@ public class TestGenValueFact implements TestGenFact {
                     imports.add(field.getType());
                 } else if (existingInstances.containsKey(value)) {
                     String id = existingInstances.get(value).toString();
-                    fields.add(new TestGenFactField(this, accessor, new TestGenExistingInstanceValueProvider(value, id)));
-                    dependencies.add(existingInstances.get(value));
+                    TestGenExistingInstanceValueProvider instanceProvider = new TestGenExistingInstanceValueProvider(value, id, existingInstances.get(value));
+                    fields.add(new TestGenFactField(this, accessor, instanceProvider));
                 } else if (field.getType().equals(List.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                     TestGenListValueProvider listValueProvider = new TestGenListValueProvider((List) value, id, typeArgs[0], existingInstances);
                     fields.add(new TestGenFactField(this, accessor, listValueProvider));
-                    dependencies.addAll(listValueProvider.getFacts());
                     imports.addAll(listValueProvider.getImports());
                 } else if (field.getType().equals(Map.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                     TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider((Map) value, id, typeArgs, existingInstances);
                     fields.add(new TestGenFactField(this, accessor, mapValueProvider));
-                    dependencies.addAll(mapValueProvider.getFacts());
                     imports.addAll(mapValueProvider.getImports());
                 } else {
                     Method parseMethod = getParseMethod(field);
@@ -137,7 +134,10 @@ public class TestGenValueFact implements TestGenFact {
 
     @Override
     public List<TestGenFact> getDependencies() {
-        return dependencies;
+        return fields.stream()
+                .filter(TestGenFactField::isActive)
+                .flatMap(f -> f.getRequiredFacts().stream())
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -15,11 +15,15 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import java.util.List;
+
 interface TestGenValueProvider<T> {
 
     T get();
 
     T getUninitialized();
+
+    List<TestGenFact> getRequiredFacts();
 
     void printSetup(StringBuilder sb);
 

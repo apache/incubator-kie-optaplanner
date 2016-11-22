@@ -15,6 +15,9 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import java.util.Collections;
+import java.util.List;
+
 abstract class TestGenAbstractValueProvider<T> implements TestGenValueProvider<T> {
 
     protected final T value;
@@ -31,6 +34,11 @@ abstract class TestGenAbstractValueProvider<T> implements TestGenValueProvider<T
     @Override
     public T getUninitialized() {
         return null;
+    }
+
+    @Override
+    public List<TestGenFact> getRequiredFacts() {
+        return Collections.emptyList();
     }
 
     @Override

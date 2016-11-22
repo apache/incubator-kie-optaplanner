@@ -16,6 +16,7 @@
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
@@ -36,6 +37,10 @@ public class TestGenFactField implements Comparable<TestGenFactField> {
     void reset() {
         Object value = active ? valueProvider.get() : valueProvider.getUninitialized();
         accessor.executeSetter(fact.getInstance(), value);
+    }
+
+    public List<TestGenFact> getRequiredFacts() {
+        return valueProvider.getRequiredFacts();
     }
 
     public boolean isActive() {
