@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -84,6 +85,11 @@ public class TestGenValueFact implements TestGenFact {
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                     TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider((Map) value, id, typeArgs, existingInstances);
                     fields.add(new TestGenFactField(this, accessor, mapValueProvider));
+                } else if (field.getType().equals(Set.class)) {
+                    String id = variableName + "_" + field.getName();
+                    Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+                    // TODO provider
+                    //fields.add(new TestGenFactField(this, accessor, setValueProvider));
                 } else {
                     Method parseMethod = getParseMethod(field);
                     if (parseMethod != null) {

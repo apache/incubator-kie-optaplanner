@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class TestGenMapValueProvider extends TestGenAbstractValueProvider<Map<?, ?>> {
 
@@ -27,9 +30,10 @@ class TestGenMapValueProvider extends TestGenAbstractValueProvider<Map<?, ?>> {
     private final Type[] typeArguments;
     private final Map<Object, TestGenFact> existingInstances;
     private final List<Class<?>> imports = new ArrayList<>();
+    private final List<TestGenFact> requiredFacts;
 
-    public TestGenMapValueProvider(Map<?, ?> value, String identifier,
-            Type[] typeArguments, Map<Object, TestGenFact> existingInstances) {
+    public TestGenMapValueProvider(Map<?, ?> value, String identifier, Type[] typeArguments,
+            Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;
         this.typeArguments = typeArguments;
@@ -37,28 +41,22 @@ class TestGenMapValueProvider extends TestGenAbstractValueProvider<Map<?, ?>> {
         imports.add(HashMap.class);
         imports.add((Class<?>) typeArguments[0]);
         imports.add((Class<?>) typeArguments[1]);
+        requiredFacts = value.entrySet().stream()
+                .flatMap(entry -> Stream.of(
+                        existingInstances.get(entry.getKey()),
+                        existingInstances.get(entry.getValue())))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<TestGenFact> getRequiredFacts() {
-        ArrayList<TestGenFact> facts = new ArrayList<>();
-        for (Map.Entry<? extends Object, ? extends Object> entry : value.entrySet()) {
-            addFact(facts, entry.getKey());
-            addFact(facts, entry.getValue());
-        }
-        return facts;
+        return requiredFacts;
     }
 
     @Override
     public List<Class<?>> getImports() {
         return imports;
-    }
-
-    private void addFact(List<TestGenFact> facts, Object o) {
-        TestGenFact fact = existingInstances.get(o);
-        if (fact != null) {
-            facts.add(fact);
-        }
     }
 
     @Override
