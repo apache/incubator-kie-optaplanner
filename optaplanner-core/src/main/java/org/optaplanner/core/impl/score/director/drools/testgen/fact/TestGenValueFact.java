@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccess
 public class TestGenValueFact implements TestGenFact {
 
     private final Object instance;
+    private final String instanceToString;
     private final String variableName;
     private final List<TestGenFactField> fields = new ArrayList<>();
     private final List<TestGenFact> dependencies = new ArrayList<>();
@@ -38,6 +39,7 @@ public class TestGenValueFact implements TestGenFact {
 
     public TestGenValueFact(int id, Object instance) {
         this.instance = instance;
+        this.instanceToString = instance.toString();
         this.variableName = instance.getClass().getSimpleName().substring(0, 1).toLowerCase()
                 + instance.getClass().getSimpleName().substring(1) + "_" + id;
     }
@@ -162,7 +164,7 @@ public class TestGenValueFact implements TestGenFact {
 
     @Override
     public void printSetup(StringBuilder sb) {
-        sb.append(String.format("        //%s%n", instance));
+        sb.append(String.format("        //%s%n", instanceToString));
         fields.forEach(f -> f.print(sb));
     }
 
