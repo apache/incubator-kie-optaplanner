@@ -35,7 +35,6 @@ public class TestGenValueFact implements TestGenFact {
     private final String instanceToString;
     private final String variableName;
     private final List<TestGenFactField> fields = new ArrayList<>();
-    private final List<Class<?>> imports = new ArrayList<>();
 
     public TestGenValueFact(int id, Object instance) {
         this.instance = instance;
@@ -47,8 +46,6 @@ public class TestGenValueFact implements TestGenFact {
     @Override
     public void setUp(Map<Object, TestGenFact> existingInstances) {
         fields.clear();
-        imports.clear();
-        imports.add(instance.getClass());
         Class<?> clazz = instance.getClass();
         while (clazz != null) {
             for (Field field : clazz.getDeclaredFields()) {
@@ -73,7 +70,6 @@ public class TestGenValueFact implements TestGenFact {
                     fields.add(new TestGenFactField(this, accessor, new TestGenPrimitiveValueProvider(value)));
                 } else if (field.getType().isEnum()) {
                     fields.add(new TestGenFactField(this, accessor, new TestGenEnumValueProvider((Enum) value)));
-                    imports.add(field.getType());
                 } else if (existingInstances.containsKey(value)) {
                     String id = existingInstances.get(value).toString();
                     TestGenExistingInstanceValueProvider instanceProvider = new TestGenExistingInstanceValueProvider(value, id, existingInstances.get(value));
@@ -83,18 +79,15 @@ public class TestGenValueFact implements TestGenFact {
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                     TestGenListValueProvider listValueProvider = new TestGenListValueProvider((List) value, id, typeArgs[0], existingInstances);
                     fields.add(new TestGenFactField(this, accessor, listValueProvider));
-                    imports.addAll(listValueProvider.getImports());
                 } else if (field.getType().equals(Map.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                     TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider((Map) value, id, typeArgs, existingInstances);
                     fields.add(new TestGenFactField(this, accessor, mapValueProvider));
-                    imports.addAll(mapValueProvider.getImports());
                 } else {
                     Method parseMethod = getParseMethod(field);
                     if (parseMethod != null) {
                         fields.add(new TestGenFactField(this, accessor, new TestGenParsedValueProvider(parseMethod, value)));
-                        imports.add(field.getType());
                     } else {
                         throw new IllegalStateException("Unsupported type: " + field.getType());
                     }
@@ -142,6 +135,11 @@ public class TestGenValueFact implements TestGenFact {
 
     @Override
     public List<Class<?>> getImports() {
+        List<Class<?>> imports = fields.stream()
+                .filter(TestGenFactField::isActive)
+                .flatMap(f -> f.getImports().stream())
+                .collect(Collectors.toList());
+        imports.add(instance.getClass());
         return imports;
     }
 

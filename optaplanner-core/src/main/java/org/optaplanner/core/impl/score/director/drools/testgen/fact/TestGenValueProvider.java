@@ -23,6 +23,8 @@ interface TestGenValueProvider<T> {
 
     T getUninitialized();
 
+    List<Class<?>> getImports();
+
     List<TestGenFact> getRequiredFacts();
 
     void printSetup(StringBuilder sb);

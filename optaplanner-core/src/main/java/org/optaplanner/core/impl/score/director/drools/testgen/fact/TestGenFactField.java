@@ -39,6 +39,10 @@ public class TestGenFactField implements Comparable<TestGenFactField> {
         accessor.executeSetter(fact.getInstance(), value);
     }
 
+    public List<Class<?>> getImports() {
+        return valueProvider.getImports();
+    }
+
     public List<TestGenFact> getRequiredFacts() {
         return valueProvider.getRequiredFacts();
     }

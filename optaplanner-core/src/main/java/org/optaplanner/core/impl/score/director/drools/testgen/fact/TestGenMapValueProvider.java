@@ -49,6 +49,7 @@ class TestGenMapValueProvider extends TestGenAbstractValueProvider<Map<?, ?>> {
         return facts;
     }
 
+    @Override
     public List<Class<?>> getImports() {
         return imports;
     }

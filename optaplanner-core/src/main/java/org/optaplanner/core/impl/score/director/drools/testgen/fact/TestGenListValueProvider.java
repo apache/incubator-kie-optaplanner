@@ -48,6 +48,7 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
         return facts;
     }
 
+    @Override
     public List<Class<?>> getImports() {
         return imports;
     }

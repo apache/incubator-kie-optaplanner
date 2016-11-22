@@ -37,6 +37,11 @@ abstract class TestGenAbstractValueProvider<T> implements TestGenValueProvider<T
     }
 
     @Override
+    public List<Class<?>> getImports() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public List<TestGenFact> getRequiredFacts() {
         return Collections.emptyList();
     }
