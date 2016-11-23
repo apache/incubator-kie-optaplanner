@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
@@ -84,7 +85,7 @@ public class TestGenValueFactTest {
         TestdataEntityCollectionPropertyEntity h = new TestdataEntityCollectionPropertyEntity("h", null);
         TestdataEntityCollectionPropertyEntity i = new TestdataEntityCollectionPropertyEntity("i", null);
         a.setEntityList(Arrays.asList(b, c));
-//        a.setEntitySet(new HashSet<>(Arrays.asList(d, e)));
+        a.setEntitySet(new HashSet<>(Arrays.asList(d, e)));
         a.setStringToEntityMap(new HashMap<>());
         a.getStringToEntityMap().put("f", f);
         a.getStringToEntityMap().put("g", g);
@@ -116,11 +117,11 @@ public class TestGenValueFactTest {
         fa.setUp(instances);
 
         List<TestGenFact> dependencies = fa.getDependencies();
-        assertEquals(6, dependencies.size());
+        assertEquals(8, dependencies.size());
         assertTrue(dependencies.contains(fb));
         assertTrue(dependencies.contains(fc));
-//        assertTrue(dependencies.contains(fd));
-//        assertTrue(dependencies.contains(fe));
+        assertTrue(dependencies.contains(fd));
+        assertTrue(dependencies.contains(fe));
         assertTrue(dependencies.contains(ff));
         assertTrue(dependencies.contains(fg));
         assertTrue(dependencies.contains(fh));
@@ -129,6 +130,7 @@ public class TestGenValueFactTest {
         List<Class<?>> imports = fa.getImports();
         assertTrue(imports.contains(TestdataEntityCollectionPropertyEntity.class));
         assertTrue(imports.contains(ArrayList.class));
+        assertTrue(imports.contains(HashSet.class));
         assertTrue(imports.contains(HashMap.class));
         assertTrue(imports.contains(String.class));
     }

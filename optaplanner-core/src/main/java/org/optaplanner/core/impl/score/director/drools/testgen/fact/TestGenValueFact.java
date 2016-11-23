@@ -73,23 +73,27 @@ public class TestGenValueFact implements TestGenFact {
                     fields.add(new TestGenFactField(this, accessor, new TestGenEnumValueProvider((Enum) value)));
                 } else if (existingInstances.containsKey(value)) {
                     String id = existingInstances.get(value).toString();
-                    TestGenExistingInstanceValueProvider instanceProvider = new TestGenExistingInstanceValueProvider(value, id, existingInstances.get(value));
+                    TestGenExistingInstanceValueProvider instanceProvider = new TestGenExistingInstanceValueProvider(
+                            value, id, existingInstances.get(value));
                     fields.add(new TestGenFactField(this, accessor, instanceProvider));
                 } else if (field.getType().equals(List.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-                    TestGenListValueProvider listValueProvider = new TestGenListValueProvider((List) value, id, typeArgs[0], existingInstances);
+                    TestGenListValueProvider listValueProvider = new TestGenListValueProvider(
+                            (List) value, id, typeArgs[0], existingInstances);
                     fields.add(new TestGenFactField(this, accessor, listValueProvider));
-                } else if (field.getType().equals(Map.class)) {
-                    String id = variableName + "_" + field.getName();
-                    Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-                    TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider((Map) value, id, typeArgs, existingInstances);
-                    fields.add(new TestGenFactField(this, accessor, mapValueProvider));
                 } else if (field.getType().equals(Set.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-                    // TODO provider
-                    //fields.add(new TestGenFactField(this, accessor, setValueProvider));
+                    TestGenSetValueProvider setValueProvider = new TestGenSetValueProvider(
+                            (Set) value, id, typeArgs[0], existingInstances);
+                    fields.add(new TestGenFactField(this, accessor, setValueProvider));
+                } else if (field.getType().equals(Map.class)) {
+                    String id = variableName + "_" + field.getName();
+                    Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+                    TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider(
+                            (Map) value, id, typeArgs, existingInstances);
+                    fields.add(new TestGenFactField(this, accessor, mapValueProvider));
                 } else {
                     Method parseMethod = getParseMethod(field);
                     if (parseMethod != null) {
