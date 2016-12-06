@@ -19,12 +19,15 @@ package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
 /**
  * Investigate the nodes with a better optimistic bound first, then deeper nodes.
+ * @param <S> the score type
  */
-public class OptimisticBoundFirstNodeComparator implements Comparator<ExhaustiveSearchNode>, Serializable {
+public class OptimisticBoundFirstNodeComparator<S extends Score<S>>
+        implements Comparator<ExhaustiveSearchNode<S>>, Serializable {
 
     public OptimisticBoundFirstNodeComparator(boolean scoreBounderEnabled) {
         if (!scoreBounderEnabled) {
@@ -34,7 +37,7 @@ public class OptimisticBoundFirstNodeComparator implements Comparator<Exhaustive
     }
 
     @Override
-    public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
+    public int compare(ExhaustiveSearchNode<S> a, ExhaustiveSearchNode<S> b) {
         // Investigate better optimistic bound first (ignore initScore to avoid depth first ordering)
         int optimisticBoundComparison = a.getOptimisticBound().compareTo(b.getOptimisticBound());
         if (optimisticBoundComparison < 0) {

@@ -19,15 +19,18 @@ package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
 /**
  * Investigate deeper nodes first, in order.
+ * @param <S> score type
  */
-public class OriginalOrderNodeComparator implements Comparator<ExhaustiveSearchNode>, Serializable {
+public class OriginalOrderNodeComparator<S extends Score<S>>
+        implements Comparator<ExhaustiveSearchNode<S>>, Serializable {
 
     @Override
-    public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
+    public int compare(ExhaustiveSearchNode<S> a, ExhaustiveSearchNode<S> b) {
         // Investigate deeper first
         int aDepth = a.getDepth();
         int bDepth = b.getDepth();

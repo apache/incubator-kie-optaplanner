@@ -21,24 +21,24 @@ import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class ExhaustiveSearchNode {
+public class ExhaustiveSearchNode<S extends Score<S>> {
 
     private final ExhaustiveSearchLayer layer;
-    private final ExhaustiveSearchNode parent;
+    private final ExhaustiveSearchNode<S> parent;
     private final long breadth;
 
     // The move to get from the parent to this node
     private Move move;
     private Move undoMove;
-    private Score score;
+    private S score;
     /**
      * Never worse than the best possible score a leaf node below this node might lead to.
      * @see ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)
      */
-    private Score optimisticBound;
+    private S optimisticBound;
     private boolean expandable = false;
 
-    public ExhaustiveSearchNode(ExhaustiveSearchLayer layer, ExhaustiveSearchNode parent) {
+    public ExhaustiveSearchNode(ExhaustiveSearchLayer layer, ExhaustiveSearchNode<S> parent) {
         this.layer = layer;
         this.parent = parent;
         this.breadth = layer.assignBreadth();
@@ -48,7 +48,7 @@ public class ExhaustiveSearchNode {
         return layer;
     }
 
-    public ExhaustiveSearchNode getParent() {
+    public ExhaustiveSearchNode<S> getParent() {
         return parent;
     }
 
@@ -72,19 +72,19 @@ public class ExhaustiveSearchNode {
         this.undoMove = undoMove;
     }
 
-    public Score getScore() {
+    public S getScore() {
         return score;
     }
 
-    public void setScore(Score score) {
+    public void setScore(S score) {
         this.score = score;
     }
 
-    public Score getOptimisticBound() {
+    public S getOptimisticBound() {
         return optimisticBound;
     }
 
-    public void setOptimisticBound(Score optimisticBound) {
+    public void setOptimisticBound(S optimisticBound) {
         this.optimisticBound = optimisticBound;
     }
 
