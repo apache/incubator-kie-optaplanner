@@ -29,14 +29,15 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type
  */
-public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
+public class ExhaustiveSearchPhaseScope<Solution_, Score_ extends Score<Score_>> extends AbstractPhaseScope<Solution_> {
 
     private List<ExhaustiveSearchLayer> layerList;
-    private SortedSet<ExhaustiveSearchNode> expandableNodeQueue;
-    private Score bestPessimisticBound;
+    private SortedSet<ExhaustiveSearchNode<Score_>> expandableNodeQueue;
+    private Score_ bestPessimisticBound;
 
-    private ExhaustiveSearchStepScope<Solution_> lastCompletedStepScope;
+    private ExhaustiveSearchStepScope<Solution_, Score_> lastCompletedStepScope;
 
     public ExhaustiveSearchPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
@@ -51,28 +52,28 @@ public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<So
         this.layerList = layerList;
     }
 
-    public SortedSet<ExhaustiveSearchNode> getExpandableNodeQueue() {
+    public SortedSet<ExhaustiveSearchNode<Score_>> getExpandableNodeQueue() {
         return expandableNodeQueue;
     }
 
-    public void setExpandableNodeQueue(SortedSet<ExhaustiveSearchNode> expandableNodeQueue) {
+    public void setExpandableNodeQueue(SortedSet<ExhaustiveSearchNode<Score_>> expandableNodeQueue) {
         this.expandableNodeQueue = expandableNodeQueue;
     }
 
-    public Score getBestPessimisticBound() {
+    public Score_ getBestPessimisticBound() {
         return bestPessimisticBound;
     }
 
-    public void setBestPessimisticBound(Score bestPessimisticBound) {
+    public void setBestPessimisticBound(Score_ bestPessimisticBound) {
         this.bestPessimisticBound = bestPessimisticBound;
     }
 
     @Override
-    public ExhaustiveSearchStepScope<Solution_> getLastCompletedStepScope() {
+    public ExhaustiveSearchStepScope<Solution_, Score_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }
 
-    public void setLastCompletedStepScope(ExhaustiveSearchStepScope<Solution_> lastCompletedStepScope) {
+    public void setLastCompletedStepScope(ExhaustiveSearchStepScope<Solution_, Score_> lastCompletedStepScope) {
         this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
@@ -85,13 +86,14 @@ public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<So
         return layerList.size();
     }
 
-    public void registerPessimisticBound(Score pessimisticBound) {
+    public void registerPessimisticBound(Score_ pessimisticBound) {
         if (pessimisticBound.compareTo(bestPessimisticBound) > 0) {
             bestPessimisticBound = pessimisticBound;
             // TODO optimize this because expandableNodeQueue is too long to iterate
-            for (Iterator<ExhaustiveSearchNode> iterator = expandableNodeQueue.iterator(); iterator.hasNext(); ) {
+            for (Iterator<ExhaustiveSearchNode<Score_>> iterator
+                    = expandableNodeQueue.iterator(); iterator.hasNext();) {
                 // Prune it
-                ExhaustiveSearchNode node = iterator.next();
+                ExhaustiveSearchNode<Score_> node = iterator.next();
                 if (node.getOptimisticBound().compareTo(bestPessimisticBound) <= 0) {
                     iterator.remove();
                 }
@@ -99,7 +101,7 @@ public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<So
         }
     }
 
-    public void addExpandableNode(ExhaustiveSearchNode moveNode) {
+    public void addExpandableNode(ExhaustiveSearchNode<Score_> moveNode) {
         expandableNodeQueue.add(moveNode);
         moveNode.setExpandable(true);
     }

@@ -17,12 +17,13 @@
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
 import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 public class ScoreFirstNodeComparatorTest extends AbstractNodeComparatorTest {
 
     @Test
     public void compare() {
-        ScoreFirstNodeComparator comparator = new ScoreFirstNodeComparator(true);
+        ScoreFirstNodeComparator<SimpleScore> comparator = new ScoreFirstNodeComparator<>(true);
         assertScoreCompareToOrder(comparator,
                 buildNode(1, "-110", 5, 41),
                 buildNode(1, "-110", 5, 40),

@@ -22,23 +22,23 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class TrendBasedScoreBounder implements ScoreBounder {
+public class TrendBasedScoreBounder<S extends Score<S>> implements ScoreBounder<S> {
 
-    protected final ScoreDefinition scoreDefinition;
+    protected final ScoreDefinition<S> scoreDefinition;
     protected final InitializingScoreTrend initializingScoreTrend;
 
-    public TrendBasedScoreBounder(InnerScoreDirectorFactory scoreDirectorFactory) {
+    public TrendBasedScoreBounder(InnerScoreDirectorFactory<S> scoreDirectorFactory) {
         scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         initializingScoreTrend = scoreDirectorFactory.getInitializingScoreTrend();
     }
 
     @Override
-    public Score calculateOptimisticBound(ScoreDirector scoreDirector, Score score) {
+    public S calculateOptimisticBound(ScoreDirector scoreDirector, S score) {
         return scoreDefinition.buildOptimisticBound(initializingScoreTrend, score);
     }
 
     @Override
-    public Score calculatePessimisticBound(ScoreDirector scoreDirector, Score score) {
+    public S calculatePessimisticBound(ScoreDirector scoreDirector, S score) {
         return scoreDefinition.buildPessimisticBound(initializingScoreTrend, score);
     }
 
