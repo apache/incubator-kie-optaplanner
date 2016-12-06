@@ -14,14 +14,14 @@
 The number of possible solutions for a planning problem can be mind blowing.
 For example:
 
-* 4 queens has `256` possible solutions (``4^4``) and 2 optimal solutions.
-* 5 queens has `3125` possible solutions (``5^5``) and 1 optimal solution.
-* 8 queens has `16777216` possible solutions (``8^8``) and 92 optimal solutions.
+* Four queens has `256` possible solutions (``4^4``) and two optimal solutions.
+* Five queens has `3125` possible solutions (``5^5``) and one optimal solution.
+* Eight queens has `16777216` possible solutions (``8^8``) and 92 optimal solutions.
 * 64 queens has more than `10^115` possible solutions (``64^64``).
-* Most real-life planning problems have an incredible number of possible solutions and only 1 or a few optimal solutions.
+* Most real-life planning problems have an incredible number of possible solutions and only one or a few optimal solutions.
 
 For comparison: the minimal number of atoms in the known universe (10^80). As a planning problem gets bigger, the search space tends to blow up really fast.
-Adding only 1 extra planning entity or planning value can heavily multiply the running time of some algorithms.
+Adding only one extra planning entity or planning value can heavily multiply the running time of some algorithms.
 
 image::Chapter-Optimization_algorithms/cloudBalanceSearchSpaceSize.png[align="center"]
 
@@ -35,12 +35,12 @@ image::Chapter-Optimization_algorithms/searchSpaceSizeCalculation.png[align="cen
 This search space size calculation includes infeasible solutions (if they can be represented by the model), because:
 
 * The optimal solution might be infeasible.
-* There are many types of hard constraints which cannot be incorporated in the formula practically. For example in Cloud Balancing, try incorporating the CPU capacity constraint in the formula.
+* There are many types of hard constraints that cannot be incorporated in the formula practically. For example, in Cloud Balancing, try incorporating the CPU capacity constraint in the formula.
 
-Even in cases were adding some of the hard constraints in the formula is practical, for example Course Scheduling, the resulting search space is still huge.
+Even in cases where adding some of the hard constraints in the formula is practical (for example, Course Scheduling), the resulting search space is still huge.
 ====
 
-An algorithm that checks every possible solution (even with pruning such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
+An algorithm that checks every possible solution (even with pruning, such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
 What we really want is to **find the best solution in the limited time at our
     disposal**.
 Planning competitions (such as the International Timetabling Competition) show that Local Search variations
@@ -53,28 +53,28 @@ usually perform best for real-world problems given real-world time limitations.
 
 The business wants the optimal solution, but they also have other requirements:
 
-* Scale out: Large production datasets must not crash and have good results too.
+* Scale out: Large production data sets must not crash and have also good results.
 * Optimize the right problem: The constraints must match the actual business needs.
 * Available time: The solution must be found in time, before it becomes useless to execute.
-* Reliability: Every dataset must have at least a decent result (better than a human planner).
+* Reliability: Every data set must have at least a decent result (better than a human planner).
 
-Given these requirements, and despite the promises of some salesmen, it's usually impossible for anyone or anything to find the optimal solution.
+Given these requirements, and despite the promises of some salesmen, it is usually impossible for anyone or anything to find the optimal solution.
 Therefore, Planner focuses on finding the best solution in available time.
 In <<examplesOverview,"realistic, independent competitions">>, it often comes out as the best _reusable_ software.
 
 The nature of NP-complete problems make scaling a prime concern. *The result quality of a
-    small dataset guarantees nothing about the result quality of a large dataset.* Scaling issues cannot be mitigated by hardware purchases later on.
-Start testing with a production sized dataset as soon as possible.
-Don't assess quality on small datasets (unless production encounters only such datasets). Instead, solve a production sized dataset and compare the results of longer executions, different algorithms and - if available - the human planner.
+    small data set guarantees nothing about the result quality of a large data set.* Scaling issues cannot be mitigated by hardware purchases later on.
+Start testing with a production sized data set as soon as possible.
+Do not assess quality on small data sets (unless production encounters only such data sets). Instead, solve a production sized data set and compare the results of longer executions, different algorithms and - if available - the human planner.
 
 
 [[architectureOverview]]
 == Architecture Overview
 
-Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination turns out to be a very efficient, because:
+Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination is very efficient, because:
 
-* A rule engine such as Drools Expert is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as "a teacher shouldn't teach more then 7 hours a day". It does delta based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
-* An optimization algorithm is *great at finding new improving solutions* for a planning problem, without necessarily brute-forcing every possibility. However it needs to know the score of a solution and offers no support in calculating that score efficiently.
+* A rule engine, such as Drools Expert, is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as, "a teacher should not teach more then seven hours a day". It does delta-based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
+* An optimization algorithm is *great at finding new improving solutions* for a planning problem, without necessarily brute-forcing every possibility. However, it needs to know the score of a solution and offers no support in calculating that score efficiently.
 
 image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
 
@@ -82,12 +82,12 @@ image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
 [[optimizationAlgorithmsOverview]]
 == Optimization Algorithms Overview
 
-Planner supports 3 _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
+Planner supports three _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
 In practice, Metaheuristics (in combination with Construction Heuristics to initialize) are the recommended choice:
 
 image::Chapter-Optimization_algorithms/scalabilityOfOptimizationAlgorithms.png[align="center"]
 
-Each of these families of algorithms has multiple optimization algorithms:
+Each of these algorithm families have multiple optimization algorithms:
 
 .Optimization Algorithms Overview
 [cols="1,1,1,1,1,1", options="header"]
@@ -118,27 +118,23 @@ Each of these families of algorithms has multiple optimization algorithms:
 |    <<geneticAlgorithms,Genetic Algorithms>> |4/5 |3/5 |2/5 |5/5|Yes
 |===
 
-If you want to learn more about metaheuristics, read the free books http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
+To learn more about metaheuristics, see  http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
 
 
 [[whichOptimizationAlgorithmsShouldIUse]]
 == Which Optimization Algorithms Should I Use?
 
-The _best_ optimization algorithms configuration for your use case depends heavily on your use case.
-Nevertheless, this vanilla recipe will get you into the game with a pretty good configuration, probably much better than what you're used to.
+The _best_ optimization algorithms configuration to use depends heavily on your use case.
+Nevertheless, this vanilla recipe will get you into the game with a pretty good configuration.
 
-Start with a quick configuration that involves little or no configuration and optimization code:
+. Start with a quick configuration that involves little or no configuration and optimization code:
+ See <<firstFit,First Fit>>.
 
-. <<firstFit,First Fit>>
+. Next, implement <<planningEntityDifficulty,planning entity difficulty>> comparison and turn it into <<firstFitDecreasing,First Fit Decreasing>>.
 
-Next, implement <<planningEntityDifficulty,planning entity difficulty>> comparison and turn it into:
-
-. <<firstFitDecreasing,First Fit Decreasing>>
-
-Next, add Late Acceptance behind it:
-
-. First Fit Decreasing
-. <<lateAcceptance,Late Acceptance>>. A Late Acceptance size of 400 usually works well.
+. Next, add Late Acceptance behind it:
+.. First Fit Decreasing
+.. <<lateAcceptance,Late Acceptance>>. A Late Acceptance size of 400 usually works well.
 
 At this point __the free lunch is over__.
 The return on invested time lowers.
