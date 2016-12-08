@@ -41,8 +41,7 @@ Even in cases where adding some of the hard constraints in the formula is practi
 ====
 
 An algorithm that checks every possible solution (even with pruning, such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
-What we really want is to **find the best solution in the limited time at our
-    disposal**.
+The goal is to find the best solution in the available timeframe.
 Planning competitions (such as the International Timetabling Competition) show that Local Search variations
 (<<tabuSearch,Tabu Search>>, <<simulatedAnnealing,Simulated Annealing>>, <<lateAcceptance,Late Acceptance>>, ...)
 usually perform best for real-world problems given real-world time limitations.
@@ -124,8 +123,8 @@ To learn more about metaheuristics, see  http://www.cs.gmu.edu/~sean/book/metahe
 [[whichOptimizationAlgorithmsShouldIUse]]
 == Which Optimization Algorithms Should I Use?
 
-The _best_ optimization algorithms configuration to use depends heavily on your use case.
-Nevertheless, this vanilla recipe will get you into the game with a pretty good configuration.
+The best optimization algorithms configuration to use depends heavily on your use case.
+Nevertheless, this basic procedure will provide basic configuration.
 
 . Start with a quick configuration that involves little or no configuration and optimization code:
  See <<firstFit,First Fit>>.
@@ -133,23 +132,19 @@ Nevertheless, this vanilla recipe will get you into the game with a pretty good 
 . Next, implement <<planningEntityDifficulty,planning entity difficulty>> comparison and turn it into <<firstFitDecreasing,First Fit Decreasing>>.
 
 . Next, add Late Acceptance behind it:
-.. First Fit Decreasing
+.. First Fit Decreasing.
 .. <<lateAcceptance,Late Acceptance>>. A Late Acceptance size of 400 usually works well.
 
-At this point __the free lunch is over__.
-The return on invested time lowers.
-The result is probably already more than good enough.
+At this point, the return on invested time lowers and the result is likely to be sufficient.
 
-But you can do even better, at a lower return on invested time.
+However, this can be improved at a lower return on invested time.
 Use the <<benchmarker,Benchmarker>> and try a couple of different Tabu Search, Simulated Annealing and Late Acceptance configurations, for example:
 
-. First Fit Decreasing
-. <<tabuSearch,Tabu Search>>. An entity tabu size of 7 usually works well.
+. First Fit Decreasing: <<tabuSearch,Tabu Search>>. An entity Tabu Search size of seven is recommended.
 
-Use the <<benchmarker,Benchmarker>> to improve the values for those size parameters.
+Use the <<benchmarker,Benchmarker>> to improve the values for the size parameters.
 
-If it's worth your time, continue experimenting further.
-For example, try combining multiple algorithms together:
+Other experiments can also be run. For example, the following multiple algorithms can be combined together:
 
 . First Fit Decreasing
 . Late Acceptance (relatively long time)
@@ -159,33 +154,31 @@ For example, try combining multiple algorithms together:
 [[powerTweaking]]
 == Power tweaking or default parameter values
 
-Many optimization algorithms have parameters which affect results and scalability.
+Many optimization algorithms have parameters that affect results and scalability.
 Planner applies __configuration by exception__, so all optimization algorithms have default parameter values.
-This is very similar to the Garbage Collection parameters in a JVM: most users have no need to tweak them, but power users do tweak them.
+This is very similar to the Garbage Collection parameters in a JVM: most users have no need to tweak them, but power users often do.
 
-The default parameter values are good enough for many cases (and especially for prototypes), but if development time allows, it can be well worth to power tweak them with the <<benchmarker,benchmarker>> for better results and scalability on a specific use case.
-The documentation for each optimization algorithm also declares its advanced configuration for power tweaking.
+The default parameter values are sufficient for many cases (and especially for prototypes), but if development time allows, it may be beneficial to power tweak them with the <<benchmarker,benchmarker>> for better results and scalability on a specific use case.
+The documentation for each optimization algorithm also declares the advanced configuration for power tweaking.
 
 [WARNING]
 ====
-The default value of parameters will change between minor versions, to improve them for most users (but not necessary for you). To shield yourself from these changes, for better or worse, always use the advanced configuration.
-This is not recommended.
+The default value of parameters will change between minor versions, to improve them for most users. The advanced configuration can be used to prevent unnecessary changes, however, this is not recommended.
 ====
 
 
 [[solverPhase]]
 == Solver Phase
 
-A `Solver` can use multiple optimization algorithms in sequence. *Each
-    optimization algorithm is represented by a solver ``**Phase**``.* There is never more than 1 `Phase` solving at the same time.
+A `Solver` can use multiple optimization algorithms in sequence. Each optimization algorithm is represented by a solver ``Phase``. There is never more than one `Phase` solving at the same time.
 
 [NOTE]
 ====
-Some `Phase` implementations can combine techniques from multiple optimization algorithms, but it is still just 1 ``Phase``.
+Some `Phase` implementations can combine techniques from multiple optimization algorithms, but it is still just one ``Phase``.
 For example: a Local Search `Phase` can do Simulated Annealing with entity Tabu.
 ====
 
-Here's a configuration that runs 3 phases in sequence:
+Here is a configuration that runs three phases in sequence:
 
 [source,xml,options="nowrap"]
 ----
@@ -204,9 +197,11 @@ Here's a configuration that runs 3 phases in sequence:
 ----
 
 The solver phases are run in the order defined by solver configuration.
-When the first `Phase` terminates, the second `Phase` starts, and so on.
-When the last `Phase` terminates, the `Solver` terminates.
-Usually, a `Solver` will first run a construction heuristic and then run 1 or multiple metaheuristics:
+
+* When the first `Phase` terminates, the second `Phase` starts, and so on.
+* When the last `Phase` terminates, the `Solver` terminates.
+
+Usually, a `Solver` will first run a construction heuristic and then run one or multiple metaheuristics:
 
 image::Chapter-Optimization_algorithms/generalPhaseSequence.png[align="center"]
 
@@ -234,17 +229,20 @@ Other phases (especially metaheuristics) will only terminate if the `Phase` is c
 </solver>
 ----
 
-If the `Solver` terminates (before the last `Phase` terminates itself),
-the current phase is terminated and all subsequent phases won't run.
+If the `Solver` terminates (before the last `Phase` terminates itself,
+the current phase is terminated and all subsequent phases will not run.
 
 
 [[scopeOverview]]
 == Scope Overview
 
-A solver will iteratively run phases.
-Each phase will usually iteratively run steps.
-Each step, in turn, usually iteratively runs moves.
-These form 4 nested scopes: solver, phase, step and move.
+A solver will iteratively run phases. Each phase will usually iteratively run steps. Each step, in turn, usually iteratively runs moves.
+These form four nested scopes: 
+
+. Solver
+. Phase
+. Step
+. Move
 
 image::Chapter-Optimization_algorithms/scopeOverview.png[align="center"]
 
@@ -254,13 +252,15 @@ Configure <<logging,logging>> to display the log messages of each scope.
 [[termination]]
 == Termination
 
-Not all phases terminate automatically and sometimes you don't want to wait that long anyway.
-A `Solver` can be terminated synchronously by up-front configuration or asynchronously from another thread.
+Not all phases terminate automatically and and may take too long.
+A `Solver` can be terminated synchronously by up-front configuration, or asynchronously from another thread.
 
-Especially metaheuristic phases will need to be told when to stop solving.
-This can be because of a number of reasons: the time is up, the perfect score has been reached, just before its solution is used, ... The only thing you can't depend on, is on finding the optimal solution (unless you know the optimal score), because a metaheuristic algorithm generally doesn't know it when it finds the optimal solution.
-For real-life problems this doesn't turn out to be much of a problem, because finding the optimal solution could take years, so you'll want to terminate sooner anyway.
-The only thing that matters is finding the best solution in the available time.
+Metaheuristic phases in particular need to be instructed to stop solving.
+This can be because of a number of reasons, for example, if the time is up, or the perfect score has been reached just before its solution is used.
+Finding the optimal solution cannot be relied on (unless you know the optimal score), because a metaheuristic algorithm is generally unaware of the optimal solution.
+
+This is not an issue for real-life problems, as finding the optimal solution may take more time than is available. 
+Finding the best solution in the available time is the most important outcome.
 
 [IMPORTANT]
 ====
@@ -269,8 +269,8 @@ This is especially common during <<realTimePlanning,real-time planning>>.
 ====
 
 For synchronous termination, configure a `Termination` on a `Solver` or a `Phase` when it needs to stop.
-You can implement your own ``Termination``, but the built-in implementations should suffice for most needs.
-Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or ``Phase``.
+The built-in implementations of these should be sufficient, however a custom `Termination` can also be used.
+Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or Phase`.
 
 
 [[timeMillisSpentTermination]]
