@@ -23,10 +23,11 @@ import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.LeadingExam;
 import org.optaplanner.examples.examination.domain.PeriodPenalty;
 
-public class ExamDifficultyWeightFactory implements SelectionSorterWeightFactory<Examination, Exam> {
+public class ExamDifficultyWeightFactory
+        implements SelectionSorterWeightFactory<Examination, Exam, ExamDifficultyWeightFactory.ExamDifficultyWeight> {
 
     @Override
-    public Comparable createSorterWeight(Examination examination, Exam exam) {
+    public ExamDifficultyWeight createSorterWeight(Examination examination, Exam exam) {
         int studentSizeTotal = exam.getTopicStudentSize();
         int maximumDuration = exam.getTopicDuration();
         for (PeriodPenalty periodPenalty : examination.getPeriodPenaltyList()) {

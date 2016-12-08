@@ -21,11 +21,13 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
+import org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory.DomicileDistanceStandstillStrengthWeight;
 
-public class DomicileDistanceStandstillStrengthWeightFactory implements SelectionSorterWeightFactory<TspSolution, Standstill> {
+public class DomicileDistanceStandstillStrengthWeightFactory
+        implements SelectionSorterWeightFactory<TspSolution, Standstill, DomicileDistanceStandstillStrengthWeight> {
 
     @Override
-    public Comparable createSorterWeight(TspSolution tspSolution, Standstill standstill) {
+    public DomicileDistanceStandstillStrengthWeight createSorterWeight(TspSolution tspSolution, Standstill standstill) {
         Domicile domicile = tspSolution.getDomicile();
         long domicileRoundTripDistance = domicile.getDistanceTo(standstill) + standstill.getDistanceTo(domicile);
         return new DomicileDistanceStandstillStrengthWeight(standstill, domicileRoundTripDistance);

@@ -25,11 +25,13 @@ import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
+import org.optaplanner.examples.projectjobscheduling.domain.solver.ExecutionModeStrengthWeightFactory.ExecutionModeStrengthWeight;
 
-public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeightFactory<Schedule, ExecutionMode> {
+public class ExecutionModeStrengthWeightFactory
+        implements SelectionSorterWeightFactory<Schedule, ExecutionMode, ExecutionModeStrengthWeight> {
 
     @Override
-    public Comparable createSorterWeight(Schedule schedule, ExecutionMode executionMode) {
+    public ExecutionModeStrengthWeight createSorterWeight(Schedule schedule, ExecutionMode executionMode) {
         Map<Resource, Integer> requirementTotalMap = new HashMap<>(
                 executionMode.getResourceRequirementList().size());
         for (ResourceRequirement resourceRequirement : executionMode.getResourceRequirementList()) {

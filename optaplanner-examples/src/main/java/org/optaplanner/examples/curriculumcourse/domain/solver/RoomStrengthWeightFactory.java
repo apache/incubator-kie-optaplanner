@@ -21,10 +21,11 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Room;
 
-public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Room> {
+public class RoomStrengthWeightFactory
+        implements SelectionSorterWeightFactory<CourseSchedule, Room, RoomStrengthWeightFactory.RoomStrengthWeight> {
 
     @Override
-    public Comparable createSorterWeight(CourseSchedule schedule, Room room) {
+    public RoomStrengthWeight createSorterWeight(CourseSchedule schedule, Room room) {
         return new RoomStrengthWeight(room);
     }
 

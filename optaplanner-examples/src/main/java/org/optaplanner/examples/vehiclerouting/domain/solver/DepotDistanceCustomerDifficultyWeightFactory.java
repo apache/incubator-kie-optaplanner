@@ -21,15 +21,17 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.solver.DepotDistanceCustomerDifficultyWeightFactory.DepotDistanceCustomerDifficultyWeight;
 
 /**
  * On large datasets, the constructed solution looks like a Matryoshka doll.
  */
-public class DepotDistanceCustomerDifficultyWeightFactory
-        implements SelectionSorterWeightFactory<VehicleRoutingSolution, Customer> {
+public class DepotDistanceCustomerDifficultyWeightFactory implements
+        SelectionSorterWeightFactory<VehicleRoutingSolution, Customer, DepotDistanceCustomerDifficultyWeight> {
 
     @Override
-    public Comparable createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution, Customer customer) {
+    public DepotDistanceCustomerDifficultyWeight createSorterWeight(
+            VehicleRoutingSolution vehicleRoutingSolution, Customer customer) {
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
         return new DepotDistanceCustomerDifficultyWeight(customer,
                 customer.getLocation().getDistanceTo(depot.getLocation())

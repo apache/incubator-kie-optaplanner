@@ -28,14 +28,15 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  * normally ascending unless its configured descending.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
+ * @param <W> the weight type
  */
-public interface SelectionSorterWeightFactory<Solution_, T> {
+public interface SelectionSorterWeightFactory<Solution_, T, W extends Comparable<W>> {
 
     /**
      * @param solution never null, the {@link PlanningSolution} to which the selection belongs or applies to
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
      * @return never null, for example a {@link Integer}, {@link Double} or a more complex {@link Comparable}
      */
-    Comparable createSorterWeight(Solution_ solution, T selection);
+    W createSorterWeight(Solution_ solution, T selection);
 
 }

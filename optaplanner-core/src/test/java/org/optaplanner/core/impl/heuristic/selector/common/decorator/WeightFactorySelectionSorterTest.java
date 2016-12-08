@@ -32,10 +32,10 @@ public class WeightFactorySelectionSorterTest {
 
     @Test
     public void sortAscending() {
-        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory
+        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity, Integer> weightFactory
                 = (solution, selection) -> Integer.valueOf(selection.getCode().charAt(0));
-        WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<>(
-                weightFactory, SelectionSorterOrder.ASCENDING);
+        WeightFactorySelectionSorter<TestdataSolution, TestdataEntity, Integer> selectionSorter
+                = new WeightFactorySelectionSorter<>(weightFactory, SelectionSorterOrder.ASCENDING);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         List<TestdataEntity> selectionList = new ArrayList<>();
         selectionList.add(new TestdataEntity("C"));
@@ -48,10 +48,10 @@ public class WeightFactorySelectionSorterTest {
 
     @Test
     public void sortDescending() {
-        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory
+        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity, Integer> weightFactory
                 = (solution, selection) -> Integer.valueOf(selection.getCode().charAt(0));
-        WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<>(
-                weightFactory, SelectionSorterOrder.DESCENDING);
+        WeightFactorySelectionSorter<TestdataSolution, TestdataEntity, Integer> selectionSorter
+                = new WeightFactorySelectionSorter<>(weightFactory, SelectionSorterOrder.DESCENDING);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         List<TestdataEntity> selectionList = new ArrayList<>();
         selectionList.add(new TestdataEntity("C"));

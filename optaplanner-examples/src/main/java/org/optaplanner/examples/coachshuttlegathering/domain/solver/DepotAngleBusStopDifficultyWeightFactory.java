@@ -21,20 +21,21 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusOrStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
+import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory.DepotAngleBusStopDifficultyWeight;
 
 /**
  * On large datasets, the constructed solution looks like pizza slices.
  */
 public class DepotAngleBusStopDifficultyWeightFactory
-        implements SelectionSorterWeightFactory<CoachShuttleGatheringSolution, BusOrStop> {
+        implements SelectionSorterWeightFactory<CoachShuttleGatheringSolution, BusOrStop, DepotAngleBusStopDifficultyWeight> {
 
     @Override
-    public Comparable createSorterWeight(CoachShuttleGatheringSolution solution, BusOrStop busOrStop) {
+    public DepotAngleBusStopDifficultyWeight createSorterWeight(CoachShuttleGatheringSolution solution, BusOrStop busOrStop) {
         BusHub hub = solution.getHub();
         return new DepotAngleBusStopDifficultyWeight(busOrStop,
                 busOrStop.getLocation().getAngle(hub.getLocation()),
                 busOrStop.getLocation().getMaximumDistanceTo(hub.getLocation())
-                        + hub.getLocation().getMaximumDistanceTo(busOrStop.getLocation()));
+                + hub.getLocation().getMaximumDistanceTo(busOrStop.getLocation()));
     }
 
     public static class DepotAngleBusStopDifficultyWeight
