@@ -41,7 +41,7 @@ Even in cases where adding some of the hard constraints in the formula is practi
 ====
 
 An algorithm that checks every possible solution (even with pruning, such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
-The goal is to find the best solution in the available timeframe.
+The aim is to find the best solution in the available timeframe.
 Planning competitions (such as the International Timetabling Competition) show that Local Search variations
 (<<tabuSearch,Tabu Search>>, <<simulatedAnnealing,Simulated Annealing>>, <<lateAcceptance,Late Acceptance>>, ...)
 usually perform best for real-world problems given real-world time limitations.
@@ -61,8 +61,14 @@ Given these requirements, and despite the promises of some salesmen, it is usual
 Therefore, Planner focuses on finding the best solution in available time.
 In <<examplesOverview,"realistic, independent competitions">>, it often comes out as the best _reusable_ software.
 
-The nature of NP-complete problems make scaling a prime concern. *The result quality of a
-    small data set guarantees nothing about the result quality of a large data set.* Scaling issues cannot be mitigated by hardware purchases later on.
+The nature of NP-complete problems make scaling a prime concern. 
+
+[NOTE]
+====
+The quality of a result from a small data set is no indication of the quality of a result from a large data set.
+====
+
+Scaling issues cannot be mitigated by hardware purchases later on.
 Start testing with a production sized data set as soon as possible.
 Do not assess quality on small data sets (unless production encounters only such data sets). Instead, solve a production sized data set and compare the results of longer executions, different algorithms and - if available - the human planner.
 
@@ -124,7 +130,7 @@ To learn more about metaheuristics, see  http://www.cs.gmu.edu/~sean/book/metahe
 == Which Optimization Algorithms Should I Use?
 
 The best optimization algorithms configuration to use depends heavily on your use case.
-Nevertheless, this basic procedure will provide basic configuration.
+However, this basic procedure provides a good starting configuration that will produce better than average results.
 
 . Start with a quick configuration that involves little or no configuration and optimization code:
  See <<firstFit,First Fit>>.
@@ -133,14 +139,14 @@ Nevertheless, this basic procedure will provide basic configuration.
 
 . Next, add Late Acceptance behind it:
 .. First Fit Decreasing.
-.. <<lateAcceptance,Late Acceptance>>. A Late Acceptance size of 400 usually works well.
+.. <<lateAcceptance,Late Acceptance>>. 
 
 At this point, the return on invested time lowers and the result is likely to be sufficient.
 
 However, this can be improved at a lower return on invested time.
 Use the <<benchmarker,Benchmarker>> and try a couple of different Tabu Search, Simulated Annealing and Late Acceptance configurations, for example:
 
-. First Fit Decreasing: <<tabuSearch,Tabu Search>>. An entity Tabu Search size of seven is recommended.
+. First Fit Decreasing: <<tabuSearch,Tabu Search>>. 
 
 Use the <<benchmarker,Benchmarker>> to improve the values for the size parameters.
 
@@ -163,18 +169,22 @@ The documentation for each optimization algorithm also declares the advanced con
 
 [WARNING]
 ====
-The default value of parameters will change between minor versions, to improve them for most users. The advanced configuration can be used to prevent unnecessary changes, however, this is not recommended.
+The default value of parameters will change between minor versions, to improve them for most users. The advanced configuration can be used to prevent unwanted changes, however, this is not recommended.
 ====
 
 
 [[solverPhase]]
 == Solver Phase
 
-A `Solver` can use multiple optimization algorithms in sequence. Each optimization algorithm is represented by a solver ``Phase``. There is never more than one `Phase` solving at the same time.
+A `Solver` can use multiple optimization algorithms in sequence. 
+[NOTE]
+====
+Each optimization algorithm is represented by a solver `Phase`. There is never more than one `Phase` solving at the same time.
+====
 
 [NOTE]
 ====
-Some `Phase` implementations can combine techniques from multiple optimization algorithms, but it is still just one ``Phase``.
+Some `Phase` implementations can combine techniques from multiple optimization algorithms, but it is still just one `Phase`.
 For example: a Local Search `Phase` can do Simulated Annealing with entity Tabu.
 ====
 
@@ -252,7 +262,7 @@ Configure <<logging,logging>> to display the log messages of each scope.
 [[termination]]
 == Termination
 
-Not all phases terminate automatically and and may take too long.
+Not all phases terminate automatically and may take a significant amount of time.
 A `Solver` can be terminated synchronously by up-front configuration, or asynchronously from another thread.
 
 Metaheuristic phases in particular need to be instructed to stop solving.
@@ -270,7 +280,7 @@ This is especially common during <<realTimePlanning,real-time planning>>.
 
 For synchronous termination, configure a `Termination` on a `Solver` or a `Phase` when it needs to stop.
 The built-in implementations of these should be sufficient, however a custom `Termination` can also be used.
-Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or Phase`.
+Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or `Phase`.
 
 
 [[timeMillisSpentTermination]]
@@ -542,7 +552,7 @@ This example ensures it does not just terminate after finding a feasible solutio
 [[asynchronousTermination]]
 === Asynchronous Termination from Another Thread
 
-Asychronous termination from another thread occurs When a `Solver` needs to be terminated early from another thread, for example, due to a user action or a server restart.
+Asychronous termination from another thread occurs when a `Solver` needs to be terminated early from another thread, for example, due to a user action or a server restart.
 This cannot be configured by a `Termination` as it is impossible to predict when and if it will occur.
 Therefore the `Solver` interface has the following thread-safe methods:
 
@@ -617,7 +627,7 @@ For example, to implement a custom Construction Heuristic without implementing a
 
 [NOTE]
 ====
-Most of the time, a custom solver phase is inefficient.
+Most of the time, a custom solver phase is not worth the development time investment.
 The supported <<constructionHeuristics,Constructions Heuristics>> are configurable (use the <<benchmarker,Benchmarker>> to tweak them),
 `Termination` aware and support partially initialized solutions too.
 ====
@@ -695,7 +705,7 @@ If the changes of a `CustomPhaseCommand` do not result in a better score, the be
 
 [NOTE]
 ====
-If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is still running, it will wait to terminate until the `CustomPhaseCommand` is done.
+If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is still running, it will wait to terminate until the `CustomPhaseCommand` is complete. This may take a significant amount of time.
 The build-in solver phases do not have this issue.
 ====
 
