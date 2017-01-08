@@ -20,13 +20,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertyEntity;
-
-import static org.junit.Assert.*;
 
 public class TestGenValueFactTest {
 
@@ -40,7 +38,7 @@ public class TestGenValueFactTest {
 
         StringBuilder sb = new StringBuilder(100);
         fact.printInitialization(sb);
-        assertEquals("    private final TestdataValue testdataValue_321 = new TestdataValue();\n", sb.toString());
+        assertEquals("    private final TestdataValue testdataValue_321 = new TestdataValue();" + System.lineSeparator(), sb.toString());
     }
 
     @Test
