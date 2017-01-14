@@ -26,19 +26,17 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
@@ -249,7 +247,7 @@ public class PlannerBenchmarkResult {
 
     public void initBenchmarkReportDirectory(File benchmarkDirectory) {
         String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(startingTimestamp);
-        if (StringUtils.isEmpty(name)) {
+        if (Objects.isNull(name) || name.isEmpty()) {
             name = timestamp;
         }
         if (!benchmarkDirectory.mkdirs()) {
@@ -267,7 +265,7 @@ public class PlannerBenchmarkResult {
             String directoryName = timestamp + (duplicationIndex == 0 ? "" : "_" + duplicationIndex);
             duplicationIndex++;
             benchmarkReportDirectory = new File(benchmarkDirectory,
-                    BooleanUtils.isFalse(aggregation) ? directoryName : directoryName + "_aggregation");
+                    aggregation ? directoryName + "_aggregation" : directoryName);
         } while (!benchmarkReportDirectory.mkdir());
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
             problemBenchmarkResult.makeDirs();

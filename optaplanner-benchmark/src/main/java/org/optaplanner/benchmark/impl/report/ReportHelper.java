@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.impl.report;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Objects;
 
 public class ReportHelper {
 
@@ -47,7 +47,16 @@ public class ReportHelper {
     }
 
     public static String capitalize(String s) {
-        return StringUtils.capitalize(s);
+        if (Objects.isNull(s)) {
+            return null;
+        }
+        if (s.isEmpty()) {
+            return s;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(Character.toTitleCase(s.charAt(0)));
+        sb.append(s.substring(1));
+        return sb.toString();
     }
 
 }

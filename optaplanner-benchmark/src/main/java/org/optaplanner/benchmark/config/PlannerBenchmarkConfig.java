@@ -21,13 +21,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -43,8 +41,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
@@ -209,7 +205,8 @@ public class PlannerBenchmarkConfig {
         plannerBenchmarkResult.setAggregation(false);
         int parallelBenchmarkCount = resolveParallelBenchmarkCount();
         plannerBenchmarkResult.setParallelBenchmarkCount(parallelBenchmarkCount);
-        plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(defaultIfNull(calculateWarmUpTimeMillisSpentLimit(), 30L));
+        Long warmupTimeLimit = calculateWarmUpTimeMillisSpentLimit();
+        plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(Objects.isNull(warmupTimeLimit) ? 30L : warmupTimeLimit);
         plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<>());
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
                 effectiveSolverBenchmarkConfigList.size()));
