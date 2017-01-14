@@ -16,7 +16,6 @@
 
 package org.optaplanner.benchmark.config.statistic;
 
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
@@ -34,7 +33,7 @@ public enum SingleStatisticType implements StatisticType {
 
     @Override
     public String getLabel() {
-        return StringUtils.capitalize(name().replace('_', ' ').toLowerCase());
+        return ReportHelper.capitalize(name().replace('_', ' ').toLowerCase());
     }
 
     public PureSubSingleStatistic buildPureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
