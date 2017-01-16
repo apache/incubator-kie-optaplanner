@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
 import java.util.Comparator;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
@@ -26,14 +27,14 @@ import static org.mockito.Mockito.*;
 
 public abstract class AbstractNodeComparatorTest {
 
-    protected ExhaustiveSearchNode buildNode(int depth, String score, long parentBreadth, long breadth) {
+    protected ExhaustiveSearchNode<SimpleScore> buildNode(int depth, String score, long parentBreadth, long breadth) {
         return buildNode(depth,
                 SimpleScore.parseScore(score),
                 SimpleScore.parseScore(score).toInitializedScore(),
                 parentBreadth, breadth);
     }
 
-    protected ExhaustiveSearchNode buildNode(int depth, String score, int optimisticBound,
+    protected ExhaustiveSearchNode<SimpleScore> buildNode(int depth, String score, int optimisticBound,
             long parentBreadth, long breadth) {
         return buildNode(depth,
                 SimpleScore.parseScore(score),
@@ -41,9 +42,9 @@ public abstract class AbstractNodeComparatorTest {
                 parentBreadth, breadth);
     }
 
-    protected ExhaustiveSearchNode buildNode(int depth, SimpleScore score, SimpleScore optimisticBound,
+    protected <S extends Score<S>> ExhaustiveSearchNode<S> buildNode(int depth, S score, S optimisticBound,
             long parentBreadth, long breadth) {
-        ExhaustiveSearchNode node = mock(ExhaustiveSearchNode.class);
+        ExhaustiveSearchNode<S> node = mock(ExhaustiveSearchNode.class);
         when(node.getDepth()).thenReturn(depth);
         when(node.getScore()).thenReturn(score);
         when(node.getOptimisticBound()).thenReturn(optimisticBound);
@@ -53,14 +54,15 @@ public abstract class AbstractNodeComparatorTest {
         return node;
     }
 
-    protected static void assertLesser(Comparator<ExhaustiveSearchNode> comparator,
-            ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
+    protected static <S extends Score<S>> void assertLesser(Comparator<ExhaustiveSearchNode<S>> comparator,
+            ExhaustiveSearchNode<S> a, ExhaustiveSearchNode<S> b) {
         assertTrue("Node (" + a + ") must be lesser than node (" + b + ").", comparator.compare(a, b) < 0);
         assertTrue("Node (" + b + ") must be greater than node (" + a + ").", comparator.compare(b, a) > 0);
     }
 
-    protected static void assertScoreCompareToOrder(Comparator<ExhaustiveSearchNode> comparator,
-            ExhaustiveSearchNode... nodes) {
+    @SafeVarargs
+    protected static <S extends Score<S>> void assertScoreCompareToOrder(Comparator<ExhaustiveSearchNode<S>> comparator,
+            ExhaustiveSearchNode<S>... nodes) {
         for (int i = 0; i < nodes.length; i++) {
             for (int j = i + 1; j < nodes.length; j++) {
                 assertLesser(comparator, nodes[i], nodes[j]);

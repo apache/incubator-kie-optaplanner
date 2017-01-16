@@ -30,8 +30,10 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * <p>
  * A typical {@link ScoreBounder}'s {@link ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)}
  * will be weak, which results in horrible performance scalability too.
+ * @param <S> the score type
  */
-public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNode>, Serializable {
+public class BreadthFirstNodeComparator<S extends Score<S>>
+        implements Comparator<ExhaustiveSearchNode<S>>, Serializable {
 
     private final boolean scoreBounderEnabled;
 
@@ -40,7 +42,7 @@ public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNo
     }
 
     @Override
-    public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
+    public int compare(ExhaustiveSearchNode<S> a, ExhaustiveSearchNode<S> b) {
         // Investigate shallower nodes first
         int aDepth = a.getDepth();
         int bDepth = b.getDepth();

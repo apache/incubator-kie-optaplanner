@@ -50,10 +50,10 @@ public class DefaultExhaustiveSearchPhaseTest {
 
     @Test
     public void restoreWorkingSolution() {
-        ExhaustiveSearchPhaseScope<TestdataSolution> phaseScope = mock(ExhaustiveSearchPhaseScope.class);
-        ExhaustiveSearchStepScope<TestdataSolution> lastCompletedStepScope = mock(ExhaustiveSearchStepScope.class);
+        ExhaustiveSearchPhaseScope<TestdataSolution, SimpleScore> phaseScope = mock(ExhaustiveSearchPhaseScope.class);
+        ExhaustiveSearchStepScope<TestdataSolution, SimpleScore> lastCompletedStepScope = mock(ExhaustiveSearchStepScope.class);
         when(phaseScope.getLastCompletedStepScope()).thenReturn(lastCompletedStepScope);
-        ExhaustiveSearchStepScope<TestdataSolution> stepScope = mock(ExhaustiveSearchStepScope.class);
+        ExhaustiveSearchStepScope<TestdataSolution, SimpleScore> stepScope = mock(ExhaustiveSearchStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
         TestdataSolution workingSolution = new TestdataSolution();
         when(phaseScope.getWorkingSolution()).thenReturn(workingSolution);
@@ -66,32 +66,32 @@ public class DefaultExhaustiveSearchPhaseTest {
         ExhaustiveSearchLayer layer2 = new ExhaustiveSearchLayer(2, mock(Object.class));
         ExhaustiveSearchLayer layer3 = new ExhaustiveSearchLayer(3, mock(Object.class));
         ExhaustiveSearchLayer layer4 = new ExhaustiveSearchLayer(4, mock(Object.class));
-        ExhaustiveSearchNode node0 = new ExhaustiveSearchNode(layer0, null);
+        ExhaustiveSearchNode<SimpleScore> node0 = new ExhaustiveSearchNode<>(layer0, null);
         node0.setMove(mock(Move.class));
         node0.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node1 = new ExhaustiveSearchNode(layer1, node0);
+        ExhaustiveSearchNode<SimpleScore> node1 = new ExhaustiveSearchNode<>(layer1, node0);
         node1.setMove(mock(Move.class));
         node1.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node2A = new ExhaustiveSearchNode(layer2, node1);
+        ExhaustiveSearchNode<SimpleScore> node2A = new ExhaustiveSearchNode<>(layer2, node1);
         node2A.setMove(mock(Move.class));
         node2A.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node3A = new ExhaustiveSearchNode(layer3, node2A); // oldNode
+        ExhaustiveSearchNode<SimpleScore> node3A = new ExhaustiveSearchNode<>(layer3, node2A); // oldNode
         node3A.setMove(mock(Move.class));
         node3A.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node2B = new ExhaustiveSearchNode(layer2, node1);
+        ExhaustiveSearchNode<SimpleScore> node2B = new ExhaustiveSearchNode<>(layer2, node1);
         node2B.setMove(mock(Move.class));
         node2B.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node3B = new ExhaustiveSearchNode(layer3, node2B);
+        ExhaustiveSearchNode<SimpleScore> node3B = new ExhaustiveSearchNode<>(layer3, node2B);
         node3B.setMove(mock(Move.class));
         node3B.setUndoMove(mock(Move.class));
-        ExhaustiveSearchNode node4B = new ExhaustiveSearchNode(layer4, node3B); // newNode
+        ExhaustiveSearchNode<SimpleScore> node4B = new ExhaustiveSearchNode<>(layer4, node3B); // newNode
         node4B.setMove(mock(Move.class));
         node4B.setUndoMove(mock(Move.class));
         node4B.setScore(SimpleScore.valueOfUninitialized(-96, 7));
         when(lastCompletedStepScope.getExpandingNode()).thenReturn(node3A);
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 
-        DefaultExhaustiveSearchPhase<TestdataSolution> phase = new DefaultExhaustiveSearchPhase<>(0, "", null, null);
+        DefaultExhaustiveSearchPhase<TestdataSolution, SimpleScore> phase = new DefaultExhaustiveSearchPhase<>(0, "", null, null);
         phase.setEntitySelector(mock(EntitySelector.class));
         phase.setDecider(mock(ExhaustiveSearchDecider.class));
         phase.restoreWorkingSolution(stepScope);

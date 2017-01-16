@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public interface ScoreBounder {
+public interface ScoreBounder<S extends Score<S>> {
 
     /**
      * In OR terms, this is called the lower bound if they minimize, and upper bound if they maximize.
@@ -33,7 +33,7 @@ public interface ScoreBounder {
      * by initializing the uninitialized variables of the working {@link PlanningSolution}.
      * @see ScoreDefinition#buildOptimisticBound(InitializingScoreTrend, Score)
      */
-    Score calculateOptimisticBound(ScoreDirector scoreDirector, Score score);
+    S calculateOptimisticBound(ScoreDirector scoreDirector, S score);
 
     /**
      * In OR terms, this is called the upper bound if they minimize, and lower bound if they maximize.
@@ -44,6 +44,6 @@ public interface ScoreBounder {
      * by initializing the uninitialized variables of the working {@link PlanningSolution}.
      * @see ScoreDefinition#buildPessimisticBound(InitializingScoreTrend, Score)
      */
-    Score calculatePessimisticBound(ScoreDirector scoreDirector, Score score);
+    S calculatePessimisticBound(ScoreDirector scoreDirector, S score);
 
 }

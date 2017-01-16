@@ -30,9 +30,9 @@ public class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
 
     @Test
     public void testNodePruning() {
-        ExhaustiveSearchPhaseScope<TestdataSolution> phase
-                = new ExhaustiveSearchPhaseScope<TestdataSolution>(new DefaultSolverScope<TestdataSolution>());
-        phase.setExpandableNodeQueue(new TreeSet<>(new ScoreFirstNodeComparator(true)));
+        ExhaustiveSearchPhaseScope<TestdataSolution, SimpleScore> phase
+                = new ExhaustiveSearchPhaseScope<>(new DefaultSolverScope<TestdataSolution>());
+        phase.setExpandableNodeQueue(new TreeSet<>(new ScoreFirstNodeComparator<>(true)));
         phase.addExpandableNode(buildNode(0, "0", 0, 0));
         phase.addExpandableNode(buildNode(0, "1", 0, 0));
         phase.addExpandableNode(buildNode(0, "2", 0, 0));

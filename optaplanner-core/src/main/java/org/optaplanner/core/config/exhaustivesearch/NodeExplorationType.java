@@ -18,6 +18,7 @@ package org.optaplanner.core.config.exhaustivesearch;
 
 import java.util.Comparator;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
@@ -32,18 +33,18 @@ public enum NodeExplorationType {
     SCORE_FIRST,
     OPTIMISTIC_BOUND_FIRST;
 
-    public Comparator<ExhaustiveSearchNode> buildNodeComparator(boolean scoreBounderEnabled) {
+    public <S extends Score<S>> Comparator<ExhaustiveSearchNode<S>> buildNodeComparator(boolean scoreBounderEnabled) {
         switch (this) {
             case ORIGINAL_ORDER:
-                return new OriginalOrderNodeComparator();
+                return new OriginalOrderNodeComparator<>();
             case DEPTH_FIRST:
-                return new DepthFirstNodeComparator(scoreBounderEnabled);
+                return new DepthFirstNodeComparator<>(scoreBounderEnabled);
             case BREADTH_FIRST:
-                return new BreadthFirstNodeComparator(scoreBounderEnabled);
+                return new BreadthFirstNodeComparator<>(scoreBounderEnabled);
             case SCORE_FIRST:
-                return new ScoreFirstNodeComparator(scoreBounderEnabled);
+                return new ScoreFirstNodeComparator<>(scoreBounderEnabled);
             case OPTIMISTIC_BOUND_FIRST:
-                return new OptimisticBoundFirstNodeComparator(scoreBounderEnabled);
+                return new OptimisticBoundFirstNodeComparator<>(scoreBounderEnabled);
             default:
                 throw new IllegalStateException("The nodeExplorationType ("
                         + this + ") is not implemented.");

@@ -23,37 +23,38 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Score_> the score type
  */
-public class ExhaustiveSearchStepScope<Solution_> extends AbstractStepScope<Solution_> {
+public class ExhaustiveSearchStepScope<Solution_, Score_ extends Score<Score_>> extends AbstractStepScope<Solution_> {
 
-    private final ExhaustiveSearchPhaseScope<Solution_> phaseScope;
+    private final ExhaustiveSearchPhaseScope<Solution_, Score_> phaseScope;
 
-    private ExhaustiveSearchNode expandingNode;
+    private ExhaustiveSearchNode<Score_> expandingNode;
     private Long selectedMoveCount = null;
 
-    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
+    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope<Solution_, Score_> phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
     }
 
-    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope<Solution_> phaseScope, int stepIndex) {
+    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope<Solution_, Score_> phaseScope, int stepIndex) {
         super(stepIndex);
         this.phaseScope = phaseScope;
     }
 
     @Override
-    public ExhaustiveSearchPhaseScope<Solution_> getPhaseScope() {
+    public ExhaustiveSearchPhaseScope<Solution_, Score_> getPhaseScope() {
         return phaseScope;
     }
 
-    public ExhaustiveSearchNode getExpandingNode() {
+    public ExhaustiveSearchNode<Score_> getExpandingNode() {
         return expandingNode;
     }
 
-    public void setExpandingNode(ExhaustiveSearchNode expandingNode) {
+    public void setExpandingNode(ExhaustiveSearchNode<Score_> expandingNode) {
         this.expandingNode = expandingNode;
     }
 
-    public Score getStartingStepScore() {
+    public Score_ getStartingStepScore() {
         return expandingNode.getScore();
     }
 
