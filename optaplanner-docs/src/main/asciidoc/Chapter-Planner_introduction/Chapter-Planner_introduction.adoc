@@ -19,7 +19,7 @@ https://www.optaplanner.org[OptaPlanner] is a lightweight, embeddable constraint
 * **Employee shift rostering**: timetabling nurses, repairmen, ...
 * **Agenda scheduling**: scheduling meetings, appointments, maintenance jobs, advertisements, ...
 * **Educational timetabling**: scheduling lessons, courses, exams, conference presentations, ...
-* **Vehicle routing**: planning vehicle routes (trucks, trains, boats, airplanes, ...) for moving freight and/or passengers through multiple destinations ...
+* **Vehicle routing**: planning vehicle routes (trucks, trains, boats, airplanes, ...) for moving freight and/or passengers through multiple destinations using known mapping tools ...
 * **Bin packing**: filling containers, trucks, ships, and storage warehouses with items, but also packing information across computer resources, as in cloud computing ...
 * **Job shop scheduling**: planning car assembly lines, machine queue planning, workforce task planning, ...
 * **Cutting stock**: minimizing waste while cutting paper, steel, carpet, ...
@@ -241,7 +241,10 @@ It runs just as well on a server or a mobile JVM as it does on the desktop.
 [discrete]
 == Run the Webexamples
 
-Besides the GUI examples, there are also a set of webexamples to try out.
+Besides the GUI examples, there are also a set of webexamples to try out. The webexamples include:
+
+* Vehicle routing: calculating the shortest possible route to pick up all items required for a number of different customers using either http://leafletjs.com/[Leaflet] or http://google.com/maps[Google Maps] visualizations. 
+* Cloud balancing: Assigning processes across computers with different specifications and costs. 
 
 *Prerequisites*
 
@@ -257,7 +260,9 @@ These are not required for Planner itself.
 
 . Download a JEE application server, such as JBoss EAP or http://www.wildfly.org/[WildFly] and unzip it.
 . Download a release zip of OptaPlanner from https://www.optaplanner.org[the OptaPlanner website] and unzip it.
-. Open the directory [path]_webexamples_ and deploy the `optaplanner-webexamples-*.war` file on the JEE application server.
+. Open the directory [path]_webexamples_ and deploy the `optaplanner-webexamples-*.war` file on the JEE application server. 
++ 
+If using JBoss EAP in standalone mode, this can be done by adding the `optaplanner-webexamples-*.war` file to the `jboss-eap-*/standalone/deployments` folder. 
 . Open the following address in a web browser:  $$http://localhost:8080/optaplanner-webexamples-*/$$ (replace the $$*$$ with the actual version).
 
 **Deploying Webexamples on a Servlet Container**
@@ -267,7 +272,6 @@ To successfully deploy the webesxamples on a servlet container (such as Jetty or
 . Add the missing implementation libraries (for example RestEasy and Weld) in the `optaplanner-webexamples-*.war` manually.
 
 . Deploy the `optaplanner-webexamples-*.war` on the servlet container.
-
 
 
 Pick an example to try it out, such as the Vehicle Routing example:
