@@ -30,8 +30,7 @@ image::Chapter-Planner_introduction/useCaseOverview.png[align="center"]
 
 [[whatIsAPlanningProblem]]
 == What is a Planning Problem?
-//image::Chapter-Planner_introduction/whatIsAPlanningProblem.png[align="center"]
-//I propose removing this image and replacing it with the following paragraph.
+image::Chapter-Planner_introduction/whatIsAPlanningProblem.png[align="center"]
 
 A planning problem has an optimal goal, based on limited resources and under specific constraints. Optimal goals can be any number of things, such as:
 
@@ -122,10 +121,7 @@ OptaPlanner is _open source_ software, released under http://www.apache.org/lice
 This license is very liberal and allows reuse for commercial purposes.
 Read http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN[the layman's explanation].
 
-OptaPlanner is 100% pure Java^TM^
- and runs on any JVM 1.6 or higher.
-It <<integration,integrates very easily>> with other Java^TM^
- technologies.
+OptaPlanner is 100% pure Java^TM^ and runs on any JVM 1.6 or higher. It <<integration,integrates very easily>> with other Java^TM^ technologies.
 OptaPlanner is available in <<useWithMavenGradleEtc,the Maven Central Repository>>.
 
 Planner works on any Java Virtual Machine and is compatible with Standard Java, Enterprise Java, and all JVM languages.
@@ -192,7 +188,6 @@ image::Chapter-Planner_introduction/kieFunctionalityOverview.png[align="center"]
 See <<architectureOverview,the architecture overview>> to learn more about the optional integration with Drools.
 
 
-
 [[_downloadandruntheexamples]]
 == Download and Run the Examples
 
@@ -223,8 +218,7 @@ $ cd examples
 $ runExamples.bat
 ----
 
-//image::Chapter-Planner_introduction/distributionZip.png[align="center"]
-// This image is redundant in the documentation. The steps to download, unzip and open are simple and clearly explained.
+image::Chapter-Planner_introduction/distributionZip.png[align="center"]
 
 The Examples GUI application will open.
 Pick an example to try it out:
