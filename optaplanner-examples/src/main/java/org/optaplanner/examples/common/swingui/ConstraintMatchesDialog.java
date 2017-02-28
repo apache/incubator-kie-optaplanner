@@ -33,11 +33,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.examples.common.business.SolutionBusiness;
@@ -80,8 +83,10 @@ public class ConstraintMatchesDialog extends JDialog {
             columnModel.getColumn(0).setPreferredWidth(160);
             columnModel.getColumn(1).setPreferredWidth(300);
             columnModel.getColumn(2).setPreferredWidth(80);
-            columnModel.getColumn(3).setPreferredWidth(80);
-            columnModel.getColumn(4).setPreferredWidth(80);
+            columnModel.getColumn(3).setPreferredWidth(160);
+            DefaultTableCellRenderer rightCellRenderer = new DefaultTableCellRenderer();
+            rightCellRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+            columnModel.getColumn(3).setCellRenderer(rightCellRenderer);
             JScrollPane tableScrollPane = new JScrollPane(table);
             tableScrollPane.setPreferredSize(new Dimension(700, 300));
             splitPane.setTopComponent(tableScrollPane);
@@ -93,18 +98,15 @@ public class ConstraintMatchesDialog extends JDialog {
             JScrollPane detailScrollPane = new JScrollPane(detailTextArea);
             bottomPanel.add(detailScrollPane, BorderLayout.CENTER);
             table.getSelectionModel().addListSelectionListener(
-                    new ListSelectionListener() {
-                        @Override
-                        public void valueChanged(ListSelectionEvent event) {
-                            int selectedRow = table.getSelectedRow();
-                            if (selectedRow < 0) {
-                                detailTextArea.setText("");
-                            } else {
-                                ConstraintMatchTotal constraintMatchTotal
-                                        = constraintMatchTotalList.get(selectedRow);
-                                detailTextArea.setText(buildConstraintMatchSetText(constraintMatchTotal));
-                                detailTextArea.setCaretPosition(0);
-                            }
+                    event -> {
+                        int selectedRow = table.getSelectedRow();
+                        if (selectedRow < 0) {
+                            detailTextArea.setText("");
+                        } else {
+                            ConstraintMatchTotal constraintMatchTotal
+                                    = constraintMatchTotalList.get(selectedRow);
+                            detailTextArea.setText(buildConstraintMatchSetText(constraintMatchTotal));
+                            detailTextArea.setCaretPosition(0);
                         }
                     }
             );
@@ -121,7 +123,8 @@ public class ConstraintMatchesDialog extends JDialog {
         Set<? extends ConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
         StringBuilder text = new StringBuilder(constraintMatchSet.size() * 80);
         for (ConstraintMatch constraintMatch : constraintMatchSet) {
-            text.append(constraintMatch.toString()).append("\n");
+            text.append(constraintMatch.getJustificationList()).append("=")
+                    .append(constraintMatch.getScore().toShortString()).append("\n");
         }
         return text.toString();
     }
@@ -141,7 +144,7 @@ public class ConstraintMatchesDialog extends JDialog {
 
         @Override
         public int getColumnCount() {
-            return 5;
+            return 4;
         }
 
         @Override
@@ -152,11 +155,9 @@ public class ConstraintMatchesDialog extends JDialog {
                 case 1:
                     return "Constraint name";
                 case 2:
-                    return "Score level";
-                case 3:
                     return "Match count";
-                case 4:
-                    return "Weight total";
+                case 3:
+                    return "Score total";
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }
@@ -172,9 +173,7 @@ public class ConstraintMatchesDialog extends JDialog {
                 case 2:
                     return Integer.class;
                 case 3:
-                    return Integer.class;
-                case 4:
-                    return Number.class;
+                    return String.class;
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }
@@ -189,11 +188,9 @@ public class ConstraintMatchesDialog extends JDialog {
                 case 1:
                     return constraintMatchTotal.getConstraintName();
                 case 2:
-                    return constraintMatchTotal.getScoreLevel();
-                case 3:
                     return constraintMatchTotal.getConstraintMatchCount();
-                case 4:
-                    return constraintMatchTotal.getWeightTotalAsNumber();
+                case 3:
+                    return constraintMatchTotal.getScoreTotal().toShortString();
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }

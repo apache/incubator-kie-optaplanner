@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.optaplanner.core.impl.testdata.domain.lookup;
 
-/**
- * Constraint match support for a {@link java.math.BigDecimal} score weight.
- */
-package org.optaplanner.core.api.score.constraint.bigdecimal;
+public class TestdataObjectNoId {
+
+    private final Integer id = 0;
+
+    public TestdataObjectNoId() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+}

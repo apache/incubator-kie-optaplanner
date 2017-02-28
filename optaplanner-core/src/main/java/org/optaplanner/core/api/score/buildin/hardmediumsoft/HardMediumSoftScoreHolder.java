@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -30,7 +31,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
     protected int softScore;
 
     public HardMediumSoftScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardMediumSoftScore.ZERO);
     }
 
     public int getHardScore() {
@@ -51,44 +52,54 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param hardWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
-        hardScore += weight;
-        registerIntConstraintMatch(kcontext, 0, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore -= weight;
-            }
-        });
+    public void addHardConstraintMatch(RuleContext kcontext, int hardWeight) {
+        hardScore += hardWeight;
+        registerConstraintMatch(kcontext,
+                () -> hardScore -= hardWeight,
+                () -> HardMediumSoftScore.valueOf(hardWeight, 0, 0));
     }
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param mediumWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addMediumConstraintMatch(RuleContext kcontext, final int weight) {
-        mediumScore += weight;
-        registerIntConstraintMatch(kcontext, 1, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                mediumScore -= weight;
-            }
-        });
+    public void addMediumConstraintMatch(RuleContext kcontext, int mediumWeight) {
+        mediumScore += mediumWeight;
+        registerConstraintMatch(kcontext,
+                () -> mediumScore -= mediumWeight,
+                () -> HardMediumSoftScore.valueOf(0, mediumWeight, 0));
     }
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
-        softScore += weight;
-        registerIntConstraintMatch(kcontext, 2, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore -= weight;
-            }
-        });
+    public void addSoftConstraintMatch(RuleContext kcontext, int softWeight) {
+        softScore += softWeight;
+        registerConstraintMatch(kcontext,
+                () -> softScore -= softWeight,
+                () -> HardMediumSoftScore.valueOf(0, 0, softWeight));
+    }
+
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeight higher is better, negative for a penalty, positive for a reward
+     * @param mediumWeight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight higher is better, negative for a penalty, positive for a reward
+     */
+    public void addMultiConstraintMatch(RuleContext kcontext, int hardWeight, int mediumWeight, int softWeight) {
+        hardScore += hardWeight;
+        mediumScore += mediumWeight;
+        softScore += softWeight;
+        registerConstraintMatch(kcontext,
+                () -> {
+                    hardScore -= hardWeight;
+                    mediumScore -= mediumWeight;
+                    softScore -= softWeight;
+                },
+                () -> HardMediumSoftScore.valueOf(hardWeight, mediumWeight, softWeight));
     }
 
     @Override

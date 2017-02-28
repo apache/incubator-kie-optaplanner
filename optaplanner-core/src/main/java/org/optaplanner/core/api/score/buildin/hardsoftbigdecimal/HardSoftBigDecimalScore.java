@@ -34,6 +34,7 @@ import org.optaplanner.core.api.score.Score;
 public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDecimalScore>
         implements FeasibilityScore<HardSoftBigDecimalScore> {
 
+    public static final HardSoftBigDecimalScore ZERO = new HardSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO);
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
 
@@ -184,6 +185,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         return new Number[]{hardScore, softScore};
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -191,19 +193,20 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         } else if (o instanceof HardSoftBigDecimalScore) {
             HardSoftBigDecimalScore other = (HardSoftBigDecimalScore) o;
             return initScore == other.getInitScore()
-                    && hardScore.equals(other.getHardScore())
-                    && softScore.equals(other.getSoftScore());
+                    && hardScore.stripTrailingZeros().equals(other.getHardScore().stripTrailingZeros())
+                    && softScore.stripTrailingZeros().equals(other.getSoftScore().stripTrailingZeros());
         } else {
             return false;
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return (((17 * 37)
                 + initScore) * 37
-                + hardScore.hashCode()) * 37
-                + softScore.hashCode();
+                + hardScore.stripTrailingZeros().hashCode()) * 37
+                + softScore.stripTrailingZeros().hashCode();
     }
 
     @Override
@@ -218,6 +221,11 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         } else {
             return softScore.compareTo(other.getSoftScore());
         }
+    }
+
+    @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0, HARD_LABEL, SOFT_LABEL);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
     protected int softScore;
 
     public HardSoftScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardSoftScore.ZERO);
     }
 
     public int getHardScore() {
@@ -46,30 +46,40 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param hardWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
-        hardScore += weight;
-        registerIntConstraintMatch(kcontext, 0, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore -= weight;
-            }
-        });
+    public void addHardConstraintMatch(RuleContext kcontext, int hardWeight) {
+        hardScore += hardWeight;
+        registerConstraintMatch(kcontext,
+                () -> hardScore -= hardWeight,
+                () -> HardSoftScore.valueOf(hardWeight, 0));
     }
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
-        softScore += weight;
-        registerIntConstraintMatch(kcontext, 1, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore -= weight;
-            }
-        });
+    public void addSoftConstraintMatch(RuleContext kcontext, int softWeight) {
+        softScore += softWeight;
+        registerConstraintMatch(kcontext,
+                () -> softScore -= softWeight,
+                () -> HardSoftScore.valueOf(0, softWeight));
+    }
+
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight higher is better, negative for a penalty, positive for a reward
+     */
+    public void addMultiConstraintMatch(RuleContext kcontext, int hardWeight, int softWeight) {
+        hardScore += hardWeight;
+        softScore += softWeight;
+        registerConstraintMatch(kcontext,
+                () -> {
+                    hardScore -= hardWeight;
+                    softScore -= softWeight;
+                },
+                () -> HardSoftScore.valueOf(hardWeight, softWeight));
     }
 
     @Override

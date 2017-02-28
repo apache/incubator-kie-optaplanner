@@ -20,6 +20,8 @@ import java.util.Arrays;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -31,7 +33,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder {
     private long[] softScores;
 
     public BendableLongScoreHolder(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, BendableLongScore.zero(hardLevelsSize, softLevelsSize));
         hardScores = new long[hardLevelsSize];
         softScores = new long[softLevelsSize];
     }
@@ -62,14 +64,16 @@ public class BendableLongScoreHolder extends AbstractScoreHolder {
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param weight higher is better, negative for a penalty, positive for a reward
      */
-    public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final long weight) {
+    public void addHardConstraintMatch(RuleContext kcontext, int hardLevel, long weight) {
         hardScores[hardLevel] += weight;
-        registerLongConstraintMatch(kcontext, hardLevel, weight, new LongConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScores[hardLevel] -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> hardScores[hardLevel] -= weight,
+                () -> {
+                    long[] newHardScores = new long[hardScores.length];
+                    long[] newSoftScores = new long[softScores.length];
+                    newHardScores[hardLevel] = weight;
+                    return BendableLongScore.valueOf(newHardScores, newSoftScores);
+                });
     }
 
     /**
@@ -78,14 +82,48 @@ public class BendableLongScoreHolder extends AbstractScoreHolder {
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param weight higher is better, negative for a penalty, positive for a reward
      */
-    public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final long weight) {
+    public void addSoftConstraintMatch(RuleContext kcontext, int softLevel, long weight) {
         softScores[softLevel] += weight;
-        registerLongConstraintMatch(kcontext, getHardLevelsSize() + softLevel, weight, new LongConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScores[softLevel] -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> softScores[softLevel] -= weight,
+                () -> {
+                    long[] newHardScores = new long[hardScores.length];
+                    long[] newSoftScores = new long[softScores.length];
+                    newSoftScores[softLevel] = weight;
+                    return BendableLongScore.valueOf(newHardScores, newSoftScores);
+                });
+    }
+
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeights never null, array of length {@link #getHardLevelsSize()}
+     * @param softWeights never null, array of length {@link #getSoftLevelsSize()}
+     */
+    public void addMultiConstraintMatch(RuleContext kcontext, long[] hardWeights, long[] softWeights) {
+        if (hardScores.length != hardWeights.length) {
+            throw new IllegalArgumentException("The hardScores length (" + hardScores.length
+                    + ") is different than the hardWeights length (" + hardWeights.length + ").");
+        }
+        for (int i = 0; i < hardScores.length; i++) {
+            hardScores[i] += hardWeights[i];
+        }
+        if (softScores.length != softWeights.length) {
+            throw new IllegalArgumentException("The softScores length (" + softScores.length
+                    + ") is different than the softWeights length (" + softWeights.length + ").");
+        }
+        for (int i = 0; i < softScores.length; i++) {
+            softScores[i] += softWeights[i];
+        }
+        registerConstraintMatch(kcontext,
+                () -> {
+                    for (int i = 0; i < hardScores.length; i++) {
+                        hardScores[i] -= hardWeights[i];
+                    }
+                    for (int i = 0; i < softScores.length; i++) {
+                        softScores[i] -= softWeights[i];
+                    }
+                },
+                () -> BendableLongScore.valueOf(hardWeights, softWeights));
     }
 
     @Override

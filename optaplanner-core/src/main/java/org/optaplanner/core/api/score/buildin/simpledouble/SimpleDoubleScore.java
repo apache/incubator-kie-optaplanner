@@ -32,6 +32,8 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
  */
 public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
+    public static final SimpleDoubleScore ZERO = new SimpleDoubleScore(0, 0.0);
+
     public static SimpleDoubleScore parseScore(String scoreString) {
         String[] scoreTokens = parseScoreTokens(SimpleDoubleScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleDoubleScore.class, scoreString, scoreTokens[0]);
@@ -139,6 +141,7 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
         return new Number[]{score};
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -152,6 +155,7 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return ((17 * 37)
@@ -168,6 +172,12 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
             return Double.compare(score, other.getScore());
         }
     }
+
+    @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Double) n).doubleValue() != 0.0, "");
+    }
+
     @Override
     public String toString() {
         return getInitPrefix() + score;

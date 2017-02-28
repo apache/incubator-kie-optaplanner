@@ -27,6 +27,8 @@ import org.optaplanner.core.api.score.Score;
  */
 public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
+    public static final SimpleLongScore ZERO = new SimpleLongScore(0, 0L);
+
     public static SimpleLongScore parseScore(String scoreString) {
         String[] scoreTokens = parseScoreTokens(SimpleLongScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleLongScore.class, scoreString, scoreTokens[0]);
@@ -134,6 +136,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         return new Number[]{score};
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -147,6 +150,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return ((17 * 37)
@@ -162,6 +166,11 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         } else {
             return Long.compare(score, other.getScore());
         }
+    }
+
+    @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Long) n).longValue() != 0L, "");
     }
 
     @Override

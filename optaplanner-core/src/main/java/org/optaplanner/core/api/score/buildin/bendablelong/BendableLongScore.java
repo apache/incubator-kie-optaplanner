@@ -75,6 +75,10 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
         return new BendableLongScore(0, hardScores, softScores);
     }
 
+    public static BendableLongScore zero(int hardLevelsSize, int softLevelsSize) {
+        return new BendableLongScore(0, new long[hardLevelsSize], new long[softLevelsSize]);
+    }
+
     // ************************************************************************
     // Fields
     // ************************************************************************
@@ -292,6 +296,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
         return levelNumbers;
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -348,6 +353,11 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
             }
         }
         return 0;
+    }
+
+    @Override
+    public String toShortString() {
+        return buildBendableShortString((n) -> ((Long) n).longValue() != 0L);
     }
 
     @Override

@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Map;
 
-public class EqualsLocationStrategy implements LocationStrategy {
+public class EqualsLookUpStrategy implements LookUpStrategy {
 
     @Override
     public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
-        idToWorkingObjectMap.put(workingObject, workingObject);
+        Object oldAddedObject = idToWorkingObjectMap.put(workingObject, workingObject);
+        if (oldAddedObject != null) {
+            throw new IllegalStateException("The workingObjects (" + oldAddedObject + ", " + workingObject
+                    + ") are equal (as in Object.equals()). Working objects must be unique.");
+        }
     }
 
     @Override
@@ -35,7 +39,7 @@ public class EqualsLocationStrategy implements LocationStrategy {
     }
 
     @Override
-    public <E> E locateWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
+    public <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
         return (E) idToWorkingObjectMap.get(externalObject);
     }
 

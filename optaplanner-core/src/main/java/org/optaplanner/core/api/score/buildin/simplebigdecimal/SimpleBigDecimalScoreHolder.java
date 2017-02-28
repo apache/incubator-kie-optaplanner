@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -30,7 +31,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
     protected BigDecimal score = null;
 
     public SimpleBigDecimalScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
     }
 
     public BigDecimal getScore() {
@@ -43,16 +44,13 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param weight never null, higher is better, negative for a penalty, positive for a reward
      */
-    public void addConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
+    public void addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
         score = (score == null) ? weight : score.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 0, weight, new BigDecimalConstraintUndoListener() {
-            @Override
-            public void undo() {
-                score = score.subtract(weight);
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> score = score.subtract(weight),
+                () -> SimpleBigDecimalScore.valueOf(weight));
     }
 
     @Override

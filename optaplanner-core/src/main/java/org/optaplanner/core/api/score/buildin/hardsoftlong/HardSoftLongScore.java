@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.Score;
 public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         implements FeasibilityScore<HardSoftLongScore> {
 
+    public static final HardSoftLongScore ZERO = new HardSoftLongScore(0, 0L, 0L);
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
 
@@ -167,6 +168,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         return new Number[]{hardScore, softScore};
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -181,6 +183,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return (((17 * 37)
@@ -199,6 +202,11 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         } else {
             return Long.compare(softScore, other.getSoftScore());
         }
+    }
+
+    @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Long) n).longValue() != 0L, HARD_LABEL, SOFT_LABEL);
     }
 
     @Override

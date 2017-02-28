@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-/**
- * Constraint match support for a {@code double} score weight.
- */
-package org.optaplanner.core.api.score.constraint.primdouble;
+package org.optaplanner.core.impl.domain.lookup;
+
+import java.util.Map;
+
+public interface LookUpStrategy {
+
+    void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject);
+    void removeWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject);
+    <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject);
+
+}

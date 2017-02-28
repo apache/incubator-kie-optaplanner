@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -31,7 +32,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     protected BigDecimal softScore = null;
 
     public HardSoftBigDecimalScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardSoftBigDecimalScore.ZERO);
     }
 
     public BigDecimal getHardScore() {
@@ -48,30 +49,40 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param hardWeight never null, higher is better, negative for a penalty, positive for a reward
      */
-    public void addHardConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
-        hardScore = (hardScore == null) ? weight : hardScore.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 0, weight, new BigDecimalConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore = hardScore.subtract(weight);
-            }
-        });
+    public void addHardConstraintMatch(RuleContext kcontext, BigDecimal hardWeight) {
+        hardScore = (hardScore == null) ? hardWeight : hardScore.add(hardWeight);
+        registerConstraintMatch(kcontext,
+                () -> hardScore = hardScore.subtract(hardWeight),
+                () -> HardSoftBigDecimalScore.valueOf(hardWeight, BigDecimal.ZERO));
     }
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight never null, higher is better, negative for a penalty, positive for a reward
      */
-    public void addSoftConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
-        softScore = (softScore == null) ? weight : softScore.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 1, weight, new BigDecimalConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore = softScore.subtract(weight);
-            }
-        });
+    public void addSoftConstraintMatch(RuleContext kcontext, BigDecimal softWeight) {
+        softScore = (softScore == null) ? softWeight : softScore.add(softWeight);
+        registerConstraintMatch(kcontext,
+                () -> softScore = softScore.subtract(softWeight),
+                () -> HardSoftBigDecimalScore.valueOf(BigDecimal.ZERO, softWeight));
+    }
+
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeight never null, higher is better, negative for a penalty, positive for a reward
+     * @param softWeight never null, higher is better, negative for a penalty, positive for a reward
+     */
+    public void addMultiConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, BigDecimal softWeight) {
+        hardScore = (hardScore == null) ? hardWeight : hardScore.add(hardWeight);
+        softScore = (softScore == null) ? softWeight : softScore.add(softWeight);
+        registerConstraintMatch(kcontext,
+                () -> {
+                    hardScore = hardScore.subtract(hardWeight);
+                    softScore = softScore.subtract(softWeight);
+                },
+                () -> HardSoftBigDecimalScore.valueOf(hardWeight, softWeight));
     }
 
     @Override

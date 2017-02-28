@@ -36,6 +36,7 @@ import org.optaplanner.core.api.score.Score;
 public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediumSoftBigDecimalScore>
         implements FeasibilityScore<HardMediumSoftBigDecimalScore> {
 
+    public static final HardMediumSoftBigDecimalScore ZERO = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
     private static final String HARD_LABEL = "hard";
     private static final String MEDIUM_LABEL = "medium";
     private static final String SOFT_LABEL = "soft";
@@ -217,9 +218,9 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         } else if (o instanceof HardMediumSoftBigDecimalScore) {
             HardMediumSoftBigDecimalScore other = (HardMediumSoftBigDecimalScore) o;
             return initScore == other.getInitScore()
-                    && hardScore.equals(other.getHardScore())
-                    && mediumScore.equals(other.getMediumScore())
-                    && softScore.equals(other.getSoftScore());
+                    && hardScore.stripTrailingZeros().equals(other.getHardScore().stripTrailingZeros())
+                    && mediumScore.stripTrailingZeros().equals(other.getMediumScore().stripTrailingZeros())
+                    && softScore.stripTrailingZeros().equals(other.getSoftScore().stripTrailingZeros());
         } else {
             return false;
         }
@@ -230,9 +231,9 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return (((((17 * 37)
                 + initScore) * 37)
-                + hardScore.hashCode()) * 37
-                + mediumScore.hashCode()) * 37
-                + softScore.hashCode();
+                + hardScore.stripTrailingZeros().hashCode()) * 37
+                + mediumScore.stripTrailingZeros().hashCode()) * 37
+                + softScore.stripTrailingZeros().hashCode();
     }
 
     @Override
@@ -249,6 +250,12 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         } else {
             return softScore.compareTo(other.getSoftScore());
         }
+    }
+
+    @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0,
+                HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
     }
 
     @Override

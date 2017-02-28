@@ -75,6 +75,10 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
         return new BendableScore(0, hardScores, softScores);
     }
 
+    public static BendableScore zero(int hardLevelsSize, int softLevelsSize) {
+        return new BendableScore(0, new int[hardLevelsSize], new int[softLevelsSize]);
+    }
+
     // ************************************************************************
     // Fields
     // ************************************************************************
@@ -294,6 +298,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
         return levelNumbers;
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -323,6 +328,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         int hashCode = (17 * 37) + initScore;
@@ -349,6 +355,11 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
             }
         }
         return 0;
+    }
+
+    @Override
+    public String toShortString() {
+        return buildBendableShortString((n) -> ((Integer) n).intValue() != 0);
     }
 
     @Override

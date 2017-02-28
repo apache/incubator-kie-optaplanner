@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
@@ -32,7 +33,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
     protected double softScore;
 
     public HardSoftDoubleScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardSoftDoubleScore.ZERO);
     }
 
     public double getHardScore() {
@@ -49,30 +50,40 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param hardWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addHardConstraintMatch(RuleContext kcontext, final double weight) {
-        hardScore += weight;
-        registerDoubleConstraintMatch(kcontext, 0, weight, new DoubleConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore -= weight;
-            }
-        });
+    public void addHardConstraintMatch(RuleContext kcontext, double hardWeight) {
+        hardScore += hardWeight;
+        registerConstraintMatch(kcontext,
+                () -> hardScore -= hardWeight,
+                () -> HardSoftDoubleScore.valueOf(hardWeight, 0.0));
     }
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addSoftConstraintMatch(RuleContext kcontext, final double weight) {
-        softScore += weight;
-        registerDoubleConstraintMatch(kcontext, 1, weight, new DoubleConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore -= weight;
-            }
-        });
+    public void addSoftConstraintMatch(RuleContext kcontext, double softWeight) {
+        softScore += softWeight;
+        registerConstraintMatch(kcontext,
+                () -> softScore -= softWeight,
+                () -> HardSoftDoubleScore.valueOf(0.0, softWeight));
+    }
+
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight higher is better, negative for a penalty, positive for a reward
+     */
+    public void addMultiConstraintMatch(RuleContext kcontext, double hardWeight, double softWeight) {
+        hardScore += hardWeight;
+        softScore += softWeight;
+        registerConstraintMatch(kcontext,
+                () -> {
+                    hardScore -= hardWeight;
+                    softScore -= softWeight;
+                },
+                () -> HardSoftDoubleScore.valueOf(hardWeight, softWeight));
     }
 
     @Override

@@ -30,6 +30,8 @@ import org.optaplanner.core.api.score.Score;
  */
 public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalScore> {
 
+    public static final SimpleBigDecimalScore ZERO = new SimpleBigDecimalScore(0, BigDecimal.ZERO);
+
     public static SimpleBigDecimalScore parseScore(String scoreString) {
         String[] scoreTokens = parseScoreTokens(SimpleBigDecimalScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleBigDecimalScore.class, scoreString, scoreTokens[0]);
@@ -151,6 +153,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         return new Number[]{score};
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -158,17 +161,18 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         } else if (o instanceof SimpleBigDecimalScore) {
             SimpleBigDecimalScore other = (SimpleBigDecimalScore) o;
             return initScore == other.getInitScore()
-                    && score.equals(other.getScore());
+                    && score.stripTrailingZeros().equals(other.getScore().stripTrailingZeros());
         } else {
             return false;
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return ((17 * 37)
                 + initScore) * 37
-                + score.hashCode();
+                + score.stripTrailingZeros().hashCode();
     }
 
     @Override
@@ -179,6 +183,11 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         } else {
             return score.compareTo(other.getScore());
         }
+    }
+
+    @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0, "");
     }
 
     @Override
