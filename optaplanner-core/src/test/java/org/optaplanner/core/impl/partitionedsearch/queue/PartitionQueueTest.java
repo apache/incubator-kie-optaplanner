@@ -20,16 +20,29 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Test;
 import org.optaplanner.core.impl.partitionedsearch.scope.PartitionChangeMove;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
 public class PartitionQueueTest {
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private static final Logger logger = LoggerFactory.getLogger(PartitionQueueTest.class);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+    @After
+    public void tearDown() throws InterruptedException {
+        executorService.shutdownNow();
+        if (!executorService.awaitTermination(1, TimeUnit.MILLISECONDS)) {
+            logger.warn("Thread pool didn't terminate within the timeout.");
+        }
+    }
 
     @Test
     public void addMove() throws ExecutionException, InterruptedException {
@@ -72,7 +85,6 @@ public class PartitionQueueTest {
         assertSame(moveB6, it.next());
         assertSame(moveA6, it.next());
         assertSame(moveC1, it.next());
-
 
         executorService.submit(() -> partitionQueue.addFinish(0)).get();
         PartitionChangeMove<TestdataSolution> moveC2 = buildMove();
