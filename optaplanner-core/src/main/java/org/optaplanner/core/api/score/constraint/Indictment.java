@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -26,24 +25,21 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Retrievable from {@link ScoreDirector#getConstraintMatchTotals()}.
+ * Retrievable from {@link ScoreDirector#getIndictmentMap()}.
  */
-public class ConstraintMatchTotal implements Serializable, Comparable<ConstraintMatchTotal> {
+public class Indictment implements Serializable, Comparable<Indictment> {
 
-    protected final String constraintPackage;
-    protected final String constraintName;
+    protected final Object justification;
 
     protected final Set<ConstraintMatch> constraintMatchSet;
     protected Score scoreTotal;
 
     /**
-     * @param constraintPackage never null
-     * @param constraintName never null
+     * @param justification never null
      * @param zeroScore never null
      */
-    public ConstraintMatchTotal(String constraintPackage, String constraintName, Score zeroScore) {
-        this.constraintPackage = constraintPackage;
-        this.constraintName = constraintName;
+    public Indictment(Object justification, Score zeroScore) {
+        this.justification = justification;
         constraintMatchSet = new LinkedHashSet<>();
         scoreTotal = zeroScore;
     }
@@ -51,15 +47,8 @@ public class ConstraintMatchTotal implements Serializable, Comparable<Constraint
     /**
      * @return never null
      */
-    public String getConstraintPackage() {
-        return constraintPackage;
-    }
-
-    /**
-     * @return never null
-     */
-    public String getConstraintName() {
-        return constraintName;
+    public Object getJustification() {
+        return justification;
     }
 
     /**
@@ -87,24 +76,18 @@ public class ConstraintMatchTotal implements Serializable, Comparable<Constraint
     // Worker methods
     // ************************************************************************
 
-    public ConstraintMatch addConstraintMatch(List<Object> justificationList, Score score) {
-        scoreTotal = scoreTotal.add(score);
-        ConstraintMatch constraintMatch = new ConstraintMatch(constraintPackage, constraintName,
-                justificationList, score);
+    public boolean addConstraintMatch(ConstraintMatch constraintMatch) {
         boolean added = constraintMatchSet.add(constraintMatch);
-        if (!added) {
-            throw new IllegalStateException("The constraintMatchTotal (" + this
-                    + ") could not add constraintMatch (" + constraintMatch
-                    + ") to its constraintMatchSet (" + constraintMatchSet + ").");
+        if (added) {
+            scoreTotal = scoreTotal.add(constraintMatch.getScore());
         }
-        return constraintMatch;
+        return added;
     }
 
     public void removeConstraintMatch(ConstraintMatch constraintMatch) {
-        scoreTotal = scoreTotal.subtract(constraintMatch.getScore());
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
-            throw new IllegalStateException("The constraintMatchTotal (" + this
+            throw new IllegalStateException("The indictment (" + this
                     + ") could not remove constraintMatch (" + constraintMatch
                     + ") from its constraintMatchSet (" + constraintMatchSet + ").");
         }
@@ -114,22 +97,18 @@ public class ConstraintMatchTotal implements Serializable, Comparable<Constraint
     // Infrastructure methods
     // ************************************************************************
 
-    public String getConstraintId() {
-        return constraintPackage + "/" + constraintName;
-    }
-
     @Override
-    public int compareTo(ConstraintMatchTotal other) {
+    public int compareTo(Indictment other) {
         return new CompareToBuilder()
-                .append(getConstraintPackage(), other.getConstraintPackage())
-                .append(getConstraintName(), other.getConstraintName())
                 .append(getScoreTotal(), other.getScoreTotal())
+                // The justification might not implement Comparable - so we leave it in original order
+                //.append(getJustification(), other.getJustification())
                 .toComparison();
     }
 
     @Override
     public String toString() {
-        return getConstraintId() + "=" + getScoreTotal();
+        return justification + "=" + getScoreTotal();
     }
 
 }

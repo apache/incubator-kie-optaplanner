@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.holder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -34,6 +35,7 @@ import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -42,12 +44,15 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     protected final boolean constraintMatchEnabled;
     protected final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
+    protected final Map<Object, Indictment> indictmentMap;
     protected final Score zeroScore;
 
     protected AbstractScoreHolder(boolean constraintMatchEnabled, Score zeroScore) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         // TODO Can we set the initial capacity of this map more accurately? For example: number of rules
         constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
+        // TODO Can we set the initial capacity of this map more accurately by using entitySize?
+        indictmentMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
         this.zeroScore = zeroScore;
     }
 
@@ -63,6 +68,15 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
                     + ") is disabled in the constructor, this method should not be called.");
         }
         return constraintMatchTotalMap.values();
+    }
+
+    @Override
+    public Map<Object, Indictment> getIndictmentMap() {
+        if (!isConstraintMatchEnabled()) {
+            throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
+                    + ") is disabled in the constructor, this method should not be called.");
+        }
+        return indictmentMap;
     }
 
     // ************************************************************************
@@ -86,9 +100,21 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             constraintActivationUnMatchListener.overwriteMatch(constraintUndoListener);
         }
         if (constraintMatchEnabled) {
+            List<Object> justificationList = extractJustificationList(kcontext);
             // Not needed in fast code: Add ConstraintMatch
-            constraintActivationUnMatchListener.constraintMatch = constraintActivationUnMatchListener
-                    .constraintMatchTotal.addConstraintMatch(kcontext, scoreSupplier.get());
+            ConstraintMatch constraintMatch = constraintActivationUnMatchListener.constraintMatchTotal
+                    .addConstraintMatch(justificationList, scoreSupplier.get());
+            List<Indictment> indictmentList = new ArrayList<>(justificationList.size());
+            for (Object justification : justificationList) {
+                Indictment indictment = indictmentMap.computeIfAbsent(justification,
+                        k -> new Indictment(justification, zeroScore));
+                boolean added = indictment.addConstraintMatch(constraintMatch);
+                if (added) {
+                    indictmentList.add(indictment);
+                }
+            }
+            constraintActivationUnMatchListener.constraintMatch = constraintMatch;
+            constraintActivationUnMatchListener.indictmentList = indictmentList;
         }
     }
 
@@ -101,12 +127,17 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
                 k -> new ConstraintMatchTotal(constraintPackage, constraintName, zeroScore));
     }
 
+    protected List<Object> extractJustificationList(RuleContext kcontext) {
+        // Unlike kcontext.getMatch().getObjects(), this includes the matches of accumulate and exists
+        return ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();
+    }
 
     private class ConstraintActivationUnMatchListener implements ActivationUnMatchListener {
 
         private Runnable constraintUndoListener;
 
         private ConstraintMatchTotal constraintMatchTotal;
+        private List<Indictment> indictmentList;
         private ConstraintMatch constraintMatch;
 
         public ConstraintActivationUnMatchListener(Runnable constraintUndoListener) {
@@ -131,6 +162,12 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Remove ConstraintMatch
                 constraintMatchTotal.removeConstraintMatch(constraintMatch);
+                for (Indictment indictment : indictmentList) {
+                    indictment.removeConstraintMatch(constraintMatch);
+                    if (indictment.getConstraintMatchSet().isEmpty()) {
+                        indictmentMap.remove(indictment.getJustification());
+                    }
+                }
             }
         }
 

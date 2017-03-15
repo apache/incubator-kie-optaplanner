@@ -17,12 +17,16 @@
 package org.optaplanner.core.impl.score.director.drools;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -102,6 +106,16 @@ public class DroolsScoreDirector<Solution_>
         }
         kieSession.fireAllRules();
         return workingScoreHolder.getConstraintMatchTotals();
+    }
+
+    @Override
+    public Map<Object, Indictment> getIndictmentMap() {
+        if (workingSolution == null) {
+            throw new IllegalStateException(
+                    "The method setWorkingSolution() must be called before the method getConstraintMatchTotals().");
+        }
+        kieSession.fireAllRules();
+        return workingScoreHolder.getIndictmentMap();
     }
 
     @Override
