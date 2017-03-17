@@ -139,12 +139,11 @@ public class PartitionQueueTest {
         assertSame(true, it.hasNext());
         assertSame(moveC2, it.next());
         try {
-            assertSame(false, it.hasNext());
+            it.hasNext();
+            fail("There was no RuntimeException thrown.");
         } catch (RuntimeException e) {
             assertSame(exception, e.getCause());
-            return;
         }
-        fail("There was no RuntimeException thrown.");
     }
 
     public PartitionChangeMove<TestdataSolution> buildMove() {
