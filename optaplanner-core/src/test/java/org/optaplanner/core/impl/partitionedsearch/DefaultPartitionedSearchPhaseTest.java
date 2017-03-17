@@ -15,13 +15,13 @@
  */
 package org.optaplanner.core.impl.partitionedsearch;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -42,6 +42,7 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -51,6 +52,14 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 public class DefaultPartitionedSearchPhaseTest {
+
+    private final ThreadMXBean threads = ManagementFactory.getThreadMXBean();
+    private int initialThreadCount;
+
+    @Before
+    public void setUp() {
+        initialThreadCount = threads.getThreadCount();
+    }
 
     @Test
     public void solve() {
@@ -76,14 +85,15 @@ public class DefaultPartitionedSearchPhaseTest {
         scope.setWorkingRandom(new Random(0));
 
         PhaseLifecycleSupport<TestdataSolution> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
-        Termination termination = new TerminationConfig().buildTermination(configPolicy, new BasicPlumbingTermination(false));
+        Termination termination = new TerminationConfig()
+                .buildTermination(configPolicy, new BasicPlumbingTermination(false));
 
         DefaultPartitionedSearchPhase<TestdataSolution> phase
                 = new DefaultPartitionedSearchPhase<>(0, "", bestSolutionRecaller, termination);
         phase.setSolverPhaseLifecycleSupport(phaseLifecycleSupport);
         phase.setSolutionPartitioner(new TestdataSolutionPartitioner());
         phase.setRunnablePartThreadLimit(1);
-        phase.setThreadPoolExecutor(new ThreadPoolExecutor(0, Integer.MAX_VALUE, 1L, TimeUnit.SECONDS, new SynchronousQueue<>()));
+        phase.setThreadFactory(new DefaultSolverThreadFactory("PartThread"));
         phase.setConfigPolicy(configPolicy);
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         phase.setPhaseConfigList(Arrays.asList(constructionHeuristicPhaseConfig));
@@ -99,6 +109,8 @@ public class DefaultPartitionedSearchPhaseTest {
 
         scope.startingNow();
         phase.solve(scope);
+        phase.solve(scope);
+        assertEquals(initialThreadCount, threads.getThreadCount());
     }
 
     public static class TestdataSolutionPartitioner implements SolutionPartitioner<TestdataSolution> {

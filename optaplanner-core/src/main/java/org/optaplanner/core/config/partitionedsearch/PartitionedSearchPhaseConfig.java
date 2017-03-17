@@ -19,10 +19,7 @@ package org.optaplanner.core.config.partitionedsearch;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
@@ -143,7 +140,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
                 phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
                 buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setSolutionPartitioner(buildSolutionPartitioner());
-        phase.setThreadPoolExecutor(buildThreadPoolExecutor());
+        phase.setThreadFactory(buildThreadFactory());
         phase.setRunnablePartThreadLimit(resolvedActiveThreadCount());
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
@@ -182,18 +179,12 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         }
     }
 
-    private ThreadPoolExecutor buildThreadPoolExecutor() {
-        ThreadFactory threadFactory;
+    private ThreadFactory buildThreadFactory() {
         if (threadFactoryClass != null) {
-            threadFactory = ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
+            return ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
         } else {
-            threadFactory = new DefaultSolverThreadFactory("PartThread");
+            return new DefaultSolverThreadFactory("PartThread");
         }
-        // Based on Executors.newCachedThreadPool(...)
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                60L, TimeUnit.SECONDS,
-                new SynchronousQueue<>(),
-                threadFactory);
     }
 
     private Integer resolvedActiveThreadCount() {

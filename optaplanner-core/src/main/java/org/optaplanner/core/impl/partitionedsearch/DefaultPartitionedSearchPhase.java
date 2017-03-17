@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -51,7 +54,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         implements PartitionedSearchPhase<Solution_>, PartitionedSearchPhaseLifecycleListener<Solution_> {
 
     protected SolutionPartitioner<Solution_> solutionPartitioner;
-    protected ThreadPoolExecutor threadPoolExecutor;
+    protected ThreadFactory threadFactory;
     protected Integer runnablePartThreadLimit;
 
     protected List<PhaseConfig> phaseConfigList;
@@ -66,8 +69,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         this.solutionPartitioner = solutionPartitioner;
     }
 
-    public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
-        this.threadPoolExecutor = threadPoolExecutor;
+    public void setThreadFactory(ThreadFactory threadFactory) {
+        this.threadFactory = threadFactory;
     }
 
     public void setRunnablePartThreadLimit(Integer runnablePartThreadLimit) {
@@ -99,6 +102,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         int partCount = partList.size();
         phaseScope.setPartCount(partCount);
         phaseStarted(phaseScope);
+        ThreadPoolExecutor threadPoolExecutor = newThreadPoolExecutor();
         if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
             throw new IllegalStateException(
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
@@ -109,7 +113,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         }
         ChildThreadPlumbingTermination childThreadPlumbingTermination = new ChildThreadPlumbingTermination();
         PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
-        Semaphore runnablePartThreadSemaphore = runnablePartThreadLimit == null ? null : new Semaphore(runnablePartThreadLimit);
+        Semaphore runnablePartThreadSemaphore
+                = runnablePartThreadLimit == null ? null : new Semaphore(runnablePartThreadLimit);
         try {
             for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext();) {
                 int partIndex = it.nextIndex();
@@ -144,13 +149,42 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 stepEnded(stepScope);
                 phaseScope.setLastCompletedStepScope(stepScope);
             }
-        } finally {
+        } catch (RuntimeException e) {
             // If a partition thread throws an Exception, it is propagated here
             // but the other partition thread won't finish any time soon, so we need to terminate them
-            // TODO move to catch block
             childThreadPlumbingTermination.terminateChildren();
+            throw e;
+        } finally {
+            List<Runnable> partitionSolvers = threadPoolExecutor.shutdownNow();
+            logger.trace("{}         Awaiting termination of {} partition solvers.",
+                    logIndentation, partitionSolvers.size());
+            try {
+                long start = 0;
+                if (logger.isTraceEnabled()) {
+                    start = System.nanoTime();
+                }
+                if (threadPoolExecutor.awaitTermination(1, TimeUnit.MILLISECONDS)) {
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("{}         Thread pool shutdown took {} nanos.",
+                                logIndentation, System.nanoTime() - start);
+                    }
+                } else {
+                    logger.warn("{}Thread pool didn't terminate within the timeout.", logIndentation);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Thread pool shutdown was interrupted.", e);
+            }
         }
         phaseEnded(phaseScope);
+    }
+
+    private ThreadPoolExecutor newThreadPoolExecutor() {
+        // Based on Executors.newCachedThreadPool(...)
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                60L, TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                threadFactory);
     }
 
     public PartitionSolver<Solution_> buildPartitionSolver(
@@ -167,7 +201,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             partPhaseIndex++;
         }
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
-        DefaultSolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
+        DefaultSolverScope<Solution_> partSolverScope
+                = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
         partSolverScope.setRunnableThreadSemaphore(runnablePartThreadSemaphore);
         return new PartitionSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
     }
