@@ -128,6 +128,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                         partitionSolver.solve(part);
                         partitionQueue.addFinish(partIndex);
                     } catch (Throwable throwable) {
+                        // TODO is it a good idea to catch Throwables including OOME for example?
                         partitionQueue.addExceptionThrown(partIndex, throwable);
                     }
                 });

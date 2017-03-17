@@ -137,4 +137,5 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
         return new PartitionChangeMove<>(destinationChangeMap);
     }
 
+    // TODO implement toString()
 }
