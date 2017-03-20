@@ -102,7 +102,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         int partCount = partList.size();
         phaseScope.setPartCount(partCount);
         phaseStarted(phaseScope);
-        ThreadPoolExecutor threadPoolExecutor = newThreadPoolExecutor();
+        ThreadPoolExecutor threadPoolExecutor = createThreadPoolExecutor();
         if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
             throw new IllegalStateException(
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
@@ -133,7 +133,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                         partitionSolver.solve(part);
                         partitionQueue.addFinish(partIndex);
                     } catch (Throwable throwable) {
-                        // TODO is it a good idea to catch Throwables including OOME for example?
+                        // Any Exception or even Error that happens here (on a partition thread) must be stored
+                        // in the partitionQueue in order to be propagated to the solver thread
                         partitionQueue.addExceptionThrown(partIndex, throwable);
                     }
                 });
@@ -149,27 +150,15 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 stepEnded(stepScope);
                 phaseScope.setLastCompletedStepScope(stepScope);
             }
-        } catch (RuntimeException e) {
+        } finally {
             // If a partition thread throws an Exception, it is propagated here
             // but the other partition thread won't finish any time soon, so we need to terminate them
             childThreadPlumbingTermination.terminateChildren();
-            throw e;
-        } finally {
-            List<Runnable> partitionSolvers = threadPoolExecutor.shutdownNow();
-            logger.trace("{}         Awaiting termination of {} partition solvers.",
-                    logIndentation, partitionSolvers.size());
+            threadPoolExecutor.shutdownNow();
             try {
-                long start = 0;
-                if (logger.isTraceEnabled()) {
-                    start = System.nanoTime();
-                }
-                if (threadPoolExecutor.awaitTermination(1, TimeUnit.MILLISECONDS)) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("{}         Thread pool shutdown took {} nanos.",
-                                logIndentation, System.nanoTime() - start);
-                    }
-                } else {
-                    logger.warn("{}Thread pool didn't terminate within the timeout.", logIndentation);
+                if (!threadPoolExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
+                    logger.warn("{}Partitioned Search threadPoolExecutor didn't terminate within timeout (1 second).",
+                            logIndentation);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -179,7 +168,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         phaseEnded(phaseScope);
     }
 
-    private ThreadPoolExecutor newThreadPoolExecutor() {
+    private ThreadPoolExecutor createThreadPoolExecutor() {
         // Based on Executors.newCachedThreadPool(...)
         return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
                 60L, TimeUnit.SECONDS,
