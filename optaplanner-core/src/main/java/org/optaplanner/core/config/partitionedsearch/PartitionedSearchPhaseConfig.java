@@ -54,7 +54,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    protected Class<SolutionPartitioner> solutionPartitionerClass = null;
+    protected Class<? extends SolutionPartitioner<?>> solutionPartitionerClass = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> solutionPartitionerCustomProperties = null;
 
@@ -68,11 +68,11 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public Class<SolutionPartitioner> getSolutionPartitionerClass() {
+    public Class<? extends SolutionPartitioner<?>> getSolutionPartitionerClass() {
         return solutionPartitionerClass;
     }
 
-    public void setSolutionPartitionerClass(Class<SolutionPartitioner> solutionPartitionerClass) {
+    public void setSolutionPartitionerClass(Class<? extends SolutionPartitioner<?>> solutionPartitionerClass) {
         this.solutionPartitionerClass = solutionPartitionerClass;
     }
 
@@ -163,7 +163,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
 
     private SolutionPartitioner buildSolutionPartitioner() {
         if (solutionPartitionerClass != null) {
-            SolutionPartitioner solutionPartitioner = ConfigUtils.newInstance(this,
+            SolutionPartitioner<?> solutionPartitioner = ConfigUtils.newInstance(this,
                     "solutionPartitionerClass", solutionPartitionerClass);
             ConfigUtils.applyCustomProperties(solutionPartitioner, "solutionPartitionerClass",
                     solutionPartitionerCustomProperties);

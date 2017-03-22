@@ -17,10 +17,14 @@ package org.optaplanner.core.impl.partitionedsearch;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -43,31 +47,32 @@ import static org.junit.Assert.assertEquals;
 
 public class DefaultPartitionedSearchPhaseTest {
 
-    private final ThreadMXBean threads = ManagementFactory.getThreadMXBean();
-    private int initialThreadCount;
-
-    @Before
-    public void setUp() {
-        initialThreadCount = threads.getThreadCount();
-    }
-
     @Test
-    public void solve() {
+    public void partCount() {
+        final int partSize = 3;
+        final int partCount = 7;
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory();
+        setPartSize(solverFactory.getSolverConfig(), partSize);
         DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
         PartitionedSearchPhase<TestdataSolution> phase
                 = (PartitionedSearchPhase<TestdataSolution>) solver.getPhaseList().get(0);
-
-        // test partCount
         phase.addPhaseLifecycleListener(new PhaseLifecycleListenerAdapter<TestdataSolution>() {
             @Override
             public void phaseStarted(AbstractPhaseScope<TestdataSolution> phaseScope) {
-                // TODO? should be possible to phase.addPartitionPhaseLifecycleListener() to avoid the cast?
-                assertEquals(Integer.valueOf(1), ((PartitionedSearchPhaseScope) phaseScope).getPartCount());
+                assertEquals(Integer.valueOf(partCount), ((PartitionedSearchPhaseScope) phaseScope).getPartCount());
             }
         });
+        solver.solve(createSolution(partCount * partSize, 2));
+    }
 
-        solver.solve(createSolution());
+    @Test
+    public void threadPoolShutdown() {
+        // TODO check if this approach is portable
+        final ThreadMXBean threads = ManagementFactory.getThreadMXBean();
+        final int initialThreadCount = threads.getThreadCount();
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory();
+        // TODO? add listener, assert getThreadCount > initialThradCount before PS phaseEnds
+        solverFactory.buildSolver().solve(createSolution(2, 2));
         assertEquals(initialThreadCount, threads.getThreadCount());
     }
 
@@ -87,19 +92,57 @@ public class DefaultPartitionedSearchPhaseTest {
         return solverFactory;
     }
 
-    private static TestdataSolution createSolution() {
+    private static TestdataSolution createSolution(int entities, int values) {
         TestdataSolution solution = new TestdataSolution();
-        solution.setEntityList(Arrays.asList(new TestdataEntity("A")));
-        solution.setValueList(Arrays.asList(new TestdataValue("1"), new TestdataValue("2")));
+        solution.setEntityList(IntStream.range(0, entities)
+                .mapToObj(i -> new TestdataEntity(Character.toString((char) (65 + i))))
+                .collect(Collectors.toList())
+        );
+        solution.setValueList(IntStream.range(0, values)
+                .mapToObj(i -> new TestdataValue(Integer.toString(i)))
+                .collect(Collectors.toList())
+        );
         return solution;
+    }
+
+    private static void setPartSize(SolverConfig solverConfig, int partSize) {
+        PartitionedSearchPhaseConfig phaseConfig
+                = (PartitionedSearchPhaseConfig) solverConfig.getPhaseConfigList().get(0);
+        Map<String, String> map = new HashMap<>();
+        map.put("partSize", Integer.toString(partSize));
+        phaseConfig.setSolutionPartitionerCustomProperties(map);
     }
 
     public static class TestdataSolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
 
+        /**
+         * {@link PartitionedSearchPhaseConfig#solutionPartitionerCustomProperties Custom property}.
+         */
+        private int partSize = 1;
+
+        public void setPartSize(int partSize) {
+            this.partSize = partSize;
+        }
+
         @Override
         public List<TestdataSolution> splitWorkingSolution(
                 ScoreDirector<TestdataSolution> scoreDirector, Integer runnablePartThreadLimit) {
-            return Arrays.asList(scoreDirector.getWorkingSolution());
+            TestdataSolution workingSolution = scoreDirector.getWorkingSolution();
+            List<TestdataEntity> allEntities = workingSolution.getEntityList();
+            if (allEntities.size() % partSize > 0) {
+                throw new IllegalStateException("This partitioner can only make equally sized partitions.");
+            }
+            List<TestdataSolution> partitions = new ArrayList<>();
+            for (int i = 0; i < allEntities.size() / partSize; i++) {
+                List<TestdataEntity> partitionEntitites = new ArrayList<>(
+                        allEntities.subList(i * partSize, (i + 1) * partSize)
+                );
+                TestdataSolution partition = new TestdataSolution();
+                partition.setEntityList(partitionEntitites);
+                partition.setValueList(workingSolution.getValueList());
+                partitions.add(partition);
+            }
+            return partitions;
         }
 
     }
