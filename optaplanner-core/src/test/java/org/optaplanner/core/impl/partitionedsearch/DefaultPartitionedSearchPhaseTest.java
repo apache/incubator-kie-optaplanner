@@ -15,13 +15,12 @@
  */
 package org.optaplanner.core.impl.partitionedsearch;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -43,7 +42,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DefaultPartitionedSearchPhaseTest {
 
@@ -67,13 +66,28 @@ public class DefaultPartitionedSearchPhaseTest {
 
     @Test
     public void threadPoolShutdown() {
-        // TODO check if this approach is portable
-        final ThreadMXBean threads = ManagementFactory.getThreadMXBean();
-        final int initialThreadCount = threads.getThreadCount();
+        final int entities = 15;
+        final int partSize = 1;
+        final int partCount = entities / partSize;
+        final int runnableThreadCount = 2;
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory();
-        // TODO? add listener, assert getThreadCount > initialThradCount before PS phaseEnds
-        solverFactory.buildSolver().solve(createSolution(2, 2));
-        assertEquals(initialThreadCount, threads.getThreadCount());
+        setPartSize(solverFactory.getSolverConfig(), partSize);
+        setRunnableThreadCount(solverFactory.getSolverConfig(), runnableThreadCount);
+        DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
+
+        // overwrite thread factory
+        DefaultPartitionedSearchPhase<TestdataSolution> phase
+                = (DefaultPartitionedSearchPhase<TestdataSolution>) solver.getPhaseList().get(0);
+        TestThreadFactory threadFactory = new TestThreadFactory();
+        phase.setThreadFactory(threadFactory);
+
+        solver.solve(createSolution(entities, 2));
+
+        int totalThreadsCreated = threadFactory.createdThreads.size();
+        assertTrue("Threads created: " + totalThreadsCreated, totalThreadsCreated <= partCount);
+        for (Thread thread : threadFactory.createdThreads) {
+            assertEquals(thread.toString(), Thread.State.TERMINATED, thread.getState());
+        }
     }
 
     private static SolverFactory<TestdataSolution> createSolverFactory() {
@@ -88,7 +102,8 @@ public class DefaultPartitionedSearchPhaseTest {
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setStepCountLimit(1);
         localSearchPhaseConfig.setTerminationConfig(terminationConfig);
-        partitionedSearchPhaseConfig.setPhaseConfigList(Arrays.asList(constructionHeuristicPhaseConfig, localSearchPhaseConfig));
+        partitionedSearchPhaseConfig.setPhaseConfigList(
+                Arrays.asList(constructionHeuristicPhaseConfig, localSearchPhaseConfig));
         return solverFactory;
     }
 
@@ -111,6 +126,12 @@ public class DefaultPartitionedSearchPhaseTest {
         Map<String, String> map = new HashMap<>();
         map.put("partSize", Integer.toString(partSize));
         phaseConfig.setSolutionPartitionerCustomProperties(map);
+    }
+
+    private void setRunnableThreadCount(SolverConfig solverConfig, int runnablePartThreadLimit) {
+        PartitionedSearchPhaseConfig phaseConfig
+                = (PartitionedSearchPhaseConfig) solverConfig.getPhaseConfigList().get(0);
+        phaseConfig.setRunnablePartThreadLimit(Integer.toString(runnablePartThreadLimit));
     }
 
     public static class TestdataSolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
@@ -146,4 +167,20 @@ public class DefaultPartitionedSearchPhaseTest {
         }
 
     }
+
+    private static class TestThreadFactory implements ThreadFactory {
+
+        private List<Thread> createdThreads = new ArrayList<>();
+        private int i = 0;
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r, "TestThread #" + i);
+            createdThreads.add(t);
+            i++;
+            return t;
+        }
+
+    }
+
 }
