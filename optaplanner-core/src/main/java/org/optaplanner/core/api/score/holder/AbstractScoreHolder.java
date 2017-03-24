@@ -26,10 +26,7 @@ import java.util.function.Supplier;
 
 import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
-import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleContext;
-import org.kie.api.runtime.rule.RuleRuntime;
-import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -84,17 +81,15 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     protected void registerConstraintMatch(RuleContext kcontext,
             final Runnable constraintUndoListener, Supplier<Score> scoreSupplier) {
         AgendaItem<?> agendaItem = (AgendaItem) kcontext.getMatch();
-        ActivationUnMatchListener activationUnMatchListener = agendaItem.getActivationUnMatchListener();
-        ConstraintActivationUnMatchListener constraintActivationUnMatchListener;
-        if (activationUnMatchListener == null) {
+        ConstraintActivationUnMatchListener constraintActivationUnMatchListener = (ConstraintActivationUnMatchListener)agendaItem.getCallback();
+        if (constraintActivationUnMatchListener == null) {
             constraintActivationUnMatchListener = new ConstraintActivationUnMatchListener(constraintUndoListener);
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Add ConstraintMatch
                 constraintActivationUnMatchListener.constraintMatchTotal = findConstraintMatchTotal(kcontext);
             }
-            agendaItem.setActivationUnMatchListener(constraintActivationUnMatchListener);
+            agendaItem.setCallback(constraintActivationUnMatchListener);
         } else {
-            constraintActivationUnMatchListener = (ConstraintActivationUnMatchListener) activationUnMatchListener;
             constraintActivationUnMatchListener.overwriteMatch(constraintUndoListener);
         }
         if (constraintMatchEnabled) {
@@ -130,7 +125,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         return ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();
     }
 
-    private class ConstraintActivationUnMatchListener implements ActivationUnMatchListener {
+    public class ConstraintActivationUnMatchListener {
 
         private Runnable constraintUndoListener;
 
@@ -142,20 +137,19 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             this.constraintUndoListener = constraintUndoListener;
         }
 
-        @Override
-        public final void unMatch(RuleRuntime ruleRuntime, Match match) {
-            unMatch();
+        public final void unMatch() {
+            internalUnMatch();
             constraintUndoListener = null;
         }
 
         public void overwriteMatch(Runnable constraintUndoListener) {
             if (this.constraintUndoListener != null) {
-                unMatch();
+                internalUnMatch();
             }
             this.constraintUndoListener = constraintUndoListener;
         }
 
-        public final void unMatch() {
+        public final void internalUnMatch() {
             constraintUndoListener.run();
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Remove ConstraintMatch
