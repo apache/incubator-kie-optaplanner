@@ -74,7 +74,7 @@ public class DroolsScoreDirector<Solution_>
             kieSession.dispose();
         }
         kieSession = scoreDirectorFactory.newKieSession();
-        ((RuleEventManager)kieSession).addEventListener( new OptaplannerRuleEventListener() );
+        ((RuleEventManager) kieSession).addEventListener(new OptaplannerRuleEventListener());
         workingScoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
         kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
@@ -87,7 +87,11 @@ public class DroolsScoreDirector<Solution_>
     public static class OptaplannerRuleEventListener implements RuleEventListener {
         @Override
         public void onDeleteMatch(Match match) {
-            ((ConstraintActivationUnMatchListener)( (AgendaItem) match ).getCallback()).unMatch();
+            Object callback = ((AgendaItem) match).getCallback();
+            // Some rules don't have a callback because their RHS doesn't do addConstraintMatch()
+            if (callback instanceof ConstraintActivationUnMatchListener) {
+                ((ConstraintActivationUnMatchListener) callback).unMatch();
+            }
         }
     }
 

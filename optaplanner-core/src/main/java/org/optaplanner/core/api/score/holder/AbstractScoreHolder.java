@@ -81,7 +81,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     protected void registerConstraintMatch(RuleContext kcontext,
             final Runnable constraintUndoListener, Supplier<Score> scoreSupplier) {
         AgendaItem<?> agendaItem = (AgendaItem) kcontext.getMatch();
-        ConstraintActivationUnMatchListener constraintActivationUnMatchListener = (ConstraintActivationUnMatchListener)agendaItem.getCallback();
+        ConstraintActivationUnMatchListener constraintActivationUnMatchListener = (ConstraintActivationUnMatchListener) agendaItem.getCallback();
         if (constraintActivationUnMatchListener == null) {
             constraintActivationUnMatchListener = new ConstraintActivationUnMatchListener(constraintUndoListener);
             if (constraintMatchEnabled) {
