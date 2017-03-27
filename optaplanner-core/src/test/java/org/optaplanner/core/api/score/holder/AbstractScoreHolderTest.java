@@ -71,7 +71,7 @@ public abstract class AbstractScoreHolderTest {
 
     protected void callUnMatch(RuleContext ruleContext) {
         AgendaItem<?> agendaItem = (AgendaItem) ruleContext.getMatch();
-        ((ConstraintActivationUnMatchListener)agendaItem.getCallback()).unMatch();
+        ((ConstraintActivationUnMatchListener) agendaItem.getCallback()).unMatch();
     }
 
     protected ConstraintMatchTotal findConstraintMatchTotal(ScoreHolder scoreHolder, String ruleName) {

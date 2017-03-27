@@ -84,15 +84,27 @@ public class DroolsScoreDirector<Solution_>
         }
     }
 
-    public static class OptaplannerRuleEventListener implements RuleEventListener {
+    private static final class OptaplannerRuleEventListener implements RuleEventListener {
+
+        @Override
+        public void onUpdateMatch(Match match) {
+            undoPreviousMatch((AgendaItem) match);
+        }
+
         @Override
         public void onDeleteMatch(Match match) {
-            Object callback = ((AgendaItem) match).getCallback();
+            undoPreviousMatch((AgendaItem) match);
+        }
+
+        public void undoPreviousMatch(AgendaItem agendaItem) {
+            Object callback = agendaItem.getCallback();
             // Some rules don't have a callback because their RHS doesn't do addConstraintMatch()
             if (callback instanceof ConstraintActivationUnMatchListener) {
                 ((ConstraintActivationUnMatchListener) callback).unMatch();
+                agendaItem.setCallback(null);
             }
         }
+
     }
 
     public Collection<Object> getWorkingFacts() {
