@@ -27,7 +27,6 @@ import org.drools.core.common.AgendaItemImpl;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.holder.AbstractScoreHolder.ConstraintActivationUnMatchListener;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -71,7 +70,7 @@ public abstract class AbstractScoreHolderTest {
 
     protected void callUnMatch(RuleContext ruleContext) {
         AgendaItem<?> agendaItem = (AgendaItem) ruleContext.getMatch();
-        ((ConstraintActivationUnMatchListener) agendaItem.getCallback()).unMatch();
+        agendaItem.getCallback().run();
     }
 
     protected ConstraintMatchTotal findConstraintMatchTotal(ScoreHolder scoreHolder, String ruleName) {

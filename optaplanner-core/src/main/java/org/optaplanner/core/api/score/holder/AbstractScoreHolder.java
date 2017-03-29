@@ -118,7 +118,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         return ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();
     }
 
-    public class ConstraintActivationUnMatchListener {
+    public class ConstraintActivationUnMatchListener implements Runnable {
 
         private final Runnable constraintUndoListener;
 
@@ -130,7 +130,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             this.constraintUndoListener = constraintUndoListener;
         }
 
-        public final void unMatch() {
+        public final void run() {
             constraintUndoListener.run();
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Remove ConstraintMatch

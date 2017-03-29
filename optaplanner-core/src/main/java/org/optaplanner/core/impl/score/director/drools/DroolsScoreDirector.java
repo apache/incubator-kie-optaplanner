@@ -100,7 +100,7 @@ public class DroolsScoreDirector<Solution_>
             Object callback = agendaItem.getCallback();
             // Some rules don't have a callback because their RHS doesn't do addConstraintMatch()
             if (callback instanceof ConstraintActivationUnMatchListener) {
-                ((ConstraintActivationUnMatchListener) callback).unMatch();
+                ((ConstraintActivationUnMatchListener) callback).run();
                 agendaItem.setCallback(null);
             }
         }
