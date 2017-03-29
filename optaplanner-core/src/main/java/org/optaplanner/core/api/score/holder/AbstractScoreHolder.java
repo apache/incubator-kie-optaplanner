@@ -81,20 +81,13 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     protected void registerConstraintMatch(RuleContext kcontext,
             final Runnable constraintUndoListener, Supplier<Score> scoreSupplier) {
         AgendaItem<?> agendaItem = (AgendaItem) kcontext.getMatch();
-        ConstraintActivationUnMatchListener constraintActivationUnMatchListener = (ConstraintActivationUnMatchListener) agendaItem.getCallback();
-        if (constraintActivationUnMatchListener == null) {
-            constraintActivationUnMatchListener = new ConstraintActivationUnMatchListener(constraintUndoListener);
-            if (constraintMatchEnabled) {
-                // Not needed in fast code: Add ConstraintMatch
-                constraintActivationUnMatchListener.constraintMatchTotal = findConstraintMatchTotal(kcontext);
-            }
-            agendaItem.setCallback(constraintActivationUnMatchListener);
-        } else {
-            constraintActivationUnMatchListener.overwriteMatch(constraintUndoListener);
-        }
+        ConstraintActivationUnMatchListener constraintActivationUnMatchListener
+                = new ConstraintActivationUnMatchListener(constraintUndoListener);
+        agendaItem.setCallback(constraintActivationUnMatchListener);
         if (constraintMatchEnabled) {
             List<Object> justificationList = extractJustificationList(kcontext);
             // Not needed in fast code: Add ConstraintMatch
+            constraintActivationUnMatchListener.constraintMatchTotal = findConstraintMatchTotal(kcontext);
             ConstraintMatch constraintMatch = constraintActivationUnMatchListener.constraintMatchTotal
                     .addConstraintMatch(justificationList, scoreSupplier.get());
             List<Indictment> indictmentList = new ArrayList<>(justificationList.size());
@@ -127,7 +120,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     public class ConstraintActivationUnMatchListener {
 
-        private Runnable constraintUndoListener;
+        private final Runnable constraintUndoListener;
 
         private ConstraintMatchTotal constraintMatchTotal;
         private List<Indictment> indictmentList;
@@ -138,18 +131,6 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         }
 
         public final void unMatch() {
-            internalUnMatch();
-            constraintUndoListener = null;
-        }
-
-        public void overwriteMatch(Runnable constraintUndoListener) {
-            if (this.constraintUndoListener != null) {
-                internalUnMatch();
-            }
-            this.constraintUndoListener = constraintUndoListener;
-        }
-
-        public final void internalUnMatch() {
             constraintUndoListener.run();
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Remove ConstraintMatch
