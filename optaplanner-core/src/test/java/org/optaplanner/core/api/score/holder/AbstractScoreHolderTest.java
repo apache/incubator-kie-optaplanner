@@ -68,7 +68,12 @@ public abstract class AbstractScoreHolderTest {
         return kcontext;
     }
 
-    protected void callUnMatch(RuleContext ruleContext) {
+    protected void callOnUpdate(RuleContext ruleContext) {
+        AgendaItem<?> agendaItem = (AgendaItem) ruleContext.getMatch();
+        agendaItem.getCallback().run();
+    }
+
+    protected void callOnDelete(RuleContext ruleContext) {
         AgendaItem<?> agendaItem = (AgendaItem) ruleContext.getMatch();
         agendaItem.getCallback().run();
     }
