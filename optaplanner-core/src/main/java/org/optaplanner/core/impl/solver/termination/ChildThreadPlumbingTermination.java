@@ -16,12 +16,8 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
-
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.ChildThreadType;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class ChildThreadPlumbingTermination extends AbstractTermination {
@@ -38,9 +34,6 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
      */
     public synchronized boolean terminateChildren() {
         boolean terminationEarlySuccessful = !terminateChildren;
-        if (terminationEarlySuccessful) {
-            logger.debug("Terminating child solvers early.");
-        }
         terminateChildren = true;
         return terminationEarlySuccessful;
     }

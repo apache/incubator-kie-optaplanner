@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.solver;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -124,7 +123,11 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean terminateEarly() {
-        return basicPlumbingTermination.terminateEarly();
+        boolean terminationEarlySuccessful = basicPlumbingTermination.terminateEarly();
+        if (terminationEarlySuccessful) {
+            logger.info("Terminating solver early.");
+        }
+        return terminationEarlySuccessful;
     }
 
     @Override

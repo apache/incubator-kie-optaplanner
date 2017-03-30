@@ -34,8 +34,6 @@ import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.SolverConfigContext;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,10 +66,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // ************************************************************************
     // Report accumulates
     // ************************************************************************
-
-    // Compared to winningSubSingleBenchmarkResult in the same SubSingleBenchmarkResult (which might not be the overall favorite)
-    private Score winningScoreDifference = null;
-    private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
@@ -163,22 +157,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     public void setScoreCalculationCount(long scoreCalculationCount) {
         this.scoreCalculationCount = scoreCalculationCount;
-    }
-
-    public Score getWinningScoreDifference() {
-        return winningScoreDifference;
-    }
-
-    public void setWinningScoreDifference(Score winningScoreDifference) {
-        this.winningScoreDifference = winningScoreDifference;
-    }
-
-    public ScoreDifferencePercentage getWorstScoreDifferencePercentage() {
-        return worstScoreDifferencePercentage;
-    }
-
-    public void setWorstScoreDifferencePercentage(ScoreDifferencePercentage worstScoreDifferencePercentage) {
-        this.worstScoreDifferencePercentage = worstScoreDifferencePercentage;
     }
 
     public Integer getRanking() {

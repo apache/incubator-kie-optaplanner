@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
@@ -32,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class PhaseLifecycleTest {
 
@@ -46,7 +44,7 @@ public class PhaseLifecycleTest {
 
         // prepare solution
         TestdataSolution solution = new TestdataSolution("s1");
-        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v1")));
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         final int entitiesCount = 17;
         ArrayList<TestdataEntity> entities = new ArrayList<>(entitiesCount);
         for (int i = 0; i < entitiesCount; i++) {
