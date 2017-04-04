@@ -23,7 +23,7 @@
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <version.org.wildfly>10.0.0.Final</version.org.wildfly>
+    <version.org.wildfly>10.1.0.Final</version.org.wildfly>
   </properties>
   <build>
     <testResources>
@@ -91,11 +91,15 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- TODO Use javaee-api instead of the individual APi's below -->
+    <!--
+      TODO Use javaee-api instead of the individual APi's below
+      It works, but the enforcer plugin doesn't like arquillian depends on individual jars
+      which causes including the same class twice from different jars (in the test scope only).
+    -->
     <!--<dependency>-->
       <!--<groupId>javax</groupId>-->
       <!--<artifactId>javaee-api</artifactId>-->
-      <!--<version>6.0</version>-->
+      <!--<version>7.0</version>-->
       <!--<scope>provided</scope>-->
     <!--</dependency>-->
     <dependency>
