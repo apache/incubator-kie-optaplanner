@@ -53,7 +53,7 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
 [[curriculumCourseDomainModel]]
 === Domain Model
 
-image::UseCasesAndExamples/curriculumCourseClassDiagram.png[align="center"]
+image::UseCasesAndExamples/RealExamples/curriculumCourseClassDiagram.png[align="center"]
 
 
 [[machineReassignment]]
@@ -85,7 +85,7 @@ Soft constraints:
 
 The problem is defined by http://challenge.roadef.org/2012/en/[the Google ROADEF/EURO Challenge 2012].
 
-image::UseCasesAndExamples/cloudOptimizationIsLikeTetris.png[align="center"]
+image::UseCasesAndExamples/RealExamples/cloudOptimizationIsLikeTetris.png[align="center"]
 
 [[machineReassignmentValueProposition]]
 === Value Proposition
@@ -123,7 +123,7 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
 [[machineReassignmentDomainModel]]
 === Domain Model
 
-image::UseCasesAndExamples/machineReassignmentClassDiagram.png[align="center"]
+image::UseCasesAndExamples/RealExamples/machineReassignmentClassDiagram.png[align="center"]
 
 
 [[vehicleRouting]]
@@ -136,7 +136,7 @@ image::UseCasesAndExamples/machineReassignmentClassDiagram.png[align="center"]
 Using a fleet of vehicles, pick up the objects of each customer and bring them to the depot.
 Each vehicle can service multiple customers, but it has a limited capacity.
 
-image::UseCasesAndExamples/vehicleRoutingUseCase.png[align="center"]
+image::UseCasesAndExamples/RealExamples/vehicleRoutingUseCase.png[align="center"]
 
 Besides the basic case (CVRP), there is also a variant with time windows (CVRPTW).
 
@@ -159,7 +159,7 @@ The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVR
 [[vehicleRoutingValueProposition]]
 === Value Proposition
 
-image::UseCasesAndExamples/vehicleRoutingValueProposition.png[align="center"]
+image::UseCasesAndExamples/RealExamples/vehicleRoutingValueProposition.png[align="center"]
 
 
 [[vehicleRoutingProblemSize]]
@@ -253,7 +253,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 [[vehicleRoutingDomainModel]]
 === Domain Model
 
-image::UseCasesAndExamples/vehicleRoutingClassDiagram.png[align="center"]
+image::UseCasesAndExamples/RealExamples/vehicleRoutingClassDiagram.png[align="center"]
 
 The vehicle routing with timewindows domain model makes heavily use of <<shadowVariable,shadow variables>>.
 This allows it to express its constraints more naturally, because properties such as `arrivalTime` and ``departureTime``, are directly available on the domain model.
@@ -265,26 +265,26 @@ This allows it to express its constraints more naturally, because properties suc
 In the real world, vehicles cannot follow a straight line from location to location: they have to use roads and highways.
 From a business point of view, this matters a lot:
 
-image::UseCasesAndExamples/vehicleRoutingDistanceType.png[align="center"]
+image::UseCasesAndExamples/RealExamples/vehicleRoutingDistanceType.png[align="center"]
 
 For the optimization algorithm, this does not matter much, as long as the distance between two points can be looked up (and are preferably precalculated). The road cost does not even need to be a distance, it can also be travel time, fuel cost, or a weighted function of those.
 There are several technologies available to precalculate road costs, such as https://graphhopper.com/[GraphHopper] (embeddable, offline Java engine), http://open.mapquestapi.com/directions/#matrix[Open MapQuest] (web service) and https://developers.google.com/maps/documentation/webservices/client-library[Google Maps Client API] (web service).
 
-image::UseCasesAndExamples/integrationWithRealMaps.png[align="center"]
+image::UseCasesAndExamples/RealExamples/integrationWithRealMaps.png[align="center"]
 
 There are also several technologies to render it, such as http://leafletjs.com[Leaflet] and https://developers.google.com/maps/[Google Maps for developers]: the `optaplanner-webexamples-*.war` has an example which demonstrates such rendering:
 
-image::UseCasesAndExamples/vehicleRoutingLeafletAndGoogleMaps.png[align="center"]
+image::UseCasesAndExamples/RealExamples/vehicleRoutingLeafletAndGoogleMaps.png[align="center"]
 
 It is even possible to render the actual road routes with GraphHopper or Google Map Directions, but because of route overlaps on highways, it can become harder to see the standstill order:
 
-image::UseCasesAndExamples/vehicleRoutingGoogleMapsDirections.png[align="center"]
+image::UseCasesAndExamples/RealExamples/vehicleRoutingGoogleMapsDirections.png[align="center"]
 
 Take special care that the road costs between two points use the same optimization criteria as the one used in Planner.
 For example, GraphHopper etc will by default return the fastest route, not the shortest route.
 Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in Planner: this leads to a suboptimal solution as shown below:
 
-image::UseCasesAndExamples/roadDistanceTriangleInequality.png[align="center"]
+image::UseCasesAndExamples/RealExamples/roadDistanceTriangleInequality.png[align="center"]
 
 Contrary to popular belief, most users do not want the shortest route: they want the fastest route instead.
 They prefer highways over normal roads.
@@ -304,7 +304,7 @@ Each job is part of a project.
 A job can be executed in different ways: each way is an execution mode that implies a different duration but also different resource usages.
 This is a form of flexible __job shop scheduling__.
 
-image::UseCasesAndExamples/projectJobSchedulingUseCase.png[align="center"]
+image::UseCasesAndExamples/RealExamples/projectJobSchedulingUseCase.png[align="center"]
 
 Hard constraints:
 
@@ -365,7 +365,7 @@ The arrival and departure dates of the patients is fixed: only a bed needs to be
 
 This problem features <<overconstrainedPlanning,overconstrained>> datasets.
 
-image::UseCasesAndExamples/patientAdmissionScheduleUseCase.png[align="center"]
+image::UseCasesAndExamples/RealExamples/patientAdmissionScheduleUseCase.png[align="center"]
 
 Hard constraints:
 
@@ -413,7 +413,7 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
 [[bedAllocationDomainModel]]
 === Domain Model
 
-image::UseCasesAndExamples/hospitalBedAllocationClassDiagram.png[align="center"]
+image::UseCasesAndExamples/RealExamples/hospitalBedAllocationClassDiagram.png[align="center"]
 
 
 [[taskAssigning]]
@@ -463,4 +463,4 @@ Soft level 3 constraints:
 [[taskAssigningDomainModel]]
 === Domain Model
 
-image::UseCasesAndExamples/taskAssigningClassDiagram.png[align="center"]
+image::UseCasesAndExamples/RealExamples/taskAssigningClassDiagram.png[align="center"]

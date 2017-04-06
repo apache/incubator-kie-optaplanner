@@ -12,7 +12,7 @@
 Place _n_ queens on a _n_ sized chessboard so that no two queens can attack each other.
 The most common _n_ queens puzzle is the eight queens puzzle, with __n = 8__:
 
-image::UseCasesAndExamples/nQueensScreenshot.png[align="center"]
+image::UseCasesAndExamples/BasicExamples/nQueensScreenshot.png[align="center"]
 
 Constraints:
 
@@ -25,14 +25,14 @@ This documentation heavily uses the four queens puzzle as the primary example.
 A proposed solution could be:
 
 .A Wrong Solution for the 4 Queens Puzzle
-image::UseCasesAndExamples/partiallySolvedNQueens04Explained.png[align="center"]
+image::UseCasesAndExamples/BasicExamples/partiallySolvedNQueens04Explained.png[align="center"]
 
 The above solution is wrong because queens `A1` and `B0` can attack each other (so can queens `B0` and ``D0``). Removing queen `B0` would respect the "no two queens can attack each other" constraint, but would break the "place _n_ queens" constraint.
 
 Below is a correct solution:
 
 .A Correct Solution for the 4 Queens Puzzle
-image::UseCasesAndExamples/solvedNQueens04.png[align="center"]
+image::UseCasesAndExamples/BasicExamples/solvedNQueens04.png[align="center"]
 
 All the constraints have been met, so the solution is correct. 
 
@@ -143,7 +143,7 @@ Notice that in the four queens example, NQueens's `getN()` method will always re
 | ascendingDiagonalIndex (columnIndex + rowIndex)
 | descendingDiagonalIndex (columnIndex - rowIndex)
 
-.4+| image::UseCasesAndExamples/partiallySolvedNQueens04Explained.png[align="center"]
+.4+| image::UseCasesAndExamples/BasicExamples/partiallySolvedNQueens04Explained.png[align="center"]
 
 |A1
 |0
@@ -212,7 +212,7 @@ lu980    has 980 cities with a search space of 10^2927.
 Despite TSP's simple definition, the problem is surprisingly hard to solve.
 Because it is an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:
 
-image::UseCasesAndExamples/tspOptimalSolutionVolatility.png[align="center"]
+image::UseCasesAndExamples/BasicExamples/tspOptimalSolutionVolatility.png[align="center"]
 
 
 [[dinnerParty]]
@@ -279,7 +279,7 @@ munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssign
 [[tennisDomainModel]]
 === Domain Model
 
-image::UseCasesAndExamples/tennisClassDiagram.png[align="center"]
+image::UseCasesAndExamples/BasicExamples/tennisClassDiagram.png[align="center"]
 
 
 [[meetingScheduling]]
