@@ -24,14 +24,14 @@ This documentation heavily uses the four queens puzzle as the primary example.
 
 A proposed solution could be:
 
-.A Wrong Solution for the 4 Queens Puzzle
+.A Wrong Solution for the Four Queens Puzzle
 image::UseCasesAndExamples/BasicExamples/partiallySolvedNQueens04Explained.png[align="center"]
 
 The above solution is wrong because queens `A1` and `B0` can attack each other (so can queens `B0` and ``D0``). Removing queen `B0` would respect the "no two queens can attack each other" constraint, but would break the "place _n_ queens" constraint.
 
 Below is a correct solution:
 
-.A Correct Solution for the 4 Queens Puzzle
+.A Correct Solution for the Four Queens Puzzle
 image::UseCasesAndExamples/BasicExamples/solvedNQueens04.png[align="center"]
 
 All the constraints have been met, so the solution is correct. 
