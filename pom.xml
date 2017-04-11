@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.1.0-SNAPSHOT</version>
     <!-- relativePath causes out-of-date problems on hudson slaves -->
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
@@ -103,15 +103,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <!-- TODO: Upgrade to newest version of checkstyle once we move to Java 7+ -->
-          <!-- https://maven.apache.org/components/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html -->
-          <!--<dependencies>-->
-            <!--<dependency>-->
-              <!--<groupId>com.puppycrawl.tools</groupId>-->
-              <!--<artifactId>checkstyle</artifactId>-->
-              <!--<version>6.9</version>-->
-            <!--</dependency>-->
-          <!--</dependencies>-->
           <executions>
             <execution>
               <id>validate</id>
@@ -132,15 +123,17 @@
                       <property name="severity" value="error"/>
                       <property name="eachLine" value="true"/>
                     </module>
+                    <module name="SuppressWarningsFilter"/>
                     <module name="TreeWalker">
                       <property name="cacheFile" value="target/cachefile"/>
                       <property name="tabWidth" value="4"/>
                       <!-- Checks for Javadoc comments. -->
                       <module name="JavadocStyle"/>
                       <!-- TODO: Enable NonEmptyAtclauseDescription after https://github.com/checkstyle/checkstyle/issues/1064 is fixed -->
+                      <!-- Update: #1064 is resolved and the performance has greatly improved but this check still adds ~2 seconds -->
+                      <!-- to the build time -> always measure build time before enabling this module (use github.com/jcgay/maven-profiler) -->
                       <!--<module name="NonEmptyAtclauseDescription"/>-->
                       <!-- Checks for imports. -->
-                      <!--<module name="UnusedImports"/>-->
                       <module name="RedundantImport"/>
                       <!-- defaults to sun.* packages -->
                       <module name="IllegalImport"/>
@@ -156,12 +149,10 @@
                       <module name="ParenPad"/>
                       <module name="TypecastParenPad"/>
                       <module name="WhitespaceAfter"/>
-                      <!-- TODO: Enable the WhitespaceAround once checkstyle supports allowEmptyBlocks -->
-                      <!--<module name="WhitespaceAround">-->
-                        <!--<property name="allowEmptyConstructors" value="true"/>-->
-                        <!--<property name="allowEmptyTypes" value="true"/>-->
-                        <!--<property name="allowEmptyBlocks" value="true"/>-->
-                      <!--</module>-->
+                      <module name="WhitespaceAround">
+                        <property name="allowEmptyConstructors" value="true"/>
+                        <property name="allowEmptyTypes" value="true"/>
+                      </module>
                       <!-- Checks for blocks. -->
                       <module name="LeftCurly"/>
                       <module name="NeedBraces"/>
@@ -178,6 +169,7 @@
                       <!-- Miscellaneous other checks. -->
                       <module name="ArrayTypeStyle"/>
                       <module name="UpperEll"/>
+                      <module name="SuppressWarningsHolder"/>
                     </module>
                   </module>
                 </checkstyleRules>
