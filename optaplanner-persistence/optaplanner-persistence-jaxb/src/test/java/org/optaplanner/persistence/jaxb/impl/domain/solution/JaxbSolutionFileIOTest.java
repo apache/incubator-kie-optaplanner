@@ -23,6 +23,7 @@ import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataAbstractSolution;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataEntity;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataSolution;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataValue;
@@ -67,4 +68,28 @@ public class JaxbSolutionFileIOTest {
         assertEquals(SimpleScore.valueOf(-123), copy.getScore());
     }
 
+    @Test
+    public void readAndWriteAbstractSolution() {
+        JaxbSolutionFileIO<JaxbTestdataAbstractSolution> solutionFileIO = new JaxbSolutionFileIO<>(JaxbTestdataAbstractSolution.class);
+        File file = new File(solutionTestDir, "testdataAbstractSolution.xml");
+
+        JaxbTestdataAbstractSolution original = new JaxbTestdataAbstractSolution("s1");
+        JaxbTestdataValue originalV1 = new JaxbTestdataValue("v1");
+        original.setValueList(Arrays.asList(originalV1, new JaxbTestdataValue("v2")));
+        original.setEntityList(Arrays.asList(
+                new JaxbTestdataEntity("e1"), new JaxbTestdataEntity("e2", originalV1), new JaxbTestdataEntity("e3")));
+        original.setScore(SimpleScore.valueOf(-123));
+        solutionFileIO.write(original, file);
+        JaxbTestdataAbstractSolution copy = solutionFileIO.read(file);
+
+        assertNotSame(original, copy);
+        assertCode("s1", copy);
+        assertAllCodesOfIterator(copy.getValueList().iterator(), "v1", "v2");
+        assertAllCodesOfIterator(copy.getEntityList().iterator(), "e1", "e2", "e3");
+        JaxbTestdataValue copyV1 = copy.getValueList().get(0);
+        JaxbTestdataEntity copyE2 = copy.getEntityList().get(1);
+        assertCode("v1", copyE2.getValue());
+        assertSame(copyV1, copyE2.getValue());
+        assertEquals(SimpleScore.valueOf(-123), copy.getScore());
+    }
 }
