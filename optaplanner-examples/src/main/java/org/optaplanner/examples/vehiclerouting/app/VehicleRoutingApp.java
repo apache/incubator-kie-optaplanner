@@ -29,7 +29,10 @@ public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
 
-    public static void main(String[] args) {
+    public static final String CARTESIAN_MOVE_SOLVER_CONFIG
+            = "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingCartesianMoveSolverConfig.xml";
+
+    public static void main() {
         prepareSwingEnvironment();
         new VehicleRoutingApp().init();
     }
