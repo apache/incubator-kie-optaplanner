@@ -37,6 +37,13 @@ import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonMessage;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRoute;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRoutingSolution;
 
+import ws.arete.arms.engine.domain.geojson.GeoJsonCustomer;
+import ws.arete.arms.engine.domain.geojson.GeoJsonCustomerProperties;
+import ws.arete.arms.engine.domain.geojson.GeoJsonGeometry;
+import ws.arete.arms.engine.domain.geojson.GeoJsonRoute;
+import ws.arete.arms.engine.domain.geojson.GeoJsonRouteProperties;
+import ws.arete.arms.engine.domain.geojson.GeoJsonVehicleRoutingSolution;
+
 public class DefaultVehicleRoutingRestService implements VehicleRoutingRestService {
 
     private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,##0.00");
@@ -53,6 +60,87 @@ public class DefaultVehicleRoutingRestService implements VehicleRoutingRestServi
         return convertToJsonVehicleRoutingSolution(solution);
     }
 
+    @Override
+    public GeoJsonVehicleRoutingSolution getSolutionGeoJson() {
+        VehicleRoutingSolution solution = solverManager.retrieveOrCreateSolution(request.getSession().getId());
+        GeoJsonVehicleRoutingSolution jsonsolution = convertToGeoJsonVehicleRoutingSolution(solution);
+
+        return jsonsolution;
+    }
+    
+    protected static GeoJsonVehicleRoutingSolution convertToGeoJsonVehicleRoutingSolution(VehicleRoutingSolution solution) {
+        GeoJsonVehicleRoutingSolution jsonSolution = new GeoJsonVehicleRoutingSolution();
+
+        jsonSolution.setType("FeatureCollection");
+        List<Object> jsonFeatureList = new ArrayList<Object>(solution.getCustomerList().size());
+        for (Customer customer : solution.getCustomerList()) {
+            
+            Location customerLocation = customer.getLocation();
+
+            List<Object> coordinates= new ArrayList<Object>();
+            coordinates.add(customerLocation.getLongitude());
+            coordinates.add(customerLocation.getLatitude());
+
+            GeoJsonGeometry geometry = new GeoJsonGeometry("Point", coordinates);
+
+            GeoJsonCustomerProperties properties = new GeoJsonCustomerProperties();
+            properties.setMarkersymbol("hospital");
+            properties.setMarkersize("small");
+            properties.setId(customerLocation.getId());
+            properties.setName(customerLocation.getName());
+
+//            private Long twe;
+//            private Long tws;
+//            private Double arrivalTime;
+//            private Double departureTime;
+//            private Double deliveryRangeStart;
+//            private Double deliveryRangeEnd;
+
+
+            jsonFeatureList.add(new GeoJsonCustomer(geometry, properties, "Feature"));
+        }
+
+        for (Vehicle vehicle : solution.getVehicleList()) {
+            
+            
+            Location depotLocation = vehicle.getDepot().getLocation();
+
+            Customer customer = vehicle.getNextCustomer();
+            
+            if (customer != null)
+            {
+            List<GeoJsonRoute> jsonVehicleCustomerList = new ArrayList<GeoJsonRoute>();
+            List<Object> coordinatesList = new ArrayList<Object>();
+
+            GeoJsonRouteProperties properties = new GeoJsonRouteProperties();
+            properties.setTrip(vehicle.getId());
+            properties.setStroke();
+
+            ArrayList<Double> depotCoordinates= new ArrayList<Double>();
+            depotCoordinates.add(depotLocation.getLongitude());
+            depotCoordinates.add(depotLocation.getLatitude());
+            coordinatesList.add(depotCoordinates);
+            
+            while (customer != null) {
+                Location customerLocation = customer.getLocation();
+
+                ArrayList<Double> coordinates= new ArrayList<Double>();
+                coordinates.add(customerLocation.getLongitude());
+                coordinates.add(customerLocation.getLatitude());
+
+                coordinatesList.add(coordinates);
+
+                customer = customer.getNextCustomer();
+            }
+            GeoJsonGeometry geometry = new GeoJsonGeometry("LineString", coordinatesList);
+            
+            jsonFeatureList.add(new GeoJsonRoute(geometry, properties, "Feature"));
+            }
+        }
+        jsonSolution.setFeatures(jsonFeatureList);
+        return jsonSolution;
+    }
+    
     protected JsonVehicleRoutingSolution convertToJsonVehicleRoutingSolution(VehicleRoutingSolution solution) {
         JsonVehicleRoutingSolution jsonSolution = new JsonVehicleRoutingSolution();
         jsonSolution.setName(solution.getName());

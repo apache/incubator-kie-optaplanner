@@ -24,6 +24,8 @@ import javax.ws.rs.Produces;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonMessage;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRoutingSolution;
 
+import ws.arete.arms.engine.domain.geojson.GeoJsonVehicleRoutingSolution;
+
 /**
  * @see DefaultVehicleRoutingRestService
  */
@@ -35,6 +37,11 @@ public interface VehicleRoutingRestService {
     @Produces("application/json")
     JsonVehicleRoutingSolution getSolution();
 
+    @GET
+    @Produces("application/json")
+    @Path("/solution/geoJson")
+    GeoJsonVehicleRoutingSolution getSolutionGeoJson();
+    
     @POST
     @Path("/solution/solve")
     @Produces("application/json")
