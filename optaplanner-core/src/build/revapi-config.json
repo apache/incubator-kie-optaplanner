@@ -1,6 +1,14 @@
 {
   "filters": {
     "revapi": {
+      "filter": {
+        "elements": {
+          "exclude": [
+            "method .* org\\.optaplanner\\.core\\.config.*::(?!(set|get)).*",
+            "parameter .* org\\.optaplanner\\.core\\.config.*::(?!(set|get)).*"
+          ]
+        }
+      },
       "java": {
         "filter": {
           "packages": {
@@ -573,43 +581,6 @@
           "justification": "Solution interface removed since it was deprecated."
         },
         {
-          "code": "java.method.removed",
-          "old": "method org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType::newEntityPlacerConfig()",
-          "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
-        },
-        {
-          "code": "java.method.numberOfParametersChanged",
-          "old": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.impl.score.definition.ScoreDefinition)",
-          "justification": "PLANNER-602 Remove <scoreDefinitionType> from the solver configuration."
-        },
-        {
-          "code": "java.method.returnTypeTypeParametersChanged",
-          "old": "method java.lang.Class<? extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig::loadSolutionClass(org.reflections.Reflections)",
-          "new": "method java.lang.Class<?> org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig::loadSolutionClass(org.reflections.Reflections)",
-          "justification": "Solution interface removed since it was deprecated."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner::determineSorter(org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor)",
-          "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method boolean org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner::hasSorter(org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor)",
-          "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner::determineSorter(org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor)",
-          "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method boolean org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner::hasSorter(org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor)",
-          "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
-        },
-        {
           "code": "java.field.removed",
           "old": "field org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig.lateSimulatedAnnealingSize",
           "justification": "The experimental, deprecated, hybrid metaheuristic called LATE_SIMULATED_ANNEALING (which was inspired by both Late Acceptance and Simulated Annealing) has been removed."
@@ -640,11 +611,6 @@
           "justification": "The dead, deprecated code of DeciderScoreComparatorFactory has been removed."
         },
         {
-          "code": "java.method.removed",
-          "old": "method void org.optaplanner.core.config.phase.PhaseConfig<C extends org.optaplanner.core.config.phase.PhaseConfig>::configurePhase(org.optaplanner.core.impl.phase.AbstractPhase, int, org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
-          "justification": "PLANNER-491 Ident logging."
-        },
-        {
           "code": "java.annotation.attributeValueChanged",
           "old": "class org.optaplanner.core.config.phase.PhaseConfig<C extends org.optaplanner.core.config.phase.PhaseConfig>",
           "new": "class org.optaplanner.core.config.phase.PhaseConfig<C extends org.optaplanner.core.config.phase.PhaseConfig>",
@@ -653,95 +619,6 @@
           "newValue": "{org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class, org.optaplanner.core.config.phase.NoChangePhaseConfig.class, org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class, org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class, org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class, org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.class}",
           "annotationType": "com.thoughtworks.xstream.annotations.XStreamInclude",
           "justification": "Add support for <noChangePhase/>."
-        },
-        {
-          "code": "java.method.returnTypeTypeParametersChanged",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.elementNowParameterized",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.formalTypeParameterAdded",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.method.returnTypeTypeParametersChanged",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.elementNowParameterized",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.formalTypeParameterAdded",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.method.returnTypeTypeParametersChanged",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.elementNowParameterized",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.formalTypeParameterAdded",
-          "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method org.optaplanner.core.impl.score.definition.ScoreDefinition org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDefinition()",
-          "justification": "PLANNER-602 Remove <scoreDefinitionType> from the solver configuration. Method renamed to buildDeprecatedScoreDefinition()."
-        },
-        {
-          "code": "java.method.parameterTypeParameterChanged",
-          "old": "parameter org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, ===org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor===)",
-          "new": "parameter <Solution_> org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, ===org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_>===)",
-          "parameterIndex": "2",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.method.returnTypeTypeParametersChanged",
-          "old": "method org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor)",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_>)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.elementNowParameterized",
-          "old": "method org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor)",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_>)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.formalTypeParameterAdded",
-          "old": "method org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor)",
-          "new": "method <Solution_> org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_>)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor, org.optaplanner.core.impl.score.definition.ScoreDefinition)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
         },
         {
           "code": "java.method.removed",
@@ -774,69 +651,6 @@
           "justification": "Remove unused getOptimisticBoundInt etc methods."
         },
         {
-          "code": "java.method.removed",
-          "old": "method org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller org.optaplanner.core.config.solver.SolverConfig::buildBestSolutionRecaller(org.optaplanner.core.config.solver.EnvironmentMode)",
-          "justification": "PLANNER-491 first partitioned solving proof, before PartSolver is introduced."
-        },
-        {
-          "code": "java.method.returnTypeTypeParametersChanged",
-          "old": "method java.util.List<org.optaplanner.core.impl.phase.Phase> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
-          "new": "method <Solution_> java.util.List<org.optaplanner.core.impl.phase.Phase<Solution_>> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.elementNowParameterized",
-          "old": "method java.util.List<org.optaplanner.core.impl.phase.Phase> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
-          "new": "method <Solution_> java.util.List<org.optaplanner.core.impl.phase.Phase<Solution_>> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.formalTypeParameterAdded",
-          "old": "method java.util.List<org.optaplanner.core.impl.phase.Phase> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
-          "new": "method <Solution_> java.util.List<org.optaplanner.core.impl.phase.Phase<Solution_>> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.method.returnTypeTypeParametersChanged",
-          "old": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method <Solution_> org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.elementNowParameterized",
-          "old": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method <Solution_> org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.generics.formalTypeParameterAdded",
-          "old": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method <Solution_> org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
-          "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
-        },
-        {
-          "code": "java.method.returnTypeTypeParametersChanged",
-          "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method <Solution_> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(org.optaplanner.core.config.SolverConfigContext)",
-          "justification": "Solution interface removed since it was deprecated."
-        },
-        {
-          "code": "java.generics.formalTypeParameterChanged",
-          "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(org.optaplanner.core.config.SolverConfigContext)",
-          "new": "method <Solution_> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(org.optaplanner.core.config.SolverConfigContext)",
-          "justification": "Solution interface removed since it was deprecated."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver()",
-          "justification": "Removed previously deprecated API."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(java.lang.ClassLoader)",
-          "justification": "Removed previously deprecated API."
-        },
-        {
           "code": "java.method.returnTypeTypeParametersChanged",
           "old": "method java.lang.Class<? extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.config.solver.SolverConfig::getSolutionClass()",
           "new": "method java.lang.Class<?> org.optaplanner.core.config.solver.SolverConfig::getSolutionClass()",
@@ -848,11 +662,6 @@
           "new": "parameter void org.optaplanner.core.config.solver.SolverConfig::setSolutionClass(===java.lang.Class<?>===)",
           "parameterIndex": "0",
           "justification": "Solution interface removed since it was deprecated."
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method long org.optaplanner.core.config.util.ConfigUtils::floorDivide(long, long)",
-          "justification": "Upgrade to java 8: replace ConfigUtils.floorDivide() with Math.floorDiv()"
         },
         {
           "code": "java.field.removed",
