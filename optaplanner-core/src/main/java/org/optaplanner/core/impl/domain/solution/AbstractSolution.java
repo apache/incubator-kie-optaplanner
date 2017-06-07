@@ -32,12 +32,17 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProp
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 /**
  * Only used by OptaPlanner Workbench 6 (but not 7).
  * This class will be removed in 8.0.
  * @param <S> the {@link Score} type used by this use case
  * @deprecated Use {@link PlanningSolution#autoDiscoverMemberType()} instead.
  */
+// JAXB can't resolve score implementation type, getScore method needs to be overridden in a subclass
+@XmlAccessorType(XmlAccessType.NONE)
 @PlanningSolution
 @Deprecated
 public abstract class AbstractSolution<S extends Score> implements Serializable {
