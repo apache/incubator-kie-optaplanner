@@ -7,24 +7,7 @@
 :icons: font
 :experimental:
 
-
-[[introductionToRepeatedPlanning]]
-== Introduction to Repeated Planning
-
-The world constantly changes.
-The problem facts used to create a solution, might change before or during the execution of that solution.
-There are different situations (which can be combined):
-
-* __Unforeseen fact changes__: For example: an employee assigned to a shift calls in sick, an airplane scheduled to take off has a technical delay, one of the machines or vehicles break down, ... Use **backup planning**.
-* __Impossible to assign all entities now__: Leave some unassigned. For example: there are 10 shifts at the same time to assign but only nine employees to handle shifts. Use **overconstrained planning**.
-* __Unknown long term future facts__: For example: The hospital admissions for the next two weeks are reliable, but those for week three and four are less reliable and for week five and beyond are not worth planning yet. Use **continuous planning**.
-* __Constantly changing problem facts__: Use **real-time planning**.
-
-Waiting to start planning - to lower the risk of problem facts changing - usually isn't a good way to deal with that.
-More CPU time means a better planning solution.
-An incomplete plan is better than no plan.
-
-Luckily, the optimization algorithms support planning a solution that's already (partially) planned, known as repeated planning.
+include::IntroductionToRepeatedPlanning/IntroductionToRepeatedPlanning-section.adoc[leveloffset=+1]
 
 
 [[backupPlanning]]
