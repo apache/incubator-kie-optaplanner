@@ -1,0 +1,41 @@
+[[overconstrainedPlanning]]
+= Overconstrained Planning
+
+When there is no feasible solution to assign all planning entities, it is preferable to assign as many entities as possible without breaking hard constraints.
+This is called overconstrained planning.
+
+By default, Planner assigns all planning entities, overloads the planning values, and therefore breaks hard constraints.
+There are two ways to avoid this:
+
+* Use <<nullablePlanningVariable,nullable>> planning variables, so that some entities are unassigned.
+* Add virtual values to catch the unassigned entities.
+
+
+[[overconstrainedPlanningWithNullableVariables]]
+== Overconstrained Planning with Nullable Variables
+
+If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
+
+image::RepeatedPlanning/OverconstrainedPlanning/overconstrainedPlanning.png[align="center"]
+
+To implement this:
+
+. Add an additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
+. Make the planning variable <<nullablePlanningVariable,nullable>>.
+. Add a score constraint on the new level (usually a medium constraint) to penalize the number of unassigned entities (or a weighted sum of them).
+
+
+[[overconstrainedPlanningWithVirutalValues]]
+== Overconstrained Planning with Virtual Values
+
+In overconstrained planning it is often useful to know which resources are lacking.
+In overconstrained planning with virtual values, the solution indicates which resources to buy.
+
+To implement this:
+
+. Add an additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
+. Add a number of virtual values. It can be difficult to determine a good formula to calculate that number:
+** Do not add too many, as that will decrease solver efficiency.
+** Importantly, do not add too few as that will lead to an infeasible solution.
+. Add a score constraint on the new level (usually a medium constraint) to penalize the number of virtual assigned entities (or a weighted sum of them).
+. Optionally, change all soft constraints to ignore virtual assigned entities.

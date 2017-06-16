@@ -9,59 +9,11 @@
 
 include::IntroductionToRepeatedPlanning/IntroductionToRepeatedPlanning-section.adoc[leveloffset=+1]
 
+include::BackupPlanning/BackupPlanning-section.adoc[leveloffset=+1]
 
-[[backupPlanning]]
-== Backup Planning
-
-Backup planning is the technique of adding extra score constraints to create space in the planning for when things go wrong.
-That creates a backup plan in the plan.
-For example: try to assign an employee as the spare employee (one for every 10 shifts at the same time), keep one hospital bed open in each department, ...
-
-Then, when things go wrong (one of the employees calls in sick), change the problem facts on the original solution (delete the sick employee leave his/her shifts unassigned) and just restart the planning, starting from that solution, which has a different score now.
-The construction heuristics will fill in the newly created gaps (probably with the spare employee) and the metaheuristics will even improve it further.
+include::OverconstrainedPlanning/OverconstrainedPlanning-section.adoc[leveloffset=+1]
 
 
-[[overconstrainedPlanning]]
-== Overconstrained Planning
-
-When there is no feasible solution to assign all planning entities, it's often desired to assign as many entities as possible without breaking hard constraints.
-This is called overconstrained planning.
-
-By default, Planner will assign all planning entities, overload the planning values and therefore break hard constraints.
-There are two ways to avoid that:
-
-* Use <<nullablePlanningVariable,nullable>> planning variables, so some entities are unassigned.
-* Add virtual values to catch the unassigned entities.
-
-
-[[overconstrainedPlanningWithNullableVariables]]
-=== Overconstrained Planning with Nullable Variables
-
-If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
-
-image::RepeatedPlanning/overconstrainedPlanning.png[align="center"]
-
-To implement this:
-
-. Add a additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
-. Make the planning variable <<nullablePlanningVariable,nullable>>.
-. Add a score constraint on the new level (so usually a medium constraint) to penalize the number of unassigned entities (or a weighted sum of them).
-
-
-[[overconstrainedPlanningWithVirutalValues]]
-=== Overconstrained Planning with Virtual Values
-
-In overconstrained planning it's often useful to know which resources are lacking.
-In overconstrained planning with virtual values, the solution indicates which resources to buy.
-
-To implement this:
-
-. Add a additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
-. Add a number of virtual values. It can be difficult to determine a good formula to calculate that number:
-** Don't add too many, as that will decrease solver efficiency.
-** Definitely don't add too few as that will lead to an infeasible solution.
-. Add a score constraint on the new level (so usually a medium constraint) to penalize the number of virtual assigned entities (or a weighted sum of them).
-. Optionally change all soft constraints to ignore virtual assigned entities.
 
 
 [[continuousPlanning]]
