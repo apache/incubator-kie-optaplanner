@@ -7,38 +7,147 @@
 :icons: font
 :experimental:
 
-include::IntroductionToRepeatedPlanning/IntroductionToRepeatedPlanning-section.adoc[leveloffset=+1]
+[[introductionToRepeatedPlanning]]
+= Introduction to Repeated Planning
 
-include::BackupPlanning/BackupPlanning-section.adoc[leveloffset=+1]
+The problem facts used to create a solution may change before or during the execution of that solution. Delaying planning in order to lower the risk of problem facts changing is not ideal, as an incomplete plan is preferable to no plan.
 
-include::OverconstrainedPlanning/OverconstrainedPlanning-section.adoc[leveloffset=+1]
+The following examples demonstrate situations where planning solutions need to be altered due to unpredictable changes:
+
+* _Unforeseen fact changes_ 
+
+** An employee assigned to a shift calls in sick. 
+** An aeroplane scheduled to take off has a technical delay.
+** One of the machines or vehicles break down.
++ 
+Unforeseen fact changes benefit from using _backup planning_.
+
+* _Cannot assign all entities immediately_
++
+Leave some unassigned. For example:
++
+** There are 10 shifts at the same time to assign but only nine employees to handle shifts. 
++
+For this type of planning, use _overconstrained planning_.
+
+* _Unknown long term future facts_
++
+For example:
+
+** Hospital admissions for the next two weeks are reliable, but those for week three and four are less reliable, and for week five and beyond are not worth planning yet. 
++
+This problem benefits from _continuous planning_.
+
+* _Constantly changing problem facts_
++
+Use _real-time planning_.
+
+More CPU time results in a better planning solution.
+
+Planner allows you to start planning earlier, despite unforeseen changes, as the optimization algorithms support planning a solution that has already been partially planned. This is known as repeated planning.
 
 
+[[backupPlanning]]
+= Backup Planning
 
+Backup planning adds extra score constraints to create space in the planning for when things go wrong. That creates a backup plan within the plan itself.
+
+An example of backup planning is as follows:
+
+. Create an extra score constraint. For example:
++
+* Assign an employee as the spare employee (one for every 10 shifts at the same time).
+* Keep one hospital bed open in each department.
+. Change the planning problem when an unforeseen event occurs. 
++
+For example, if an employee calls in sick: 
++
+* Delete the sick employee and leave their shifts unassigned.
+* Restart the planning, starting from that solution, which now has a different score.
+
+The construction heuristics fills in the newly created gaps (probably with the spare employee) and the metaheuristics will improve it even further.
+
+
+[[overconstrainedPlanning]]
+= Overconstrained Planning
+
+When there is no feasible solution to assign all planning entities, it is preferable to assign as many entities as possible without breaking hard constraints.
+This is called overconstrained planning.
+
+By default, Planner assigns all planning entities, overloads the planning values, and therefore breaks hard constraints.
+There are two ways to avoid this:
+
+* Use <<nullablePlanningVariable,nullable>> planning variables, so that some entities are unassigned.
+* Add virtual values to catch the unassigned entities.
+
+
+[[overconstrainedPlanningWithNullableVariables]]
+== Overconstrained Planning with Nullable Variables
+
+If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
+
+image::RepeatedPlanning/OverconstrainedPlanning/overconstrainedPlanning.png[align="center"]
+
+To implement this:
+
+. Add an additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
+. Make the planning variable <<nullablePlanningVariable,nullable>>.
+. Add a score constraint on the new level (usually a medium constraint) to penalize the number of unassigned entities (or a weighted sum of them).
+
+
+[[overconstrainedPlanningWithVirutalValues]]
+== Overconstrained Planning with Virtual Values
+
+In overconstrained planning it is often useful to know which resources are lacking.
+In overconstrained planning with virtual values, the solution indicates which resources to buy.
+
+To implement this:
+
+. Add an additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
+. Add a number of virtual values. It can be difficult to determine a good formula to calculate that number:
+** Do not add too many, as that will decrease solver efficiency.
+** Importantly, do not add too few as that will lead to an infeasible solution.
+. Add a score constraint on the new level (usually a medium constraint) to penalize the number of virtual assigned entities (or a weighted sum of them).
+. Optionally, change all soft constraints to ignore virtual assigned entities.
 
 [[continuousPlanning]]
 == Continuous Planning (Windowed Planning)
 
-Continuous planning is the technique of planning one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly or even more frequently.
-Time is infinite, so planning all future time periods is impossible.
-Instead, plan a planning window of a fixed number of upcoming planning time periods, and consider anything beyond that out of scope.
+Continuous planning is the technique of planning one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly, or even more frequently.
+However, as time is infinite, planning all future time periods is impossible.
+
+A planning window allows you to have a fixed number of upcoming planning time periods.
 
 The planning window can be split up in several parts:
 
-* **History**: Past time periods that immutable. It contains only immovable entities.
-** Historic entities can affect score constraints that apply to movable entities too. For example in nurse rostering, a nurse that has worked the last five historic days in a row, should not be assigned on the first tentative day of the planning window because then she's work too many days in a row.
-** Do not load all historic entities in memory: even though immovable entities don't affect solving performance, they can cause out of memory problems when the data grows to years. Only load those that might still affect the current constraints with a good safety margin, for example load the past year.
-* **Tentative**: The first few time periods that are being planned freely for the last time. After this planning, their planning entities become <<immovablePlanningEntities,immovable>> or <<nonvolatileReplanning,semi-immovable>>.
-** The result of the tentative planning is usually shared with the business. For example in nurse rostering, the nurses will use this schedule to plan their personal lives. Changing that schedule later becomes disruptive (but if exceptions force us to do so, <<nonvolatileReplanning,we minimize disruption>>).
-* **Draft**: The latter time periods that are being planned freely, but not for the last time. They are likely to change again in the next planning effort.
-** The draft part is needed to assure that the tentatively planned entities will allow room of a good, feasible planning afterwards. It prevents you from painting yourself in a corner.
+* _History_ 
++
+Immutable past time periods. It contains only immovable entities.
++
+** Historic entities can also affect score constraints that apply to movable entities. For example, in nurse rostering, a nurse that has worked the last five historic days in a row should not be assigned on the first tentative day of the planning window, they will have worked too many consecutive days.
+** Do not load all historic entities in memory: even though immovable entities do not affect solving performance, they can cause out of memory problems when the data grows to years. Only load those that might still affect the current constraints with a good safety margin, for example load the past year.
+* _Tentative_ 
++
+The first few time periods that are being planned freely for the last time. After this planning, their planning entities become <<immovablePlanningEntities,immovable>> or <<nonvolatileReplanning,semi-immovable>>.
++
+** The result of the tentative planning is usually shared with the business. For example, in nurse rostering, the nurses will use this schedule to plan their personal lives. Changing that schedule later becomes disruptive, however, were exceptions force us to do so, disruption can be minimized (see <<nonvolatileReplanning,Nonvolatile Replanning>>).
+* _Draft_ 
++
+The latter time periods that are being planned freely, but not for the last time. They are likely to change again in the next planning effort.
++
+** The draft part is needed to assure that the tentatively planned entities will allow room of a good, feasible planning afterwards. 
++
 ** That draft part is usually not shared with the business yet, because it is too volatile. However, it is stored in the database and used a starting point for the next plan.
-* *Future* (out of scope): Planning entities that aren't in the current planning window.
-** If <<assigningTimeToPlanningEntities,time is a planning variable>>, there is no future part. Instead, if the planning window is too small to plan all entities, you're dealing with <<overconstrainedPlanning,overconstrained planning>>.
+
+* _Future_ (out of scope)
++ 
+Planning entities that are not in the current planning window.
++
+** If <<assigningTimeToPlanningEntities,time is a planning variable>>, there is no future part. Instead, if the planning window is too small to plan all entities, see  <<overconstrainedPlanning,overconstrained planning>>.
 
 image::RepeatedPlanning/continuousPlanningEmployeeRostering.png[align="center"]
 
-In the employee rostering example above, we replan every four days.
+In the employee rostering example above, we re-plan every four days.
 Each time, we actually plan a window of 12 days, but we only share the tentative roster of the next four days with the employees.
 
 [NOTE]
@@ -49,14 +158,21 @@ That too can be a week in advance.
 
 image::RepeatedPlanning/continuousPlanningPatientAdmissionSchedule.png[align="center"]
 
-In the hospital bed planning example above, notice the difference between the original planning of November 1th and the new planning of November 5th: some problem facts (F, H, I, J, K) changed meanwhile, which results in unrelated planning entities (G) changing too.
+In the hospital bed planning example above, notice the difference between the original planning of November 1st and the new planning of November 5th: some problem facts (F, H, I, J, K) changed in the meantime, which results in unrelated planning entities (G) changing too.
 
 
 [[immovablePlanningEntities]]
 === Immovable Planning Entities
 
-To make some planning entities immovable, simply add an entity `SelectionFilter` that returns `true` if an entity is movable and `false` if it is immovable.
+To make some planning entities immovable, add an entity `SelectionFilter` that returns `true` if an entity is movable, and `false` if it is immovable.
 
+The following procedure demonstrates how to do this using the nurse rostering example.
+
+[discrete]
+==== Configuring Immovable Planning Entities
+
+. Add the `SelectionFilter`:
++
 [source,java,options="nowrap"]
 ----
 public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
@@ -71,8 +187,8 @@ public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<Nu
 }
 ----
 
-And configure it like this:
-
+. Configure the `SelectionFilter`:
++
 [source,java,options="nowrap"]
 ----
 @PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)
@@ -83,21 +199,20 @@ public class ShiftAssignment {
 
 [WARNING]
 ====
-Custom `MoveListFactory` and `MoveIteratorFactory` implementations must make sure that they don't move immovable entities.
+Custom `MoveListFactory` and `MoveIteratorFactory` implementations must ensure that they do not move immovable entities.
 ====
 
 
 [[nonvolatileReplanning]]
-=== Nonvolatile Replanning to minimize disruption (Semi-movable Planning Entities)
+=== Nonvolatile Replanning to Minimize Disruption (Semi-movable Planning Entities)
 
-Replanning an existing plan can be very disruptive on the plan.
-If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable.
-In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.
-This is usually implemented by taxing all planning entities that change.
+Replanning an existing plan can be very disruptive. If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes. This is usually implemented by taxing all planning entities that change.
+
+The machine reassignment example demonstrates a nonvolatile solution to deal with real-time changes. 
 
 image::RepeatedPlanning/nonvolatileReplanning.png[align="center"]
 
-For example, in the Machine Reassignment example, the entity has both the planning variable `machine` and its original value ``originalMachine``:
+In the machine reassignment example, the entity has both the planning variable `machine` and its original value ``originalMachine``:
 
 [source,java,options="nowrap"]
 ----
