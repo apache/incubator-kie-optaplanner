@@ -17,7 +17,7 @@ The following examples demonstrate situations where planning solutions need to b
 * _Unforeseen fact changes_ 
 
 ** An employee assigned to a shift calls in sick. 
-** An aeroplane scheduled to take off has a technical delay.
+** An airplane scheduled to take off has a technical delay.
 ** One of the machines or vehicles break down.
 + 
 Unforeseen fact changes benefit from using _backup planning_.
@@ -255,21 +255,34 @@ The soft penalty of `-1000` means that a better solution is only accepted if it 
 [[realTimePlanning]]
 == Real-time Planning
 
-To do real-time planning, first combine <<backupPlanning,backup planning>> and <<continuousPlanning,continuous planning>> with short planning windows to lower the burden of real-time planning.
-As time passes, the problem itself changes:
+To do real-time planning, combine the following planning techniques:
+
+* <<backupPlanning,Backup planning>> - adding extra score constraints to allow for unforeseen changes).
+* <<continuousPlanning,Continuous planning>> - planning for one or more future planning periods.
+* Short planning windows.
++
+This lowers the burden of real-time planning.
+
+As time passes, the problem itself changes. Consider the vehicle routing use case:
 
 image::RepeatedPlanning/realTimePlanningVehicleRouting.png[align="center"]
 
-In the example above, three customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55` and in some cases after the vehicles already left.
-Planner can handle such scenario's with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable planning entities>>).
+In the example above, three customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55`, and in some cases, after the vehicles already left.
+
+Planner can handle such scenarios with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable planning entities>>).
 
 
 [[problemFactChange]]
-=== `ProblemFactChange`
+=== ProblemFactChange
 
-While the `Solver` is solving, an outside event might want to change one of the problem facts, for example an airplane is delayed and needs the runway at a later time.
+While the `Solver` is solving, one of the problem facts may be changed by an outside event. For example, an airplane is delayed and needs the runway at a later time.
+
+Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible.
+
+[IMPORTANT]
+====
 Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it.
-Instead, add a `ProblemFactChange` to the `Solver` which it will execute in the solver thread as soon as possible.
+====
 
 [source,java,options="nowrap"]
 ----
