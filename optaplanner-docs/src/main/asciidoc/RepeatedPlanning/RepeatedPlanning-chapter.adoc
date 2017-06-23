@@ -28,7 +28,7 @@ Leave some unassigned. For example:
 +
 ** There are 10 shifts at the same time to assign but only nine employees to handle shifts. 
 +
-For this type of planning, use _overconstrained planning_.
+For this type of planning, use <<overconstrainedPlanning,_overconstrained planning_>>.
 
 * _Unknown long term future facts_
 +
@@ -36,11 +36,11 @@ For example:
 
 ** Hospital admissions for the next two weeks are reliable, but those for week three and four are less reliable, and for week five and beyond are not worth planning yet. 
 +
-This problem benefits from _continuous planning_.
+This problem benefits from <<continuousPlanning,_continuous planning_>>.
 
 * _Constantly changing problem facts_
 +
-Use _real-time planning_.
+Use <<realTimePlanning,_real-time planning_>>.
 
 More CPU time results in a better planning solution.
 
@@ -277,12 +277,12 @@ Planner can handle such scenarios with `ProblemFactChange` (in combination with 
 
 While the `Solver` is solving, one of the problem facts may be changed by an outside event. For example, an airplane is delayed and needs the runway at a later time.
 
-Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible.
-
 [IMPORTANT]
 ====
-Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it.
+Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it. 
 ====
+
+Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible. For example:
 
 [source,java,options="nowrap"]
 ----
@@ -308,7 +308,27 @@ public interface ProblemFactChange<Solution_> {
 }
 ----
 
-Here's an example:
+
+[WARNING]
+====
+The `ScoreDirector` must be updated with any change on the problem facts of planning entities in a `ProblemFactChange`.
+====
+
+
+To write a `ProblemFactChange` correctly, it is important to understand the behavior of <<cloningASolution,a planning clone>>. 
+
+A planning clone of a solution must fulfill these requirements:
+
+* The clone must represent the same planning problem. Usually it reuses the same instances of the problem facts and problem fact collections as the original.
+
+* The clone must use different, cloned instances of the entities and entity collections. Changes to an original Solution entity’s variables must not affect its clone.
+
+
+[[problemFactChangeExample]]
+==== Cloud Balancing ProblemFactChange Example
+
+Consider the following example of a `ProblemFactChange` implementation in the cloud balancing use case:
+
 
 [source,java,options="nowrap"]
 ----
@@ -337,60 +357,67 @@ Here's an example:
     }
 ----
 
-[WARNING]
-====
-Any change on the problem facts or planning entities in a `ProblemFactChange` must be told to the ``ScoreDirector``.
-====
+
+. Any change in a `ProblemFactChange` must be done on the `Solution` instance of ``scoreDirector.getWorkingSolution()``.
++
+
+. The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``.
++
+
+* The `workingSolution` in the `Solver` is never the same instance as the `Solution` in the rest of your application: it is a planning clone.
+* A planning clone also clones the planning entities and planning entity collections.
++ 
+So any change on the planning entities must happen on the instances held by ``scoreDirector.getWorkingSolution()``.
+
+. Use the method `ScoreDirector.lookUpWorkingObject()` to translate and retrieve the working solution's instance of an object.
+
+. A planning clone does not clone the problem facts, nor the problem fact collections.
+_Therefore the ``__workingSolution__`` and the ``__bestSolution__`` share the same problem fact instances and the same problem fact list instances._
++
+Any problem fact or problem fact list changed by a `ProblemFactChange` must be problem cloned first (which can imply rerouting references in other problem facts and planning entities). Otherwise, if the `workingSolution` and `bestSolution` are used in different threads (for example a solver thread and a GUI event thread), a race condition can occur.
+
+[[cloningSolutionsToAvoidRaceConditions]]
+==== Cloning Solutions to Avoid Race Conditions in Real-time Planning
+
+Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized solution. This is acceptable, provided the first solver phase can handle it.
+
+All construction heuristics solver phases can handle a partially initialized solution, so it is recommended to configure such a solver phase as the first phase.
+
 
 image::RepeatedPlanning/realTimePlanningConcurrencySequenceDiagram.png[align="center"]
 
-[IMPORTANT]
-====
-To write a `ProblemFactChange` correctly, it's important to understand the behaviour of <<cloningASolution,a planning clone>>:
+The process occurs as follows:
 
-* Any change in a `ProblemFactChange` must be done on the `Solution` instance of ``scoreDirector.getWorkingSolution()``.
-The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``.
-So the `workingSolution` in the `Solver` is never the same instance as the `Solution` in the rest of your application: it is a planning clone.
-Use the method `ScoreDirector.lookUpWorkingObject()` to translate an retrieve the working solution's instance of an object.
-* A planning clone also clones the planning entities and planning entity collections.
-So any change on the planning entities must happen on the instances hold by ``scoreDirector.getWorkingSolution()``.
-* A planning clone does not clone the problem facts, nor the problem fact collections.
-_Therefore the ``__workingSolution__`` and the ``__bestSolution__`` share the same problem fact instances and the same problem fact list instances._
-+ 
-Any problem fact or problem fact list changed by a `ProblemFactChange` must be problem cloned first (which can imply rerouting references in other problem facts and planning entities). Otherwise, if the `workingSolution` and `bestSolution` are used in different threads (for example a solver thread and a GUI event thread), a race condition can occur.
-
-====
-
-[NOTE]
-====
-Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized solution.
-That's fine, as long as the first solver phase can handle it.
-All construction heuristics solver phases can handle that, so it's recommended to configure such a solver phase as the first phase.
-====
-
-In essence, the `Solver` stops, runs the `ProblemFactChange` and **restarts**.
+. The `Solver` stops.
+. Runs the `ProblemFactChange`.
+. **restarts**.
++
 This is a _warm start_ because its initial solution is the adjusted best solution of the previous run.
-Each solver phase runs again.
+
+. Each solver phase runs again.
++
 This implies the construction heuristic runs again, but because little or no planning variables are uninitialized (unless you have a <<nullablePlanningVariable,nullable planning variable>>), it finishes much quicker than in a cold start.
 
-Each configured `Termination` resets (both in solver and phase configuration), but a previous call to `terminateEarly()` is not undone.
-Normally however, you won't configure any `Termination` (except in daemon mode), just call `Solver.terminateEarly()` when the results are needed.
-Alternatively, do configure a `Termination` and use the daemon mode in combination with `<<SolverEventListener,BestSolutionChangedEvent>>` as described below.
+. Each configured `Termination` resets (both in solver and phase configuration), but a previous call to `terminateEarly()` is not undone.
++
+`Termination` is not usually configured (except in daemon mode); instead, `Solver.terminateEarly()` is called when the results are needed. Alternatively, configure a `Termination` and use the daemon mode in combination with `<<SolverEventListener,BestSolutionChangedEvent>>` as described in the following section.
 
 
 [[daemon]]
 === Daemon: `solve()` Does Not Return
 
-In real-time planning, it's often useful to have a solver thread wait when it runs out of work, and immediately resume solving a problem once new problem fact changes are added.
-Putting the `Solver` in daemon mode has these effects:
+In real-time planning, it is often useful to have a solver thread wait when it runs out of work, and immediately resume solving a problem once new problem fact changes are added.
+Putting the `Solver` in daemon mode has the following effects:
 
-* If the ``Solver``'s `Termination` terminates, it does not return from `solve()` but blocks its thread instead (which frees up CPU power).
+* If the ``Solver``'s `Termination` terminates, it does not return from `solve()`, but blocks its thread instead (which frees up CPU power).
 ** Except for ``terminateEarly()``, which does make it return from ``solve()``, freeing up system resources and allowing an application to shutdown gracefully.
 ** If a `Solver` starts with an empty planning entity collection, it waits in the blocked state immediately.
 * If a `ProblemFactChange` is added, it goes into the running state, applies the `ProblemFactChange` and runs the `Solver` again.
 
-To configure the daemon mode:
+To use the `Solver` in daemon mode:
 
+. Enable `daemon` mode on the `Solver`:
++
 [source,xml,options="nowrap"]
 ----
 <solver>
@@ -401,13 +428,15 @@ To configure the daemon mode:
 
 [WARNING]
 ====
-Don't forget to call `Solver.terminateEarly()` when your application needs to shutdown to avoid killing the solver thread unnaturally.
+Do not forget to call `Solver.terminateEarly()` when your application needs to shutdown to avoid killing the solver thread unnaturally.
 ====
 
-Subscribe to the `<<SolverEventListener,BestSolutionChangedEvent>>` to process new best solutions found by the solver thread.
-A `BestSolutionChangedEvent` doesn't guarantee that every `ProblemFactChange` has been processed already, nor that the solution is initialized and feasible.
-To ignore ``BestSolutionChangedEvent``s with such invalid solutions, do this:
+. Subscribe to the `<<SolverEventListener,BestSolutionChangedEvent>>` to process new best solutions found by the solver thread.
++
+A `BestSolutionChangedEvent` does not guarantee that every `ProblemFactChange` has been processed already, nor that the solution is initialized and feasible.
 
+. To ignore ``BestSolutionChangedEvent``s with such invalid solutions, do the following:
++
 [source,java,options="nowrap"]
 ----
     public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) {
@@ -419,4 +448,4 @@ To ignore ``BestSolutionChangedEvent``s with such invalid solutions, do this:
     }
 ----
 
-Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions, but do accept infeasible solutions too.
+. Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions, but do accept infeasible solutions too.
