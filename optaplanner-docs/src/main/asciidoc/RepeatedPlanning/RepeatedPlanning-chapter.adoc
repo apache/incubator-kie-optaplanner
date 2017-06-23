@@ -425,7 +425,7 @@ To use the `Solver` in daemon mode:
   ...
 </solver>
 ----
-
++
 [WARNING]
 ====
 Do not forget to call `Solver.terminateEarly()` when your application needs to shutdown to avoid killing the solver thread unnaturally.
