@@ -34,13 +34,15 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Sorts a selection {@link List} based on a {@link SelectionSorterWeightFactory}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
+ * @param <W> the weight type
  */
-public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSorter<Solution_, T> {
+public class WeightFactorySelectionSorter<Solution_, T, W extends Comparable<W>>
+        implements SelectionSorter<Solution_, T> {
 
-    private final SelectionSorterWeightFactory<Solution_, T> selectionSorterWeightFactory;
-    private final Comparator<Comparable> appliedWeightComparator;
+    private final SelectionSorterWeightFactory<Solution_, T, W> selectionSorterWeightFactory;
+    private final Comparator<W> appliedWeightComparator;
 
-    public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution_, T> selectionSorterWeightFactory,
+    public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution_, T, W> selectionSorterWeightFactory,
             SelectionSorterOrder selectionSorterOrder) {
         this.selectionSorterWeightFactory = selectionSorterWeightFactory;
         switch (selectionSorterOrder) {
@@ -67,9 +69,9 @@ public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSort
      * of {@link PlanningEntity}, planningValue,  {@link Move} or {@link Selector}
      */
     public void sort(Solution_ solution, List<T> selectionList) {
-        SortedMap<Comparable, T> selectionMap = new TreeMap<>(appliedWeightComparator);
+        SortedMap<W, T> selectionMap = new TreeMap<>(appliedWeightComparator);
         for (T selection : selectionList) {
-            Comparable difficultyWeight = selectionSorterWeightFactory.createSorterWeight(solution, selection);
+            W difficultyWeight = selectionSorterWeightFactory.createSorterWeight(solution, selection);
             T previous = selectionMap.put(difficultyWeight, selection);
             if (previous != null) {
                 throw new IllegalStateException("The selectionList contains 2 times the same selection ("

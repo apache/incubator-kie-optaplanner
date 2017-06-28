@@ -22,11 +22,13 @@ import org.optaplanner.examples.curriculumcourse.domain.Course;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
+import org.optaplanner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory.LectureDifficultyWeight;
 
-public class LectureDifficultyWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Lecture> {
+public class LectureDifficultyWeightFactory
+        implements SelectionSorterWeightFactory<CourseSchedule, Lecture, LectureDifficultyWeight> {
 
     @Override
-    public Comparable createSorterWeight(CourseSchedule schedule, Lecture lecture) {
+    public LectureDifficultyWeight createSorterWeight(CourseSchedule schedule, Lecture lecture) {
         Course course = lecture.getCourse();
         int unavailablePeriodPenaltyCount = 0;
         for (UnavailablePeriodPenalty penalty : schedule.getUnavailablePeriodPenaltyList()) {

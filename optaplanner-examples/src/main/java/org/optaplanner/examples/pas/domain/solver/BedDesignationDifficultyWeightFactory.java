@@ -21,12 +21,14 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.domain.Room;
+import org.optaplanner.examples.pas.domain.solver.BedDesignationDifficultyWeightFactory.BedDesignationDifficultyWeight;
 
-public class BedDesignationDifficultyWeightFactory
-        implements SelectionSorterWeightFactory<PatientAdmissionSchedule, BedDesignation> {
+public class BedDesignationDifficultyWeightFactory implements
+        SelectionSorterWeightFactory<PatientAdmissionSchedule, BedDesignation, BedDesignationDifficultyWeight> {
 
     @Override
-    public Comparable createSorterWeight(PatientAdmissionSchedule schedule, BedDesignation bedDesignation) {
+    public BedDesignationDifficultyWeight createSorterWeight(
+            PatientAdmissionSchedule schedule, BedDesignation bedDesignation) {
         int hardDisallowedCount = 0;
         int softDisallowedCount = 0;
         for (Room room : schedule.getRoomList()) {

@@ -21,11 +21,13 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Period;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
+import org.optaplanner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory.PeriodStrengthWeight;
 
-public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Period> {
+public class PeriodStrengthWeightFactory
+        implements SelectionSorterWeightFactory<CourseSchedule, Period, PeriodStrengthWeight> {
 
     @Override
-    public Comparable createSorterWeight(CourseSchedule schedule, Period period) {
+    public PeriodStrengthWeight createSorterWeight(CourseSchedule schedule, Period period) {
         int unavailablePeriodPenaltyCount = 0;
         for (UnavailablePeriodPenalty penalty : schedule.getUnavailablePeriodPenaltyList()) {
             if (penalty.getPeriod().equals(period)) {

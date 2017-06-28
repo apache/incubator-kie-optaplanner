@@ -21,10 +21,11 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Row;
 
-public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQueens, Row> {
+public class RowStrengthWeightFactory
+        implements SelectionSorterWeightFactory<NQueens, Row, RowStrengthWeightFactory.RowStrengthWeight> {
 
     @Override
-    public Comparable createSorterWeight(NQueens nQueens, Row row) {
+    public RowStrengthWeight createSorterWeight(NQueens nQueens, Row row) {
         int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), row.getIndex());
         return new RowStrengthWeight(row, distanceFromMiddle);
     }
