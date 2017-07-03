@@ -8,7 +8,7 @@
 :experimental:
 
 [[introductionToRepeatedPlanning]]
-= Introduction to Repeated Planning
+== Introduction to Repeated Planning
 
 The problem facts used to create a solution may change before or during the execution of that solution. Delaying planning in order to lower the risk of problem facts changing is not ideal, as an incomplete plan is preferable to no plan.
 
@@ -48,7 +48,7 @@ Planner allows you to start planning earlier, despite unforeseen changes, as the
 
 
 [[backupPlanning]]
-= Backup Planning
+== Backup Planning
 
 Backup planning adds extra score constraints to create space in the planning for when things go wrong. That creates a backup plan within the plan itself.
 
@@ -69,7 +69,7 @@ The construction heuristics fills in the newly created gaps (probably with the s
 
 
 [[overconstrainedPlanning]]
-= Overconstrained Planning
+== Overconstrained Planning
 
 When there is no feasible solution to assign all planning entities, it is preferable to assign as many entities as possible without breaking hard constraints.
 This is called overconstrained planning.
@@ -82,7 +82,7 @@ There are two ways to avoid this:
 
 
 [[overconstrainedPlanningWithNullableVariables]]
-== Overconstrained Planning with Nullable Variables
+=== Overconstrained Planning with Nullable Variables
 
 If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
 
@@ -96,7 +96,7 @@ To implement this:
 
 
 [[overconstrainedPlanningWithVirutalValues]]
-== Overconstrained Planning with Virtual Values
+=== Overconstrained Planning with Virtual Values
 
 In overconstrained planning it is often useful to know which resources are lacking.
 In overconstrained planning with virtual values, the solution indicates which resources to buy.
@@ -111,7 +111,7 @@ To implement this:
 . Optionally, change all soft constraints to ignore virtual assigned entities.
 
 [[continuousPlanning]]
-== Continuous Planning (Windowed Planning)
+=== Continuous Planning (Windowed Planning)
 
 Continuous planning is the technique of planning one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly, or even more frequently.
 However, as time is infinite, planning all future time periods is impossible.
@@ -162,14 +162,14 @@ In the hospital bed planning example above, notice the difference between the or
 
 
 [[immovablePlanningEntities]]
-=== Immovable Planning Entities
+==== Immovable Planning Entities
 
 To make some planning entities immovable, add an entity `SelectionFilter` that returns `true` if an entity is movable, and `false` if it is immovable.
 
 The following procedure demonstrates how to do this using the nurse rostering example.
 
 [discrete]
-==== Configuring Immovable Planning Entities
+===== Configuring Immovable Planning Entities
 
 . Add the `SelectionFilter`:
 +
@@ -204,7 +204,7 @@ Custom `MoveListFactory` and `MoveIteratorFactory` implementations must ensure t
 
 
 [[nonvolatileReplanning]]
-=== Nonvolatile Replanning to Minimize Disruption (Semi-movable Planning Entities)
+==== Nonvolatile Replanning to Minimize Disruption (Semi-movable Planning Entities)
 
 Replanning an existing plan can be very disruptive. If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes. This is usually implemented by taxing all planning entities that change.
 
