@@ -210,7 +210,7 @@ Replanning an existing plan can be very disruptive. If the plan affects humans (
 
 The machine reassignment example demonstrates a nonvolatile solution to deal with real-time changes. 
 
-image::RepeatedPlanning/nonvolatileReplanning.png[align="center"]
+image::RepeatedPlanning/nonDisruptiveReplanning.png[align="center"]
 
 In the machine reassignment example, the entity has both the planning variable `machine` and its original value ``originalMachine``:
 
