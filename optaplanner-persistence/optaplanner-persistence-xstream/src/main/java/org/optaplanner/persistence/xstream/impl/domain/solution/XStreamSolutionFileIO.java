@@ -39,6 +39,8 @@ public class XStreamSolutionFileIO implements SolutionFileIO {
 
     public XStreamSolutionFileIO() {
         xStream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
         xStream.setMode(XStream.ID_REFERENCES);
     }
 

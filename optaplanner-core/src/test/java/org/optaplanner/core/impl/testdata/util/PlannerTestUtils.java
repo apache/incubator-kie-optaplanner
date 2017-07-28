@@ -75,6 +75,8 @@ public class PlannerTestUtils {
 
     public static <T> T serializeAndDeserializeWithXStream(T input) {
         XStream xStream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
         xStream.setMode(XStream.ID_REFERENCES);
         if (input != null) {
             xStream.processAnnotations(input.getClass());

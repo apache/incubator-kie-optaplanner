@@ -374,6 +374,8 @@ public class XStreamScoreConverterTest {
 
     public static <T> T serializeAndDeserializeWithXStream(T input) {
         XStream xStream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(input.getClass());
         String xmlString = xStream.toXML(input);
@@ -382,6 +384,8 @@ public class XStreamScoreConverterTest {
 
     public static <T> void assertXStreamXml(String regex, T input) {
         XStream xStream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
         xStream.setMode(XStream.NO_REFERENCES);
         xStream.processAnnotations(input.getClass());
         String xml = xStream.toXML(input);
