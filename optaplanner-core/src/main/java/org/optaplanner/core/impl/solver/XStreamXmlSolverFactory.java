@@ -49,6 +49,8 @@ public class XStreamXmlSolverFactory<Solution_> extends AbstractSolverFactory<So
      */
     public static XStream buildXStream() {
         XStream xStream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.aliasSystemAttribute("xStreamId", "id");
         xStream.aliasSystemAttribute("xStreamRef", "reference");
