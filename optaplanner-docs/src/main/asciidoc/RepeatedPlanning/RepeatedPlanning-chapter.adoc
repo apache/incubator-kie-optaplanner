@@ -48,7 +48,7 @@ Planner allows you to start planning earlier, despite unforeseen changes, as the
 
 
 [[backupPlanning]]
-= Backup Planning
+== Backup Planning
 
 Backup planning adds extra score constraints to create space in the planning for when things go wrong. That creates a backup plan within the plan itself.
 
@@ -86,7 +86,7 @@ There are two ways to avoid this:
 
 If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
 
-image::RepeatedPlanning/OverconstrainedPlanning/overconstrainedPlanning.png[align="center"]
+image::RepeatedPlanning/overconstrainedPlanning.png[align="center"]
 
 To implement this:
 
@@ -111,17 +111,11 @@ To implement this:
 . Optionally, change all soft constraints to ignore virtual assigned entities.
 
 [[continuousPlanning]]
-=== Continuous Planning (Windowed Planning)
+== Continuous Planning (Windowed Planning)
 
 Continuous planning is the technique of planning one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly, or even more frequently.
 However, as time is infinite, planning all future time periods is impossible.
 
-<<<<<<< 180e9d20868bd998f9645581980a83d2385ee0a7
-=======
-Continuous planning is the technique of planning one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly, or even more frequently.
-However, as time is infinite, planning all future time periods is impossible.
-
->>>>>>> New branch and copied file RepeatedPlanning.adoc as unable to resolve conflicts on previous pull request
 A planning window allows you to have a fixed number of upcoming planning time periods.
 
 The planning window can be split up in several parts:
