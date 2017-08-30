@@ -274,13 +274,18 @@ public class ConfigUtils {
 
     public static List<Class<?>> getAllAnnotatedLineageClasses(Class<?> bottomClass,
             Class<? extends Annotation> annotation) {
+        if (bottomClass == null) {
+            throw new IllegalArgumentException("The inspected class (bottomClass) cannot be null");
+        }
         if (!bottomClass.isAnnotationPresent(annotation)) {
             return Collections.emptyList();
         }
         List<Class<?>> lineageClassList = new ArrayList<>();
         lineageClassList.add(bottomClass);
         Class<?> superclass = bottomClass.getSuperclass();
-        lineageClassList.addAll(getAllAnnotatedLineageClasses(superclass, annotation));
+        if (superclass != null) { // superclass is null when bottomClass is an interface
+            lineageClassList.addAll(getAllAnnotatedLineageClasses(superclass, annotation));
+        }
         for (Class<?> superInterface : bottomClass.getInterfaces()) {
             lineageClassList.addAll(getAllAnnotatedLineageClasses(superInterface, annotation));
         }
