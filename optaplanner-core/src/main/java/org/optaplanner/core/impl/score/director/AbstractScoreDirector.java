@@ -466,11 +466,14 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         }
         Score workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
+            assertWorkingScoreFromScratch(workingScore,
+                    "assertShadowVariablesAreNotStale(" + expectedWorkingScore + ", " + completedAction + ")");
             throw new IllegalStateException("Impossible " + VariableListener.class.getSimpleName() + " corruption:"
                     + " the expectedWorkingScore (" + expectedWorkingScore
                     + ") is not the workingScore (" + workingScore
                     + ") after all " + VariableListener.class.getSimpleName()
-                    + "s were triggered without changes to the genuine variables.\n"
+                    + "s were triggered without changes to the genuine variables"
+                    + " after completedAction (" + completedAction + ").\n"
                     + "But all the shadow variable values are still the same, so this is impossible.");
         }
     }
