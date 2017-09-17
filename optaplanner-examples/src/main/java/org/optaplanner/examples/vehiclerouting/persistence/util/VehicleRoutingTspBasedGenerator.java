@@ -138,7 +138,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
         for (org.optaplanner.examples.vehiclerouting.domain.location.Location location : locationList.subList(1, locationList.size())) {
             Customer customer = new Customer();
             customer.setId(location.getId());
-            customer.setLocation(location);
+            customer.setLocations(Collections.singletonList(location));
             customerList.add(customer);
         }
         for (Visit visit : tspSolution.getVisitList()) {
