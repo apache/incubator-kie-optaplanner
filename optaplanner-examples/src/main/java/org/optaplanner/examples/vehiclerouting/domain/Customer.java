@@ -19,6 +19,9 @@ package org.optaplanner.examples.vehiclerouting.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
@@ -27,6 +30,8 @@ import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 
+import java.util.List;
+
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
 @XStreamAlias("VrpCustomer")
 @XStreamInclude({
@@ -34,7 +39,6 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedC
 })
 public class Customer extends AbstractPersistable implements Standstill {
 
-    protected Location location;
     protected int demand;
 
     // Planning variables: changes during planning, between score calculations.
@@ -44,14 +48,41 @@ public class Customer extends AbstractPersistable implements Standstill {
     protected Customer nextCustomer;
     protected Vehicle vehicle;
 
-    @Override
-    public Location getLocation() {
-        return location;
+    protected List<Location> locations;
+    protected Integer selectedLocation = 0;
+
+    public void setSelectedLocation(Integer selectedLocation){
+        this.selectedLocation = selectedLocation;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    @PlanningVariable(valueRangeProviderRefs = {"selectedLocation"})
+    public Integer getSelectedLocation(){
+        return selectedLocation;
     }
+
+    @ValueRangeProvider(id = "selectedLocation")
+    public CountableValueRange<Integer> getSelectableLocations(){
+        return ValueRangeFactory.createIntValueRange(0, locations.size());
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
+
+    public List<Location> getLocations(){
+        return locations;
+    }
+
+    @Override
+    public Location getLocation() {
+        return locations.get(selectedLocation);
+    }
+
+    @Override
+    public String toString() {
+        return "Customer " + getId();
+    }
+
 
     public int getDemand() {
         return demand;
@@ -111,7 +142,7 @@ public class Customer extends AbstractPersistable implements Standstill {
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public long getDistanceFrom(Standstill standstill) {
-        return standstill.getLocation().getDistanceTo(location);
+        return standstill.getLocation().getDistanceTo(getLocation());
     }
 
     /**
@@ -119,15 +150,8 @@ public class Customer extends AbstractPersistable implements Standstill {
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public long getDistanceTo(Standstill standstill) {
-        return location.getDistanceTo(standstill.getLocation());
+        return getLocation().getDistanceTo(standstill.getLocation());
     }
 
-    @Override
-    public String toString() {
-        if (location.getName() == null) {
-            return super.toString();
-        }
-        return location.getName();
-    }
 
 }

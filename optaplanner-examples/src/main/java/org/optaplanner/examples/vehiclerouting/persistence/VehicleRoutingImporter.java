@@ -18,10 +18,7 @@ package org.optaplanner.examples.vehiclerouting.persistence;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
@@ -300,7 +297,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
             List<Customer> customerList = new ArrayList<>(customerListSize);
             for (int i = 0; i < customerListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpacesOrTabs(line.trim(), timewindowed ? 5 : 2);
+                String[] lineTokens = splitBySpacesOrTabs(line.trim());
                 long id = Long.parseLong(lineTokens[0]);
                 int demand = Integer.parseInt(lineTokens[1]);
                 // Depots have no demand
@@ -327,12 +324,21 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                 } else {
                     Customer customer = timewindowed ? new TimeWindowedCustomer() : new Customer();
                     customer.setId(id);
-                    Location location = locationMap.get(id);
-                    if (location == null) {
-                        throw new IllegalArgumentException("The customer with id (" + id
-                                + ") has no location (" + location + ").");
+                    List<Location> locations = new ArrayList<>(lineTokens.length-2);
+                    for (int j = 2; j < lineTokens.length; ++j){
+                        long locationId = Long.parseLong(lineTokens[j]);
+                        Location location = locationMap.get(locationId);
+                        if (location == null)
+                            throw new IllegalArgumentException("Missing location (id=" + locationId + ") specified for customer id=" + id);
+                        locations.add(location);
                     }
-                    customer.setLocation(location);
+                    customer.setLocations(locations);
+//                    Location location = locationMap.get(id);
+//                    if (location == null) {
+//                        throw new IllegalArgumentException("The customer with id (" + id
+//                                + ") has no location (" + location + ").");
+//                    }
+//                    customer.setLocation(location);
                     customer.setDemand(demand);
                     if (timewindowed) {
                         TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
@@ -428,7 +434,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                 } else {
                     Customer customer = new Customer();
                     customer.setId((long) i);
-                    customer.setLocation(location);
+                    customer.setLocations(Collections.singletonList(location));
                     int demand = Integer.parseInt(lineTokens[0]);
                     customer.setDemand(demand);
                     // Notice that we leave the PlanningVariable properties on null
@@ -508,7 +514,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                 } else {
                     TimeWindowedCustomer customer = new TimeWindowedCustomer();
                     customer.setId(id);
-                    customer.setLocation(location);
+                    customer.setLocations(Collections.singletonList(location));
                     customer.setDemand(demand);
                     customer.setReadyTime(readyTime);
                     // Score constraint arrivalAfterDueTimeAtDepot is a built-in hard constraint in VehicleRoutingImporter

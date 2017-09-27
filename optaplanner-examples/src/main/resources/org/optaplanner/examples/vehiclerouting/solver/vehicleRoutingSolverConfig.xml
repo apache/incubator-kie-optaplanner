@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <environmentMode>FAST_ASSERT</environmentMode>
   <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
   <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
   <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
@@ -26,12 +26,6 @@
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
-      <subChainChangeMoveSelector>
-        <selectReversingMoveToo>true</selectReversingMoveToo>
-      </subChainChangeMoveSelector>
-      <subChainSwapMoveSelector>
-        <selectReversingMoveToo>true</selectReversingMoveToo>
-      </subChainSwapMoveSelector>
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>200</lateAcceptanceSize>
