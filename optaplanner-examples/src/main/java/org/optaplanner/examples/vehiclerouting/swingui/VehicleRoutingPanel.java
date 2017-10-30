@@ -16,14 +16,16 @@
 
 package org.optaplanner.examples.vehiclerouting.swingui;
 
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.Random;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
@@ -39,6 +41,7 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
 
     private Random demandRandom = new Random(37);
     private Long nextLocationId = null;
+    private long id = 10000;
 
     public VehicleRoutingPanel() {
         setLayout(new BorderLayout());
@@ -46,6 +49,26 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
         vehicleRoutingWorldPanel = new VehicleRoutingWorldPanel(this);
         vehicleRoutingWorldPanel.setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
         tabbedPane.add("World", vehicleRoutingWorldPanel);
+        JButton jButton = new JButton();
+        jButton.setAction(new AbstractAction("Add vehicle") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doProblemFactChange(scoreDirector -> {
+                    VehicleRoutingSolution workingSolution = scoreDirector.getWorkingSolution();
+                    Vehicle vehicle = new Vehicle();
+                    vehicle.setId(id);
+                    id++;
+                    vehicle.setCapacity(100);
+                    vehicle.setDepot(workingSolution.getDepotList().get(0));
+                    scoreDirector.beforeEntityAdded(vehicle);
+                    workingSolution.getVehicleList().add(vehicle);
+                    scoreDirector.afterEntityAdded
+                        (vehicle);
+                    scoreDirector.triggerVariableListeners();
+                });
+            }
+        });
+        vehicleRoutingWorldPanel.add(jButton);
         add(tabbedPane, BorderLayout.CENTER);
     }
 
