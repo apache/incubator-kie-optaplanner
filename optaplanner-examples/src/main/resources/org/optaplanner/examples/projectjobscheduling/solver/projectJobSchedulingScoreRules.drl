@@ -94,10 +94,10 @@ end
 
 rule "totalMakespan"
     when
-        accumulate(
+        $maxProjectEndDate : Integer() from accumulate(
             Allocation(jobType == JobType.SINK, $endDate : endDate);
-            $maxProjectEndDate : max($endDate)
+            max($endDate)
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, 1, - (Integer) $maxProjectEndDate);
+        scoreHolder.addSoftConstraintMatch(kcontext, 1, - $maxProjectEndDate);
 end

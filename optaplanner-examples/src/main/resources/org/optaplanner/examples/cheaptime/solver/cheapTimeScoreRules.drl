@@ -111,9 +111,9 @@ rule "calculateIdleCost"
         MachinePeriodPart($machine : machine, $period : period, active == true)
         exists MachinePeriodPart(machine == $machine, period == $period - 1, active == false)
         exists MachinePeriodPart(machine == $machine, period < $period - 1, active == true)
-        accumulate (
+        $lastActivePeriod : Integer() from accumulate (
             MachinePeriodPart(machine == $machine, $activePeriod : period < $period - 1, active == true);
-            $lastActivePeriod : max($activePeriod)
+            max($activePeriod)
         )
         $idlePeriodPowerPriceList : ArrayList() from collect (
             PeriodPowerPrice(
