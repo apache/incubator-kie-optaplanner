@@ -95,6 +95,10 @@ public class EntityDescriptor<Solution_> {
         this.entityClass = entityClass;
     }
 
+    // ************************************************************************
+    // Lifecycle methods
+    // ************************************************************************
+
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processEntityAnnotations(descriptorPolicy);
         processValueRangeProviderAnnotations(descriptorPolicy);
@@ -234,6 +238,7 @@ public class EntityDescriptor<Solution_> {
         investigateParentsToLinkInherited(entityClass);
         createEffectiveVariableDescriptorMaps();
         createEffectiveMovableEntitySelectionFilter();
+        // linkVariableDescriptors() is in a separate loop
     }
 
     private void investigateParentsToLinkInherited(Class<?> investigateClass) {
@@ -254,12 +259,6 @@ public class EntityDescriptor<Solution_> {
             inheritedEntityDescriptorList.add(entityDescriptor);
         } else {
             investigateParentsToLinkInherited(potentialEntityClass);
-        }
-    }
-
-    public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : declaredShadowVariableDescriptorMap.values()) {
-            shadowVariableDescriptor.linkShadowSources(descriptorPolicy);
         }
     }
 
@@ -300,6 +299,15 @@ public class EntityDescriptor<Solution_> {
             effectiveMovableEntitySelectionFilter = selectionFilterList.get(0);
         } else {
             effectiveMovableEntitySelectionFilter = new CompositeSelectionFilter(selectionFilterList);
+        }
+    }
+
+    public void linkVariableDescriptors(DescriptorPolicy descriptorPolicy) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : declaredGenuineVariableDescriptorMap.values()) {
+            variableDescriptor.linkVariableDescriptors(descriptorPolicy);
+        }
+        for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : declaredShadowVariableDescriptorMap.values()) {
+            shadowVariableDescriptor.linkVariableDescriptors(descriptorPolicy);
         }
     }
 
