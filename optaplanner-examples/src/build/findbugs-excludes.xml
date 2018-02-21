@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <Match>
+    <!--
+     False positives - classes implementing List interface are serializable.
+    -->
+    <Class name="org.optaplanner.examples.common.swingui.timetable.TimeTableLayout"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+</FindBugsFilter>

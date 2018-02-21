@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Move
  */
-public abstract class AbstractMove<Solution_> implements Move<Solution_> {
+public abstract class AbstractMove<Solution_> implements Move<Solution_>, Serializable {
 
     @Override
     public String getSimpleMoveTypeDescription() {

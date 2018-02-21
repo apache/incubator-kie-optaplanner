@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <Match>
+    <!--
+    Uninitialized fields are intentional in this class - to make sure the uninitialized value is the same as JVM
+    would use for uninitialized fields in facts.
+    -->
+    <Class name="org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenPrimitiveValueProvider"/>
+    <Bug pattern="UR_UNINIT_READ"/>
+  </Match>
+</FindBugsFilter>

@@ -107,6 +107,10 @@ public class SolutionConverter<Solution_> extends LoggingMain {
 
     public void convertAll() {
         File[] inputFiles = inputDir.listFiles();
+        if (inputFiles == null) {
+            inputFiles = new File[]{};
+        }
+
         Arrays.sort(inputFiles, new ProblemFileComparator());
         for (File inputFile : inputFiles) {
             if (acceptInputFile(inputFile)) {
