@@ -94,7 +94,8 @@ public class BenchmarkResultIO {
     private File[] retrieveSortedBenchmarkReportDirectories(File benchmarkDirectory) {
         File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
         if (benchmarkReportDirectories == null) {
-            return new File[]{};
+            throw new IllegalStateException("Unable to list subdirectories in a directory ("
+                                                    + benchmarkDirectory.getAbsolutePath() + ").");
         } else {
             Arrays.sort(benchmarkReportDirectories);
             return benchmarkReportDirectories;

@@ -98,7 +98,7 @@ public class SolutionConverter<Solution_> extends LoggingMain {
         this.outputSolutionFileIO = outputSolutionFileIO;
         File dataDir = CommonApp.determineDataDir(dataDirName);
         inputDir = new File(dataDir, inputDirName);
-        if (!inputDir.exists()) {
+        if (!inputDir.exists() || !inputDir.isDirectory()) {
             throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
                     + ") does not exist.");
         }
@@ -108,7 +108,7 @@ public class SolutionConverter<Solution_> extends LoggingMain {
     public void convertAll() {
         File[] inputFiles = inputDir.listFiles();
         if (inputFiles == null) {
-            inputFiles = new File[]{};
+            throw new IllegalStateException("Unable to list files in a directory (" + inputDir.getAbsolutePath() + ").");
         }
 
         Arrays.sort(inputFiles, new ProblemFileComparator());

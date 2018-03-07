@@ -15,6 +15,10 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings(value = "UR_UNINIT_READ", justification = "Uninitialized fields are intentional in this class - "
+        + "to make sure the uninitialized value is the same as JVM would use for uninitialized fields in facts.")
 class TestGenPrimitiveValueProvider extends TestGenAbstractValueProvider<Object> {
 
     private byte defBy;

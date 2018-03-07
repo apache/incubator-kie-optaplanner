@@ -29,7 +29,7 @@ public final class PartitionChangedEvent<Solution_> implements Serializable {
     private final int partIndex;
     private final long eventIndex;
     private final PartitionChangedEventType type;
-    private final PartitionChangeMove<Solution_> move;
+    private final transient PartitionChangeMove<Solution_> move;
     private final Throwable throwable;
 
     public PartitionChangedEvent(int partIndex, long eventIndex, PartitionChangedEventType type) {
