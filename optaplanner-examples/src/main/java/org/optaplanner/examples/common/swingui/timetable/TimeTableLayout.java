@@ -28,6 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings(value = "SE_BAD_FIELD",
+        justification = "False positives - classes implementing List interface are serializable")
 public class TimeTableLayout implements LayoutManager2, Serializable {
 
     public static final int FILL_COLLISIONS_FLAG = -1;

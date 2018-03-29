@@ -78,8 +78,7 @@ public class BenchmarkResultIO {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
                     + ") is not a directory.");
         }
-        File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
-        Arrays.sort(benchmarkReportDirectories);
+        File[] benchmarkReportDirectories = retrieveSortedBenchmarkReportDirectories(benchmarkDirectory);
         List<PlannerBenchmarkResult> plannerBenchmarkResultList = new ArrayList<>(
                 benchmarkReportDirectories.length);
         for (File benchmarkReportDirectory : benchmarkReportDirectories) {
@@ -90,6 +89,17 @@ public class BenchmarkResultIO {
             }
         }
         return plannerBenchmarkResultList;
+    }
+
+    private File[] retrieveSortedBenchmarkReportDirectories(File benchmarkDirectory) {
+        File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
+        if (benchmarkReportDirectories == null) {
+            throw new IllegalStateException("Unable to list subdirectories in a directory ("
+                                                    + benchmarkDirectory.getAbsolutePath() + ").");
+        } else {
+            Arrays.sort(benchmarkReportDirectories);
+            return benchmarkReportDirectories;
+        }
     }
 
     protected PlannerBenchmarkResult readPlannerBenchmarkResult(SolverConfigContext configContext, File plannerBenchmarkResultFile) {
