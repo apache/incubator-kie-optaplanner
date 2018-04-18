@@ -86,7 +86,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @Deprecated protected Integer bendableHardLevelsSize = null;
     @Deprecated protected Integer bendableSoftLevelsSize = null;
 
-    @Deprecated protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
+    protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
 
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
 
@@ -173,7 +173,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     }
 
     public Class<? extends EasyScoreCalculator> getEasyScoreCalculatorClass() {
-        return getEasyScoreCalculatorSupplier().get().getClass();
+        return easyScoreCalculatorClass;
     }
 
     public Supplier<? extends EasyScoreCalculator> getEasyScoreCalculatorSupplier() {
@@ -183,10 +183,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return easyScoreCalculatorSupplier;
     }
 
-    /**
-     * @deprecated Use {@link #setEasyScoreCalculatorSupplier(Supplier)} instead
-     */
-    @Deprecated
     public void setEasyScoreCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
         if (easyScoreCalculatorClass == null) {
             this.easyScoreCalculatorSupplier = null;
@@ -568,8 +564,10 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             bendableHardLevelsSize = inheritedConfig.getBendableHardLevelsSize();
             bendableSoftLevelsSize = inheritedConfig.getBendableSoftLevelsSize();
         }
+        easyScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
+                easyScoreCalculatorClass, inheritedConfig.getEasyScoreCalculatorClass());
         easyScoreCalculatorSupplier = ConfigUtils.inheritOverwritableProperty(
-                 getEasyScoreCalculatorSupplier(), inheritedConfig.getEasyScoreCalculatorSupplier());
+                easyScoreCalculatorSupplier, inheritedConfig.getEasyScoreCalculatorSupplier());
         incrementalScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
         ksessionName = ConfigUtils.inheritOverwritableProperty(
