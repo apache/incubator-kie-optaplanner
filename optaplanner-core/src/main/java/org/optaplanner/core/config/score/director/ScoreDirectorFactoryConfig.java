@@ -87,6 +87,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @Deprecated protected Integer bendableSoftLevelsSize = null;
 
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
+    @XStreamConverter(KeyAsElementMapConverter.class)
+    protected Map<String, String> easyScoreCalculatorCustomProperties = null;
 
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
 
@@ -417,6 +419,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected <Solution_> AbstractScoreDirectorFactory<Solution_> buildEasyScoreDirectorFactory() {
         if (getEasyScoreCalculatorSupplier() != null) {
             final EasyScoreCalculator easyScoreCalculator = getEasyScoreCalculatorSupplier().get();
+            ConfigUtils.applyCustomProperties(easyScoreCalculator, "easyScoreCalculatorClass",
+                easyScoreCalculatorCustomProperties);
             return new EasyScoreDirectorFactory<>(easyScoreCalculator);
         } else {
             return null;
