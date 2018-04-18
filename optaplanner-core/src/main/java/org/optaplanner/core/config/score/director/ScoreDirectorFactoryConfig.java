@@ -108,7 +108,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
 
     protected Boolean generateDroolsTestOnError = null;
-    protected Supplier<? extends EasyScoreCalculator> easyScoreCalculatorSupplier;
+    protected Supplier<? extends EasyScoreCalculator> easyScoreCalculatorSupplier = null;
 
     /**
      * @return sometimes null
