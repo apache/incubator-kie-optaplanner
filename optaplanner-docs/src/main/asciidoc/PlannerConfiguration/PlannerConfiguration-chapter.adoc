@@ -1120,6 +1120,7 @@ The `variableName` is the variable that triggers changes in the shadow variable(
 ====
 If the class of the trigger variable is different than the shadow variable, also specify the `entityClass` on ``@PlanningVariableReference``.
 In that case, make sure that `entityClass` is also properly configured as a planning entity class in the solver config, or the `VariableListener` will simply never trigger.
+By the way, the class that contain the shadow variable must be an entity class; if it has no genuine variable, it can be considered a *shadow entity*.
 ====
 
 For example, the `VehicleUpdatingVariableListener` assures that every `Customer` in a chain has the same ``Vehicle``, namely the chain's anchor.
