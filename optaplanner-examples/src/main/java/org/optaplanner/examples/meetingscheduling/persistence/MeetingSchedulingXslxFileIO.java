@@ -1,4 +1,5 @@
 //TODO: need endingMinuteOfDay in class TimeGrain
+//TODO: Meetings view, get duration from users in Minutes >> convert it to timeGrains
 
 package org.optaplanner.examples.meetingscheduling.persistence;
 
@@ -11,10 +12,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
@@ -34,8 +37,10 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
+import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
+import org.optaplanner.examples.meetingscheduling.domain.Person;
 import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
@@ -53,7 +58,6 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
     protected static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
     protected static final String REQUIRED_ATTENDANCE_CONFLICT = "Required attendance conflict";
     protected static final String REQUIRED_ROOM_CAPACITY = "Required room capacity";
-
 
     protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
 
@@ -137,7 +141,7 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
             workbook.write(out);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed writing outputScheduleFile ("
-                    + outputScheduleFile + ") for schedule (" + schedule + ").", e);
+                                                + outputScheduleFile + ") for schedule (" + schedule + ").", e);
         }
     }
 
@@ -250,9 +254,40 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
         }
 
         private void writePersons() {
+            nextSheet("Persons", 1, 1, false);
+            nextRow();
+            nextHeaderCell("Full name");
+            for (Person person : schedule.getPersonList()) {
+                nextRow();
+                nextCell().setCellValue(person.getFullName());
+            }
+            autoSizeColumnsWithHeader();
         }
 
+        // TODO: ensure that preferred/required attendance are in persons view
         private void writeMeetings() {
+            nextSheet("Meetings", 2, 1, false);
+            nextRow();
+            nextHeaderCell("Id");
+            nextHeaderCell("Topic");
+            nextHeaderCell("Duration");
+            nextHeaderCell("Required attendance list");
+            nextHeaderCell("Preferred attendance list");
+            for (Meeting meeting : schedule.getMeetingList()) {
+                nextRow();
+                nextCell().setCellValue(meeting.getId());
+                nextCell().setCellValue(meeting.getTopic());
+                nextCell().setCellValue(meeting.getDurationString());
+                nextCell().setCellValue(
+                    String.join(", ", meeting.getRequiredAttendanceList().stream()
+                        .map(requiredAttendance -> requiredAttendance.getPerson().getFullName())
+                        .collect(Collectors.toList())));
+                nextCell().setCellValue(
+                    String.join(", ", meeting.getPreferredAttendanceList().stream()
+                        .map(preferredAttendance -> preferredAttendance.getPerson().getFullName())
+                        .collect(Collectors.toList())));
+            }
+            autoSizeColumnsWithHeader();
         }
 
         private void writeDays() {
