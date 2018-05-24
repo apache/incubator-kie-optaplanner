@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
@@ -42,6 +43,17 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSchedule>
     implements SolutionFileIO<MeetingSchedule> {
+
+    protected static final String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE = "Do all meetings as soon as possible";
+
+    protected static final String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT = "Do all meetings as soon as possible";
+    protected static final String PREFERRED_ATTENDANCE_CONFLICT = "Preferred attendance conflict";
+
+    protected static final String ROOM_CONFLICT = "Room conflict";
+    protected static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
+    protected static final String REQUIRED_ATTENDANCE_CONFLICT = "Required attendance conflict";
+    protected static final String REQUIRED_ROOM_CAPACITY = "Required room capacity";
+
 
     protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
 
@@ -216,6 +228,25 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
             nextHeaderCell("Constraint");
             nextHeaderCell("Weight");
             nextHeaderCell("Description");
+
+            writeConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
+            nextRow();
+            writeConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
+            writeConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
+            nextRow();
+            writeConstraintLine(ROOM_CONFLICT, null, "");
+            writeConstraintLine(DONT_GO_IN_OVERTIME, null, "");
+            writeConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
+            writeConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
+            autoSizeColumnsWithHeader();
+        }
+
+        private void writeConstraintLine(String name, Supplier<Integer> supplier, String constraintDescription) {
+            nextRow();
+            nextHeaderCell(name);
+            //TODO: do we need to add weight to the constraints?
+            nextCell().setCellValue("n/a");
+            nextHeaderCell(constraintDescription);
         }
 
         private void writePersons() {
@@ -267,6 +298,12 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
             XSSFCell cell = currentRow.createCell(currentColumnNumber);
             cell.setCellStyle(cellStyle);
             return cell;
+        }
+
+        protected void autoSizeColumnsWithHeader() {
+            for (int i = 0; i < headerCellCount; i++) {
+                currentSheet.autoSizeColumn(i);
+            }
         }
     }
 }
