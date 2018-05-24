@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,6 +32,7 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -48,6 +50,7 @@ import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
+import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -268,7 +271,7 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
         }
 
         private void writePersons() {
-            nextSheet("Persons", 1, 1, false);
+            nextSheet("Persons", 1, 0, false);
             nextRow();
             nextHeaderCell("Full name");
             for (Person person : schedule.getPersonList()) {
@@ -311,7 +314,7 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
             nextHeaderCell("Start");
             nextHeaderCell("End");
             // TODO: A better way to represent day in class Day (LocalDate instead of int?)
-            for (Day dayOfYear: schedule.getDayList()) {
+            for (Day dayOfYear : schedule.getDayList()) {
                 nextRow();
                 LocalDate date = LocalDate.ofYearDay(Year.now().getValue(), dayOfYear.getDayOfYear());
                 LocalTime startTime = LocalTime.ofSecondOfDay(8 * 60 * 60); // 8am TODO: set startTime field to class Day
@@ -325,13 +328,62 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
         }
 
         private void writeRooms() {
-
+            nextSheet("Rooms", 1, 1, false);
+            nextRow();
+            nextHeaderCell("");
+            nextHeaderCell("");
+            writeTimeGrainDaysHeaders();
+            nextRow();
+            nextHeaderCell("Name");
+            nextHeaderCell("Capacity");
+            writeTimeGrainsHoursHeaders();
+            for (Room room : schedule.getRoomList()) {
+                nextRow();
+                nextCell().setCellValue(room.getName());
+                nextCell().setCellValue(room.getCapacity());
+                for (TimeGrain timeGrain : schedule.getTimeGrainList()) {
+                    nextCell().setCellValue(""); // TODO: implement unavailable style after adding unavailableTimeGrain to class Room
+                }
+            }
+            autoSizeColumnsWithHeader();
         }
 
         private void writeRoomsView() {
         }
 
         private void writePersonsView() {
+        }
+
+        private void writeTimeGrainDaysHeaders() {
+            Day previousTimeGrainDay = null;
+            int mergeStart = -1;
+
+            for (TimeGrain timeGrain : schedule.getTimeGrainList()) {
+                Day timeGrainDay = timeGrain.getDay();
+                if (timeGrainDay.equals(previousTimeGrainDay)) {
+                    nextHeaderCell("");
+                } else {
+                    if (previousTimeGrainDay != null) {
+                        currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                    }
+                    nextHeaderCell(DAY_FORMATTER.format(
+                        LocalDate.ofYearDay(Year.now().getValue(), timeGrainDay.getDayOfYear())));
+                    previousTimeGrainDay = timeGrainDay;
+                    mergeStart = currentColumnNumber;
+                }
+            }
+            if (previousTimeGrainDay != null) {
+                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+            }
+        }
+
+        private void writeTimeGrainsHoursHeaders() {
+            for (TimeGrain timeGrain: schedule.getTimeGrainList()) {
+                LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60);
+                LocalTime endTime = LocalTime.ofSecondOfDay(
+                    (timeGrain.getStartingMinuteOfDay() + timeGrain.GRAIN_LENGTH_IN_MINUTES) * 60);
+                nextHeaderCell(TIME_FORMATTER.format(startTime) + "-" + TIME_FORMATTER.format(endTime));
+            }
         }
 
         protected void nextSheet(String sheetName, int colSplit, int rowSplit, boolean view) {
