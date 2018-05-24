@@ -9,12 +9,18 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -38,9 +44,11 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;
+import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
+import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
@@ -49,6 +57,18 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSchedule>
     implements SolutionFileIO<MeetingSchedule> {
 
+    protected static final DateTimeFormatter DAY_FORMATTER
+        = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+    protected static final DateTimeFormatter TIME_FORMATTER
+        = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
+
+    protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
+
+    protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
+    protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
+    protected static final XSSFColor SOFT_PENALTY_COLOR = new XSSFColor(TangoColorFactory.ORANGE_1);
+
+    // Meeting Parametrization:
     protected static final String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE = "Do all meetings as soon as possible";
 
     protected static final String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT = "Do all meetings as soon as possible";
@@ -58,12 +78,6 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
     protected static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
     protected static final String REQUIRED_ATTENDANCE_CONFLICT = "Required attendance conflict";
     protected static final String REQUIRED_ROOM_CAPACITY = "Required room capacity";
-
-    protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
-
-    protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
-    protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
-    protected static final XSSFColor SOFT_PENALTY_COLOR = new XSSFColor(TangoColorFactory.ORANGE_1);
 
 //    @Override
 //    public String getInputFileExtension() {
@@ -291,9 +305,27 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
         }
 
         private void writeDays() {
+            nextSheet("Days", 1, 1, false);
+            nextRow();
+            nextHeaderCell("Day");
+            nextHeaderCell("Start");
+            nextHeaderCell("End");
+            // TODO: A better way to represent day in class Day (LocalDate instead of int?)
+            for (Day dayOfYear: schedule.getDayList()) {
+                nextRow();
+                LocalDate date = LocalDate.ofYearDay(Year.now().getValue(), dayOfYear.getDayOfYear());
+                LocalTime startTime = LocalTime.ofSecondOfDay(8 * 60 * 60); // 8am TODO: set startTime field to class Day
+                LocalTime endTime = LocalTime.ofSecondOfDay(17 * 60 * 60); // 5pm
+
+                nextCell().setCellValue(DAY_FORMATTER.format(date));
+                nextCell().setCellValue(TIME_FORMATTER.format(startTime));
+                nextCell().setCellValue(TIME_FORMATTER.format(endTime));
+            }
+            autoSizeColumnsWithHeader();
         }
 
         private void writeRooms() {
+
         }
 
         private void writeRoomsView() {
