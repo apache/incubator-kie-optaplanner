@@ -169,14 +169,16 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     protected Random random;
 
     public MeetingSchedulingGenerator() {
-        solutionFileIO = new XStreamSolutionFileIO<>(MeetingSchedule.class);
+        //TODO: Make them permanent changes:
+//        solutionFileIO = new XStreamSolutionFileIO<>(MeetingSchedule.class);
+        solutionFileIO = new MeetingSchedulingXslxFileIO();
         outputDir = new File(CommonApp.determineDataDir(MeetingSchedulingApp.DATA_DIR_NAME), "unsolved");
     }
 
     private void writeMeetingSchedule(int meetingListSize, int roomListSize) {
         int timeGrainListSize = meetingListSize * durationInGrainsOptions[durationInGrainsOptions.length - 1] / roomListSize;
         String fileName = determineFileName(meetingListSize, timeGrainListSize, roomListSize);
-        File outputFile = new File(outputDir, fileName + ".xml");
+        File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
         MeetingSchedule meetingSchedule = createMeetingSchedule(fileName, meetingListSize, timeGrainListSize, roomListSize);
         solutionFileIO.write(meetingSchedule, outputFile);
         logger.info("Saved: {}", outputFile);
