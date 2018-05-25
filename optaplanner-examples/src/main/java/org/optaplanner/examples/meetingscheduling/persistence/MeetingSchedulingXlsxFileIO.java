@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,16 +36,20 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
+import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
+import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
+import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<MeetingSchedule> {
 
@@ -70,7 +75,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
     }
 
-    // TODO: why static?
     private static class MeetingSchedulingXslxReader extends AbstractXslxReader<MeetingSchedule> {
 
         private Map<String, Meeting> totalMeetingMap;
@@ -83,30 +87,118 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             solution = new MeetingSchedule();
             totalMeetingMap = new HashMap<>();
             readConfiguration();
-            readPersons();
-            readMeetings();
-            readDay();
-            readRooms();
+            readPersonList();
+            readMeetingList();
+            readDayList();
+            readRoomList();
 
             return solution;
-
-        }
-
-        private void readPersons() {
         }
 
         private void readConfiguration() {
+            nextSheet("Configuration");
+            nextRow();
+            readHeaderCell("Meeting name");
+            nextRow(true);
+            readHeaderCell("Constraint");
+            readHeaderCell("Weight");
+            readHeaderCell("Description");
+
+            readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
+            nextRow();
+            readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
+            readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
+            nextRow();
+            readIntConstraintLine(ROOM_CONFLICT, null, "");
+            readIntConstraintLine(DONT_GO_IN_OVERTIME, null, "");
+            readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
+            readIntConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
         }
 
-        private void readMeetings() {
+        private void readPersonList() {
+            nextSheet("Persons");
+            nextRow(false);
+            readHeaderCell("Full name");
+            List<Person> personList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
+            while (nextRow()) {
+                Person person = new Person();
+                person.setFullName(nextStringCell().getStringCellValue());
+                if (!VALID_NAME_PATTERN.matcher(person.getFullName()).matches()) {
+                    throw new IllegalStateException(currentPosition() + ": The person name (" + person.getFullName()
+                                                        + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
+                }
+                personList.add(person);
+            }
+            solution.setPersonList(personList);
         }
 
-        private void readDay() {
+        private void readMeetingList() {
+            Map<String, Person> personMap = solution.getPersonList().stream().collect(
+                toMap(Person::getFullName, person -> person));
+            nextSheet("Meetings");
+            // TODO: when added speaker to class Meeting make sure speaker exists in personsList
+            nextRow(false);
+            readHeaderCell("Id");
+            readHeaderCell("Topic");
+            readHeaderCell("Duration");
+            readHeaderCell("Required attendance list");
+            readHeaderCell("Preferred attendance list");
+
+            List<Meeting> meetingList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
+            long id = 0L;
+            while (nextRow()) {
+                Meeting meeting = new Meeting();
+                meeting.setId(id++);
+                meeting.setTopic(nextStringCell().getStringCellValue());
+                double durationDouble = nextNumericCell().getNumericCellValue();
+                if (durationDouble <= 0 || durationDouble != Math.floor(durationDouble)) {
+                    throw new IllegalStateException(currentPosition() + ": The meeting with id (" + meeting.getId()
+                                                        + ")'s has a duration (" + durationDouble + ") that isn't a strictly positive integer number.");
+                }
+                if (durationDouble % TimeGrain.GRAIN_LENGTH_IN_MINUTES != 0) {
+                    throw new IllegalStateException(currentPosition() + ": The meeting with id (" + meeting.getId()
+                                                        + ")'s has a duration (" + durationDouble + ") that isn't a multiple of "
+                                                        + TimeGrain.GRAIN_LENGTH_IN_MINUTES + ".");
+                }
+                meeting.setDurationInGrains((int) durationDouble / TimeGrain.GRAIN_LENGTH_IN_MINUTES);
+                meeting.setRequiredAttendanceList(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
+                                                      .filter(requiredAttendee -> !requiredAttendee.isEmpty())
+                                                      .map(personName -> {
+                                                          RequiredAttendance requiredAttendance = new RequiredAttendance();
+                                                          Person person = personMap.get(personName);
+                                                          if (person == null) {
+                                                              throw new IllegalStateException(currentPosition() + ": The meeting with id (" + meeting.getId()
+                                                                                                  + ") has a required attendee (" + personName + ") that doesn't exist in the Persons list.");
+                                                          }
+                                                          requiredAttendance.setMeeting(meeting);
+                                                          requiredAttendance.setPerson(person);
+                                                          return requiredAttendance;
+                                                      })
+                                                      .collect(toList()));
+                meeting.setPreferredAttendanceList(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
+                                                      .filter(preferredAttendee -> !preferredAttendee.isEmpty())
+                                                      .map(personName -> {
+                                                          PreferredAttendance preferredAttendance = new PreferredAttendance();
+                                                          Person person = personMap.get(personName);
+                                                          if (person == null) {
+                                                              throw new IllegalStateException(currentPosition() + ": The meeting with id (" + meeting.getId()
+                                                                                                  + ") has a preferred attendee (" + personName + ") that doesn't exist in the Persons list.");
+                                                          }
+                                                          preferredAttendance.setMeeting(meeting);
+                                                          preferredAttendance.setPerson(person);
+                                                          return preferredAttendance;
+                                                      })
+                                                      .collect(toList()));
+                meetingList.add(meeting);
+            }
+            solution.setMeetingList(meetingList);
         }
 
-        private void readRooms() {
+        private void readDayList() {
         }
 
+        private void readRoomList() {
+        }
     }
 
     @Override
@@ -284,7 +376,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         }
                         // TODO: add unavailable timeGrains
                         nextMeetingListCell(meetingList, meeting -> meeting.getTopic() + "\n  "
-                                                          + "Speaker"); // TODO: add speaker list once added to class Meeting
+                            + "Speaker"); // TODO: add speaker list once added to class Meeting
                         mergePreviousTimeGrain = meetingList.isEmpty() ? null : timeGrain;
                     }
                 }
@@ -368,7 +460,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 for (Meeting meeting : meetingList) {
                     commentString.append(meeting.getId()).append(": ")
                         .append(meeting.getTopic()).append("\n    ");
-                        // TODO: append speaker as well
+                    // TODO: append speaker as well
                     Indictment indictment = indictmentMap.get(meeting);
                     if (indictment != null) {
                         commentString.append("\n").append(indictment.getScore().toShortString())
@@ -401,7 +493,5 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             cell.setCellValue(meetingList.stream().map(stringFunction).collect(joining("\n")));
             currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), meetingList.size() * currentSheet.getDefaultRowHeightInPoints()));
         }
-
     }
-
 }
