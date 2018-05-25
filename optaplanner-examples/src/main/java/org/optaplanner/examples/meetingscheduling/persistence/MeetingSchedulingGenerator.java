@@ -38,7 +38,6 @@ import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class MeetingSchedulingGenerator extends LoggingMain {
 
@@ -171,7 +170,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     public MeetingSchedulingGenerator() {
         //TODO: Make them permanent changes:
 //        solutionFileIO = new XStreamSolutionFileIO<>(MeetingSchedule.class);
-        solutionFileIO = new MeetingSchedulingXslxFileIO();
+        solutionFileIO = new MeetingSchedulingXlsxFileIO();
         outputDir = new File(CommonApp.determineDataDir(MeetingSchedulingApp.DATA_DIR_NAME), "solved"); //TODO: was unsolved
     }
 
