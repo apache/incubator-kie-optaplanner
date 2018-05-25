@@ -26,7 +26,6 @@
   </properties>
 
   <repositories>
-    <!-- TODO remove this once maven central replicates the jboss repository -->
     <!-- Included so the examples sources in the distribution zip build out-of-the-box with maven -->
     <repository>
       <id>jboss-public-repository-group</id>
