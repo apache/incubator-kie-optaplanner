@@ -172,7 +172,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         //TODO: Make them permanent changes:
 //        solutionFileIO = new XStreamSolutionFileIO<>(MeetingSchedule.class);
         solutionFileIO = new MeetingSchedulingXslxFileIO();
-        outputDir = new File(CommonApp.determineDataDir(MeetingSchedulingApp.DATA_DIR_NAME), "unsolved");
+        outputDir = new File(CommonApp.determineDataDir(MeetingSchedulingApp.DATA_DIR_NAME), "solved"); //TODO: was unsolved
     }
 
     private void writeMeetingSchedule(int meetingListSize, int roomListSize) {

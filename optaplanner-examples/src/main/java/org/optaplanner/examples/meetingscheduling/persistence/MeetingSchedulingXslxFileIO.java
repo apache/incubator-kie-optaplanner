@@ -1,5 +1,6 @@
 //TODO: need endingMinuteOfDay in class TimeGrain
 //TODO: Meetings view, get duration from users in Minutes >> convert it to timeGrains
+//TODO: The solved files are stored in unsolved folder, should they be store in solved?
 
 package org.optaplanner.examples.meetingscheduling.persistence;
 
@@ -16,6 +17,8 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,9 +26,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -39,6 +47,9 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -48,6 +59,7 @@ import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
@@ -56,6 +68,9 @@ import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 import org.optaplanner.swing.impl.TangoColorFactory;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSchedule>
     implements SolutionFileIO<MeetingSchedule> {
@@ -298,11 +313,11 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
                 nextCell().setCellValue(
                     String.join(", ", meeting.getRequiredAttendanceList().stream()
                         .map(requiredAttendance -> requiredAttendance.getPerson().getFullName())
-                        .collect(Collectors.toList())));
+                        .collect(toList())));
                 nextCell().setCellValue(
                     String.join(", ", meeting.getPreferredAttendanceList().stream()
                         .map(preferredAttendance -> preferredAttendance.getPerson().getFullName())
-                        .collect(Collectors.toList())));
+                        .collect(toList())));
             }
             autoSizeColumnsWithHeader();
         }
@@ -348,7 +363,45 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
             autoSizeColumnsWithHeader();
         }
 
+        // TODO: Should there be InfeasibleView and ScoreView?
+
         private void writeRoomsView() {
+            nextSheet("Rooms view", 1, 2, true);
+            nextRow();
+            nextHeaderCell("");
+            writeTimeGrainDaysHeaders();
+            nextRow();
+            nextHeaderCell("Room");
+            writeTimeGrainsHoursHeaders();
+            for (Room room : schedule.getRoomList()) {
+                nextRow();
+                currentRow.setHeightInPoints(2 * currentSheet.getDefaultRowHeightInPoints());
+                nextCell().setCellValue(room.getName());
+                List<MeetingAssignment> roomMeetingAssignmentList = schedule.getMeetingAssignmentList().stream()
+                    .filter(meetingAssignment -> meetingAssignment.getRoom() == room).collect(toList());
+
+                TimeGrain mergePreviousTimeGrain = null;
+                int mergeStart = -1;
+                for (TimeGrain timeGrain : schedule.getTimeGrainList()) {
+                    List<MeetingAssignment> meetingAssignmentList = roomMeetingAssignmentList.stream()
+                        .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() == timeGrain)
+                        .collect(toList());
+
+                    if (meetingAssignmentList.isEmpty() && mergePreviousTimeGrain != null
+                        && timeGrain.getStartingMinuteOfDay() < timeGrain.getStartingMinuteOfDay() + timeGrain.GRAIN_LENGTH_IN_MINUTES) {
+                        nextCell();
+                    } else {
+                        if (mergePreviousTimeGrain != null && mergeStart < currentColumnNumber) {
+                            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
+                        }
+                        // TODO: add unavailable timeGrains
+                        nextMeetingAssignmentListCell(false, meetingAssignmentList,
+                                                      meetingAssignment -> meetingAssignment.getMeeting().getId() + ": " + meetingAssignment.getMeeting().getTopic() + "\n  "
+                                                          + "Speaker"); // TODO: add speaker list once added to class Meeting
+                        mergePreviousTimeGrain = meetingAssignmentList.isEmpty() ? null : timeGrain;
+                    }
+                }
+            }
         }
 
         private void writePersonsView() {
@@ -378,7 +431,7 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
         }
 
         private void writeTimeGrainsHoursHeaders() {
-            for (TimeGrain timeGrain: schedule.getTimeGrainList()) {
+            for (TimeGrain timeGrain : schedule.getTimeGrainList()) {
                 LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60);
                 LocalTime endTime = LocalTime.ofSecondOfDay(
                     (timeGrain.getStartingMinuteOfDay() + timeGrain.GRAIN_LENGTH_IN_MINUTES) * 60);
@@ -406,6 +459,88 @@ public class MeetingSchedulingXslxFileIO extends XStreamSolutionFileIO<MeetingSc
         protected void nextHeaderCell(String value) {
             nextCell(headerStyle).setCellValue(value);
             headerCellCount++;
+        }
+
+        protected void nextMeetingAssignmentListCell(List<MeetingAssignment> meetingAssignmentList,
+                                                     Function<MeetingAssignment, String> stringFunction, String[] filteredConstraintNames) {
+            nextMeetingAssignmentListCell(meetingAssignmentList, stringFunction, filteredConstraintNames);
+        }
+
+        protected void nextMeetingAssignmentListCell(boolean unavailable, List<MeetingAssignment> meetingAssignmentList,
+                                                     Function<MeetingAssignment, String> stringFunction) {
+            nextMeetingAssignmentListCell(unavailable, meetingAssignmentList, stringFunction, null);
+        }
+
+        protected void nextMeetingAssignmentListCell(boolean unavailable, List<MeetingAssignment> meetingAssignmentList,
+                                                     Function<MeetingAssignment, String> stringFunction, String[] filteredConstraintNames) {
+            List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
+                : Arrays.asList(filteredConstraintNames);
+            if (meetingAssignmentList == null) {
+                meetingAssignmentList = Collections.emptyList();
+            }
+            HardSoftScore score = meetingAssignmentList.stream()
+                .map(indictmentMap::get).filter(Objects::nonNull)
+                .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
+                // Filter out filtered constraints
+                .filter(constraintMatch -> filteredConstraintNameList == null
+                    || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
+                .map(constraintMatch -> (HardSoftScore) constraintMatch.getScore())
+                // Filter out positive constraints
+                .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
+                .reduce(Score::add).orElse(HardSoftScore.ZERO);
+            XSSFCell cell;
+            if (!score.isFeasible()) {
+                cell = nextCell(hardPenaltyStyle);
+            } else if (unavailable) {
+                cell = nextCell(unavailableStyle);
+            } else if (score.getSoftScore() < 0) {
+                cell = nextCell(softPenaltyStyle);
+            } else {
+                cell = nextCell(wrappedStyle);
+            }
+            if (!meetingAssignmentList.isEmpty()) {
+                ClientAnchor anchor = creationHelper.createClientAnchor();
+                anchor.setCol1(cell.getColumnIndex());
+                anchor.setCol2(cell.getColumnIndex() + 4);
+                anchor.setRow1(currentRow.getRowNum());
+                anchor.setRow2(currentRow.getRowNum() + 4);
+                Comment comment = currentDrawing.createCellComment(anchor);
+                StringBuilder commentString = new StringBuilder(meetingAssignmentList.size() * 200);
+                for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
+                    commentString.append(meetingAssignment.getMeeting().getId()).append(": ")
+                        .append(meetingAssignment.getMeeting().getTopic()).append("\n    ");
+                        // TODO: append speaker as well
+                    Indictment indictment = indictmentMap.get(meetingAssignment);
+                    if (indictment != null) {
+                        commentString.append("\n").append(indictment.getScore().toShortString())
+                            .append(" total");
+                        Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
+                        List<String> constraintNameList = constraintMatchSet.stream()
+                            .map(ConstraintMatch::getConstraintName).distinct().collect(toList());
+                        for (String constraintName : constraintNameList) {
+                            List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
+                                .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
+                                .collect(toList());
+                            Score sum = filteredConstraintMatchList.stream()
+                                .map(ConstraintMatch::getScore)
+                                .reduce(Score::add).orElse(HardSoftScore.ZERO);
+                            String justificationTalkCodes = filteredConstraintMatchList.stream()
+                                .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
+                                .filter(justification -> justification instanceof MeetingAssignment && justification != meetingAssignment)
+                                .distinct().map(o -> Long.toString(((MeetingAssignment) o).getMeeting().getId())).collect(joining(", "));
+                            commentString.append("\n    ").append(sum.toShortString())
+                                .append(" for ").append(filteredConstraintMatchList.size())
+                                .append(" ").append(constraintName).append("s")
+                                .append("\n        ").append(justificationTalkCodes);
+                        }
+                    }
+                    commentString.append("\n\n");
+                }
+                comment.setString(creationHelper.createRichTextString(commentString.toString()));
+                cell.setCellComment(comment);
+            }
+            cell.setCellValue(meetingAssignmentList.stream().map(stringFunction).collect(joining("\n")));
+            currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), meetingAssignmentList.size() * currentSheet.getDefaultRowHeightInPoints()));
         }
 
         protected XSSFCell nextCell() {
