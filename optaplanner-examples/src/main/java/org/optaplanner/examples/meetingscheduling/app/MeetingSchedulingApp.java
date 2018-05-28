@@ -49,7 +49,6 @@ public class MeetingSchedulingApp extends CommonApp<MeetingSchedule> {
 
     @Override
     public SolutionFileIO<MeetingSchedule> createSolutionFileIO() {
-//        return new XStreamSolutionFileIO<>(MeetingSchedule.class); //TODO: delete this
         return new MeetingSchedulingXlsxFileIO();
     }
 

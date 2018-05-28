@@ -45,9 +45,9 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         MeetingSchedulingGenerator generator = new MeetingSchedulingGenerator();
         generator.writeMeetingSchedule(50, 5);
         generator.writeMeetingSchedule(100, 5);
-//        generator.writeMeetingSchedule(200, 5);
-//        generator.writeMeetingSchedule(400, 5);
-//        generator.writeMeetingSchedule(800, 5);
+        generator.writeMeetingSchedule(200, 5);
+        generator.writeMeetingSchedule(400, 5);
+        generator.writeMeetingSchedule(800, 5);
     }
 
     private final StringDataGenerator topicGenerator = new StringDataGenerator()
@@ -168,10 +168,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     protected Random random;
 
     public MeetingSchedulingGenerator() {
-        //TODO: Make them permanent changes:
-//        solutionFileIO = new XStreamSolutionFileIO<>(MeetingSchedule.class);
         solutionFileIO = new MeetingSchedulingXlsxFileIO();
-        outputDir = new File(CommonApp.determineDataDir(MeetingSchedulingApp.DATA_DIR_NAME), "solved"); //TODO: was unsolved
+        outputDir = new File(CommonApp.determineDataDir(MeetingSchedulingApp.DATA_DIR_NAME), "unsolved");
     }
 
     private void writeMeetingSchedule(int meetingListSize, int roomListSize) {
