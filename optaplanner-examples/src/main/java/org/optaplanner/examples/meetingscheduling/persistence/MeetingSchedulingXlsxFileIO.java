@@ -485,7 +485,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextCell().setCellValue(room.getName());
                 List<MeetingAssignment> roomMeetingAssignmentList = solution.getMeetingAssignmentList().stream()
                     .filter(meetingAssignment -> meetingAssignment.getRoom() == room).collect(toList());
-                
+
                 List<Meeting> mergePreviousMeetingList = null;
                 int mergeStart = -1;
                 int previousMeetingRemainingTimeGrains = 0;
@@ -533,82 +533,71 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Person");
             nextHeaderCell("Attendance");
             writeTimeGrainHoursHeaders();
-            int rowMergeStart = -1;
             for (Person person : solution.getPersonList()) {
-                nextRow();
-                rowMergeStart = currentRowNumber;
-                currentRow.setHeightInPoints(2 * currentSheet.getDefaultRowHeightInPoints());
-                nextHeaderCell(person.getFullName());
-                nextHeaderCell("Required");
+                writePersonMeetingList(person, true);
+                writePersonMeetingList(person, false);
+            }
+            autoSizeColumnsWithHeader();
+        }
 
-                //TODO: refactor writing required/preferred meeting lists
-                List<Meeting> personRequiredMeetingList = solution.getAttendanceList().stream()
+        private void writePersonMeetingList(Person person, boolean required) {
+            nextRow();
+            currentRow.setHeightInPoints(2 * currentSheet.getDefaultRowHeightInPoints());
+            nextHeaderCell(person.getFullName());
+            if (required) {
+                nextHeaderCell("Required");
+            } else {
+                currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber - 1, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                nextHeaderCell("Preferred");
+            }
+
+            List<Meeting> personMeetingList;
+            if (required) {
+                personMeetingList = solution.getAttendanceList().stream()
                     .filter(attendance -> attendance.getPerson().equals(person)
                         && attendance.getMeeting().getRequiredAttendanceList().contains(attendance))
                     .map(Attendance::getMeeting)
                     .collect(toList());
-                List<MeetingAssignment> timeGrainRequiredMeetingAssignmentList = solution.getMeetingAssignmentList().stream()
-                    .filter(meetingAssignment -> personRequiredMeetingList.contains(meetingAssignment.getMeeting()))
-                    .collect(toList());
-
-                TimeGrain mergePreviousTimeGrain = null;
-                int columnMergeStart = -1;
-                for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                    List<Meeting> requiredMeetingList = timeGrainRequiredMeetingAssignmentList.stream()
-                        .filter(meetingAssignment ->
-                                    meetingAssignment.getStartingTimeGrain() != null
-                                        && (timeGrain.getGrainIndex() >= meetingAssignment.getStartingTimeGrain().getGrainIndex()
-                                        && timeGrain.getGrainIndex() <= meetingAssignment.getLastTimeGrainIndex()))
-                        .map(MeetingAssignment::getMeeting)
-                        .collect(toList());
-                    if (requiredMeetingList.isEmpty() && mergePreviousTimeGrain != null) {
-                        nextCell(); //TODO: check if this is necessary
-                    } else {
-                        if (mergePreviousTimeGrain != null && columnMergeStart < currentColumnNumber) {
-                            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, columnMergeStart, currentColumnNumber));
-                        }
-                        nextMeetingListCell(requiredMeetingList, meeting -> meeting.getTopic() + "\n  "
-                            + "Speaker");
-                        columnMergeStart = currentColumnNumber;
-                    }
-                }
-
-                nextRow();
-                currentRow.setHeightInPoints(2 * currentSheet.getDefaultRowHeightInPoints());
-                nextCell();
-                currentSheet.addMergedRegion(new CellRangeAddress(rowMergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
-                nextHeaderCell("Preferred");
-                List<Meeting> personPreferredMeetingList = solution.getAttendanceList().stream()
+            } else {
+                personMeetingList = solution.getAttendanceList().stream()
                     .filter(attendance -> attendance.getPerson().equals(person)
                         && attendance.getMeeting().getPreferredAttendanceList().contains(attendance))
                     .map(Attendance::getMeeting)
                     .collect(toList());
-                List<MeetingAssignment> timeGrainPreferredMeetingAssignmentList = solution.getMeetingAssignmentList().stream()
-                    .filter(meetingAssignment -> personPreferredMeetingList.contains(meetingAssignment.getMeeting()))
-                    .collect(toList());
+            }
+            List<MeetingAssignment> timeGrainMeetingAssignmentList = solution.getMeetingAssignmentList().stream()
+                .filter(meetingAssignment -> personMeetingList.contains(meetingAssignment.getMeeting()))
+                .collect(toList());
 
-                mergePreviousTimeGrain = null;
-                columnMergeStart = -1;
-                for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                    List<Meeting> preferredMeetingList = timeGrainPreferredMeetingAssignmentList.stream()
-                        .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null
-                            && (timeGrain.getGrainIndex() >= meetingAssignment.getStartingTimeGrain().getGrainIndex()
-                            && timeGrain.getGrainIndex() <= meetingAssignment.getLastTimeGrainIndex()))
-                        .map(MeetingAssignment::getMeeting)
-                        .collect(toList());
-                    if (preferredMeetingList.isEmpty() && mergePreviousTimeGrain != null) {
-                        nextCell(); //TODO: check if this is necessary
-                    } else {
-                        if (mergePreviousTimeGrain != null && columnMergeStart < currentColumnNumber) {
-                            currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, columnMergeStart, currentColumnNumber));
-                        }
-                        nextMeetingListCell(preferredMeetingList, meeting -> meeting.getTopic() + "\n  "
-                            + "Speaker");
-                        columnMergeStart = currentColumnNumber;
+            TimeGrain mergePreviousTimeGrain = null;
+            int columnMergeStart = -1;
+            int previousMeetingRemainingTimeGrains = 0;
+            for (TimeGrain timeGrain : solution.getTimeGrainList()) {
+                List<Meeting> meetingList = timeGrainMeetingAssignmentList.stream()
+                    .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null
+                        && meetingAssignment.getStartingTimeGrain().equals(timeGrain))
+                    .map(MeetingAssignment::getMeeting)
+                    .collect(toList());
+                if (meetingList.isEmpty() && mergePreviousTimeGrain != null && previousMeetingRemainingTimeGrains > 0) {
+                    previousMeetingRemainingTimeGrains--;
+                    nextCell();
+                } else {
+                    if (mergePreviousTimeGrain != null && columnMergeStart < currentColumnNumber) {
+                        currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, columnMergeStart, currentColumnNumber));
                     }
+                    nextMeetingListCell(meetingList, meeting -> meeting.getTopic() + "\n  "
+                        + "Speaker");
+                    mergePreviousTimeGrain = meetingList.isEmpty() ? null : timeGrain;
+                    columnMergeStart = currentColumnNumber;
+                    int longestDurationInGrains = 1;
+                    for (Meeting meeting : meetingList) {
+                        if (meeting.getDurationInGrains() > longestDurationInGrains) {
+                            longestDurationInGrains = meeting.getDurationInGrains();
+                        }
+                    }
+                    previousMeetingRemainingTimeGrains = longestDurationInGrains - 1;
                 }
             }
-            autoSizeColumnsWithHeader();
         }
 
         private void writeTimeGrainDaysHeaders() {
