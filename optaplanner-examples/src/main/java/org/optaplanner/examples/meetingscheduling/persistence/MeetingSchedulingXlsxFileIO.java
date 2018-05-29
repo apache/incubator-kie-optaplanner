@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
@@ -173,6 +172,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 }
                 meeting.setDurationInGrains((int) durationDouble / TimeGrain.GRAIN_LENGTH_IN_MINUTES);
 
+                //TODO: refactor adding the attendance list
                 List<RequiredAttendance> requiredAttendanceList = Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                     .filter(requiredAttendee -> !requiredAttendee.isEmpty())
                     .map(personName -> {
@@ -239,15 +239,20 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 day.setDayOfYear(LocalDate.parse(nextStringCell().getStringCellValue(), DAY_FORMATTER).getDayOfYear());
                 dayList.add(day);
 
-                int startMinuteOfDay = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER).getMinute();
-                int endMinuteOfDay = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER).getMinute();
+                LocalTime startTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
+                LocalTime endTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
+                int startMinuteOfDay = startTime.getHour() * 60 + startTime.getMinute();
+                int endMinuteOfDay = endTime.getHour() * 60 + endTime.getMinute();
                 for (int i = 0; (endMinuteOfDay - startMinuteOfDay) > i * TimeGrain.GRAIN_LENGTH_IN_MINUTES; i++) {
-                    TimeGrain timeGrain = new TimeGrain();
-                    timeGrain.setId(timeGrainId);
-                    timeGrain.setGrainIndex((int) timeGrainId++);
-                    timeGrain.setDay(day);
-                    timeGrain.setStartingMinuteOfDay(i * TimeGrain.GRAIN_LENGTH_IN_MINUTES + startMinuteOfDay);
-                    timeGrainList.add(timeGrain);
+                    int timeGrainStartingMinuteOfDay = i * TimeGrain.GRAIN_LENGTH_IN_MINUTES + startMinuteOfDay;
+                    if (!(timeGrainStartingMinuteOfDay >= 12 * 60 && timeGrainStartingMinuteOfDay < 13 * 60)) { // lunch break
+                        TimeGrain timeGrain = new TimeGrain();
+                        timeGrain.setId(timeGrainId);
+                        timeGrain.setGrainIndex((int) timeGrainId++);
+                        timeGrain.setDay(day);
+                        timeGrain.setStartingMinuteOfDay(timeGrainStartingMinuteOfDay);
+                        timeGrainList.add(timeGrain);
+                    }
                 }
             }
             solution.setDayList(dayList);
@@ -296,6 +301,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 } else {
                     LocalDate timeGrainDate = LocalDate.ofYearDay(Year.now().getValue(), timeGrainDay.getDayOfYear());
                     readHeaderCell(DAY_FORMATTER.format(timeGrainDate));
+                    previousTimeGrainDay = timeGrainDay;
                 }
             }
         }
@@ -421,7 +427,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextRow();
                 LocalDate date = LocalDate.ofYearDay(Year.now().getValue(), dayOfYear.getDayOfYear());
                 LocalTime startTime = LocalTime.ofSecondOfDay(8 * 60 * 60); // 8am TODO: set startTime field to class Day
-                LocalTime endTime = LocalTime.ofSecondOfDay(17 * 60 * 60); // 5pm
+                LocalTime endTime = LocalTime.ofSecondOfDay(18 * 60 * 60); // 6pm
 
                 nextCell().setCellValue(DAY_FORMATTER.format(date));
                 nextCell().setCellValue(TIME_FORMATTER.format(startTime));
@@ -512,6 +518,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextHeaderCell(person.getFullName());
                 nextHeaderCell("Required");
 
+                //TODO: refactor writing required/preferred meeting lists
                 List<Meeting> personRequiredMeetingList = solution.getAttendanceList().stream()
                     .filter(attendance -> attendance.getPerson().equals(person)
                         && attendance.getMeeting().getRequiredAttendanceList().contains(attendance))
