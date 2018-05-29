@@ -1,8 +1,3 @@
-//TODO: need endingMinuteOfDay in class TimeGrain
-//TODO: Meetings view, get duration from users in Minutes >> convert it to timeGrains
-//TODO: The solved files are stored in unsolved folder, should they be store in solved?
-//TODO: Ensure fields added in later views exist in previous ones (preferred person not in person ...)
-
 package org.optaplanner.examples.meetingscheduling.persistence;
 
 import java.io.BufferedInputStream;
@@ -11,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
@@ -140,6 +134,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readHeaderCell("Id");
             readHeaderCell("Topic");
             readHeaderCell("Duration");
+            readHeaderCell("Speakers");
+            readHeaderCell("Content");
             readHeaderCell("Required attendance list");
             readHeaderCell("Preferred attendance list");
 
@@ -153,7 +149,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 MeetingAssignment meetingAssignment = new MeetingAssignment();
                 meeting.setId(meetingId++);
                 meetingAssignment.setId(meetingAssignmentId++);
-                nextNumericCell().getNumericCellValue(); //TODO: do something with it or remove it
+                nextNumericCell().getNumericCellValue(); //TODO: reading meetingID, use it or remove it
                 meeting.setTopic(nextStringCell().getStringCellValue());
                 double durationDouble = nextNumericCell().getNumericCellValue();
                 if (durationDouble <= 0 || durationDouble != Math.floor(durationDouble)) {
@@ -168,8 +164,19 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                             + TimeGrain.GRAIN_LENGTH_IN_MINUTES + ".");
                 }
                 meeting.setDurationInGrains((int) durationDouble / TimeGrain.GRAIN_LENGTH_IN_MINUTES);
+                meeting.setSpeakerList(Arrays.stream(nextStringCell().getStringCellValue().split(","))
+                                           .filter(speaker -> !speaker.isEmpty())
+                                           .map(speakerName -> {
+                                               Person speaker = personMap.get(speakerName);
+                                               if (speaker == null) {
+                                                   throw new IllegalStateException(
+                                                       currentPosition() + ": The meeting with id (" + meeting.getId()
+                                                           + ") has a speaker (" + speakerName + ") that doesn't exist in the Persons list.");
+                                               }
+                                               return speaker;
+                                           }).collect(toList()));
+                meeting.setContent(nextStringCell().getStringCellValue());
 
-                //TODO: refactor adding the attendance list
                 List<RequiredAttendance> requiredAttendanceList = Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                     .filter(requiredAttendee -> !requiredAttendee.isEmpty())
                     .map(personName -> {
@@ -390,13 +397,14 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             autoSizeColumnsWithHeader();
         }
 
-        // TODO: ensure that preferred/required attendance are in persons view
         private void writeMeetings() {
             nextSheet("Meetings", 2, 1, false);
             nextRow();
             nextHeaderCell("Id");
             nextHeaderCell("Topic");
             nextHeaderCell("Duration");
+            nextHeaderCell("Speakers");
+            nextHeaderCell("Content");
             nextHeaderCell("Required attendance list");
             nextHeaderCell("Preferred attendance list");
             for (Meeting meeting : solution.getMeetingList()) {
@@ -404,6 +412,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextCell().setCellValue(meeting.getId());
                 nextCell().setCellValue(meeting.getTopic());
                 nextCell().setCellValue(meeting.getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
+                nextCell().setCellValue(meeting.getSpeakerList() == null ? "" :
+                                            String.join(", ", meeting.getSpeakerList().stream()
+                                                .map(speaker -> speaker.getFullName())
+                                                .collect(toList())));
+                nextCell().setCellValue(meeting.getContent() == null ? "" : meeting.getContent());
                 nextCell().setCellValue(
                     String.join(", ", meeting.getRequiredAttendanceList().stream()
                         .map(requiredAttendance -> requiredAttendance.getPerson().getFullName())
@@ -427,7 +440,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             for (Day dayOfYear : solution.getDayList()) {
                 nextRow();
                 LocalDate date = LocalDate.ofYearDay(Year.now().getValue(), dayOfYear.getDayOfYear());
-                // TODO: add breaks column (for example lunch breaks)
                 int startMinuteOfDay = 24 * 60, endMinuteOfDay = 0;
                 for (TimeGrain timeGrain : solution.getTimeGrainList()) {
                     if (timeGrain.getDay().equals(dayOfYear)) {
@@ -463,16 +475,20 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextRow();
                 nextCell().setCellValue(room.getName());
                 nextCell().setCellValue(room.getCapacity());
-                // TODO: implement unavailable style after adding unavailableTimeGrain to class Room
             }
             autoSizeColumnsWithHeader();
         }
 
-        // TODO: Should there be InfeasibleView and ScoreView?
+        //TODO: do we need infeasible view? If so what info should be in it
 
         private void writeRoomsView() {
             nextSheet("Rooms view", 1, 2, true);
-            //TODO: add constraint macros filteredConstraintNames to nextMeetingListCell
+            String[] filteredConstraintNames = {
+                DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE,
+
+                REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, PREFERRED_ATTENDANCE_CONFLICT,
+
+                ROOM_CONFLICT, DONT_GO_IN_OVERTIME, REQUIRED_ATTENDANCE_CONFLICT, REQUIRED_ROOM_CAPACITY};
             nextRow();
             nextHeaderCell("");
             writeTimeGrainDaysHeaders();
@@ -501,9 +517,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         if (mergePreviousMeetingList != null && mergeStart < currentColumnNumber) {
                             currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                         }
-                        // TODO: add unavailable timeGrains
                         nextMeetingListCell(meetingList, meeting -> meeting.getTopic() + "\n  "
-                            + "Speaker"); // TODO: add speaker list once added to class Meeting
+                                                + meeting.getSpeakerList().stream().map(Person::getFullName).collect(joining(", ")),
+                                            filteredConstraintNames);
                         mergePreviousMeetingList = meetingList.isEmpty() ? null : meetingList;
                         mergeStart = currentColumnNumber;
                         int longestDurationInGrains = 1;
@@ -524,7 +540,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
         private void writePersonsView() {
             nextSheet("Persons view", 1, 2, true);
-            //TODO: add constraint macros filteredConstraintNames to nextMeetingListCell
             nextRow();
             nextHeaderCell("");
             nextHeaderCell("");
@@ -541,6 +556,12 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         private void writePersonMeetingList(Person person, boolean required) {
+            String[] filteredConstraintNames = {
+                DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE,
+
+                REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, PREFERRED_ATTENDANCE_CONFLICT,
+
+                ROOM_CONFLICT, DONT_GO_IN_OVERTIME, REQUIRED_ATTENDANCE_CONFLICT, REQUIRED_ROOM_CAPACITY};
             nextRow();
             currentRow.setHeightInPoints(2 * currentSheet.getDefaultRowHeightInPoints());
             nextHeaderCell(person.getFullName());
@@ -586,7 +607,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, columnMergeStart, currentColumnNumber));
                     }
                     nextMeetingListCell(meetingList, meeting -> meeting.getTopic() + "\n  "
-                        + "Speaker");
+                                            + meeting.getSpeakerList().stream().map(Person::getFullName).collect(joining(", ")),
+                                        filteredConstraintNames);
                     mergePreviousTimeGrain = meetingList.isEmpty() ? null : timeGrain;
                     columnMergeStart = currentColumnNumber;
                     int longestDurationInGrains = 1;
@@ -632,8 +654,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             }
         }
 
-        protected void nextMeetingListCell(List<Meeting> meetingList, Function<Meeting, String> stringFunction) {
-            nextMeetingListCell(false, meetingList, stringFunction, null);
+        protected void nextMeetingListCell(List<Meeting> meetingList, Function<Meeting, String> stringFunction,
+                                           String[] filteredConstraintNames) {
+            nextMeetingListCell(false, meetingList, stringFunction, filteredConstraintNames);
         }
 
         protected void nextMeetingListCell(boolean unavailable, List<Meeting> meetingList,
@@ -673,8 +696,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 StringBuilder commentString = new StringBuilder(meetingList.size() * 200);
                 for (Meeting meeting : meetingList) {
                     commentString.append(meeting.getId()).append(": ")
-                        .append(meeting.getTopic()).append("\n    ");
-                    // TODO: append speaker as well
+                        .append(meeting.getTopic()).append("\n    ")
+                        .append(meeting.getSpeakerList().stream().map(Person::getFullName).collect(joining(", ")));
                     Indictment indictment = indictmentMap.get(meeting);
                     if (indictment != null) {
                         commentString.append("\n").append(indictment.getScore().toShortString())
