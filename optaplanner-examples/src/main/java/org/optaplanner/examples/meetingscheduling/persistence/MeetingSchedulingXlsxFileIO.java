@@ -11,13 +11,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,15 +78,12 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
     private static class MeetingSchedulingXslxReader extends AbstractXslxReader<MeetingSchedule> {
 
-        private Map<String, Meeting> totalMeetingMap;
-
         public MeetingSchedulingXslxReader(XSSFWorkbook workbook) {
             super(workbook);
         }
 
         public MeetingSchedule read() {
             solution = new MeetingSchedule();
-            totalMeetingMap = new HashMap<>();
             readConfiguration();
             readPersonList();
             readMeetingList();
@@ -241,11 +238,14 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
                 LocalTime startTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
                 LocalTime endTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
+                LocalTime lunchHourStartTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
                 int startMinuteOfDay = startTime.getHour() * 60 + startTime.getMinute();
                 int endMinuteOfDay = endTime.getHour() * 60 + endTime.getMinute();
+                int lunchHourStartMinuteOfDay = lunchHourStartTime.getHour() * 60 + lunchHourStartTime.getMinute();
                 for (int i = 0; (endMinuteOfDay - startMinuteOfDay) > i * TimeGrain.GRAIN_LENGTH_IN_MINUTES; i++) {
                     int timeGrainStartingMinuteOfDay = i * TimeGrain.GRAIN_LENGTH_IN_MINUTES + startMinuteOfDay;
-                    if (!(timeGrainStartingMinuteOfDay >= 12 * 60 && timeGrainStartingMinuteOfDay < 13 * 60)) { // lunch break
+                    if (timeGrainStartingMinuteOfDay < lunchHourStartMinuteOfDay
+                        || timeGrainStartingMinuteOfDay >= lunchHourStartMinuteOfDay + 60) {
                         TimeGrain timeGrain = new TimeGrain();
                         timeGrain.setId(timeGrainId);
                         timeGrain.setGrainIndex((int) timeGrainId++);
@@ -319,7 +319,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
     @Override
     public void write(MeetingSchedule solution, File outputScheduleFile) {
         try (FileOutputStream out = new FileOutputStream(outputScheduleFile)) {
-            Workbook workbook = new MeetingSchedulingXslxWriter(solution).write();
+            Workbook workbook = new MeetingSchedulingXlsxWriter(solution).write();
             workbook.write(out);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed writing outputScheduleFile (" + outputScheduleFile
@@ -327,9 +327,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
     }
 
-    private class MeetingSchedulingXslxWriter extends AbstractXlsxWriter<MeetingSchedule> {
+    private class MeetingSchedulingXlsxWriter extends AbstractXlsxWriter<MeetingSchedule> {
 
-        public MeetingSchedulingXslxWriter(MeetingSchedule solution) {
+        public MeetingSchedulingXlsxWriter(MeetingSchedule solution) {
             super(solution, MeetingSchedulingApp.SOLVER_CONFIG);
         }
 
@@ -422,16 +422,29 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Day");
             nextHeaderCell("Start");
             nextHeaderCell("End");
+            nextHeaderCell("Lunch hour start time");
             // TODO: A better way to represent day in class Day (LocalDate instead of int?)
             for (Day dayOfYear : solution.getDayList()) {
                 nextRow();
                 LocalDate date = LocalDate.ofYearDay(Year.now().getValue(), dayOfYear.getDayOfYear());
-                LocalTime startTime = LocalTime.ofSecondOfDay(8 * 60 * 60); // 8am TODO: set startTime field to class Day
-                LocalTime endTime = LocalTime.ofSecondOfDay(18 * 60 * 60); // 6pm
+                // TODO: add breaks column (for example lunch breaks)
+                int startMinuteOfDay = 24 * 60, endMinuteOfDay = 0;
+                for (TimeGrain timeGrain : solution.getTimeGrainList()) {
+                    if (timeGrain.getDay().equals(dayOfYear)) {
+                        startMinuteOfDay = timeGrain.getStartingMinuteOfDay() < startMinuteOfDay ?
+                            timeGrain.getStartingMinuteOfDay() : startMinuteOfDay;
+                        endMinuteOfDay = timeGrain.getStartingMinuteOfDay() + TimeGrain.GRAIN_LENGTH_IN_MINUTES > endMinuteOfDay ?
+                            timeGrain.getStartingMinuteOfDay() + TimeGrain.GRAIN_LENGTH_IN_MINUTES : endMinuteOfDay;
+                    }
+                }
+                LocalTime startTime = LocalTime.ofSecondOfDay(startMinuteOfDay * 60); // 8am TODO: set start/end Time fields to class Day
+                LocalTime endTime = LocalTime.ofSecondOfDay(endMinuteOfDay * 60); // 6pm
+                LocalTime lunchHourStartTime = LocalTime.ofSecondOfDay(12 * 60 * 60); // 12 pm
 
                 nextCell().setCellValue(DAY_FORMATTER.format(date));
                 nextCell().setCellValue(TIME_FORMATTER.format(startTime));
                 nextCell().setCellValue(TIME_FORMATTER.format(endTime));
+                nextCell().setCellValue(TIME_FORMATTER.format(lunchHourStartTime));
             }
             autoSizeColumnsWithHeader();
         }
@@ -450,9 +463,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextRow();
                 nextCell().setCellValue(room.getName());
                 nextCell().setCellValue(room.getCapacity());
-                for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                    nextCell().setCellValue(""); // TODO: implement unavailable style after adding unavailableTimeGrain to class Room
-                }
+                // TODO: implement unavailable style after adding unavailableTimeGrain to class Room
             }
             autoSizeColumnsWithHeader();
         }
@@ -474,26 +485,38 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 nextCell().setCellValue(room.getName());
                 List<MeetingAssignment> roomMeetingAssignmentList = solution.getMeetingAssignmentList().stream()
                     .filter(meetingAssignment -> meetingAssignment.getRoom() == room).collect(toList());
-
-                TimeGrain mergePreviousTimeGrain = null;
+                
+                List<Meeting> mergePreviousMeetingList = null;
                 int mergeStart = -1;
+                int previousMeetingRemainingTimeGrains = 0;
                 for (TimeGrain timeGrain : solution.getTimeGrainList()) {
                     List<Meeting> meetingList = roomMeetingAssignmentList.stream()
                         .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() == timeGrain)
                         .map(MeetingAssignment::getMeeting)
                         .collect(toList());
-
-                    if (meetingList.isEmpty() && mergePreviousTimeGrain != null) {
+                    if (meetingList.isEmpty() && mergePreviousMeetingList != null && previousMeetingRemainingTimeGrains > 0) {
+                        previousMeetingRemainingTimeGrains--;
                         nextCell();
                     } else {
-                        if (mergePreviousTimeGrain != null && mergeStart < currentColumnNumber) {
+                        if (mergePreviousMeetingList != null && mergeStart < currentColumnNumber) {
                             currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                         }
                         // TODO: add unavailable timeGrains
                         nextMeetingListCell(meetingList, meeting -> meeting.getTopic() + "\n  "
                             + "Speaker"); // TODO: add speaker list once added to class Meeting
-                        mergePreviousTimeGrain = meetingList.isEmpty() ? null : timeGrain;
+                        mergePreviousMeetingList = meetingList.isEmpty() ? null : meetingList;
+                        mergeStart = currentColumnNumber;
+                        int longestDurationInGrains = 1;
+                        for (Meeting meeting : meetingList) {
+                            if (meeting.getDurationInGrains() > longestDurationInGrains) {
+                                longestDurationInGrains = meeting.getDurationInGrains();
+                            }
+                        }
+                        previousMeetingRemainingTimeGrains = longestDurationInGrains - 1;
                     }
+                }
+                if (mergePreviousMeetingList != null && mergeStart < currentColumnNumber) {
+                    currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                 }
             }
             autoSizeColumnsWithHeader();
