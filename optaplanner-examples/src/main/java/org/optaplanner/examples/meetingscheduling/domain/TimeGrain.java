@@ -26,7 +26,7 @@ public class TimeGrain extends AbstractPersistable implements Labeled {
     /**
      * Time granularity is 15 minutes (which is often recommended when dealing with humans for practical purposes).
      */
-    public static final int GRAIN_LENGTH_IN_MINUTES = 15;
+    public static final int GRAIN_LENGTH_IN_MINUTES = 5; // TODO: change it back to 15 / get it from user
 
     private int grainIndex; // unique
 

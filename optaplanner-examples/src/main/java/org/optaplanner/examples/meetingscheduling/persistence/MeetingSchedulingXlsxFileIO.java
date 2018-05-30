@@ -1,3 +1,5 @@
+//TODO: strip names from tailing/leading spaces when reading
+
 package org.optaplanner.examples.meetingscheduling.persistence;
 
 import java.io.BufferedInputStream;
@@ -12,6 +14,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +29,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -129,7 +133,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             Map<String, Person> personMap = solution.getPersonList().stream().collect(
                 toMap(Person::getFullName, person -> person));
             nextSheet("Meetings");
-            // TODO: when added speaker to class Meeting make sure speaker exists in personsList
             nextRow(false);
             readHeaderCell("Id");
             readHeaderCell("Topic");
@@ -164,7 +167,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                             + TimeGrain.GRAIN_LENGTH_IN_MINUTES + ".");
                 }
                 meeting.setDurationInGrains((int) durationDouble / TimeGrain.GRAIN_LENGTH_IN_MINUTES);
-                meeting.setSpeakerList(Arrays.stream(nextStringCell().getStringCellValue().split(","))
+                meeting.setSpeakerList(Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                                            .filter(speaker -> !speaker.isEmpty())
                                            .map(speakerName -> {
                                                Person speaker = personMap.get(speakerName);
@@ -177,6 +180,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                            }).collect(toList()));
                 meeting.setContent(nextStringCell().getStringCellValue());
 
+                //TODO: refactor this in another method
+                Set<Person> requiredPersonSet = new HashSet<>();
                 List<RequiredAttendance> requiredAttendanceList = Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                     .filter(requiredAttendee -> !requiredAttendee.isEmpty())
                     .map(personName -> {
@@ -187,6 +192,12 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 currentPosition() + ": The meeting with id (" + meeting.getId()
                                     + ") has a required attendee (" + personName + ") that doesn't exist in the Persons list.");
                         }
+                        if (requiredPersonSet.contains(person)) {
+                            throw new IllegalStateException(
+                                currentPosition() + ": The meeting with id (" + meeting.getId()
+                                    + ") has a duplicate required attendee (" + personName + ").");
+                        }
+                        requiredPersonSet.add(person);
                         requiredAttendance.setMeeting(meeting);
                         requiredAttendance.setPerson(person);
                         return requiredAttendance;
@@ -198,6 +209,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 meeting.setRequiredAttendanceList(requiredAttendanceList);
                 attendanceList.addAll(requiredAttendanceList);
 
+                Set<Person> preferredPersonSet = new HashSet<>();
                 List<PreferredAttendance> preferredAttendanceList = Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                     .filter(preferredAttendee -> !preferredAttendee.isEmpty())
                     .map(personName -> {
@@ -208,6 +220,17 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 currentPosition() + ": The meeting with id (" + meeting.getId()
                                     + ") has a preferred attendee (" + personName + ") that doesn't exist in the Persons list.");
                         }
+                        if (preferredPersonSet.contains(person)) {
+                            throw new IllegalStateException(
+                                currentPosition() + ": The meeting with id (" + meeting.getId()
+                                    + ") has a duplicate preferred attendee (" + personName + ").");
+                        }
+                        if (requiredPersonSet.contains(person)) {
+                            throw new IllegalStateException(
+                                currentPosition() + ": The meeting with id (" + meeting.getId()
+                                    + ") has a preferred attendee (" + personName + ") that is also a required attendee.");
+                        }
+                        preferredPersonSet.add(person);
                         preferredAttendance.setMeeting(meeting);
                         preferredAttendance.setPerson(person);
                         return preferredAttendance;
@@ -271,11 +294,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextRow(false);
             readHeaderCell("");
             readHeaderCell("");
-            readTimeGrainDaysHeader();
+//            readTimeGrainDaysHeader();
             nextRow(false);
             readHeaderCell("Name");
             readHeaderCell("Capacity");
-            readTimeGrainHoursHeaders();
+//            readTimeGrainHoursHeaders();
             List<Room> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (nextRow()) {
@@ -502,30 +525,31 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 List<MeetingAssignment> roomMeetingAssignmentList = solution.getMeetingAssignmentList().stream()
                     .filter(meetingAssignment -> meetingAssignment.getRoom() == room).collect(toList());
 
-                List<Meeting> mergePreviousMeetingList = null;
+                List<MeetingAssignment> mergePreviousMeetingList = null;
                 int mergeStart = -1;
                 int previousMeetingRemainingTimeGrains = 0;
                 for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                    List<Meeting> meetingList = roomMeetingAssignmentList.stream()
+                    List<MeetingAssignment> meetingAssignmentList = roomMeetingAssignmentList.stream()
                         .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() == timeGrain)
-                        .map(MeetingAssignment::getMeeting)
                         .collect(toList());
-                    if (meetingList.isEmpty() && mergePreviousMeetingList != null && previousMeetingRemainingTimeGrains > 0) {
+                    if (meetingAssignmentList.isEmpty() && mergePreviousMeetingList != null && previousMeetingRemainingTimeGrains > 0) {
                         previousMeetingRemainingTimeGrains--;
                         nextCell();
                     } else {
                         if (mergePreviousMeetingList != null && mergeStart < currentColumnNumber) {
                             currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, mergeStart, currentColumnNumber));
                         }
-                        nextMeetingListCell(meetingList, meeting -> meeting.getTopic() + "\n  "
-                                                + meeting.getSpeakerList().stream().map(Person::getFullName).collect(joining(", ")),
-                                            filteredConstraintNames);
-                        mergePreviousMeetingList = meetingList.isEmpty() ? null : meetingList;
+                        nextMeetingAssignmentListCell(meetingAssignmentList,
+                                                      meetingAssignment -> meetingAssignment.getMeeting().getTopic() + "\n  "
+                                                          + meetingAssignment.getMeeting().getSpeakerList().
+                                                          stream().map(Person::getFullName).collect(joining(", ")),
+                                                      filteredConstraintNames);
+                        mergePreviousMeetingList = meetingAssignmentList.isEmpty() ? null : meetingAssignmentList;
                         mergeStart = currentColumnNumber;
                         int longestDurationInGrains = 1;
-                        for (Meeting meeting : meetingList) {
-                            if (meeting.getDurationInGrains() > longestDurationInGrains) {
-                                longestDurationInGrains = meeting.getDurationInGrains();
+                        for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
+                            if (meetingAssignment.getMeeting().getDurationInGrains() > longestDurationInGrains) {
+                                longestDurationInGrains = meetingAssignment.getMeeting().getDurationInGrains();
                             }
                         }
                         previousMeetingRemainingTimeGrains = longestDurationInGrains - 1;
@@ -594,27 +618,28 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             int columnMergeStart = -1;
             int previousMeetingRemainingTimeGrains = 0;
             for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                List<Meeting> meetingList = timeGrainMeetingAssignmentList.stream()
+                List<MeetingAssignment> meetingAssignmentList = timeGrainMeetingAssignmentList.stream()
                     .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null
                         && meetingAssignment.getStartingTimeGrain().equals(timeGrain))
-                    .map(MeetingAssignment::getMeeting)
                     .collect(toList());
-                if (meetingList.isEmpty() && mergePreviousTimeGrain != null && previousMeetingRemainingTimeGrains > 0) {
+                if (meetingAssignmentList.isEmpty() && mergePreviousTimeGrain != null && previousMeetingRemainingTimeGrains > 0) {
                     previousMeetingRemainingTimeGrains--;
                     nextCell();
                 } else {
                     if (mergePreviousTimeGrain != null && columnMergeStart < currentColumnNumber) {
                         currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber, columnMergeStart, currentColumnNumber));
                     }
-                    nextMeetingListCell(meetingList, meeting -> meeting.getTopic() + "\n  "
-                                            + meeting.getSpeakerList().stream().map(Person::getFullName).collect(joining(", ")),
-                                        filteredConstraintNames);
-                    mergePreviousTimeGrain = meetingList.isEmpty() ? null : timeGrain;
+                    nextMeetingAssignmentListCell(meetingAssignmentList,
+                                                  meetingAssignment -> meetingAssignment.getMeeting().getTopic() + "\n  "
+                                                      + meetingAssignment.getMeeting().getSpeakerList()
+                                                      .stream().map(Person::getFullName).collect(joining(", ")),
+                                                  filteredConstraintNames);
+                    mergePreviousTimeGrain = meetingAssignmentList.isEmpty() ? null : timeGrain;
                     columnMergeStart = currentColumnNumber;
                     int longestDurationInGrains = 1;
-                    for (Meeting meeting : meetingList) {
-                        if (meeting.getDurationInGrains() > longestDurationInGrains) {
-                            longestDurationInGrains = meeting.getDurationInGrains();
+                    for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
+                        if (meetingAssignment.getMeeting().getDurationInGrains() > longestDurationInGrains) {
+                            longestDurationInGrains = meetingAssignment.getMeeting().getDurationInGrains();
                         }
                     }
                     previousMeetingRemainingTimeGrains = longestDurationInGrains - 1;
@@ -650,32 +675,32 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60);
                 LocalTime endTime = LocalTime.ofSecondOfDay(
                     (timeGrain.getStartingMinuteOfDay() + timeGrain.GRAIN_LENGTH_IN_MINUTES) * 60);
-                nextHeaderCell(TIME_FORMATTER.format(startTime) + "-" + TIME_FORMATTER.format(endTime));
+                nextHeaderCell(TIME_FORMATTER.format(startTime)); // TODO: + "-" + TIME_FORMATTER.format(endTime));
             }
         }
 
-        protected void nextMeetingListCell(List<Meeting> meetingList, Function<Meeting, String> stringFunction,
-                                           String[] filteredConstraintNames) {
-            nextMeetingListCell(false, meetingList, stringFunction, filteredConstraintNames);
+        protected void nextMeetingAssignmentListCell(List<MeetingAssignment> meetingAssignmentList, Function<MeetingAssignment, String> stringFunction,
+                                                     String[] filteredConstraintNames) {
+            nextMeetingAssignmentListCell(false, meetingAssignmentList, stringFunction, filteredConstraintNames);
         }
 
-        protected void nextMeetingListCell(boolean unavailable, List<Meeting> meetingList,
-                                           Function<Meeting, String> stringFunction, String[] filteredConstraintNames) {
+        protected void nextMeetingAssignmentListCell(boolean unavailable, List<MeetingAssignment> meetingAssignmentList,
+                                                     Function<MeetingAssignment, String> stringFunction, String[] filteredConstraintNames) {
             List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
                 : Arrays.asList(filteredConstraintNames);
-            if (meetingList == null) {
-                meetingList = Collections.emptyList();
+            if (meetingAssignmentList == null) {
+                meetingAssignmentList = Collections.emptyList();
             }
-            HardSoftScore score = meetingList.stream()
+            HardMediumSoftScore score = meetingAssignmentList.stream()
                 .map(indictmentMap::get).filter(Objects::nonNull)
                 .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
                 // Filter out filtered constraints
                 .filter(constraintMatch -> filteredConstraintNameList == null
                     || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
-                .map(constraintMatch -> (HardSoftScore) constraintMatch.getScore())
+                .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                 // Filter out positive constraints
                 .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
-                .reduce(Score::add).orElse(HardSoftScore.ZERO);
+                .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
             if (!score.isFeasible()) {
                 cell = nextCell(hardPenaltyStyle);
@@ -686,19 +711,23 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             } else {
                 cell = nextCell(wrappedStyle);
             }
-            if (!meetingList.isEmpty()) {
+
+            if (!meetingAssignmentList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
                 anchor.setCol1(cell.getColumnIndex());
                 anchor.setCol2(cell.getColumnIndex() + 4);
                 anchor.setRow1(currentRow.getRowNum());
                 anchor.setRow2(currentRow.getRowNum() + 4);
                 Comment comment = currentDrawing.createCellComment(anchor);
-                StringBuilder commentString = new StringBuilder(meetingList.size() * 200);
-                for (Meeting meeting : meetingList) {
-                    commentString.append(meeting.getId()).append(": ")
-                        .append(meeting.getTopic()).append("\n    ")
-                        .append(meeting.getSpeakerList().stream().map(Person::getFullName).collect(joining(", ")));
-                    Indictment indictment = indictmentMap.get(meeting);
+                StringBuilder commentString = new StringBuilder(meetingAssignmentList.size() * 200);
+                for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
+                    commentString.append("Topic: " + meetingAssignment.getMeeting().getTopic()).append("\n")
+                        .append("Speakers: " + meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName).collect(joining(", ")) + "\n")
+                        .append("Date and Time: " + meetingAssignment.getStartingTimeGrain().getDateTimeString() + "\n")
+                        .append("Duration: " + meetingAssignment.getMeeting().getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES + " minutes.\n")
+                        .append("Room: " + meetingAssignment.getRoom().getName() + "\n");
+
+                    Indictment indictment = indictmentMap.get(meetingAssignment);
                     if (indictment != null) {
                         commentString.append("\n").append(indictment.getScore().toShortString())
                             .append(" total");
@@ -714,7 +743,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .reduce(Score::add).orElse(HardSoftScore.ZERO);
                             String justificationTalkCodes = filteredConstraintMatchList.stream()
                                 .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
-                                .filter(justification -> justification instanceof MeetingAssignment && justification != meeting)
+                                .filter(justification -> justification instanceof MeetingAssignment && justification != meetingAssignment)
                                 .distinct().map(o -> Long.toString(((MeetingAssignment) o).getMeeting().getId())).collect(joining(", "));
                             commentString.append("\n    ").append(sum.toShortString())
                                 .append(" for ").append(filteredConstraintMatchList.size())
@@ -727,8 +756,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 comment.setString(creationHelper.createRichTextString(commentString.toString()));
                 cell.setCellComment(comment);
             }
-            cell.setCellValue(meetingList.stream().map(stringFunction).collect(joining("\n")));
-            currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), meetingList.size() * currentSheet.getDefaultRowHeightInPoints()));
+            cell.setCellValue(meetingAssignmentList.stream().map(stringFunction).collect(joining("\n")));
+            currentRow.setHeightInPoints(Math.max(currentRow.getHeightInPoints(), meetingAssignmentList.size() * currentSheet.getDefaultRowHeightInPoints()));
         }
     }
 }
