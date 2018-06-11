@@ -1,5 +1,3 @@
-//TODO: strip names from tailing/leading spaces when reading
-
 package org.optaplanner.examples.meetingscheduling.persistence;
 
 import java.io.BufferedInputStream;
@@ -152,7 +150,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 MeetingAssignment meetingAssignment = new MeetingAssignment();
                 meeting.setId(meetingId++);
                 meetingAssignment.setId(meetingAssignmentId++);
-                nextNumericCell().getNumericCellValue(); //TODO: reading meetingID, use it or remove it
                 meeting.setTopic(nextStringCell().getStringCellValue());
                 double durationDouble = nextNumericCell().getNumericCellValue();
                 if (durationDouble <= 0 || durationDouble != Math.floor(durationDouble)) {
@@ -180,7 +177,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                            }).collect(toList()));
                 meeting.setContent(nextStringCell().getStringCellValue());
 
-                //TODO: refactor this in another method
                 Set<Person> requiredPersonSet = new HashSet<>();
                 List<RequiredAttendance> requiredAttendanceList = Arrays.stream(nextStringCell().getStringCellValue().split(", "))
                     .filter(requiredAttendee -> !requiredAttendee.isEmpty())
@@ -291,14 +287,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
         private void readRoomList() {
             nextSheet("Rooms");
-            nextRow(false);
-            readHeaderCell("");
-            readHeaderCell("");
-//            readTimeGrainDaysHeader();
-            nextRow(false);
+            nextRow();
             readHeaderCell("Name");
             readHeaderCell("Capacity");
-//            readTimeGrainHoursHeaders();
             List<Room> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (nextRow()) {
@@ -320,29 +311,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 roomList.add(room);
             }
             solution.setRoomList(roomList);
-        }
-
-        private void readTimeGrainDaysHeader() {
-            Day previousTimeGrainDay = null;
-            for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                Day timeGrainDay = timeGrain.getDay();
-                if (timeGrainDay.equals(previousTimeGrainDay)) {
-                    readHeaderCell("");
-                } else {
-                    LocalDate timeGrainDate = LocalDate.ofYearDay(Year.now().getValue(), timeGrainDay.getDayOfYear());
-                    readHeaderCell(DAY_FORMATTER.format(timeGrainDate));
-                    previousTimeGrainDay = timeGrainDay;
-                }
-            }
-        }
-
-        private void readTimeGrainHoursHeaders() {
-            for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60);
-                LocalTime endTime = LocalTime.ofSecondOfDay(
-                    (timeGrain.getStartingMinuteOfDay() + timeGrain.GRAIN_LENGTH_IN_MINUTES) * 60);
-                readHeaderCell(TIME_FORMATTER.format(startTime) + "-" + TIME_FORMATTER.format(endTime));
-            }
         }
     }
 
@@ -404,7 +372,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void writeConstraintLine(String name, Supplier<Integer> supplier, String constraintDescription) {
             nextRow();
             nextHeaderCell(name);
-            //TODO: do we need to add weight to the constraints?
             nextCell().setCellValue("n/a");
             nextHeaderCell(constraintDescription);
         }
@@ -423,7 +390,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void writeMeetings() {
             nextSheet("Meetings", 2, 1, false);
             nextRow();
-            nextHeaderCell("Id");
             nextHeaderCell("Topic");
             nextHeaderCell("Duration");
             nextHeaderCell("Speakers");
@@ -432,7 +398,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Preferred attendance list");
             for (Meeting meeting : solution.getMeetingList()) {
                 nextRow();
-                nextCell().setCellValue(meeting.getId());
                 nextCell().setCellValue(meeting.getTopic());
                 nextCell().setCellValue(meeting.getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
                 nextCell().setCellValue(meeting.getSpeakerList() == null ? "" :
@@ -459,7 +424,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Start");
             nextHeaderCell("End");
             nextHeaderCell("Lunch hour start time");
-            // TODO: A better way to represent day in class Day (LocalDate instead of int?)
             for (Day dayOfYear : solution.getDayList()) {
                 nextRow();
                 LocalDate date = LocalDate.ofYearDay(Year.now().getValue(), dayOfYear.getDayOfYear());
@@ -487,13 +451,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void writeRooms() {
             nextSheet("Rooms", 1, 1, false);
             nextRow();
-            nextHeaderCell("");
-            nextHeaderCell("");
-            writeTimeGrainDaysHeaders();
-            nextRow();
             nextHeaderCell("Name");
             nextHeaderCell("Capacity");
-            writeTimeGrainHoursHeaders();
             for (Room room : solution.getRoomList()) {
                 nextRow();
                 nextCell().setCellValue(room.getName());
@@ -501,8 +460,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             }
             autoSizeColumnsWithHeader();
         }
-
-        //TODO: do we need infeasible view? If so what info should be in it
 
         private void writeRoomsView() {
             nextSheet("Rooms view", 1, 2, true);
@@ -563,7 +520,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         private void writePersonsView() {
-            nextSheet("Persons view", 1, 2, true);
+            nextSheet("Persons view", 2, 2, true);
             nextRow();
             nextHeaderCell("");
             nextHeaderCell("");
@@ -675,7 +632,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60);
                 LocalTime endTime = LocalTime.ofSecondOfDay(
                     (timeGrain.getStartingMinuteOfDay() + timeGrain.GRAIN_LENGTH_IN_MINUTES) * 60);
-                nextHeaderCell(TIME_FORMATTER.format(startTime)); // TODO: + "-" + TIME_FORMATTER.format(endTime));
+                nextHeaderCell(TIME_FORMATTER.format(startTime));
             }
         }
 
