@@ -104,6 +104,17 @@ rule "Preferred attendance conflict"
         scoreHolder.addMediumConstraintMatch(kcontext, -1);
 end
 
+rule "Room stability"
+    when
+        Attendance($person : person, $leftMeeting : meeting)
+        Attendance(person == $person, $rightMeeting : meeting)
+        MeetingAssignment(meeting == $leftMeeting, $leftStartTimeGrain : startingTimeGrain, startingTimeGrain != null, $leftRoom : room)
+        MeetingAssignment(meeting == $rightMeeting, startingTimeGrain != null, $leftStartTimeGrain.getGrainIndex() < startingTimeGrain.getGrainIndex(),
+            $leftRoom != room, startingTimeGrain.getGrainIndex() - $leftMeeting.getDurationInGrains() - $leftStartTimeGrain.getGrainIndex() <= 2)
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, -1);
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
@@ -113,4 +124,16 @@ rule "Do all meetings as soon as possible"
         MeetingAssignment(startingTimeGrain != null, $lastTimeGrainIndex : lastTimeGrainIndex)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $lastTimeGrainIndex);
+end
+
+//TODO: Add minimum break in time grains to class MeetingSchedule. Minimum break here is 1 timeGrain
+rule "Minimum TimeGrains break between two consecutive meetings"
+    when
+        Attendance($person : person, $leftMeeting : meeting)
+        Attendance(person == $person, $rightMeeting : meeting)
+        MeetingAssignment(meeting == $leftMeeting, $leftRoom : room, startingTimeGrain != null, $leftEndTimeGrainIndex : getLastTimeGrainIndex())
+        MeetingAssignment(meeting == $rightMeeting, startingTimeGrain != null, $rightStartingTimeGrainIndex : startingTimeGrain.getGrainIndex(),
+            $leftEndTimeGrainIndex < $rightStartingTimeGrainIndex, $rightStartingTimeGrainIndex - $leftEndTimeGrainIndex - 1 < 1)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - ((1 - ($rightStartingTimeGrainIndex - $leftEndTimeGrainIndex - 1)) * 100)); // 1 TimeGrains break
 end
