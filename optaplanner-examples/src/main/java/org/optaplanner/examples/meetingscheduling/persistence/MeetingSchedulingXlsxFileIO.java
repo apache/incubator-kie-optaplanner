@@ -60,6 +60,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
     protected static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
     protected static final String REQUIRED_ATTENDANCE_CONFLICT = "Required attendance conflict";
     protected static final String REQUIRED_ROOM_CAPACITY = "Required room capacity";
+    protected static final String START_AND_END_ON_SAME_DAY = "Start and end on same day";
 
     @Override
     public MeetingSchedule read(File inputScheduleFile) {
@@ -105,6 +106,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readIntConstraintLine(DONT_GO_IN_OVERTIME, null, "");
             readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
             readIntConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
+            readIntConstraintLine(START_AND_END_ON_SAME_DAY, null, "");
         }
 
         private void readPersonList() {
@@ -132,7 +134,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 toMap(Person::getFullName, person -> person));
             nextSheet("Meetings");
             nextRow(false);
-            readHeaderCell("Id");
             readHeaderCell("Topic");
             readHeaderCell("Duration");
             readHeaderCell("Speakers");
@@ -350,7 +351,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextSheet("Configuration", 1, 3, false);
             nextRow();
             nextHeaderCell("Meeting name");
-            nextCell().setCellValue("stub"); // TODO: add a meetingName field to class MeetingSchedule?
+            nextCell().setCellValue(""); // TODO: add a meetingName field to class MeetingSchedule?
             nextRow();
             nextRow();
             nextHeaderCell("Constraint");
@@ -366,6 +367,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             writeConstraintLine(DONT_GO_IN_OVERTIME, null, "");
             writeConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
             writeConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
+            writeConstraintLine(START_AND_END_ON_SAME_DAY, null, "");
             autoSizeColumnsWithHeader();
         }
 
