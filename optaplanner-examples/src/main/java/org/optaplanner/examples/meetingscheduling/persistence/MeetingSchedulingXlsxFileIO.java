@@ -52,9 +52,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
     // Meeting Parametrization:
     protected static final String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE = "Do all meetings as soon as possible";
+    protected static final String MINIMUM_TIMEGRAINs_BREAK = "Minimum TimeGrains break between two consecutive meetings";
 
     protected static final String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT = "Required and preferred attendance conflict";
     protected static final String PREFERRED_ATTENDANCE_CONFLICT = "Preferred attendance conflict";
+    protected static final String ROOM_STABILITY = "Room Stability";
 
     protected static final String ROOM_CONFLICT = "Room conflict";
     protected static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
@@ -100,8 +102,10 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readHeaderCell("Description");
 
             readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
+            readIntConstraintLine(MINIMUM_TIMEGRAINs_BREAK, null, "");
             readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
             readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
+            readIntConstraintLine(ROOM_STABILITY, null, "");
             readIntConstraintLine(ROOM_CONFLICT, null, "");
             readIntConstraintLine(DONT_GO_IN_OVERTIME, null, "");
             readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
@@ -360,9 +364,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Description");
 
             writeConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
+            writeConstraintLine(MINIMUM_TIMEGRAINs_BREAK, null, "");
             nextRow();
             writeConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
             writeConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
+            writeConstraintLine(ROOM_STABILITY, null, "");
             nextRow();
             writeConstraintLine(ROOM_CONFLICT, null, "");
             writeConstraintLine(DONT_GO_IN_OVERTIME, null, "");
