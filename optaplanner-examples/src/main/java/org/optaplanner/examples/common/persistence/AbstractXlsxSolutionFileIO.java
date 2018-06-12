@@ -69,6 +69,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
     protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
     protected static final XSSFColor PINNED_COLOR = new XSSFColor(TangoColorFactory.PLUM_1);
     protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
+    protected static final XSSFColor MEDIUM_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_3);
     protected static final XSSFColor SOFT_PENALTY_COLOR = new XSSFColor(TangoColorFactory.ORANGE_1);
 
     @Override
@@ -311,6 +312,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected XSSFCellStyle unavailableStyle;
         protected XSSFCellStyle pinnedStyle;
         protected XSSFCellStyle hardPenaltyStyle;
+        protected XSSFCellStyle mediumPenaltyStyle;
         protected XSSFCellStyle softPenaltyStyle;
         protected XSSFCellStyle wrappedStyle;
 
@@ -352,6 +354,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             unavailableStyle = createStyle(UNAVAILABLE_COLOR);
             pinnedStyle = createStyle(PINNED_COLOR);
             hardPenaltyStyle = createStyle(HARD_PENALTY_COLOR);
+            mediumPenaltyStyle = createStyle(MEDIUM_PENALTY_COLOR);
             softPenaltyStyle = createStyle(SOFT_PENALTY_COLOR);
             wrappedStyle = createStyle(null);
         }
