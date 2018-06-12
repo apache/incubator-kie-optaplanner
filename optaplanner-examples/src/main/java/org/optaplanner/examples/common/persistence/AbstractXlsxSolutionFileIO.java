@@ -76,7 +76,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         return "xlsx";
     }
 
-    public static abstract class AbstractXslxReader<Solution_> {
+    public static abstract class AbstractXlsxReader<Solution_> {
 
         protected final XSSFWorkbook workbook;
 
@@ -88,7 +88,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected int currentRowNumber;
         protected int currentColumnNumber;
 
-        public AbstractXslxReader(XSSFWorkbook workbook) {
+        public AbstractXlsxReader(XSSFWorkbook workbook) {
             this.workbook = workbook;
         }
 

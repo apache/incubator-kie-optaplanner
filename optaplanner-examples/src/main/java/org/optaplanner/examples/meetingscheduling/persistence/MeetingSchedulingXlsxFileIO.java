@@ -66,16 +66,16 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
     public MeetingSchedule read(File inputScheduleFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputScheduleFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            return new MeetingSchedulingXslxReader(workbook).read();
+            return new MeetingSchedulingXlsxReader(workbook).read();
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed reading inputScheduleFile ("
                                                 + inputScheduleFile + ").", e);
         }
     }
 
-    private static class MeetingSchedulingXslxReader extends AbstractXslxReader<MeetingSchedule> {
+    private static class MeetingSchedulingXlsxReader extends AbstractXlsxReader<MeetingSchedule> {
 
-        public MeetingSchedulingXslxReader(XSSFWorkbook workbook) {
+        public MeetingSchedulingXlsxReader(XSSFWorkbook workbook) {
             super(workbook);
         }
 
@@ -129,6 +129,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             solution.setPersonList(personList);
         }
 
+        // TODO: refactor this
         private void readMeetingList() {
             Map<String, Person> personMap = solution.getPersonList().stream().collect(
                 toMap(Person::getFullName, person -> person));
@@ -643,6 +644,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextMeetingAssignmentListCell(false, meetingAssignmentList, stringFunction, filteredConstraintNames);
         }
 
+        // TODO: refactor this
         protected void nextMeetingAssignmentListCell(boolean unavailable, List<MeetingAssignment> meetingAssignmentList,
                                                      Function<MeetingAssignment, String> stringFunction, String[] filteredConstraintNames) {
             List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null

@@ -41,13 +41,13 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
-    public abstract XslxInputBuilder<Solution_> createXslxInputBuilder();
+    public abstract XlsxInputBuilder<Solution_> createXlsxInputBuilder();
 
     @Override
     public Solution_ readSolution(File inputFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            XslxInputBuilder<Solution_> xlsxInputBuilder = createXslxInputBuilder();
+            XlsxInputBuilder<Solution_> xlsxInputBuilder = createXlsxInputBuilder();
             xlsxInputBuilder.setInputFile(inputFile);
             xlsxInputBuilder.setWorkbook(workbook);
             try {
@@ -62,7 +62,7 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         }
     }
 
-    public static abstract class XslxInputBuilder<Solution_> extends InputBuilder {
+    public static abstract class XlsxInputBuilder<Solution_> extends InputBuilder {
 
         protected File inputFile;
         protected XSSFWorkbook workbook;
