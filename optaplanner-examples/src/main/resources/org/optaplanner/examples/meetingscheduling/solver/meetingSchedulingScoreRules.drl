@@ -123,10 +123,11 @@ rule "Do all meetings as soon as possible"
     when
         MeetingAssignment(startingTimeGrain != null, $lastTimeGrainIndex : lastTimeGrainIndex)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $lastTimeGrainIndex);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $lastTimeGrainIndex % 100);
 end
 
 //TODO: Add minimum break in time grains to class MeetingSchedule. Minimum break here is 1 timeGrain
+//TODO: replace hard-coded values with constraint weights gotten from Configuration sheet
 rule "Minimum TimeGrains break between two consecutive meetings"
     when
         Attendance($person : person, $leftMeeting : meeting)
@@ -147,4 +148,12 @@ rule "Overlapping meetings"
         if ($leftAssignment.calculateOverlap($rightAssignment) != 0) {
             scoreHolder.addSoftConstraintMatch(kcontext, -100);
         }
+end
+
+rule "Use larger rooms first"
+    when
+        MeetingAssignment(room != null, $room : room, $roomCapacity : room.getCapacity())
+        Room($otherRoomCapacity : capacity, $roomCapacity < capacity)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, $roomCapacity - $otherRoomCapacity);
 end
