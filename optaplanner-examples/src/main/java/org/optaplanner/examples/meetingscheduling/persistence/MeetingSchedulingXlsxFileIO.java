@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
@@ -368,6 +369,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextRow();
             nextHeaderCell("Meeting name");
             nextCell().setCellValue(""); // TODO: add a meetingName field to class MeetingSchedule?
+            nextCell().setCellValue(DAY_FORMATTER.format(LocalDateTime.now()) + " " + TIME_FORMATTER.format(LocalDateTime.now()));
             nextRow();
             nextRow();
             nextHeaderCell("Constraint");
@@ -408,7 +410,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         private void writeMeetings() {
-            nextSheet("Meetings", 2, 1, false);
+            nextSheet("Meetings", 1, 1, false);
             nextRow();
             nextHeaderCell("Topic");
             nextHeaderCell("Duration");
