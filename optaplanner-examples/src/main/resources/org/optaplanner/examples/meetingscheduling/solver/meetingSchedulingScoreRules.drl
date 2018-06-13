@@ -150,7 +150,7 @@ rule "Overlapping meetings"
         }
 end
 
-rule "Use larger rooms first"
+rule "Assign larger rooms first"
     when
         MeetingAssignment(room != null, $room : room, $roomCapacity : room.getCapacity())
         Room($otherRoomCapacity : capacity, $roomCapacity < capacity)

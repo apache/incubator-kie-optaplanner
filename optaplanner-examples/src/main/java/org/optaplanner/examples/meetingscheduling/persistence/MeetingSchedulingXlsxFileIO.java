@@ -13,19 +13,21 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
@@ -53,7 +55,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
     // Meeting Parametrization:
     protected static final String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE = "Do all meetings as soon as possible";
-    protected static final String MINIMUM_TIMEGRAINs_BREAK = "Minimum TimeGrains break between two consecutive meetings";
+    protected static final String MINIMUM_TIMEGRAINS_BREAK = "Minimum TimeGrains break between two consecutive meetings";
+    protected static final String OVERLAPPING_MEETINGS = "Overlapping meetings";
+    protected static final String ASSIGN_LARGER_ROOMS_FIRST = "Assign larger rooms first";
 
     protected static final String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT = "Required and preferred attendance conflict";
     protected static final String PREFERRED_ATTENDANCE_CONFLICT = "Preferred attendance conflict";
@@ -103,7 +107,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readHeaderCell("Description");
 
             readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
-            readIntConstraintLine(MINIMUM_TIMEGRAINs_BREAK, null, "");
+            readIntConstraintLine(MINIMUM_TIMEGRAINS_BREAK, null, "");
+            //TODO: read OVERLAPPING_MEETINGS and ASSIGN_LARGER_ROOMS_FIRST
             readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
             readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
             readIntConstraintLine(ROOM_STABILITY, null, "");
@@ -195,7 +200,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                                speakerAttendanceList.add(speakerAttendance);
                                                return speaker;
                                            }).collect(toList()));
-                for (Attendance speakerAttendance: speakerAttendanceList) {
+                for (Attendance speakerAttendance : speakerAttendanceList) {
                     speakerAttendance.setId(attendanceId++);
                 }
                 attendanceList.addAll(speakerAttendanceList);
@@ -209,7 +214,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 meetingList.add(meeting);
                 meetingAssignment.setMeeting(meeting);
                 meetingAssignmentList.add(meetingAssignment);
-
             }
             solution.setMeetingList(meetingList);
             solution.setMeetingAssignmentList(meetingAssignmentList);
@@ -387,6 +391,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             writeRooms();
             writeRoomsView();
             writePersonsView();
+            writePrintedFormView();
 
             return workbook;
         }
@@ -404,7 +409,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Description");
 
             writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
-            writeIntConstraintLine(MINIMUM_TIMEGRAINs_BREAK, null, "");
+            writeIntConstraintLine(MINIMUM_TIMEGRAINS_BREAK, null, "");
+            writeIntConstraintLine(OVERLAPPING_MEETINGS, null, "");
+            writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, null, "");
             nextRow();
             writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
             writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
@@ -456,7 +463,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         .map(preferredAttendance -> preferredAttendance.getPerson().getFullName())
                         .collect(toList())));
             }
-            autoSizeColumnsWithHeader();
+            setColumnsWidthHeader(5000);
         }
 
         private void writeDays() {
@@ -506,11 +513,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void writeRoomsView() {
             nextSheet("Rooms view", 1, 2, true);
             String[] filteredConstraintNames = {
-                DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE,
+                DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, MINIMUM_TIMEGRAINS_BREAK, OVERLAPPING_MEETINGS, ASSIGN_LARGER_ROOMS_FIRST,
 
-                REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, PREFERRED_ATTENDANCE_CONFLICT,
+                REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, PREFERRED_ATTENDANCE_CONFLICT, MINIMUM_TIMEGRAINS_BREAK,
 
-                ROOM_CONFLICT, DONT_GO_IN_OVERTIME, REQUIRED_ATTENDANCE_CONFLICT, REQUIRED_ROOM_CAPACITY};
+                ROOM_CONFLICT, DONT_GO_IN_OVERTIME, REQUIRED_ATTENDANCE_CONFLICT, REQUIRED_ROOM_CAPACITY, START_AND_END_ON_SAME_DAY};
             nextRow();
             nextHeaderCell("");
             writeTimeGrainDaysHeaders();
@@ -644,6 +651,35 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     previousMeetingRemainingTimeGrains = longestDurationInGrains - 1;
                 }
             }
+        }
+
+        private void writePrintedFormView() {
+            nextSheet("Printed form view", 1, 1, true);
+            nextRow();
+            nextHeaderCell("");
+            for (Room room : solution.getRoomList()) {
+                nextHeaderCell(room.getName());
+            }
+            List<MeetingAssignment> meetingAssignmentList = new ArrayList<>(solution.getMeetingAssignmentList()).stream()
+                .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
+                .collect(toList());
+            meetingAssignmentList.sort(Comparator.comparing(meetingAssignment -> meetingAssignment.getStartingTimeGrain().getGrainIndex()));
+            TimeGrain previousTimeGrain = new TimeGrain();
+            for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
+                if (meetingAssignment.getStartingTimeGrain() != previousTimeGrain) {
+                    nextRow();
+                    nextCell().setCellValue(meetingAssignment.getStartingTimeGrain().getDateTimeString());
+                }
+                XSSFCell newCell = currentRow.createCell(meetingAssignment.getRoom().getId().intValue() + 1);
+                newCell.setCellStyle(createStyle(null));
+                StringBuilder cellValue = new StringBuilder();
+                cellValue.append("Topic: ").append(meetingAssignment.getMeeting().getTopic()).append("\n")
+                    .append("Speakers: ").append(meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName).collect(joining(", "))).append("\n")
+                    .append("Duration: ").append(meetingAssignment.getMeeting().getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES).append(" minutes.\n");
+                newCell.setCellValue(cellValue.toString());
+                previousTimeGrain = meetingAssignment.getStartingTimeGrain();
+            }
+            setColumnsWidthHeader(5000);
         }
 
         private void writeTimeGrainDaysHeaders() {
