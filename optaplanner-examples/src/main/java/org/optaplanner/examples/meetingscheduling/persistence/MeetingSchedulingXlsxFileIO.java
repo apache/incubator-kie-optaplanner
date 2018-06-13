@@ -153,6 +153,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
             while (nextRow()) {
                 Meeting meeting = new Meeting();
+                List<Attendance> speakerAttendanceList = new ArrayList<>();
+                Set<Person> speakerSet = new HashSet<>();
                 MeetingAssignment meetingAssignment = new MeetingAssignment();
                 meeting.setId(meetingId++);
                 meetingAssignment.setId(meetingAssignmentId++);
@@ -181,11 +183,26 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                                        currentPosition() + ": The meeting with id (" + meeting.getId()
                                                            + ") has a speaker (" + speakerName + ") that doesn't exist in the Persons list.");
                                                }
+                                               if (speakerSet.contains(speaker)) {
+                                                   throw new IllegalStateException(
+                                                       currentPosition() + ": The meeting with id (" + meeting.getId()
+                                                           + ") has a duplicate speaker (" + speakerName + ").");
+                                               }
+                                               speakerSet.add(speaker);
+                                               RequiredAttendance speakerAttendance = new RequiredAttendance();
+                                               speakerAttendance.setMeeting(meeting);
+                                               speakerAttendance.setPerson(speaker);
+                                               speakerAttendanceList.add(speakerAttendance);
                                                return speaker;
                                            }).collect(toList()));
+                for (Attendance speakerAttendance: speakerAttendanceList) {
+                    speakerAttendance.setId(attendanceId++);
+                }
+                attendanceList.addAll(speakerAttendanceList);
+
                 meeting.setContent(nextStringCell().getStringCellValue());
 
-                List<Attendance> meetingAttendanceList = getAttendanceLists(meeting, personMap, attendanceId);
+                List<Attendance> meetingAttendanceList = getAttendanceLists(meeting, personMap, attendanceId, speakerSet);
                 attendanceId += meetingAttendanceList.size();
                 attendanceList.addAll(meetingAttendanceList);
 
@@ -199,7 +216,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             solution.setAttendanceList(attendanceList);
         }
 
-        private List<Attendance> getAttendanceLists(Meeting meeting, Map<String, Person> personMap, long attendanceId) {
+        private List<Attendance> getAttendanceLists(Meeting meeting, Map<String, Person> personMap, long attendanceId, Set<Person> speakerSet) {
             List<Attendance> attendanceList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             Set<Person> requiredPersonSet = new HashSet<>();
             List<RequiredAttendance> requiredAttendanceList = Arrays.stream(nextStringCell().getStringCellValue().split(", "))
@@ -216,6 +233,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         throw new IllegalStateException(
                             currentPosition() + ": The meeting with id (" + meeting.getId()
                                 + ") has a duplicate required attendee (" + personName + ").");
+                    }
+                    if (speakerSet.contains(person)) {
+                        throw new IllegalStateException(
+                            currentPosition() + ": The meeting with id (" + meeting.getId()
+                                + ") has a required attendee  (" + personName + ") who is also the speaker.");
                     }
                     requiredPersonSet.add(person);
                     requiredAttendance.setMeeting(meeting);
@@ -249,6 +271,11 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         throw new IllegalStateException(
                             currentPosition() + ": The meeting with id (" + meeting.getId()
                                 + ") has a preferred attendee (" + personName + ") that is also a required attendee.");
+                    }
+                    if (speakerSet.contains(person)) {
+                        throw new IllegalStateException(
+                            currentPosition() + ": The meeting with id (" + meeting.getId()
+                                + ") has a preferred attendee  (" + personName + ") who is also the speaker.");
                     }
                     preferredPersonSet.add(person);
                     preferredAttendance.setMeeting(meeting);
