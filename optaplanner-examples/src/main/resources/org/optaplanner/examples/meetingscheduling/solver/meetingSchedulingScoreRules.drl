@@ -137,3 +137,14 @@ rule "Minimum TimeGrains break between two consecutive meetings"
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - ((1 - ($rightStartingTimeGrainIndex - $leftEndTimeGrainIndex - 1)) * 100)); // 1 TimeGrains break
 end
+
+rule "Overlapping meetings"
+    when
+        $leftAssignment : MeetingAssignment(startingTimeGrain != null)
+        $rightAssignment : MeetingAssignment(startingTimeGrain != null, meeting.getId() < $leftAssignment.getMeeting().getId(),
+            meeting != $leftAssignment.getMeeting())
+    then
+        if ($leftAssignment.calculateOverlap($rightAssignment) != 0) {
+            scoreHolder.addSoftConstraintMatch(kcontext, -100);
+        }
+end
