@@ -403,26 +403,19 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Weight");
             nextHeaderCell("Description");
 
-            writeConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
-            writeConstraintLine(MINIMUM_TIMEGRAINs_BREAK, null, "");
+            writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
+            writeIntConstraintLine(MINIMUM_TIMEGRAINs_BREAK, null, "");
             nextRow();
-            writeConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
-            writeConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
-            writeConstraintLine(ROOM_STABILITY, null, "");
+            writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
+            writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
+            writeIntConstraintLine(ROOM_STABILITY, null, "");
             nextRow();
-            writeConstraintLine(ROOM_CONFLICT, null, "");
-            writeConstraintLine(DONT_GO_IN_OVERTIME, null, "");
-            writeConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
-            writeConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
-            writeConstraintLine(START_AND_END_ON_SAME_DAY, null, "");
+            writeIntConstraintLine(ROOM_CONFLICT, null, "");
+            writeIntConstraintLine(DONT_GO_IN_OVERTIME, null, "");
+            writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
+            writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
+            writeIntConstraintLine(START_AND_END_ON_SAME_DAY, null, "");
             autoSizeColumnsWithHeader();
-        }
-
-        private void writeConstraintLine(String name, Supplier<Integer> supplier, String constraintDescription) {
-            nextRow();
-            nextHeaderCell(name);
-            nextCell().setCellValue("n/a");
-            nextHeaderCell(constraintDescription);
         }
 
         private void writePersons() {
