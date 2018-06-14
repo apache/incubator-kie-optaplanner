@@ -13,7 +13,6 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +20,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
@@ -108,7 +106,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
             readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
             readIntConstraintLine(MINIMUM_TIMEGRAINS_BREAK, null, "");
-            //TODO: read OVERLAPPING_MEETINGS and ASSIGN_LARGER_ROOMS_FIRST
+            readIntConstraintLine(OVERLAPPING_MEETINGS, null, "");
+            readIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, null, "");
             readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
             readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
             readIntConstraintLine(ROOM_STABILITY, null, "");
@@ -552,13 +551,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                                       filteredConstraintNames);
                         mergingPreviousMeetingList = !meetingAssignmentList.isEmpty();
                         mergeStart = currentColumnNumber;
-                        int longestDurationInGrains = 1;
-                        for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
-                            if (meetingAssignment.getMeeting().getDurationInGrains() > longestDurationInGrains) {
-                                longestDurationInGrains = meetingAssignment.getMeeting().getDurationInGrains();
-                            }
-                        }
-                        previousMeetingRemainingTimeGrains = longestDurationInGrains - 1;
+                        previousMeetingRemainingTimeGrains = getLongestDurationInGrains(meetingAssignmentList) - 1;
                     }
                 }
                 if (mergingPreviousMeetingList && mergeStart < currentColumnNumber) {
@@ -642,44 +635,109 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                                   filteredConstraintNames);
                     mergingPreviousTimeGrain = !meetingAssignmentList.isEmpty();
                     columnMergeStart = currentColumnNumber;
-                    int longestDurationInGrains = 1;
-                    for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
-                        if (meetingAssignment.getMeeting().getDurationInGrains() > longestDurationInGrains) {
-                            longestDurationInGrains = meetingAssignment.getMeeting().getDurationInGrains();
-                        }
-                    }
-                    previousMeetingRemainingTimeGrains = longestDurationInGrains - 1;
+                    previousMeetingRemainingTimeGrains = getLongestDurationInGrains(meetingAssignmentList) - 1;
                 }
             }
         }
 
+        //TODO: Refactor this to add methods writing vertically
         private void writePrintedFormView() {
             nextSheet("Printed form view", 1, 1, true);
             nextRow();
+            nextRow();
+            //TODO: Add lunch hour
+            writeTimeGrainsHoursVertically(30);
+            currentRowNumber = 0;
+            currentRow = currentSheet.getRow(currentRowNumber);
             nextHeaderCell("");
             for (Room room : solution.getRoomList()) {
-                nextHeaderCell(room.getName());
-            }
-            List<MeetingAssignment> meetingAssignmentList = new ArrayList<>(solution.getMeetingAssignmentList()).stream()
-                .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
-                .collect(toList());
-            meetingAssignmentList.sort(Comparator.comparing(meetingAssignment -> meetingAssignment.getStartingTimeGrain().getGrainIndex()));
-            TimeGrain previousTimeGrain = new TimeGrain();
-            for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
-                if (meetingAssignment.getStartingTimeGrain() != previousTimeGrain) {
-                    nextRow();
-                    nextCell().setCellValue(meetingAssignment.getStartingTimeGrain().getDateTimeString());
+                List<MeetingAssignment> roomMeetingAssignmentList = solution.getMeetingAssignmentList().stream()
+                    .filter(meetingAssignment -> meetingAssignment.getRoom() == room)
+                    .collect(toList());
+                if (roomMeetingAssignmentList.isEmpty()) {
+                    continue;
                 }
-                XSSFCell newCell = currentRow.createCell(meetingAssignment.getRoom().getId().intValue() + 1);
-                newCell.setCellStyle(createStyle(null));
-                StringBuilder cellValue = new StringBuilder();
-                cellValue.append("Topic: ").append(meetingAssignment.getMeeting().getTopic()).append("\n")
-                    .append("Speakers: ").append(meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName).collect(joining(", "))).append("\n")
-                    .append("Duration: ").append(meetingAssignment.getMeeting().getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES).append(" minutes.\n");
-                newCell.setCellValue(cellValue.toString());
-                previousTimeGrain = meetingAssignment.getStartingTimeGrain();
+
+                currentRowNumber = 0;
+                currentRow = currentSheet.getRow(currentRowNumber);
+                nextHeaderCell(room.getName());
+                currentColumnNumber--;
+                currentRowNumber++;
+                currentRow = currentSheet.getRow(currentRowNumber);
+
+                int mergeStart = -1;
+                int previousMeetingRemainingTimeGrains = 0;
+                boolean mergingPreviousTimeGrain = false;
+                for (TimeGrain timeGrain : solution.getTimeGrainList()) {
+                    List<MeetingAssignment> meetingAssignmentList = roomMeetingAssignmentList.stream()
+                        .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() == timeGrain)
+                        .collect(toList());
+                    if (meetingAssignmentList.isEmpty() && previousMeetingRemainingTimeGrains > 0) {
+                        previousMeetingRemainingTimeGrains--;
+                        currentRow = currentSheet.getRow(++currentRowNumber);
+                    } else {
+                        if (mergeStart > 0 && mergingPreviousTimeGrain) {
+                            currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber - 1, currentColumnNumber + 1, currentColumnNumber + 1));
+                        }
+
+                        nextMeetingAssignmentListCell(meetingAssignmentList, meetingAssignment -> {
+                                                          StringBuilder meetingInfo = new StringBuilder();
+                                                          String startTimeString = getTimeString(meetingAssignment.getStartingTimeGrain().getStartingMinuteOfDay());
+                                                          String endTimeString = getTimeString(solution.getTimeGrainList().get(meetingAssignment.getLastTimeGrainIndex()).getStartingMinuteOfDay()
+                                                                                                   + TimeGrain.GRAIN_LENGTH_IN_MINUTES);
+                                                          meetingInfo.append(StringUtils.abbreviate(meetingAssignment.getMeeting().getTopic(), 150)).append("\n  ")
+                                                              .append(meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName).collect(joining(", "))).append("\n  ")
+                                                              .append(startTimeString).append(" - ").append(endTimeString)
+                                                              .append(" (").append(meetingAssignment.getMeeting().getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES).append(" mins)");
+                                                          return meetingInfo.toString();
+                                                      }
+                            , null);
+                        currentColumnNumber--;
+                        previousMeetingRemainingTimeGrains = getLongestDurationInGrains(meetingAssignmentList) - 1;
+                        mergingPreviousTimeGrain = previousMeetingRemainingTimeGrains > 0;
+
+                        mergeStart = currentRowNumber;
+                        currentRowNumber++;
+                        currentRow = currentSheet.getRow(currentRowNumber);
+                    }
+                }
+                currentColumnNumber++;
             }
-            setColumnsWidthHeader(5000);
+
+            setColumnsWidthHeader(6000);
+        }
+
+        private String getTimeString(int minuteOfDay) {
+            return TIME_FORMATTER.format(LocalTime.ofSecondOfDay(minuteOfDay * 60));
+        }
+
+        private int getLongestDurationInGrains(List<MeetingAssignment> meetingAssignmentList) {
+            int longestDurationInGrains = 1;
+            for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
+                if (meetingAssignment.getMeeting().getDurationInGrains() > longestDurationInGrains) {
+                    longestDurationInGrains = meetingAssignment.getMeeting().getDurationInGrains();
+                }
+            }
+            return longestDurationInGrains;
+        }
+
+        private void writeTimeGrainsHoursVertically(int minimumInterval) {
+            int mergeStart = -1;
+            for (TimeGrain timeGrain : solution.getTimeGrainList()) {
+                if (timeGrain.getGrainIndex() % (Math.ceil(minimumInterval / TimeGrain.GRAIN_LENGTH_IN_MINUTES)) == 0) {
+                    if (mergeStart > 0) {
+                        currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber - 1, 0, 0));
+                    }
+                    nextCell().setCellValue(timeGrain.getDateTimeString());
+                    mergeStart = currentRowNumber;
+                    nextRow();
+                } else {
+                    nextRow();
+                }
+            }
+            if (mergeStart < currentRowNumber) {
+                currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber - 1, 0, 0));
+            }
         }
 
         private void writeTimeGrainDaysHeaders() {
@@ -708,8 +766,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void writeTimeGrainHoursHeaders() {
             for (TimeGrain timeGrain : solution.getTimeGrainList()) {
                 LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60);
-                LocalTime endTime = LocalTime.ofSecondOfDay(
-                    (timeGrain.getStartingMinuteOfDay() + timeGrain.GRAIN_LENGTH_IN_MINUTES) * 60);
                 nextHeaderCell(TIME_FORMATTER.format(startTime));
             }
         }
