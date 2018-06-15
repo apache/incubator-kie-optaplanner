@@ -27,6 +27,7 @@ public class Meeting extends AbstractPersistable {
     private String topic;
     private List<Person> speakerList;
     private String content;
+    private boolean entireGroupMeeting;
     /**
      * Multiply by {@link TimeGrain#GRAIN_LENGTH_IN_MINUTES} to get duration in minutes.
      */
@@ -102,5 +103,13 @@ public class Meeting extends AbstractPersistable {
     @Override
     public String toString() {
         return topic;
+    }
+
+    public boolean isEntireGroupMeeting() {
+        return entireGroupMeeting;
+    }
+
+    public void setEntireGroupMeeting(boolean entireGroupMeeting) {
+        this.entireGroupMeeting = entireGroupMeeting;
     }
 }

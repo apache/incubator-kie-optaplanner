@@ -112,17 +112,6 @@ rule "Preferred attendance conflict"
         scoreHolder.addMediumConstraintMatch(kcontext, -1);
 end
 
-rule "Room stability"
-    when
-        Attendance($person : person, $leftMeeting : meeting)
-        Attendance(person == $person, $rightMeeting : meeting)
-        MeetingAssignment(meeting == $leftMeeting, $leftStartTimeGrain : startingTimeGrain, startingTimeGrain != null, $leftRoom : room)
-        MeetingAssignment(meeting == $rightMeeting, startingTimeGrain != null, $leftStartTimeGrain.getGrainIndex() < startingTimeGrain.getGrainIndex(),
-            $leftRoom != room, startingTimeGrain.getGrainIndex() - $leftMeeting.getDurationInGrains() - $leftStartTimeGrain.getGrainIndex() <= 2)
-    then
-        scoreHolder.addMediumConstraintMatch(kcontext, -1);
-end
-
 // ############################################################################
 // Soft constraints
 // ############################################################################
@@ -154,7 +143,7 @@ rule "Overlapping meetings"
             meeting != $leftAssignment.getMeeting())
     then
         if ($leftAssignment.calculateOverlap($rightAssignment) != 0) {
-            scoreHolder.addSoftConstraintMatch(kcontext, -100);
+            scoreHolder.addSoftConstraintMatch(kcontext, -10);
         }
 end
 
@@ -164,4 +153,15 @@ rule "Assign larger rooms first"
         Room($otherRoomCapacity : capacity, $roomCapacity < capacity)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, $roomCapacity - $otherRoomCapacity);
+end
+
+rule "Room stability"
+    when
+        Attendance($person : person, $leftMeeting : meeting)
+        Attendance(person == $person, $rightMeeting : meeting)
+        MeetingAssignment(meeting == $leftMeeting, $leftStartTimeGrain : startingTimeGrain, startingTimeGrain != null, $leftRoom : room)
+        MeetingAssignment(meeting == $rightMeeting, startingTimeGrain != null, $leftStartTimeGrain.getGrainIndex() < startingTimeGrain.getGrainIndex(),
+            $leftRoom != room, startingTimeGrain.getGrainIndex() - $leftMeeting.getDurationInGrains() - $leftStartTimeGrain.getGrainIndex() <= 2)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, -100);
 end

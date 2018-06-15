@@ -466,6 +466,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             for (Meeting meeting : solution.getMeetingList()) {
                 nextRow();
                 nextCell().setCellValue(meeting.getTopic());
+                nextCell().setCellValue(meeting.isEntireGroupMeeting() ? "Y" : "");
                 nextCell().setCellValue(meeting.getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
                 nextCell().setCellValue(meeting.getSpeakerList() == null ? "" :
                                             meeting.getSpeakerList().stream()
@@ -829,9 +830,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 Comment comment = currentDrawing.createCellComment(anchor);
                 StringBuilder commentString = new StringBuilder(meetingAssignmentList.size() * 200);
                 for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
-                    commentString.append("Topic: ").append(meetingAssignment.getMeeting().getTopic()).append("\n")
-                        .append("Speakers: ").append(meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName).collect(joining(", "))).append("\n")
-                        .append("Date and Time: ").append(meetingAssignment.getStartingTimeGrain().getDateTimeString()).append("\n")
+                    commentString.append("Date and Time: ").append(meetingAssignment.getStartingTimeGrain().getDateTimeString()).append("\n")
                         .append("Duration: ").append(meetingAssignment.getMeeting().getDurationInGrains() * TimeGrain.GRAIN_LENGTH_IN_MINUTES).append(" minutes.\n")
                         .append("Room: ").append(meetingAssignment.getRoom().getName()).append("\n");
 
