@@ -78,6 +78,14 @@ rule "Start and end on same day"
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
 
+rule "Entire group meeting not scheduled"
+    when
+        $entireGroupMeeting : Meeting(entireGroupMeeting)
+        MeetingAssignment(meeting == $entireGroupMeeting, startingTimeGrain == null)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1);
+end
+
 // ############################################################################
 // Medium constraints
 // ############################################################################

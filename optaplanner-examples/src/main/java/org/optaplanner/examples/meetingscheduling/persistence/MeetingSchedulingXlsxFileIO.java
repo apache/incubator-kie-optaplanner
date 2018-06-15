@@ -144,6 +144,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextSheet("Meetings");
             nextRow(false);
             readHeaderCell("Topic");
+            readHeaderCell("Group");
             readHeaderCell("Duration");
             readHeaderCell("Speakers");
             readHeaderCell("Content");
@@ -164,6 +165,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 meetingAssignment.setId(meetingAssignmentId++);
                 meeting.setTopic(nextStringCell().getStringCellValue());
 
+                meeting.setEntireGroupMeeting(nextStringCell().getStringCellValue().toLowerCase().equals("y"));
                 double durationDouble = nextNumericCell().getNumericCellValue();
                 if (durationDouble <= 0 || durationDouble != Math.floor(durationDouble)) {
                     throw new IllegalStateException(
@@ -199,16 +201,32 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                                speakerAttendanceList.add(speakerAttendance);
                                                return speaker;
                                            }).collect(toList()));
-                for (Attendance speakerAttendance : speakerAttendanceList) {
-                    speakerAttendance.setId(attendanceId++);
-                }
-                attendanceList.addAll(speakerAttendanceList);
 
                 meeting.setContent(nextStringCell().getStringCellValue());
 
-                List<Attendance> meetingAttendanceList = getAttendanceLists(meeting, personMap, attendanceId, speakerSet);
-                attendanceId += meetingAttendanceList.size();
-                attendanceList.addAll(meetingAttendanceList);
+                if (meeting.isEntireGroupMeeting()) {
+                    for (Person person : solution.getPersonList()) {
+                        List<RequiredAttendance> requiredAttendanceList = new ArrayList<>(solution.getPersonList().size());
+                        RequiredAttendance requiredAttendance = new RequiredAttendance();
+                        requiredAttendance.setPerson(person);
+                        requiredAttendance.setMeeting(meeting);
+                        requiredAttendance.setId(attendanceId++);
+                        requiredAttendanceList.addAll(requiredAttendanceList);
+                        attendanceList.add(requiredAttendance);
+
+                        meeting.setRequiredAttendanceList(requiredAttendanceList);
+                        meeting.setPreferredAttendanceList(new ArrayList<>());
+                    }
+                } else {
+                    for (Attendance speakerAttendance : speakerAttendanceList) {
+                        speakerAttendance.setId(attendanceId++);
+                    }
+                    attendanceList.addAll(speakerAttendanceList);
+
+                    List<Attendance> meetingAttendanceList = getAttendanceLists(meeting, personMap, attendanceId, speakerSet);
+                    attendanceId += meetingAttendanceList.size();
+                    attendanceList.addAll(meetingAttendanceList);
+                }
 
                 meetingList.add(meeting);
                 meetingAssignment.setMeeting(meeting);
@@ -439,6 +457,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextSheet("Meetings", 1, 1, false);
             nextRow();
             nextHeaderCell("Topic");
+            nextHeaderCell("Group");
             nextHeaderCell("Duration");
             nextHeaderCell("Speakers");
             nextHeaderCell("Content");
@@ -700,6 +719,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         currentRowNumber++;
                         currentRow = currentSheet.getRow(currentRowNumber);
                     }
+                }
+                if (mergeStart > 0 && mergingPreviousTimeGrain) {
+                    currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber - 1, currentColumnNumber + 1, currentColumnNumber + 1));
                 }
                 currentColumnNumber++;
             }
