@@ -56,16 +56,17 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
     protected static final String MINIMUM_TIMEGRAINS_BREAK = "Minimum TimeGrains break between two consecutive meetings";
     protected static final String OVERLAPPING_MEETINGS = "Overlapping meetings";
     protected static final String ASSIGN_LARGER_ROOMS_FIRST = "Assign larger rooms first";
+    protected static final String ROOM_STABILITY = "Room Stability";
 
     protected static final String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT = "Required and preferred attendance conflict";
     protected static final String PREFERRED_ATTENDANCE_CONFLICT = "Preferred attendance conflict";
-    protected static final String ROOM_STABILITY = "Room Stability";
 
     protected static final String ROOM_CONFLICT = "Room conflict";
     protected static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
     protected static final String REQUIRED_ATTENDANCE_CONFLICT = "Required attendance conflict";
     protected static final String REQUIRED_ROOM_CAPACITY = "Required room capacity";
     protected static final String START_AND_END_ON_SAME_DAY = "Start and end on same day";
+    protected static final String ENTIRE_GROUP_MEETING_NOT_SCHEDULED = "Entire group meeting not scheduled";
 
     @Override
     public MeetingSchedule read(File inputScheduleFile) {
@@ -108,14 +109,15 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readIntConstraintLine(MINIMUM_TIMEGRAINS_BREAK, null, "");
             readIntConstraintLine(OVERLAPPING_MEETINGS, null, "");
             readIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, null, "");
+            readIntConstraintLine(ROOM_STABILITY, null, "");
             readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
             readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
-            readIntConstraintLine(ROOM_STABILITY, null, "");
             readIntConstraintLine(ROOM_CONFLICT, null, "");
             readIntConstraintLine(DONT_GO_IN_OVERTIME, null, "");
             readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
             readIntConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
             readIntConstraintLine(START_AND_END_ON_SAME_DAY, null, "");
+            readIntConstraintLine(ENTIRE_GROUP_MEETING_NOT_SCHEDULED, null, "");
         }
 
         private void readPersonList() {
@@ -205,18 +207,17 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                 meeting.setContent(nextStringCell().getStringCellValue());
 
                 if (meeting.isEntireGroupMeeting()) {
+                    List<RequiredAttendance> requiredAttendanceList = new ArrayList<>(solution.getPersonList().size());
                     for (Person person : solution.getPersonList()) {
-                        List<RequiredAttendance> requiredAttendanceList = new ArrayList<>(solution.getPersonList().size());
                         RequiredAttendance requiredAttendance = new RequiredAttendance();
                         requiredAttendance.setPerson(person);
                         requiredAttendance.setMeeting(meeting);
                         requiredAttendance.setId(attendanceId++);
-                        requiredAttendanceList.addAll(requiredAttendanceList);
+                        requiredAttendanceList.add(requiredAttendance);
                         attendanceList.add(requiredAttendance);
-
-                        meeting.setRequiredAttendanceList(requiredAttendanceList);
-                        meeting.setPreferredAttendanceList(new ArrayList<>());
                     }
+                    meeting.setRequiredAttendanceList(requiredAttendanceList);
+                    meeting.setPreferredAttendanceList(new ArrayList<>());
                 } else {
                     for (Attendance speakerAttendance : speakerAttendanceList) {
                         speakerAttendance.setId(attendanceId++);
@@ -429,16 +430,18 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             writeIntConstraintLine(MINIMUM_TIMEGRAINS_BREAK, null, "");
             writeIntConstraintLine(OVERLAPPING_MEETINGS, null, "");
             writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, null, "");
+            writeIntConstraintLine(ROOM_STABILITY, null, "");
             nextRow();
             writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
             writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
-            writeIntConstraintLine(ROOM_STABILITY, null, "");
             nextRow();
             writeIntConstraintLine(ROOM_CONFLICT, null, "");
             writeIntConstraintLine(DONT_GO_IN_OVERTIME, null, "");
             writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
             writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
             writeIntConstraintLine(START_AND_END_ON_SAME_DAY, null, "");
+            writeIntConstraintLine(ENTIRE_GROUP_MEETING_NOT_SCHEDULED, null, "");
+
             autoSizeColumnsWithHeader();
         }
 
@@ -536,7 +539,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
                 REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, PREFERRED_ATTENDANCE_CONFLICT, MINIMUM_TIMEGRAINS_BREAK,
 
-                ROOM_CONFLICT, DONT_GO_IN_OVERTIME, REQUIRED_ATTENDANCE_CONFLICT, REQUIRED_ROOM_CAPACITY, START_AND_END_ON_SAME_DAY};
+                ROOM_CONFLICT, DONT_GO_IN_OVERTIME, REQUIRED_ATTENDANCE_CONFLICT, REQUIRED_ROOM_CAPACITY, START_AND_END_ON_SAME_DAY,
+                ENTIRE_GROUP_MEETING_NOT_SCHEDULED};
             nextRow();
             nextHeaderCell("");
             writeTimeGrainDaysHeaders();
