@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.rocktour.app;
+package org.optaplanner.examples.scrabble.app;
 
 import java.io.File;
 
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
-import org.optaplanner.examples.rocktour.domain.RockTourSolution;
+import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
 
-public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution> {
+public class ScrabblePerformanceTest extends SolverPerformanceTest<ScrabbleSolution> {
 
     @Override
-    protected RockTourApp createCommonApp() {
-        return new RockTourApp();
+    protected ScrabbleApp createCommonApp() {
+        return new ScrabbleApp();
     }
 
     // ************************************************************************
@@ -36,14 +36,14 @@ public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolut
 
     @Test(timeout = 600000)
     public void solveModel() {
-        File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
-        runSpeedTest(unsolvedDataFile, "0hard/72725670medium/-6208480soft");
+        File unsolvedDataFile = new File("data/scrabble/unsolved/jbossProjects.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/328medium/-1165soft");
     }
 
     @Test(timeout = 600000)
     public void solveModelFastAssert() {
-        File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
-        runSpeedTest(unsolvedDataFile, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT);
+        File unsolvedDataFile = new File("data/scrabble/unsolved/jbossProjects.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/328medium/-1165soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }
