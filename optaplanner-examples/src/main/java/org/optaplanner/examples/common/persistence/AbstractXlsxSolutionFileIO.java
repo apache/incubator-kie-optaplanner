@@ -431,6 +431,23 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             return cell;
         }
 
+        protected void nextHeaderCellVertically(String value) {
+            nextCellVertically(headerStyle).setCellValue(value);
+            headerCellCount++;
+        }
+
+        protected XSSFCell nextCellVertically() {
+            return nextCellVertically(defaultStyle);
+        }
+
+        protected XSSFCell nextCellVertically(XSSFCellStyle cellStyle) { //TODO: use it or delete it
+            currentRowNumber++;
+            currentRow = currentSheet.getRow(currentRowNumber);
+            XSSFCell cell = currentRow.createCell(currentColumnNumber);
+            cell.setCellStyle(cellStyle);
+            return cell;
+        }
+
         protected void autoSizeColumnsWithHeader() {
             for (int i = 0; i < headerCellCount; i++) {
                 currentSheet.autoSizeColumn(i);
