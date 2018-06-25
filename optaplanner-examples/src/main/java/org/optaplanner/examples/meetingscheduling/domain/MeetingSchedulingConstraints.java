@@ -17,26 +17,40 @@
 package org.optaplanner.examples.meetingscheduling.domain;
 
 public enum MeetingSchedulingConstraints {
-    DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE("Do all meetings as soon as possible"),
-    MINIMUM_TIMEGRAINS_BREAK("Minimum TimeGrains break between two consecutive meetings"),
-    OVERLAPPING_MEETINGS("Overlapping meetings"),
-    ASSIGN_LARGER_ROOMS_FIRST("Assign larger rooms first"),
-    ROOM_STABILITY("Room Stability"),
+    ROOM_CONFLICT("Room conflict", 1),
+    DONT_GO_IN_OVERTIME("Don't go in overtime", 1),
+    REQUIRED_ATTENDANCE_CONFLICT("Required attendance conflict", 1),
+    REQUIRED_ROOM_CAPACITY("Required room capacity", 1),
+    START_AND_END_ON_SAME_DAY("Start and end on same day", 1),
+    ENTIRE_GROUP_MEETING_NOT_SCHEDULED("Entire group meeting not scheduled", 1),
 
-    REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT("Required and preferred attendance conflict"),
-    PREFERRED_ATTENDANCE_CONFLICT("Preferred attendance conflict"),
+    REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT("Required and preferred attendance conflict", 1),
+    PREFERRED_ATTENDANCE_CONFLICT("Preferred attendance conflict", 1),
 
-    ROOM_CONFLICT("Room conflict"),
-    DONT_GO_IN_OVERTIME("Don't go in overtime"),
-    REQUIRED_ATTENDANCE_CONFLICT("Required attendance conflict"),
-    REQUIRED_ROOM_CAPACITY("Required room capacity"),
-    START_AND_END_ON_SAME_DAY("Start and end on same day"),
-    ENTIRE_GROUP_MEETING_NOT_SCHEDULED("Entire group meeting not scheduled");
+    DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE("Do all meetings as soon as possible", 1),
+    MINIMUM_TIMEGRAINS_BREAK("Minimum TimeGrains break between two consecutive meetings", 100),
+    OVERLAPPING_MEETINGS("Overlapping meetings", 10),
+    ASSIGN_LARGER_ROOMS_FIRST("Assign larger rooms first", 1),
+    ROOM_STABILITY("Room Stability", 1);
 
     private final String constraintName;
+    private int constraintWeight;
 
-    private MeetingSchedulingConstraints(String constraintName) {
+    private MeetingSchedulingConstraints(String constraintName, int constraintWeight) {
         this.constraintName = constraintName;
+        this.constraintWeight = constraintWeight;
+    }
+
+    public String getConstraintName() {
+        return constraintName;
+    }
+
+    public int getConstraintWeight() {
+        return this.constraintWeight;
+    }
+
+    public void setConstraintWeight(int constraintWeight) {
+        this.constraintWeight = constraintWeight;
     }
 
     public String toString() {

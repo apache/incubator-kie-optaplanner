@@ -89,9 +89,10 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readHeaderCell("Weight");
             readHeaderCell("Description");
 
-            for (MeetingSchedulingConstraints constraintEnum : MeetingSchedulingConstraints.values()) {
-                readIntConstraintLine(constraintEnum.toString(), null, "");
+            for (MeetingSchedulingConstraints constraint : MeetingSchedulingConstraints.values()) {
+                readIntConstraintLine(constraint.getConstraintName(), constraint::setConstraintWeight, "");
             }
+            System.out.println("");
         }
 
         private void readPersonList() {
@@ -416,8 +417,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Description");
 
             for (MeetingSchedulingConstraints constraint : MeetingSchedulingConstraints.values()) {
-                writeIntConstraintLine(constraint.toString(), null, "");
-                if (constraint.equals(MeetingSchedulingConstraints.ROOM_STABILITY)
+                writeIntConstraintLine(constraint.getConstraintName(), constraint::getConstraintWeight, "");
+                if (constraint.equals(MeetingSchedulingConstraints.ENTIRE_GROUP_MEETING_NOT_SCHEDULED)
                         || constraint.equals(MeetingSchedulingConstraints.PREFERRED_ATTENDANCE_CONFLICT)) {
                     nextRow();
                 }
@@ -644,7 +645,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
         private void writeMeetingAssignmentList(List<MeetingAssignment> meetingAssignmentList) {
             String[] filteredConstraintNames = Arrays.stream(MeetingSchedulingConstraints.values())
-                    .map(MeetingSchedulingConstraints::toString)
+                    .map(MeetingSchedulingConstraints::getConstraintName)
                     .toArray(String[]::new);
             int mergeStart = -1;
             int previousMeetingRemainingTimeGrains = 0;
@@ -754,7 +755,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
 
-            XSSFCell cell = getXssfCellOfScore(score);
+            XSSFCell cell = getXSSFCellOfScore(score);
 
             if (!meetingAssignmentList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
@@ -807,7 +808,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             return commentString.toString();
         }
 
-        private XSSFCell getXssfCellOfScore(HardMediumSoftScore score) {
+        private XSSFCell getXSSFCellOfScore(HardMediumSoftScore score) {
             XSSFCell cell;
             if (!score.isFeasible()) {
                 cell = nextCell(hardPenaltyStyle);
