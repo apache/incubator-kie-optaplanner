@@ -39,6 +39,7 @@ import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedulingConstraints;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
 import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
@@ -50,23 +51,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<MeetingSchedule> {
-
-    // Meeting Parametrization:
-    private static final String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE = "Do all meetings as soon as possible";
-    private static final String MINIMUM_TIMEGRAINS_BREAK = "Minimum TimeGrains break between two consecutive meetings";
-    private static final String OVERLAPPING_MEETINGS = "Overlapping meetings";
-    private static final String ASSIGN_LARGER_ROOMS_FIRST = "Assign larger rooms first";
-    private static final String ROOM_STABILITY = "Room Stability";
-
-    private static final String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT = "Required and preferred attendance conflict";
-    private static final String PREFERRED_ATTENDANCE_CONFLICT = "Preferred attendance conflict";
-
-    private static final String ROOM_CONFLICT = "Room conflict";
-    private static final String DONT_GO_IN_OVERTIME = "Don't go in overtime";
-    private static final String REQUIRED_ATTENDANCE_CONFLICT = "Required attendance conflict";
-    private static final String REQUIRED_ROOM_CAPACITY = "Required room capacity";
-    private static final String START_AND_END_ON_SAME_DAY = "Start and end on same day";
-    private static final String ENTIRE_GROUP_MEETING_NOT_SCHEDULED = "Entire group meeting not scheduled";
 
     @Override
     public MeetingSchedule read(File inputScheduleFile) {
@@ -105,19 +89,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readHeaderCell("Weight");
             readHeaderCell("Description");
 
-            readIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
-            readIntConstraintLine(MINIMUM_TIMEGRAINS_BREAK, null, "");
-            readIntConstraintLine(OVERLAPPING_MEETINGS, null, "");
-            readIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, null, "");
-            readIntConstraintLine(ROOM_STABILITY, null, "");
-            readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
-            readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
-            readIntConstraintLine(ROOM_CONFLICT, null, "");
-            readIntConstraintLine(DONT_GO_IN_OVERTIME, null, "");
-            readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
-            readIntConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
-            readIntConstraintLine(START_AND_END_ON_SAME_DAY, null, "");
-            readIntConstraintLine(ENTIRE_GROUP_MEETING_NOT_SCHEDULED, null, "");
+            for (MeetingSchedulingConstraints constraintEnum : MeetingSchedulingConstraints.values()) {
+                readIntConstraintLine(constraintEnum.toString(), null, "");
+            }
         }
 
         private void readPersonList() {
@@ -441,21 +415,13 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             nextHeaderCell("Weight");
             nextHeaderCell("Description");
 
-            writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, null, "");
-            writeIntConstraintLine(MINIMUM_TIMEGRAINS_BREAK, null, "");
-            writeIntConstraintLine(OVERLAPPING_MEETINGS, null, "");
-            writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, null, "");
-            writeIntConstraintLine(ROOM_STABILITY, null, "");
-            nextRow();
-            writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, null, "");
-            writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, null, "");
-            nextRow();
-            writeIntConstraintLine(ROOM_CONFLICT, null, "");
-            writeIntConstraintLine(DONT_GO_IN_OVERTIME, null, "");
-            writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, null, "");
-            writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, null, "");
-            writeIntConstraintLine(START_AND_END_ON_SAME_DAY, null, "");
-            writeIntConstraintLine(ENTIRE_GROUP_MEETING_NOT_SCHEDULED, null, "");
+            for (MeetingSchedulingConstraints constraint : MeetingSchedulingConstraints.values()) {
+                writeIntConstraintLine(constraint.toString(), null, "");
+                if (constraint.equals(MeetingSchedulingConstraints.ROOM_STABILITY)
+                        || constraint.equals(MeetingSchedulingConstraints.PREFERRED_ATTENDANCE_CONFLICT)) {
+                    nextRow();
+                }
+            }
 
             autoSizeColumnsWithHeader();
         }
@@ -677,13 +643,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         private void writeMeetingAssignmentList(List<MeetingAssignment> meetingAssignmentList) {
-            String[] filteredConstraintNames = {
-                    DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, MINIMUM_TIMEGRAINS_BREAK, OVERLAPPING_MEETINGS, ASSIGN_LARGER_ROOMS_FIRST,
-
-                    REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, PREFERRED_ATTENDANCE_CONFLICT, MINIMUM_TIMEGRAINS_BREAK,
-
-                    ROOM_CONFLICT, DONT_GO_IN_OVERTIME, REQUIRED_ATTENDANCE_CONFLICT, REQUIRED_ROOM_CAPACITY, START_AND_END_ON_SAME_DAY,
-                    ENTIRE_GROUP_MEETING_NOT_SCHEDULED};
+            String[] filteredConstraintNames = Arrays.stream(MeetingSchedulingConstraints.values())
+                    .map(MeetingSchedulingConstraints::toString)
+                    .toArray(String[]::new);
             int mergeStart = -1;
             int previousMeetingRemainingTimeGrains = 0;
             boolean mergingPreviousMeetingList = false;
@@ -792,7 +754,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
 
-            XSSFCell cell = getXssfCell(score);
+            XSSFCell cell = getXssfCellOfScore(score);
 
             if (!meetingAssignmentList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
@@ -845,7 +807,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             return commentString.toString();
         }
 
-        private XSSFCell getXssfCell(HardMediumSoftScore score) {
+        private XSSFCell getXssfCellOfScore(HardMediumSoftScore score) {
             XSSFCell cell;
             if (!score.isFeasible()) {
                 cell = nextCell(hardPenaltyStyle);
