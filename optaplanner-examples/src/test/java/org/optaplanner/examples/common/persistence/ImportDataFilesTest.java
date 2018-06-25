@@ -47,7 +47,7 @@ public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
         if (solutionImporter.isInputFileDirectory()) {
             // Non recursively
             fileList = new ArrayList<>(Arrays.asList(
-                Objects.requireNonNull(importDir.listFiles((FileFilter) DirectoryFileFilter.INSTANCE))));
+                    Objects.requireNonNull(importDir.listFiles((FileFilter) DirectoryFileFilter.INSTANCE))));
         } else {
             // recursively
             fileList = new ArrayList<>(
@@ -80,5 +80,4 @@ public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
     public void readSolution() {
         solutionImporter.readSolution(importFile);
     }
-
 }

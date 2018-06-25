@@ -29,7 +29,7 @@ public class Day extends AbstractPersistable implements Labeled {
 
     private int dayOfYear;
     private static final DateTimeFormatter DAY_FORMATTER
-        = DateTimeFormatter.ofPattern("E", Locale.ENGLISH);
+            = DateTimeFormatter.ofPattern("E", Locale.ENGLISH);
 
     public int getDayOfYear() {
         return dayOfYear;
