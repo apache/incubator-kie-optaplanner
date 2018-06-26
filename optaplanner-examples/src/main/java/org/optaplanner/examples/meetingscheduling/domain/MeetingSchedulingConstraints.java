@@ -28,7 +28,7 @@ public enum MeetingSchedulingConstraints {
     PREFERRED_ATTENDANCE_CONFLICT("Preferred attendance conflict", 1),
 
     DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE("Do all meetings as soon as possible", 1),
-    MINIMUM_TIMEGRAINS_BREAK("Minimum TimeGrains break between two consecutive meetings", 100),
+    MINIMUM_TIMEGRAINS_BREAK("One TimeGrain break between two consecutive meetings", 100),
     OVERLAPPING_MEETINGS("Overlapping meetings", 10),
     ASSIGN_LARGER_ROOMS_FIRST("Assign larger rooms first", 1),
     ROOM_STABILITY("Room Stability", 1);

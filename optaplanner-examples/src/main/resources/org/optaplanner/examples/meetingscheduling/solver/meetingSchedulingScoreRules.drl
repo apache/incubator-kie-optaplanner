@@ -126,14 +126,12 @@ end
 
 //TODO: Add minimum break in time grains to class MeetingSchedule. Minimum break here is 1 timeGrain
 //TODO: replace hard-coded values with constraint weights gotten from Configuration sheet
-rule "Minimum TimeGrains break between two consecutive meetings"
+rule "One TimeGrain break between two consecutive meetings"
     when
-        MeetingAssignment($leftMeeting : meeting, $leftRoom : room, startingTimeGrain != null, $leftEndTimeGrainIndex : getLastTimeGrainIndex())
-        MeetingAssignment(startingTimeGrain != null, meeting != $leftMeeting, $rightStartingTimeGrainIndex : startingTimeGrain.getGrainIndex(),
-            $leftEndTimeGrainIndex < $rightStartingTimeGrainIndex, $rightStartingTimeGrainIndex - $leftEndTimeGrainIndex - 1 < 1)
+        MeetingAssignment(startingTimeGrain != null,  $leftEnd : getLastTimeGrainIndex())
+        MeetingAssignment(startingTimeGrain != null, $leftEnd == startingTimeGrain.getGrainIndex() - 1)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, -MeetingSchedulingConstraints.MINIMUM_TIMEGRAINS_BREAK.getConstraintWeight()
-            * (1 - ($rightStartingTimeGrainIndex - $leftEndTimeGrainIndex - 1))); // 1 TimeGrains break
+        scoreHolder.addSoftConstraintMatch(kcontext, -MeetingSchedulingConstraints.MINIMUM_TIMEGRAINS_BREAK.getConstraintWeight());
 end
 
 rule "Overlapping meetings"
