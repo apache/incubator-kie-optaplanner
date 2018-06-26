@@ -83,7 +83,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void readConfiguration() {
             nextSheet("Configuration");
             nextRow();
-            readHeaderCell("Meeting name");
             nextRow(true);
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
@@ -92,7 +91,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             for (MeetingSchedulingConstraints constraint : MeetingSchedulingConstraints.values()) {
                 readIntConstraintLine(constraint.getConstraintName(), constraint::setConstraintWeight, "");
             }
-            System.out.println("");
         }
 
         private void readPersonList() {
@@ -407,8 +405,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void writeConfiguration() {
             nextSheet("Configuration", 1, 3, false);
             nextRow();
-            nextHeaderCell("Meeting name");
-            nextCell().setCellValue(""); // TODO: add a meetingName field to class MeetingSchedule?
             nextCell().setCellValue(DAY_FORMATTER.format(LocalDateTime.now()) + " " + TIME_FORMATTER.format(LocalDateTime.now()));
             nextRow();
             nextRow();
@@ -459,13 +455,13 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                                         .collect(joining(", ")));
                 nextCell().setCellValue(meeting.getContent() == null ? "" : meeting.getContent());
                 nextCell().setCellValue(
-                        String.join(", ", meeting.getRequiredAttendanceList().stream()
+                        meeting.getRequiredAttendanceList().stream()
                                 .map(requiredAttendance -> requiredAttendance.getPerson().getFullName())
-                                .collect(toList())));
+                                .collect(joining(", ")));
                 nextCell().setCellValue(
-                        String.join(", ", meeting.getPreferredAttendanceList().stream()
+                        meeting.getPreferredAttendanceList().stream()
                                 .map(preferredAttendance -> preferredAttendance.getPerson().getFullName())
-                                .collect(toList())));
+                                .collect(joining(", ")));
             }
             setColumnsWidthHeader(5000);
         }
@@ -489,9 +485,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 timeGrain.getStartingMinuteOfDay() + TimeGrain.GRAIN_LENGTH_IN_MINUTES : endMinuteOfDay;
                     }
                 }
-                LocalTime startTime = LocalTime.ofSecondOfDay(startMinuteOfDay * 60); // 8am TODO: set start/end Time fields to class Day
-                LocalTime endTime = LocalTime.ofSecondOfDay(endMinuteOfDay * 60); // 6pm
-                LocalTime lunchHourStartTime = LocalTime.ofSecondOfDay(12 * 60 * 60); // 12 pm
+                LocalTime startTime = LocalTime.ofSecondOfDay(startMinuteOfDay * 60);
+                LocalTime endTime = LocalTime.ofSecondOfDay(endMinuteOfDay * 60);
+                LocalTime lunchHourStartTime = LocalTime.ofSecondOfDay(12 * 60 * 60); // 12pm
 
                 nextCell().setCellValue(DAY_FORMATTER.format(date));
                 nextCell().setCellValue(TIME_FORMATTER.format(startTime));
@@ -644,9 +640,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         private void writeMeetingAssignmentList(List<MeetingAssignment> meetingAssignmentList) {
-            String[] filteredConstraintNames = Arrays.stream(MeetingSchedulingConstraints.values())
+            List<String> filteredConstraintNames = Arrays.stream(MeetingSchedulingConstraints.values())
                     .map(MeetingSchedulingConstraints::getConstraintName)
-                    .toArray(String[]::new);
+                    .collect(toList());
             int mergeStart = -1;
             int previousMeetingRemainingTimeGrains = 0;
             boolean mergingPreviousMeetingList = false;
@@ -738,9 +734,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         void nextMeetingAssignmentListCell(List<MeetingAssignment> meetingAssignmentList,
-                                           Function<MeetingAssignment, String> stringFunction, String[] filteredConstraintNames) {
-            List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
-                    : Arrays.asList(filteredConstraintNames);
+                                           Function<MeetingAssignment, String> stringFunction, List<String> filteredConstraintNames) {
             if (meetingAssignmentList == null) {
                 meetingAssignmentList = Collections.emptyList();
             }
@@ -748,8 +742,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     .map(indictmentMap::get).filter(Objects::nonNull)
                     .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
                     // Filter out filtered constraints
-                    .filter(constraintMatch -> filteredConstraintNameList == null
-                            || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
+                    .filter(constraintMatch -> filteredConstraintNames == null
+                            || filteredConstraintNames.contains(constraintMatch.getConstraintName()))
                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))

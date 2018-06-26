@@ -44,16 +44,6 @@ rule "Room conflict"
         scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
 end
 
-// TODO Might be more efficient if a MeetingAssignment knows timeGrainList.size()
-// TODO Can be obsolete if MeetingAssignment uses @ValueRangeProvider from entity for timeGrainRange
-rule "Don't go in overtime"
-    when
-        MeetingAssignment(startingTimeGrain != null, $lastTimeGrainIndex : getLastTimeGrainIndex())
-        not TimeGrain(grainIndex == $lastTimeGrainIndex)
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, - $lastTimeGrainIndex);
-end
-
 rule "Required attendance conflict"
     when
         RequiredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
@@ -76,15 +66,7 @@ rule "Start and end on same day"
         MeetingAssignment(startingTimeGrain != null, $firstTimeGrain : startingTimeGrain, $lastTimeGrainIndex : getLastTimeGrainIndex())
         $lastTimeGrain : TimeGrain(grainIndex == $lastTimeGrainIndex, $firstTimeGrain.getDay() != getDay())
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -MeetingSchedulingConstraints.START_AND_END_ON_SAME_DAY.getConstraintWeight());
-end
-
-rule "Entire group meeting not scheduled"
-    when
-        $entireGroupMeeting : Meeting(entireGroupMeeting)
-        MeetingAssignment(meeting == $entireGroupMeeting, startingTimeGrain == null)
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, -MeetingSchedulingConstraints.ENTIRE_GROUP_MEETING_NOT_SCHEDULED.getConstraintWeight());
+        scoreHolder.addHardConstraintMatch(kcontext, - MeetingSchedulingConstraints.START_AND_END_ON_SAME_DAY.getConstraintWeight());
 end
 
 // ############################################################################
@@ -121,17 +103,15 @@ rule "Do all meetings as soon as possible"
     when
         MeetingAssignment(startingTimeGrain != null, $lastTimeGrainIndex : lastTimeGrainIndex)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $lastTimeGrainIndex % 100 * MeetingSchedulingConstraints.DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE.getConstraintWeight());
+        scoreHolder.addSoftConstraintMatch(kcontext, - $lastTimeGrainIndex * MeetingSchedulingConstraints.DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE.getConstraintWeight());
 end
 
-//TODO: Add minimum break in time grains to class MeetingSchedule. Minimum break here is 1 timeGrain
-//TODO: replace hard-coded values with constraint weights gotten from Configuration sheet
 rule "One TimeGrain break between two consecutive meetings"
     when
         MeetingAssignment(startingTimeGrain != null,  $leftEnd : getLastTimeGrainIndex())
         MeetingAssignment(startingTimeGrain != null, $leftEnd == startingTimeGrain.getGrainIndex() - 1)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, -MeetingSchedulingConstraints.MINIMUM_TIMEGRAINS_BREAK.getConstraintWeight());
+        scoreHolder.addSoftConstraintMatch(kcontext, - MeetingSchedulingConstraints.MINIMUM_TIMEGRAINS_BREAK.getConstraintWeight());
 end
 
 rule "Overlapping meetings"
@@ -141,7 +121,7 @@ rule "Overlapping meetings"
             meeting != $leftAssignment.getMeeting())
     then
         if ($leftAssignment.calculateOverlap($rightAssignment) != 0) {
-            scoreHolder.addSoftConstraintMatch(kcontext, -MeetingSchedulingConstraints.OVERLAPPING_MEETINGS.getConstraintWeight());
+            scoreHolder.addSoftConstraintMatch(kcontext, - MeetingSchedulingConstraints.OVERLAPPING_MEETINGS.getConstraintWeight());
         }
 end
 
@@ -156,10 +136,10 @@ end
 rule "Room stability"
     when
         Attendance($person : person, $leftMeeting : meeting)
-        Attendance(person == $person, $rightMeeting : meeting)
-        MeetingAssignment(meeting == $leftMeeting, $leftStartTimeGrain : startingTimeGrain, startingTimeGrain != null, $leftRoom : room)
+        Attendance(person == $person, meeting != $leftMeeting, $rightMeeting : meeting)
+        MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null, $leftStartTimeGrain : startingTimeGrain, $leftRoom : room)
         MeetingAssignment(meeting == $rightMeeting, startingTimeGrain != null, $leftStartTimeGrain.getGrainIndex() < startingTimeGrain.getGrainIndex(),
             $leftRoom != room, startingTimeGrain.getGrainIndex() - $leftMeeting.getDurationInGrains() - $leftStartTimeGrain.getGrainIndex() <= 2)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, -MeetingSchedulingConstraints.ROOM_STABILITY.getConstraintWeight());
+        scoreHolder.addSoftConstraintMatch(kcontext, - MeetingSchedulingConstraints.ROOM_STABILITY.getConstraintWeight());
 end

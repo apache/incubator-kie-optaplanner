@@ -60,6 +60,14 @@ public class Meeting extends AbstractPersistable {
         this.content = content;
     }
 
+    public boolean isEntireGroupMeeting() {
+        return entireGroupMeeting;
+    }
+
+    public void setEntireGroupMeeting(boolean entireGroupMeeting) {
+        this.entireGroupMeeting = entireGroupMeeting;
+    }
+
     public int getDurationInGrains() {
         return durationInGrains;
     }
@@ -103,13 +111,5 @@ public class Meeting extends AbstractPersistable {
     @Override
     public String toString() {
         return topic;
-    }
-
-    public boolean isEntireGroupMeeting() {
-        return entireGroupMeeting;
-    }
-
-    public void setEntireGroupMeeting(boolean entireGroupMeeting) {
-        this.entireGroupMeeting = entireGroupMeeting;
     }
 }

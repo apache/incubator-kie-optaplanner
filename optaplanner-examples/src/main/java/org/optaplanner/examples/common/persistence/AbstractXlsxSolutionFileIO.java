@@ -440,7 +440,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             return nextCellVertically(defaultStyle);
         }
 
-        protected XSSFCell nextCellVertically(XSSFCellStyle cellStyle) { //TODO: use it or delete it
+        protected XSSFCell nextCellVertically(XSSFCellStyle cellStyle) {
             currentRowNumber++;
             currentRow = currentSheet.getRow(currentRowNumber);
             XSSFCell cell = currentRow.createCell(currentColumnNumber);
