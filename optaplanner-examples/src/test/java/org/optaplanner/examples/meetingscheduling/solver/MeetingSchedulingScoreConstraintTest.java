@@ -93,35 +93,6 @@ public class MeetingSchedulingScoreConstraintTest {
     }
 
     @Test
-    public void entireGroupMeeting() {
-        MeetingSchedule solution = getMeetingSchedule(3);
-
-        Meeting meeting = solution.getMeetingList().get(0);
-        List<RequiredAttendance> raList = new ArrayList<>();
-        List<Attendance> aList = new ArrayList<>();
-        meeting.setEntireGroupMeeting(true);
-        for (int i = 0; i < solution.getPersonList().size(); i++) {
-            RequiredAttendance ra = new RequiredAttendance();
-            ra.setId((long) i);
-            ra.setMeeting(meeting);
-            ra.setPerson(solution.getPersonList().get(i));
-            raList.add(ra);
-            aList.add(ra);
-        }
-        solution.setAttendanceList(aList);
-        meeting.setRequiredAttendanceList(raList);
-        meeting.setPreferredAttendanceList(new ArrayList<>());
-
-        MeetingAssignment ma = solution.getMeetingAssignmentList().get(0);
-        ma.setMeeting(meeting);
-        solution.setMeetingAssignmentList(Collections.singletonList(ma));
-        scoreVerifier.assertHardWeight("Entire group meeting not scheduled", -MeetingSchedulingConstraints.ENTIRE_GROUP_MEETING_NOT_SCHEDULED.getConstraintWeight(), solution);
-        ma.setRoom(solution.getRoomList().get(0));
-        ma.setStartingTimeGrain(solution.getTimeGrainList().get(0));
-        scoreVerifier.assertHardWeight("Entire group meeting not scheduled", 0, solution);
-    }
-
-    @Test
     public void roomStability() {
         MeetingSchedule solution = getMeetingSchedule(6);
         List<Attendance> aList = new ArrayList<>();
