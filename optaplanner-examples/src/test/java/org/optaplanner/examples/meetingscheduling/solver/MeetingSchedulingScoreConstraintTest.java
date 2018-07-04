@@ -17,7 +17,6 @@
 package org.optaplanner.examples.meetingscheduling.solver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,8 +26,8 @@ import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingParametrization;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
-import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedulingConstraints;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
 import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
@@ -95,6 +94,7 @@ public class MeetingSchedulingScoreConstraintTest {
     @Test
     public void entireGroupMeeting() {
         MeetingSchedule solution = getMeetingSchedule(3);
+        MeetingParametrization parametrization = solution.getParametrization();
 
         Meeting meeting = solution.getMeetingList().get(0);
         List<RequiredAttendance> raList = new ArrayList<>();
@@ -115,7 +115,7 @@ public class MeetingSchedulingScoreConstraintTest {
         MeetingAssignment ma = solution.getMeetingAssignmentList().get(0);
         ma.setMeeting(meeting);
         solution.setMeetingAssignmentList(Collections.singletonList(ma));
-        scoreVerifier.assertHardWeight("Entire group meeting not scheduled", -MeetingSchedulingConstraints.ENTIRE_GROUP_MEETING_NOT_SCHEDULED.getConstraintWeight(), solution);
+        scoreVerifier.assertHardWeight("Entire group meeting not scheduled", -parametrization.getEntireGroupMeetingNotScheduled(), solution);
         ma.setRoom(solution.getRoomList().get(0));
         ma.setStartingTimeGrain(solution.getTimeGrainList().get(0));
         scoreVerifier.assertHardWeight("Entire group meeting not scheduled", 0, solution);
@@ -124,6 +124,7 @@ public class MeetingSchedulingScoreConstraintTest {
     @Test
     public void roomStability() {
         MeetingSchedule solution = getMeetingSchedule(6);
+        MeetingParametrization parametrization = solution.getParametrization();
         List<Attendance> aList = new ArrayList<>();
         for (int i = 0; i < solution.getMeetingList().size(); i++) {
             Meeting m = solution.getMeetingList().get(i);
@@ -154,7 +155,7 @@ public class MeetingSchedulingScoreConstraintTest {
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(2));
         ma1.setRoom(solution.getRoomList().get(1));
 
-        scoreVerifier.assertSoftWeight("Room stability", -MeetingSchedulingConstraints.ROOM_STABILITY.getConstraintWeight(), solution);
+        scoreVerifier.assertSoftWeight("Room stability", -parametrization.getRoomStability(), solution);
 
         /* Scenario 2: should penalize
                 t0  t1  t2  t3  t4  t5
@@ -163,7 +164,7 @@ public class MeetingSchedulingScoreConstraintTest {
            r1              |  m1   |
         */
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(3));
-        scoreVerifier.assertSoftWeight("Room stability", -MeetingSchedulingConstraints.ROOM_STABILITY.getConstraintWeight(), solution);
+        scoreVerifier.assertSoftWeight("Room stability", -parametrization.getRoomStability(), solution);
 
         /* Scenario 3: should penalize
                 t0  t1  t2  t3  t4  t5
@@ -172,7 +173,7 @@ public class MeetingSchedulingScoreConstraintTest {
            r1                 |  m1   |
         */
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(4));
-        scoreVerifier.assertSoftWeight("Room stability", -MeetingSchedulingConstraints.ROOM_STABILITY.getConstraintWeight(), solution);
+        scoreVerifier.assertSoftWeight("Room stability", -parametrization.getRoomStability(), solution);
 
         /* Scenario 4: shouldn't penalize
                 t0  t1  t2  t3  t4  t5
@@ -203,6 +204,6 @@ public class MeetingSchedulingScoreConstraintTest {
         MeetingAssignment ma2 = solution.getMeetingAssignmentList().get(2);
         ma2.setStartingTimeGrain(solution.getTimeGrainList().get(4));
         ma2.setRoom(solution.getRoomList().get(0));
-        scoreVerifier.assertSoftWeight("Room stability", -MeetingSchedulingConstraints.ROOM_STABILITY.getConstraintWeight() * 2, solution);
+        scoreVerifier.assertSoftWeight("Room stability", -parametrization.getRoomStability() * 2, solution);
     }
 }

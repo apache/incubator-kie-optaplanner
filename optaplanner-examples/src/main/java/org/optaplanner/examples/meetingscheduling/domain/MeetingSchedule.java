@@ -44,6 +44,7 @@ public class MeetingSchedule extends AbstractPersistable {
 
     @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
     private HardMediumSoftScore score;
+    private MeetingParametrization parametrization;
 
     @ProblemFactCollectionProperty
     public List<Meeting> getMeetingList() {
@@ -117,6 +118,14 @@ public class MeetingSchedule extends AbstractPersistable {
 
     public void setScore(HardMediumSoftScore score) {
         this.score = score;
+    }
+
+    public void setParametrization(MeetingParametrization parametrization) {
+        this.parametrization = parametrization;
+    }
+
+    public MeetingParametrization getParametrization() {
+        return parametrization;
     }
 
     // ************************************************************************
