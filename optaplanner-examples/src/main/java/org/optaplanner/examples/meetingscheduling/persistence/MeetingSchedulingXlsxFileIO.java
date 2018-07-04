@@ -97,7 +97,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, parametrization::setRoomConflict, "");
             readIntConstraintLine(REQUIRED_ROOM_CAPACITY, parametrization::setRoomConflict, "");
             readIntConstraintLine(START_AND_END_ON_SAME_DAY, parametrization::setRoomConflict, "");
-            readIntConstraintLine(ENTIRE_GROUP_MEETING_NOT_SCHEDULED, parametrization::setRoomConflict, "");
 
             readIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, parametrization::setRoomConflict, "");
             readIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, parametrization::setRoomConflict, "");
@@ -437,7 +436,6 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, parametrization::getRoomConflict, "");
             writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, parametrization::getRoomConflict, "");
             writeIntConstraintLine(START_AND_END_ON_SAME_DAY, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(ENTIRE_GROUP_MEETING_NOT_SCHEDULED, parametrization::getRoomConflict, "");
             nextRow();
             writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, parametrization::getRoomConflict, "");
             writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, parametrization::getRoomConflict, "");
@@ -670,7 +668,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         private void writeMeetingAssignmentList(List<MeetingAssignment> meetingAssignmentList) {
             String[] filteredConstraintNames = {
                     ROOM_CONFLICT, DONT_GO_IN_OVERTIME, REQUIRED_ATTENDANCE_CONFLICT, REQUIRED_ROOM_CAPACITY,
-                    START_AND_END_ON_SAME_DAY, ENTIRE_GROUP_MEETING_NOT_SCHEDULED,
+                    START_AND_END_ON_SAME_DAY,
 
                     REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, PREFERRED_ATTENDANCE_CONFLICT,
 
