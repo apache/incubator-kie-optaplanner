@@ -642,8 +642,10 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     StringBuilder meetingInfo = new StringBuilder();
                     for (MeetingAssignment meetingAssignment : meetingAssignmentList) {
                         String startTimeString = getTimeString(meetingAssignment.getStartingTimeGrain().getStartingMinuteOfDay());
-                        String endTimeString = getTimeString(solution.getTimeGrainList().get(meetingAssignment.getLastTimeGrainIndex()).getStartingMinuteOfDay()
-                                                                     + TimeGrain.GRAIN_LENGTH_IN_MINUTES); //TODO IndexOutOfBoundsException when a meeting is scheduled overtime
+                        int lastTimeGrainIndex = meetingAssignment.getLastTimeGrainIndex() <= solution.getTimeGrainList().size() - 1 ?
+                               meetingAssignment.getLastTimeGrainIndex() : solution.getTimeGrainList().size() - 1;
+                        String endTimeString = getTimeString(solution.getTimeGrainList().get(lastTimeGrainIndex).getStartingMinuteOfDay()
+                                                                     + TimeGrain.GRAIN_LENGTH_IN_MINUTES);
                         meetingInfo.append(StringUtils.abbreviate(meetingAssignment.getMeeting().getTopic(), 150)).append("\n  ")
                                 .append(meetingAssignment.getMeeting().getSpeakerList().stream().map(Person::getFullName).collect(joining(", "))).append("\n  ")
                                 .append(startTimeString).append(" - ").append(endTimeString)
