@@ -42,6 +42,10 @@ public class MeetingSchedulingScoreConstraintTest {
     private MeetingSchedule getMeetingSchedule(int numberOfEntities) {
         // After getting the solution, need to set AttendanceList for it. And for every meeting Required & Preferred attendance lists
         MeetingSchedule solution = new MeetingSchedule();
+        MeetingParametrization parametrization = new MeetingParametrization();
+        parametrization.setId(0L);
+        solution.setParametrization(parametrization);
+
         List<Meeting> meetingList = new ArrayList<>();
         List<Day> dayList = new ArrayList<>();
         List<TimeGrain> timeGrainList = new ArrayList<>();
@@ -57,12 +61,13 @@ public class MeetingSchedulingScoreConstraintTest {
 
             Day d = new Day();
             d.setId((long) i);
-            d.setDayOfYear(i);
+            d.setDayOfYear(i+1);
             dayList.add(d);
 
             TimeGrain t = new TimeGrain();
             t.setId((long) i);
             t.setGrainIndex(i);
+            t.setDay(dayList.get(0));
             t.setStartingMinuteOfDay(i * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
             timeGrainList.add(t);
 
