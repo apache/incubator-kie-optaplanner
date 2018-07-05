@@ -13,7 +13,7 @@ Hard constraints:
 
 * Room conflict: two meetings must not use the same room at the same time.
 * Required attendance: A person cannot have two required meetings at the same time.
-* Required room capacity: A meeting shouldn't be at a room that doesn't fit all of the meeting's attendees.
+* Required room capacity: A meeting must not be in a room that doesn't fit all of the meeting's attendees.
 * Start and end on same day: A meeting shouldn't be scheduled over multiple days.
 
 Medium constraints:
@@ -28,6 +28,7 @@ Soft constraints:
 * Assign larger rooms first: If a larger room is available any meeting should be assigned to that room in order to accommodate as many people as possible
     even if they haven't signed up to that meeting.
 * Room stability: If a person has two consecutive meetings with two or less time grains break between them they better be in the same room.
+
 
 [[meetingSchedulingProblemSize]]
 == Problem Size
