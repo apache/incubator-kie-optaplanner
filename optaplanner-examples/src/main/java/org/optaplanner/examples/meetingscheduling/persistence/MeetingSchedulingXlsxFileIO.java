@@ -432,19 +432,19 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             MeetingParametrization parametrization = solution.getParametrization();
 
             writeIntConstraintLine(ROOM_CONFLICT, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(DONT_GO_IN_OVERTIME, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(START_AND_END_ON_SAME_DAY, parametrization::getRoomConflict, "");
+            writeIntConstraintLine(DONT_GO_IN_OVERTIME, parametrization::getDontGoInOvertime, "");
+            writeIntConstraintLine(REQUIRED_ATTENDANCE_CONFLICT, parametrization::getRequiredAttendanceConflict, "");
+            writeIntConstraintLine(REQUIRED_ROOM_CAPACITY, parametrization::getRequiredRoomCapacity, "");
+            writeIntConstraintLine(START_AND_END_ON_SAME_DAY, parametrization::getStartAndEndOnSameDay, "");
             nextRow();
-            writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, parametrization::getRoomConflict, "");
+            writeIntConstraintLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT, parametrization::getRequiredAndPreferredAttendanceConflict, "");
+            writeIntConstraintLine(PREFERRED_ATTENDANCE_CONFLICT, parametrization::getPreferredAttendanceConflict, "");
             nextRow();
-            writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(OVERLAPPING_MEETINGS, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, parametrization::getRoomConflict, "");
-            writeIntConstraintLine(ROOM_STABILITY, parametrization::getRoomConflict, "");
+            writeIntConstraintLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE, parametrization::getDoAllMeetingsAsSoonAsPossible, "");
+            writeIntConstraintLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS, parametrization::getOneTimeGrainBreakBetweenTwoConsecutiveMeetings, "");
+            writeIntConstraintLine(OVERLAPPING_MEETINGS, parametrization::getOverlappingMeetings, "");
+            writeIntConstraintLine(ASSIGN_LARGER_ROOMS_FIRST, parametrization::getAssignLargerRoomsFirst, "");
+            writeIntConstraintLine(ROOM_STABILITY, parametrization::getRoomStability, "");
 
             autoSizeColumnsWithHeader();
         }
