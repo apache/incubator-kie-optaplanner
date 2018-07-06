@@ -34,6 +34,9 @@ import org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoft.Hard
 @XStreamAlias("MsMeetingSchedule")
 public class MeetingSchedule extends AbstractPersistable {
 
+    @ProblemFactProperty
+    private MeetingParametrization parametrization;
+
     private List<Meeting> meetingList;
     private List<Day> dayList;
     private List<TimeGrain> timeGrainList;
@@ -45,8 +48,14 @@ public class MeetingSchedule extends AbstractPersistable {
 
     @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
     private HardMediumSoftScore score;
-    @ProblemFactProperty
-    private MeetingParametrization parametrization;
+
+    public MeetingParametrization getParametrization() {
+        return parametrization;
+    }
+
+    public void setParametrization(MeetingParametrization parametrization) {
+        this.parametrization = parametrization;
+    }
 
     @ProblemFactCollectionProperty
     public List<Meeting> getMeetingList() {
@@ -122,16 +131,7 @@ public class MeetingSchedule extends AbstractPersistable {
         this.score = score;
     }
 
-    public void setParametrization(MeetingParametrization parametrization) {
-        this.parametrization = parametrization;
-    }
-
-    public MeetingParametrization getParametrization() {
-        return parametrization;
-    }
-
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
 }
