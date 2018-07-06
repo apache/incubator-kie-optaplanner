@@ -34,11 +34,11 @@ public abstract class AbstractStepScope<Solution_> {
     // Stays null if there is no need to clone it
     protected Solution_ clonedSolution = null;
 
-    public abstract AbstractPhaseScope<Solution_> getPhaseScope();
-
     public AbstractStepScope(int stepIndex) {
         this.stepIndex = stepIndex;
     }
+
+    public abstract AbstractPhaseScope<Solution_> getPhaseScope();
 
     public int getStepIndex() {
         return stepIndex;

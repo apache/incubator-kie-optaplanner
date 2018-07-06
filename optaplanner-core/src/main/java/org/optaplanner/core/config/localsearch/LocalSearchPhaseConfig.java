@@ -19,6 +19,7 @@ package org.optaplanner.core.config.localsearch;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -41,8 +42,10 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.LocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
+import org.optaplanner.core.impl.localsearch.decider.MultiThreadedLocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -128,8 +131,6 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
         MoveSelector moveSelector = buildMoveSelector(configPolicy);
         Acceptor acceptor = buildAcceptor(configPolicy);
         LocalSearchForager forager = buildForager(configPolicy);
-        LocalSearchDecider decider = new LocalSearchDecider(configPolicy.getLogIndentation(),
-                termination, moveSelector, acceptor, forager);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
             throw new IllegalStateException("The moveSelector (" + moveSelector
                     + ") has neverEnding (" + moveSelector.isNeverEnding()
@@ -137,7 +138,34 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     + ") does not support it.\n"
                     + "Maybe configure the <forager> with an <acceptedCountLimit>.");
         }
+        Integer moveThreadCount = configPolicy.getMoveThreadCount();
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
+        LocalSearchDecider decider;
+        if (moveThreadCount == null) {
+            decider = new LocalSearchDecider(configPolicy.getLogIndentation(),
+                    termination, moveSelector, acceptor, forager);
+        } else {
+            Integer moveThreadBufferSize = configPolicy.getMoveThreadBufferSize();
+            if (moveThreadBufferSize == null) {
+                // TODO Verify this is a good default by more meticulous benchmarking on multiple machines and JDK's
+                // If it's too low, move threads will need to wait on the buffer, which hurts performance
+                // If it's too high, more moves are selected that aren't foraged
+                moveThreadBufferSize = 10;
+            }
+            ThreadFactory threadFactory = configPolicy.buildThreadFactory(ChildThreadType.MOVE_THREAD);
+            int selectedMoveBufferSize = moveThreadCount * moveThreadBufferSize;
+            MultiThreadedLocalSearchDecider multiThreadedDecider = new MultiThreadedLocalSearchDecider(
+                    configPolicy.getLogIndentation(), termination, moveSelector, acceptor, forager,
+                    threadFactory, moveThreadCount, selectedMoveBufferSize);
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
+                multiThreadedDecider.setAssertStepScoreFromScratch(true);
+            }
+            if (environmentMode.isIntrusiveFastAsserted()) {
+                multiThreadedDecider.setAssertExpectedStepScore(true);
+                multiThreadedDecider.setAssertShadowVariablesAreNotStaleAfterStep(true);
+            }
+            decider = multiThreadedDecider;
+        }
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             decider.setAssertMoveScoreFromScratch(true);
         }

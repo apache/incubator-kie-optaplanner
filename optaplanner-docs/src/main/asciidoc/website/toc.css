@@ -1,0 +1,12 @@
+.jstree-node {
+  color: #2156a5; !important;
+}
+#toc {
+  resize: horizontal;
+}
+#tocTreeExpandAll {
+  margin: 2px;
+}
+#tocTreeCollapseAll {
+  margin: 2px;
+}
