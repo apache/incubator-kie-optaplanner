@@ -1,0 +1,567 @@
+<VrpTimeWindowedVehicleRoutingSolution id="1">
+  <id>0</id>
+  <name>cvrptw_lel_hackathon</name>
+  <distanceType>ROAD_DISTANCE</distanceType>
+  <distanceUnitOfMeasurement>sec</distanceUnitOfMeasurement>
+  <locationList id="2">
+    <VrpRoadLocation id="3">
+      <id>0</id>
+      <name>NODE0</name>
+      <latitude>-6.1736844</latitude>
+      <longitude>106.891857</longitude>
+      <travelDistanceMap class="linked-hash-map" id="4">
+        <entry>
+          <VrpRoadLocation id="5">
+            <id>1</id>
+            <name>NODE1</name>
+            <latitude>-6.1337694</latitude>
+            <longitude>106.7331855</longitude>
+            <travelDistanceMap class="linked-hash-map" id="6">
+              <entry>
+                <VrpRoadLocation reference="3"/>
+                <double>3406.23642495</double>
+              </entry>
+              <entry>
+                <VrpRoadLocation id="7">
+                  <id>2</id>
+                  <name>NODE2</name>
+                  <latitude>-6.1664916</latitude>
+                  <longitude>106.858882</longitude>
+                  <travelDistanceMap class="linked-hash-map" id="8">
+                    <entry>
+                      <VrpRoadLocation reference="3"/>
+                      <double>495.12258049</double>
+                    </entry>
+                    <entry>
+                      <VrpRoadLocation reference="5"/>
+                      <double>2572.39292957</double>
+                    </entry>
+                    <entry>
+                      <VrpRoadLocation id="9">
+                        <id>3</id>
+                        <name>NODE3</name>
+                        <latitude>-6.1517072</latitude>
+                        <longitude>106.7815347</longitude>
+                        <travelDistanceMap class="linked-hash-map" id="10">
+                          <entry>
+                            <VrpRoadLocation reference="3"/>
+                            <double>2613.85165541</double>
+                          </entry>
+                          <entry>
+                            <VrpRoadLocation reference="5"/>
+                            <double>1418.42907372</double>
+                          </entry>
+                          <entry>
+                            <VrpRoadLocation reference="7"/>
+                            <double>1848.63583454</double>
+                          </entry>
+                          <entry>
+                            <VrpRoadLocation id="11">
+                              <id>4</id>
+                              <name>NODE4</name>
+                              <latitude>-6.2179531</latitude>
+                              <longitude>106.90568</longitude>
+                              <travelDistanceMap class="linked-hash-map" id="12">
+                                <entry>
+                                  <VrpRoadLocation reference="3"/>
+                                  <double>929.301717207</double>
+                                </entry>
+                                <entry>
+                                  <VrpRoadLocation reference="5"/>
+                                  <double>4268.30415322</double>
+                                </entry>
+                                <entry>
+                                  <VrpRoadLocation reference="7"/>
+                                  <double>1686.33506534</double>
+                                </entry>
+                                <entry>
+                                  <VrpRoadLocation reference="9"/>
+                                  <double>3085.71886288</double>
+                                </entry>
+                                <entry>
+                                  <VrpRoadLocation id="13">
+                                    <id>5</id>
+                                    <name>NODE5</name>
+                                    <latitude>-6.1917089</latitude>
+                                    <longitude>106.8150327</longitude>
+                                    <travelDistanceMap class="linked-hash-map" id="14">
+                                      <entry>
+                                        <VrpRoadLocation reference="3"/>
+                                        <double>1282.20380882</double>
+                                      </entry>
+                                      <entry>
+                                        <VrpRoadLocation reference="5"/>
+                                        <double>2597.1258685</double>
+                                      </entry>
+                                      <entry>
+                                        <VrpRoadLocation reference="7"/>
+                                        <double>913.875295501</double>
+                                      </entry>
+                                      <entry>
+                                        <VrpRoadLocation reference="9"/>
+                                        <double>1578.22315289</double>
+                                      </entry>
+                                      <entry>
+                                        <VrpRoadLocation reference="11"/>
+                                        <double>1577.40858963</double>
+                                      </entry>
+                                      <entry>
+                                        <VrpRoadLocation id="15">
+                                          <id>6</id>
+                                          <name>NODE7</name>
+                                          <latitude>-6.1462775</latitude>
+                                          <longitude>106.8046603</longitude>
+                                          <travelDistanceMap class="linked-hash-map" id="16">
+                                            <entry>
+                                              <VrpRoadLocation reference="3"/>
+                                              <double>2353.79381518</double>
+                                            </entry>
+                                            <entry>
+                                              <VrpRoadLocation reference="5"/>
+                                              <double>1529.16263665</double>
+                                            </entry>
+                                            <entry>
+                                              <VrpRoadLocation reference="7"/>
+                                              <double>1107.57131029</double>
+                                            </entry>
+                                            <entry>
+                                              <VrpRoadLocation reference="9"/>
+                                              <double>493.418213673</double>
+                                            </entry>
+                                            <entry>
+                                              <VrpRoadLocation reference="11"/>
+                                              <double>3138.36115344</double>
+                                            </entry>
+                                            <entry>
+                                              <VrpRoadLocation reference="13"/>
+                                              <double>718.841995368</double>
+                                            </entry>
+                                            <entry>
+                                              <VrpRoadLocation id="17">
+                                                <id>7</id>
+                                                <name>NODE8</name>
+                                                <latitude>-6.1402346</latitude>
+                                                <longitude>106.8100022</longitude>
+                                                <travelDistanceMap class="linked-hash-map" id="18">
+                                                  <entry>
+                                                    <VrpRoadLocation reference="3"/>
+                                                    <double>2429.55563822</double>
+                                                  </entry>
+                                                  <entry>
+                                                    <VrpRoadLocation reference="5"/>
+                                                    <double>1574.86037944</double>
+                                                  </entry>
+                                                  <entry>
+                                                    <VrpRoadLocation reference="7"/>
+                                                    <double>1175.84414338</double>
+                                                  </entry>
+                                                  <entry>
+                                                    <VrpRoadLocation reference="9"/>
+                                                    <double>539.116076464</double>
+                                                  </entry>
+                                                  <entry>
+                                                    <VrpRoadLocation reference="11"/>
+                                                    <double>3377.60671043</double>
+                                                  </entry>
+                                                  <entry>
+                                                    <VrpRoadLocation reference="13"/>
+                                                    <double>827.579110316</double>
+                                                  </entry>
+                                                  <entry>
+                                                    <VrpRoadLocation reference="15"/>
+                                                    <double>187.976431906</double>
+                                                  </entry>
+                                                  <entry>
+                                                    <VrpRoadLocation id="19">
+                                                      <id>8</id>
+                                                      <name>NODE9</name>
+                                                      <latitude>-6.1704716</latitude>
+                                                      <longitude>106.5866312</longitude>
+                                                      <travelDistanceMap class="linked-hash-map" id="20">
+                                                        <entry>
+                                                          <VrpRoadLocation reference="3"/>
+                                                          <double>5697.43486974</double>
+                                                        </entry>
+                                                        <entry>
+                                                          <VrpRoadLocation reference="5"/>
+                                                          <double>2540.30168121</double>
+                                                        </entry>
+                                                        <entry>
+                                                          <VrpRoadLocation reference="7"/>
+                                                          <double>4932.21904888</double>
+                                                        </entry>
+                                                        <entry>
+                                                          <VrpRoadLocation reference="9"/>
+                                                          <double>2976.23954496</double>
+                                                        </entry>
+                                                        <entry>
+                                                          <VrpRoadLocation reference="11"/>
+                                                          <double>6725.45930184</double>
+                                                        </entry>
+                                                        <entry>
+                                                          <VrpRoadLocation reference="13"/>
+                                                          <double>4770.46068184</double>
+                                                        </entry>
+                                                        <entry>
+                                                          <VrpRoadLocation reference="15"/>
+                                                          <double>3981.17132469</double>
+                                                        </entry>
+                                                        <entry>
+                                                          <VrpRoadLocation reference="17"/>
+                                                          <double>3908.03307213</double>
+                                                        </entry>
+                                                        <entry>
+                                                          <VrpRoadLocation id="21">
+                                                            <id>9</id>
+                                                            <name>NODE10</name>
+                                                            <latitude>-6.1913057</latitude>
+                                                            <longitude>106.7714607</longitude>
+                                                            <travelDistanceMap class="linked-hash-map" id="22">
+                                                              <entry>
+                                                                <VrpRoadLocation reference="3"/>
+                                                                <double>3524.10749643</double>
+                                                              </entry>
+                                                              <entry>
+                                                                <VrpRoadLocation reference="5"/>
+                                                                <double>1695.25590102</double>
+                                                              </entry>
+                                                              <entry>
+                                                                <VrpRoadLocation reference="7"/>
+                                                                <double>1461.33692535</double>
+                                                              </entry>
+                                                              <entry>
+                                                                <VrpRoadLocation reference="9"/>
+                                                                <double>1416.79058716</double>
+                                                              </entry>
+                                                              <entry>
+                                                                <VrpRoadLocation reference="11"/>
+                                                                <double>3167.00250801</double>
+                                                              </entry>
+                                                              <entry>
+                                                                <VrpRoadLocation reference="13"/>
+                                                                <double>844.867699471</double>
+                                                              </entry>
+                                                              <entry>
+                                                                <VrpRoadLocation reference="15"/>
+                                                                <double>1312.32020928</double>
+                                                              </entry>
+                                                              <entry>
+                                                                <VrpRoadLocation reference="17"/>
+                                                                <double>1508.14251257</double>
+                                                              </entry>
+                                                              <entry>
+                                                                <VrpRoadLocation reference="19"/>
+                                                                <double>4169.08355633</double>
+                                                              </entry>
+                                                            </travelDistanceMap>
+                                                          </VrpRoadLocation>
+                                                          <double>4011.43724575</double>
+                                                        </entry>
+                                                      </travelDistanceMap>
+                                                    </VrpRoadLocation>
+                                                    <double>3874.6250585</double>
+                                                  </entry>
+                                                  <entry>
+                                                    <VrpRoadLocation reference="21"/>
+                                                    <double>1305.3760215</double>
+                                                  </entry>
+                                                </travelDistanceMap>
+                                              </VrpRoadLocation>
+                                              <double>164.421417686</double>
+                                            </entry>
+                                            <entry>
+                                              <VrpRoadLocation reference="19"/>
+                                              <double>3413.251053</double>
+                                            </entry>
+                                            <entry>
+                                              <VrpRoadLocation reference="21"/>
+                                              <double>1125.01410006</double>
+                                            </entry>
+                                          </travelDistanceMap>
+                                        </VrpRoadLocation>
+                                        <double>817.00742803</double>
+                                      </entry>
+                                      <entry>
+                                        <VrpRoadLocation reference="17"/>
+                                        <double>904.884739539</double>
+                                      </entry>
+                                      <entry>
+                                        <VrpRoadLocation reference="19"/>
+                                        <double>5141.76616706</double>
+                                      </entry>
+                                      <entry>
+                                        <VrpRoadLocation reference="21"/>
+                                        <double>1302.34432938</double>
+                                      </entry>
+                                    </travelDistanceMap>
+                                  </VrpRoadLocation>
+                                  <double>2424.12309649</double>
+                                </entry>
+                                <entry>
+                                  <VrpRoadLocation reference="15"/>
+                                  <double>3176.10670443</double>
+                                </entry>
+                                <entry>
+                                  <VrpRoadLocation reference="17"/>
+                                  <double>3102.96833187</double>
+                                </entry>
+                                <entry>
+                                  <VrpRoadLocation reference="19"/>
+                                  <double>6649.26187705</double>
+                                </entry>
+                                <entry>
+                                  <VrpRoadLocation reference="21"/>
+                                  <double>2809.84003936</double>
+                                </entry>
+                              </travelDistanceMap>
+                            </VrpRoadLocation>
+                            <double>3209.47919792</double>
+                          </entry>
+                          <entry>
+                            <VrpRoadLocation reference="13"/>
+                            <double>1243.72361489</double>
+                          </entry>
+                          <entry>
+                            <VrpRoadLocation reference="15"/>
+                            <double>476.608786435</double>
+                          </entry>
+                          <entry>
+                            <VrpRoadLocation reference="17"/>
+                            <double>495.565742263</double>
+                          </entry>
+                          <entry>
+                            <VrpRoadLocation reference="19"/>
+                            <double>2947.61631047</double>
+                          </entry>
+                          <entry>
+                            <VrpRoadLocation reference="21"/>
+                            <double>1196.13226453</double>
+                          </entry>
+                        </travelDistanceMap>
+                      </VrpRoadLocation>
+                      <double>1934.39153757</double>
+                    </entry>
+                    <entry>
+                      <VrpRoadLocation reference="11"/>
+                      <double>1487.91235165</double>
+                    </entry>
+                    <entry>
+                      <VrpRoadLocation reference="13"/>
+                      <double>976.601346405</double>
+                    </entry>
+                    <entry>
+                      <VrpRoadLocation reference="15"/>
+                      <double>1077.89387158</double>
+                    </entry>
+                    <entry>
+                      <VrpRoadLocation reference="17"/>
+                      <double>1407.05710823</double>
+                    </entry>
+                    <entry>
+                      <VrpRoadLocation reference="19"/>
+                      <double>4872.15748863</double>
+                    </entry>
+                    <entry>
+                      <VrpRoadLocation reference="21"/>
+                      <double>1716.25838503</double>
+                    </entry>
+                  </travelDistanceMap>
+                </VrpRoadLocation>
+                <double>2641.02060408</double>
+              </entry>
+              <entry>
+                <VrpRoadLocation reference="9"/>
+                <double>1139.27111708</double>
+              </entry>
+              <entry>
+                <VrpRoadLocation reference="11"/>
+                <double>4192.06556826</double>
+              </entry>
+              <entry>
+                <VrpRoadLocation reference="13"/>
+                <double>2237.06694827</double>
+              </entry>
+              <entry>
+                <VrpRoadLocation reference="15"/>
+                <double>1689.97287989</double>
+              </entry>
+              <entry>
+                <VrpRoadLocation reference="17"/>
+                <double>1616.83462734</double>
+              </entry>
+              <entry>
+                <VrpRoadLocation reference="19"/>
+                <double>2454.03069612</double>
+              </entry>
+              <entry>
+                <VrpRoadLocation reference="21"/>
+                <double>1478.04351217</double>
+              </entry>
+            </travelDistanceMap>
+          </VrpRoadLocation>
+          <double>3351.20456482</double>
+        </entry>
+        <entry>
+          <VrpRoadLocation reference="7"/>
+          <double>709.342637371</double>
+        </entry>
+        <entry>
+          <VrpRoadLocation reference="9"/>
+          <double>2713.20317281</double>
+        </entry>
+        <entry>
+          <VrpRoadLocation reference="11"/>
+          <double>900.184800739</double>
+        </entry>
+        <entry>
+          <VrpRoadLocation reference="13"/>
+          <double>1435.46674187</double>
+        </entry>
+        <entry>
+          <VrpRoadLocation reference="15"/>
+          <double>2259.00711603</double>
+        </entry>
+        <entry>
+          <VrpRoadLocation reference="17"/>
+          <double>2185.86874347</double>
+        </entry>
+        <entry>
+          <VrpRoadLocation reference="19"/>
+          <double>5650.96924388</double>
+        </entry>
+        <entry>
+          <VrpRoadLocation reference="21"/>
+          <double>3356.12626451</double>
+        </entry>
+      </travelDistanceMap>
+    </VrpRoadLocation>
+    <VrpRoadLocation reference="5"/>
+    <VrpRoadLocation reference="7"/>
+    <VrpRoadLocation reference="9"/>
+    <VrpRoadLocation reference="11"/>
+    <VrpRoadLocation reference="13"/>
+    <VrpRoadLocation reference="15"/>
+    <VrpRoadLocation reference="17"/>
+    <VrpRoadLocation reference="19"/>
+    <VrpRoadLocation reference="21"/>
+  </locationList>
+  <depotList id="23">
+    <VrpTimeWindowedDepot id="24">
+      <id>0</id>
+      <location class="VrpRoadLocation" reference="3"/>
+      <readyTime>7200000</readyTime>
+      <dueTime>82800000</dueTime>
+    </VrpTimeWindowedDepot>
+  </depotList>
+  <vehicleList id="25">
+    <VrpVehicle id="26">
+      <id>0</id>
+      <capacity>70</capacity>
+      <depot class="VrpTimeWindowedDepot" reference="24"/>
+    </VrpVehicle>
+    <VrpVehicle id="27">
+      <id>1</id>
+      <capacity>70</capacity>
+      <depot class="VrpTimeWindowedDepot" reference="24"/>
+    </VrpVehicle>
+    <VrpVehicle id="28">
+      <id>2</id>
+      <capacity>70</capacity>
+      <depot class="VrpTimeWindowedDepot" reference="24"/>
+    </VrpVehicle>
+    <VrpVehicle id="29">
+      <id>3</id>
+      <capacity>70</capacity>
+      <depot class="VrpTimeWindowedDepot" reference="24"/>
+    </VrpVehicle>
+    <VrpVehicle id="30">
+      <id>4</id>
+      <capacity>70</capacity>
+      <depot class="VrpTimeWindowedDepot" reference="24"/>
+    </VrpVehicle>
+    <VrpVehicle id="31">
+      <id>5</id>
+      <capacity>70</capacity>
+      <depot class="VrpTimeWindowedDepot" reference="24"/>
+    </VrpVehicle>
+    <VrpVehicle id="32">
+      <id>6</id>
+      <capacity>70</capacity>
+      <depot class="VrpTimeWindowedDepot" reference="24"/>
+    </VrpVehicle>
+  </vehicleList>
+  <customerList id="33">
+    <VrpTimeWindowedCustomer id="34">
+      <id>1</id>
+      <location class="VrpRoadLocation" reference="5"/>
+      <demand>44</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>132</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="35">
+      <id>2</id>
+      <location class="VrpRoadLocation" reference="7"/>
+      <demand>18</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>54</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="36">
+      <id>3</id>
+      <location class="VrpRoadLocation" reference="9"/>
+      <demand>3</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>9</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="37">
+      <id>4</id>
+      <location class="VrpRoadLocation" reference="11"/>
+      <demand>5</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>15</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="38">
+      <id>5</id>
+      <location class="VrpRoadLocation" reference="13"/>
+      <demand>8</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>24</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="39">
+      <id>6</id>
+      <location class="VrpRoadLocation" reference="15"/>
+      <demand>63</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>189</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="40">
+      <id>7</id>
+      <location class="VrpRoadLocation" reference="17"/>
+      <demand>3</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>9</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="41">
+      <id>8</id>
+      <location class="VrpRoadLocation" reference="19"/>
+      <demand>1</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>3</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="42">
+      <id>9</id>
+      <location class="VrpRoadLocation" reference="21"/>
+      <demand>4</demand>
+      <readyTime>25200000</readyTime>
+      <dueTime>82800000</dueTime>
+      <serviceDuration>12</serviceDuration>
+    </VrpTimeWindowedCustomer>
+  </customerList>
+</VrpTimeWindowedVehicleRoutingSolution>

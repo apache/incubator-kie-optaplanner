@@ -100,8 +100,8 @@ public class VehicleRoutingSolutionPainter {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.setColor(TangoColorFactory.ALUMINIUM_4);
             g.fillRect(x - 1, y - 1, 3, 3);
-            String demandString = Integer.toString(customer.getDemand());
-            g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE / 2);
+            String customerId = Long.toString(customer.getId());
+            g.drawString(customerId, x - (g.getFontMetrics().stringWidth(customerId) / 2), y - TEXT_SIZE / 2);
             if (customer instanceof TimeWindowedCustomer) {
                 TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
                 g.setColor(TangoColorFactory.ALUMINIUM_3);

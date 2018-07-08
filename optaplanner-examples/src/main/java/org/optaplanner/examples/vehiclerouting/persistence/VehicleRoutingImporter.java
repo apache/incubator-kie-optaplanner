@@ -53,6 +53,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         converter.convert("vrpweb/timewindowed/air/Solomon_100_R101.vrp", "cvrptw-100customers-A.xml");
         converter.convert("vrpweb/timewindowed/air/Solomon_100_R201.vrp", "cvrptw-100customers-B.xml");
         converter.convert("vrpweb/timewindowed/air/Homberger_0400_R1_4_1.vrp", "cvrptw-400customers.xml");
+        converter.convert("vrpweb/timewindowed/air/Lel_hackathon-n11-k7.vrp", "Lel_hackathon-n11.xml");
         converter.convert("vrpweb/basic/road-unknown/bays-n29-k5.vrp", "road-cvrp-29customers.xml");
     }
 
