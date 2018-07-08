@@ -492,13 +492,34 @@ Configure it in your solver configuration:
   </scoreDirectorFactory>
 ----
 
-Alternatively, build a `EasyScoreCalculator` instance at runtime and set it with the programmatic API:
+Alternatively, describe a way to construct an `EasyScoreCalculator` instance at runtime and set it with the programmatic API:
 
 [source,java,options="nowrap"]
 ----
-    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig().setEasyScoreCalculator(easyScoreCalculator);
+    Supplier<EasyScoreCalculator> easyScoreCalculatorSupplier = () -> new MyEasyScoreCalculator(1, 2);
+    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig().setEasyScoreCalculatorSupplier(easyScoreCalculatorSupplier);
 ----
 
+An additional way to configure parameters of an `EasyScoreCalculator` dynamically is to add a `customProperties` element:
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>com.example.Example</easyScoreCalculatorClass>
+    <easyScoreCalculatorCustomProperties>
+      <myCustomParam>5</myCustomParam>
+    </easyScoreCalculatorCustomProperties>
+  </scoreDirectorFactory>
+----
+
+The setter for the parameter must be public. For instance, for the above example, the corresponding `EasyScoreCalculator` should have a method
+
+[source,java,options="nowrap"]
+----
+    public void setMyCustomParam(int paramValue) {
+        this.myCustomParam = paramValue;
+    }
+----
 
 [[incrementalJavaScoreCalculation]]
 === Incremental Java Score Calculation
