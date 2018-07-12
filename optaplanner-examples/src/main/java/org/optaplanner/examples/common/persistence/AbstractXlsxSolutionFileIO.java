@@ -62,7 +62,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
     protected static final DateTimeFormatter MONTH_FORMATTER
             = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
-    protected static final DateTimeFormatter TIME_FORMATTER
+    public static final DateTimeFormatter TIME_FORMATTER
             = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
 
     protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
