@@ -35,7 +35,6 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     public ConferenceSchedulingPanel() {
         JButton importConferenceButton = new JButton("Import conference");
         importConferenceButton.addActionListener(event -> {
-            System.out.println("clicked");
             ConferenceSchedulingImporter conferenceSchedulingImporter = new ConferenceSchedulingImporter();
             solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
         });
