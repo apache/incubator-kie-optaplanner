@@ -22,8 +22,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ import org.slf4j.LoggerFactory;
 public class ConferenceSchedulingImporter {
 
     private static final Logger logger = LoggerFactory.getLogger(ConferenceSchedulingImporter.class);
+    private static final String zoneId = "Europe/Warsaw";
 
     private ConferenceSchedulingRESTEndpoints endpoints;
     private Map<String, Room> roomIdToRoomMap;
@@ -65,9 +67,9 @@ public class ConferenceSchedulingImporter {
 
     public ConferenceSchedulingImporter() {
         this.endpoints = new ConferenceSchedulingRESTEndpoints();
-        this.endpoints.setBaseUrl("https://dvbe18.confinabox.com/api/conferences/DVBE18");
+//        this.endpoints.setBaseUrl("https://dvbe18.confinabox.com/api/conferences/DVBE18");
 //        this.endpoints.setBaseUrl("https://cfp.devoxx.fr/api/conferences/DevoxxFR2018");
-//        this.endpoints.setBaseUrl("https://cfp.devoxx.pl/api/conferences/DevoxxPL2018");
+        this.endpoints.setBaseUrl("https://cfp.devoxx.pl/api/conferences/DevoxxPL2018");
         this.endpoints.setRoomsEndpoint("/rooms/");
         this.endpoints.setSpeakersEndpoint("/speakers");
         this.endpoints.setSchedulesEndpoint("/schedules/");
@@ -86,8 +88,6 @@ public class ConferenceSchedulingImporter {
         importSpeakerList(solution);
         importTalkList(solution);
         importTimeslotList(solution);
-
-        //TODO: initially the rooms have empty timeslots in their
 
         return solution;
     }
@@ -123,10 +123,12 @@ public class ConferenceSchedulingImporter {
 
             if (!talkTypeNameToTalkTypeMap.containsKey(talkTypeName)) {
                 TalkType talkType = new TalkType(talkTypeNameToTalkTypeMap.size(), talkTypeName);
-                talkType.setCompatibleRoomSet(new HashSet<>());
+                talkType.setCompatibleRoomSet(new HashSet<>(Arrays.asList(room)));
                 talkType.setCompatibleTimeslotSet(new HashSet<>());
                 talkTypeList.add(talkType);
                 talkTypeNameToTalkTypeMap.put(talkTypeName, talkType);
+            } else {
+                talkTypeNameToTalkTypeMap.get(talkTypeName).getCompatibleRoomSet().add(room);
             }
         }
 
@@ -163,7 +165,7 @@ public class ConferenceSchedulingImporter {
                     .withUndesiredTimeslotTagSet(new HashSet<>());
             speakerList.add(speaker);
             speakerIdToSpeakerMap.put(speakerId, speaker);
-            if (speakerNameToSpeakerMap.get(speakerName) != null) { //TODO: delete this
+            if (speakerNameToSpeakerMap.get(speakerName) != null) { //TODO: use more efficient way to get existing speakerId
                 throw new IllegalStateException("Speaker (" + speakerName + ") with id (" + speakerId
                                                         + ") already exists with an id (" + (speakerIdToSpeakerMap.keySet().stream().filter(key -> speakerIdToSpeakerMap.get(speakerId).getName().equals(speakerName))).toString() + ").");
             }
@@ -238,16 +240,22 @@ public class ConferenceSchedulingImporter {
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint());
         JsonArray daysArray = readJsonObject(endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint()).getJsonArray("links");
         for (int i = 0; i < daysArray.size(); i++) {
-            String dayUrl = daysArray.getJsonObject(i).getString("href");
+            JsonObject dayObject = daysArray.getJsonObject(i);
+            String dayUrl = dayObject.getString("href");
+
             logger.info("Sending a request to: " + dayUrl);
             JsonArray daySlotsArray = readJsonObject(dayUrl).getJsonArray("slots");
 
             for (int j = 0; j < daySlotsArray.size(); j++) {
                 JsonObject timeslotObject = daySlotsArray.getJsonObject(j);
 
-                //TODO: fix these
-                LocalDateTime startDateTime = (new Timestamp((long) timeslotObject.getInt("fromTimeMillis"))).toLocalDateTime();
-                LocalDateTime endDateTime = (new Timestamp((long) timeslotObject.getInt("toTimeMillis"))).toLocalDateTime();
+                LocalDateTime startDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeslotObject.getJsonNumber("fromTimeMillis").longValue()),
+                                                                      ZoneId.of(zoneId));
+                LocalDateTime endDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeslotObject.getJsonNumber("toTimeMillis").longValue()),
+                                                                      ZoneId.of(zoneId));
+
+
+
                 String talkTypeName = timeslotObject.getString("roomSetup");
                 TalkType talkType = talkTypeNameToTalkTypeMap.get(talkTypeName);
                 if (talkType == null) {
@@ -265,6 +273,7 @@ public class ConferenceSchedulingImporter {
 
                 timeslotList.add(timeslot);
                 //TODO: set the talks and rooms associated with this timeslot
+                //TODO: add timeslot to the room's talkType compatibleTimeslotSet
             }
         }
         solution.setTimeslotList(timeslotList);
@@ -362,4 +371,8 @@ public class ConferenceSchedulingImporter {
 /*
 http://cfp.devoxx.fr/api/conferences/DevoxxFR2018/speakers/6e6abda121ae5cbb90a2a8ffea980fca09cabb54
 This speaker does not exists in the speakr list
+
+Same speaker exists twice in the speakers list:
+http://cfp.devoxx.fr/api/conferences/DevoxxFR2018/speakers/90f5d34b-3e17-493f-b325-0b49c3e0030c
+http://cfp.devoxx.fr/api/conferences/DevoxxFR2018/speakers/43094674f4188c5e4a121d85ed52edc83ea9b97d
  */
