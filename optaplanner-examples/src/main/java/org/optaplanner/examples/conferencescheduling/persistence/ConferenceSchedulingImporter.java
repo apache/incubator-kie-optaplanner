@@ -53,21 +53,26 @@ public class ConferenceSchedulingImporter {
 
     private static final Logger logger = LoggerFactory.getLogger(ConferenceSchedulingImporter.class);
     private static final String zoneId = "Europe/Warsaw";
+    private static final String[] smallRoomsTypeNames = {"Quickie Sessions", "Quickie", "Hands-on Labs", "BOF (Bird of a Feather)"};
+    private static final String[] mediumRoomsTypeNames = {"Tools-in-Action", "University", "Conference", "Deep Dive"};
+    private static final String[] largeRoomsTypeNames = {"Opening Keynote", "Closing Keynote", "Keynote"};
 
     private ConferenceSchedulingRESTEndpoints endpoints;
-    private Map<String, Room> roomIdToRoomMap;
     private Map<String, TalkType> talkTypeNameToTalkTypeMap;
+    private Map<String, Room> roomIdToRoomMap;
     private Map<String, Speaker> speakerIdToSpeakerMap;
     private Map<String, Speaker> speakerNameToSpeakerMap;
     private Map<String, Talk> talkCodeToTalkMap;
-
     private Set<String> talkUrlSet;
+
+    private ConferenceSolution solution;
 
     public ConferenceSchedulingImporter() {
         this.endpoints = new ConferenceSchedulingRESTEndpoints();
 //        this.endpoints.setBaseUrl("https://dvbe18.confinabox.com/api/conferences/DVBE18");
-//        this.endpoints.setBaseUrl("https://cfp.devoxx.fr/api/conferences/DevoxxFR2018");
-        this.endpoints.setBaseUrl("https://cfp.devoxx.pl/api/conferences/DevoxxPL2018");
+        this.endpoints.setBaseUrl("https://cfp.devoxx.fr/api/conferences/DevoxxFR2018");
+//        this.endpoints.setBaseUrl("https://cfp.devoxx.pl/api/conferences/DevoxxPL2018");
+//        this.endpoints.setBaseUrl("https://cfp.devoxx.co.uk/api/conferences/DV18");
         this.endpoints.setRoomsEndpoint("/rooms/");
         this.endpoints.setSpeakersEndpoint("/speakers");
         this.endpoints.setSchedulesEndpoint("/schedules/");
@@ -75,17 +80,18 @@ public class ConferenceSchedulingImporter {
     }
 
     public ConferenceSolution importSolution() {
-        ConferenceSolution solution = new ConferenceSolution();
+        solution = new ConferenceSolution();
         solution.setId(0L);
         solution.setConferenceName(getConferenceName());
         ConferenceParametrization parametrization = new ConferenceParametrization();
         parametrization.setId(0L);
         solution.setParametrization(parametrization);
 
-        importRoomAndTalkTypeLists(solution);
-        importSpeakerList(solution);
-        importTalkList(solution);
-        importTimeslotList(solution);
+        importTalkTypeList();
+        importRoomList();
+        importSpeakerList();
+        importTalkList();
+        importTimeslotList();
 
         return solution;
     }
@@ -97,11 +103,35 @@ public class ConferenceSchedulingImporter {
         return conferenceObject.getString("label");
     }
 
-    private void importRoomAndTalkTypeLists(ConferenceSolution solution) {
-        this.roomIdToRoomMap = new HashMap<>();
+    private void importTalkTypeList() {
         this.talkTypeNameToTalkTypeMap = new HashMap<>();
-        List<Room> roomList = new ArrayList<>();
         List<TalkType> talkTypeList = new ArrayList<>();
+        logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint());
+        JsonObject rootObject = readJsonObject(endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint());
+        JsonArray talkTypeArray = rootObject.getJsonArray("proposalTypes");
+        for (int i = 0; i < talkTypeArray.size(); i++) {
+            JsonObject talkTypeObject = talkTypeArray.getJsonObject(i);
+            String talkTypeName = talkTypeObject.getString("label");
+            if (talkTypeNameToTalkTypeMap.keySet().contains(talkTypeName)) {
+                logger.warn("Duplicate talk type in " + endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint()
+                        + " at index " + i + ".");
+                continue;
+            }
+
+            TalkType talkType = new TalkType((long) i, talkTypeName);
+            talkType.setCompatibleRoomSet(new HashSet<>());
+            talkType.setCompatibleTimeslotSet(new HashSet<>());
+
+            talkTypeList.add(talkType);
+            talkTypeNameToTalkTypeMap.put(talkTypeName, talkType);
+        }
+
+        solution.setTalkTypeList(talkTypeList);
+    }
+
+    private void importRoomList() {
+        this.roomIdToRoomMap = new HashMap<>();
+        List<Room> roomList = new ArrayList<>();
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getRoomsEndpoint());
         JsonObject rootObject = readJsonObject(endpoints.getBaseUrl() + endpoints.getRoomsEndpoint());
         JsonArray roomArray = rootObject.getJsonArray("rooms");
@@ -109,35 +139,22 @@ public class ConferenceSchedulingImporter {
             JsonObject roomObject = roomArray.getJsonObject(i);
             String id = roomObject.getString("id");
             String name = roomObject.getString("name");
-            String talkTypeName = roomObject.getString("setup");
+            int capacity = roomObject.getInt("capacity");
 
             Room room = new Room((long) i);
             room.setName(name);
+            room.setCapacity(capacity);
+            room.setTalkTypeSet(getTalkTypeSetForCapacity(capacity));
             room.setTagSet(new HashSet<>());
-            room.withTalkTypeSet(new HashSet<>())
-                    .withUnavailableTimeslotSet(new HashSet<>());
+            room.setUnavailableTimeslotSet(new HashSet<>());
             roomList.add(room);
             roomIdToRoomMap.put(id, room);
-
-            if (!talkTypeNameToTalkTypeMap.containsKey(talkTypeName)) {
-                TalkType talkType = new TalkType(talkTypeNameToTalkTypeMap.size(), talkTypeName);
-                talkType.setCompatibleRoomSet(new HashSet<>(Arrays.asList(room)));
-                talkType.setCompatibleTimeslotSet(new HashSet<>());
-                talkTypeList.add(talkType);
-                room.getTalkTypeSet().add(talkType);
-                talkTypeNameToTalkTypeMap.put(talkTypeName, talkType);
-            } else {
-                TalkType talkType = talkTypeNameToTalkTypeMap.get(talkTypeName);
-                talkType.getCompatibleRoomSet().add(room);
-                room.getTalkTypeSet().add(talkType);
-            }
         }
 
         solution.setRoomList(roomList);
-        solution.setTalkTypeList(talkTypeList);
     }
 
-    private void importSpeakerList(ConferenceSolution solution) {
+    private void importSpeakerList() {
         this.speakerIdToSpeakerMap = new HashMap<>();
         this.speakerNameToSpeakerMap = new HashMap<>();
         this.talkUrlSet = new HashSet<>();
@@ -166,10 +183,10 @@ public class ConferenceSchedulingImporter {
                     .withUndesiredTimeslotTagSet(new HashSet<>());
             speakerList.add(speaker);
             speakerIdToSpeakerMap.put(speakerId, speaker);
-            if (speakerNameToSpeakerMap.get(speakerName) != null) { //TODO: use more efficient way to get existing speakerId
-                throw new IllegalStateException("Speaker (" + speakerName + ") with id (" + speakerId
-                                                        + ") already exists with an id (" + (speakerIdToSpeakerMap.keySet().stream().filter(key -> speakerIdToSpeakerMap.get(speakerId).getName().equals(speakerName))).toString() + ").");
-            }
+//            if (speakerNameToSpeakerMap.get(speakerName) != null) { //TODO: use more efficient way to get existing speakerId
+//                throw new IllegalStateException("Speaker (" + speakerName + ") with id (" + speakerId
+//                        + ") already exists with an id (" + speakerIdToSpeakerMap.keySet().stream().filter(key -> speakerIdToSpeakerMap.get(speakerId).getName().equals(speakerName)).toString() + ").");
+//            }
             speakerNameToSpeakerMap.put(speakerName, speaker);
 
             JsonArray speakerTalksArray = speakerObject.getJsonArray("acceptedTalks");
@@ -182,7 +199,7 @@ public class ConferenceSchedulingImporter {
         solution.setSpeakerList(speakerList);
     }
 
-    private void importTalkList(ConferenceSolution solution) {
+    private void importTalkList() {
         this.talkCodeToTalkMap = new HashMap<>();
         List<Talk> talkList = new ArrayList<>();
         Long talkId = 0L;
@@ -193,26 +210,32 @@ public class ConferenceSchedulingImporter {
 
             String code = talkObject.getString("id");
             String title = talkObject.getString("title");
+            String talkTypeName = talkObject.getString("talkType");
             Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getString("track")));
             String languageg = talkObject.getString("lang");
             List<Speaker> speakerList = talkObject.getJsonArray("speakers").stream()
-                                                .map(speakerJson -> {
-                                                    String speakerName = speakerJson.asJsonObject().getString("name").toLowerCase();
-                                                    Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
-                                                    if (speaker == null) {
-                                                        throw new IllegalStateException("The talk (" + title + ") with id (" + code
-                                                                                                + ") contains a speaker (" + speakerName
-                                                                                                + ") that doesn't exist in speaker list.");
-                                                    }
-                                                    return speaker;
-                                                })
-                                                .collect(Collectors.toList());
+                    .map(speakerJson -> {
+                        String speakerName = speakerJson.asJsonObject().getString("name").toLowerCase();
+                        Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
+                        if (speaker == null) {
+                            throw new IllegalStateException("The talk (" + title + ") with id (" + code
+                                    + ") contains a speaker (" + speakerName
+                                    + ") that doesn't exist in speaker list.");
+                        }
+                        return speaker;
+                    })
+                    .collect(Collectors.toList());
 
             Talk talk = new Talk(talkId++);
             talk.setCode(code);
             talk.setTitle(title);
-            talk.withTalkType(talkTypeNameToTalkTypeMap.get("classroom")) //TODO: set talkType properly
-                    .withThemeTrackTagSet(themeTrackSet)
+            TalkType talkType = talkTypeNameToTalkTypeMap.get(talkTypeName);
+            if (talkType == null) {
+                throw new IllegalStateException("The talk (" + title + ") with id (" + code
+                + ") has a talkType (" + talkTypeName + ") that doesn't exist in the talkType list.");
+            }
+            talk.setTalkType(talkType);
+            talk.withThemeTrackTagSet(themeTrackSet)
                     .withLanguage(languageg)
                     .withSpeakerList(speakerList)
                     .withAudienceLevel(1)
@@ -235,7 +258,7 @@ public class ConferenceSchedulingImporter {
         solution.setTalkList(talkList);
     }
 
-    private void importTimeslotList(ConferenceSolution solution) {
+    private void importTimeslotList() {
         List<Timeslot> timeslotList = new ArrayList<>();
         Map<Timeslot, Room> timeslotToAvailableRoomMap = new HashMap<>();
 
@@ -253,42 +276,35 @@ public class ConferenceSchedulingImporter {
                 JsonObject timeslotObject = daySlotsArray.getJsonObject(j);
 
                 LocalDateTime startDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeslotObject.getJsonNumber("fromTimeMillis").longValue()),
-                                                                      ZoneId.of(zoneId));
+                        ZoneId.of(zoneId));
                 LocalDateTime endDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeslotObject.getJsonNumber("toTimeMillis").longValue()),
-                                                                    ZoneId.of(zoneId));
-
-                String talkTypeName = timeslotObject.getString("roomSetup");
-                TalkType talkType = talkTypeNameToTalkTypeMap.get(talkTypeName);
-                if (talkType == null) {
-                    throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId") + ") has a talk type + (" + talkTypeName
-                                                            + ") that does not exist in the talkType list");
-                }
-                Set<TalkType> talkTypeSet = new HashSet<>(Arrays.asList(talkType));
+                        ZoneId.of(zoneId));
 
                 Room room = roomIdToRoomMap.get(timeslotObject.getString("roomId"));
                 if (room == null) {
                     throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId") + ") has a roomId + (" + timeslotObject.getString("roomId")
-                                                            + ") that does not exist in the rooms list");
+                            + ") that does not exist in the rooms list");
                 }
 
                 Timeslot timeslot = new Timeslot(timeSlotId++);
                 timeslot.withStartDateTime(startDateTime)
                         .withEndDateTime(endDateTime)
-                        .withTalkTypeSet(talkTypeSet);
+                        .withTalkTypeSet(getTalkTypeSetForCapacity(room.getCapacity()));
                 timeslot.setTagSet(new HashSet<>());
 
                 timeslotList.add(timeslot);
                 timeslotToAvailableRoomMap.put(timeslot, room);
-                talkType.getCompatibleTimeslotSet().add(timeslot);
+                for (TalkType talkType: timeslot.getTalkTypeSet()) {
+                    talkType.getCompatibleTimeslotSet().add(timeslot);
+                }
 
                 if (!timeslotObject.isNull("talk")) {
                     Talk talk = talkCodeToTalkMap.get(timeslotObject.getJsonObject("talk").getString("id"));
                     if (talk == null) {
                         throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId")
-                                                                + ") has a talk (" + timeslotObject.getJsonObject("talk").getString("id")
-                                                                + ") that does not exist in the talk list");
+                                + ") has a talk (" + timeslotObject.getJsonObject("talk").getString("id")
+                                + ") that does not exist in the talk list");
                     }
-                    talk.setTalkType(talkType);
                     talk.setRoom(room);
                     talk.setTimeslot(timeslot);
                     talk.setPinnedByUser(true);
@@ -298,12 +314,34 @@ public class ConferenceSchedulingImporter {
 
         for (Room room : solution.getRoomList()) {
             room.setUnavailableTimeslotSet(timeslotList.stream()
-                                                   .filter(timeslot -> !timeslotToAvailableRoomMap.get(timeslot).equals(room))
-                                                   .collect(Collectors.toSet()));
+                    .filter(timeslot -> !timeslotToAvailableRoomMap.get(timeslot).equals(room))
+                    .collect(Collectors.toSet()));
         }
 
         solution.setTimeslotList(timeslotList);
     }
+
+    private Set<TalkType> getTalkTypeSetForCapacity(int capacity) {
+        Set<TalkType> talkTypeSet = new HashSet<>();
+        List<String> typeNames;
+        if (capacity < 100) {
+            typeNames = Arrays.asList(smallRoomsTypeNames);
+        } else if (capacity < 1000) {
+            typeNames = Arrays.asList(mediumRoomsTypeNames);
+        } else {
+            typeNames = Arrays.asList(largeRoomsTypeNames);
+        }
+
+        for (String talkTypeName : typeNames) {
+            TalkType talkType = talkTypeNameToTalkTypeMap.get(talkTypeName);
+            if (talkType != null) {
+                talkTypeSet.add(talkType);
+            }
+        }
+
+        return talkTypeSet;
+    }
+
 /*
     private void importTalkTypeList(ConferenceSolution solution) {
         this.talkTypeMap = new HashMap<>();
@@ -358,7 +396,7 @@ public class ConferenceSchedulingImporter {
                 HttpURLConnection http = (HttpURLConnection) connection;
                 int stat = http.getResponseCode();
                 if (stat >= 300 && stat <= 307 && stat != 306 &&
-                            stat != HttpURLConnection.HTTP_NOT_MODIFIED) {
+                        stat != HttpURLConnection.HTTP_NOT_MODIFIED) {
                     URL base = http.getURL();
                     String loc = http.getHeaderField("Location");
                     URL target = null;
@@ -369,8 +407,8 @@ public class ConferenceSchedulingImporter {
                     // Redirection should be allowed only for HTTP and HTTPS
                     // and should be limited to 5 redirections at most.
                     if (target == null || !(target.getProtocol().equals("http")
-                                                    || target.getProtocol().equals("https"))
-                                || redirects >= 5) {
+                            || target.getProtocol().equals("https"))
+                            || redirects >= 5) {
                         throw new SecurityException("illegal URL redirect");
                     }
                     isRedirect = true;
