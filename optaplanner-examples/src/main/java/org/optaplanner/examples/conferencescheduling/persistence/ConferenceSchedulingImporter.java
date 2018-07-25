@@ -56,10 +56,10 @@ import org.slf4j.LoggerFactory;
 public class ConferenceSchedulingImporter {
 
     private static final Logger logger = LoggerFactory.getLogger(ConferenceSchedulingImporter.class);
-    private static final String zoneId = "Europe/Warsaw";
+    private static final String zoneId = "Europe/Paris";
     private static final String[] smallRoomsTypeNames = {"Quickie Sessions", "Quickie", "Hands-on Labs", "BOF (Bird of a Feather)"};
-    private static final String[] mediumRoomsTypeNames = {"Tools-in-Action", "University", "Conference", "Deep Dive"};
-    private static final String[] largeRoomsTypeNames = {"Opening Keynote", "Closing Keynote", "Keynote"};
+    private static final String[] mediumRoomsTypeNames = {"Tools-in-Action", "University", "Conference", "Deep Dive", "Opening Keynote", "Closing Keynote", "Keynote"};
+    private static final String[] largeRoomsTypeNames = {"break"};
 
     private ConferenceSchedulingRESTEndpoints endpoints;
     private Map<String, TalkType> talkTypeNameToTalkTypeMap;
@@ -128,6 +128,12 @@ public class ConferenceSchedulingImporter {
             talkTypeList.add(talkType);
             talkTypeNameToTalkTypeMap.put(talkTypeName, talkType);
         }
+
+        TalkType breakTalkType = new TalkType((long) talkTypeArray.size(), "break");
+        breakTalkType.setCompatibleRoomSet(new HashSet<>());
+        breakTalkType.setCompatibleTimeslotSet(new HashSet<>());
+        talkTypeList.add(breakTalkType);
+        talkTypeNameToTalkTypeMap.put("break", breakTalkType);
 
         solution.setTalkTypeList(talkTypeList);
     }
@@ -237,30 +243,7 @@ public class ConferenceSchedulingImporter {
                     })
                     .collect(Collectors.toList());
 
-            Talk talk = new Talk(talkId++);
-            talk.setCode(code);
-            talk.setTitle(title);
-            TalkType talkType = talkTypeNameToTalkTypeMap.get(talkTypeName);
-            if (talkType == null) {
-                throw new IllegalStateException("The talk (" + title + ") with id (" + code
-                        + ") has a talkType (" + talkTypeName + ") that doesn't exist in the talkType list.");
-            }
-            talk.setTalkType(talkType);
-            talk.withThemeTrackTagSet(themeTrackSet)
-                    .withLanguage(languageg)
-                    .withSpeakerList(speakerList)
-                    .withAudienceLevel(1)
-                    .withAudienceTypeSet(new HashSet<>())
-                    .withContentTagSet(new HashSet<>())
-                    .withPreferredRoomTagSet(new HashSet<>())
-                    .withPreferredTimeslotTagSet(new HashSet<>())
-                    .withProhibitedRoomTagSet(new HashSet<>())
-                    .withProhibitedTimeslotTagSet(new HashSet<>())
-                    .withRequiredRoomTagSet(new HashSet<>())
-                    .withRequiredTimeslotTagSet(new HashSet<>())
-                    .withSectorTagSet(new HashSet<>())
-                    .withUndesiredRoomTagSet(new HashSet<>())
-                    .withUndesiredTimeslotTagSet(new HashSet<>());
+            Talk talk = createTalk(talkId++, code, title, talkTypeName, themeTrackSet, languageg, speakerList);
 
             talkCodeToTalkMap.put(code, talk);
             talkList.add(talk);
@@ -275,6 +258,7 @@ public class ConferenceSchedulingImporter {
         Map<Pair<LocalDateTime, LocalDateTime>, Timeslot> startAndEndTimeToTimeslotMap = new HashMap<>();
 
         Long timeSlotId = 0L;
+        Long talkIdForBreak = (long) solution.getTalkList().size();
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint());
         JsonArray daysArray = readJsonObject(endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint()).getJsonArray("links");
         for (int i = 0; i < daysArray.size(); i++) {
@@ -316,20 +300,11 @@ public class ConferenceSchedulingImporter {
                 }
 
                 if (!timeslotObject.isNull("talk")) {
-                    Talk talk = talkCodeToTalkMap.get(timeslotObject.getJsonObject("talk").getString("id"));
-                    if (talk == null) {
-                        throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId")
-                                + ") has a talk (" + timeslotObject.getJsonObject("talk").getString("id")
-                                + ") that does not exist in the talk list");
-                    }
-                    if (talk.isPinnedByUser()) {
-                        throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId")
-                                + ") has a talk (" + timeslotObject.getJsonObject("talk").getString("id")
-                                + ") that is already pinned by user at another timeslot (" + talk.getTimeslot().toString() + ").");
-                    }
-                    talk.setRoom(room);
-                    talk.setTimeslot(timeslot);
-                    talk.setPinnedByUser(true);
+                    scheduleTalk(timeslotObject, room, timeslot);
+                }
+
+                if (!timeslotObject.isNull("break")) {
+                    createNewBreak(talkIdForBreak++, timeslotObject, timeslot);
                 }
 
                 for (TalkType talkType : timeslot.getTalkTypeSet()) {
@@ -347,15 +322,80 @@ public class ConferenceSchedulingImporter {
         solution.setTimeslotList(timeslotList);
     }
 
+    private void scheduleTalk(JsonObject timeslotObject, Room room, Timeslot timeslot) {
+        Talk talk = talkCodeToTalkMap.get(timeslotObject.getJsonObject("talk").getString("id"));
+        if (talk == null) {
+            throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId")
+                    + ") has a talk (" + timeslotObject.getJsonObject("talk").getString("id")
+                    + ") that does not exist in the talk list");
+        }
+        if (talk.isPinnedByUser()) {
+            throw new IllegalStateException("The timeslot (" + timeslotObject.getString("slotId")
+                    + ") has a talk (" + timeslotObject.getJsonObject("talk").getString("id")
+                    + ") that is already pinned by user at another timeslot (" + talk.getTimeslot().toString() + ").");
+        }
+        talk.setRoom(room);
+        talk.setTimeslot(timeslot);
+        talk.setPinnedByUser(true);
+    }
+
+    private void createNewBreak(Long talkIdForBreak, JsonObject timeslotObject, Timeslot timeslot) {
+        JsonObject breakObject = timeslotObject.getJsonObject("break");
+        String code = timeslotObject.getString("slotId");
+        String title = breakObject.getString("nameEN") + ", " + breakObject.getString("nameFR");
+        Room breakRoom = roomIdToRoomMap.get(breakObject.getJsonObject("room").getString("id"));
+
+        Talk breakTalk = createTalk(talkIdForBreak, code, title, "break", new HashSet<>(), "", new ArrayList<>());
+        breakTalk.setRoom(breakRoom);
+        breakTalk.setTimeslot(timeslot);
+        breakTalk.setPinnedByUser(true);
+
+        timeslot.getTalkTypeSet().add(talkTypeNameToTalkTypeMap.get("break"));
+        talkCodeToTalkMap.put(code, breakTalk);
+        solution.getTalkList().add(breakTalk);
+    }
+
+    private Talk createTalk(Long talkId, String code, String title, String talkTypeName, Set<String> themeTrackSet,
+                            String languageg, List<Speaker> speakerList) {
+        Talk talk = new Talk(talkId);
+        talk.setCode(code);
+        talk.setTitle(title);
+        if (talkTypeNameToTalkTypeMap.get(talkTypeName) == null) {
+            throw new IllegalStateException("The talk (" + title + ") with id (" + code
+                    + ") has a talkType (" + talkTypeName + ") that doesn't exist in the talkType list.");
+        }
+        talk.setTalkType(talkTypeNameToTalkTypeMap.get(talkTypeName));
+        talk.withThemeTrackTagSet(themeTrackSet)
+                .withLanguage(languageg)
+                .withSpeakerList(speakerList)
+                .withAudienceLevel(1)
+                .withAudienceTypeSet(new HashSet<>())
+                .withContentTagSet(new HashSet<>())
+                .withPreferredRoomTagSet(new HashSet<>())
+                .withPreferredTimeslotTagSet(new HashSet<>())
+                .withProhibitedRoomTagSet(new HashSet<>())
+                .withProhibitedTimeslotTagSet(new HashSet<>())
+                .withRequiredRoomTagSet(new HashSet<>())
+                .withRequiredTimeslotTagSet(new HashSet<>())
+                .withSectorTagSet(new HashSet<>())
+                .withUndesiredRoomTagSet(new HashSet<>())
+                .withUndesiredTimeslotTagSet(new HashSet<>());
+        return talk;
+    }
+
     private Set<TalkType> getTalkTypeSetForCapacity(int capacity) {
         Set<TalkType> talkTypeSet = new HashSet<>();
-        List<String> typeNames;
+        List<String> typeNames = new ArrayList<>();
         if (capacity < 100) {
-            typeNames = Arrays.asList(smallRoomsTypeNames);
+            typeNames.addAll(Arrays.asList(smallRoomsTypeNames));
         } else if (capacity < 1000) {
-            typeNames = Arrays.asList(mediumRoomsTypeNames);
+            typeNames.addAll(Arrays.asList(mediumRoomsTypeNames));
+            typeNames.addAll(Arrays.asList(smallRoomsTypeNames));
+
         } else {
-            typeNames = Arrays.asList(largeRoomsTypeNames);
+            typeNames.addAll(Arrays.asList(largeRoomsTypeNames));
+            typeNames.addAll(Arrays.asList(mediumRoomsTypeNames));
+            typeNames.addAll(Arrays.asList(smallRoomsTypeNames));
         }
 
         for (String talkTypeName : typeNames) {
