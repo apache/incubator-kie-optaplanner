@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 /*
  TODO:
  - Can rooms of smaller capacities be categorized as ones of larges capacities?
+ - Create room tags: small, medium and large.
  */
 public class ConferenceSchedulingImporter {
 
@@ -60,6 +61,9 @@ public class ConferenceSchedulingImporter {
     private static final String[] smallRoomsTypeNames = {"Quickie Sessions", "Quickie", "Hands-on Labs", "BOF (Bird of a Feather)"};
     private static final String[] mediumRoomsTypeNames = {"Tools-in-Action", "University", "Conference", "Deep Dive", "Opening Keynote", "Closing Keynote", "Keynote"};
     private static final String[] largeRoomsTypeNames = {"break"};
+    private static final String SMALL_ROOM_TAG = "small";
+    private static final String MEDIUM_ROOM_TAG = "medium";
+    private static final String LARGE_ROOM_TAG = "large";
 
     private ConferenceSchedulingRESTEndpoints endpoints;
     private Map<String, TalkType> talkTypeNameToTalkTypeMap;
@@ -159,13 +163,26 @@ public class ConferenceSchedulingImporter {
             room.setName(id);
             room.setCapacity(capacity);
             room.setTalkTypeSet(getTalkTypeSetForCapacity(capacity));
-            room.setTagSet(new HashSet<>());
+            room.setTagSet(getRoomTagSetOfCapacity(capacity));
             room.setUnavailableTimeslotSet(new HashSet<>());
             roomList.add(room);
             roomIdToRoomMap.put(id, room);
         }
 
         solution.setRoomList(roomList);
+    }
+
+    private Set<String> getRoomTagSetOfCapacity(int capacity) {
+        Set<String> roomTagSet = new HashSet<>();
+        if (capacity < 100) {
+            roomTagSet.add(SMALL_ROOM_TAG);
+        } else if (capacity < 1000) {
+            roomTagSet.add(MEDIUM_ROOM_TAG);
+        } else {
+            roomTagSet.add(LARGE_ROOM_TAG);
+        }
+
+        return roomTagSet;
     }
 
     private void importSpeakerList() {
@@ -371,9 +388,9 @@ public class ConferenceSchedulingImporter {
                 .withAudienceLevel(1)
                 .withAudienceTypeSet(new HashSet<>())
                 .withContentTagSet(new HashSet<>())
-                .withPreferredRoomTagSet(new HashSet<>())
+                .withPreferredRoomTagSet(getPreferredRoomTagSetForTalkOfType(talkTypeName))
                 .withPreferredTimeslotTagSet(new HashSet<>())
-                .withProhibitedRoomTagSet(new HashSet<>())
+                .withProhibitedRoomTagSet(getProhibitedRoomTagSetForTalkOfType(talkTypeName))
                 .withProhibitedTimeslotTagSet(new HashSet<>())
                 .withRequiredRoomTagSet(new HashSet<>())
                 .withRequiredTimeslotTagSet(new HashSet<>())
@@ -381,6 +398,30 @@ public class ConferenceSchedulingImporter {
                 .withUndesiredRoomTagSet(new HashSet<>())
                 .withUndesiredTimeslotTagSet(new HashSet<>());
         return talk;
+    }
+
+    private Set<String> getPreferredRoomTagSetForTalkOfType(String talkTypeName) {
+        Set<String> preferredRoomTagSet = new HashSet<>();
+        if (Arrays.asList(smallRoomsTypeNames).contains(talkTypeName)) {
+            preferredRoomTagSet.add(SMALL_ROOM_TAG);
+        } else if (Arrays.asList(mediumRoomsTypeNames).contains(talkTypeName)) {
+            preferredRoomTagSet.add(MEDIUM_ROOM_TAG);
+        } else {
+            preferredRoomTagSet.add(LARGE_ROOM_TAG);
+        }
+        return preferredRoomTagSet;
+    }
+
+    private Set<String> getProhibitedRoomTagSetForTalkOfType(String talkTypeName) {
+        Set<String> prohibitedRoomTagSet = new HashSet<>();
+        if (Arrays.asList(largeRoomsTypeNames).contains(talkTypeName)) {
+            prohibitedRoomTagSet.add(SMALL_ROOM_TAG);
+            prohibitedRoomTagSet.add(MEDIUM_ROOM_TAG);
+        } else if (Arrays.asList(mediumRoomsTypeNames).contains(talkTypeName)) {
+            prohibitedRoomTagSet.add(SMALL_ROOM_TAG);
+        }
+
+        return prohibitedRoomTagSet;
     }
 
     private Set<TalkType> getTalkTypeSetForCapacity(int capacity) {
@@ -391,7 +432,6 @@ public class ConferenceSchedulingImporter {
         } else if (capacity < 1000) {
             typeNames.addAll(Arrays.asList(mediumRoomsTypeNames));
             typeNames.addAll(Arrays.asList(smallRoomsTypeNames));
-
         } else {
             typeNames.addAll(Arrays.asList(largeRoomsTypeNames));
             typeNames.addAll(Arrays.asList(mediumRoomsTypeNames));
