@@ -18,9 +18,6 @@ package org.optaplanner.examples.conferencescheduling.persistence;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -31,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -49,11 +47,6 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- TODO:
- - Can rooms of smaller capacities be categorized as ones of larges capacities?
- - Create room tags: small, medium and large.
- */
 public class ConferenceSchedulingImporter {
 
     private static final Logger logger = LoggerFactory.getLogger(ConferenceSchedulingImporter.class);
@@ -105,8 +98,7 @@ public class ConferenceSchedulingImporter {
 
     private String getConferenceName() {
         logger.info("Sending a request to: " + endpoints.getBaseUrl());
-        JsonObject conferenceObject = readJsonObject(endpoints.getBaseUrl());
-
+        JsonObject conferenceObject = readJson(endpoints.getBaseUrl(), JsonReader::readObject);
         return conferenceObject.getString("label");
     }
 
@@ -114,7 +106,7 @@ public class ConferenceSchedulingImporter {
         this.talkTypeNameToTalkTypeMap = new HashMap<>();
         List<TalkType> talkTypeList = new ArrayList<>();
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint());
-        JsonObject rootObject = readJsonObject(endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint());
+        JsonObject rootObject = readJson(endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint(), JsonReader::readObject);
         JsonArray talkTypeArray = rootObject.getJsonArray("proposalTypes");
         for (int i = 0; i < talkTypeArray.size(); i++) {
             JsonObject talkTypeObject = talkTypeArray.getJsonObject(i);
@@ -149,7 +141,7 @@ public class ConferenceSchedulingImporter {
         // TODO: Workaround inconsistent data in DevoxxFr, use local updated files
         // FIXME : RESOURCES.../persistence/devoxxFrance modify all the files, searching for urls that starts with "file:/" and replace the url to the resource folder with the correct one
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getRoomsEndpoint());
-        JsonObject rootObject = readJsonObject(endpoints.getBaseUrl() + endpoints.getRoomsEndpoint());
+        JsonObject rootObject = readJson(endpoints.getBaseUrl() + endpoints.getRoomsEndpoint(), JsonReader::readObject);
 //        logger.info("Sending a request to: " + getClass().getResource("devoxxFrance/rooms.json").toString());
 //        JsonObject rootObject = readJsonObject(getClass().getResource("devoxxFrance/rooms.json").toString());
 
@@ -193,14 +185,14 @@ public class ConferenceSchedulingImporter {
         // TODO: Workaround inconsistent data in DevoxxFr, use local updated files
         // FIXME : RESOURCES.../persistence/devoxxFrance modify all the files, searching for urls that starts with "file:/" and replace the url to the resource folder with the correct one
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint());
-        JsonArray speakerArray = readJsonArray(endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint());
+        JsonArray speakerArray = readJson(endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint(), JsonReader::readArray);
 //        logger.info("Sending a request to: " + getClass().getResource("devoxxFrance/speakers.json").toString());
 //        JsonArray speakerArray = readJsonArray(getClass().getResource("devoxxFrance/speakers.json").toString());
 
         for (int i = 0; i < speakerArray.size(); i++) {
             String speakerUrl = speakerArray.getJsonObject(i).getJsonArray("links").getJsonObject(0).getString("href");
             logger.info("Sending a request to: " + speakerUrl);
-            JsonObject speakerObject = readJsonObject(speakerUrl);
+            JsonObject speakerObject = readJson(speakerUrl, JsonReader::readObject);
 
             String speakerId = speakerObject.getString("uuid");
             String speakerName = (speakerObject.getString("firstName") + " " + speakerObject.getString("lastName")).toLowerCase();
@@ -240,7 +232,7 @@ public class ConferenceSchedulingImporter {
 
         for (String talkUrl : this.talkUrlSet) {
             logger.info("Sending a request to: " + talkUrl);
-            JsonObject talkObject = readJsonObject(talkUrl);
+            JsonObject talkObject = readJson(talkUrl, JsonReader::readObject);
 
             String code = talkObject.getString("id");
             String title = talkObject.getString("title");
@@ -277,13 +269,13 @@ public class ConferenceSchedulingImporter {
         Long timeSlotId = 0L;
         Long talkIdForBreak = (long) solution.getTalkList().size();
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint());
-        JsonArray daysArray = readJsonObject(endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint()).getJsonArray("links");
+        JsonArray daysArray = readJson(endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint(), JsonReader::readObject).getJsonArray("links");
         for (int i = 0; i < daysArray.size(); i++) {
             JsonObject dayObject = daysArray.getJsonObject(i);
             String dayUrl = dayObject.getString("href");
 
             logger.info("Sending a request to: " + dayUrl);
-            JsonArray daySlotsArray = readJsonObject(dayUrl).getJsonArray("slots");
+            JsonArray daySlotsArray = readJson(dayUrl, JsonReader::readObject).getJsonArray("slots");
 
             for (int j = 0; j < daySlotsArray.size(); j++) {
                 JsonObject timeslotObject = daySlotsArray.getJsonObject(j);
@@ -448,64 +440,13 @@ public class ConferenceSchedulingImporter {
         return talkTypeSet;
     }
 
-    private JsonObject readJsonObject(String url) {
-        try (InputStream inputStream = openConnectionCheckRedirects(new URL(url).openConnection())) {
+    private <R> R readJson(String url, Function<JsonReader, R> mapper) {
+        try (InputStream inputStream = new ConnectionFollowRedirects(url).getInputStream()) {
             JsonReader jsonReader = Json.createReader(inputStream);
-            return jsonReader.readObject();
+            return mapper.apply(jsonReader);
         } catch (IOException e) {
             throw new IllegalStateException(
                     "Import failed on URL (" + url + ").", e);
         }
-    }
-
-    private JsonArray readJsonArray(String url) {
-        try (InputStream inputStream = openConnectionCheckRedirects(new URL(url).openConnection())) {
-            JsonReader jsonReader = Json.createReader(inputStream);
-            return jsonReader.readArray();
-        } catch (IOException e) {
-            throw new IllegalStateException(
-                    "Import failed on URL (" + url + ").", e);
-        }
-    }
-
-    private InputStream openConnectionCheckRedirects(URLConnection connection) throws IOException { // credits for https://www.cs.mun.ca/java-api-1.5/guide/deployment/deployment-guide/upgrade-guide/article-17.html
-        boolean isRedirect;
-        int redirects = 0;
-        InputStream in = null;
-        do {
-            if (connection instanceof HttpURLConnection) {
-                ((HttpURLConnection) connection).setInstanceFollowRedirects(false);
-            }
-            // We want to open the input stream before getting headers
-            // because getHeaderField() et al swallow IOExceptions.
-            in = connection.getInputStream();
-            isRedirect = false;
-            if (connection instanceof HttpURLConnection) {
-                HttpURLConnection http = (HttpURLConnection) connection;
-                int stat = http.getResponseCode();
-                if (stat >= 300 && stat <= 307 && stat != 306 &&
-                        stat != HttpURLConnection.HTTP_NOT_MODIFIED) {
-                    URL base = http.getURL();
-                    String loc = http.getHeaderField("Location");
-                    URL target = null;
-                    if (loc != null) {
-                        target = new URL(base, loc);
-                    }
-                    http.disconnect();
-                    // Redirection should be allowed only for HTTP and HTTPS
-                    // and should be limited to 5 redirections at most.
-                    if (target == null || !(target.getProtocol().equals("http")
-                            || target.getProtocol().equals("https"))
-                            || redirects >= 5) {
-                        throw new SecurityException("illegal URL redirect");
-                    }
-                    isRedirect = true;
-                    connection = target.openConnection();
-                    redirects++;
-                }
-            }
-        }
-        while (isRedirect);
-        return in;
     }
 }
