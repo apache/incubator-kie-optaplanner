@@ -22,6 +22,7 @@ public class ConferenceSchedulingRESTEndpoints {
     private String speakersEndpoint;
     private String schedulesEndpoint;
     private String talkTypesEndpoint;
+    private String tracksEndpoint;
 
     public ConferenceSchedulingRESTEndpoints() {
 
@@ -67,5 +68,11 @@ public class ConferenceSchedulingRESTEndpoints {
         this.talkTypesEndpoint = talkTypesEndpoint;
     }
 
+    public String getTracksEndpoint() {
+        return tracksEndpoint;
+    }
 
+    public void setTracksEndpoint(String tracksEndpoint) {
+        this.tracksEndpoint = tracksEndpoint;
+    }
 }

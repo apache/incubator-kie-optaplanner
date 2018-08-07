@@ -64,6 +64,7 @@ public class ConferenceSchedulingImporter {
     private Map<String, Speaker> speakerNameToSpeakerMap;
     private Map<String, Talk> talkCodeToTalkMap;
     private Set<String> talkUrlSet;
+    private Set<String> trackIdSet;
 
     private ConferenceSolution solution;
 
@@ -77,6 +78,7 @@ public class ConferenceSchedulingImporter {
         this.endpoints.setSpeakersEndpoint("/speakers");
         this.endpoints.setSchedulesEndpoint("/schedules/");
         this.endpoints.setTalkTypesEndpoint("/proposalTypes");
+        this.endpoints.setTracksEndpoint("/tracks");
     }
 
     public ConferenceSolution importSolution() {
@@ -88,6 +90,7 @@ public class ConferenceSchedulingImporter {
         solution.setParametrization(parametrization);
 
         importTalkTypeList();
+        importTrackIdSet();
         importRoomList();
         importSpeakerList();
         importTalkList();
@@ -134,6 +137,17 @@ public class ConferenceSchedulingImporter {
         solution.setTalkTypeList(talkTypeList);
     }
 
+    private void importTrackIdSet() {
+        this.trackIdSet = new HashSet<>();
+        logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getTracksEndpoint());
+        JsonObject rootObject = readJson(endpoints.getBaseUrl() + endpoints.getTracksEndpoint(), JsonReader::readObject);
+
+        JsonArray tracksArray = rootObject.getJsonArray("tracks");
+        for (int i = 0; i < tracksArray.size(); i++) {
+            trackIdSet.add(tracksArray.getJsonObject(i).getString("id"));
+        }
+    }
+
     private void importRoomList() {
         this.roomIdToRoomMap = new HashMap<>();
         List<Room> roomList = new ArrayList<>();
@@ -143,7 +157,7 @@ public class ConferenceSchedulingImporter {
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getRoomsEndpoint());
         JsonObject rootObject = readJson(endpoints.getBaseUrl() + endpoints.getRoomsEndpoint(), JsonReader::readObject);
 //        logger.info("Sending a request to: " + getClass().getResource("devoxxFrance/rooms.json").toString());
-//        JsonObject rootObject = readJsonObject(getClass().getResource("devoxxFrance/rooms.json").toString());
+//        JsonObject rootObject = readJson(getClass().getResource("devoxxFrance/rooms.json").toString(), JsonReader::readObject);
 
         JsonArray roomArray = rootObject.getJsonArray("rooms");
         for (int i = 0; i < roomArray.size(); i++) {
@@ -187,7 +201,7 @@ public class ConferenceSchedulingImporter {
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint());
         JsonArray speakerArray = readJson(endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint(), JsonReader::readArray);
 //        logger.info("Sending a request to: " + getClass().getResource("devoxxFrance/speakers.json").toString());
-//        JsonArray speakerArray = readJsonArray(getClass().getResource("devoxxFrance/speakers.json").toString());
+//        JsonArray speakerArray = readJson(getClass().getResource("devoxxFrance/speakers.json").toString(), JsonReader::readArray);
 
         for (int i = 0; i < speakerArray.size(); i++) {
             String speakerUrl = speakerArray.getJsonObject(i).getJsonArray("links").getJsonObject(0).getString("href");
@@ -237,7 +251,11 @@ public class ConferenceSchedulingImporter {
             String code = talkObject.getString("id");
             String title = talkObject.getString("title");
             String talkTypeName = talkObject.getString("talkType");
-            Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getString("track")));
+            Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getString("trackId")));
+            if (!trackIdSet.containsAll(themeTrackSet)) {
+                throw new IllegalStateException("The talk (" + title + ") with id (" + code
+                + ") contains trackId + (" + trackIdSet + ") that doesn't exist in the trackIdSet.");
+            }
             String languageg = talkObject.getString("lang");
             List<Speaker> speakerList = talkObject.getJsonArray("speakers").stream()
                     .map(speakerJson -> {
