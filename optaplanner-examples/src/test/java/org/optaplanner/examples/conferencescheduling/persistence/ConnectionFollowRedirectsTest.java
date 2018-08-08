@@ -19,8 +19,6 @@ package org.optaplanner.examples.conferencescheduling.persistence;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,23 +28,22 @@ import org.mockserver.integration.ClientAndServer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpForward.forward;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 public class ConnectionFollowRedirectsTest {
 
     private MockServerClient mockServerClient;
-    private ClientAndServer mockServer1;
+    private ClientAndServer mockServer;
 
     @Before
     public void startServer() {
-        mockServer1 = startClientAndServer(1080);
+        mockServer = startClientAndServer(1080);
     }
 
     @After
     public void stopServer() {
-        mockServer1.stop();
+        mockServer.stop();
     }
 
     @Test
@@ -109,34 +106,4 @@ public class ConnectionFollowRedirectsTest {
             e.printStackTrace();
         }
     }
-
-/*
-    @Test
-    public void shouldRedirectHttpToHttpsOnce() {
-        mockServerClient = new MockServerClient("localhost", 1080);
-        mockServerClient
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/path")
-                )
-                .forward(
-                        forward()
-                                .withHost("localhost")
-                                .withPort(1080)
-                                .withScheme(HttpForward.Scheme.HTTPS)
-                );
-
-        try {
-            ConnectionFollowRedirects connectionFollowRedirects = new ConnectionFollowRedirects("http://localhost:1080/path");
-            assertTrue(connectionFollowRedirects.getConnection() instanceof HttpURLConnection);
-            connectionFollowRedirects.getInputStream();
-            assertTrue(connectionFollowRedirects.getConnection() instanceof HttpsURLConnection);
-            assertEquals(connectionFollowRedirects.getRedirects(), 1);
-            assertEquals(((HttpsURLConnection) connectionFollowRedirects.getConnection()).getResponseCode(), 200);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-*/
 }
