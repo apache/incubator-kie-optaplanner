@@ -63,7 +63,7 @@ public class ConnectionFollowRedirectsTest {
         try {
             ConnectionFollowRedirects connectionFollowRedirects = new ConnectionFollowRedirects("http://localhost:1080/path");
             assertTrue(connectionFollowRedirects.getConnection() instanceof HttpURLConnection);
-            connectionFollowRedirects.getInputStream();
+            connectionFollowRedirects.getInputStream().close();
             assertEquals(connectionFollowRedirects.getRedirects(), 0);
             assertEquals(((HttpURLConnection) connectionFollowRedirects.getConnection()).getResponseCode(), 200);
         } catch (IOException e) {
@@ -99,7 +99,7 @@ public class ConnectionFollowRedirectsTest {
         try {
             ConnectionFollowRedirects connectionFollowRedirects = new ConnectionFollowRedirects("http://localhost:1080/path");
             assertTrue(connectionFollowRedirects.getConnection() instanceof HttpURLConnection);
-            connectionFollowRedirects.getInputStream();
+            connectionFollowRedirects.getInputStream().close();
             assertEquals(connectionFollowRedirects.getRedirects(), 1);
             assertEquals(((HttpURLConnection) connectionFollowRedirects.getConnection()).getResponseCode(), 200);
         } catch (IOException e) {
