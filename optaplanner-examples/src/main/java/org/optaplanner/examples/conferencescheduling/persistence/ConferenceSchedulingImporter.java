@@ -254,7 +254,7 @@ public class ConferenceSchedulingImporter {
             Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getString("trackId")));
             if (!trackIdSet.containsAll(themeTrackSet)) {
                 throw new IllegalStateException("The talk (" + title + ") with id (" + code
-                + ") contains trackId + (" + trackIdSet + ") that doesn't exist in the trackIdSet.");
+                        + ") contains trackId + (" + trackIdSet + ") that doesn't exist in the trackIdSet.");
             }
             String languageg = talkObject.getString("lang");
             List<Speaker> speakerList = talkObject.getJsonArray("speakers").stream()
