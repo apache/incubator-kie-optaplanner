@@ -33,12 +33,15 @@ import static org.mockserver.model.HttpResponse.response;
 
 public class ConnectionFollowRedirectsTest {
 
+    private final String host = "localhost";
+    private final int port = 1080;
+
     private MockServerClient mockServerClient;
     private ClientAndServer mockServer;
 
     @Before
     public void startServer() {
-        mockServer = startClientAndServer(1080);
+        mockServer = startClientAndServer(port);
     }
 
     @After
@@ -47,8 +50,8 @@ public class ConnectionFollowRedirectsTest {
     }
 
     @Test
-    public void shouldRespoondWithoutRedirection() {
-        mockServerClient = new MockServerClient("localhost", 1080);
+    public void shouldRespondWithoutRedirection() {
+        mockServerClient = new MockServerClient(host, port);
         mockServerClient
                 .when(
                         request()
@@ -61,7 +64,7 @@ public class ConnectionFollowRedirectsTest {
                 );
 
         try {
-            ConnectionFollowRedirects connectionFollowRedirects = new ConnectionFollowRedirects("http://localhost:1080/path");
+            ConnectionFollowRedirects connectionFollowRedirects = new ConnectionFollowRedirects(getUrl("path"));
             assertTrue(connectionFollowRedirects.getConnection() instanceof HttpURLConnection);
             connectionFollowRedirects.getInputStream().close();
             assertEquals(connectionFollowRedirects.getRedirects(), 0);
@@ -73,7 +76,7 @@ public class ConnectionFollowRedirectsTest {
 
     @Test
     public void shouldRedirectHttpOnce() {
-        mockServerClient = new MockServerClient("localhost", 1080);
+        mockServerClient = new MockServerClient(host, port);
         mockServerClient
                 .when(
                         request()
@@ -83,7 +86,7 @@ public class ConnectionFollowRedirectsTest {
                 .respond(
                         response()
                                 .withStatusCode(301)
-                                .withHeader("location", "http://localhost:1080/anotherPath")
+                                .withHeader("location", getUrl("anotherPath"))
                 );
         mockServerClient
                 .when(
@@ -97,7 +100,7 @@ public class ConnectionFollowRedirectsTest {
                 );
 
         try {
-            ConnectionFollowRedirects connectionFollowRedirects = new ConnectionFollowRedirects("http://localhost:1080/path");
+            ConnectionFollowRedirects connectionFollowRedirects = new ConnectionFollowRedirects(getUrl("path"));
             assertTrue(connectionFollowRedirects.getConnection() instanceof HttpURLConnection);
             connectionFollowRedirects.getInputStream().close();
             assertEquals(connectionFollowRedirects.getRedirects(), 1);
@@ -105,5 +108,9 @@ public class ConnectionFollowRedirectsTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getUrl(String path) {
+        return String.format("http://%s:%d/%s", host, port, path);
     }
 }
