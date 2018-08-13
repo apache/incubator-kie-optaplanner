@@ -18,6 +18,7 @@ package org.optaplanner.examples.conferencescheduling.persistence;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -258,12 +259,15 @@ public class ConferenceSchedulingImporter {
             }
             String languageg = talkObject.getString("lang");
             List<Speaker> speakerList = talkObject.getJsonArray("speakers").stream()
-                    .map(speakerJson -> {
-                        String speakerName = speakerJson.asJsonObject().getString("name").toLowerCase();
+                    .map(speakerJsonValue -> {
+                        JsonReader jsonReader = Json.createReader(new StringReader(speakerJsonValue.toString()));
+                        JsonObject speakerJsonObject = jsonReader.readObject();
+
+                        String speakerName = speakerJsonObject.getString("name").toLowerCase();
                         Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
                         if (speaker == null) {
                             throw new IllegalStateException("The talk (" + title + ") with id (" + code
-                                    + ") contains a speaker (" + speakerName + ", " + speakerJson.asJsonObject().getJsonObject("link").getString("href")
+                                    + ") contains a speaker (" + speakerName + ", " + speakerJsonObject.getJsonObject("link").getString("href")
                                     + ") that doesn't exist in speaker list.");
                         }
                         return speaker;

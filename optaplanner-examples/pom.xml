@@ -176,10 +176,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>javax.json</groupId>
-      <artifactId>javax.json-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
     </dependency>
@@ -192,22 +188,19 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>javax.json</groupId>
-        <artifactId>javax.json-api</artifactId>
-        <version>1.1.2</version>
-      </dependency>
-      <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>javax.json</artifactId>
-        <version>1.1.2</version>
-        <scope>runtime</scope>
+        <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
+        <version>1.0.4</version>
       </dependency>
       <dependency>
         <groupId>org.mock-server</groupId>
         <artifactId>mockserver-netty</artifactId>
         <version>5.3.0</version>
+        <scope>test</scope>
         <exclusions>
           <exclusion>
+            <!-- Collides with 'javax.xml.bind:jboss-jaxb-api' brought in by 'org.optaplanner:optaplanner-persistence-jaxb'. -->
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
           </exclusion>
