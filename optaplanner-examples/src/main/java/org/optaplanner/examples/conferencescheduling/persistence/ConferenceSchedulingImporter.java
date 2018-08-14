@@ -53,7 +53,8 @@ public class ConferenceSchedulingImporter {
     private static final Logger logger = LoggerFactory.getLogger(ConferenceSchedulingImporter.class);
     private static final String zoneId = "Europe/Paris";
     private static final String[] smallRoomsTypeNames = {"Quickie Sessions", "Quickie", "Hands-on Labs", "BOF (Bird of a Feather)"};
-    private static final String[] mediumRoomsTypeNames = {"Tools-in-Action", "University", "Conference", "Deep Dive", "Opening Keynote", "Closing Keynote", "Keynote"};
+    private static final String[] mediumRoomsTypeNames = {"Tools-in-Action", "University", "Conference", "Deep Dive",
+            "Opening Keynote", "Closing Keynote", "Keynote", "Ignite Sessions"};
     private static final String[] largeRoomsTypeNames = {"break"};
     private static final String SMALL_ROOM_TAG = "small";
     private static final String MEDIUM_ROOM_TAG = "medium";
@@ -71,10 +72,8 @@ public class ConferenceSchedulingImporter {
 
     public ConferenceSchedulingImporter() {
         this.endpoints = new ConferenceSchedulingRESTEndpoints();
-//        this.endpoints.setBaseUrl("https://dvbe18.confinabox.com/api/conferences/DVBE18");
-        this.endpoints.setBaseUrl("https://cfp.devoxx.fr/api/conferences/DevoxxFR2018");
-//        this.endpoints.setBaseUrl("https://cfp.devoxx.pl/api/conferences/DevoxxPL2018");
-//        this.endpoints.setBaseUrl("https://cfp.devoxx.co.uk/api/conferences/DV18");
+        //TODO: Add a panel to get these from the user
+        this.endpoints.setBaseUrl("https://dvbe18.confinabox.com/api/conferences/DVBE18");
         this.endpoints.setRoomsEndpoint("/rooms/");
         this.endpoints.setSpeakersEndpoint("/speakers");
         this.endpoints.setSchedulesEndpoint("/schedules/");
@@ -153,12 +152,8 @@ public class ConferenceSchedulingImporter {
         this.roomIdToRoomMap = new HashMap<>();
         List<Room> roomList = new ArrayList<>();
 
-        // TODO: Workaround inconsistent data in DevoxxFr, use local updated files
-        // FIXME : RESOURCES.../persistence/devoxxFrance modify all the files, searching for urls that starts with "file:/" and replace the url to the resource folder with the correct one
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getRoomsEndpoint());
         JsonObject rootObject = readJson(endpoints.getBaseUrl() + endpoints.getRoomsEndpoint(), JsonReader::readObject);
-//        logger.info("Sending a request to: " + getClass().getResource("devoxxFrance/rooms.json").toString());
-//        JsonObject rootObject = readJson(getClass().getResource("devoxxFrance/rooms.json").toString(), JsonReader::readObject);
 
         JsonArray roomArray = rootObject.getJsonArray("rooms");
         for (int i = 0; i < roomArray.size(); i++) {
@@ -170,6 +165,9 @@ public class ConferenceSchedulingImporter {
             room.setName(id);
             room.setCapacity(capacity);
             room.setTalkTypeSet(getTalkTypeSetForCapacity(capacity));
+            for (TalkType talkType : room.getTalkTypeSet()) {
+                talkType.getCompatibleRoomSet().add(room);
+            }
             room.setTagSet(getRoomTagSetOfCapacity(capacity));
             room.setUnavailableTimeslotSet(new HashSet<>());
             roomList.add(room);
@@ -197,12 +195,8 @@ public class ConferenceSchedulingImporter {
         this.talkUrlSet = new HashSet<>();
         List<Speaker> speakerList = new ArrayList<>();
 
-        // TODO: Workaround inconsistent data in DevoxxFr, use local updated files
-        // FIXME : RESOURCES.../persistence/devoxxFrance modify all the files, searching for urls that starts with "file:/" and replace the url to the resource folder with the correct one
         logger.info("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint());
         JsonArray speakerArray = readJson(endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint(), JsonReader::readArray);
-//        logger.info("Sending a request to: " + getClass().getResource("devoxxFrance/speakers.json").toString());
-//        JsonArray speakerArray = readJson(getClass().getResource("devoxxFrance/speakers.json").toString(), JsonReader::readArray);
 
         for (int i = 0; i < speakerArray.size(); i++) {
             String speakerUrl = speakerArray.getJsonObject(i).getJsonArray("links").getJsonObject(0).getString("href");
@@ -266,9 +260,37 @@ public class ConferenceSchedulingImporter {
                         String speakerName = speakerJsonObject.getString("name").toLowerCase();
                         Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
                         if (speaker == null) {
-                            throw new IllegalStateException("The talk (" + title + ") with id (" + code
+/*                            throw new IllegalStateException("The talk (" + title + ") with id (" + code
                                     + ") contains a speaker (" + speakerName + ", " + speakerJsonObject.getJsonObject("link").getString("href")
+                                    + ") that doesn't exist in speaker list.");*/
+
+                            //TODO: Temporary workaround until the api issues are fixed, once fixed uncomment the throw block above and delete this
+                            logger.warn("The talk (" + code + ": " + title + ", " + talkUrl
+                                    + ") has a speaker (" + speakerName + ", " + speakerJsonObject.getJsonObject("link").getString("href")
                                     + ") that doesn't exist in speaker list.");
+                            String speakerUrl = speakerJsonObject.getJsonObject("link").getString("href");
+                            logger.info("Sending a request to: " + speakerUrl);
+                            JsonObject speakerObject = readJson(speakerUrl, JsonReader::readObject);
+
+                            String speakerId = speakerObject.getString("uuid");
+
+                            speaker = new Speaker((long) solution.getSpeakerList().size());
+                            speaker.setName(speakerName);
+                            speaker.withPreferredRoomTagSet(new HashSet<>())
+                                    .withPreferredTimeslotTagSet(new HashSet<>())
+                                    .withProhibitedRoomTagSet(new HashSet<>())
+                                    .withProhibitedTimeslotTagSet(new HashSet<>())
+                                    .withRequiredRoomTagSet(new HashSet<>())
+                                    .withRequiredTimeslotTagSet(new HashSet<>())
+                                    .withUnavailableTimeslotSet(new HashSet<>())
+                                    .withUndesiredRoomTagSet(new HashSet<>())
+                                    .withUndesiredTimeslotTagSet(new HashSet<>());
+                            if (speakerNameToSpeakerMap.keySet().contains(speakerName)) {
+                                throw new IllegalStateException("Speaker (" + speakerName + ") with id (" + speakerId
+                                        + ") already exists in the speaker list");
+                            }
+                            speakerNameToSpeakerMap.put(speakerName, speaker);
+                            solution.getSpeakerList().add(speaker);
                         }
                         return speaker;
                     })
