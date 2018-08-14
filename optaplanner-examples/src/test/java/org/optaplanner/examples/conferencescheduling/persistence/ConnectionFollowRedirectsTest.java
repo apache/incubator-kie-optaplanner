@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
+import org.optaplanner.examples.common.app.LoggingTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +32,8 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public class ConnectionFollowRedirectsTest {
+
+public class ConnectionFollowRedirectsTest extends LoggingTest {
 
     private final String host = "localhost";
     private final int port = 1080;
@@ -70,7 +72,8 @@ public class ConnectionFollowRedirectsTest {
             assertEquals(connectionFollowRedirects.getRedirects(), 0);
             assertEquals(((HttpURLConnection) connectionFollowRedirects.getConnection()).getResponseCode(), 200);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Cannot connect to url ({})", getUrl("path"), e);
+            return;
         }
     }
 
@@ -106,7 +109,8 @@ public class ConnectionFollowRedirectsTest {
             assertEquals(connectionFollowRedirects.getRedirects(), 1);
             assertEquals(((HttpURLConnection) connectionFollowRedirects.getConnection()).getResponseCode(), 200);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Cannot connect to url ({})", getUrl("path"), e);
+            return;
         }
     }
 
