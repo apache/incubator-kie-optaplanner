@@ -32,7 +32,9 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
     protected Number[] referenceLevelNumbers;
 
     protected Score finalistScore;
+    protected Score referenceScore;
     protected Number[] finalistLevelNumbers;
+    protected boolean hasImproving;
 
     public StrategicOscillationByLevelFinalistPodium(boolean referenceBestScoreInsteadOfLastStepScore) {
         this.referenceBestScoreInsteadOfLastStepScore = referenceBestScoreInsteadOfLastStepScore;
@@ -44,8 +46,12 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
         referenceLevelNumbers = referenceBestScoreInsteadOfLastStepScore
             ? stepScope.getPhaseScope().getBestScore().toLevelNumbers()
             : stepScope.getPhaseScope().getLastCompletedStepScope().getScore().toLevelNumbers();
+        referenceScore = referenceBestScoreInsteadOfLastStepScore
+            ? stepScope.getPhaseScope().getBestScore()
+            : stepScope.getPhaseScope().getLastCompletedStepScope().getScore();
         finalistScore = null;
         finalistLevelNumbers = null;
+		hasImproving = false;
     }
 
     @Override
@@ -73,22 +79,51 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
     }
 
     private int doComparison(Score moveScore, Number[] moveLevelNumbers) {
-        if (finalistScore == null) {
-            return 1;
+		if (finalistScore == null) {
+			return 1;
+		}
+
+		if (!hasImproving && moveScore.compareTo(referenceScore) > 0) {
+			/*
+			 * Found an improving move.
+			 * 
+			 * The '!hasImproving' condition is present so that it is only checking for an
+			 * improving move in this step if it is not already found. The part after the &&
+			 * sign will not be executed if 'hasImproving' is true.
+			 */
+			hasImproving = true;
+			
+		}
+        if(!hasImproving) {
+			/*
+			 * There are no improving moves (including this one) so far. Checking is this a
+			 * strategic oscillation move.
+			 */
+	        for (int i = 0; i < referenceLevelNumbers.length; i++) {
+	            boolean moveIsHigher = ((Comparable) moveLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;//True if it has and improvement at the current level.
+	            boolean finalistIsHigher = ((Comparable) finalistLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;//True if it has and improvement at the current level.
+	            if (moveIsHigher) {
+	            	//Current move has improvement
+	                if (finalistIsHigher) {
+	                	//There is also an improvement produced in the previous moves
+	                    break;
+	                } else {
+	                	//This move is the first improving move for the i-th level at the current step
+	                    return 1;
+	                }
+	            } else if (finalistIsHigher) {
+	            	//The current move is not producing an improving score at this level but there is already a previous move that does that
+	            	//so we definitely know that the previous finalists have a better score than this move.
+	                return -1;
+	            }
+	        }
         }
-        for (int i = 0; i < referenceLevelNumbers.length; i++) {
-            boolean moveIsHigher = ((Comparable) moveLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
-            boolean finalistIsHigher = ((Comparable) finalistLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
-            if (moveIsHigher) {
-                if (finalistIsHigher) {
-                    break;
-                } else {
-                    return 1;
-                }
-            } else if (finalistIsHigher) {
-                return -1;
-            }
-        }
+		/*
+		 * If it comes to this point it means that both the finalists and the current
+		 * move are improving the score either at just one level (as strategic
+		 * oscillation moves) or one of them or both might be an overall improvement
+		 * compared to the reference score, so now we compare which one is better.
+		 */
         return moveScore.compareTo(finalistScore);
     }
 
