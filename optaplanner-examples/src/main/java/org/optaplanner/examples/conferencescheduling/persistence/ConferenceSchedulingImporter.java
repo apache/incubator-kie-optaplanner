@@ -47,16 +47,6 @@ import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//TODO: fix room talkTypes:
-// Mon&Tue 9:30-12:30 Uni/DeepDive, Hands-on-lab
-// Mon 12:30-13:30 quickie
-// Mon 13:30 16:30 Uni/DeepDive, Hands-on-lab
-// Mon 16:30-19:30 Tools-in-action
-// Mon 19:30+ BOF
-
-// Wed-Thu-Fri: before 19:30 Conference (except if quickie or keynote)
-
-// Alternative: parse room_id for talkType
 
 public class ConferenceSchedulingImporter {
 
@@ -439,16 +429,23 @@ public class ConferenceSchedulingImporter {
                             + ") that does not exist in the rooms list");
                 }
 
+                // Assuming slotId is of format: tia_room6_monday_12_.... take only tia
+                TalkType timeslotTalkType = talkTypeNameToTalkTypeMap.get(timeslotObject.getString("slotId").split("_")[0]);
+                if (Arrays.asList(IGNORED_TALK_TYPES).contains(timeslotTalkType)) {
+                    continue;
+                }
                 Timeslot timeslot;
                 if (startAndEndTimeToTimeslotMap.keySet().contains(Pair.of(startDateTime, endDateTime))) {
                     timeslot = startAndEndTimeToTimeslotMap.get(Pair.of(startDateTime, endDateTime));
                     timeslotToAvailableRoomsMap.get(timeslot).add(room);
-                    timeslot.getTalkTypeSet().addAll(getTalkTypeSetForCapacity(room.getCapacity()));
+                    if (timeslotTalkType != null) {
+                        timeslot.getTalkTypeSet().add(timeslotTalkType);
+                    }
                 } else {
                     timeslot = new Timeslot(timeSlotId++);
                     timeslot.withStartDateTime(startDateTime)
                             .withEndDateTime(endDateTime)
-                            .withTalkTypeSet(getTalkTypeSetForCapacity(room.getCapacity()));
+                            .withTalkTypeSet(timeslotTalkType == null ? new HashSet<>() : new HashSet<>(Arrays.asList(timeslotTalkType)));
                     timeslot.setTagSet(new HashSet<>());
 
                     timeslotList.add(timeslot);
