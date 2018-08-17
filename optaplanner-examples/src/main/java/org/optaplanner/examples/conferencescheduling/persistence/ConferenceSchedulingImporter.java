@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,8 +56,10 @@ public class ConferenceSchedulingImporter {
     private static final String[] SMALL_ROOMS_TYPE_NAMES = {"lab", "bof"};
     private static final String[] LARGE_ROOMS_TYPE_NAMES = {"tia", "uni", "conf", "Deep Dive",
             "Opening Keynote", "Closing Keynote", "Quickie Sessions", "quick"};
+
     private static final String[] IGNORED_TALK_TYPES = {"ignite", "key"};
     private static final String[] IGNORED_ROOM_IDS = {"ExhibitionHall"};
+    private static final String[] IGNORED_SPEAKER_NAMES = {"Devoxx Partner"};
 
     private ConferenceSchedulingRESTEndpoints endpoints;
     private Map<String, TalkType> talkTypeNameToTalkTypeMap;
@@ -67,6 +70,8 @@ public class ConferenceSchedulingImporter {
     private Set<String> trackIdSet;
 
     private ConferenceSolution solution;
+    private Map<String, Integer> timeslotTalkTypeToTotalMap = new HashMap<>();
+    private Map<String, Integer> talkTalkTypeToTotalMap = new HashMap<>();
 
     public ConferenceSchedulingImporter() {
         this.endpoints = new ConferenceSchedulingRESTEndpoints();
@@ -94,13 +99,19 @@ public class ConferenceSchedulingImporter {
         importTalkList();
         importTimeslotList();
 
+        for (TalkType talkType : solution.getTalkTypeList()) {
+            LOGGER.info(talkType.getName()
+                    + ": Timeslots Total is " + (timeslotTalkTypeToTotalMap.get(talkType.getName()) == null ? 0 : timeslotTalkTypeToTotalMap.get(talkType.getName()))
+                    + ", Talks Total is " + (talkTalkTypeToTotalMap.get(talkType.getName()) == null ? 0 : talkTalkTypeToTotalMap.get(talkType.getName()))
+            );
+        }
         return solution;
     }
 
     private String getConferenceName() {
         LOGGER.debug("Sending a request to: " + endpoints.getBaseUrl());
         JsonObject conferenceObject = readJson(endpoints.getBaseUrl(), JsonReader::readObject);
-        return conferenceObject.getString("label");
+        return conferenceObject.getString("eventCode");
     }
 
     private void importTalkTypeList() {
@@ -174,6 +185,7 @@ public class ConferenceSchedulingImporter {
             }
         }
 
+        roomList.sort(Comparator.comparing(Room::getName));
         solution.setRoomList(roomList);
     }
 
@@ -193,6 +205,9 @@ public class ConferenceSchedulingImporter {
             String speakerId = speakerObject.getString("uuid");
             String speakerName = speakerObject.getString("firstName") + " " + speakerObject.getString("lastName");
 
+            if (Arrays.asList(IGNORED_SPEAKER_NAMES).contains(speakerName)) {
+                continue;
+            }
             Speaker speaker = new Speaker((long) i);
             speaker.setName(speakerName);
             speaker.withPreferredRoomTagSet(new HashSet<>())
@@ -218,6 +233,7 @@ public class ConferenceSchedulingImporter {
             }
         }
 
+        speakerList.sort(Comparator.comparing(Speaker::getName));
         solution.setSpeakerList(speakerList);
     }
 
@@ -264,7 +280,7 @@ public class ConferenceSchedulingImporter {
 
                             String speakerId = speakerObject.getString("uuid");
 
-                            speaker = new Speaker((long) solution.getSpeakerList().size());
+                            speaker = new Speaker((long) solution.extractSpeakerList().size());
                             speaker.setName(speakerName);
                             speaker.withPreferredRoomTagSet(new HashSet<>())
                                     .withPreferredTimeslotTagSet(new HashSet<>())
@@ -280,7 +296,7 @@ public class ConferenceSchedulingImporter {
                                         + ") already exists in the speaker list");
                             }
                             speakerNameToSpeakerMap.put(speakerName, speaker);
-                            solution.getSpeakerList().add(speaker);
+                            solution.extractSpeakerList().add(speaker);
                         }
                         return speaker;
                     })
@@ -306,7 +322,8 @@ public class ConferenceSchedulingImporter {
 
         for (String confType : confFiles) {
             LOGGER.debug("Sending a request to: " + talksPath + "/" + confType + ".json");
-            JsonArray talksArray = readJson(talksPath + "/" + confType + ".json", JsonReader::readObject).getJsonObject("approvedTalks").getJsonArray("talks");
+            JsonArray talksArray = readJson(talksPath + "/" + confType + ".json", JsonReader::readObject)
+                    .getJsonObject("approvedTalks").getJsonArray("talks");
 
             for (int i = 0; i < talksArray.size(); i++) {
                 JsonObject talkObject = talksArray.getJsonObject(i);
@@ -314,69 +331,62 @@ public class ConferenceSchedulingImporter {
                 String code = talkObject.getString("id");
                 String title = talkObject.getString("title");
                 String talkTypeName = talkObject.getJsonObject("talkType").getString("id");
-                Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getJsonObject("track").getString("id")));
-                if (!trackIdSet.containsAll(themeTrackSet)) {
-                    throw new IllegalStateException("The talk (" + title + ") with id (" + code
-                            + ") contains trackId + (" + trackIdSet + ") that doesn't exist in the trackIdSet.");
-                }
+                Set<String> themeTrackSet = extractThemeTrackSet(talkObject, code, title);
                 String language = talkObject.getString("lang");
                 int audienceLevel = Integer.parseInt(talkObject.getString("audienceLevel").replaceAll("[^0-9]", ""));
-
-                List<Speaker> speakerList = new ArrayList<>();
-
-                String mainSpeakerName = talkObject.getString("mainSpeaker");
-                speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title, mainSpeakerName));
-                if (talkObject.containsKey("secondarySpeaker")) {
-                    String secondarySpeakerName = talkObject.getString("secondarySpeaker");
-                    speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title, secondarySpeakerName));
-                }
-                JsonArray otherSpeakersArray = talkObject.getJsonArray("otherSpeakers");
-                for (JsonValue otherSpeakerName : otherSpeakersArray) {
-                    speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title, otherSpeakerName.toString()));
-                }
+                List<Speaker> speakerList = extractSpeakerList(confType, talkObject, code, title);
+                Set<String> contentTagSet = extractContentTagSet(talkObject);
 
                 if (!Arrays.asList(IGNORED_TALK_TYPES).contains(code)) {
-                    Talk talk = createTalk(talkId++, code, title, talkTypeName, themeTrackSet, language, speakerList, audienceLevel);
+                    Talk talk = createTalk(talkId++, code, title, talkTypeName, themeTrackSet, language, speakerList,
+                            audienceLevel, contentTagSet);
                     talkCodeToTalkMap.put(code, talk);
                     talkList.add(talk);
                 }
+                talkTalkTypeToTotalMap.merge(talkTypeName, 1, Integer::sum);
             }
         }
         solution.setTalkList(talkList);
     }
 
-    private Talk createTalk(Long talkId, String code, String title, String talkTypeName, Set<String> themeTrackSet,
-                            String languageg, List<Speaker> speakerList, int audienceLevel) {
-        Talk talk = new Talk(talkId);
-        talk.setCode(code);
-        talk.setTitle(title);
-        if (talkTypeNameToTalkTypeMap.get(talkTypeName) == null) {
+    private Set<String> extractThemeTrackSet(JsonObject talkObject, String code, String title) {
+        Set<String> themeTrackSet = new HashSet<>(Arrays.asList(talkObject.getJsonObject("track").getString("id")));
+        if (!trackIdSet.containsAll(themeTrackSet)) {
             throw new IllegalStateException("The talk (" + title + ") with id (" + code
-                    + ") has a talkType (" + talkTypeName + ") that doesn't exist in the talkType list.");
+                    + ") contains trackId + (" + trackIdSet + ") that doesn't exist in the trackIdSet.");
         }
-        talk.setTalkType(talkTypeNameToTalkTypeMap.get(talkTypeName));
-        talk.withThemeTrackTagSet(themeTrackSet)
-                .withLanguage(languageg)
-                .withSpeakerList(speakerList)
-                .withAudienceLevel(audienceLevel)
-                .withAudienceTypeSet(new HashSet<>())
-                .withContentTagSet(new HashSet<>())
-                .withPreferredRoomTagSet(new HashSet<>())
-                .withPreferredTimeslotTagSet(new HashSet<>())
-                .withProhibitedRoomTagSet(new HashSet<>())
-                .withProhibitedTimeslotTagSet(new HashSet<>())
-                .withRequiredRoomTagSet(new HashSet<>())
-                .withRequiredTimeslotTagSet(new HashSet<>())
-                .withSectorTagSet(new HashSet<>())
-                .withUndesiredRoomTagSet(new HashSet<>())
-                .withUndesiredTimeslotTagSet(new HashSet<>());
-        return talk;
+        return themeTrackSet;
+    }
+
+    private List<Speaker> extractSpeakerList(String confType, JsonObject talkObject, String code, String title) {
+        List<Speaker> speakerList = new ArrayList<>();
+
+        String mainSpeakerName = talkObject.getString("mainSpeaker");
+        if (Arrays.asList(IGNORED_SPEAKER_NAMES).contains(mainSpeakerName)) {
+            return speakerList;
+        }
+
+        speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title, mainSpeakerName));
+        if (talkObject.containsKey("secondarySpeaker")) {
+            String secondarySpeakerName = talkObject.getString("secondarySpeaker");
+            speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title, secondarySpeakerName));
+        }
+
+        if (talkObject.containsKey("otherSpeakers")) {
+            JsonArray otherSpeakersArray = talkObject.getJsonArray("otherSpeakers");
+            for (JsonValue otherSpeakerName : otherSpeakersArray) {
+                speakerList.add(getSpeakerOrCreateOneIfNull(confType, code, title,
+                        otherSpeakerName.toString().replaceAll("\"", "")));
+            }
+        }
+
+        return speakerList;
     }
 
     private Speaker getSpeakerOrCreateOneIfNull(String confType, String code, String title, String speakerName) {
         Speaker speaker = speakerNameToSpeakerMap.get(speakerName);
         if (speaker == null) {
-            LOGGER.warn("The talk (" + code + ": " + title + ", " + confType
+            LOGGER.warn("The talk (" + code + ": " + title + ") of type ( " + confType
                     + ") has a speaker (" + speakerName + ") that doesn't exist in speaker list.");
 
             speaker = new Speaker((long) solution.getSpeakerList().size());
@@ -399,13 +409,51 @@ public class ConferenceSchedulingImporter {
         return speaker;
     }
 
+    private Set<String> extractContentTagSet(JsonObject talkObject) {
+        if (talkObject.containsKey("tags")) {
+            return talkObject.getJsonArray("tags").stream()
+                    .map(JsonObject.class::cast)
+                    .filter(tagObject -> !tagObject.getString("value").isEmpty())
+                    .map(tagObject -> tagObject.getString("value"))
+                    .collect(Collectors.toSet());
+        }
+        return new HashSet<>();
+    }
+
+    private Talk createTalk(Long talkId, String code, String title, String talkTypeName, Set<String> themeTrackSet,
+                            String languageg, List<Speaker> speakerList, int audienceLevel, Set<String> contentTagSet) {
+        Talk talk = new Talk(talkId);
+        talk.setCode(code);
+        talk.setTitle(title);
+        if (talkTypeNameToTalkTypeMap.get(talkTypeName) == null) {
+            throw new IllegalStateException("The talk (" + title + ") with id (" + code
+                    + ") has a talkType (" + talkTypeName + ") that doesn't exist in the talkType list.");
+        }
+        talk.setTalkType(talkTypeNameToTalkTypeMap.get(talkTypeName));
+        talk.withThemeTrackTagSet(themeTrackSet)
+                .withLanguage(languageg)
+                .withSpeakerList(speakerList)
+                .withAudienceLevel(audienceLevel)
+                .withAudienceTypeSet(new HashSet<>())
+                .withContentTagSet(contentTagSet)
+                .withPreferredRoomTagSet(new HashSet<>())
+                .withPreferredTimeslotTagSet(new HashSet<>())
+                .withProhibitedRoomTagSet(new HashSet<>())
+                .withProhibitedTimeslotTagSet(new HashSet<>())
+                .withRequiredRoomTagSet(new HashSet<>())
+                .withRequiredTimeslotTagSet(new HashSet<>())
+                .withSectorTagSet(new HashSet<>())
+                .withUndesiredRoomTagSet(new HashSet<>())
+                .withUndesiredTimeslotTagSet(new HashSet<>());
+        return talk;
+    }
+
     private void importTimeslotList() {
         List<Timeslot> timeslotList = new ArrayList<>();
         Map<Timeslot, List<Room>> timeslotToAvailableRoomsMap = new HashMap<>();
         Map<Pair<LocalDateTime, LocalDateTime>, Timeslot> startAndEndTimeToTimeslotMap = new HashMap<>();
 
         Long timeSlotId = 0L;
-//        Long talkIdForBreak = (long) solution.getTalkList().size();
         LOGGER.debug("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint());
         JsonArray daysArray = readJson(endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint(), JsonReader::readObject).getJsonArray("links");
         for (int i = 0; i < daysArray.size(); i++) {
@@ -429,11 +477,13 @@ public class ConferenceSchedulingImporter {
                             + ") that does not exist in the rooms list");
                 }
 
-                // Assuming slotId is of format: tia_room6_monday_12_.... take only tia
-                TalkType timeslotTalkType = talkTypeNameToTalkTypeMap.get(timeslotObject.getString("slotId").split("_")[0]);
-                if (Arrays.asList(IGNORED_TALK_TYPES).contains(timeslotTalkType)) {
+                // Assuming slotId is of format: tia_room6_monday_12_.... take only "tia"
+                String talkTypeName = timeslotObject.getString("slotId").split("_")[0];
+                TalkType timeslotTalkType = talkTypeNameToTalkTypeMap.get(talkTypeName);
+                if (Arrays.asList(IGNORED_TALK_TYPES).contains(talkTypeName)) {
                     continue;
                 }
+
                 Timeslot timeslot;
                 if (startAndEndTimeToTimeslotMap.keySet().contains(Pair.of(startDateTime, endDateTime))) {
                     timeslot = startAndEndTimeToTimeslotMap.get(Pair.of(startDateTime, endDateTime));
@@ -457,13 +507,10 @@ public class ConferenceSchedulingImporter {
                     scheduleTalk(timeslotObject, room, timeslot);
                 }
 
-//                if (!timeslotObject.isNull("break")) {
-//                    createNewBreak(talkIdForBreak++, timeslotObject, timeslot);
-//                }
-
                 for (TalkType talkType : timeslot.getTalkTypeSet()) {
                     talkType.getCompatibleTimeslotSet().add(timeslot);
                 }
+                timeslotTalkTypeToTotalMap.merge(talkTypeName, 1, Integer::sum);
             }
         }
 
@@ -511,22 +558,6 @@ public class ConferenceSchedulingImporter {
         talk.setTimeslot(timeslot);
         talk.setPinnedByUser(true);
     }
-
-//    private void createNewBreak(Long talkIdForBreak, JsonObject timeslotObject, Timeslot timeslot) {
-//        JsonObject breakObject = timeslotObject.getJsonObject("break");
-//        String code = timeslotObject.getString("slotId");
-//        String title = breakObject.getString("nameEN") + ", " + breakObject.getString("nameFR");
-//        Room breakRoom = roomIdToRoomMap.get(breakObject.getJsonObject("room").getString("id"));
-//
-//        Talk breakTalk = createTalk(talkIdForBreak, code, title, "break", new HashSet<>(), "", new ArrayList<>());
-//        breakTalk.setRoom(breakRoom);
-//        breakTalk.setTimeslot(timeslot);
-//        breakTalk.setPinnedByUser(true);
-//
-//        timeslot.getTalkTypeSet().add(talkTypeNameToTalkTypeMap.get("break"));
-//        talkCodeToTalkMap.put(code, breakTalk);
-//        solution.getTalkList().add(breakTalk);
-//    }
 
     private <R> R readJson(String url, Function<JsonReader, R> mapper) {
         try (InputStream inputStream = new ConnectionFollowRedirects(url).getInputStream()) {
