@@ -24,7 +24,7 @@ import javax.swing.JLabel;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
-import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingImporter;
+import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingCfpDevoxxImporter;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -35,7 +35,8 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     public ConferenceSchedulingPanel() {
         JButton importConferenceButton = new JButton("Import conference");
         importConferenceButton.addActionListener(event -> {
-            ConferenceSchedulingImporter conferenceSchedulingImporter = new ConferenceSchedulingImporter();
+            //TODO: Add a panel to get conferenceBaseUrl from the user
+            ConferenceSchedulingCfpDevoxxImporter conferenceSchedulingImporter = new ConferenceSchedulingCfpDevoxxImporter("https://dvbe18.confinabox.com/api/conferences/DVBE18");
             solutionBusiness.setSolution(conferenceSchedulingImporter.importSolution());
         });
 

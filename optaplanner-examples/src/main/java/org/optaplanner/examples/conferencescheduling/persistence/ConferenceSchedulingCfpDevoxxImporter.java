@@ -49,9 +49,12 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConferenceSchedulingImporter {
+/**
+ * Import an instance of a Devoxx Conference from an API created from https://github.com/nicmarti/cfp-devoxx
+ */
+public class ConferenceSchedulingCfpDevoxxImporter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConferenceSchedulingImporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConferenceSchedulingCfpDevoxxImporter.class);
     private static final String ZONE_ID = "Europe/Paris";
     private static final String[] SMALL_ROOMS_TYPE_NAMES = {"lab", "bof"};
     private static final String[] LARGE_ROOMS_TYPE_NAMES = {"tia", "uni", "conf", "Deep Dive",
@@ -61,7 +64,7 @@ public class ConferenceSchedulingImporter {
     private static final String[] IGNORED_ROOM_IDS = {"ExhibitionHall"};
     private static final String[] IGNORED_SPEAKER_NAMES = {"Devoxx Partner"};
 
-    private ConferenceSchedulingRESTEndpoints endpoints;
+    private String conferenceBaseUrl;
     private Map<String, TalkType> talkTypeNameToTalkTypeMap;
     private Map<String, Room> roomIdToRoomMap;
     private Map<String, Speaker> speakerNameToSpeakerMap;
@@ -73,15 +76,8 @@ public class ConferenceSchedulingImporter {
     private Map<String, Integer> timeslotTalkTypeToTotalMap = new HashMap<>();
     private Map<String, Integer> talkTalkTypeToTotalMap = new HashMap<>();
 
-    public ConferenceSchedulingImporter() {
-        this.endpoints = new ConferenceSchedulingRESTEndpoints();
-        //TODO: Add a panel to get these from the user
-        this.endpoints.setBaseUrl("https://dvbe18.confinabox.com/api/conferences/DVBE18");
-        this.endpoints.setRoomsEndpoint("/rooms/");
-        this.endpoints.setSpeakersEndpoint("/speakers");
-        this.endpoints.setSchedulesEndpoint("/schedules/");
-        this.endpoints.setTalkTypesEndpoint("/proposalTypes");
-        this.endpoints.setTracksEndpoint("/tracks");
+    public ConferenceSchedulingCfpDevoxxImporter(String conferenceBaseUrl) {
+        this.conferenceBaseUrl = conferenceBaseUrl;
     }
 
     public ConferenceSolution importSolution() {
@@ -109,22 +105,25 @@ public class ConferenceSchedulingImporter {
     }
 
     private String getConferenceName() {
-        LOGGER.debug("Sending a request to: " + endpoints.getBaseUrl());
-        JsonObject conferenceObject = readJson(endpoints.getBaseUrl(), JsonReader::readObject);
+        LOGGER.debug("Sending a request to: " + conferenceBaseUrl);
+        JsonObject conferenceObject = readJson(conferenceBaseUrl, JsonReader::readObject);
         return conferenceObject.getString("eventCode");
     }
 
     private void importTalkTypeList() {
         this.talkTypeNameToTalkTypeMap = new HashMap<>();
         List<TalkType> talkTypeList = new ArrayList<>();
-        LOGGER.debug("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint());
-        JsonObject rootObject = readJson(endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint(), JsonReader::readObject);
+
+        String proposalTypeUrl = conferenceBaseUrl + "/proposalTypes";
+        LOGGER.debug("Sending a request to: " + proposalTypeUrl);
+        JsonObject rootObject = readJson(proposalTypeUrl, JsonReader::readObject);
+
         JsonArray talkTypeArray = rootObject.getJsonArray("proposalTypes");
         for (int i = 0; i < talkTypeArray.size(); i++) {
             JsonObject talkTypeObject = talkTypeArray.getJsonObject(i);
             String talkTypeName = talkTypeObject.getString("id");
             if (talkTypeNameToTalkTypeMap.keySet().contains(talkTypeName)) {
-                LOGGER.warn("Duplicate talk type in " + endpoints.getBaseUrl() + endpoints.getTalkTypesEndpoint()
+                LOGGER.warn("Duplicate talk type in " + proposalTypeUrl
                         + " at index " + i + ".");
                 continue;
             }
@@ -137,19 +136,14 @@ public class ConferenceSchedulingImporter {
             talkTypeNameToTalkTypeMap.put(talkTypeName, talkType);
         }
 
-        TalkType breakTalkType = new TalkType((long) talkTypeArray.size(), "break");
-        breakTalkType.setCompatibleRoomSet(new HashSet<>());
-        breakTalkType.setCompatibleTimeslotSet(new HashSet<>());
-        talkTypeList.add(breakTalkType);
-        talkTypeNameToTalkTypeMap.put("break", breakTalkType);
-
         solution.setTalkTypeList(talkTypeList);
     }
 
     private void importTrackIdSet() {
         this.trackIdSet = new HashSet<>();
-        LOGGER.debug("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getTracksEndpoint());
-        JsonObject rootObject = readJson(endpoints.getBaseUrl() + endpoints.getTracksEndpoint(), JsonReader::readObject);
+        String tracksUrl = conferenceBaseUrl + "/tracks";
+        LOGGER.debug("Sending a request to: " + tracksUrl);
+        JsonObject rootObject = readJson(tracksUrl, JsonReader::readObject);
 
         JsonArray tracksArray = rootObject.getJsonArray("tracks");
         for (int i = 0; i < tracksArray.size(); i++) {
@@ -161,8 +155,9 @@ public class ConferenceSchedulingImporter {
         this.roomIdToRoomMap = new HashMap<>();
         List<Room> roomList = new ArrayList<>();
 
-        LOGGER.debug("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getRoomsEndpoint());
-        JsonObject rootObject = readJson(endpoints.getBaseUrl() + endpoints.getRoomsEndpoint(), JsonReader::readObject);
+        String roomsUrl = conferenceBaseUrl + "/rooms/";
+        LOGGER.debug("Sending a request to: " + roomsUrl);
+        JsonObject rootObject = readJson(roomsUrl, JsonReader::readObject);
 
         JsonArray roomArray = rootObject.getJsonArray("rooms");
         for (int i = 0; i < roomArray.size(); i++) {
@@ -194,8 +189,9 @@ public class ConferenceSchedulingImporter {
         this.talkUrlSet = new HashSet<>();
         List<Speaker> speakerList = new ArrayList<>();
 
-        LOGGER.debug("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint());
-        JsonArray speakerArray = readJson(endpoints.getBaseUrl() + endpoints.getSpeakersEndpoint(), JsonReader::readArray);
+        String speakersUrl = conferenceBaseUrl + "/speakers";
+        LOGGER.debug("Sending a request to: " + speakersUrl);
+        JsonArray speakerArray = readJson(speakersUrl, JsonReader::readArray);
 
         for (int i = 0; i < speakerArray.size(); i++) {
             String speakerUrl = speakerArray.getJsonObject(i).getJsonArray("links").getJsonObject(0).getString("href");
@@ -454,8 +450,9 @@ public class ConferenceSchedulingImporter {
         Map<Pair<LocalDateTime, LocalDateTime>, Timeslot> startAndEndTimeToTimeslotMap = new HashMap<>();
 
         Long timeSlotId = 0L;
-        LOGGER.debug("Sending a request to: " + endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint());
-        JsonArray daysArray = readJson(endpoints.getBaseUrl() + endpoints.getSchedulesEndpoint(), JsonReader::readObject).getJsonArray("links");
+        String schedulesUrl = conferenceBaseUrl + "/schedules/";
+        LOGGER.debug("Sending a request to: " + schedulesUrl);
+        JsonArray daysArray = readJson(schedulesUrl, JsonReader::readObject).getJsonArray("links");
         for (int i = 0; i < daysArray.size(); i++) {
             JsonObject dayObject = daysArray.getJsonObject(i);
             String dayUrl = dayObject.getString("href");
