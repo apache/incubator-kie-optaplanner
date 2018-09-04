@@ -1355,7 +1355,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
-                    .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
+                    .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
             if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
@@ -1364,6 +1364,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 cell = nextCell(hardPenaltyStyle);
             } else if (unavailable) {
                 cell = nextCell(unavailableStyle);
+            } else if (score.getMediumScore() < 0) {
+                cell = nextCell(mediumPenaltyStyle);
             } else if (score.getSoftScore() < 0) {
                 cell = nextCell(softPenaltyStyle);
             } else {
