@@ -27,6 +27,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @PlanningEntity
 public class Employee extends AbstractPersistable {
 
+    private static final int MAX_TAXI_TIME = 240;
     private String name;
     private Airport homeAirport;
 
@@ -67,19 +68,26 @@ public class Employee extends AbstractPersistable {
         // TODO allow taking a taxi, but penalize it with a soft score instead
         return lastAssignment.getFlight().getArrivalAirport() == homeAirport;
     }
-
-    public long countInvalidConnections() {
-        long count = 0L;
+    
+    public ConnectionStatus getConnectionStatus() {
+        ConnectionStatus healthCheck = new ConnectionStatus();
         FlightAssignment previousAssignment = null;
+
         for (FlightAssignment assignment : flightAssignmentSet) {
-            if (previousAssignment != null
-                    && previousAssignment.getFlight().getArrivalAirport()
-                    != assignment.getFlight().getDepartureAirport()) {
-                count++;
+            if (previousAssignment != null) {
+                Airport previousAirport = previousAssignment.getFlight().getArrivalAirport();
+                Airport airport = assignment.getFlight().getDepartureAirport();
+                if (previousAirport != airport) {
+                    Long taxiTimeInMinutes = previousAirport.getTaxiTimeInMinutesTo(airport);
+                    if (taxiTimeInMinutes == null || taxiTimeInMinutes > MAX_TAXI_TIME)
+                        healthCheck.invalidConnection++;
+                    else
+                        healthCheck.taxiMinutes += taxiTimeInMinutes == null ? 0 : taxiTimeInMinutes;
+                }
             }
             previousAssignment = assignment;
         }
-        return count;
+        return healthCheck;
     }
 
     public long getFlightDurationTotalInMinutes() {
@@ -95,6 +103,15 @@ public class Employee extends AbstractPersistable {
         return name;
     }
 
+    // ************************************************************************
+    // Subclasses
+    // ************************************************************************
+
+    public class ConnectionStatus {
+        public long invalidConnection = 0;
+        public long taxiMinutes = 0;
+    }
+    
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************
