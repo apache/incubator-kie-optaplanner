@@ -49,7 +49,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -1347,16 +1347,16 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             if (talkList == null) {
                 talkList = Collections.emptyList();
             }
-            HardSoftScore score = talkList.stream()
+            HardMediumSoftScore score = talkList.stream()
                     .map(indictmentMap::get).filter(Objects::nonNull)
                     .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
                     // Filter out filtered constraints
                     .filter(constraintMatch -> filteredConstraintNameList == null
                             || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
-                    .map(constraintMatch -> (HardSoftScore) constraintMatch.getScore())
+                    .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
-                    .reduce(Score::add).orElse(HardSoftScore.ZERO);
+                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
             if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
                 cell = nextCell(pinnedStyle);
@@ -1394,7 +1394,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                                     .collect(toList());
                             Score sum = filteredConstraintMatchList.stream()
                                     .map(ConstraintMatch::getScore)
-                                    .reduce(Score::add).orElse(HardSoftScore.ZERO);
+                                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
                             String justificationTalkCodes = filteredConstraintMatchList.stream()
                                     .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
                                     .filter(justification -> justification instanceof Talk && justification != talk)
