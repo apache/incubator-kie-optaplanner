@@ -278,8 +278,10 @@ This is especially common during <<realTimePlanning,real-time planning>>.
 ====
 
 For synchronous termination, configure a `Termination` on a `Solver` or a `Phase` when it needs to stop.
-The built-in implementations of these should be sufficient, however a custom `Termination` can also be used.
-Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or `Phase`.
+The built-in implementations of these should be sufficient,
+but <<customTerminationSelectorOrAcceptor,custom terminations>> are supported too.
+Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms),
+which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or `Phase`.
 
 
 [[timeMillisSpentTermination]]
@@ -667,14 +669,14 @@ public class ToOriginalMachineSolutionInitializer extends AbstractCustomPhaseCom
 Any change on the planning entities in a `CustomPhaseCommand` must be notified to the ``ScoreDirector``.
 ====
 
-[WARNING]
+[NOTE]
 ====
 Do not change any of the problem facts in a `CustomPhaseCommand`.
 That will corrupt the `Solver` because any previous score or solution was for a different problem.
 To do that, read about <<repeatedPlanning,repeated planning>> and do it with a <<problemFactChange,ProblemFactChange>> instead.
 ====
 
-`CustomPhaseCommand` can be configured using the following:
+Configure the `CustomPhaseCommand` in the solver configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -713,41 +715,25 @@ The built-in solver phases do not have this issue.
 ====
 
 To configure values of a `CustomPhaseCommand` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters), add the `customProperties` element:
+(so the <<benchmarker,Benchmarker>> can tweak those parameters),
+add the `customProperties` element and use <<customPropertiesConfiguration,custom properties>>:
 
 [source,xml,options="nowrap"]
 ----
   <customPhase>
+    <customPhaseCommandClass>...MyCustomPhase</customPhaseCommandClass>
     <customProperties>
       <mySelectionSize>5</mySelectionSize>
     </customProperties>
   </customPhase>
 ----
 
-Then add a public setter for each custom property, which is called when a `Solver` is build.
-Most value types are supported (including boolean, integers, doubles and strings).
-
-[source,java,options="nowrap"]
-----
-public class MyCustomPhase extends AbstractCustomPhaseCommand<MySolution> {
-
-    private int mySelectionSize = 10;
-
-    @SuppressWarnings("unused")
-    public void setMySelectionSize(int mySelectionSize) {
-        this.mySelectionSize = mySelectionSize;
-    }
-
-    ...
-}
-----
-
 
 [[noChangeSolverPhase]]
 == No Change Solver Phase
 
-In rare cases, it can be useful to configure that no solver phase should be run.
-But by default, configuring no phase will trigger the use of the default phases.
+In rare cases, it's useful not to run any solver phases.
+But by default, configuring no phase will trigger running the default phases.
 To avoid those, configure a `NoChangePhase`:
 
 [source,xml,options="nowrap"]
@@ -784,6 +770,50 @@ A <<logging,logging level>> of `debug` or `trace` might cause congestion multith
 and slow down the <<scoreCalculationSpeed,score calculation speed>>.
 ====
 
+[[planningId]]
+=== @PlanningId
+
+For some functionality (such as multithreaded solving and real-time planning),
+Planner needs to map problem facts and planning entities to an ID.
+Planner uses that ID to _rebase_ a move from one thread's solution state to another's.
+
+To enable such functionality, specify the `@PlanningId` annotation on the identification field or getter method,
+for example on the database ID:
+
+[source,java,options="nowrap"]
+----
+public class CloudComputer {
+
+    @PlanningId
+    private Long id;
+
+    ...
+}
+----
+
+Or alternatively, on another type of ID:
+
+[source,java,options="nowrap"]
+----
+public class User {
+
+    @PlanningId
+    private String username;
+
+    ...
+}
+----
+
+An `@PlanningId` property must be:
+
+* Unique for that specific class
+** It does not need to be unique across different problem fact classes
+(unless in that rare case that those classes are mixed in the same value range or planning entity collection).
+* An instance of a type that implements `Object.hashCode()` and `Object.equals()`.
+** It's recommended to use the type `Integer`, `Long`, `String` or `UUID`.
+* Never `null` by the time `Solver.solve()` is called.
+
+
 [[customThreadFactory]]
 === Custom Thread Factory (WildFly, Android, GAE, ...)
 
@@ -805,7 +835,9 @@ and the <<partitionedSearch,Partition Search threads>> with it:
 [[multithreadedIncrementalSolving]]
 === Multithreaded Incremental Solving
 
-Enable multithreaded incremental solving by configuring a `moveThreadCount`:
+Enable multithreaded incremental solving by <<planningId,adding a @PlanningId annotation>>
+on every planning entity class and planning value class.
+Then configure a `moveThreadCount`:
 
 [source,xml,options="nowrap"]
 ----

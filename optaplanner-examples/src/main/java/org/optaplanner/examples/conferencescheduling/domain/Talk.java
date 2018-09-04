@@ -46,6 +46,10 @@ public class Talk extends AbstractPersistable {
     private Set<String> preferredRoomTagSet;
     private Set<String> prohibitedRoomTagSet;
     private Set<String> undesiredRoomTagSet;
+    private Set<String> mutuallyExclusiveTalksTagSet;
+    private Set<Talk> prerequisiteTalkSet;
+    private int favoriteCount;
+    private int crowdControlRisk;
 
     @PlanningPin
     private boolean pinnedByUser = false;
@@ -220,6 +224,16 @@ public class Talk extends AbstractPersistable {
             return false;
         }
         return room.getUnavailableTimeslotSet().contains(timeslot);
+    }
+
+    public int overlappingMutuallyExclusiveTalksTagCount(Talk other) {
+        return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag)).count();
+    }
+
+    public int missingPrerequisiteCount() {
+        return (int) prerequisiteTalkSet.stream()
+                .filter(prerequisite -> prerequisite.getTimeslot() == null || timeslot.endsBefore(prerequisite.getTimeslot()))
+                .count();
     }
 
     @Override
@@ -409,6 +423,38 @@ public class Talk extends AbstractPersistable {
         this.room = room;
     }
 
+    public Set<String> getMutuallyExclusiveTalksTagSet() {
+        return mutuallyExclusiveTalksTagSet;
+    }
+
+    public void setMutuallyExclusiveTalksTagSet(Set<String> mutuallyExclusiveTalksTagSet) {
+        this.mutuallyExclusiveTalksTagSet = mutuallyExclusiveTalksTagSet;
+    }
+
+    public Set<Talk> getPrerequisiteTalkSet() {
+        return prerequisiteTalkSet;
+    }
+
+    public void setPrerequisiteTalkSet(Set<Talk> prerequisiteTalkSet) {
+        this.prerequisiteTalkSet = prerequisiteTalkSet;
+    }
+
+    public int getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
+
+    public int getCrowdControlRisk() {
+        return crowdControlRisk;
+    }
+
+    public void setCrowdControlRisk(int crowdControlRisk) {
+        this.crowdControlRisk = crowdControlRisk;
+    }
+
     // ************************************************************************
     // With methods
     // ************************************************************************
@@ -493,6 +539,16 @@ public class Talk extends AbstractPersistable {
         return this;
     }
 
+    public Talk withMutuallyExclusiveTalksTagSet(Set<String> mutuallyExclusiveTalksTagSet) {
+        this.mutuallyExclusiveTalksTagSet = mutuallyExclusiveTalksTagSet;
+        return this;
+    }
+
+    public Talk withPrerequisiteTalksCodesSet(Set<Talk> prerequisiteTalksCodesSet) {
+        this.prerequisiteTalkSet = prerequisiteTalksCodesSet;
+        return this;
+    }
+
     public Talk withTimeslot(Timeslot timeSlot) {
         this.timeslot = timeSlot;
         return this;
@@ -502,5 +558,4 @@ public class Talk extends AbstractPersistable {
         this.room = room;
         return this;
     }
-
 }

@@ -58,12 +58,14 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
     protected static final Pattern VALID_NAME_PATTERN = AbstractXlsxSolutionFileIO.VALID_TAG_PATTERN;
     protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
 
-    protected static final DateTimeFormatter DAY_FORMATTER
+    public static final DateTimeFormatter DAY_FORMATTER
             = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
-    protected static final DateTimeFormatter MONTH_FORMATTER
+    public static final DateTimeFormatter MONTH_FORMATTER
             = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
     public static final DateTimeFormatter TIME_FORMATTER
             = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
+    public static final DateTimeFormatter DATE_TIME_FORMATTER
+            = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
 
     protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
     protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
@@ -244,6 +246,19 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected XSSFCell nextNumericCell() {
             XSSFCell cell = nextCell();
+            if (cell.getCellTypeEnum() == CellType.STRING) {
+                throw new IllegalStateException(currentPosition() + ": The cell with value ("
+                        + cell.getStringCellValue() + ") has a string type but should be numeric.");
+            }
+            return cell;
+        }
+
+        protected XSSFCell nextNumericCellOrBlank() {
+            XSSFCell cell = nextCell();
+            if (cell.getCellTypeEnum() == CellType.BLANK
+                    || (cell.getCellTypeEnum() == CellType.STRING && cell.getStringCellValue().isEmpty())) {
+                return null;
+            }
             if (cell.getCellTypeEnum() == CellType.STRING) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
                         + cell.getStringCellValue() + ") has a string type but should be numeric.");

@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.common.app;
 
+import org.optaplanner.examples.common.TestSystemProperties;
+
 import static org.junit.Assume.*;
 
 /**
@@ -24,7 +26,7 @@ import static org.junit.Assume.*;
 public abstract class AbstractTurtleTest extends LoggingTest {
 
     protected static void checkRunTurtleTests() {
-        assumeTrue("true".equals(System.getProperty("runTurtleTests")));
+        assumeTrue("true".equals(System.getProperty(TestSystemProperties.RUN_TURTLE_TESTS)));
     }
 
 }
