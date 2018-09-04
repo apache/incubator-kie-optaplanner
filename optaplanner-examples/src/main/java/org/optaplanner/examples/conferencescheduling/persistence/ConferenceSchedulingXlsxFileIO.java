@@ -1104,7 +1104,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
         private void writeThemeTracksView() {
             nextSheet("Theme tracks view", 1, 2, true);
-            String[] filteredConstraintNames = {THEME_TRACK_CONFLICT, AUDIENCE_TYPE_THEME_TRACK_CONFLICT};
+            String[] filteredConstraintNames = {THEME_TRACK_CONFLICT, AUDIENCE_TYPE_THEME_TRACK_CONFLICT, SAME_DAY_TALKS};
             nextRow();
             nextHeaderCell("");
             writeTimeslotDaysHeaders();

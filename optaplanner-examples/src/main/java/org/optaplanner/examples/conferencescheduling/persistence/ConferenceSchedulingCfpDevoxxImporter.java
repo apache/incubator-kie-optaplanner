@@ -440,7 +440,10 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 .withRequiredTimeslotTagSet(new HashSet<>())
                 .withSectorTagSet(new HashSet<>())
                 .withUndesiredRoomTagSet(new HashSet<>())
-                .withUndesiredTimeslotTagSet(new HashSet<>());
+                .withUndesiredTimeslotTagSet(new HashSet<>())
+                .withMutuallyExclusiveTalksTagSet(new HashSet<>())
+                .withPrerequisiteTalksCodesSet(new HashSet<>());
+
         return talk;
     }
 
