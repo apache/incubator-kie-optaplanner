@@ -457,6 +457,10 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             readHeaderCell("Start");
             readHeaderCell("End");
             readHeaderCell("Room");
+            readHeaderCell("Published Timeslot");
+            readHeaderCell("Published Start");
+            readHeaderCell("Published End");
+            readHeaderCell("Published Room");
             List<Talk> talkList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             Map<Pair<LocalDateTime, LocalDateTime>, Timeslot> timeslotMap = solution.getTimeslotList().stream().collect(
@@ -558,46 +562,65 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 talk.setFavoriteCount(getNextPositiveIntegerCell("talk with code (" + talk.getCode(), "a Favorite count"));
                 talk.setCrowdControlRisk(getNextPositiveIntegerCell("talk with code (" + talk.getCode(), "a crowd control risk"));
                 talk.setPinnedByUser(nextBooleanCell().getBooleanCellValue());
-                String dateString = nextStringCell().getStringCellValue();
-                String startTimeString = nextStringCell().getStringCellValue();
-                String endTimeString = nextStringCell().getStringCellValue();
-                if (!dateString.isEmpty() || !startTimeString.isEmpty() || !endTimeString.isEmpty()) {
-                    LocalDateTime startDateTime;
-                    LocalDateTime endDateTime;
-                    try {
-                        startDateTime = LocalDateTime.of(LocalDate.parse(dateString, DAY_FORMATTER),
-                                LocalTime.parse(startTimeString, TIME_FORMATTER));
-                        endDateTime = LocalDateTime.of(LocalDate.parse(dateString, DAY_FORMATTER),
-                                LocalTime.parse(endTimeString, TIME_FORMATTER));
-                    } catch (DateTimeParseException e) {
-                        throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                                + ") has a timeslot date (" + dateString
-                                + "), startTime (" + startTimeString + ") and endTime (" + endTimeString
-                                + ") that doesn't parse as a date or time.", e);
-                    }
-                    Timeslot timeslot = timeslotMap.get(Pair.of(startDateTime, endDateTime));
-                    if (timeslot == null) {
-                        throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                                + ") has a timeslot date (" + dateString
-                                + "), startTime (" + startTimeString + ") and endTime (" + endTimeString
-                                + ") that doesn't exist in the other sheet (Timeslots).");
-                    }
-                    talk.setTimeslot(timeslot);
-                }
-                String roomName = nextStringCell().getStringCellValue();
-                if (!roomName.isEmpty()) {
-                    Room room = roomMap.get(roomName);
-                    if (room == null) {
-                        throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
-                                + ") has a roomName (" + roomName
-                                + ") that doesn't exist in the other sheet (Rooms).");
-                    }
-                    talk.setRoom(room);
-                }
+                talk.setTimeslot(extractTimeslot(timeslotMap, talk));
+                talk.setRoom(extractRoom(roomMap, talk));
+                talk.setPublishedTimeslot(extractTimeslot(timeslotMap, talk));
+                talk.setPublishedRoom(extractRoom(roomMap, talk));
+
                 talkList.add(talk);
             }
+
             setPrerequisiteTalkSets(talkToPrerequisiteTalkSetMap);
             solution.setTalkList(talkList);
+        }
+
+        private Timeslot extractTimeslot(Map<Pair<LocalDateTime, LocalDateTime>, Timeslot> timeslotMap, Talk talk) {
+            Timeslot assignedTimeslot;
+            String dateString = nextStringCell().getStringCellValue();
+            String startTimeString = nextStringCell().getStringCellValue();
+            String endTimeString = nextStringCell().getStringCellValue();
+            if (!dateString.isEmpty() || !startTimeString.isEmpty() || !endTimeString.isEmpty()) {
+                LocalDateTime startDateTime;
+                LocalDateTime endDateTime;
+                try {
+                    startDateTime = LocalDateTime.of(LocalDate.parse(dateString, DAY_FORMATTER),
+                            LocalTime.parse(startTimeString, TIME_FORMATTER));
+                    endDateTime = LocalDateTime.of(LocalDate.parse(dateString, DAY_FORMATTER),
+                            LocalTime.parse(endTimeString, TIME_FORMATTER));
+                } catch (DateTimeParseException e) {
+                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
+                            + ") has a timeslot date (" + dateString
+                            + "), startTime (" + startTimeString + ") and endTime (" + endTimeString
+                            + ") that doesn't parse as a date or time.", e);
+                }
+
+                assignedTimeslot = timeslotMap.get(Pair.of(startDateTime, endDateTime));
+                if (assignedTimeslot == null) {
+                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
+                            + ") has a timeslot date (" + dateString
+                            + "), startTime (" + startTimeString + ") and endTime (" + endTimeString
+                            + ") that doesn't exist in the other sheet (Timeslots).");
+                }
+
+                return assignedTimeslot;
+            }
+
+            return null;
+        }
+
+        private Room extractRoom(Map<String, Room> roomMap, Talk talk) {
+            String roomName = nextStringCell().getStringCellValue();
+            if (!roomName.isEmpty()) {
+                Room room = roomMap.get(roomName);
+                if (room == null) {
+                    throw new IllegalStateException(currentPosition() + ": The talk with code (" + talk.getCode()
+                            + ") has a roomName (" + roomName
+                            + ") that doesn't exist in the other sheet (Rooms).");
+                }
+                return room;
+            }
+
+            return null;
         }
 
         private int getNextStrictlyPositiveIntegerCell(String classSpecifier, String columnName) {
@@ -920,6 +943,11 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             nextHeaderCell("Start");
             nextHeaderCell("End");
             nextHeaderCell("Room");
+            nextHeaderCell("Published Timeslot");
+            nextHeaderCell("Published Start");
+            nextHeaderCell("Published End");
+            nextHeaderCell("Published Room");
+
             for (Talk talk : solution.getTalkList()) {
                 nextRow();
                 nextCell().setCellValue(talk.getCode());
@@ -950,6 +978,10 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
                 nextCell().setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
                 nextCell().setCellValue(talk.getRoom() == null ? "" : talk.getRoom().getName());
+                nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getPublishedTimeslot().getDate()));
+                nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getPublishedTimeslot().getStartDateTime()));
+                nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getPublishedTimeslot().getEndDateTime()));
+                nextCell().setCellValue(talk.getPublishedRoom() == null ? "" : talk.getPublishedRoom().getName());
             }
             autoSizeColumnsWithHeader();
         }
