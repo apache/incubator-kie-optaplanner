@@ -702,6 +702,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             writeTalkList();
             writeInfeasibleView();
             writeRoomsView();
+            writeRoomsViewVertically();
             writeSpeakersView();
             writeThemeTracksView();
             writeSectorsView();
@@ -1040,7 +1041,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                         boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
                                 || Collections.disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
                         nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + ": " + talk.getTitle() + "\n  "
-                                + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")));
+                                + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), false);
                         mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
                         mergeStart = currentColumnNumber;
                     }
@@ -1296,6 +1297,54 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             autoSizeColumnsWithHeader();
         }
 
+        private void writeRoomsViewVertically() {
+            nextSheet("Rooms view 2", 2, 1, true);
+            nextRow();
+            nextHeaderCell("");
+            writeTimeslotDaysHeadersVertically();
+            currentColumnNumber = 0;
+            currentRowNumber = 0;
+            currentRow = currentSheet.getRow(currentRowNumber);
+            nextHeaderCell("Room");
+            writeTimeslotHoursHeadersVertically();
+            currentColumnNumber = 1;
+            for (Room room : solution.getRoomList()) {
+                currentColumnNumber++;
+                currentRowNumber = -1;
+                nextCellVertically().setCellValue(room.getName());
+                List<Talk> roomTalkList = solution.getTalkList().stream()
+                        .filter(talk -> talk.getRoom() == room)
+                        .collect(toList());
+
+                Timeslot mergePreviousTimeslot = null;
+                int mergeStart = -1;
+                for (Timeslot timeslot : solution.getTimeslotList()) {
+                    List<Talk> talkList = roomTalkList.stream()
+                            .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
+                    if (talkList.isEmpty() && mergePreviousTimeslot != null
+                            && timeslot.getStartDateTime().compareTo(mergePreviousTimeslot.getEndDateTime()) < 0) {
+                        nextCellVertically();
+                    } else {
+                        if (mergePreviousTimeslot != null && mergeStart < currentRowNumber) {
+                            currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                        }
+                        boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
+                                || Collections.disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
+                        nextTalkListCell(unavailable, talkList, talk -> talk.getTitle(), true);
+                        mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
+                        mergeStart = currentRowNumber;
+                    }
+                }
+                if (mergePreviousTimeslot != null && mergeStart < currentRowNumber) {
+                    currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                }
+            }
+            currentSheet.autoSizeColumn(1);
+            for (int i = 2; i < headerCellCount; i++) {
+                currentSheet.setColumnWidth(i, 20 * 256);
+            }
+        }
+
         private void writeTimeslotDaysHeaders() {
             LocalDate previousTimeslotDay = null;
             int mergeStart = -1;
@@ -1317,9 +1366,39 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             }
         }
 
+        private void writeTimeslotDaysHeadersVertically() {
+            LocalDate previousTimeslotDay = null;
+            int mergeStart = -1;
+            for (Timeslot timeslot : solution.getTimeslotList()) {
+                LocalDate timeslotDay = timeslot.getDate();
+                if (timeslotDay.equals(previousTimeslotDay)) {
+                    nextRow();
+                } else {
+                    if (previousTimeslotDay != null) {
+                        currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, 0, 0));
+                    }
+                    nextRow();
+                    nextCell().setCellValue(DAY_FORMATTER.format(timeslotDay));
+                    previousTimeslotDay = timeslotDay;
+                    mergeStart = currentRowNumber;
+                }
+            }
+            if (previousTimeslotDay != null) {
+                currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, 0, 0));
+            }
+        }
+
         private void writeTimeslotHoursHeaders() {
             for (Timeslot timeslot : solution.getTimeslotList()) {
                 nextHeaderCell(TIME_FORMATTER.format(timeslot.getStartDateTime())
+                        + "-" + TIME_FORMATTER.format(timeslot.getEndDateTime()));
+            }
+        }
+
+        private void writeTimeslotHoursHeadersVertically() {
+            for (Timeslot timeslot : solution.getTimeslotList()) {
+                currentRow.setHeightInPoints(3 * currentSheet.getDefaultRowHeightInPoints());
+                nextHeaderCellVertically(TIME_FORMATTER.format(timeslot.getStartDateTime())
                         + "-" + TIME_FORMATTER.format(timeslot.getEndDateTime()));
             }
         }
@@ -1331,19 +1410,19 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, String[] filteredConstraintNames) {
             nextTalkListCell(unavailable, talkList,
                     talk -> talk.getCode() + " @ " + (talk.getRoom() == null ? "No room" : talk.getRoom().getName()),
-                    filteredConstraintNames);
+                    filteredConstraintNames, false);
         }
 
         protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction, String[] filteredConstraintNames) {
-            nextTalkListCell(false, talkList, stringFunction, filteredConstraintNames);
+            nextTalkListCell(false, talkList, stringFunction, filteredConstraintNames, false);
         }
 
-        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction) {
-            nextTalkListCell(unavailable, talkList, stringFunction, null);
+        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction, boolean isVerticalView) {
+            nextTalkListCell(unavailable, talkList, stringFunction, null, isVerticalView);
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction,
-                                        String[] filteredConstraintNames) {
+                                        String[] filteredConstraintNames, boolean isVerticalView) {
             List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
                     : Arrays.asList(filteredConstraintNames);
             if (talkList == null) {
@@ -1361,17 +1440,17 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
             if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
-                cell = nextCell(pinnedStyle);
+                cell = isVerticalView ? nextCellVertically(pinnedStyle) : nextCell(pinnedStyle);
             } else if (!score.isFeasible()) {
-                cell = nextCell(hardPenaltyStyle);
+                cell = isVerticalView ? nextCellVertically(hardPenaltyStyle) : nextCell(hardPenaltyStyle);
             } else if (unavailable) {
-                cell = nextCell(unavailableStyle);
+                cell = isVerticalView ? nextCellVertically(unavailableStyle) : nextCell(unavailableStyle);
             } else if (score.getMediumScore() < 0) {
-                cell = nextCell(mediumPenaltyStyle);
+                cell = isVerticalView ? nextCellVertically(mediumPenaltyStyle) : nextCell(mediumPenaltyStyle);
             } else if (score.getSoftScore() < 0) {
-                cell = nextCell(softPenaltyStyle);
+                cell = isVerticalView ? nextCellVertically(softPenaltyStyle) : nextCell(softPenaltyStyle);
             } else {
-                cell = nextCell(wrappedStyle);
+                cell = isVerticalView ? nextCellVertically(wrappedStyle) : nextCell(wrappedStyle);
             }
             if (!talkList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
@@ -1382,7 +1461,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 Comment comment = currentDrawing.createCellComment(anchor);
                 StringBuilder commentString = new StringBuilder(talkList.size() * 200);
                 for (Talk talk : talkList) {
-                    commentString.append(talk.getCode()).append(": ").append(talk.getTitle()).append("\n    ")
+                    commentString.append(talk.getCode()).append("-").append(String.join(", ", talk.getThemeTrackTagSet()))
+                            .append(": ").append(talk.getTitle()).append("\n    ")
                             .append(talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")))
                             .append(talk.isPinnedByUser() ? "\nPINNED BY USER" : "");
                     Indictment indictment = indictmentMap.get(talk);
