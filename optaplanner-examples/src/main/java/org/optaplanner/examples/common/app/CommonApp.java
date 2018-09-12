@@ -32,6 +32,8 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
 import org.optaplanner.swing.impl.SwingUtils;
 
+
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -151,4 +153,9 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
         return null;
     }
 
+    public Solution_ getUnsolvedProblem(String problemFileName) {
+        String pathToResource = String.format("/org/optaplanner/examples/%s/data/%s", dataDirName, problemFileName);
+        String fileName = getClass().getResource(pathToResource).getFile();
+        return createSolutionFileIO().read(new File(fileName));
+    }
 }
