@@ -314,8 +314,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         Long talkId = 0L;
 
         String talksPath = getClass().getResource("devoxxBE").toString();
-        String[] confFiles = {"bof", "conf", "deepdive", "quickies", "tia"};
-
+        String[] confFiles = {"BOF", "Conference", "DeepDive", "HandsOnLabs", "Quickies", "ToolsInAction"};
         for (String confType : confFiles) {
             LOGGER.debug("Sending a request to: " + talksPath + "/" + confType + ".json");
             JsonArray talksArray = readJson(talksPath + "/" + confType + ".json", JsonReader::readObject)
@@ -332,14 +331,15 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 int audienceLevel = Integer.parseInt(talkObject.getString("audienceLevel").replaceAll("[^0-9]", ""));
                 List<Speaker> speakerList = extractSpeakerList(confType, talkObject, code, title);
                 Set<String> contentTagSet = extractContentTagSet(talkObject);
+                String state = talkObject.getJsonObject("state").getString("code");
 
-                if (!Arrays.asList(IGNORED_TALK_TYPES).contains(code)) {
+                if (!Arrays.asList(IGNORED_TALK_TYPES).contains(code) && !state.equals("declined")) {
                     Talk talk = createTalk(talkId++, code, title, talkTypeName, themeTrackSet, language, speakerList,
                             audienceLevel, contentTagSet);
                     talkCodeToTalkMap.put(code, talk);
                     talkList.add(talk);
+                    talkTalkTypeToTotalMap.merge(talkTypeName, 1, Integer::sum);
                 }
-                talkTalkTypeToTotalMap.merge(talkTypeName, 1, Integer::sum);
             }
         }
         solution.setTalkList(talkList);
@@ -443,6 +443,11 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 .withUndesiredTimeslotTagSet(new HashSet<>())
                 .withMutuallyExclusiveTalksTagSet(new HashSet<>())
                 .withPrerequisiteTalksCodesSet(new HashSet<>());
+
+        //TODO specific for DeovxxBE, remove it
+        if (talk.getContentTagSet().contains("Devoxx Sponsor")) {
+            talk.getMutuallyExclusiveTalksTagSet().add("Devoxx Sponsor");
+        }
 
         return talk;
     }
