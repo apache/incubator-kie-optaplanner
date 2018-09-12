@@ -32,8 +32,6 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
 import org.optaplanner.swing.impl.SwingUtils;
 
-
-
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
