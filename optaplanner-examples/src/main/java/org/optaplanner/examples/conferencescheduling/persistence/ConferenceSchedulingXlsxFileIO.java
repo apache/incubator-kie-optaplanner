@@ -702,7 +702,6 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             writeTalkList();
             writeInfeasibleView();
             writeRoomsView();
-            writeRoomsViewVertically();
             writeSpeakersView();
             writeThemeTracksView();
             writeSectorsView();
@@ -711,6 +710,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             writeContentsView();
             writeLanguagesView();
             writeScoreView();
+            writeDaysSheets();
             return workbook;
         }
 
@@ -1297,51 +1297,60 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             autoSizeColumnsWithHeader();
         }
 
-        private void writeRoomsViewVertically() {
-            nextSheet("Rooms view 2", 2, 1, true);
+        private void writeDaysSheets() {
+            List<LocalDate> dayList = solution.getTimeslotList().stream().map(Timeslot::getDate).distinct().collect(toList());
+
+            for (LocalDate day : dayList) {
+                List<Timeslot> dayTimeslotList = solution.getTimeslotList().stream().filter(timeslot -> timeslot.getDate().equals(day)).collect(toList());
+                List<Talk> dayTalkList = solution.getTalkList().stream().filter(talk -> talk.getTimeslot().getDate().equals(day)).collect(toList());
+                writeDaySheet(day, dayTimeslotList, dayTalkList);
+            }
+        }
+
+        private void writeDaySheet(LocalDate day, List<Timeslot> timeslotList, List<Talk> talkList) {
+            nextSheet(DAY_FORMATTER.format(day), 1, 1, true);
             nextRow();
-            nextHeaderCell("");
-            writeTimeslotDaysHeadersVertically();
-            currentColumnNumber = 0;
-            currentRowNumber = 0;
-            currentRow = currentSheet.getRow(currentRowNumber);
-            nextHeaderCell("Room");
-            writeTimeslotHoursHeadersVertically();
-            currentColumnNumber = 1;
-            for (Room room : solution.getRoomList()) {
+            nextHeaderCell(DAY_FORMATTER.format(day));
+            writeTimeslotHoursVertically(timeslotList);
+            List<Room> dayRoomList = talkList.stream().map(Talk::getRoom).distinct().collect(toList());
+            dayRoomList.sort(Comparator.comparing(Room::getName));
+            for (Room room : dayRoomList) {
                 currentColumnNumber++;
                 currentRowNumber = -1;
                 nextCellVertically().setCellValue(room.getName());
-                List<Talk> roomTalkList = solution.getTalkList().stream()
+                List<Talk> roomTalkList = talkList.stream()
                         .filter(talk -> talk.getRoom() == room)
                         .collect(toList());
+                writeRoomTalks(timeslotList, room, roomTalkList);
+            }
+            currentSheet.autoSizeColumn(0);
+            for (int i = 1; i < currentSheet.getRow(0).getPhysicalNumberOfCells(); i++) {
+                currentSheet.setColumnWidth(i, 15 * 256);
+            }
+        }
 
-                Timeslot mergePreviousTimeslot = null;
-                int mergeStart = -1;
-                for (Timeslot timeslot : solution.getTimeslotList()) {
-                    List<Talk> talkList = roomTalkList.stream()
-                            .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
-                    if (talkList.isEmpty() && mergePreviousTimeslot != null
-                            && timeslot.getStartDateTime().compareTo(mergePreviousTimeslot.getEndDateTime()) < 0) {
-                        nextCellVertically();
-                    } else {
-                        if (mergePreviousTimeslot != null && mergeStart < currentRowNumber) {
-                            currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
-                        }
-                        boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
-                                || Collections.disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
-                        nextTalkListCell(unavailable, talkList, talk -> talk.getTitle(), true);
-                        mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
-                        mergeStart = currentRowNumber;
+        private void writeRoomTalks(List<Timeslot> dayTimeslotList, Room room, List<Talk> roomTalkList) {
+            Timeslot mergePreviousTimeslot = null;
+            int mergeStart = -1;
+            for (Timeslot timeslot : dayTimeslotList) {
+                List<Talk> talkList = roomTalkList.stream()
+                        .filter(talk -> talk.getTimeslot() == timeslot).collect(toList());
+                if (talkList.isEmpty() && mergePreviousTimeslot != null
+                        && timeslot.getStartDateTime().compareTo(mergePreviousTimeslot.getEndDateTime()) < 0) {
+                    nextCellVertically();
+                } else {
+                    if (mergePreviousTimeslot != null && mergeStart < currentRowNumber) {
+                        currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
                     }
-                }
-                if (mergePreviousTimeslot != null && mergeStart < currentRowNumber) {
-                    currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
+                    boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
+                            || Collections.disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
+                    nextTalkListCell(unavailable, talkList, talk -> talk.getTitle(), true);
+                    mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
+                    mergeStart = currentRowNumber;
                 }
             }
-            currentSheet.autoSizeColumn(1);
-            for (int i = 2; i < headerCellCount; i++) {
-                currentSheet.setColumnWidth(i, 20 * 256);
+            if (mergePreviousTimeslot != null && mergeStart < currentRowNumber) {
+                currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, currentColumnNumber, currentColumnNumber));
             }
         }
 
@@ -1366,28 +1375,6 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             }
         }
 
-        private void writeTimeslotDaysHeadersVertically() {
-            LocalDate previousTimeslotDay = null;
-            int mergeStart = -1;
-            for (Timeslot timeslot : solution.getTimeslotList()) {
-                LocalDate timeslotDay = timeslot.getDate();
-                if (timeslotDay.equals(previousTimeslotDay)) {
-                    nextRow();
-                } else {
-                    if (previousTimeslotDay != null) {
-                        currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, 0, 0));
-                    }
-                    nextRow();
-                    nextCell().setCellValue(DAY_FORMATTER.format(timeslotDay));
-                    previousTimeslotDay = timeslotDay;
-                    mergeStart = currentRowNumber;
-                }
-            }
-            if (previousTimeslotDay != null) {
-                currentSheet.addMergedRegion(new CellRangeAddress(mergeStart, currentRowNumber, 0, 0));
-            }
-        }
-
         private void writeTimeslotHoursHeaders() {
             for (Timeslot timeslot : solution.getTimeslotList()) {
                 nextHeaderCell(TIME_FORMATTER.format(timeslot.getStartDateTime())
@@ -1395,11 +1382,12 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             }
         }
 
-        private void writeTimeslotHoursHeadersVertically() {
-            for (Timeslot timeslot : solution.getTimeslotList()) {
-                currentRow.setHeightInPoints(3 * currentSheet.getDefaultRowHeightInPoints());
-                nextHeaderCellVertically(TIME_FORMATTER.format(timeslot.getStartDateTime())
+        private void writeTimeslotHoursVertically(List<Timeslot> dayTimeslotList) {
+            for (Timeslot timeslot : dayTimeslotList) {
+                nextRow();
+                nextCell().setCellValue(TIME_FORMATTER.format(timeslot.getStartDateTime())
                         + "-" + TIME_FORMATTER.format(timeslot.getEndDateTime()));
+                currentRow.setHeightInPoints(3 * currentSheet.getDefaultRowHeightInPoints());
             }
         }
 
