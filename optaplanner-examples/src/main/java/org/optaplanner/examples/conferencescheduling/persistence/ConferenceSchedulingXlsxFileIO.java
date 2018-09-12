@@ -47,6 +47,8 @@ import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
@@ -62,6 +64,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static java.util.stream.Collectors.*;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization.*;
@@ -688,6 +691,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
     private static class ConferenceSchedulingXlsxWriter extends AbstractXlsxWriter<ConferenceSolution> {
 
+        private Map<String, XSSFCellStyle> themeTrackToStyleMap;
+
         public ConferenceSchedulingXlsxWriter(ConferenceSolution solution) {
             super(solution, ConferenceSchedulingApp.SOLVER_CONFIG);
         }
@@ -695,6 +700,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         @Override
         public Workbook write() {
             writeSetup();
+            initializeThemeTrackToStyleMap();
             writeConfiguration();
             writeTimeslotList();
             writeRoomList();
@@ -712,6 +718,18 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             writeScoreView();
             writeDaysSheets();
             return workbook;
+        }
+
+        private void initializeThemeTrackToStyleMap() {
+            this.themeTrackToStyleMap = new HashMap<>();
+            TangoColorFactory tangoColorFactory = new TangoColorFactory();
+            List<String> themeTrackList = solution.getTalkList().stream()
+                    .flatMap(talk -> talk.getThemeTrackTagSet().stream())
+                    .distinct().collect(toList());
+            for (String themeTrack : themeTrackList) {
+                XSSFCellStyle style = createStyle(new XSSFColor(tangoColorFactory.pickColor(themeTrack)));
+                themeTrackToStyleMap.put(themeTrack, style);
+            }
         }
 
         private void writeConfiguration() {
@@ -1410,7 +1428,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction,
-                                        String[] filteredConstraintNames, boolean isVerticalView) {
+                                        String[] filteredConstraintNames, boolean isPrintedView) {
             List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
                     : Arrays.asList(filteredConstraintNames);
             if (talkList == null) {
@@ -1427,18 +1445,21 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
-            if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
-                cell = isVerticalView ? nextCellVertically(pinnedStyle) : nextCell(pinnedStyle);
+            if (isPrintedView) {
+                cell = nextCellVertically(talkList.isEmpty() || talkList.get(0).getThemeTrackTagSet().isEmpty() ? wrappedStyle :
+                        themeTrackToStyleMap.get(talkList.get(0).getThemeTrackTagSet().iterator().next()));
+            } else if (talkList.stream().anyMatch(Talk::isPinnedByUser)) {
+                cell = nextCell(pinnedStyle);
             } else if (!score.isFeasible()) {
-                cell = isVerticalView ? nextCellVertically(hardPenaltyStyle) : nextCell(hardPenaltyStyle);
+                cell = nextCell(hardPenaltyStyle);
             } else if (unavailable) {
-                cell = isVerticalView ? nextCellVertically(unavailableStyle) : nextCell(unavailableStyle);
+                cell = nextCell(unavailableStyle);
             } else if (score.getMediumScore() < 0) {
-                cell = isVerticalView ? nextCellVertically(mediumPenaltyStyle) : nextCell(mediumPenaltyStyle);
+                cell = nextCell(mediumPenaltyStyle);
             } else if (score.getSoftScore() < 0) {
-                cell = isVerticalView ? nextCellVertically(softPenaltyStyle) : nextCell(softPenaltyStyle);
+                cell = nextCell(softPenaltyStyle);
             } else {
-                cell = isVerticalView ? nextCellVertically(wrappedStyle) : nextCell(wrappedStyle);
+                cell = nextCell(wrappedStyle);
             }
             if (!talkList.isEmpty()) {
                 ClientAnchor anchor = creationHelper.createClientAnchor();
