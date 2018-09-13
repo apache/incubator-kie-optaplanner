@@ -1320,7 +1320,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
             for (LocalDate day : dayList) {
                 List<Timeslot> dayTimeslotList = solution.getTimeslotList().stream().filter(timeslot -> timeslot.getDate().equals(day)).collect(toList());
-                List<Talk> dayTalkList = solution.getTalkList().stream().filter(talk -> talk.getTimeslot().getDate().equals(day)).collect(toList());
+                List<Talk> dayTalkList = solution.getTalkList().stream().filter(talk ->
+                        talk.getTimeslot() != null && talk.getTimeslot().getDate().equals(day)).collect(toList());
                 writeDaySheet(day, dayTimeslotList, dayTalkList);
             }
         }
