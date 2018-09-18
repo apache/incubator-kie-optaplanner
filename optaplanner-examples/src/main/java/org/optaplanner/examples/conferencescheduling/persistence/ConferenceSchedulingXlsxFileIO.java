@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -1060,7 +1061,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                         boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
                                 || Collections.disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
                         nextTalkListCell(unavailable, talkList, talk -> talk.getCode() + ": " + talk.getTitle() + "\n  "
-                                + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), false);
+                                + talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")));
                         mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
                         mergeStart = currentColumnNumber;
                     }
@@ -1254,7 +1255,10 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     List<Talk> talkList = timeslotToTalkListMap.get(timeslot);
                     nextTalkListCell(talkList,
                             talk -> talk.getCode() + " (level " + talk.getAudienceLevel() + ")",
-                            filteredConstraintNames);
+                            filteredConstraintNames,
+                            justificationList -> justificationList.stream().allMatch(justification -> !(justification instanceof Talk)
+                                    || ((Talk) justification).getContentTagSet().contains(entry.getKey())
+                            ));
                 }
             }
             autoSizeColumnsWithHeader();
@@ -1419,19 +1423,24 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, String[] filteredConstraintNames) {
             nextTalkListCell(unavailable, talkList,
                     talk -> talk.getCode() + " @ " + (talk.getRoom() == null ? "No room" : talk.getRoom().getName()),
-                    filteredConstraintNames, false);
+                    filteredConstraintNames, false, null);
         }
 
-        protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction, String[] filteredConstraintNames) {
-            nextTalkListCell(false, talkList, stringFunction, filteredConstraintNames, false);
+        protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction,
+                                        String[] filteredConstraintNames, Predicate<List<Object>> isValidJustificationList) {
+            nextTalkListCell(false, talkList, stringFunction, filteredConstraintNames, false, isValidJustificationList);
+        }
+
+        protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction) {
+            nextTalkListCell(unavailable, talkList, stringFunction, null, false, null);
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction, boolean isVerticalView) {
-            nextTalkListCell(unavailable, talkList, stringFunction, null, isVerticalView);
+            nextTalkListCell(unavailable, talkList, stringFunction, null, isVerticalView, null);
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction,
-                                        String[] filteredConstraintNames, boolean isPrintedView) {
+                                        String[] filteredConstraintNames, boolean isPrintedView, Predicate<List<Object>> isValidJustificationList) {
             List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
                     : Arrays.asList(filteredConstraintNames);
             if (talkList == null) {
@@ -1443,6 +1452,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     // Filter out filtered constraints
                     .filter(constraintMatch -> filteredConstraintNameList == null
                             || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
+                    .filter(constraintMatch -> isValidJustificationList == null
+                            || isValidJustificationList.test(constraintMatch.getJustificationList()))
                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0 && indictmentScore.getSoftScore() >= 0))
@@ -1481,12 +1492,16 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     if (indictment != null) {
                         commentString.append("\n").append(indictment.getScore().toShortString())
                                 .append(" total");
-                        Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
+                        Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet().stream()
+                                .filter(constraintMatch -> filteredConstraintNameList == null
+                                        || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
+                                .collect(toSet());
                         List<String> constraintNameList = constraintMatchSet.stream()
                                 .map(ConstraintMatch::getConstraintName).distinct().collect(toList());
                         for (String constraintName : constraintNameList) {
                             List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
-                                    .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
+                                    .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName)
+                                            && (isValidJustificationList == null || isValidJustificationList.test(constraintMatch.getJustificationList())))
                                     .collect(toList());
                             Score sum = filteredConstraintMatchList.stream()
                                     .map(ConstraintMatch::getScore)
