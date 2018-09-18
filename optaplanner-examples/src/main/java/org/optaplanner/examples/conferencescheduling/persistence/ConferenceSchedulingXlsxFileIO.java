@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
@@ -1363,7 +1364,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     }
                     boolean unavailable = room.getUnavailableTimeslotSet().contains(timeslot)
                             || Collections.disjoint(room.getTalkTypeSet(), timeslot.getTalkTypeSet());
-                    nextTalkListCell(unavailable, talkList, talk -> talk.getTitle(), true);
+                    nextTalkListCell(unavailable, talkList, talk -> StringUtils.abbreviate(talk.getTitle(), 50) + "\n"
+                            + StringUtils.abbreviate(talk.getSpeakerList().stream().map(Speaker::getName).collect(joining(", ")), 30), true);
                     mergePreviousTimeslot = talkList.isEmpty() ? null : timeslot;
                     mergeStart = currentRowNumber;
                 }

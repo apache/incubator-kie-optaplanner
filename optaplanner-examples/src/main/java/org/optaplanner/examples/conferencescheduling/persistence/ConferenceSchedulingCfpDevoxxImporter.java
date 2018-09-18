@@ -314,7 +314,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         Long talkId = 0L;
 
         String talksPath = getClass().getResource("devoxxBE").toString();
-        String[] confFiles = {"BOF", "Conference", "DeepDive", "HandsOnLabs", "Quickies", "ToolsInAction"};
+        String[] confFiles = {"BOF", "Conf14Sept2018", "DeepDive", "HandsOnLabs", "Quickies", "ToolsInAction"};
         for (String confType : confFiles) {
             LOGGER.debug("Sending a request to: " + talksPath + "/" + confType + ".json");
             JsonArray talksArray = readJson(talksPath + "/" + confType + ".json", JsonReader::readObject)
@@ -324,7 +324,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 JsonObject talkObject = talksArray.getJsonObject(i);
 
                 String code = talkObject.getString("id");
-                String title = talkObject.getString("title");
+                String title = talkObject.getString("title").substring(5);
                 String talkTypeName = talkObject.getJsonObject("talkType").getString("id");
                 Set<String> themeTrackSet = extractThemeTrackSet(talkObject, code, title);
                 String language = talkObject.getString("lang");
