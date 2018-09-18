@@ -179,7 +179,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
 
             readIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, parametrization::setTalkMutuallyExclusiveTalksTags,
-                    "Hard penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
+                    "Medium penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
 
             readIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::setTalkTypeOfTimeslot,
                     "Hard penalty per talk in a timeslot with another talk type");
@@ -787,7 +787,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
 
             nextRow();
             writeIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, parametrization::getTalkMutuallyExclusiveTalksTags,
-                    "Hard penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
+                    "Medium penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
 
             nextRow();
             writeIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::getTalkTypeOfTimeslot,
