@@ -53,8 +53,7 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
-import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.DAY_FORMATTER;
-import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.TIME_FORMATTER;
+import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.*;
 
 @RunWith(Parameterized.class)
 public class ConferenceSchedulingScoreRulesXlsxTest {
