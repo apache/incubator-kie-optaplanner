@@ -156,9 +156,14 @@ end
 rule "Talk prerequisite talks"
     when
         ConferenceParametrization($weight : talkPrerequisiteTalks != 0)
-        $talk : Talk(timeslot != null, missingPrerequisiteCount() > 0)
+        $talk : Talk(timeslot != null, getPrerequisiteTalkSet().size() > 0)
+        $count : Number(this > 0) from accumulate(
+            $reqTalk : Talk($talk.getPrerequisiteTalkSet().contains(this), timeslot == null ||
+                            !timeslot.endsBefore($talk.getTimeslot())),
+            count($reqTalk)
+        )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $weight * $talk.missingPrerequisiteCount());
+        scoreHolder.addHardConstraintMatch(kcontext, - $weight * $count.intValue());
 end
 
 // ############################################################################
