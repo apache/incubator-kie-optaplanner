@@ -407,7 +407,7 @@ end
 
 rule "Room stability"
     when
-        ConferenceParametrization($weight : talkMutuallyExclusiveTalksTags != 0)
+        ConferenceParametrization($weight : roomStability != 0)
         $talk : Talk(timeslot != null, $timeslot : timeslot, $room : room, $id : id)
         Talk(timeslot != null, overlappingThemeTrackCount($talk) > 0, $id < id, timeslot.isOnSameDayAs($timeslot), $room != room)
     then
