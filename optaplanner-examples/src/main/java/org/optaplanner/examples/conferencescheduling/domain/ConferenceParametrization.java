@@ -58,6 +58,7 @@ public class ConferenceParametrization extends AbstractPersistable {
     public static final String CROWD_CONTROL = "Crowd control";
     public static final String PUBLISHED_TIMESLOT = "Published timeslot";
     public static final String PUBLISHED_ROOM = "Published room";
+    public static final String ROOM_STABILITY = "Room stability";
 
     private int talkTypeOfTimeslot = 10000;
     private int talkTypeOfRoom = 10000;
@@ -98,6 +99,7 @@ public class ConferenceParametrization extends AbstractPersistable {
     private int popularTalks = 10;
     private int crowdControl = 10;
     private int publishedRoom = 10;
+    private int roomStability = 10;
 
     public ConferenceParametrization() {
     }
@@ -404,5 +406,13 @@ public class ConferenceParametrization extends AbstractPersistable {
 
     public void setPublishedRoom(int publishedRoom) {
         this.publishedRoom = publishedRoom;
+    }
+
+    public int getRoomStability() {
+        return roomStability;
+    }
+
+    public void setRoomStability(int roomStability) {
+        this.roomStability = roomStability;
     }
 }

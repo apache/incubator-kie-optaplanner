@@ -179,6 +179,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
             readIntConstraintLine(PUBLISHED_ROOM, parametrization::setPublishedRoom,
                     "Soft penalty per talk scheduled at a different room than its published one");
+            readIntConstraintLine(ROOM_STABILITY, parametrization::setRoomStability,
+                    "Soft penalty per two talks with the same track scheduled in the same day but at different rooms");
 
             readIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, parametrization::setTalkMutuallyExclusiveTalksTags,
                     "Medium penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
@@ -813,6 +815,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
             writeIntConstraintLine(PUBLISHED_ROOM, parametrization::getPublishedRoom,
                     "Soft penalty per talk scheduled at a different room than its published one");
+            writeIntConstraintLine(ROOM_STABILITY, parametrization::getRoomStability,
+                    "Soft penalty per two talks with the same track scheduled in the same day but at different rooms");
 
             nextRow();
             writeIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, parametrization::getTalkMutuallyExclusiveTalksTags,
