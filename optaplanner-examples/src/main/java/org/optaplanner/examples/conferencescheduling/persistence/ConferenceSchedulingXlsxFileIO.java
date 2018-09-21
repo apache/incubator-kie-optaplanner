@@ -177,9 +177,13 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk");
             readIntConstraintLine(CROWD_CONTROL, parametrization::setCrowdControl,
                     "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
+            readIntConstraintLine(PUBLISHED_ROOM, parametrization::setPublishedRoom,
+                    "Soft penalty per talk scheduled at a different room than its published one");
 
             readIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, parametrization::setTalkMutuallyExclusiveTalksTags,
                     "Medium penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
+            readIntConstraintLine(PUBLISHED_TIMESLOT, parametrization::setPublishedTimeslot,
+                    "Medium penalty per talk scheduled at a different timeslot than its published one");
 
             readIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::setTalkTypeOfTimeslot,
                     "Hard penalty per talk in a timeslot with another talk type");
@@ -807,10 +811,14 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     "Soft penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk");
             writeIntConstraintLine(CROWD_CONTROL, parametrization::getCrowdControl,
                     "Soft penalty per talks with crowd control risk greater than zero that are not in pairs");
+            writeIntConstraintLine(PUBLISHED_ROOM, parametrization::getPublishedRoom,
+                    "Soft penalty per talk scheduled at a different room than its published one");
 
             nextRow();
             writeIntConstraintLine(TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS, parametrization::getTalkMutuallyExclusiveTalksTags,
                     "Medium penalty per two talks that share the same Mutually exclusive talks tag that are scheduled in overlapping timeslots");
+            writeIntConstraintLine(PUBLISHED_TIMESLOT, parametrization::getPublishedTimeslot,
+                    "Medium penalty per talk scheduled at a different timeslot than its published one");
 
             nextRow();
             writeIntConstraintLine(TALK_TYPE_OF_TIMESLOT, parametrization::getTalkTypeOfTimeslot,

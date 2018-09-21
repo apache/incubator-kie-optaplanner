@@ -181,6 +181,14 @@ rule "Talk mutually-exclusive-talks tags"
         }
 end
 
+rule "Published timeslot"
+    when
+        ConferenceParametrization($weight : talkMutuallyExclusiveTalksTags != 0)
+        Talk(publishedTimeslot != null, timeslot != publishedTimeslot)
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, - $weight);
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
@@ -387,4 +395,12 @@ rule "Crowd control"
         )
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
+end
+
+rule "Published room"
+    when
+        ConferenceParametrization($weight : talkMutuallyExclusiveTalksTags != 0)
+        Talk(publishedRoom != null, room != publishedRoom)
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, - $weight);
 end
