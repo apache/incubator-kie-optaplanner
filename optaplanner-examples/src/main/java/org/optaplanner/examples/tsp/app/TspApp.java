@@ -63,12 +63,14 @@ public class TspApp extends CommonApp<TspSolution> {
     public Solver<TspSolution> createSolver(long terminationSeconds) {
         SolverFactory<TspSolution> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
         solverFactory.getSolverConfig().getTerminationConfig().setSecondsSpentLimit(terminationSeconds);
+        solverFactory.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(0L);
         return solverFactory.buildSolver();
     }
 
     public Solver<TspSolution> createSolver(long terminationSeconds, String solverFactoryConfigPath) {
         SolverFactory<TspSolution> solverFactory = SolverFactory.createFromXmlResource(solverFactoryConfigPath);
         solverFactory.getSolverConfig().getTerminationConfig().setSecondsSpentLimit(terminationSeconds);
+        solverFactory.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(0L);
         return solverFactory.buildSolver();
     }
 
