@@ -153,10 +153,12 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
     public Solution_ loadUnsolvedProblemFromResource(String problemFileName) {
         String pathToResource = String.format("/org/optaplanner/examples/%s/data/%s", dataDirName, problemFileName);
-        String fileName = getClass().getResource(pathToResource).getFile();
+        String fileName = CommonApp.class.getResource(pathToResource).getFile();
         return createSolutionFileIO().read(new File(fileName));
     }
+
     public Solution_ loadUnsolvedProblemFromDataFolder(String problemFileName) {
-        return createSolutionFileIO().read(new File(determineDataDir(dataDirName),"unsolved"+ File.separator + problemFileName));
+        return createSolutionFileIO().read(new File(determineDataDir(dataDirName),
+                                                    "unsolved" + File.separator + problemFileName));
     }
 }
