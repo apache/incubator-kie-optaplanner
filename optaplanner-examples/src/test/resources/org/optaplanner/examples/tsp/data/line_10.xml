@@ -1,100 +1,100 @@
 <TspSolution id="1">
-    <id>0</id>
-    <name>Line 10</name>
-    <distanceType>AIR_DISTANCE</distanceType>
-    <distanceUnitOfMeasurement>distance</distanceUnitOfMeasurement>
-    <locationList id="2">
-        <TspAirLocation id="3">
-            <id>1</id>
-            <latitude>0.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="4">
-            <id>2</id>
-            <latitude>1.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="5">
-            <id>3</id>
-            <latitude>2.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="6">
-            <id>4</id>
-            <latitude>3.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="7">
-            <id>5</id>
-            <latitude>4.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="8">
-            <id>6</id>
-            <latitude>5.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="9">
-            <id>7</id>
-            <latitude>6.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="10">
-            <id>8</id>
-            <latitude>7.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="11">
-            <id>9</id>
-            <latitude>8.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-        <TspAirLocation id="12">
-            <id>10</id>
-            <latitude>9.0</latitude>
-            <longitude>0.0</longitude>
-        </TspAirLocation>
-    </locationList>
-    <domicile id="13">
-        <id>1</id>
-        <location class="TspAirLocation" reference="3"/>
-    </domicile>
-    <visitList id="14">
-        <Visit id="15">
-            <id>2</id>
-            <location class="TspAirLocation" reference="4"/>
-        </Visit>
-        <Visit id="16">
-            <id>3</id>
-            <location class="TspAirLocation" reference="5"/>
-        </Visit>
-        <Visit id="17">
-            <id>4</id>
-            <location class="TspAirLocation" reference="6"/>
-        </Visit>
-        <Visit id="18">
-            <id>5</id>
-            <location class="TspAirLocation" reference="7"/>
-        </Visit>
-        <Visit id="19">
-            <id>6</id>
-            <location class="TspAirLocation" reference="8"/>
-        </Visit>
-        <Visit id="20">
-            <id>7</id>
-            <location class="TspAirLocation" reference="9"/>
-        </Visit>
-        <Visit id="21">
-            <id>8</id>
-            <location class="TspAirLocation" reference="10"/>
-        </Visit>
-        <Visit id="22">
-            <id>9</id>
-            <location class="TspAirLocation" reference="11"/>
-        </Visit>
-        <Visit id="23">
-            <id>10</id>
-            <location class="TspAirLocation" reference="12"/>
-        </Visit>
-    </visitList>
+  <id>0</id>
+  <name>Line 10</name>
+  <distanceType>AIR_DISTANCE</distanceType>
+  <distanceUnitOfMeasurement>distance</distanceUnitOfMeasurement>
+  <locationList id="2">
+    <TspAirLocation id="3">
+      <id>1</id>
+      <latitude>0.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="4">
+      <id>2</id>
+      <latitude>1.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="5">
+      <id>3</id>
+      <latitude>2.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="6">
+      <id>4</id>
+      <latitude>3.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="7">
+      <id>5</id>
+      <latitude>4.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="8">
+      <id>6</id>
+      <latitude>5.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="9">
+      <id>7</id>
+      <latitude>6.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="10">
+      <id>8</id>
+      <latitude>7.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="11">
+      <id>9</id>
+      <latitude>8.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="12">
+      <id>10</id>
+      <latitude>9.0</latitude>
+      <longitude>0.0</longitude>
+    </TspAirLocation>
+  </locationList>
+  <domicile id="13">
+    <id>1</id>
+    <location class="TspAirLocation" reference="3"/>
+  </domicile>
+  <visitList id="14">
+    <Visit id="15">
+      <id>2</id>
+      <location class="TspAirLocation" reference="4"/>
+    </Visit>
+    <Visit id="16">
+      <id>3</id>
+      <location class="TspAirLocation" reference="5"/>
+    </Visit>
+    <Visit id="17">
+      <id>4</id>
+      <location class="TspAirLocation" reference="6"/>
+    </Visit>
+    <Visit id="18">
+      <id>5</id>
+      <location class="TspAirLocation" reference="7"/>
+    </Visit>
+    <Visit id="19">
+      <id>6</id>
+      <location class="TspAirLocation" reference="8"/>
+    </Visit>
+    <Visit id="20">
+      <id>7</id>
+      <location class="TspAirLocation" reference="9"/>
+    </Visit>
+    <Visit id="21">
+      <id>8</id>
+      <location class="TspAirLocation" reference="10"/>
+    </Visit>
+    <Visit id="22">
+      <id>9</id>
+      <location class="TspAirLocation" reference="11"/>
+    </Visit>
+    <Visit id="23">
+      <id>10</id>
+      <location class="TspAirLocation" reference="12"/>
+    </Visit>
+  </visitList>
 </TspSolution>
