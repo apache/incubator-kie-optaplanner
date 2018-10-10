@@ -149,7 +149,12 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Examples only dependencies. -->
     <!--
       WARNING: every examples only dependency must be properly dealt with in
@@ -175,10 +180,5 @@
         </exclusion>
       </exclusions>
     </dependency>
-      <dependency>
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-core</artifactId>
-          <scope>test</scope>
-      </dependency>
   </dependencies>
 </project>
