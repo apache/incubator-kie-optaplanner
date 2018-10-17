@@ -323,6 +323,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                                     + ") of the other sheet (Employees).");
                         }
                         flightAssignment.setEmployee(employee);
+                        employee.getFlightAssignmentSet().add(flightAssignment);
                     }
                     flightAssignmentList.add(flightAssignment);
                 }

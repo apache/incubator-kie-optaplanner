@@ -19,9 +19,9 @@
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
-      <!-- TODO Use a sorted pillar to heavily improve feasibility and solution quality https://issues.jboss.org/browse/PLANNER-1217 -->
-      <!--<pillarChangeMoveSelector/>-->
-      <!--<pillarSwapMoveSelector/>-->
+      <moveIteratorFactory>
+        <moveIteratorFactoryClass>org.optaplanner.examples.flightcrewscheduling.solver.move.FlightCrewSequentialPillarSwapMoveIteratorFactory</moveIteratorFactoryClass>
+      </moveIteratorFactory>
     </unionMoveSelector>
   </localSearch>
 </solver>
