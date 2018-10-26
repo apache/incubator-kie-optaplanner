@@ -16,9 +16,7 @@
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 
-  <termination>
-    <minutesSpentLimit>2</minutesSpentLimit>
-  </termination>
+
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>

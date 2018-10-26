@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.tsp.app;
 
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -58,20 +56,6 @@ public class TspApp extends CommonApp<TspSolution> {
     @Override
     public SolutionFileIO<TspSolution> createSolutionFileIO() {
         return new XStreamSolutionFileIO<>(TspSolution.class);
-    }
-
-    public Solver<TspSolution> createSolver(long terminationSeconds) {
-        SolverFactory<TspSolution> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
-        solverFactory.getSolverConfig().getTerminationConfig().setSecondsSpentLimit(terminationSeconds);
-        solverFactory.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(0L);
-        return solverFactory.buildSolver();
-    }
-
-    public Solver<TspSolution> createSolver(long terminationSeconds, String solverFactoryConfigPath) {
-        SolverFactory<TspSolution> solverFactory = SolverFactory.createFromXmlResource(solverFactoryConfigPath);
-        solverFactory.getSolverConfig().getTerminationConfig().setSecondsSpentLimit(terminationSeconds);
-        solverFactory.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(0L);
-        return solverFactory.buildSolver();
     }
 
     @Override
