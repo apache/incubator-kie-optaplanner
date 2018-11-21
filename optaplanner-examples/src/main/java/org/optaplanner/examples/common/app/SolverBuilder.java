@@ -29,7 +29,7 @@ public final class SolverBuilder {
     private SolverBuilder() {
     }
 
-    public static <Solution_> Solver<Solution_> createSolver(long terminationSeconds, String solverConfigPath) {
+    public static <Solution_> Solver<Solution_> createSolver(int terminationStepsCount, String solverConfigPath) {
         SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfigPath);
         List<PhaseConfig> phaseConfigList = solverFactory.getSolverConfig().getPhaseConfigList();
 
@@ -39,11 +39,10 @@ public final class SolverBuilder {
                     phaseConfig.setTerminationConfig(new TerminationConfig());
                 }
 
-                phaseConfig.getTerminationConfig().setStepCountLimit(1);
+                phaseConfig.getTerminationConfig().setStepCountLimit(terminationStepsCount);
                 break;
             }
         }
-
         return solverFactory.buildSolver();
     }
 }
