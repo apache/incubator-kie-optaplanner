@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.bendable;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -39,13 +40,13 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, 0, -1);
-        assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.of(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, 0, -8);
-        assertEquals(BendableScore.valueOf(new int[]{-9}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.of(new int[]{-9}, new int[]{0, 0}), scoreHolder.extractScore(0));
         callOnDelete(hard2Undo);
-        assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.of(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addSoftConstraintMatch(medium1, 0, -10);
@@ -79,13 +80,52 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium2Undo, 0, -9999);
         callOnDelete(medium2Undo);
 
-        assertEquals(BendableScore.valueOf(new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(0));
-        assertEquals(BendableScore.valueOfUninitialized(-7, new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(-7));
+        assertEquals(BendableScore.of(new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.ofUninitialized(-7, new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(BendableScore.valueOf(new int[]{0}, new int[]{0, -300}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(BendableScore.of(new int[]{-1}, new int[]{0, 0}), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(BendableScore.of(new int[]{0}, new int[]{0, -300}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        BendableScoreHolder scoreHolder = new BendableScoreHolder(constraintMatchEnabled, 1, 2);
+        Rule hard1 = mockRule("hard1");
+        scoreHolder.configureConstraintWeight(hard1, BendableScore.ofHard(1, 2, 0, 10));
+        Rule hard2 = mockRule("hard2");
+        scoreHolder.configureConstraintWeight(hard2, BendableScore.ofHard(1, 2, 0, 100));
+        Rule medium1 = mockRule("medium1");
+        scoreHolder.configureConstraintWeight(medium1, BendableScore.ofSoft(1, 2, 0, 10));
+        Rule soft1 = mockRule("soft1");
+        scoreHolder.configureConstraintWeight(soft1, BendableScore.ofSoft(1, 2, 1, 10));
+        Rule soft2 = mockRule("soft2");
+        scoreHolder.configureConstraintWeight(soft2, BendableScore.ofSoft(1, 2, 1, 100));
+
+        scoreHolder.penalize(mockRuleContext(hard1));
+        assertEquals(BendableScore.of(new int[]{-10}, new int[]{0, 0}), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(hard2), 2);
+        assertEquals(BendableScore.of(new int[]{-210}, new int[]{0, 0}), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(medium1), 9);
+        assertEquals(BendableScore.of(new int[]{-210}, new int[]{-90, 0}), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft1));
+        assertEquals(BendableScore.of(new int[]{-210}, new int[]{-90, 10}), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft2), 3);
+        assertEquals(BendableScore.of(new int[]{-210}, new int[]{-90, 310}), scoreHolder.extractScore(0));
     }
 
 }

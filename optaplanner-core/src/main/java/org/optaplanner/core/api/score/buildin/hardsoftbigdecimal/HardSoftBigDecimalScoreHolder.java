@@ -17,15 +17,24 @@
 package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see HardSoftBigDecimalScore
  */
-public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
+public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftBigDecimalScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorByNumberMap = new LinkedHashMap<>();
+    /** Slower than {@link #matchExecutorByNumberMap} */
+    protected final Map<Rule, BiConsumer<RuleContext, HardSoftBigDecimalScore>> matchExecutorByScoreMap = new LinkedHashMap<>();
 
     protected BigDecimal hardScore = null;
     protected BigDecimal softScore = null;
@@ -43,7 +52,110 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void configureConstraintWeight(Rule rule, HardSoftBigDecimalScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
+        BiConsumer<RuleContext, BigDecimal> matchExecutor;
+        if (constraintWeight.equals(HardSoftBigDecimalScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {};
+        } else if (constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore().multiply(matchWeight));
+        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore().multiply(matchWeight));
+        } else {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
+                    -> addMultiConstraintMatch(kcontext,
+                    constraintWeight.getHardScore().multiply(matchWeight),
+                    constraintWeight.getSoftScore().multiply(matchWeight));
+        }
+        matchExecutorByNumberMap.put(rule, matchExecutor);
+        matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
+                HardSoftBigDecimalScore weightMultiplier) -> addMultiConstraintMatch(kcontext,
+                constraintWeight.getHardScore().multiply(weightMultiplier.getHardScore()),
+                constraintWeight.getSoftScore().multiply(weightMultiplier.getSoftScore())));
+    }
+
+    // ************************************************************************
+    // Penalize and reward methods
+    // ************************************************************************
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated.
+     * @param kcontext never null, the magic variable in DRL
+     */
+    public void penalize(RuleContext kcontext) {
+        reward(kcontext, BigDecimal.ONE.negate());
+    }
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * @param kcontext never null, the magic variable in DRL
+     * @param weightMultiplier at least 0
+     */
+    public void penalize(RuleContext kcontext, BigDecimal weightMultiplier) {
+        reward(kcontext, weightMultiplier.negate());
+    }
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score level.
+     * Slower than {@link #penalize(RuleContext, BigDecimal)}.
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeightMultiplier at least 0
+     * @param softWeightMultiplier at least 0
+     */
+    public void penalize(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal softWeightMultiplier) {
+        reward(kcontext, hardWeightMultiplier.negate(), softWeightMultiplier.negate());
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight}.
+     * @param kcontext never null, the magic variable in DRL
+     */
+    public void reward(RuleContext kcontext) {
+        reward(kcontext, BigDecimal.ONE);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * @param kcontext never null, the magic variable in DRL
+     * @param weightMultiplier at least 0
+     */
+    public void reward(RuleContext kcontext, BigDecimal weightMultiplier) {
+        Rule rule = kcontext.getRule();
+        BiConsumer<RuleContext, BigDecimal> matchExecutor = matchExecutorByNumberMap.get(rule);
+        if (matchExecutor == null) {
+            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
+        }
+        matchExecutor.accept(kcontext, weightMultiplier);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight} multiplied with the specific weightMultiplier per score level.
+     * Slower than {@link #reward(RuleContext, BigDecimal)}.
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeightMultiplier at least 0
+     * @param softWeightMultiplier at least 0
+     */
+    public void reward(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal softWeightMultiplier) {
+        Rule rule = kcontext.getRule();
+        BiConsumer<RuleContext, HardSoftBigDecimalScore> matchExecutor = matchExecutorByScoreMap.get(rule);
+        if (matchExecutor == null) {
+            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
+        }
+        matchExecutor.accept(kcontext, HardSoftBigDecimalScore.of(hardWeightMultiplier, softWeightMultiplier));
+    }
+
+    // ************************************************************************
+    // Other match methods
     // ************************************************************************
 
     /**
@@ -54,7 +166,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
         hardScore = (hardScore == null) ? hardWeight : hardScore.add(hardWeight);
         registerConstraintMatch(kcontext,
                 () -> hardScore = hardScore.subtract(hardWeight),
-                () -> HardSoftBigDecimalScore.valueOf(hardWeight, BigDecimal.ZERO));
+                () -> HardSoftBigDecimalScore.of(hardWeight, BigDecimal.ZERO));
     }
 
     /**
@@ -65,7 +177,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
         softScore = (softScore == null) ? softWeight : softScore.add(softWeight);
         registerConstraintMatch(kcontext,
                 () -> softScore = softScore.subtract(softWeight),
-                () -> HardSoftBigDecimalScore.valueOf(BigDecimal.ZERO, softWeight));
+                () -> HardSoftBigDecimalScore.of(BigDecimal.ZERO, softWeight));
     }
 
     /**
@@ -81,12 +193,12 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
                     hardScore = hardScore.subtract(hardWeight);
                     softScore = softScore.subtract(softWeight);
                 },
-                () -> HardSoftBigDecimalScore.valueOf(hardWeight, softWeight));
+                () -> HardSoftBigDecimalScore.of(hardWeight, softWeight));
     }
 
     @Override
-    public Score extractScore(int initScore) {
-        return HardSoftBigDecimalScore.valueOfUninitialized(initScore,
+    public HardSoftBigDecimalScore extractScore(int initScore) {
+        return HardSoftBigDecimalScore.ofUninitialized(initScore,
                 hardScore == null ? BigDecimal.ZERO : hardScore,
                 softScore == null ? BigDecimal.ZERO : softScore);
     }

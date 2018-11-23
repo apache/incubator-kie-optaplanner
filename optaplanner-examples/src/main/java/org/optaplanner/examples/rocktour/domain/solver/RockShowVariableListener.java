@@ -95,11 +95,13 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
                 || previousStandstill.getHosWeekStart().getHosWeekStart() == null) {
             return new Arrival(null, null, null, null);
         }
-        long earlyLateBreakDrivingSecondsBudget = solution.getParametrization().getEarlyLateBreakDrivingSecondsBudget();
-        long nightDrivingSecondsBudget = solution.getParametrization().getNightDrivingSecondsBudget();
-        long hosWeekDrivingSecondsBudget = solution.getParametrization().getHosWeekDrivingSecondsBudget();
-        int hosWeekConsecutiveDrivingDaysBudget = solution.getParametrization().getHosWeekConsecutiveDrivingDaysBudget();
-        int hosWeekRestDays = solution.getParametrization().getHosWeekRestDays();
+
+        // HOS = Hours of service (in terms of driving regulations)
+        long earlyLateBreakDrivingSecondsBudget = solution.getConstraintConfiguration().getEarlyLateBreakDrivingSecondsBudget();
+        long nightDrivingSecondsBudget = solution.getConstraintConfiguration().getNightDrivingSecondsBudget();
+        long hosWeekDrivingSecondsBudget = solution.getConstraintConfiguration().getHosWeekDrivingSecondsBudget();
+        int hosWeekConsecutiveDrivingDaysBudget = solution.getConstraintConfiguration().getHosWeekConsecutiveDrivingDaysBudget();
+        int hosWeekRestDays = solution.getConstraintConfiguration().getHosWeekRestDays();
 
         RockTimeOfDay timeOfDay = previousStandstill.getDepartureTimeOfDay();
         LocalDate arrivalDate = previousStandstill.getDepartureDate();
@@ -118,13 +120,15 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
                 timeOfDay = RockTimeOfDay.EARLY;
             }
         }
-        hosWeekDrivingSecondsTotal += drivingSeconds;
+
+        hosWeekDrivingSecondsTotal += show.getDrivingTimeFromPreviousStandstill();
+
         // HOS driving time per week limits: add weekend rest period if driving for too many hour or too many days
         if (hosWeekDrivingSecondsTotal > hosWeekDrivingSecondsBudget
                 || hosWeekStart.getDepartureDate().until(arrivalDate, DAYS) > hosWeekConsecutiveDrivingDaysBudget) {
             arrivalDate = arrivalDate.plusDays(hosWeekRestDays);
             hosWeekStart = show;
-            hosWeekDrivingSecondsTotal = 0L;
+            hosWeekDrivingSecondsTotal -= hosWeekDrivingSecondsBudget;
             timeOfDay = RockTimeOfDay.EARLY;
         }
         if (show.getDurationInHalfDay() % 2 == 0 && timeOfDay != RockTimeOfDay.EARLY) {

@@ -49,5 +49,4 @@ public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolut
         File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
         runSpeedTest(unsolvedDataFile, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT);
     }
-
 }

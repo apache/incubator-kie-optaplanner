@@ -50,6 +50,8 @@ public class Talk extends AbstractPersistable {
     private Set<Talk> prerequisiteTalkSet;
     private int favoriteCount;
     private int crowdControlRisk;
+    private Timeslot publishedTimeslot;
+    private Room publishedRoom;
 
     @PlanningPin
     private boolean pinnedByUser = false;
@@ -234,6 +236,33 @@ public class Talk extends AbstractPersistable {
         return (int) prerequisiteTalkSet.stream()
                 .filter(prerequisite -> prerequisite.getTimeslot() == null || timeslot.endsBefore(prerequisite.getTimeslot()))
                 .count();
+    }
+
+    public boolean hasMutualSpeaker(Talk talk) {
+        for (Speaker speaker : talk.getSpeakerList()) {
+            if (speakerList.contains(speaker)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Integer getDurationInMinutes() {
+        return timeslot == null ? null : timeslot.getDurationInMinutes();
+    }
+
+    public boolean overlapsTime(Talk other) {
+        return timeslot != null && other.getTimeslot() != null && timeslot.overlapsTime(other.getTimeslot());
+    }
+
+    public int overlappingDurationInMinutes(Talk other) {
+        if (timeslot == null) {
+            return 0;
+        }
+        if (other.getTimeslot() == null) {
+            return 0;
+        }
+        return timeslot.getOverlapInMinutes(other.getTimeslot());
     }
 
     @Override
@@ -455,6 +484,22 @@ public class Talk extends AbstractPersistable {
         this.crowdControlRisk = crowdControlRisk;
     }
 
+    public Timeslot getPublishedTimeslot() {
+        return publishedTimeslot;
+    }
+
+    public void setPublishedTimeslot(Timeslot publishedTimeslot) {
+        this.publishedTimeslot = publishedTimeslot;
+    }
+
+    public Room getPublishedRoom() {
+        return publishedRoom;
+    }
+
+    public void setPublishedRoom(Room publishedRoom) {
+        this.publishedRoom = publishedRoom;
+    }
+
     // ************************************************************************
     // With methods
     // ************************************************************************
@@ -558,4 +603,5 @@ public class Talk extends AbstractPersistable {
         this.room = room;
         return this;
     }
+
 }

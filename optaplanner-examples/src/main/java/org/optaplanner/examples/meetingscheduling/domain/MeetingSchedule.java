@@ -18,46 +18,50 @@ package org.optaplanner.examples.meetingscheduling.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoft.HardMediumSoftScoreXStreamConverter;
 
 @PlanningSolution
-@XStreamAlias("MsMeetingSchedule")
 public class MeetingSchedule extends AbstractPersistable {
 
-    private MeetingParametrization parametrization;
-
-    private List<Meeting> meetingList;
-    private List<Day> dayList;
-    private List<TimeGrain> timeGrainList;
-    private List<Room> roomList;
-    private List<Person> personList;
-    private List<Attendance> attendanceList;
-
-    private List<MeetingAssignment> meetingAssignmentList;
-
-    @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
-    private HardMediumSoftScore score;
-
-    @ProblemFactProperty
-    public MeetingParametrization getParametrization() {
-        return parametrization;
-    }
-
-    public void setParametrization(MeetingParametrization parametrization) {
-        this.parametrization = parametrization;
-    }
+    @ConstraintConfigurationProvider
+    private MeetingConstraintConfiguration constraintConfiguration;
 
     @ProblemFactCollectionProperty
+    private List<Meeting> meetingList;
+    @ProblemFactCollectionProperty
+    private List<Day> dayList;
+    @ValueRangeProvider(id = "timeGrainRange")
+    @ProblemFactCollectionProperty
+    private List<TimeGrain> timeGrainList;
+    @ValueRangeProvider(id = "roomRange")
+    @ProblemFactCollectionProperty
+    private List<Room> roomList;
+    @ProblemFactCollectionProperty
+    private List<Person> personList;
+    @ProblemFactCollectionProperty
+    private List<Attendance> attendanceList;
+
+    @PlanningEntityCollectionProperty
+    private List<MeetingAssignment> meetingAssignmentList;
+
+    @PlanningScore
+    private HardMediumSoftScore score;
+
+    public MeetingConstraintConfiguration getConstraintConfiguration() {
+        return constraintConfiguration;
+    }
+
+    public void setConstraintConfiguration(MeetingConstraintConfiguration constraintConfiguration) {
+        this.constraintConfiguration = constraintConfiguration;
+    }
+
     public List<Meeting> getMeetingList() {
         return meetingList;
     }
@@ -66,7 +70,6 @@ public class MeetingSchedule extends AbstractPersistable {
         this.meetingList = meetingList;
     }
 
-    @ProblemFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -75,8 +78,6 @@ public class MeetingSchedule extends AbstractPersistable {
         this.dayList = dayList;
     }
 
-    @ValueRangeProvider(id = "timeGrainRange")
-    @ProblemFactCollectionProperty
     public List<TimeGrain> getTimeGrainList() {
         return timeGrainList;
     }
@@ -85,8 +86,6 @@ public class MeetingSchedule extends AbstractPersistable {
         this.timeGrainList = timeGrainList;
     }
 
-    @ValueRangeProvider(id = "roomRange")
-    @ProblemFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -95,7 +94,6 @@ public class MeetingSchedule extends AbstractPersistable {
         this.roomList = roomList;
     }
 
-    @ProblemFactCollectionProperty
     public List<Person> getPersonList() {
         return personList;
     }
@@ -104,7 +102,6 @@ public class MeetingSchedule extends AbstractPersistable {
         this.personList = personList;
     }
 
-    @ProblemFactCollectionProperty
     public List<Attendance> getAttendanceList() {
         return attendanceList;
     }
@@ -113,7 +110,6 @@ public class MeetingSchedule extends AbstractPersistable {
         this.attendanceList = attendanceList;
     }
 
-    @PlanningEntityCollectionProperty
     public List<MeetingAssignment> getMeetingAssignmentList() {
         return meetingAssignmentList;
     }
@@ -122,7 +118,6 @@ public class MeetingSchedule extends AbstractPersistable {
         this.meetingAssignmentList = meetingAssignmentList;
     }
 
-    @PlanningScore
     public HardMediumSoftScore getScore() {
         return score;
     }

@@ -16,8 +16,14 @@
 
 package org.optaplanner.core.api.score.buildin.simpledouble;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -25,7 +31,9 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
  * Use {@link SimpleDoubleScoreHolder} instead.
  * @see SimpleDoubleScore
  */
-public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
+public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, Double>> matchExecutorByNumberMap = new LinkedHashMap<>();
 
     protected double score;
 
@@ -38,7 +46,69 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void configureConstraintWeight(Rule rule, SimpleDoubleScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
+        BiConsumer<RuleContext, Double> matchExecutor;
+        if (constraintWeight.equals(SimpleDoubleScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> {};
+        } else {
+            matchExecutor = (RuleContext kcontext, Double matchWeight)
+                    -> addConstraintMatch(kcontext, constraintWeight.getScore() * matchWeight);
+        }
+        matchExecutorByNumberMap.put(rule, matchExecutor);
+    }
+
+    // ************************************************************************
+    // Penalize and reward methods
+    // ************************************************************************
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated.
+     * @param kcontext never null, the magic variable in DRL
+     */
+    public void penalize(RuleContext kcontext) {
+        reward(kcontext, -1.0);
+    }
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * @param kcontext never null, the magic variable in DRL
+     * @param weightMultiplier at least 0
+     */
+    public void penalize(RuleContext kcontext, double weightMultiplier) {
+        reward(kcontext, -weightMultiplier);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight}.
+     * @param kcontext never null, the magic variable in DRL
+     */
+    public void reward(RuleContext kcontext) {
+        reward(kcontext, 1.0);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * @param kcontext never null, the magic variable in DRL
+     * @param weightMultiplier at least 0
+     */
+    public void reward(RuleContext kcontext, double weightMultiplier) {
+        Rule rule = kcontext.getRule();
+        BiConsumer<RuleContext, Double> matchExecutor = matchExecutorByNumberMap.get(rule);
+        if (matchExecutor == null) {
+            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
+        }
+        matchExecutor.accept(kcontext, weightMultiplier);
+    }
+
+    // ************************************************************************
+    // Other match methods
     // ************************************************************************
 
     /**
@@ -49,12 +119,12 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
         score += weight;
         registerConstraintMatch(kcontext,
                 () -> score -= weight,
-                () -> SimpleDoubleScore.valueOf(weight));
+                () -> SimpleDoubleScore.of(weight));
     }
 
     @Override
-    public Score extractScore(int initScore) {
-        return SimpleDoubleScore.valueOfUninitialized(initScore, score);
+    public SimpleDoubleScore extractScore(int initScore) {
+        return SimpleDoubleScore.ofUninitialized(initScore, score);
     }
 
 }

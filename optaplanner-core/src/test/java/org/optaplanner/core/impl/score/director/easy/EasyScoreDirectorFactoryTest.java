@@ -33,16 +33,16 @@ public class EasyScoreDirectorFactoryTest {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EasyScoreCalculator<TestdataSolution> scoreCalculator = mock(EasyScoreCalculator.class);
         when(scoreCalculator.calculateScore(any(TestdataSolution.class)))
-                .thenAnswer(invocation -> SimpleScore.valueOf(-10));
-        EasyScoreDirectorFactory<TestdataSolution> directorFactory = new EasyScoreDirectorFactory<>(scoreCalculator);
-        directorFactory.setSolutionDescriptor(solutionDescriptor);
+                .thenAnswer(invocation -> SimpleScore.of(-10));
+        EasyScoreDirectorFactory<TestdataSolution> directorFactory = new EasyScoreDirectorFactory<>(
+                solutionDescriptor, scoreCalculator);
 
         EasyScoreDirector<TestdataSolution> director = directorFactory.buildScoreDirector(false, false);
         TestdataSolution solution = new TestdataSolution();
         solution.setValueList(Collections.emptyList());
         solution.setEntityList(Collections.emptyList());
         director.setWorkingSolution(solution);
-        assertEquals(SimpleScore.valueOfUninitialized(0, -10), director.calculateScore());
+        assertEquals(SimpleScore.ofUninitialized(0, -10), director.calculateScore());
     }
 
 }

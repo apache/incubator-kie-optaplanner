@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.simplelong;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -49,11 +50,47 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
         callOnUpdate(scoreRule3);
         scoreHolder.addConstraintMatch(scoreRule3, -3L); // Overwrite existing
 
-        assertEquals(SimpleLongScore.valueOfUninitialized(0, -1003L), scoreHolder.extractScore(0));
-        assertEquals(SimpleLongScore.valueOfUninitialized(-7, -1003L), scoreHolder.extractScore(-7));
+        assertEquals(SimpleLongScore.ofUninitialized(0, -1003L), scoreHolder.extractScore(0));
+        assertEquals(SimpleLongScore.ofUninitialized(-7, -1003L), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(SimpleLongScore.valueOf(-1000L), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
+            assertEquals(SimpleLongScore.of(-1000L), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        SimpleLongScoreHolder scoreHolder = new SimpleLongScoreHolder(constraintMatchEnabled);
+        Rule constraint1 = mockRule("constraint1");
+        scoreHolder.configureConstraintWeight(constraint1, SimpleLongScore.of(10L));
+        Rule constraint2 = mockRule("constraint2");
+        scoreHolder.configureConstraintWeight(constraint2, SimpleLongScore.of(100L));
+
+        scoreHolder.penalize(mockRuleContext(constraint1));
+        assertEquals(SimpleLongScore.of(-10L), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(constraint2), 2L);
+        assertEquals(SimpleLongScore.of(-210L), scoreHolder.extractScore(0));
+
+        scoreHolder = new SimpleLongScoreHolder(constraintMatchEnabled);
+        Rule constraint3 = mockRule("constraint3");
+        scoreHolder.configureConstraintWeight(constraint3, SimpleLongScore.of(10L));
+        Rule constraint4 = mockRule("constraint4");
+        scoreHolder.configureConstraintWeight(constraint4, SimpleLongScore.of(100L));
+
+        scoreHolder.reward(mockRuleContext(constraint3));
+        assertEquals(SimpleLongScore.of(10L), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(constraint4), 3L);
+        assertEquals(SimpleLongScore.of(310L), scoreHolder.extractScore(0));
     }
 
 }

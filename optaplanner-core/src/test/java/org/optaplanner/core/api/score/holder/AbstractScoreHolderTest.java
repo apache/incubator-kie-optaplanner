@@ -28,8 +28,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public abstract class AbstractScoreHolderTest {
 
@@ -41,13 +40,17 @@ public abstract class AbstractScoreHolderTest {
     }
 
     protected RuleContext mockRuleContext(String ruleName, Object... justifications) {
+        Rule rule = mockRule(ruleName);
+        return mockRuleContext(rule, justifications);
+    }
+
+    protected RuleContext mockRuleContext(Rule rule, Object... justifications) {
         if (justifications.length == 0) {
             justifications = new Object[]{DEFAULT_JUSTIFICATION};
         }
         List<Object> justificationList = Arrays.asList(justifications);
         RuleContext kcontext = mock(RuleContext.class);
         AgendaItemImpl<TestModedAssertion> agendaItem = new AgendaItemImpl<TestModedAssertion>() {
-            private static final long serialVersionUID = 1L;
 
             @Override
             public List<Object> getObjects() {
@@ -61,11 +64,15 @@ public abstract class AbstractScoreHolderTest {
 
         };
         when(kcontext.getMatch()).thenReturn(agendaItem);
+        when(kcontext.getRule()).thenReturn(rule);
+        return kcontext;
+    }
+
+    protected Rule mockRule(String ruleName) {
         Rule rule = mock(Rule.class);
         when(rule.getPackageName()).thenReturn(getClass().getPackage().getName());
         when(rule.getName()).thenReturn(ruleName);
-        when(kcontext.getRule()).thenReturn(rule);
-        return kcontext;
+        return rule;
     }
 
     protected void callOnUpdate(RuleContext ruleContext) {

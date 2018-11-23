@@ -5,54 +5,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
-import org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.domain.Room;
 import org.optaplanner.examples.conferencescheduling.domain.Speaker;
 import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.domain.TalkType;
 import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
-import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
+import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceParametrization.*;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.*;
 
+// TODO https://issues.jboss.org/browse/PLANNER-1335
+@Ignore("Temporarily disabled until ScoreVerifier.assertPenalty() exists to avoid unneeded refactor")
 public class ConferenceSchedulingScoreHardConstraintTest {
 
-    private HardSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardSoftScoreVerifier<>(
+    private HardMediumSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardMediumSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
-
-    @Test
-    public void talkTypeOfTimeSlot() {
-        Talk talk1 = createTalk(1L);
-        Talk talk2 = createTalk(2L);
-        Timeslot slot1 = new Timeslot(1L)
-                .withStartDateTime(LocalDateTime.of(2018, 1, 1, 9, 0))
-                .withEndDateTime(LocalDateTime.of(2018, 1, 1, 10, 0));
-        Timeslot slot2 = new Timeslot(2L)
-                .withStartDateTime(LocalDateTime.of(2018, 1, 1, 9, 0))
-                .withEndDateTime(LocalDateTime.of(2018, 1, 1, 10, 0));
-        TalkType talkType1 = new TalkType(0L, "type1");
-        TalkType talkType2 = new TalkType(1L, "type2");
-        ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
-                .withTalkTypeList(Arrays.asList(talkType1, talkType2))
-                .withTalkList(Arrays.asList(talk1, talk2))
-                .withTimeslotList(Arrays.asList(slot1, slot2))
-                .withRoomList(Collections.emptyList())
-                .withSpeakerList(Collections.emptyList());
-        scoreVerifier.assertHardWeight(TALK_TYPE_OF_TIMESLOT, 0, solution);
-        // time slot with matching talk type
-        talk1.withTalkType(talkType1).withTimeslot(slot1);
-        slot1.setTalkTypeSet(Collections.singleton(talkType1));
-        scoreVerifier.assertHardWeight(TALK_TYPE_OF_TIMESLOT, 0, solution);
-        // time slot with non matching talk type
-        talk2.withTalkType(talkType2).withTimeslot(slot2);
-        slot2.setTalkTypeSet(Collections.singleton(talkType1));
-        scoreVerifier.assertHardWeight(TALK_TYPE_OF_TIMESLOT, -10000, solution);
-    }
 
     @Test
     public void talkHasUnavailableRoom() {
@@ -64,7 +37,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Room room2 = new Room(2L).withTalkTypeSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2))
@@ -116,7 +89,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withTalkTypeSet(Collections.singleton(talkType))
                 .withUnavailableTimeslotSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
@@ -157,7 +130,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         Talk talk1 = createTalk(1L).withTalkType(talkType);
 
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -219,7 +192,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start3)
                 .withEndDateTime(end3);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1, talk2))
                 .withTimeslotList(Arrays.asList(slot1, slot2, slot3))
@@ -262,7 +235,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -343,7 +316,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -352,51 +325,51 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         // talk with 1 speaker, speaker without prohibited time slot tag
         talk1.withSpeakerList(Arrays.asList(speaker1)).withTimeslot(slot1);
         slot1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, 0, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, 0, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker with prohibited time slot tag, time slot without matching tag
         speaker1.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         slot1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, 0, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag2)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, 0, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, 0, solution);
         // talk with 1 speaker, speaker with prohibited time slot tag, time slot with matching tag
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -1, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -1, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -1, solution);
         // talk with 1 speaker, speaker with 2 required time slot tags
         speaker1.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
         slot1.setTagSet(Collections.emptySet());
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, 0, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, 0, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -1, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -1, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -2, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -2, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2, tag3)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -2, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -2, solution);
         // talk with 2 speakers, speakers with prohibited time slot tag, time slot without matching tag
         talk1.withSpeakerList(Arrays.asList(speaker1, speaker2));
         slot1.setTagSet(Collections.emptySet());
         speaker1.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         speaker2.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, 0, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, 0, solution);
         // talk with 2 speakers, speakers with prohibited time slot tags, time slot with matching tags
         speaker1.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         speaker2.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1)));
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -2, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -2, solution);
         speaker1.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -2, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -2, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -3, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -3, solution);
         speaker2.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag2)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -4, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -4, solution);
         speaker2.setProhibitedTimeslotTagSet(new HashSet<>(Arrays.asList(tag1, tag3)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -3, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -3, solution);
         slot1.setTagSet(new HashSet<>(Arrays.asList(tag1, tag2, tag3)));
-        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGs, -4, solution);
+        scoreVerifier.assertHardWeight(SPEAKER_PROHIBITED_TIMESLOT_TAGS, -4, solution);
     }
 
     @Test
@@ -412,7 +385,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -459,7 +432,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withStartDateTime(start1)
                 .withEndDateTime(end1);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Arrays.asList(slot1))
@@ -518,7 +491,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withProhibitedRoomTagSet(Collections.emptySet())
                 .withUndesiredRoomTagSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
@@ -595,7 +568,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
                 .withProhibitedRoomTagSet(Collections.emptySet())
                 .withUndesiredRoomTagSet(Collections.emptySet());
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
@@ -656,7 +629,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())
@@ -696,7 +669,7 @@ public class ConferenceSchedulingScoreHardConstraintTest {
         Room room1 = new Room(1L).withTalkTypeSet(Collections.emptySet());
         Talk talk1 = createTalk(1L).withTalkType(talkType);
         ConferenceSolution solution = new ConferenceSolution(1L)
-                .withParametrization(new ConferenceParametrization(1L))
+                .withConstraintConfiguration(new ConferenceConstraintConfiguration(1L))
                 .withTalkTypeList(Collections.singletonList(talkType))
                 .withTalkList(Arrays.asList(talk1))
                 .withTimeslotList(Collections.emptyList())

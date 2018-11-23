@@ -16,14 +16,22 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see SimpleLongScore
  */
-public class SimpleLongScoreHolder extends AbstractScoreHolder {
+public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> {
+
+    protected final Map<Rule, BiConsumer<RuleContext, Long>> matchExecutorByNumberMap = new LinkedHashMap<>();
 
     protected long score;
 
@@ -36,7 +44,69 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder {
     }
 
     // ************************************************************************
-    // Worker methods
+    // Setup methods
+    // ************************************************************************
+
+    @Override
+    public void configureConstraintWeight(Rule rule, SimpleLongScore constraintWeight) {
+        super.configureConstraintWeight(rule, constraintWeight);
+        BiConsumer<RuleContext, Long> matchExecutor;
+        if (constraintWeight.equals(SimpleLongScore.ZERO)) {
+            matchExecutor = (RuleContext kcontext, Long matchWeight) -> {};
+        } else {
+            matchExecutor = (RuleContext kcontext, Long matchWeight)
+                    -> addConstraintMatch(kcontext, constraintWeight.getScore() * matchWeight);
+        }
+        matchExecutorByNumberMap.put(rule, matchExecutor);
+    }
+
+    // ************************************************************************
+    // Penalize and reward methods
+    // ************************************************************************
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated.
+     * @param kcontext never null, the magic variable in DRL
+     */
+    public void penalize(RuleContext kcontext) {
+        reward(kcontext, -1L);
+    }
+
+    /**
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * @param kcontext never null, the magic variable in DRL
+     * @param weightMultiplier at least 0
+     */
+    public void penalize(RuleContext kcontext, long weightMultiplier) {
+        reward(kcontext, -weightMultiplier);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight}.
+     * @param kcontext never null, the magic variable in DRL
+     */
+    public void reward(RuleContext kcontext) {
+        reward(kcontext, 1L);
+    }
+
+    /**
+     * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * @param kcontext never null, the magic variable in DRL
+     * @param weightMultiplier at least 0
+     */
+    public void reward(RuleContext kcontext, long weightMultiplier) {
+        Rule rule = kcontext.getRule();
+        BiConsumer<RuleContext, Long> matchExecutor = matchExecutorByNumberMap.get(rule);
+        if (matchExecutor == null) {
+            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
+        }
+        matchExecutor.accept(kcontext, weightMultiplier);
+    }
+
+    // ************************************************************************
+    // Other match methods
     // ************************************************************************
 
     /**
@@ -47,12 +117,12 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder {
         score += weight;
         registerConstraintMatch(kcontext,
                 () -> score -= weight,
-                () -> SimpleLongScore.valueOf(weight));
+                () -> SimpleLongScore.of(weight));
     }
 
     @Override
-    public Score extractScore(int initScore) {
-        return SimpleLongScore.valueOfUninitialized(initScore, score);
+    public SimpleLongScore extractScore(int initScore) {
+        return SimpleLongScore.ofUninitialized(initScore, score);
     }
 
 }

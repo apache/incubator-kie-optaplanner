@@ -41,13 +41,13 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
 
     protected boolean assertClonedSolution = false;
 
+    public AbstractScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
+        this.solutionDescriptor = solutionDescriptor;
+    }
+
     @Override
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
-    }
-
-    public void setSolutionDescriptor(SolutionDescriptor<Solution_> solutionDescriptor) {
-        this.solutionDescriptor = solutionDescriptor;
     }
 
     @Override
@@ -98,7 +98,8 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
             Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
             if (!score.equals(uncorruptedScore)) {
                 throw new IllegalStateException(
-                        "Score corruption: the solution's score (" + score + ") is not the uncorruptedScore ("
+                        "Score corruption (" + score.subtract(uncorruptedScore).toShortString()
+                                + "): the solution's score (" + score + ") is not the uncorruptedScore ("
                                 + uncorruptedScore + ").");
             }
         }

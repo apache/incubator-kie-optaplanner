@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -39,13 +40,13 @@ public class HardMediumSoftLongScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -1L);
-        assertEquals(HardMediumSoftLongScore.valueOf(-1L, 0L, 0L), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftLongScore.of(-1L, 0L, 0L), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -8L);
-        assertEquals(HardMediumSoftLongScore.valueOf(-9L, 0L, 0L), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftLongScore.of(-9L, 0L, 0L), scoreHolder.extractScore(0));
         callOnDelete(hard2Undo);
-        assertEquals(HardMediumSoftLongScore.valueOf(-1L, 0L, 0L), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftLongScore.of(-1L, 0L, 0L), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addMediumConstraintMatch(medium1, -10L);
@@ -79,13 +80,52 @@ public class HardMediumSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMediumConstraintMatch(medium2Undo, -9999L);
         callOnDelete(medium2Undo);
 
-        assertEquals(HardMediumSoftLongScore.valueOf(-7004001L, -50020L, -600300L), scoreHolder.extractScore(0));
-        assertEquals(HardMediumSoftLongScore.valueOfUninitialized(-7, -7004001L, -50020L, -600300L), scoreHolder.extractScore(-7));
+        assertEquals(HardMediumSoftLongScore.of(-7004001L, -50020L, -600300L), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftLongScore.ofUninitialized(-7, -7004001L, -50020L, -600300L), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardMediumSoftLongScore.valueOf(-1L, 0L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardMediumSoftLongScore.valueOf(0L, 0L, -300L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardMediumSoftLongScore.of(-1L, 0L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardMediumSoftLongScore.of(0L, 0L, -300L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        HardMediumSoftLongScoreHolder scoreHolder = new HardMediumSoftLongScoreHolder(constraintMatchEnabled);
+        Rule hard1 = mockRule("hard1");
+        scoreHolder.configureConstraintWeight(hard1, HardMediumSoftLongScore.ofHard(10L));
+        Rule hard2 = mockRule("hard2");
+        scoreHolder.configureConstraintWeight(hard2, HardMediumSoftLongScore.ofHard(100L));
+        Rule medium1 = mockRule("medium1");
+        scoreHolder.configureConstraintWeight(medium1, HardMediumSoftLongScore.ofMedium(10L));
+        Rule soft1 = mockRule("soft1");
+        scoreHolder.configureConstraintWeight(soft1, HardMediumSoftLongScore.ofSoft(10L));
+        Rule soft2 = mockRule("soft2");
+        scoreHolder.configureConstraintWeight(soft2, HardMediumSoftLongScore.ofSoft(100L));
+
+        scoreHolder.penalize(mockRuleContext(hard1));
+        assertEquals(HardMediumSoftLongScore.of(-10L, 0L, 0L), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(hard2), 2L);
+        assertEquals(HardMediumSoftLongScore.of(-210L, 0L, 0L), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(medium1), 9L);
+        assertEquals(HardMediumSoftLongScore.of(-210L, -90L, 0L), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft1));
+        assertEquals(HardMediumSoftLongScore.of(-210L, -90L, 10L), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft2), 3L);
+        assertEquals(HardMediumSoftLongScore.of(-210L, -90L, 310L), scoreHolder.extractScore(0));
     }
 
 }

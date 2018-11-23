@@ -47,11 +47,11 @@ import org.optaplanner.examples.rocktour.app.RockTourApp;
 import org.optaplanner.examples.rocktour.domain.RockBus;
 import org.optaplanner.examples.rocktour.domain.RockLocation;
 import org.optaplanner.examples.rocktour.domain.RockShow;
-import org.optaplanner.examples.rocktour.domain.RockTourParametrization;
+import org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
 import static java.util.stream.Collectors.*;
-import static org.optaplanner.examples.rocktour.domain.RockTourParametrization.*;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.*;
 
 public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolution> {
 
@@ -69,7 +69,7 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
     private static class RockTourXlsxReader extends AbstractXlsxReader<RockTourSolution> {
 
         public RockTourXlsxReader(XSSFWorkbook workbook) {
-            super(workbook);
+            super(workbook, RockTourApp.SOLVER_CONFIG);
         }
 
         @Override
@@ -91,31 +91,34 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                 throw new IllegalStateException(currentPosition() + ": The tour name (" + solution.getTourName()
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
             }
-            RockTourParametrization parametrization = new RockTourParametrization();
-            readLongConstraintLine(EARLY_LATE_BREAK_DRIVING_SECONDS, parametrization::setEarlyLateBreakDrivingSecondsBudget,
+            RockTourConstraintConfiguration constraintConfiguration = new RockTourConstraintConfiguration();
+            readLongConstraintParameterLine(EARLY_LATE_BREAK_DRIVING_SECONDS, constraintConfiguration::setEarlyLateBreakDrivingSecondsBudget,
                     "Maximum driving time in seconds between 2 shows on the same day.");
-            readLongConstraintLine(NIGHT_DRIVING_SECONDS, parametrization::setNightDrivingSecondsBudget,
+            readLongConstraintParameterLine(NIGHT_DRIVING_SECONDS, constraintConfiguration::setNightDrivingSecondsBudget,
                     "Maximum driving time in seconds per night between 2 shows.");
-            readLongConstraintLine(HOS_WEEK_DRIVING_SECONDS_BUDGET, parametrization::setHosWeekDrivingSecondsBudget,
+            readLongConstraintParameterLine(HOS_WEEK_DRIVING_SECONDS_BUDGET, constraintConfiguration::setHosWeekDrivingSecondsBudget,
                     "Maximum driving time in seconds since last weekend rest.");
-            readIntConstraintLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET, parametrization::setHosWeekConsecutiveDrivingDaysBudget,
+            readIntConstraintParameterLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET, constraintConfiguration::setHosWeekConsecutiveDrivingDaysBudget,
                     "Maximum driving days since last weekend rest.");
-            readIntConstraintLine(HOS_WEEK_REST_DAYS, parametrization::setHosWeekRestDays,
+            readIntConstraintParameterLine(HOS_WEEK_REST_DAYS, constraintConfiguration::setHosWeekRestDays,
                     "Minimum weekend rest in days (actually in full night sleeps: 2 days guarantees only 32 hours).");
-            nextRow(true);
-            readHeaderCell("Constraint");
-            readHeaderCell("Weight");
-            readHeaderCell("Description");
-            parametrization.setId(0L);
-            readLongConstraintLine(MISSED_SHOW_PENALTY, parametrization::setMissedShowPenalty,
-                    "Set this to 1 to prioritize visiting all shows (over the other constraints).");
-            readLongConstraintLine(REVENUE_OPPORTUNITY, parametrization::setRevenueOpportunity,
-                    "Reward per revenue opportunity.");
-            readLongConstraintLine(DRIVING_TIME_COST_PER_SECOND, parametrization::setDrivingTimeCostPerSecond,
-                    "Driving time cost per second.");
-            readLongConstraintLine(DELAY_COST_PER_DAY, parametrization::setDelayCostPerDay,
-                    "Cost per day for each day that a visit is later in the schedule.");
-            solution.setParametrization(parametrization);
+            readScoreConstraintHeaders();
+            constraintConfiguration.setId(0L);
+            constraintConfiguration.setRequiredShow(readScoreConstraintLine(REQUIRED_SHOW,
+                    "Penalty per required show that isn't assigned."));
+            constraintConfiguration.setUnassignedShow(readScoreConstraintLine(UNASSIGNED_SHOW,
+                    "Penalty per show that isn't assigned."));
+            constraintConfiguration.setRevenueOpportunity(readScoreConstraintLine(REVENUE_OPPORTUNITY,
+                    "Reward per revenue opportunity."));
+            constraintConfiguration.setDrivingTimeToShowPerSecond(readScoreConstraintLine(DRIVING_TIME_TO_SHOW_PER_SECOND,
+                    "Driving time cost per second, excluding after the last show."));
+            constraintConfiguration.setDrivingTimeToBusArrivalPerSecond(readScoreConstraintLine(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND,
+                    "Driving time cost per second from the last show to the bus arrival location."));
+            constraintConfiguration.setDelayShowCostPerDay(readScoreConstraintLine(DELAY_SHOW_COST_PER_DAY,
+                    "Cost per day for each day that a show is assigned later in the schedule."));
+            constraintConfiguration.setShortenDrivingTimePerMillisecondSquared(readScoreConstraintLine(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED,
+                    "Avoid long driving times: Penalty per millisecond of continuous driving time squared."));
+            solution.setConstraintConfiguration(constraintConfiguration);
         }
 
         private void readBus() {
@@ -326,6 +329,9 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
             writeShowList();
             writeDrivingTime();
             writeStopsView();
+            writeScoreView(justificationList -> justificationList.stream()
+                    .filter(o -> o instanceof RockShow).map(o -> ((RockShow) o).getVenueName())
+                    .collect(joining(", ")));
             return workbook;
         }
 
@@ -334,30 +340,33 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
             nextRow();
             nextHeaderCell("Tour name");
             nextCell().setCellValue(solution.getTourName());
-            RockTourParametrization parametrization = solution.getParametrization();
-            writeLongConstraintLine(EARLY_LATE_BREAK_DRIVING_SECONDS, parametrization::getEarlyLateBreakDrivingSecondsBudget,
+            RockTourConstraintConfiguration constraintConfiguration = solution.getConstraintConfiguration();
+            writeLongConstraintParameterLine(EARLY_LATE_BREAK_DRIVING_SECONDS, constraintConfiguration::getEarlyLateBreakDrivingSecondsBudget,
                     "Maximum driving time in seconds between 2 shows on the same day.");
-            writeLongConstraintLine(NIGHT_DRIVING_SECONDS, parametrization::getNightDrivingSecondsBudget,
+            writeLongConstraintParameterLine(NIGHT_DRIVING_SECONDS, constraintConfiguration::getNightDrivingSecondsBudget,
                     "Maximum driving time in seconds per night between 2 shows.");
-            writeLongConstraintLine(HOS_WEEK_DRIVING_SECONDS_BUDGET, parametrization::getHosWeekDrivingSecondsBudget,
+            writeLongConstraintParameterLine(HOS_WEEK_DRIVING_SECONDS_BUDGET, constraintConfiguration::getHosWeekDrivingSecondsBudget,
                     "Maximum driving time in seconds since last weekend rest.");
-            writeIntConstraintLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET, parametrization::getHosWeekConsecutiveDrivingDaysBudget,
+            writeIntConstraintParameterLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET, constraintConfiguration::getHosWeekConsecutiveDrivingDaysBudget,
                     "Maximum driving days since last weekend rest.");
-            writeIntConstraintLine(HOS_WEEK_REST_DAYS, parametrization::getHosWeekRestDays,
+            writeIntConstraintParameterLine(HOS_WEEK_REST_DAYS, constraintConfiguration::getHosWeekRestDays,
                     "Minimum weekend rest in days (actually in full night sleeps: 2 days guarantees only 32 hours).");
             nextRow();
-            nextRow();
-            nextHeaderCell("Constraint");
-            nextHeaderCell("Weight");
-            nextHeaderCell("Description");
-            writeLongConstraintLine(MISSED_SHOW_PENALTY, parametrization::getMissedShowPenalty,
-                    "Set this to 1 to prioritize visiting all shows (over the other constraints).");
-            writeLongConstraintLine(REVENUE_OPPORTUNITY, parametrization::getRevenueOpportunity,
+            writeScoreConstraintHeaders();
+            writeScoreConstraintLine(REQUIRED_SHOW, constraintConfiguration.getRequiredShow(),
+                    "Penalty per required show that isn't assigned.");
+            writeScoreConstraintLine(UNASSIGNED_SHOW, constraintConfiguration.getUnassignedShow(),
+                    "Penalty per show that isn't assigned.");
+            writeScoreConstraintLine(REVENUE_OPPORTUNITY, constraintConfiguration.getRevenueOpportunity(),
                     "Reward per revenue opportunity.");
-            writeLongConstraintLine(DRIVING_TIME_COST_PER_SECOND, parametrization::getDrivingTimeCostPerSecond,
-                    "Driving time cost per second.");
-            writeLongConstraintLine(DELAY_COST_PER_DAY, parametrization::getDelayCostPerDay,
-                    "Cost per day for each day that a visit is later in the schedule.");
+            writeScoreConstraintLine(DRIVING_TIME_TO_SHOW_PER_SECOND, constraintConfiguration.getDrivingTimeToShowPerSecond(),
+                    "Driving time cost per second, excluding after the last show.");
+            writeScoreConstraintLine(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND, constraintConfiguration.getDrivingTimeToBusArrivalPerSecond(),
+                    "Driving time cost per second from the last show to the bus arrival location.");
+            writeScoreConstraintLine(DELAY_SHOW_COST_PER_DAY, constraintConfiguration.getDelayShowCostPerDay(),
+                    "Cost per day for each day that a show is assigned later in the schedule.");
+            writeScoreConstraintLine(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED, constraintConfiguration.getShortenDrivingTimePerMillisecondSquared(),
+                    "Avoid long driving times: Penalty per millisecond of continuous driving time squared.");
             autoSizeColumnsWithHeader();
         }
 

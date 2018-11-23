@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.hardsoftlong;
 
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -39,13 +40,13 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -1L);
-        assertEquals(HardSoftLongScore.valueOf(-1L, -0L), scoreHolder.extractScore(0));
+        assertEquals(HardSoftLongScore.of(-1L, -0L), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -8L);
-        assertEquals(HardSoftLongScore.valueOf(-9L, -0L), scoreHolder.extractScore(0));
+        assertEquals(HardSoftLongScore.of(-9L, -0L), scoreHolder.extractScore(0));
         callOnDelete(hard2Undo);
-        assertEquals(HardSoftLongScore.valueOf(-1L, -0L), scoreHolder.extractScore(0));
+        assertEquals(HardSoftLongScore.of(-1L, -0L), scoreHolder.extractScore(0));
 
         RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, -10L);
@@ -70,13 +71,47 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMultiConstraintMatch(multi2Undo, -999L, -999L);
         callOnDelete(multi2Undo);
 
-        assertEquals(HardSoftLongScore.valueOf(-50301L, -4020L), scoreHolder.extractScore(0));
-        assertEquals(HardSoftLongScore.valueOfUninitialized(-7, -50301L, -4020L), scoreHolder.extractScore(-7));
+        assertEquals(HardSoftLongScore.of(-50301L, -4020L), scoreHolder.extractScore(0));
+        assertEquals(HardSoftLongScore.ofUninitialized(-7, -50301L, -4020L), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardSoftLongScore.valueOf(-1L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardSoftLongScore.valueOf(0L, -20L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardSoftLongScore.of(-1L, 0L), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardSoftLongScore.of(0L, -20L), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
+    }
+
+    @Test
+    public void rewardPenalizeWithConstraintMatch() {
+        rewardPenalize(true);
+    }
+
+    @Test
+    public void rewardPenalizeWithoutConstraintMatch() {
+        rewardPenalize(false);
+    }
+
+    public void rewardPenalize(boolean constraintMatchEnabled) {
+        HardSoftLongScoreHolder scoreHolder = new HardSoftLongScoreHolder(constraintMatchEnabled);
+        Rule hard1 = mockRule("hard1");
+        scoreHolder.configureConstraintWeight(hard1, HardSoftLongScore.ofHard(10L));
+        Rule hard2 = mockRule("hard2");
+        scoreHolder.configureConstraintWeight(hard2, HardSoftLongScore.ofHard(100L));
+        Rule soft1 = mockRule("soft1");
+        scoreHolder.configureConstraintWeight(soft1, HardSoftLongScore.ofSoft(10L));
+        Rule soft2 = mockRule("soft2");
+        scoreHolder.configureConstraintWeight(soft2, HardSoftLongScore.ofSoft(100L));
+
+        scoreHolder.penalize(mockRuleContext(hard1));
+        assertEquals(HardSoftLongScore.of(-10L, 0L), scoreHolder.extractScore(0));
+
+        scoreHolder.penalize(mockRuleContext(hard2), 2L);
+        assertEquals(HardSoftLongScore.of(-210L, 0L), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft1));
+        assertEquals(HardSoftLongScore.of(-210L, 10L), scoreHolder.extractScore(0));
+
+        scoreHolder.reward(mockRuleContext(soft2), 3L);
+        assertEquals(HardSoftLongScore.of(-210L, 310L), scoreHolder.extractScore(0));
     }
 
 }

@@ -19,7 +19,6 @@ package org.optaplanner.examples.conferencescheduling.domain;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -32,6 +31,9 @@ public class Timeslot extends AbstractPersistable {
     private Set<TalkType> talkTypeSet;
     private Set<String> tagSet;
 
+    // Cached
+    private Integer durationInMinutes;
+
     public Timeslot() {
     }
 
@@ -43,16 +45,25 @@ public class Timeslot extends AbstractPersistable {
         return startDateTime.toLocalDate();
     }
 
-    public long getDurationInMinutes() {
-        return Duration.between(startDateTime, endDateTime).toMinutes();
+    public Integer getDurationInMinutes() {
+        return durationInMinutes;
     }
 
-    public boolean overlaps(Timeslot other) {
+    public boolean overlapsTime(Timeslot other) {
         if (this == other) {
             return true;
         }
         return startDateTime.compareTo(other.endDateTime) < 0
                 && other.startDateTime.compareTo(endDateTime) < 0;
+    }
+
+    public int getOverlapInMinutes(Timeslot other) {
+        if (this == other) {
+            return durationInMinutes;
+        }
+        LocalDateTime startMaximum = (startDateTime.compareTo(other.startDateTime) < 0) ? other.startDateTime : startDateTime;
+        LocalDateTime endMinimum = (endDateTime.compareTo(other.endDateTime) < 0) ? endDateTime : other.endDateTime;
+        return (int) Duration.between(startMaximum, endMinimum).toMinutes();
     }
 
     public boolean startsAfter(Timeslot other) {
@@ -71,6 +82,24 @@ public class Timeslot extends AbstractPersistable {
         return startDateTime.toLocalDate().equals(other.getStartDateTime().toLocalDate());
     }
 
+    public boolean pauseExists(Timeslot other, int pauseInMinutes) {
+        if (this.overlapsTime(other)) {
+            return false;
+        }
+        if (!this.isOnSameDayAs(other)) {
+            return true;
+        }
+        if (this.startsAfter(other)) {
+            // TODO use Duration.between(a, b).toMinutes()
+            return (this.getStartDateTime().getHour() * 60 + this.getStartDateTime().getMinute())
+                    - (other.getEndDateTime().getHour() * 60 + other.getEndDateTime().getMinute()) >= pauseInMinutes;
+        } else {
+            // TODO use Duration.between(a, b).toMinutes()
+            return (other.getStartDateTime().getHour() * 60 + other.getStartDateTime().getMinute())
+                    - (this.getEndDateTime().getHour() * 60 + this.getEndDateTime().getMinute()) >= pauseInMinutes;
+        }
+    }
+
     @Override
     public String toString() {
         return startDateTime + "-" + endDateTime.toLocalTime();
@@ -86,6 +115,8 @@ public class Timeslot extends AbstractPersistable {
 
     public void setStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
+        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
+                : (int) Duration.between(startDateTime, endDateTime).toMinutes();
     }
 
     public LocalDateTime getEndDateTime() {
@@ -94,6 +125,8 @@ public class Timeslot extends AbstractPersistable {
 
     public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
+        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
+                : (int) Duration.between(startDateTime, endDateTime).toMinutes();
     }
 
     public Set<TalkType> getTalkTypeSet() {
@@ -123,11 +156,15 @@ public class Timeslot extends AbstractPersistable {
 
     public Timeslot withStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
+        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
+                : (int) Duration.between(startDateTime, endDateTime).toMinutes();
         return this;
     }
 
     public Timeslot withEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
+        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
+                : (int) Duration.between(startDateTime, endDateTime).toMinutes();
         return this;
     }
 }
