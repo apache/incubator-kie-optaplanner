@@ -27,7 +27,7 @@
   <inceptionYear>2006</inceptionYear>
 
   <properties>
-    <findbugs.failOnViolation>true</findbugs.failOnViolation>
+    <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
   </properties>
 
   <repositories>
@@ -194,14 +194,6 @@
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
-          <configuration>
-            <maxRank>14</maxRank>
-            <includeTests>true</includeTests>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
