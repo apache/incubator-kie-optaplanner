@@ -23,14 +23,17 @@ import org.mockito.Mockito;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class PhaseLifecycleTest {
 
@@ -78,4 +81,35 @@ public class PhaseLifecycleTest {
         PlannerAssert.verifyPhaseLifecycle(listener, 0, 0, 0);
     }
 
+    @Test
+    public void verifyScoreCalculationSpeed() {
+        // prepare solver
+        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataSolution.class, TestdataEntity.class);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        // prepare solution
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        // add listener and solve
+        ScoreCalculationCountListener listener = new ScoreCalculationCountListener();
+        ((DefaultSolver<TestdataSolution>) solver).addPhaseLifecycleListener(listener);
+        solver.solve(solution);
+        assertThat(listener.scoreCalculationCount).isPositive();
+        assertThat(listener.scoreCalculationSpeed).isPositive();
+    }
+
+    private static class ScoreCalculationCountListener extends PhaseLifecycleListenerAdapter<TestdataSolution> {
+
+        private long scoreCalculationCount;
+        private long scoreCalculationSpeed;
+
+        @Override
+        public void solvingEnded(DefaultSolverScope<TestdataSolution> solverScope) {
+            scoreCalculationCount = solverScope.getScoreCalculationCount();
+            scoreCalculationSpeed = solverScope.getScoreCalculationSpeed();
+        }
+    }
 }

@@ -220,8 +220,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
-        super.solvingEnded(solverScope);
         solverScope.endingNow();
+        super.solvingEnded(solverScope);
     }
 
     public void outerSolvingEnded(DefaultSolverScope<Solution_> solverScope) {
