@@ -676,7 +676,7 @@ Understand these guidelines to decide the hardware for a Planner service:
 ** Improving CPU speed directly increases the <<scoreCalculationSpeed,score calculation speed>>.
 *** If the CPU power is twice as fast, it takes half the time to find the same result. However, this does not guarantee that it finds a better result in the same time, nor that it finds a similar result for a problem twice as a big in the same time.
 *** Increasing CPU power usually does not resolve scaling issues, because planning problems scale exponentially. Power tweaking the solver configuration has far better results for scaling issues than throwing hardware at it.
-** During the `solve()` method, the CPU power will max out until it returns (except in <<daemon,daemon mode>> or if your <<SolverEventListener,SolverEventListener>> writes the best solution to disk or the network).
+** During the `solve()` method, the CPU power will max out until it returns (except in <<daemon,daemon mode>> or if your <<BestSolutionListener,BestSolutionListener>> writes the best solution to disk or the network).
 * **Number of CPU cores**: one CPU core per active Solver, plus at least one one for the operating system.
 ** So in a multitenant application, which has one Solver per tenant, this means one CPU core per tenant, unless the number of solver threads is limited, as that limits the number of tenants being solved in parallel.
 ** With Partitioned Search, presume one CPU core per partition (per active tenant), unless the number of partition threads is limited.

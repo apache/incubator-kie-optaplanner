@@ -83,7 +83,7 @@ public class VehicleRoutingSolverManager implements Serializable {
 
     public synchronized boolean solve(final String sessionId) {
         final Solver<VehicleRoutingSolution> solver = solverFactory.buildSolver();
-        solver.addEventListener(event -> {
+        solver.addBestSolutionListener(event -> {
             VehicleRoutingSolution bestSolution = event.getNewBestSolution();
             synchronized (VehicleRoutingSolverManager.this) {
                 sessionSolutionMap.put(sessionId, bestSolution);

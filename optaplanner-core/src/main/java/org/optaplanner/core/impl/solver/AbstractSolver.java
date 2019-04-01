@@ -16,19 +16,24 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.event.BestSolutionListener;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.SolverListener;
 import org.optaplanner.core.impl.partitionedsearch.PartitionSolver;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.event.SolverEventSupport;
+import org.optaplanner.core.impl.solver.event.BestSolutionListenerSupport;
+import org.optaplanner.core.impl.solver.event.DeprecatedBestSolutionListenerSupport;
+import org.optaplanner.core.impl.solver.event.SolverListenerSupport;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -44,7 +49,9 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  */
 public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
 
-    protected final SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
+    protected final SolverListenerSupport<Solution_> solverListenerSupport = new SolverListenerSupport<>(this);
+    protected final BestSolutionListenerSupport<Solution_> bestSolutionListenerSupport = new BestSolutionListenerSupport<>(this);
+    protected final DeprecatedBestSolutionListenerSupport<Solution_> deprecatedBestSolutionListenerSupport = new DeprecatedBestSolutionListenerSupport<>(this);
     protected final PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
     protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
@@ -60,7 +67,8 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
             List<Phase<Solution_>> phaseList) {
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.termination = termination;
-        bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
+        bestSolutionRecaller.setBestSolutionListenerSupport(bestSolutionListenerSupport);
+        bestSolutionRecaller.setDeprecatedBestSolutionListenerSupport(deprecatedBestSolutionListenerSupport);
         this.phaseList = phaseList;
         for (Phase<Solution_> phase : phaseList) {
             phase.setSolverPhaseLifecycleSupport(phaseLifecycleSupport);
@@ -72,6 +80,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     // ************************************************************************
 
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+        solverListenerSupport.fireSolvingStarted(solverScope);
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
         termination.solvingStarted(solverScope);
@@ -100,6 +109,8 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         bestSolutionRecaller.solvingEnded(solverScope);
         termination.solvingEnded(solverScope);
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
+        solverScope.endingNow();
+        solverListenerSupport.fireSolvingEnded(solverScope);
     }
 
     // ************************************************************************
@@ -107,13 +118,53 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     // ************************************************************************
 
     @Override
-    public void addEventListener(SolverEventListener<Solution_> eventListener) {
-        solverEventSupport.addEventListener(eventListener);
+    public void addSolverListener(SolverListener<Solution_> listener) {
+        if (isSolving()) {
+            throw new ConcurrentModificationException("The solver is solving.");
+        }
+        solverListenerSupport.addEventListener(listener);
     }
 
     @Override
-    public void removeEventListener(SolverEventListener<Solution_> eventListener) {
-        solverEventSupport.removeEventListener(eventListener);
+    public void removeSolverListener(SolverListener<Solution_> listener) {
+        if (isSolving()) {
+            throw new ConcurrentModificationException("The solver is solving.");
+        }
+        solverListenerSupport.removeEventListener(listener);
+    }
+
+    @Override
+    public void addBestSolutionListener(BestSolutionListener<Solution_> listener) {
+        if (isSolving()) {
+            throw new ConcurrentModificationException("The solver is solving.");
+        }
+        bestSolutionListenerSupport.addEventListener(listener);
+    }
+
+    @Override
+    public void removeBestSolutionListener(BestSolutionListener<Solution_> listener) {
+        if (isSolving()) {
+            throw new ConcurrentModificationException("The solver is solving.");
+        }
+        bestSolutionListenerSupport.removeEventListener(listener);
+    }
+
+    @Override
+    @Deprecated
+    public void addEventListener(SolverEventListener<Solution_> listener) {
+        if (isSolving()) {
+            throw new ConcurrentModificationException("The solver is solving.");
+        }
+        deprecatedBestSolutionListenerSupport.addEventListener(listener);
+    }
+
+    @Override
+    @Deprecated
+    public void removeEventListener(SolverEventListener<Solution_> listener) {
+        if (isSolving()) {
+            throw new ConcurrentModificationException("The solver is solving.");
+        }
+        deprecatedBestSolutionListenerSupport.removeEventListener(listener);
     }
 
     /**

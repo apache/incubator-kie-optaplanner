@@ -226,7 +226,7 @@ public class SolutionBusiness<Solution_> {
     }
 
     public void registerForBestSolutionChanges(final SolverAndPersistenceFrame solverAndPersistenceFrame) {
-        solver.addEventListener(event -> {
+        solver.addBestSolutionListener(event -> {
             // Called on the Solver thread, so not on the Swing Event thread
             /*
              * Avoid ConcurrentModificationException when there is an unprocessed ProblemFactChange

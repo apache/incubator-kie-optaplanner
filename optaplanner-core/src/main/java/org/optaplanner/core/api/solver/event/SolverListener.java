@@ -24,16 +24,28 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
- * @deprecated in favor of {@link BestSolutionListener}. Will be removed in 8.0.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@Deprecated // TODO remove in 8.0
-public interface SolverEventListener<Solution_> extends EventListener {
+@FunctionalInterface
+public interface SolverListener<Solution_> extends EventListener {
 
     /**
+     * Called when the solver starts, including after every {@link Solver#addProblemFactChange(ProblemFactChange) restart}.
+     * <p>
+     * Called from the solver thread.
+     * <b>Should return fast, because it steals time from the {@link Solver}.</b>
      * @param event never null
-     * @deprecated in favor of {@link BestSolutionListener#bestSolutionChanged(BestSolutionChangedEvent)}
      */
-    void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event);
+    default void solvingStarted(SolvingStartedEvent<Solution_> event) {
+    }
+
+    /**
+     * Called when the solver ends, including before every {@link Solver#addProblemFactChange(ProblemFactChange) restart}.
+     * <p>
+     * Called from the solver thread.
+     * <b>Should return fast, because it steals time from the {@link Solver}.</b>
+     * @param event never null
+     */
+    void solvingEnded(SolvingEndedEvent<Solution_> event);
 
 }

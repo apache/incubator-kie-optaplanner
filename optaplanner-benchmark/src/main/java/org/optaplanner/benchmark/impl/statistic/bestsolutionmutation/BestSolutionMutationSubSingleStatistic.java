@@ -23,7 +23,7 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.BestSolutionListener;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -49,15 +49,15 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
                 = (InnerScoreDirectorFactory<Solution_>) solver.getScoreDirectorFactory();
         SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
         listener.setMutationCounter(new MutationCounter<>(solutionDescriptor));
-        solver.addEventListener(listener);
+        solver.addBestSolutionListener(listener);
     }
 
     @Override
     public void close(Solver<Solution_> solver) {
-        solver.removeEventListener(listener);
+        solver.removeBestSolutionListener(listener);
     }
 
-    private class BestSolutionMutationSubSingleStatisticListener implements SolverEventListener<Solution_> {
+    private class BestSolutionMutationSubSingleStatisticListener implements BestSolutionListener<Solution_> {
 
         private MutationCounter<Solution_> mutationCounter;
 

@@ -16,24 +16,27 @@
 
 package org.optaplanner.core.api.solver.event;
 
-import java.util.EventListener;
+import java.util.EventObject;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
- * @deprecated in favor of {@link BestSolutionListener}. Will be removed in 8.0.
+ * Delivered when the solver starts, including after every {@link Solver#addProblemFactChange(ProblemFactChange) restart}.
+ * Delivered in the solver thread (which is the thread that calls {@link Solver#solve}).
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@Deprecated // TODO remove in 8.0
-public interface SolverEventListener<Solution_> extends EventListener {
+public class SolvingStartedEvent<Solution_> extends EventObject {
+
+    private final Solver<Solution_> solver;
 
     /**
-     * @param event never null
-     * @deprecated in favor of {@link BestSolutionListener#bestSolutionChanged(BestSolutionChangedEvent)}
+     * @param solver never null
      */
-    void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event);
+    public SolvingStartedEvent(Solver<Solution_> solver) {
+        super(solver);
+        this.solver = solver;
+    }
 
 }

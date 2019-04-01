@@ -637,40 +637,39 @@ This guarantees a graceful shutdown when an `ExecutorService` (such as a thread 
 ====
 
 
-[[SolverEventListener]]
-== SolverEventListener
+[[BestSolutionListener]]
+== BestSolutionListener
 
 Each time a new best solution is found, a new `BestSolutionChangedEvent` is fired in the `Solver` thread.
 
-To listen to such events, add a `SolverEventListener` to the ``Solver``:
+To listen to such events, add a `BestSolutionListener` to the ``Solver``:
 
 [source,java,options="nowrap"]
 ----
 public interface Solver<Solution_> {
     ...
 
-    void addEventListener(SolverEventListener<S> eventListener);
-    void removeEventListener(SolverEventListener<S> eventListener);
+    void addBestSolutionListener(BestSolutionListener<Solution_> listener);
 
 }
 ----
 
-The ``BestSolutionChangedEvent``'s `newBestSolution` may not be initialized or feasible.
+The ``BestSolutionChangedEvent``'s `newBestSolution` can be uninitialized or infeasible.
 Use the `isFeasible()` method on ``BestSolutionChangedEvent``'s new best `Score` to detect such cases:
 
 [source,java,options="nowrap"]
 ----
-    solver.addEventListener(new SolverEventListener<CloudBalance>() {
-        public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) {
-            // Ignore infeasible (including uninitialized) solutions
-            if (event.getNewBestSolution().getScore().isFeasible()) {
-                ...
-            }
+    solver.addBestSolutionListener(event -> {
+        CloudBalance solution = event.getNewBestSolution();
+        // Ignore infeasible (including uninitialized) solutions
+        if (solution.getScore().isFeasible()) {
+            ...
         }
     });
 ----
 
-Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions, but also accept infeasible solutions.
+Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions,
+but also accept infeasible solutions.
 
 [WARNING]
 ====

@@ -23,7 +23,7 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.BestSolutionListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class BestScoreSubSingleStatistic<Solution_>
@@ -42,15 +42,15 @@ public class BestScoreSubSingleStatistic<Solution_>
 
     @Override
     public void open(Solver<Solution_> solver) {
-        solver.addEventListener(listener);
+        solver.addBestSolutionListener(listener);
     }
 
     @Override
     public void close(Solver<Solution_> solver) {
-        solver.removeEventListener(listener);
+        solver.removeBestSolutionListener(listener);
     }
 
-    private class BestScoreSubSingleStatisticListener implements SolverEventListener<Solution_> {
+    private class BestScoreSubSingleStatisticListener implements BestSolutionListener<Solution_> {
 
         @Override
         public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {

@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.BestSolutionListener;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 
@@ -48,7 +48,7 @@ public class CloudBalancingWebAction {
         final Solver<CloudBalance> solver = (Solver<CloudBalance>) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
         final CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
 
-        solver.addEventListener(new SolverEventListener<CloudBalance>() {
+        solver.addBestSolutionListener(new BestSolutionListener<CloudBalance>() {
             @Override
             public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) {
                 CloudBalance bestSolution = event.getNewBestSolution();

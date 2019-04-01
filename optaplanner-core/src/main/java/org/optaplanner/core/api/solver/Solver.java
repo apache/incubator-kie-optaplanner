@@ -26,7 +26,11 @@ import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+import org.optaplanner.core.api.solver.event.BestSolutionListener;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.SolverListener;
+import org.optaplanner.core.api.solver.event.SolvingEndedEvent;
+import org.optaplanner.core.api.solver.event.SolvingStartedEvent;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -52,7 +56,7 @@ public interface Solver<Solution_> {
      * <p>
      * The {@link #solve} method also returns the best solution,
      * but this method is useful in rare asynchronous situations (although
-     * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
+     * {@link BestSolutionListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
      * <p>
      * This method is thread-safe.
      * @return never null, but it can return the uninitialized {@link PlanningSolution} with a {@link Score} null.
@@ -88,12 +92,13 @@ public interface Solver<Solution_> {
     String explainBestScore();
 
     /**
-     * Returns the amount of milliseconds spent solving since the last start.
+     * Returns the amount of milliseconds spent solving since the last (re)start.
      * If it hasn't started it yet, it returns 0.
-     * If it hasn't ended yet, it returns the time between the last start and now.
-     * If it has ended already, it returns the time between the last start and the ending.
+     * If it hasn't ended yet, it returns the time between the last (re)start and now.
+     * If it has ended already, it returns the time between the last (re)start and the ending.
      * <p>
      * A {@link #addProblemFactChange(ProblemFactChange)} triggers a restart which resets this time.
+     * To measure every restart, use {@link #addSolverListener(SolverListener)} instead.
      * <p>
      * This method is thread-safe.
      * @return the amount of milliseconds spent solving since the last (re)start, at least 0
@@ -177,14 +182,50 @@ public interface Solver<Solution_> {
     boolean isEveryProblemFactChangeProcessed();
 
     /**
-     * @param eventListener never null
+     * Listens to {@link SolvingStartedEvent} and {@link SolvingEndedEvent}.
+     * <p>
+     * Do not call while {@link #solve(Object) solving}.
+     * @param listener never null
      */
-    void addEventListener(SolverEventListener<Solution_> eventListener);
+    void addSolverListener(SolverListener<Solution_> listener);
 
     /**
-     * @param eventListener never null
+     * Removes listener added by {@link #addSolverListener(SolverListener)}.
+     * <p>
+     * Do not call while {@link #solve(Object) solving}.
+     * @param listener never null
      */
-    void removeEventListener(SolverEventListener<Solution_> eventListener);
+    void removeSolverListener(SolverListener<Solution_> listener);
+
+    /**
+     * Listens to {@link BestSolutionChangedEvent}.
+     * <p>
+     * Do not call while {@link #solve(Object) solving}.
+     * @param listener never null
+     */
+    void addBestSolutionListener(BestSolutionListener<Solution_> listener);
+
+    /**
+     * Removes listener added by {@link #addBestSolutionListener(BestSolutionListener)}.
+     * <p>
+     * Do not call while {@link #solve(Object) solving}.
+     * @param listener never null
+     */
+    void removeBestSolutionListener(BestSolutionListener<Solution_> listener);
+
+    /**
+     * @param listener never null
+     * @deprecated in favor of {@link #addBestSolutionListener(BestSolutionListener)}
+     */
+    @Deprecated
+    void addEventListener(SolverEventListener<Solution_> listener);
+
+    /**
+     * @param listener never null
+     * @deprecated in favor of {@link #removeBestSolutionListener(BestSolutionListener)}
+     */
+    @Deprecated
+    void removeEventListener(SolverEventListener<Solution_> listener);
 
     /**
      * Useful to reuse the {@link Score} calculation in a UI (or even to explain the {@link Score} in a UI).

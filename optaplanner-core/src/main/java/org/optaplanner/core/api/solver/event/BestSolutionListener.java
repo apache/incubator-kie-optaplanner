@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2010 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,15 +24,26 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
- * @deprecated in favor of {@link BestSolutionListener}. Will be removed in 8.0.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@Deprecated // TODO remove in 8.0
-public interface SolverEventListener<Solution_> extends EventListener {
+@FunctionalInterface
+public interface BestSolutionListener<Solution_> extends EventListener {
 
     /**
+     * Called once every time when the solver finds a better {@link PlanningSolution}.
+     * The {@link PlanningSolution} is guaranteed to be initialized.
+     * Early in the solving process it's usually called more frequently than later on,
+     * due to the law of diminishing returns.
+     * <p>
+     * Called from the solver thread.
+     * <b>Should return fast, because it steals time from the {@link Solver}.</b>
+     * <p>
+     * In real-time planning,
+     * when {@link Solver#addProblemFactChange(ProblemFactChange)} has been called,
+     * all {@link ProblemFactChange}s in the queue will be processed and this method is called only once.
+     * In that case, the former best {@link PlanningSolution} is considered stale,
+     * so it doesn't matter whether the new {@link Score} is better or not.
      * @param event never null
-     * @deprecated in favor of {@link BestSolutionListener#bestSolutionChanged(BestSolutionChangedEvent)}
      */
     void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event);
 

@@ -23,7 +23,8 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.event.SolverEventSupport;
+import org.optaplanner.core.impl.solver.event.BestSolutionListenerSupport;
+import org.optaplanner.core.impl.solver.event.DeprecatedBestSolutionListenerSupport;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,8 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     protected boolean assertShadowVariablesAreNotStale = false;
     protected boolean assertBestScoreIsUnmodified = false;
 
-    protected SolverEventSupport<Solution_> solverEventSupport;
+    protected BestSolutionListenerSupport<Solution_> bestSolutionListenerSupport;
+    protected DeprecatedBestSolutionListenerSupport<Solution_> deprecatedBestSolutionListenerSupport;
 
     public void setAssertInitialScoreFromScratch(boolean assertInitialScoreFromScratch) {
         this.assertInitialScoreFromScratch = assertInitialScoreFromScratch;
@@ -54,8 +56,12 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         this.assertBestScoreIsUnmodified = assertBestScoreIsUnmodified;
     }
 
-    public void setSolverEventSupport(SolverEventSupport<Solution_> solverEventSupport) {
-        this.solverEventSupport = solverEventSupport;
+    public void setBestSolutionListenerSupport(BestSolutionListenerSupport<Solution_> bestSolutionListenerSupport) {
+        this.bestSolutionListenerSupport = bestSolutionListenerSupport;
+    }
+
+    public void setDeprecatedBestSolutionListenerSupport(DeprecatedBestSolutionListenerSupport<Solution_> deprecatedBestSolutionListenerSupport) {
+        this.deprecatedBestSolutionListenerSupport = deprecatedBestSolutionListenerSupport;
     }
 
     // ************************************************************************
@@ -133,7 +139,8 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         solverScope.setBestSolution(bestSolution);
         solverScope.setBestScore(bestScore);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
-        solverEventSupport.fireBestSolutionChanged(solverScope, bestSolution);
+        bestSolutionListenerSupport.fireBestSolutionChanged(solverScope, bestSolution);
+        deprecatedBestSolutionListenerSupport.fireBestSolutionChanged(solverScope, bestSolution);
     }
 
 }

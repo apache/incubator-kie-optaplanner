@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.api.solver.event.BestSolutionListener;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
@@ -88,7 +88,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         assertEquals(12, (solver.getBestSolution()).getProcessList().size());
     }
 
-    private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {
+    private class SolverThread extends Thread implements BestSolutionListener<CloudBalance> {
 
         private final Solver<CloudBalance> solver;
         private final CloudBalance cloudBalance;
@@ -100,7 +100,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
 
         @Override
         public void run() { // In solver thread
-            solver.addEventListener(this);
+            solver.addBestSolutionListener(this);
             nextStage(); // For an empty entity list, there is no bestSolutionChanged() event currently
             try {
                 solver.solve(cloudBalance);

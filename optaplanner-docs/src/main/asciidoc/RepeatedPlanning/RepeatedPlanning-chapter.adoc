@@ -451,7 +451,7 @@ This implies the construction heuristic runs again, but because little or no pla
 
 . Each configured `Termination` resets (both in solver and phase configuration), but a previous call to `terminateEarly()` is not undone.
 +
-`Termination` is not usually configured (except in daemon mode); instead, `Solver.terminateEarly()` is called when the results are needed. Alternatively, configure a `Termination` and use the daemon mode in combination with `<<SolverEventListener,BestSolutionChangedEvent>>` as described in the following section.
+`Termination` is not usually configured (except in daemon mode); instead, `Solver.terminateEarly()` is called when the results are needed. Alternatively, configure a `Termination` and use the daemon mode in combination with `<<BestSolutionListener,BestSolutionChangedEvent>>` as described in the following section.
 
 
 [[daemon]]
@@ -482,7 +482,7 @@ To use the `Solver` in daemon mode:
 Do not forget to call `Solver.terminateEarly()` when your application needs to shutdown to avoid killing the solver thread unnaturally.
 ====
 
-. Subscribe to the `<<SolverEventListener,BestSolutionChangedEvent>>` to process new best solutions found by the solver thread.
+. Subscribe to the `<<BestSolutionListener,BestSolutionChangedEvent>>` to process new best solutions found by the solver thread.
 +
 A `BestSolutionChangedEvent` does not guarantee that every `ProblemFactChange` has been processed already, nor that the solution is initialized and feasible.
 
