@@ -33,6 +33,7 @@ import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,12 +202,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     public Long getScoreCalculationSpeed() {
-        long timeMillisSpent = this.timeMillisSpent;
-        if (timeMillisSpent == 0L) {
-            // Avoid divide by zero exception on a fast CPU
-            timeMillisSpent = 1L;
-        }
-        return scoreCalculationCount * 1000L / timeMillisSpent;
+        return ScoreUtils.calculateScoreCalculationSpeed(scoreCalculationCount, timeMillisSpent);
     }
 
     public boolean isWinner() {

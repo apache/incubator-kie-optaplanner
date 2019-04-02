@@ -25,6 +25,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.ChildThreadType;
@@ -208,12 +209,7 @@ public class DefaultSolverScope<Solution_> {
      * @return at least 0, per second
      */
     public long getScoreCalculationSpeed() {
-        long timeMillisSpent = getTimeMillisSpent();
-        // Avoid divide by zero exception on a run faster than the clock accuracy (which can be 15 milliseconds)
-        // In that case, the 0 milliseconds gets rounded up to 1 millisecond,
-        // which is closer to the correct result than positive infinity or MAX_VALUE.
-        // Ideally, we'd replace that 0 by the half of the clock accuracy instead, but that information is unavailable.
-        return getScoreCalculationCount() * 1000L / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
+        return ScoreUtils.calculateScoreCalculationSpeed(getScoreCalculationCount(), getTimeMillisSpent());
     }
 
     public void setWorkingSolutionFromBestSolution() {

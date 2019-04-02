@@ -83,6 +83,17 @@ public class ScoreUtils {
         return levelDoubles;
     }
 
+    public static long calculateScoreCalculationSpeed(long scoreCalculationCount, long timeMillisSpent) {
+        if (timeMillisSpent == 0L) {
+            // Avoid divide by zero exception on a run faster than the clock accuracy (which can be 15 milliseconds)
+            // In that case, the 0 milliseconds gets rounded up to 1 millisecond,
+            // which is closer to returning the correct result than positive infinity or MAX_VALUE.
+            // Ideally, we'd replace that 0 by the half of the clock accuracy instead, but that information is unavailable.
+            timeMillisSpent = 1L;
+        }
+        return scoreCalculationCount * 1000L / timeMillisSpent;
+    }
+
     /**
      *
      * @param totalDiffNumbers never null

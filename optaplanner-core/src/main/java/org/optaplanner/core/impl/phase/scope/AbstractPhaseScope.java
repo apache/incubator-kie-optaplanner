@@ -25,6 +25,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -136,9 +137,7 @@ public abstract class AbstractPhaseScope<Solution_> {
      * @return at least 0, per second
      */
     public long getPhaseScoreCalculationSpeed() {
-        long timeMillisSpent = getPhaseTimeMillisSpent();
-        // Avoid divide by zero exception on a fast CPU
-        return getPhaseScoreCalculationCount() * 1000L / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
+        return ScoreUtils.calculateScoreCalculationSpeed(getPhaseScoreCalculationCount(), getPhaseTimeMillisSpent());
     }
 
     public InnerScoreDirector<Solution_> getScoreDirector() {

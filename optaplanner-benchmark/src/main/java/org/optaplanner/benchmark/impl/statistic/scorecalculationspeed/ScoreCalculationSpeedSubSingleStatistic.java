@@ -24,6 +24,7 @@ import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -81,7 +82,8 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
                     // Avoid divide by zero exception on a fast CPU
                     timeMillisSpentInterval = 1L;
                 }
-                long scoreCalculationSpeed = calculationCountInterval * 1000L / timeMillisSpentInterval;
+                long scoreCalculationSpeed = ScoreUtils.calculateScoreCalculationSpeed(
+                        calculationCountInterval, timeMillisSpentInterval);
                 pointList.add(new ScoreCalculationSpeedStatisticPoint(timeMillisSpent, scoreCalculationSpeed));
                 lastCalculationCount = calculationCount;
 
