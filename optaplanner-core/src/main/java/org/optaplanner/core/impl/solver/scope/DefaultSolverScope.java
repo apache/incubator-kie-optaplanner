@@ -209,7 +209,10 @@ public class DefaultSolverScope<Solution_> {
      */
     public long getScoreCalculationSpeed() {
         long timeMillisSpent = getTimeMillisSpent();
-        // Avoid divide by zero exception on a fast CPU
+        // Avoid divide by zero exception on a run faster than the clock accuracy (which can be 15 milliseconds)
+        // In that case, the 0 milliseconds gets rounded up to 1 millisecond,
+        // which is closer to the correct result than positive infinity or MAX_VALUE.
+        // Ideally, we'd replace that 0 by the half of the clock accuracy instead, but that information is unavailable.
         return getScoreCalculationCount() * 1000L / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
     }
 
