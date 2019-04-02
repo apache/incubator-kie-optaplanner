@@ -51,7 +51,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     }
 
     /**
-     * @return {@code >= 0}, the amount of millis spent since the {@link Solver} started
+     * @return {@code >= 0},  the amount of millis spent since the last {@link Solver} (re)start
      * until {@link #getNewBestSolution()} was found
      */
     public long getTimeMillisSpent() {

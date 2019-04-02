@@ -18,7 +18,10 @@ package org.optaplanner.core.api.solver.event;
 
 import java.util.Arrays;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -47,6 +50,7 @@ public class SolverListenerTest {
         solver.removeSolverListener(otherListener);
         solution = solver.solve(solution);
         verify(listener, times(1)).solvingStarted(any());
+        // TODO Upgrade to Mockito 2.0 and verify that the event's scoreCalculationCount is at least 1
         verify(listener, times(1)).solvingEnded(any());
         verify(otherListener, never()).solvingStarted(any());
         verify(otherListener, never()).solvingEnded(any());

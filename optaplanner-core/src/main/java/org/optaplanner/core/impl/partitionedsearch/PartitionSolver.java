@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.partitionedsearch;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -32,6 +33,8 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
+
+    protected boolean solving = false;
 
     protected final DefaultSolverScope<Solution_> solverScope;
 
@@ -76,7 +79,7 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean isSolving() {
-        throw new UnsupportedOperationException();
+        return solving;
     }
 
     @Override
@@ -110,6 +113,7 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public Solution_ solve(Solution_ problem) {
+        solving = true;
         solverScope.initializeYielding();
         try {
             solverScope.setBestSolution(problem);
@@ -118,6 +122,7 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
             solvingEnded(solverScope);
             return solverScope.getBestSolution();
         } finally {
+            solving = false;
             solverScope.destroyYielding();
         }
     }

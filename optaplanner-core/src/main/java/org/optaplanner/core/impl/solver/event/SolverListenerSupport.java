@@ -17,10 +17,7 @@
 package org.optaplanner.core.impl.solver.event;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.BestSolutionListener;
 import org.optaplanner.core.api.solver.event.SolverListener;
 import org.optaplanner.core.api.solver.event.SolvingEndedEvent;
 import org.optaplanner.core.api.solver.event.SolvingStartedEvent;
@@ -54,7 +51,9 @@ public class SolverListenerSupport<Solution_> extends AbstractEventSupport<Solve
         if (eventListenerSet.isEmpty()) {
             return;
         }
-        final SolvingEndedEvent<Solution_> event = new SolvingEndedEvent<>(solver);
+        long timeMillisSpent = solverScope.getTimeMillisSpent();
+        long scoreCalculationCount = solverScope.getScoreCalculationCount();
+        SolvingEndedEvent<Solution_> event = new SolvingEndedEvent<>(solver, timeMillisSpent, scoreCalculationCount);
         for (SolverListener<Solution_> listener : eventListenerSet) {
             listener.solvingEnded(event);
         }

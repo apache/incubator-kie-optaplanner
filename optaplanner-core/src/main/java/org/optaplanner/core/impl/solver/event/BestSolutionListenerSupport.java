@@ -42,7 +42,7 @@ public class BestSolutionListenerSupport<Solution_> extends AbstractEventSupport
         }
         long timeMillisSpent = solverScope.getBestSolutionTimeMillisSpent();
         Score bestScore = solverScope.getBestScore();
-        final BestSolutionChangedEvent<Solution_> event = new BestSolutionChangedEvent<>(solver,
+        BestSolutionChangedEvent<Solution_> event = new BestSolutionChangedEvent<>(solver,
                 timeMillisSpent, newBestSolution, bestScore);
         for (BestSolutionListener<Solution_> listener : eventListenerSet) {
             listener.bestSolutionChanged(event);
