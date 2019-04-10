@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.event.BestSolutionListenerSupport;
-import org.optaplanner.core.impl.solver.event.DeprecatedBestSolutionListenerSupport;
+import org.optaplanner.core.impl.solver.event.DeprecatedSolverEventListenerSupport;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     protected boolean assertBestScoreIsUnmodified = false;
 
     protected BestSolutionListenerSupport<Solution_> bestSolutionListenerSupport;
-    protected DeprecatedBestSolutionListenerSupport<Solution_> deprecatedBestSolutionListenerSupport;
+    protected DeprecatedSolverEventListenerSupport<Solution_> deprecatedSolverEventListenerSupport;
 
     public void setAssertInitialScoreFromScratch(boolean assertInitialScoreFromScratch) {
         this.assertInitialScoreFromScratch = assertInitialScoreFromScratch;
@@ -60,8 +60,8 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         this.bestSolutionListenerSupport = bestSolutionListenerSupport;
     }
 
-    public void setDeprecatedBestSolutionListenerSupport(DeprecatedBestSolutionListenerSupport<Solution_> deprecatedBestSolutionListenerSupport) {
-        this.deprecatedBestSolutionListenerSupport = deprecatedBestSolutionListenerSupport;
+    public void setDeprecatedSolverEventListenerSupport(DeprecatedSolverEventListenerSupport<Solution_> deprecatedSolverEventListenerSupport) {
+        this.deprecatedSolverEventListenerSupport = deprecatedSolverEventListenerSupport;
     }
 
     // ************************************************************************
@@ -140,7 +140,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         solverScope.setBestScore(bestScore);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
         bestSolutionListenerSupport.fireBestSolutionChanged(solverScope, bestSolution);
-        deprecatedBestSolutionListenerSupport.fireBestSolutionChanged(solverScope, bestSolution);
+        deprecatedSolverEventListenerSupport.fireBestSolutionChanged(solverScope, bestSolution);
     }
 
 }

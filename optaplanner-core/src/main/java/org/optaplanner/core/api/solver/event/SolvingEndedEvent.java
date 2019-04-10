@@ -22,10 +22,7 @@ import java.util.EventObject;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -37,18 +34,16 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  */
 public class SolvingEndedEvent<Solution_> extends EventObject {
 
-    private final Solver<Solution_> solver;
     private final long timeMillisSpent;
     private final long scoreCalculationCount;
 
     /**
-     * @param solver never null
-     * @param timeMillisSpent
-     * @param scoreCalculationCount at least 0
+     * @param solver never null, the {@link #getSource() source} for this event
+     * @param timeMillisSpent {@code >= 0L}
+     * @param scoreCalculationCount {@code >= 0L}
      */
     public SolvingEndedEvent(Solver<Solution_> solver, long timeMillisSpent, long scoreCalculationCount) {
         super(solver);
-        this.solver = solver;
         this.timeMillisSpent = timeMillisSpent;
         this.scoreCalculationCount = scoreCalculationCount;
     }

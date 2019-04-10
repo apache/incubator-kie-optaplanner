@@ -29,14 +29,11 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  */
 public class SolvingStartedEvent<Solution_> extends EventObject {
 
-    private final Solver<Solution_> solver;
-
     /**
-     * @param solver never null
+     * @param solver never null, the {@link #getSource() source} for this event
      */
     public SolvingStartedEvent(Solver<Solution_> solver) {
         super(solver);
-        this.solver = solver;
     }
 
 }

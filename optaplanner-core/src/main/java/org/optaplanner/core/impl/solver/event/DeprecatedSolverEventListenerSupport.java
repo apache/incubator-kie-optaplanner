@@ -20,7 +20,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.BestSolutionListener;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
@@ -29,11 +28,11 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @Deprecated // TODO remove in 8.0
-public class DeprecatedBestSolutionListenerSupport<Solution_> extends AbstractEventSupport<SolverEventListener<Solution_>> {
+public class DeprecatedSolverEventListenerSupport<Solution_> extends AbstractEventSupport<SolverEventListener<Solution_>> {
 
     private final Solver<Solution_> solver;
 
-    public DeprecatedBestSolutionListenerSupport(Solver<Solution_> solver) {
+    public DeprecatedSolverEventListenerSupport(Solver<Solution_> solver) {
         this.solver = solver;
     }
 

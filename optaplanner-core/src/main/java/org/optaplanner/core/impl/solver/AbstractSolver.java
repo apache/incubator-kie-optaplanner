@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.event.BestSolutionListenerSupport;
-import org.optaplanner.core.impl.solver.event.DeprecatedBestSolutionListenerSupport;
+import org.optaplanner.core.impl.solver.event.DeprecatedSolverEventListenerSupport;
 import org.optaplanner.core.impl.solver.event.SolverListenerSupport;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -51,7 +51,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
 
     protected final SolverListenerSupport<Solution_> solverListenerSupport = new SolverListenerSupport<>(this);
     protected final BestSolutionListenerSupport<Solution_> bestSolutionListenerSupport = new BestSolutionListenerSupport<>(this);
-    protected final DeprecatedBestSolutionListenerSupport<Solution_> deprecatedBestSolutionListenerSupport = new DeprecatedBestSolutionListenerSupport<>(this);
+    protected final DeprecatedSolverEventListenerSupport<Solution_> deprecatedSolverEventListenerSupport = new DeprecatedSolverEventListenerSupport<>(this);
     protected final PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
     protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
@@ -68,7 +68,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.termination = termination;
         bestSolutionRecaller.setBestSolutionListenerSupport(bestSolutionListenerSupport);
-        bestSolutionRecaller.setDeprecatedBestSolutionListenerSupport(deprecatedBestSolutionListenerSupport);
+        bestSolutionRecaller.setDeprecatedSolverEventListenerSupport(deprecatedSolverEventListenerSupport);
         this.phaseList = phaseList;
         for (Phase<Solution_> phase : phaseList) {
             phase.setSolverPhaseLifecycleSupport(phaseLifecycleSupport);
@@ -155,7 +155,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         if (isSolving()) {
             throw new ConcurrentModificationException("The solver is solving.");
         }
-        deprecatedBestSolutionListenerSupport.addEventListener(listener);
+        deprecatedSolverEventListenerSupport.addEventListener(listener);
     }
 
     @Override
@@ -164,7 +164,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         if (isSolving()) {
             throw new ConcurrentModificationException("The solver is solving.");
         }
-        deprecatedBestSolutionListenerSupport.removeEventListener(listener);
+        deprecatedSolverEventListenerSupport.removeEventListener(listener);
     }
 
     /**

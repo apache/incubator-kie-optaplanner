@@ -37,7 +37,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     private final Score newBestScore;
 
     /**
-     * @param solver never null
+     * @param solver never null, the {@link #getSource() source} for this event
      * @param timeMillisSpent {@code >= 0L}
      * @param newBestSolution never null
      */

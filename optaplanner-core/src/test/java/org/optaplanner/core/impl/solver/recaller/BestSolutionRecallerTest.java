@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.event.BestSolutionListenerSupport;
-import org.optaplanner.core.impl.solver.event.DeprecatedBestSolutionListenerSupport;
+import org.optaplanner.core.impl.solver.event.DeprecatedSolverEventListenerSupport;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import static org.junit.Assert.*;
@@ -54,7 +54,7 @@ public class BestSolutionRecallerTest {
     private static <Solution_> BestSolutionRecaller<Solution_> createBestSolutionRecaller() {
         BestSolutionRecaller<Solution_> recaller = new BestSolutionRecaller<>();
         recaller.setBestSolutionListenerSupport(mock(BestSolutionListenerSupport.class));
-        recaller.setDeprecatedBestSolutionListenerSupport(mock(DeprecatedBestSolutionListenerSupport.class));
+        recaller.setDeprecatedSolverEventListenerSupport(mock(DeprecatedSolverEventListenerSupport.class));
         return recaller;
     }
 
