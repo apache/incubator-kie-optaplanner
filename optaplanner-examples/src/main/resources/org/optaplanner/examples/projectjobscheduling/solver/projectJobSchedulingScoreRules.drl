@@ -88,7 +88,7 @@ rule "totalProjectDelay"
         Allocation(jobType == JobType.SINK, endDate != null, $endDate : endDate,
                $criticalPathEndDate : projectCriticalPathEndDate)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, 0,  $criticalPathEndDate - $endDate);
+        scoreHolder.addSoftConstraintMatch(kcontext, 0, $criticalPathEndDate - $endDate);
 end
 
 

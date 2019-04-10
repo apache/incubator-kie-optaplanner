@@ -336,7 +336,7 @@ public class SolutionDescriptorTest {
         SolutionDescriptor<TestdataExtendedAutoDiscoverGetterSolution> solutionDescriptor
                 = TestdataExtendedAutoDiscoverGetterSolution.buildSubclassSolutionDescriptor();
         assertEquals("constraintConfiguration", solutionDescriptor.getConstraintConfigurationMemberAccessor().getName());
-        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "constraintConfiguration", "singleProblemFact",  "problemFactList");
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "constraintConfiguration", "singleProblemFact", "problemFactList");
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap());
         assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap(), "otherEntity");
         assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),

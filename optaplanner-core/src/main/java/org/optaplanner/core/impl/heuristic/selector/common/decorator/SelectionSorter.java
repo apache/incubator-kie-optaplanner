@@ -36,7 +36,7 @@ public interface SelectionSorter<Solution_, T> {
      * @param scoreDirector never null, the {@link ScoreDirector}
      * which has the {@link ScoreDirector#getWorkingSolution()} to which the selections belong or apply to
      * @param selectionList never null, a {@link List}
-     * of {@link PlanningEntity}, planningValue,  {@link Move} or {@link Selector}
+     * of {@link PlanningEntity}, planningValue, {@link Move} or {@link Selector}
      */
     void sort(ScoreDirector<Solution_> scoreDirector, List<T> selectionList);
 

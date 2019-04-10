@@ -64,7 +64,7 @@ public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSort
     /**
      * @param solution never null, the {@link PlanningSolution} to which the selections belong or apply to
      * @param selectionList never null, a {@link List}
-     * of {@link PlanningEntity}, planningValue,  {@link Move} or {@link Selector}
+     * of {@link PlanningEntity}, planningValue, {@link Move} or {@link Selector}
      */
     public void sort(Solution_ solution, List<T> selectionList) {
         SortedMap<Comparable, T> selectionMap = new TreeMap<>(appliedWeightComparator);

@@ -117,7 +117,7 @@ end
 
 rule "One TimeGrain break between two consecutive meetings"
     when
-        MeetingAssignment(startingTimeGrain != null,  $leftEnd : getLastTimeGrainIndex())
+        MeetingAssignment(startingTimeGrain != null, $leftEnd : getLastTimeGrainIndex())
         MeetingAssignment(startingTimeGrain != null, $leftEnd == startingTimeGrain.getGrainIndex() - 1)
     then
         scoreHolder.penalize(kcontext);

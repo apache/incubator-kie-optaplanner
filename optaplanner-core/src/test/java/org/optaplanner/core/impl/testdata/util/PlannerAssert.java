@@ -48,9 +48,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @see PlannerTestUtils
@@ -446,7 +444,7 @@ public class PlannerAssert extends Assert {
     }
 
     public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
-            long size,  String... codes) {
+            long size, String... codes) {
         assertAllCodesOfIterator(valueSelector.iterator(entity), codes);
         assertEquals(true, valueSelector.isCountable());
         assertEquals(false, valueSelector.isNeverEnding());
