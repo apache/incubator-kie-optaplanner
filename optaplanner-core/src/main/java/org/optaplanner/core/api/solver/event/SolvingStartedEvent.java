@@ -18,21 +18,19 @@ package org.optaplanner.core.api.solver.event;
 
 import java.util.EventObject;
 
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * Delivered when the solver starts, including after every {@link Solver#addProblemFactChange(ProblemFactChange) restart}.
  * Delivered in the solver thread (which is the thread that calls {@link Solver#solve}).
- * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SolvingStartedEvent<Solution_> extends EventObject {
+public class SolvingStartedEvent extends EventObject {
 
     /**
      * @param solver never null, the {@link #getSource() source} for this event
      */
-    public SolvingStartedEvent(Solver<Solution_> solver) {
+    public SolvingStartedEvent(Solver<?> solver) {
         super(solver);
     }
 

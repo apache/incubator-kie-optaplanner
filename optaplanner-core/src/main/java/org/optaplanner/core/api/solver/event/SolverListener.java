@@ -18,16 +18,14 @@ package org.optaplanner.core.api.solver.event;
 
 import java.util.EventListener;
 
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
- * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * Listens to {@link SolvingStartedEvent} and {@link SolvingEndedEvent}.
  */
 @FunctionalInterface
-public interface SolverListener<Solution_> extends EventListener {
+public interface SolverListener extends EventListener {
 
     /**
      * Called when the solver starts, including after every {@link Solver#addProblemFactChange(ProblemFactChange) restart}.
@@ -36,7 +34,7 @@ public interface SolverListener<Solution_> extends EventListener {
      * <b>Should return fast, because it steals time from the {@link Solver}.</b>
      * @param event never null
      */
-    default void solvingStarted(SolvingStartedEvent<Solution_> event) {
+    default void solvingStarted(SolvingStartedEvent event) {
     }
 
     /**
@@ -46,6 +44,6 @@ public interface SolverListener<Solution_> extends EventListener {
      * <b>Should return fast, because it steals time from the {@link Solver}.</b>
      * @param event never null
      */
-    void solvingEnded(SolvingEndedEvent<Solution_> event);
+    void solvingEnded(SolvingEndedEvent event);
 
 }

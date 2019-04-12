@@ -24,6 +24,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
+ * Listens to {@link BestSolutionChangedEvent}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @FunctionalInterface

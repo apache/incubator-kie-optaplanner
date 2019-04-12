@@ -18,10 +18,8 @@ package org.optaplanner.core.api.solver.event;
 
 import java.util.Arrays;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentCaptor;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -29,6 +27,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class SolverListenerTest {
@@ -43,14 +42,16 @@ public class SolverListenerTest {
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
-        SolverListener<TestdataSolution> listener = mock(SolverListener.class);
+        SolverListener listener = mock(SolverListener.class);
         solver.addSolverListener(listener);
-        SolverListener<TestdataSolution> otherListener = mock(SolverListener.class);
+        SolverListener otherListener = mock(SolverListener.class);
         solver.addSolverListener(otherListener);
         solver.removeSolverListener(otherListener);
         solution = solver.solve(solution);
         verify(listener, times(1)).solvingStarted(any());
-        // TODO Upgrade to Mockito 2.0 and verify that the event's scoreCalculationCount is at least 1
+        ArgumentCaptor<SolvingEndedEvent> eventCaptor = ArgumentCaptor.forClass(SolvingEndedEvent.class);
+        verify(listener, times(1)).solvingEnded(eventCaptor.capture());
+        assertTrue(eventCaptor.getValue().getScoreCalculationCount() >= 1);
         verify(listener, times(1)).solvingEnded(any());
         verify(otherListener, never()).solvingStarted(any());
         verify(otherListener, never()).solvingEnded(any());

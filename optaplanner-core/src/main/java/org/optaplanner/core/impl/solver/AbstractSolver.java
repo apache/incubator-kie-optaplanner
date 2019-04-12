@@ -118,7 +118,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     // ************************************************************************
 
     @Override
-    public void addSolverListener(SolverListener<Solution_> listener) {
+    public void addSolverListener(SolverListener listener) {
         if (isSolving()) {
             throw new ConcurrentModificationException("The solver is solving.");
         }
@@ -126,7 +126,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     }
 
     @Override
-    public void removeSolverListener(SolverListener<Solution_> listener) {
+    public void removeSolverListener(SolverListener listener) {
         if (isSolving()) {
             throw new ConcurrentModificationException("The solver is solving.");
         }

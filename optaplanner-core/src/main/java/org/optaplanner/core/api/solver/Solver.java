@@ -187,7 +187,7 @@ public interface Solver<Solution_> {
      * Do not call while {@link #solve(Object) solving}.
      * @param listener never null
      */
-    void addSolverListener(SolverListener<Solution_> listener);
+    void addSolverListener(SolverListener listener);
 
     /**
      * Removes listener added by {@link #addSolverListener(SolverListener)}.
@@ -195,7 +195,7 @@ public interface Solver<Solution_> {
      * Do not call while {@link #solve(Object) solving}.
      * @param listener never null
      */
-    void removeSolverListener(SolverListener<Solution_> listener);
+    void removeSolverListener(SolverListener listener);
 
     /**
      * Listens to {@link BestSolutionChangedEvent}.

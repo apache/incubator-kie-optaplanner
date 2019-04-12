@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  * Internal API.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SolverListenerSupport<Solution_> extends AbstractEventSupport<SolverListener<Solution_>> {
+public class SolverListenerSupport<Solution_> extends AbstractEventSupport<SolverListener> {
 
     private final Solver<Solution_> solver;
 
@@ -40,8 +40,8 @@ public class SolverListenerSupport<Solution_> extends AbstractEventSupport<Solve
         if (eventListenerSet.isEmpty()) {
             return;
         }
-        final SolvingStartedEvent<Solution_> event = new SolvingStartedEvent<>(solver);
-        for (SolverListener<Solution_> listener : eventListenerSet) {
+        final SolvingStartedEvent event = new SolvingStartedEvent(solver);
+        for (SolverListener listener : eventListenerSet) {
             listener.solvingStarted(event);
         }
     }
@@ -53,8 +53,8 @@ public class SolverListenerSupport<Solution_> extends AbstractEventSupport<Solve
         }
         long timeMillisSpent = solverScope.getTimeMillisSpent();
         long scoreCalculationCount = solverScope.getScoreCalculationCount();
-        SolvingEndedEvent<Solution_> event = new SolvingEndedEvent<>(solver, timeMillisSpent, scoreCalculationCount);
-        for (SolverListener<Solution_> listener : eventListenerSet) {
+        SolvingEndedEvent event = new SolvingEndedEvent(solver, timeMillisSpent, scoreCalculationCount);
+        for (SolverListener listener : eventListenerSet) {
             listener.solvingEnded(event);
         }
     }

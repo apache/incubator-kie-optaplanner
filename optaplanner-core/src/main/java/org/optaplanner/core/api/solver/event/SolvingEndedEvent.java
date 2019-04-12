@@ -21,7 +21,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.EventObject;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -30,9 +29,8 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 /**
  * Delivered when the solver ends, including before every {@link Solver#addProblemFactChange(ProblemFactChange) restart}.
  * Delivered in the solver thread (which is the thread that calls {@link Solver#solve}).
- * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SolvingEndedEvent<Solution_> extends EventObject {
+public class SolvingEndedEvent extends EventObject {
 
     private final long timeMillisSpent;
     private final long scoreCalculationCount;
@@ -42,7 +40,7 @@ public class SolvingEndedEvent<Solution_> extends EventObject {
      * @param timeMillisSpent {@code >= 0L}
      * @param scoreCalculationCount {@code >= 0L}
      */
-    public SolvingEndedEvent(Solver<Solution_> solver, long timeMillisSpent, long scoreCalculationCount) {
+    public SolvingEndedEvent(Solver<?> solver, long timeMillisSpent, long scoreCalculationCount) {
         super(solver);
         this.timeMillisSpent = timeMillisSpent;
         this.scoreCalculationCount = scoreCalculationCount;
