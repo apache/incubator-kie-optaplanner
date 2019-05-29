@@ -94,8 +94,102 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Benchmarking -->
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-generator-annprocess</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
+  <profiles>
+    <profile>
+      <id>benchmark</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-test-source</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>src/benchmark/java</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+                <configuration>
+                  <annotationProcessorPaths>
+                    <path>
+                      <groupId>org.openjdk.jmh</groupId>
+                      <artifactId>jmh-generator-annprocess</artifactId>
+                      <version>${jmh.version}</version>
+                    </path>
+                  </annotationProcessorPaths>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <descriptors>
+                <descriptor>src/benchmark/assembly/benchmarks.xml</descriptor>
+              </descriptors>
+            </configuration>
+            <executions>
+              <execution>
+                <id>make-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <attach>true</attach>
+                  <archive>
+                    <manifest>
+                      <mainClass>org.openjdk.jmh.Main</mainClass>
+                    </manifest>
+                  </archive>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.openjdk.jmh</groupId>
+          <artifactId>jmh-core</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.openjdk.jmh</groupId>
+          <artifactId>jmh-generator-annprocess</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
   <build>
     <plugins>
       <plugin>
