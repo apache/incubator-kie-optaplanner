@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractPlannerMoveMicroBenchmark;
@@ -24,19 +23,16 @@ public class ChangeMoveBenchmark extends AbstractPlannerMoveMicroBenchmark<Testd
 
     @Override
     public void initMove() {
-        EntityDescriptor<TestdataSolution> entityDescriptor = solutionDescriptor.
-                findEntityDescriptorOrFail(TestdataEntity.class);
-        GenuineVariableDescriptor<TestdataSolution> genuineVariableDescriptor = entityDescriptor.
-                getGenuineVariableDescriptor("value");
-        ChangeMove<TestdataSolution> testdataSolutionChangeMove =
-                new ChangeMove<>(testdataEntity, genuineVariableDescriptor, testdataValue);
-        super.setMove(testdataSolutionChangeMove);
+        GenuineVariableDescriptor<TestdataSolution> genuineVariableDescriptor =
+                TestdataEntity.buildVariableDescriptorForValue();
+        solutionDescriptor = genuineVariableDescriptor.getEntityDescriptor().getSolutionDescriptor();
+
+        super.setMove(new ChangeMove<>(testdataEntity, genuineVariableDescriptor, testdataValue));
     }
 
     @Override
     protected void initEntities() {
         testdataEntity = new TestdataEntity("e1");
-        solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(TestdataSolution.class, TestdataEntity.class);
     }
 
     @Override

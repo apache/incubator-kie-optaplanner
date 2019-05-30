@@ -51,7 +51,6 @@ public abstract class AbstractPlannerMoveMicroBenchmark<Solution> {
     public void initBenchmark() {
         initEntities();
         initMove();
-
         initScoreDirector();
     }
 
