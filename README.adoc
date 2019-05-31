@@ -22,6 +22,15 @@ and configure a _Run/Debug configuration_ like this:
 * Working directory: `$MODULE_DIR$` (must resolve to optaplanner-examples directory)
 * Use classpath of module: `optaplanner-examples`
 
+=== Benchmarking core
+If you want to benchmark performance of `optaplanner-core` module, simply build it with benchmarking profile activated.
+Example of usage:
+....
+cd optaplanner-core
+mvn clean install -P benchmark
+java -jar target/optaplanner-core-{VERSION}-benchmarks.jar
+....
+
 === Starter issues
 
 If you're just starting out with OptaPlanner and want to contribute,

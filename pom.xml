@@ -28,7 +28,6 @@
 
   <properties>
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
-    <jmh.version>1.21</jmh.version>
   </properties>
 
   <repositories>
@@ -94,13 +93,13 @@
       <dependency>
         <groupId>org.openjdk.jmh</groupId>
         <artifactId>jmh-core</artifactId>
-        <version>${jmh.version}</version>
+        <version>${version.org.openjdk.jmh}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.openjdk.jmh</groupId>
         <artifactId>jmh-generator-annprocess</artifactId>
-        <version>${jmh.version}</version>
+        <version>${version.org.openjdk.jmh}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
