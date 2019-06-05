@@ -8,7 +8,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
     <dependencySet>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>${file.separator}</outputDirectory>
       <useProjectArtifact>true</useProjectArtifact>
       <unpack>true</unpack>
       <scope>test</scope>
@@ -16,10 +16,10 @@
   </dependencySets>
   <fileSets>
     <fileSet>
-      <directory>${project.build.directory}/test-classes</directory>
-      <outputDirectory>/</outputDirectory>
+      <directory>${project.build.directory}${file.separator}test-classes</directory>
+      <outputDirectory>${file.separator}</outputDirectory>
       <includes>
-        <include>**/*</include>
+        <include>**${file.separator}*</include>
       </includes>
       <useDefaultExcludes>true</useDefaultExcludes>
     </fileSet>
