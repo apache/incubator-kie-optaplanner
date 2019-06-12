@@ -90,18 +90,6 @@
         <!-- Old version until this issue is resolved: https://github.com/ImmobilienScout24/illegal-transitive-dependency-check/issues/30 -->
         <version>1.0.4</version>
       </dependency>
-      <dependency>
-        <groupId>org.openjdk.jmh</groupId>
-        <artifactId>jmh-core</artifactId>
-        <version>${version.org.openjdk.jmh}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openjdk.jmh</groupId>
-        <artifactId>jmh-generator-annprocess</artifactId>
-        <version>${version.org.openjdk.jmh}</version>
-        <scope>test</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 

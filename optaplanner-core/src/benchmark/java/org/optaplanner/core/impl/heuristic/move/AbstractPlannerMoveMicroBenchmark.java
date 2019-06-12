@@ -16,9 +16,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
-@Warmup(iterations = 5, time = 3)
+@Warmup(iterations = 10, time = 3)
 @Measurement(iterations = 5, time = 5)
-@Fork(value = 5)
+@Fork(value = 3)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public abstract class AbstractPlannerMoveMicroBenchmark<Solution> {
 
