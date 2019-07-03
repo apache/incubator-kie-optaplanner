@@ -476,6 +476,46 @@ Use a lower tabu size than in a pure Tabu Search configuration.
   </localSearch>
 ----
 
+[[greatDeluge]]
+== Great Deluge
+
+
+[[greatDelugeAlgorithm]]
+=== Algorithm Description
+
+Great Deluge algorithm is very similar to the Simulated Annealing algorithm, it evaluates only a few moves per steps,
+so it steps quickly. The first accepted move is the winning step. A move is accepted only if it does not decrease
+the score value (water level) that we are working with. It means Great Deluge is deterministic and opposite
+of Simulated Annealing has no randomization in it. The water level is increased after every step either about the fixed value
+or by percentual value.
+A gradual increase in water level gives Great Deluge more time to escape from local maxima.
+
+
+[[greatDelugeConfiguration]]
+=== Configuration
+
+`GreatDelugeStartingWaterLevel` can be set as a starting water level but is recommended to do not do it,
+so the algorithm takes as starting value best score from construction heuristic.
+Either `greatDelugeRainSpeedScore` or `greatDelugeRainSpeedRatio` have to be set.
+If `greatDelugeRainSpeedScore` is set, the water level is increased by a constant value but is recommended to use
+`greatDelugeRainSpeedRatio` when the water level is increased by percentual value, so there is no need to know the size of the problem or value of a scoring function.
+The good starting value of `greatDelugeRainSpeedRatio` may be `0.99999995`.
+Use the Benchmarker to tweak the value. Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <greatDelugeStartingWaterLevel>2hard/100soft</greatDelugeStartingWaterLevel>
+      <greatDelugeRainSpeedRatio>0.99999995</greatDelugeRainSpeedRatio>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>100</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+
 
 [[lateAcceptance]]
 == Late Acceptance
