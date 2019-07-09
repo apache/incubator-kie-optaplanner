@@ -575,34 +575,34 @@ Great Deluge takes as starting water level best score from construction heuristi
   <localSearch>
     ...
     <acceptor>
-      <greatDelugeStartingWaterLevel>2hard/100soft</greatDelugeStartingWaterLevel>
-      <greatDelugeRainSpeedRatio>0.99999995</greatDelugeRainSpeedRatio>
+      <greatDelugeInitialWaterLevel>20hard/100soft</greatDelugeInitialWaterLevel>
+      <greatDelugeWaterLevelIncrementRatio>0.00000005</greatDelugeWaterLevelIncrementRatio>
     </acceptor>
     <forager>
-      <acceptedCountLimit>100</acceptedCountLimit>
+      <acceptedCountLimit>4</acceptedCountLimit>
     </forager>
   </localSearch>
 ----
-Planner implements two rain speed options:
+Planner implements two water level increment options:
 
-If `greatDelugeRainSpeedScore` is set, the water level is increased by a constant value.
-
-[source,xml,options="nowrap"]
-----
-<acceptor>
-  <greatDelugeRainSpeedScore>100</greatDelugeRainSpeedRatio>
-</acceptor>
-----
-To avoid hard coding the rain speed score, configure a `greatDelugeRainSpeedRatio` (recommended) when the water level is increased by percentual value, so there is no need to know the size of the problem or value of a scoring function.
+If `greatDelugeWaterLevelIncrementScore` is set, the water level is increased by a constant value.
 
 [source,xml,options="nowrap"]
 ----
 <acceptor>
-  <greatDelugeRainSpeedScore>100</greatDelugeRainSpeedRatio>
+  <greatDelugeWaterLevelIncrementScore>100</greatDelugeWaterLevelIncrementScore>
+</acceptor>
+----
+To avoid hard coding the rain speed score, configure a `greatDelugeWaterLevelIncrementRatio` (recommended) when the water level is increased by percentual value, so there is no need to know the size of the problem or value of a scoring function.
+
+[source,xml,options="nowrap"]
+----
+<acceptor>
+  <greatDelugeWaterLevelIncrementRatio>100</greatDelugeWaterLevelIncrementRatio>
 </acceptor>
 ----
 
-Also `GreatDelugeStartingWaterLevel` can be set as a starting water level but is recommended to do not do it,
+Also `greatDelugeInitialWaterLevel` can be set as a starting water level but is recommended to do not do it,
 so the algorithm takes as starting value best score from construction heuristic.
 Use the Benchmarker to fine tweak your configuration.
 
