@@ -583,7 +583,7 @@ Great Deluge takes as starting water level best score from construction heuristi
     </forager>
   </localSearch>
 ----
-Planner implements two water level increment options:
+OptaPlanner implements two water level increment options:
 
 If `greatDelugeWaterLevelIncrementScore` is set, the water level is increased by a constant value.
 
@@ -593,7 +593,7 @@ If `greatDelugeWaterLevelIncrementScore` is set, the water level is increased by
   <greatDelugeWaterLevelIncrementScore>100</greatDelugeWaterLevelIncrementScore>
 </acceptor>
 ----
-To avoid hard coding the rain speed score, configure a `greatDelugeWaterLevelIncrementRatio` (recommended) when the water level is increased by percentual value, so there is no need to know the size of the problem or value of a scoring function.
+To avoid hard coding the water level increment, configure a `greatDelugeWaterLevelIncrementRatio` (recommended) when the water level is increased by percentual value, so there is no need to know the size of the problem or value of a scoring function.
 
 [source,xml,options="nowrap"]
 ----
@@ -602,9 +602,9 @@ To avoid hard coding the rain speed score, configure a `greatDelugeWaterLevelInc
 </acceptor>
 ----
 
-Also `greatDelugeInitialWaterLevel` can be set as a starting water level but is recommended to do not do it,
-so the algorithm takes as starting value best score from construction heuristic.
-Use the Benchmarker to fine tweak your configuration.
+Also `greatDelugeInitialWaterLevel` can be set as a starting water level but is recommended not to do it,
+so the algorithm takes as starting value the best score from the construction heuristic.
+Use the Benchmarker to fine-tune tweak your configuration.
 
 [[stepCountingHillClimbing]]
 == Step Counting Hill Climbing
