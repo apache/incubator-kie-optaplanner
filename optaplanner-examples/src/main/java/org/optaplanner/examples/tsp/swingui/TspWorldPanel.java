@@ -80,13 +80,13 @@ public class TspWorldPanel extends JPanel {
                 if (translator != null) {
                     double longitude = translator.translateXToLongitude(e.getX());
                     double latitude = translator.translateYToLatitude(e.getY());
-                    if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (e.getButton() == MouseEvent.BUTTON1 && !e.isControlDown()) {
                         dragSourceStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                                 new AirLocation(-1L, latitude, longitude));
                         TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
                         dragTargetStandstill = tspSolution.getDomicile();
                         resetPanel(tspSolution);
-                    } else if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+                    } else if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3 ||  && e.isControlDown()) {
                         TspWorldPanel.this.tspPanel.insertLocationAndVisit(longitude, latitude);
                     }
                 }
@@ -111,7 +111,7 @@ public class TspWorldPanel extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (translator != null) {
-                    if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (e.getButton() == MouseEvent.BUTTON1 && !e.isControlDown()) {
                         double longitude = translator.translateXToLongitude(e.getX());
                         double latitude = translator.translateYToLatitude(e.getY());
                         dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
