@@ -9,6 +9,7 @@
 
   <scoreDirectorFactory>
     <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningScoreRules.drl</scoreDrl>
+    <!--<constraintProviderClass>org.optaplanner.examples.taskassigning.solver.score.TaskAssigningConstraintProvider</constraintProviderClass>-->
   </scoreDirectorFactory>
 
   <!--<termination>-->
