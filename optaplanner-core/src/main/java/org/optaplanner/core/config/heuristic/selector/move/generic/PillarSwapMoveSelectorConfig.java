@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -37,6 +38,7 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapMoveSelectorConfig> {
 
     private PillarType pillarType = null;
+    private Class<? extends Comparator> pillarOrderComparatorClass = null;
     @XStreamAlias("pillarSelector")
     private PillarSelectorConfig pillarSelectorConfig = null;
     @XStreamAlias("secondaryPillarSelector")
@@ -55,6 +57,14 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapM
 
     public void setPillarType(final PillarType pillarType) {
         this.pillarType = pillarType;
+    }
+
+    public Class<? extends Comparator> getPillarOrderComparatorClass() {
+        return pillarOrderComparatorClass;
+    }
+
+    public void setPillarOrderComparatorClass(final Class<? extends Comparator> pillarOrderComparatorClass) {
+        this.pillarOrderComparatorClass = pillarOrderComparatorClass;
     }
 
     public PillarSelectorConfig getPillarSelectorConfig() {
@@ -91,10 +101,12 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapM
         PillarSelectorConfig pillarSelectorConfig_ = pillarSelectorConfig == null ? new PillarSelectorConfig()
                 : pillarSelectorConfig;
         PillarSelector leftPillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, pillarType,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
+                pillarOrderComparatorClass, minimumCacheType,
+                SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         PillarSelectorConfig rightPillarSelectorConfig = defaultIfNull(secondaryPillarSelectorConfig, pillarSelectorConfig_);
         PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(configPolicy, pillarType,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
+                pillarOrderComparatorClass, minimumCacheType,
+                SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         List<GenuineVariableDescriptor> variableDescriptorList = deduceVariableDescriptorList(
                 leftPillarSelector.getEntityDescriptor(), variableNameIncludeList);
         return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptorList,

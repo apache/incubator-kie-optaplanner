@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -36,6 +37,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarChangeMoveSelectorConfig> {
 
     private PillarType pillarType = null;
+    private Class<? extends Comparator> pillarOrderComparatorClass = null;
     @XStreamAlias("pillarSelector")
     private PillarSelectorConfig pillarSelectorConfig = null;
     @XStreamAlias("valueSelector")
@@ -47,6 +49,14 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarCha
 
     public void setPillarType(final PillarType pillarType) {
         this.pillarType = pillarType;
+    }
+
+    public Class<? extends Comparator> getPillarOrderComparatorClass() {
+        return pillarOrderComparatorClass;
+    }
+
+    public void setPillarOrderComparatorClass(final Class<? extends Comparator> pillarOrderComparatorClass) {
+        this.pillarOrderComparatorClass = pillarOrderComparatorClass;
     }
 
     public PillarSelectorConfig getPillarSelectorConfig() {
@@ -78,7 +88,8 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarCha
                 : valueSelectorConfig.getVariableName() == null ? null
                 : Collections.singletonList(valueSelectorConfig.getVariableName());
         PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, pillarType,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
+                pillarOrderComparatorClass, minimumCacheType,
+                SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
                 : valueSelectorConfig;
         ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,

@@ -49,7 +49,6 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     protected Boolean subPillarEnabled = null;
     protected Integer minimumSubPillarSize = null;
     protected Integer maximumSubPillarSize = null;
-    protected Class<? extends Comparator> pillarOrderComparatorClass = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -91,14 +90,6 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         this.maximumSubPillarSize = maximumSubPillarSize;
     }
 
-    public Class<? extends Comparator> getPillarOrderComparatorClass() {
-        return pillarOrderComparatorClass;
-    }
-
-    public void setPillarOrderComparatorClass(final Class<? extends Comparator> pillarOrderComparatorClass) {
-        this.pillarOrderComparatorClass = pillarOrderComparatorClass;
-    }
-
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -114,8 +105,8 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
      * @return never null
      */
     public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy, PillarType pillarType,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
-            List<String> variableNameIncludeList) {
+            Class<? extends Comparator> pillarOrderComparatorClass, SelectionCacheType minimumCacheType,
+            SelectionOrder inheritedSelectionOrder, List<String> variableNameIncludeList) {
         if (subPillarEnabled != null) {
             if (pillarType == null) {
                 LOGGER.warn("Property subPillarEnabled ({}) on pillarSelectorConfig ({}) is deprecated for removal.\n" +
@@ -153,13 +144,15 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         }
 
         SubPillarConfigPolicy subPillarPolicy = subPillarActuallyEnabled ?
-                configureSubPillars(pillarType, entitySelector, minimumSubPillarSize, maximumSubPillarSize) :
+                configureSubPillars(pillarType, pillarOrderComparatorClass, entitySelector, minimumSubPillarSize,
+                        maximumSubPillarSize) :
                 SubPillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean(), subPillarPolicy);
     }
 
-    private SubPillarConfigPolicy configureSubPillars(PillarType pillarType, EntitySelector entitySelector,
+    private SubPillarConfigPolicy configureSubPillars(PillarType pillarType,
+            Class<? extends Comparator> pillarOrderComparatorClass, EntitySelector entitySelector,
             Integer minimumSubPillarSize, Integer maximumSubPillarSize) {
         int actualMinimumSubPillarSize = defaultIfNull(minimumSubPillarSize, 1);
         int actualMaximumSubPillarSize = defaultIfNull(maximumSubPillarSize, Integer.MAX_VALUE);
