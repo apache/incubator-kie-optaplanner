@@ -96,6 +96,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     /**
      * @param configPolicy never null
      * @param pillarType if null, defaults to {@link PillarType#FULL_AND_SUB} for backwards compatibility reasons.
+     * @param pillarOrderComparatorClass if not null, will force entites in the pillar to come in this order
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.

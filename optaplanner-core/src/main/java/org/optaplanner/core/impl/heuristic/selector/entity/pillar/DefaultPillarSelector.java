@@ -281,6 +281,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
                 final Object randomElement = basePillar.get(randomIndex);
                 return Collections.singletonList(randomElement);
             }
+            // when entity comparator present, it means we require sequential subpillars
             return subpillarConfigPolicy.getEntityComparator()
                     .map(comparator -> selectSublist(basePillar, subPillarSize))
                     .orElseGet(() -> selectRandom(basePillar, subPillarSize));
