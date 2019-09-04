@@ -123,9 +123,8 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         if (!subPillarActuallyEnabled
                 && (minimumSubPillarSize != null || maximumSubPillarSize != null)) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this
-                    + ") must not have subPillarEnabled (" + subPillarEnabled
-                    + ") with minimumSubPillarSize (" + minimumSubPillarSize
-                    + ") and maximumSubPillarSize (" + maximumSubPillarSize + ").");
+                    + ") must not disable subpillars while providing minimumSubPillarSize (" + minimumSubPillarSize
+                    + ") or maximumSubPillarSize (" + maximumSubPillarSize + ").");
         }
         SubpillarConfigPolicy subpillarPolicy = subPillarActuallyEnabled ?
                 SubpillarConfigPolicy.withSubpillars(minimumSubPillarSize, maximumSubPillarSize) :
