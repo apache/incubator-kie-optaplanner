@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -255,18 +256,31 @@ public class DefaultPillarSelector extends AbstractSelector
                 final int randomIndex = workingRandom.nextInt(basePillarSize);
                 final Object randomElement = basePillar.get(randomIndex);
                 return Collections.singletonList(randomElement);
-            } else {
-                // Random sampling: See http://eyalsch.wordpress.com/2010/04/01/random-sample/
-                // Used Swapping instead of Floyd because subPillarSize is large, to avoid hashCode() hit
-                Object[] sandboxPillar = basePillar.toArray(); // Clone to avoid changing basePillar
-                List<Object> subPillar = new ArrayList<>(subPillarSize);
-                for (int i = 0; i < subPillarSize; i++) {
-                    int index = i + workingRandom.nextInt(basePillarSize - i);
-                    subPillar.add(sandboxPillar[index]);
-                    sandboxPillar[index] = sandboxPillar[i];
-                }
-                return subPillar;
             }
+            return subpillarConfigPolicy.getEntityComparator()
+                    .map(comparator -> selectSublist(basePillar, subPillarSize, comparator))
+                    .orElseGet(() -> selectRandom(basePillar, subPillarSize));
+        }
+
+        private List<Object> selectSublist(final List<Object> basePillar, final int subPillarSize,
+                final Comparator comparator) {
+            final List<Object> sorted = new ArrayList<>(basePillar);
+            sorted.sort(comparator);
+            final int randomStartingIndex = workingRandom.nextInt(basePillar.size() - subPillarSize);
+            return basePillar.subList(randomStartingIndex, randomStartingIndex + subPillarSize);
+        }
+
+        private List<Object> selectRandom(final List<Object> basePillar, final int subPillarSize) {
+            // Random sampling: See http://eyalsch.wordpress.com/2010/04/01/random-sample/
+            // Used Swapping instead of Floyd because subPillarSize is large, to avoid hashCode() hit
+            Object[] sandboxPillar = basePillar.toArray(); // Clone to avoid changing basePillar
+            List<Object> subPillar = new ArrayList<>(subPillarSize);
+            for (int i = 0; i < subPillarSize; i++) {
+                int index = i + workingRandom.nextInt(basePillar.size() - i);
+                subPillar.add(sandboxPillar[index]);
+                sandboxPillar[index] = sandboxPillar[i];
+            }
+            return subPillar;
         }
 
         private List<Object> selectBasePillar() {
