@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -134,7 +133,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                 : entitySelectorConfig;
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.ORIGINAL);
-        Collection<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptorList(
+        List<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptorList(
                 entitySelector.getEntityDescriptor(), variableNameIncludeList);
         if (!subPillarActuallyEnabled
                 && (minimumSubPillarSize != null || maximumSubPillarSize != null)) {

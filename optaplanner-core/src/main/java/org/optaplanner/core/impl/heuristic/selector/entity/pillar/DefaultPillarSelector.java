@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -25,6 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy;
@@ -41,21 +43,20 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 /**
  * @see PillarSelector
  */
-public class DefaultPillarSelector extends AbstractSelector
-        implements PillarSelector, SelectionCacheLifecycleListener {
+public class DefaultPillarSelector extends AbstractSelector implements PillarSelector,
+        SelectionCacheLifecycleListener {
 
     protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
 
     protected final EntitySelector entitySelector;
-    protected final Collection<GenuineVariableDescriptor> variableDescriptors;
+    protected final List<GenuineVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
     protected final SubPillarConfigPolicy subpillarConfigPolicy;
 
     protected List<List<Object>> cachedBasePillarList = null;
 
-    public DefaultPillarSelector(EntitySelector entitySelector,
-            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection,
-            SubPillarConfigPolicy subpillarConfigPolicy) {
+    public DefaultPillarSelector(EntitySelector entitySelector, List<GenuineVariableDescriptor> variableDescriptors,
+            boolean randomSelection, SubPillarConfigPolicy subpillarConfigPolicy) {
         this.entitySelector = entitySelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
@@ -99,6 +100,26 @@ public class DefaultPillarSelector extends AbstractSelector
         }
     }
 
+    private static List<Object> getSingleVariableValueState(Object entity,
+            List<GenuineVariableDescriptor> variableDescriptors) {
+        Object value = variableDescriptors.get(0).getValue(entity);
+        return Collections.singletonList(value);
+    }
+
+    private static List<Object> getMultiVariableValueState(Object entity,
+            List<GenuineVariableDescriptor> variableDescriptors, int variableCount) {
+        List<Object> valueState = new ArrayList<>(variableCount);
+        for (int i = 0; i < variableCount; i++) {
+            Object value = variableDescriptors.get(i).getValue(entity);
+            valueState.add(value);
+        }
+        return valueState;
+    }
+
+    // ************************************************************************
+    // Cache lifecycle methods
+    // ************************************************************************
+
     @Override
     public EntityDescriptor getEntityDescriptor() {
         return entitySelector.getEntityDescriptor();
@@ -109,10 +130,6 @@ public class DefaultPillarSelector extends AbstractSelector
         return CACHE_TYPE;
     }
 
-    // ************************************************************************
-    // Cache lifecycle methods
-    // ************************************************************************
-
     @Override
     public void constructCache(DefaultSolverScope solverScope) {
         long entitySize = entitySelector.getSize();
@@ -121,16 +138,23 @@ public class DefaultPillarSelector extends AbstractSelector
                     + entitySelector + ") with entitySize (" + entitySize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
+        Stream<Object> entities = StreamSupport.stream(entitySelector.spliterator(), false);
+        /*
+         * sort the entities in case we need sequential pillars; this will result in all the pillars being sorted
+         * without having to sort them individually later.
+         */
+        Optional<Comparator<?>> comparator = subpillarConfigPolicy.getEntityComparator();
+        entities = comparator.isPresent() ? entities.sorted((Comparator) comparator.get()) : entities;
+        // create all the pillars from a stream of entities; if sorted, the pillars will be sequential
         Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
-        for (Object entity : entitySelector) {
-            List<Object> valueState = new ArrayList<>(variableDescriptors.size());
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
-                Object value = variableDescriptor.getValue(entity);
-                valueState.add(value);
-            }
+        int variableCount = variableDescriptors.size();
+        entities.forEach(entity -> {
+            List<Object> valueState = variableCount == 1 ?
+                    getSingleVariableValueState(entity, variableDescriptors) :
+                    getMultiVariableValueState(entity, variableDescriptors, variableCount);
             List<Object> pillar = valueStateToPillarMap.computeIfAbsent(valueState, key -> new ArrayList<>());
             pillar.add(entity);
-        }
+        });
         cachedBasePillarList = new ArrayList<>(valueStateToPillarMap.values());
     }
 
@@ -258,14 +282,11 @@ public class DefaultPillarSelector extends AbstractSelector
                 return Collections.singletonList(randomElement);
             }
             return subpillarConfigPolicy.getEntityComparator()
-                    .map(comparator -> selectSublist(basePillar, subPillarSize, comparator))
+                    .map(comparator -> selectSublist(basePillar, subPillarSize))
                     .orElseGet(() -> selectRandom(basePillar, subPillarSize));
         }
 
-        private List<Object> selectSublist(final List<Object> basePillar, final int subPillarSize,
-                final Comparator comparator) {
-            final List<Object> sorted = new ArrayList<>(basePillar);
-            sorted.sort(comparator);
+        private List<Object> selectSublist(final List<Object> basePillar, final int subPillarSize) {
             final int randomStartingIndex = workingRandom.nextInt(basePillar.size() - subPillarSize);
             return basePillar.subList(randomStartingIndex, randomStartingIndex + subPillarSize);
         }
@@ -289,7 +310,5 @@ public class DefaultPillarSelector extends AbstractSelector
             int baseListIndex = workingRandom.nextInt(cachedBasePillarList.size());
             return cachedBasePillarList.get(baseListIndex);
         }
-
     }
-
 }
