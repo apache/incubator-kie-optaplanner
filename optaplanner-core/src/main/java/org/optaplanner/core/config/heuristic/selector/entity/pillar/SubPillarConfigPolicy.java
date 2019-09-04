@@ -93,4 +93,14 @@ public final class SubPillarConfigPolicy {
     public Optional<Comparator<?>> getEntityComparator() {
         return Optional.ofNullable(entityComparator);
     }
+
+    @Override
+    public String toString() {
+        return "SubPillarConfigPolicy{" +
+                "entityComparator=" + entityComparator +
+                ", maximumSubPillarSize=" + maximumSubPillarSize +
+                ", minimumSubPillarSize=" + minimumSubPillarSize +
+                ", subPillarEnabled=" + subPillarEnabled +
+                '}';
+    }
 }

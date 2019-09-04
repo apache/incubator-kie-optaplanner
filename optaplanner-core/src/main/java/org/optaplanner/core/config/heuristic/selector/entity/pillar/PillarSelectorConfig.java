@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -35,6 +36,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
 
@@ -46,6 +49,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     protected Boolean subPillarEnabled = null;
     protected Integer minimumSubPillarSize = null;
     protected Integer maximumSubPillarSize = null;
+    protected Class<? extends Comparator> pillarOrderComparatorClass = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -87,6 +91,14 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         this.maximumSubPillarSize = maximumSubPillarSize;
     }
 
+    public Class<? extends Comparator> getPillarOrderComparatorClass() {
+        return pillarOrderComparatorClass;
+    }
+
+    public void setPillarOrderComparatorClass(final Class<? extends Comparator> pillarOrderComparatorClass) {
+        this.pillarOrderComparatorClass = pillarOrderComparatorClass;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -114,6 +126,11 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                         ") is set on the parent MoveSelectorConfig.");
             }
         }
+        if (pillarType != PillarType.SEQUENTIAL && pillarOrderComparatorClass != null) {
+            throw new IllegalArgumentException("Pillar type (" + pillarType + ") on pillarSelectorConfig (" + this +
+                    ") is not " + PillarType.SEQUENTIAL + ", yet pillarOrderComparatorClass (" +
+                    pillarOrderComparatorClass + ") is provided.");
+        }
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this
                     + ")'s minimumCacheType (" + minimumCacheType
@@ -136,18 +153,39 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         }
 
         SubPillarConfigPolicy subPillarPolicy = subPillarActuallyEnabled ?
-                configureSubPillars(pillarType, minimumSubPillarSize, maximumSubPillarSize) :
+                configureSubPillars(pillarType, entitySelector, minimumSubPillarSize, maximumSubPillarSize) :
                 SubPillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean(), subPillarPolicy);
     }
 
-    private SubPillarConfigPolicy configureSubPillars(PillarType pillarType, int minimumSubPillarSize, int maximumSubPillarSize) {
+    private SubPillarConfigPolicy configureSubPillars(PillarType pillarType, EntitySelector entitySelector,
+            Integer minimumSubPillarSize, Integer maximumSubPillarSize) {
+        int actualMinimumSubPillarSize = defaultIfNull(minimumSubPillarSize, 1);
+        int actualMaximumSubPillarSize = defaultIfNull(maximumSubPillarSize, Integer.MAX_VALUE);
+        if (pillarType == null) { // for backwards compatibility reasons
+            return SubPillarConfigPolicy.withSubpillars(actualMinimumSubPillarSize, actualMaximumSubPillarSize);
+        }
         switch (pillarType) {
             case FULL_AND_SUB:
-                return SubPillarConfigPolicy.withSubpillars(minimumSubPillarSize, maximumSubPillarSize);
+                return SubPillarConfigPolicy.withSubpillars(actualMinimumSubPillarSize, actualMaximumSubPillarSize);
             case SEQUENTIAL:
-                return null; // TODO implement
+                if (pillarOrderComparatorClass == null) {
+                    Class<?> entityClass = entitySelector.getEntityDescriptor().getEntityClass();
+                    boolean isComparable = entityClass.isAssignableFrom(Comparable.class);
+                    if (!isComparable) {
+                        throw new IllegalArgumentException("Pillar type (" + pillarType + ") on pillarSelectorConfig (" +
+                                this + ") does not provide pillarOrderComparatorClass while the entity (" +
+                                entityClass.getCanonicalName() + ") does not implement Comparable.");
+                    }
+                    Comparator<Comparable> comparator = Comparable::compareTo;
+                    return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize,
+                            comparator);
+                } else {
+                    Comparator<Object> comparator = ConfigUtils.newInstance(this, "pillarOrderComparatorClass", pillarOrderComparatorClass);
+                    return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize,
+                            comparator);
+                }
             default:
                 throw new IllegalStateException("Subpillars can not be enabled and disabled at the same time.");
         }
@@ -169,5 +207,4 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     public String toString() {
         return getClass().getSimpleName() + "(" + entitySelectorConfig + ")";
     }
-
 }
