@@ -134,11 +134,23 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                     + ") must not disable subpillars while providing minimumSubPillarSize (" + minimumSubPillarSize
                     + ") or maximumSubPillarSize (" + maximumSubPillarSize + ").");
         }
-        SubpillarConfigPolicy subpillarPolicy = subPillarActuallyEnabled ?
-                SubpillarConfigPolicy.withSubpillars(minimumSubPillarSize, maximumSubPillarSize) :
-                SubpillarConfigPolicy.withoutSubpillars();
+
+        SubPillarConfigPolicy subPillarPolicy = subPillarActuallyEnabled ?
+                configureSubPillars(pillarType, minimumSubPillarSize, maximumSubPillarSize) :
+                SubPillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
-                inheritedSelectionOrder.toRandomSelectionBoolean(), subpillarPolicy);
+                inheritedSelectionOrder.toRandomSelectionBoolean(), subPillarPolicy);
+    }
+
+    private SubPillarConfigPolicy configureSubPillars(PillarType pillarType, int minimumSubPillarSize, int maximumSubPillarSize) {
+        switch (pillarType) {
+            case FULL_AND_SUB:
+                return SubPillarConfigPolicy.withSubpillars(minimumSubPillarSize, maximumSubPillarSize);
+            case SEQUENTIAL:
+                return null; // TODO implement
+            default:
+                throw new IllegalStateException("Subpillars can not be enabled and disabled at the same time.");
+        }
     }
 
     @Override

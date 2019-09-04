@@ -26,7 +26,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubpillarConfigPolicy;
+import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
@@ -48,13 +48,13 @@ public class DefaultPillarSelector extends AbstractSelector
     protected final EntitySelector entitySelector;
     protected final Collection<GenuineVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
-    protected final SubpillarConfigPolicy subpillarConfigPolicy;
+    protected final SubPillarConfigPolicy subpillarConfigPolicy;
 
     protected List<List<Object>> cachedBasePillarList = null;
 
     public DefaultPillarSelector(EntitySelector entitySelector,
             Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection,
-            SubpillarConfigPolicy subpillarConfigPolicy) {
+            SubPillarConfigPolicy subpillarConfigPolicy) {
         this.entitySelector = entitySelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
@@ -246,8 +246,8 @@ public class DefaultPillarSelector extends AbstractSelector
             }
             // Known issue/compromise: Every subPillar should have same probability, but doesn't.
             // Instead, every subPillar size has the same probability.
-            int min = Math.min(subpillarConfigPolicy.getMinSubpillarSize(), basePillarSize);
-            int max = Math.min(subpillarConfigPolicy.getMaxSubpillarSize(), basePillarSize);
+            int min = Math.min(subpillarConfigPolicy.getMinimumSubPillarSize(), basePillarSize);
+            int max = Math.min(subpillarConfigPolicy.getMaximumSubPillarSize(), basePillarSize);
             int subPillarSize = min + workingRandom.nextInt(max - min + 1);
             if (subPillarSize == basePillarSize) { // subpillar is equal to the base pillar, use shortcut
                 return basePillar;
