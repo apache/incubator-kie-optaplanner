@@ -31,6 +31,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("pillarChangeMoveSelector")
 public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarChangeMoveSelectorConfig> {
 
@@ -52,16 +54,14 @@ public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorCo
     @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PillarSelectorConfig pillarSelectorConfig_ = pillarSelectorConfig == null ? new PillarSelectorConfig()
-                : pillarSelectorConfig;
+        PillarSelectorConfig pillarSelectorConfig_ = defaultIfNull(pillarSelectorConfig, new PillarSelectorConfig());
         List<String> variableNameIncludeList = valueSelectorConfig == null ? null
                 : valueSelectorConfig.getVariableName() == null ? null
                 : Collections.singletonList(valueSelectorConfig.getVariableName());
         PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, pillarType,
                 pillarOrderComparatorClass, minimumCacheType,
                 SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
-        ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
-                : valueSelectorConfig;
+        ValueSelectorConfig valueSelectorConfig_ = defaultIfNull(valueSelectorConfig, new ValueSelectorConfig());
         ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
                 pillarSelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));

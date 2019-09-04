@@ -57,6 +57,9 @@ abstract class AbstractPillarMoveSelectorConfig<T extends AbstractPillarMoveSele
     @Override
     public void inherit(T inheritedConfig) {
         super.inherit(inheritedConfig);
+        pillarType = ConfigUtils.inheritOverwritableProperty(pillarType, inheritedConfig.getPillarType());
+        pillarOrderComparatorClass = ConfigUtils.inheritOverwritableProperty(pillarOrderComparatorClass,
+                inheritedConfig.getPillarOrderComparatorClass());
         pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
     }
 
