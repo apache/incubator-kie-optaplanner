@@ -55,10 +55,18 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
+    /**
+     * @see PillarType and its uses in pillar move selectors.
+     */
+    @Deprecated(/* forRemoval = true */)
     public Boolean getSubPillarEnabled() {
         return subPillarEnabled;
     }
 
+    /**
+     * @see PillarType and its uses in pillar move selectors.
+     */
+    @Deprecated(/* forRemoval = true */)
     public void setSubPillarEnabled(Boolean subPillarEnabled) {
         this.subPillarEnabled = subPillarEnabled;
     }
