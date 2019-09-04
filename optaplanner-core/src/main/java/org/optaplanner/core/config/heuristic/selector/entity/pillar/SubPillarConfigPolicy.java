@@ -96,7 +96,7 @@ public final class SubPillarConfigPolicy {
 
     @Override
     public String toString() {
-        return "SubPillarConfigPolicy{" +
+        return getClass().getSimpleName() + "{" +
                 "entityComparator=" + entityComparator +
                 ", maximumSubPillarSize=" + maximumSubPillarSize +
                 ", minimumSubPillarSize=" + minimumSubPillarSize +
