@@ -26,16 +26,21 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.PillarType;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PillarSelectorConfig.class);
 
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
@@ -82,6 +87,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
 
     /**
      * @param configPolicy never null
+     * @param pillarType if null, defaults to {@link PillarType#FULL_AND_SUB} for backwards compatibility reasons.
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
@@ -89,9 +95,19 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
      * @param variableNameIncludeList sometimes null
      * @return never null
      */
-    public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy,
+    public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy, PillarType pillarType,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
             List<String> variableNameIncludeList) {
+        if (subPillarEnabled != null) {
+            if (pillarType == null) {
+                LOGGER.warn("Property subPillarEnabled ({}) on pillarSelectorConfig ({}) is deprecated for removal.\n" +
+                        "Use property pillarType on the parent MoveSelectorConfig.", subPillarEnabled, this);
+            } else {
+                throw new IllegalArgumentException("Property subPillarEnabled (" + subPillarEnabled +
+                        ") on pillarSelectorConfig (" + this + ") must not be present when pillarType (" + pillarType +
+                        ") is set on the parent MoveSelectorConfig.");
+            }
+        }
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this
                     + ")'s minimumCacheType (" + minimumCacheType

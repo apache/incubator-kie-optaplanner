@@ -35,10 +35,19 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 @XStreamAlias("pillarChangeMoveSelector")
 public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarChangeMoveSelectorConfig> {
 
+    private PillarType pillarType = null;
     @XStreamAlias("pillarSelector")
     private PillarSelectorConfig pillarSelectorConfig = null;
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
+
+    public PillarType getPillarType() {
+        return pillarType;
+    }
+
+    public void setPillarType(final PillarType pillarType) {
+        this.pillarType = pillarType;
+    }
 
     public PillarSelectorConfig getPillarSelectorConfig() {
         return pillarSelectorConfig;
@@ -68,7 +77,7 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarCha
         List<String> variableNameIncludeList = valueSelectorConfig == null ? null
                 : valueSelectorConfig.getVariableName() == null ? null
                 : Collections.singletonList(valueSelectorConfig.getVariableName());
-        PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy,
+        PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, pillarType,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
                 : valueSelectorConfig;
