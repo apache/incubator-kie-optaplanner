@@ -17,7 +17,6 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -25,7 +24,6 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
@@ -34,38 +32,10 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarChangeMov
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 @XStreamAlias("pillarChangeMoveSelector")
-public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarChangeMoveSelectorConfig> {
+public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarChangeMoveSelectorConfig> {
 
-    private PillarType pillarType = null;
-    private Class<? extends Comparator> pillarOrderComparatorClass = null;
-    @XStreamAlias("pillarSelector")
-    private PillarSelectorConfig pillarSelectorConfig = null;
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
-
-    public PillarType getPillarType() {
-        return pillarType;
-    }
-
-    public void setPillarType(final PillarType pillarType) {
-        this.pillarType = pillarType;
-    }
-
-    public Class<? extends Comparator> getPillarOrderComparatorClass() {
-        return pillarOrderComparatorClass;
-    }
-
-    public void setPillarOrderComparatorClass(final Class<? extends Comparator> pillarOrderComparatorClass) {
-        this.pillarOrderComparatorClass = pillarOrderComparatorClass;
-    }
-
-    public PillarSelectorConfig getPillarSelectorConfig() {
-        return pillarSelectorConfig;
-    }
-
-    public void setPillarSelectorConfig(PillarSelectorConfig pillarSelectorConfig) {
-        this.pillarSelectorConfig = pillarSelectorConfig;
-    }
 
     public ValueSelectorConfig getValueSelectorConfig() {
         return valueSelectorConfig;
@@ -101,7 +71,6 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarCha
     @Override
     public void inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
     }
 
