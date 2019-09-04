@@ -26,6 +26,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubpillarConfigPolicy;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
@@ -34,7 +35,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecyc
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -48,23 +48,17 @@ public class DefaultPillarSelector extends AbstractSelector
     protected final EntitySelector entitySelector;
     protected final Collection<GenuineVariableDescriptor> variableDescriptors;
     protected final boolean randomSelection;
-
-    protected final boolean subPillarEnabled;
-    /**
-     * Unlike {@link DefaultSubChainSelector#minimumSubChainSize} and {@link DefaultSubChainSelector#maximumSubChainSize},
-     * the sub selection here is any sub set. For example from ABCDE, it can select BCD and also ACD.
-     */
-    protected final int minimumSubPillarSize;
-    protected final int maximumSubPillarSize;
+    protected final SubpillarConfigPolicy subpillarConfigPolicy;
 
     protected List<List<Object>> cachedBasePillarList = null;
 
     public DefaultPillarSelector(EntitySelector entitySelector,
             Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection,
-            boolean subPillarEnabled, int minimumSubPillarSize, int maximumSubPillarSize) {
+            SubpillarConfigPolicy subpillarConfigPolicy) {
         this.entitySelector = entitySelector;
         this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
+        this.subpillarConfigPolicy = subpillarConfigPolicy;
         Class<?> entityClass = entitySelector.getEntityDescriptor().getEntityClass();
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!entityClass.equals(
@@ -94,18 +88,7 @@ public class DefaultPillarSelector extends AbstractSelector
         }
         phaseLifecycleSupport.addEventListener(entitySelector);
         phaseLifecycleSupport.addEventListener(new SelectionCacheLifecycleBridge(CACHE_TYPE, this));
-        this.subPillarEnabled = subPillarEnabled;
-        this.minimumSubPillarSize = minimumSubPillarSize;
-        this.maximumSubPillarSize = maximumSubPillarSize;
-        if (minimumSubPillarSize < 1) {
-            throw new IllegalStateException("The selector (" + this
-                    + ")'s minimumPillarSize (" + minimumSubPillarSize
-                    + ") must be at least 1.");
-        }
-        if (minimumSubPillarSize > maximumSubPillarSize) {
-            throw new IllegalStateException("The minimumPillarSize (" + minimumSubPillarSize
-                    + ") must be at least maximumSubChainSize (" + maximumSubPillarSize + ").");
-        }
+        boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
         if (!randomSelection && subPillarEnabled) {
             throw new IllegalStateException("The selector (" + this
                     + ") with randomSelection  (" + randomSelection + ") and subPillarEnabled (" + subPillarEnabled
@@ -172,6 +155,7 @@ public class DefaultPillarSelector extends AbstractSelector
 
     @Override
     public long getSize() {
+        boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
         if (!subPillarEnabled) {
             return (long) cachedBasePillarList.size();
         } else {
@@ -187,6 +171,7 @@ public class DefaultPillarSelector extends AbstractSelector
 
     @Override
     public Iterator<List<Object>> iterator() {
+        boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
         if (!randomSelection) {
             if (!subPillarEnabled) {
                 return cachedBasePillarList.iterator();
@@ -206,6 +191,7 @@ public class DefaultPillarSelector extends AbstractSelector
 
     @Override
     public ListIterator<List<Object>> listIterator() {
+        boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
         if (!randomSelection) {
             if (!subPillarEnabled) {
                 return cachedBasePillarList.listIterator();
@@ -222,6 +208,7 @@ public class DefaultPillarSelector extends AbstractSelector
 
     @Override
     public ListIterator<List<Object>> listIterator(int index) {
+        boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
         if (!randomSelection) {
             if (!subPillarEnabled) {
                 return cachedBasePillarList.listIterator(index);
@@ -259,8 +246,8 @@ public class DefaultPillarSelector extends AbstractSelector
             }
             // Known issue/compromise: Every subPillar should have same probability, but doesn't.
             // Instead, every subPillar size has the same probability.
-            int min = Math.min(minimumSubPillarSize, basePillarSize);
-            int max = Math.min(maximumSubPillarSize, basePillarSize);
+            int min = Math.min(subpillarConfigPolicy.getMinSubpillarSize(), basePillarSize);
+            int max = Math.min(subpillarConfigPolicy.getMaxSubpillarSize(), basePillarSize);
             int subPillarSize = min + workingRandom.nextInt(max - min + 1);
             if (subPillarSize == basePillarSize) { // subpillar is equal to the base pillar, use shortcut
                 return basePillar;

@@ -35,8 +35,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
 
@@ -114,6 +112,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the pillars change every step.");
         }
+        boolean subPillarActuallyEnabled = BooleanUtils.isTrue(subPillarEnabled) || pillarType != PillarType.FULL_ONLY;
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
@@ -121,18 +120,18 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                 minimumCacheType, SelectionOrder.ORIGINAL);
         Collection<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptorList(
                 entitySelector.getEntityDescriptor(), variableNameIncludeList);
-        if (BooleanUtils.isFalse(subPillarEnabled)
+        if (!subPillarActuallyEnabled
                 && (minimumSubPillarSize != null || maximumSubPillarSize != null)) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this
                     + ") must not have subPillarEnabled (" + subPillarEnabled
                     + ") with minimumSubPillarSize (" + minimumSubPillarSize
                     + ") and maximumSubPillarSize (" + maximumSubPillarSize + ").");
         }
+        SubpillarConfigPolicy subpillarPolicy = subPillarActuallyEnabled ?
+                SubpillarConfigPolicy.withSubpillars(minimumSubPillarSize, maximumSubPillarSize) :
+                SubpillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
-                inheritedSelectionOrder.toRandomSelectionBoolean(),
-                defaultIfNull(subPillarEnabled, true),
-                defaultIfNull(minimumSubPillarSize, 1),
-                defaultIfNull(maximumSubPillarSize, Integer.MAX_VALUE));
+                inheritedSelectionOrder.toRandomSelectionBoolean(), subpillarPolicy);
     }
 
     @Override

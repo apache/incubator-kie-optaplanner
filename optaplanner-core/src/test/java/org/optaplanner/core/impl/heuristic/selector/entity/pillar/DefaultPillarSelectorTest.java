@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.Test;
+import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubpillarConfigPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -96,7 +97,7 @@ public class DefaultPillarSelectorTest {
                                                                              a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
-                entitySelector, Arrays.asList(variableDescriptor), false, false, 1, Integer.MAX_VALUE);
+                entitySelector, Arrays.asList(variableDescriptor), false, SubpillarConfigPolicy.withoutSubpillars());
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         pillarSelector.solvingStarted(solverScope);
@@ -149,7 +150,7 @@ public class DefaultPillarSelectorTest {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor());
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
-                entitySelector, Arrays.asList(variableDescriptor), false, false, 1, Integer.MAX_VALUE);
+                entitySelector, Arrays.asList(variableDescriptor), false, SubpillarConfigPolicy.withoutSubpillars());
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         pillarSelector.solvingStarted(solverScope);
@@ -208,7 +209,8 @@ public class DefaultPillarSelectorTest {
                                                                              a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
-                entitySelector, Arrays.asList(variableDescriptor), true, true, 1, Integer.MAX_VALUE);
+                entitySelector, Arrays.asList(variableDescriptor), true,
+                SubpillarConfigPolicy.withSubpillarsUnlimited());
 
         Random workingRandom = mock(Random.class);
 
@@ -294,7 +296,7 @@ public class DefaultPillarSelectorTest {
                                                                              a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
-                entitySelector, Arrays.asList(variableDescriptor), true, true, 2, 2);
+                entitySelector, Arrays.asList(variableDescriptor), true, SubpillarConfigPolicy.withSubpillars(2, 2));
 
         Random workingRandom = mock(Random.class);
 
@@ -335,7 +337,8 @@ public class DefaultPillarSelectorTest {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor());
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
-                entitySelector, Arrays.asList(variableDescriptor), true, true, 1, Integer.MAX_VALUE);
+                entitySelector, Arrays.asList(variableDescriptor), true,
+                SubpillarConfigPolicy.withSubpillarsUnlimited());
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         pillarSelector.solvingStarted(solverScope);
