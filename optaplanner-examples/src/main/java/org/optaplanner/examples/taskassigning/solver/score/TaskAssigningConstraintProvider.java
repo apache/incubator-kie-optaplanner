@@ -18,24 +18,28 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
         return new Constraint[]{
                 noMissingSkills(constraintFactory),
                 minimizeMakespan(constraintFactory),
+                /*
+                 * TODO potential for performance improvements through API enhancements,
+                 *  see https://issues.jboss.org/browse/PLANNER-1604.
+                 */
                 criticalPriorityBasedTaskEndTime(constraintFactory),
                 majorPriorityTaskEndTime(constraintFactory),
                 minorPriorityTaskEndTime(constraintFactory)
         };
     }
 
-    private static UniConstraintStream<Task> getInitializedTask(ConstraintFactory constraintFactory) {
+    private UniConstraintStream<Task> getInitializedTask(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Task.class)
                 .filter(task -> task.getEmployee() != null);
     }
 
-    private static UniConstraintStream<Task> getInitializedTaskWithPriority(ConstraintFactory constraintFactory,
+    private UniConstraintStream<Task> getInitializedTaskWithPriority(ConstraintFactory constraintFactory,
             Priority priority) {
         return getInitializedTask(constraintFactory)
                 .filter(task -> task.getPriority() == priority);
     }
 
-    private static Constraint noMissingSkills(ConstraintFactory constraintFactory) {
+    private Constraint noMissingSkills(ConstraintFactory constraintFactory) {
         return getInitializedTask(constraintFactory)
                 .filter(task -> task.getMissingSkillCount() > 0)
                 .penalize("No missing skills",
@@ -43,14 +47,14 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
                         Task::getMissingSkillCount);
     }
 
-    private static Constraint criticalPriorityBasedTaskEndTime(ConstraintFactory constraintFactory) {
+    private Constraint criticalPriorityBasedTaskEndTime(ConstraintFactory constraintFactory) {
         return getInitializedTaskWithPriority(constraintFactory, Priority.CRITICAL)
                 .penalize("Critical priority task end time",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
                         Task::getEndTime);
     }
 
-    private static Constraint minimizeMakespan(ConstraintFactory constraintFactory) {
+    private Constraint minimizeMakespan(ConstraintFactory constraintFactory) {
         return getInitializedTask(constraintFactory)
                 .filter(task -> task.getNextTask() == null)
                 .penalize("Minimize makespan, latest ending employee first",
@@ -58,18 +62,17 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
                         task -> task.getEndTime() * task.getEndTime());
     }
 
-    private static Constraint majorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
+    private Constraint majorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
         return getInitializedTaskWithPriority(constraintFactory, Priority.MAJOR)
                 .penalize("Major priority task end time",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 2, 1),
                         Task::getEndTime);
     }
 
-    private static Constraint minorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
+    private Constraint minorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
         return getInitializedTaskWithPriority(constraintFactory, Priority.MINOR)
                 .penalize("Minor priority task end time",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 3, 1),
                         Task::getEndTime);
     }
-
 }
