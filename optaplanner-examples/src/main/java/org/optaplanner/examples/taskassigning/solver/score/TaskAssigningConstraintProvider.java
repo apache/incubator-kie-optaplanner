@@ -28,19 +28,13 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
         };
     }
 
-    private UniConstraintStream<Task> getInitializedTask(ConstraintFactory constraintFactory) {
+    private UniConstraintStream<Task> getTaskWithPriority(ConstraintFactory constraintFactory, Priority priority) {
         return constraintFactory.from(Task.class)
-                .filter(task -> task.getEmployee() != null);
-    }
-
-    private UniConstraintStream<Task> getInitializedTaskWithPriority(ConstraintFactory constraintFactory,
-            Priority priority) {
-        return getInitializedTask(constraintFactory)
                 .filter(task -> task.getPriority() == priority);
     }
 
     private Constraint noMissingSkills(ConstraintFactory constraintFactory) {
-        return getInitializedTask(constraintFactory)
+        return constraintFactory.from(Task.class)
                 .filter(task -> task.getMissingSkillCount() > 0)
                 .penalize("No missing skills",
                         BendableScore.ofHard(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
@@ -48,14 +42,14 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
     }
 
     private Constraint criticalPriorityBasedTaskEndTime(ConstraintFactory constraintFactory) {
-        return getInitializedTaskWithPriority(constraintFactory, Priority.CRITICAL)
+        return getTaskWithPriority(constraintFactory, Priority.CRITICAL)
                 .penalize("Critical priority task end time",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
                         Task::getEndTime);
     }
 
     private Constraint minimizeMakespan(ConstraintFactory constraintFactory) {
-        return getInitializedTask(constraintFactory)
+        return constraintFactory.from(Task.class)
                 .filter(task -> task.getNextTask() == null)
                 .penalize("Minimize makespan, latest ending employee first",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 1, 1),
@@ -63,14 +57,14 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
     }
 
     private Constraint majorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
-        return getInitializedTaskWithPriority(constraintFactory, Priority.MAJOR)
+        return getTaskWithPriority(constraintFactory, Priority.MAJOR)
                 .penalize("Major priority task end time",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 2, 1),
                         Task::getEndTime);
     }
 
     private Constraint minorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
-        return getInitializedTaskWithPriority(constraintFactory, Priority.MINOR)
+        return getTaskWithPriority(constraintFactory, Priority.MINOR)
                 .penalize("Minor priority task end time",
                         BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 3, 1),
                         Task::getEndTime);
