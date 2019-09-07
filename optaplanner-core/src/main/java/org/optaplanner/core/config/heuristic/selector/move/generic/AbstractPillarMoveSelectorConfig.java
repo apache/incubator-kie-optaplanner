@@ -25,16 +25,16 @@ import org.optaplanner.core.config.util.ConfigUtils;
 
 abstract class AbstractPillarMoveSelectorConfig<T extends AbstractPillarMoveSelectorConfig<T>> extends MoveSelectorConfig<T> {
 
-    protected PillarType pillarType = null;
+    protected SubPillarType pillarType = null;
     protected Class<? extends Comparator> pillarOrderComparatorClass = null;
     @XStreamAlias("pillarSelector")
     protected PillarSelectorConfig pillarSelectorConfig = null;
 
-    public PillarType getPillarType() {
+    public SubPillarType getPillarType() {
         return pillarType;
     }
 
-    public void setPillarType(final PillarType pillarType) {
+    public void setPillarType(final SubPillarType pillarType) {
         this.pillarType = pillarType;
     }
 

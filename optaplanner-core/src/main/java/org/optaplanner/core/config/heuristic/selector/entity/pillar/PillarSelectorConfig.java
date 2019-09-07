@@ -26,21 +26,17 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.PillarType;
+import org.optaplanner.core.config.heuristic.selector.move.generic.SubPillarType;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PillarSelectorConfig.class);
 
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
@@ -58,7 +54,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     }
 
     /**
-     * @see PillarType and its uses in pillar move selectors.
+     * @see SubPillarType and its uses in pillar move selectors.
      */
     @Deprecated(/* forRemoval = true */)
     public Boolean getSubPillarEnabled() {
@@ -66,7 +62,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     }
 
     /**
-     * @see PillarType and its uses in pillar move selectors.
+     * @see SubPillarType and its uses in pillar move selectors.
      */
     @Deprecated(/* forRemoval = true */)
     public void setSubPillarEnabled(Boolean subPillarEnabled) {
@@ -95,7 +91,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
 
     /**
      * @param configPolicy never null
-     * @param pillarType if null, defaults to {@link PillarType#FULL_AND_SUB} for backwards compatibility reasons.
+     * @param subPillarType if null, defaults to {@link SubPillarType#ALL} for backwards compatibility reasons.
      * @param pillarOrderComparatorClass if not null, will force entites in the pillar to come in this order
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
@@ -104,22 +100,17 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
      * @param variableNameIncludeList sometimes null
      * @return never null
      */
-    public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy, PillarType pillarType,
+    public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy, SubPillarType subPillarType,
             Class<? extends Comparator> pillarOrderComparatorClass, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder, List<String> variableNameIncludeList) {
-        if (subPillarEnabled != null) {
-            if (pillarType == null) {
-                LOGGER.warn("Property subPillarEnabled ({}) on pillarSelectorConfig ({}) is deprecated for removal.\n" +
-                        "Use property pillarType on the parent MoveSelectorConfig.", subPillarEnabled, this);
-            } else {
-                throw new IllegalArgumentException("Property subPillarEnabled (" + subPillarEnabled +
-                        ") on pillarSelectorConfig (" + this + ") must not be present when pillarType (" + pillarType +
-                        ") is set on the parent MoveSelectorConfig.");
-            }
+        if (subPillarEnabled != null && subPillarType != null) {
+            throw new IllegalArgumentException("Property subPillarEnabled (" + subPillarEnabled +
+                    ") on pillarSelectorConfig (" + this + ") must not be present when subPillarType (" +
+                    subPillarType + ") is set on the parent MoveSelectorConfig.");
         }
-        if (pillarType != PillarType.SEQUENTIAL && pillarOrderComparatorClass != null) {
-            throw new IllegalArgumentException("Pillar type (" + pillarType + ") on pillarSelectorConfig (" + this +
-                    ") is not " + PillarType.SEQUENTIAL + ", yet pillarOrderComparatorClass (" +
+        if (subPillarType != SubPillarType.SEQUENCE && pillarOrderComparatorClass != null) {
+            throw new IllegalArgumentException("Pillar type (" + subPillarType + ") on pillarSelectorConfig (" + this +
+                    ") is not " + SubPillarType.SEQUENCE + ", yet pillarOrderComparatorClass (" +
                     pillarOrderComparatorClass + ") is provided.");
         }
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
@@ -128,7 +119,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the pillars change every step.");
         }
-        boolean subPillarActuallyEnabled = BooleanUtils.isTrue(subPillarEnabled) || pillarType != PillarType.FULL_ONLY;
+        boolean subPillarActuallyEnabled = BooleanUtils.isTrue(subPillarEnabled) || subPillarType != SubPillarType.NONE;
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
@@ -144,14 +135,14 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         }
 
         SubPillarConfigPolicy subPillarPolicy = subPillarActuallyEnabled ?
-                configureSubPillars(pillarType, pillarOrderComparatorClass, entitySelector, minimumSubPillarSize,
+                configureSubPillars(subPillarType, pillarOrderComparatorClass, entitySelector, minimumSubPillarSize,
                         maximumSubPillarSize) :
                 SubPillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean(), subPillarPolicy);
     }
 
-    private SubPillarConfigPolicy configureSubPillars(PillarType pillarType,
+    private SubPillarConfigPolicy configureSubPillars(SubPillarType pillarType,
             Class<? extends Comparator> pillarOrderComparatorClass, EntitySelector entitySelector,
             Integer minimumSubPillarSize, Integer maximumSubPillarSize) {
         int actualMinimumSubPillarSize = defaultIfNull(minimumSubPillarSize, 1);
@@ -160,9 +151,9 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
             return SubPillarConfigPolicy.withSubpillars(actualMinimumSubPillarSize, actualMaximumSubPillarSize);
         }
         switch (pillarType) {
-            case FULL_AND_SUB:
+            case ALL:
                 return SubPillarConfigPolicy.withSubpillars(actualMinimumSubPillarSize, actualMaximumSubPillarSize);
-            case SEQUENTIAL:
+            case SEQUENCE:
                 if (pillarOrderComparatorClass == null) {
                     Class<?> entityClass = entitySelector.getEntityDescriptor().getEntityClass();
                     boolean isComparable = entityClass.isAssignableFrom(Comparable.class);

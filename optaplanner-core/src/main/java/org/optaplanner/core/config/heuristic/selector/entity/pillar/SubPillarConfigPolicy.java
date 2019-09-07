@@ -1,7 +1,6 @@
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
 import java.util.Comparator;
-import java.util.Optional;
 
 public final class SubPillarConfigPolicy {
 
@@ -24,7 +23,7 @@ public final class SubPillarConfigPolicy {
         this.maximumSubPillarSize = maximumSubPillarSize;
         validateSizes();
         if (entityComparator == null) {
-            throw new IllegalStateException("entityComparator must not be null.");
+            throw new IllegalStateException("The entityComparator must not be null.");
         }
         this.entityComparator = entityComparator;
     }
@@ -87,11 +86,10 @@ public final class SubPillarConfigPolicy {
     }
 
     /**
-     * @return Only present if the subpillars are to be treated as sequential. Never present if
-     * {@link #isSubPillarEnabled()} is false.
+     * @return Not null if the subpillars are to be treated as sequential. Always null if {@link #subPillarEnabled} is false.
      */
-    public Optional<Comparator<?>> getEntityComparator() {
-        return Optional.ofNullable(entityComparator);
+    public Comparator<?> getEntityComparator() {
+        return entityComparator;
     }
 
     @Override

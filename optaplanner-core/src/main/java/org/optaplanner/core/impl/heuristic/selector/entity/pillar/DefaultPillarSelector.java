@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -140,12 +139,12 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
         }
         Stream<Object> entities = StreamSupport.stream(entitySelector.spliterator(), false);
         /*
-         * sort the entities in case we need sequential pillars; this will result in all the pillars being sorted
-         * without having to sort them individually later.
+         * When the entity comparator is present, the entity selection will be sorted. This will result in all the
+         * pillars being sorted without having to sort them individually later.
          */
-        Optional<Comparator<?>> comparator = subpillarConfigPolicy.getEntityComparator();
-        entities = comparator.isPresent() ? entities.sorted((Comparator) comparator.get()) : entities;
-        // create all the pillars from a stream of entities; if sorted, the pillars will be sequential
+        Comparator<?> comparator = subpillarConfigPolicy.getEntityComparator();
+        entities = (comparator == null) ? entities.sorted((Comparator) comparator) : entities;
+        // Create all the pillars from a stream of entities; if sorted, the pillars will be sequential.
         Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
         int variableCount = variableDescriptors.size();
         entities.forEach(entity -> {
@@ -281,10 +280,12 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
                 final Object randomElement = basePillar.get(randomIndex);
                 return Collections.singletonList(randomElement);
             }
-            // when entity comparator present, it means we require sequential subpillars
-            return subpillarConfigPolicy.getEntityComparator()
-                    .map(comparator -> selectSublist(basePillar, subPillarSize))
-                    .orElseGet(() -> selectRandom(basePillar, subPillarSize));
+            Comparator<?> comparator = subpillarConfigPolicy.getEntityComparator();
+            if (comparator == null) {
+                return selectRandom(basePillar, subPillarSize);
+            } else { // sequential subpillars
+                return selectSublist(basePillar, subPillarSize);
+            }
         }
 
         private List<Object> selectSublist(final List<Object> basePillar, final int subPillarSize) {
