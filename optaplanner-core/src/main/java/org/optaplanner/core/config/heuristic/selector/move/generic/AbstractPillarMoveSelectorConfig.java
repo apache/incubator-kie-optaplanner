@@ -25,25 +25,25 @@ import org.optaplanner.core.config.util.ConfigUtils;
 
 abstract class AbstractPillarMoveSelectorConfig<T extends AbstractPillarMoveSelectorConfig<T>> extends MoveSelectorConfig<T> {
 
-    protected SubPillarType pillarType = null;
-    protected Class<? extends Comparator> pillarOrderComparatorClass = null;
+    protected SubPillarType subPillarType = null;
+    protected Class<? extends Comparator> subPillarSequenceComparatorClass = null;
     @XStreamAlias("pillarSelector")
     protected PillarSelectorConfig pillarSelectorConfig = null;
 
-    public SubPillarType getPillarType() {
-        return pillarType;
+    public SubPillarType getSubPillarType() {
+        return subPillarType;
     }
 
-    public void setPillarType(final SubPillarType pillarType) {
-        this.pillarType = pillarType;
+    public void setSubPillarType(final SubPillarType subPillarType) {
+        this.subPillarType = subPillarType;
     }
 
-    public Class<? extends Comparator> getPillarOrderComparatorClass() {
-        return pillarOrderComparatorClass;
+    public Class<? extends Comparator> getSubPillarSequenceComparatorClass() {
+        return subPillarSequenceComparatorClass;
     }
 
-    public void setPillarOrderComparatorClass(final Class<? extends Comparator> pillarOrderComparatorClass) {
-        this.pillarOrderComparatorClass = pillarOrderComparatorClass;
+    public void setSubPillarSequenceComparatorClass(final Class<? extends Comparator> subPillarSequenceComparatorClass) {
+        this.subPillarSequenceComparatorClass = subPillarSequenceComparatorClass;
     }
 
     public PillarSelectorConfig getPillarSelectorConfig() {
@@ -57,9 +57,9 @@ abstract class AbstractPillarMoveSelectorConfig<T extends AbstractPillarMoveSele
     @Override
     public void inherit(T inheritedConfig) {
         super.inherit(inheritedConfig);
-        pillarType = ConfigUtils.inheritOverwritableProperty(pillarType, inheritedConfig.getPillarType());
-        pillarOrderComparatorClass = ConfigUtils.inheritOverwritableProperty(pillarOrderComparatorClass,
-                inheritedConfig.getPillarOrderComparatorClass());
+        subPillarType = ConfigUtils.inheritOverwritableProperty(subPillarType, inheritedConfig.getSubPillarType());
+        subPillarSequenceComparatorClass = ConfigUtils.inheritOverwritableProperty(subPillarSequenceComparatorClass,
+                inheritedConfig.getSubPillarSequenceComparatorClass());
         pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
     }
 

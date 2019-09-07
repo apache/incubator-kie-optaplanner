@@ -58,8 +58,8 @@ public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorCo
         List<String> variableNameIncludeList = valueSelectorConfig == null ? null
                 : valueSelectorConfig.getVariableName() == null ? null
                 : Collections.singletonList(valueSelectorConfig.getVariableName());
-        PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, pillarType,
-                pillarOrderComparatorClass, minimumCacheType,
+        PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, subPillarType,
+                subPillarSequenceComparatorClass, minimumCacheType,
                 SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         ValueSelectorConfig valueSelectorConfig_ = defaultIfNull(valueSelectorConfig, new ValueSelectorConfig());
         ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,

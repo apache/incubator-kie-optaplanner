@@ -69,12 +69,12 @@ public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConf
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig pillarSelectorConfig_ = defaultIfNull(pillarSelectorConfig, new PillarSelectorConfig());
-        PillarSelector leftPillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, pillarType,
-                pillarOrderComparatorClass, minimumCacheType,
+        PillarSelector leftPillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy, subPillarType,
+                subPillarSequenceComparatorClass, minimumCacheType,
                 SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         PillarSelectorConfig rightPillarSelectorConfig = defaultIfNull(secondaryPillarSelectorConfig, pillarSelectorConfig_);
-        PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(configPolicy, pillarType,
-                pillarOrderComparatorClass, minimumCacheType,
+        PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(configPolicy, subPillarType,
+                subPillarSequenceComparatorClass, minimumCacheType,
                 SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         List<GenuineVariableDescriptor> variableDescriptorList = deduceVariableDescriptorList(
                 leftPillarSelector.getEntityDescriptor(), variableNameIncludeList);

@@ -92,7 +92,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     /**
      * @param configPolicy never null
      * @param subPillarType if null, defaults to {@link SubPillarType#ALL} for backwards compatibility reasons.
-     * @param pillarOrderComparatorClass if not null, will force entites in the pillar to come in this order
+     * @param subPillarSequenceComparatorClass if not null, will force entites in the pillar to come in this order
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
@@ -101,17 +101,17 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
      * @return never null
      */
     public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy, SubPillarType subPillarType,
-            Class<? extends Comparator> pillarOrderComparatorClass, SelectionCacheType minimumCacheType,
+            Class<? extends Comparator> subPillarSequenceComparatorClass, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder, List<String> variableNameIncludeList) {
         if (subPillarEnabled != null && subPillarType != null) {
             throw new IllegalArgumentException("Property subPillarEnabled (" + subPillarEnabled +
                     ") on pillarSelectorConfig (" + this + ") must not be present when subPillarType (" +
                     subPillarType + ") is set on the parent MoveSelectorConfig.");
         }
-        if (subPillarType != SubPillarType.SEQUENCE && pillarOrderComparatorClass != null) {
-            throw new IllegalArgumentException("Pillar type (" + subPillarType + ") on pillarSelectorConfig (" + this +
-                    ") is not " + SubPillarType.SEQUENCE + ", yet pillarOrderComparatorClass (" +
-                    pillarOrderComparatorClass + ") is provided.");
+        if (subPillarType != SubPillarType.SEQUENCE && subPillarSequenceComparatorClass != null) {
+            throw new IllegalArgumentException("Subpillar type (" + subPillarType + ") on pillarSelectorConfig (" + this +
+                    ") is not " + SubPillarType.SEQUENCE + ", yet subPillarSequenceComparatorClass (" +
+                    subPillarSequenceComparatorClass + ") is provided.");
         }
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this
@@ -135,7 +135,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
         }
 
         SubPillarConfigPolicy subPillarPolicy = subPillarActuallyEnabled ?
-                configureSubPillars(subPillarType, pillarOrderComparatorClass, entitySelector, minimumSubPillarSize,
+                configureSubPillars(subPillarType, subPillarSequenceComparatorClass, entitySelector, minimumSubPillarSize,
                         maximumSubPillarSize) :
                 SubPillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
