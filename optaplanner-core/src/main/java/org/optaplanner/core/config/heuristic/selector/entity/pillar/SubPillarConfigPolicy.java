@@ -92,13 +92,4 @@ public final class SubPillarConfigPolicy {
         return entityComparator;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "entityComparator=" + entityComparator +
-                ", maximumSubPillarSize=" + maximumSubPillarSize +
-                ", minimumSubPillarSize=" + minimumSubPillarSize +
-                ", subPillarEnabled=" + subPillarEnabled +
-                '}';
-    }
 }
