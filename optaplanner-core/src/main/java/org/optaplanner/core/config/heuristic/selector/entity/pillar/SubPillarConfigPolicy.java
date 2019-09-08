@@ -57,8 +57,7 @@ public final class SubPillarConfigPolicy {
 
     private void validateSizes() {
         if (minimumSubPillarSize < 1) {
-            throw new IllegalStateException("The selector (" + this
-                    + ")'s minimumPillarSize (" + minimumSubPillarSize
+            throw new IllegalStateException("The sub pillar's minimumPillarSize (" + minimumSubPillarSize
                     + ") must be at least 1.");
         }
         if (minimumSubPillarSize > maximumSubPillarSize) {
