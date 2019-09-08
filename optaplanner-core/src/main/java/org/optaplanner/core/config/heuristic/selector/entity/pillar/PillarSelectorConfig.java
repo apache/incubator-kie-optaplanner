@@ -54,7 +54,9 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     }
 
     /**
+     * @deprecated in favor of SubPillarType
      * @see SubPillarType and its uses in pillar move selectors.
+     * @return Null when not set.
      */
     @Deprecated(/* forRemoval = true */)
     public Boolean getSubPillarEnabled() {
@@ -62,6 +64,8 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     }
 
     /**
+     * @param subPillarEnabled true to enable, false to disable, null to leave unset.
+     * @deprecated in favor of SubPillarType
      * @see SubPillarType and its uses in pillar move selectors.
      */
     @Deprecated(/* forRemoval = true */)
