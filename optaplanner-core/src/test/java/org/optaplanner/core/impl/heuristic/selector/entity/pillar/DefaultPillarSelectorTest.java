@@ -312,12 +312,11 @@ public class DefaultPillarSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
-        // Expected pillar cache: [a], [b, d], [c, e, f]
+        // Expected pillar cache: [b, d], [c, e, f]
         when(workingRandom.nextInt(anyInt())).thenReturn(
-                0,// [a]
-                2, 0, 0, 0, // [c, e, f]
-                1, 0, 0); // [b, d]
-        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b, d]");
+                1, 0, 0, 0, // [c, e]
+                0); // [b, d]
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[c, e]", "[b, d]");
         pillarSelector.stepEnded(stepScopeA1);
 
         pillarSelector.phaseEnded(phaseScopeA);

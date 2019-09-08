@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -24,11 +25,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy;
+import org.optaplanner.core.config.heuristic.selector.move.generic.SubPillarType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
@@ -92,10 +95,9 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
         boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
         if (!randomSelection && subPillarEnabled) {
             throw new IllegalStateException("The selector (" + this
-                    + ") with randomSelection  (" + randomSelection + ") and subPillarEnabled (" + subPillarEnabled
-                    + ") does not support non random selection with sub pillars" +
-                    " because the number of sub pillars scales exponentially.\n"
-                    + "Either set subPillarEnabled to false or use JIT random selection.");
+                    + ") with randomSelection  (" + randomSelection + ") does not support non random selection with "
+                    + "sub pillars because the number of sub pillars scales exponentially.\n"
+                    + "Either set subPillarType to " + SubPillarType.NONE + " or use JIT random selection.");
         }
     }
 
@@ -144,7 +146,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
              * The entity selection will be sorted. This will result in all the pillars being sorted without having to
              * sort them individually later.
              */
-            entities =  entities.sorted((Comparator) comparator);
+            entities = entities.sorted((Comparator) comparator);
         }
         // Create all the pillars from a stream of entities; if sorted, the pillars will be sequential.
         Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
@@ -156,7 +158,16 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
             List<Object> pillar = valueStateToPillarMap.computeIfAbsent(valueState, key -> new ArrayList<>());
             pillar.add(entity);
         });
-        cachedBasePillarList = new ArrayList<>(valueStateToPillarMap.values());
+        // Store the cache. Exclude pillars of size lower than the minimumSubPillarSize, as we shouldn't select those.
+        Collection<List<Object>> pillarLists = valueStateToPillarMap.values();
+        int minimumSubPillarSize = subpillarConfigPolicy.getMinimumSubPillarSize();
+        if (minimumSubPillarSize > 1) {
+            cachedBasePillarList = pillarLists.stream()
+                    .filter(pillar -> pillar.size() >= minimumSubPillarSize)
+                    .collect(Collectors.toList());
+        } else { // Use shortcut when we don't intend to remove anything.
+            cachedBasePillarList = new ArrayList<>(pillarLists);
+        }
     }
 
     @Override
@@ -181,17 +192,15 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
 
     @Override
     public long getSize() {
-        boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
-        if (!subPillarEnabled) {
-            return (long) cachedBasePillarList.size();
+        if (!subpillarConfigPolicy.isSubPillarEnabled()) {
+            return cachedBasePillarList.size();
         } else {
-            // For each pillar, the number of combinations is: the sum of every (n! / (k! (n-k)!))
-            // for which n is pillar.getSize() and k iterates from minimumSubPillarSize to maximumSubPillarSize
-            // This implies that a single pillar of size 64 is already too big to be held in a long
+            // For each pillar, the number of combinations is: the sum of every (n! / (k! (n-k)!)) for which n is
+            // pillar.getSize() and k iterates from minimumSubPillarSize to maximumSubPillarSize. This implies that a
+            // single pillar of size 64 is already too big to be held in a long.
             throw new UnsupportedOperationException("The selector (" + this
-                    + ") with randomSelection  (" + randomSelection + ") and subPillarEnabled (" + subPillarEnabled
-                    + ") does not support getSize()" +
-                    " because the number of sub pillars scales exponentially.");
+                    + ") with randomSelection  (" + randomSelection + ") and sub pillars does not support getSize() "
+                    + "because the number of sub pillars scales exponentially.");
         }
     }
 
@@ -202,9 +211,7 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
             if (!subPillarEnabled) {
                 return cachedBasePillarList.iterator();
             } else {
-                throw new IllegalStateException(
-                        "Impossible state because the constructors fails with randomSelection (" + randomSelection
-                                + ") and subPillarEnabled (" + subPillarEnabled + ").");
+                throw new IllegalStateException(getSubPillarExceptionMessage());
             }
         } else {
             if (!subPillarEnabled) {
@@ -215,6 +222,16 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
         }
     }
 
+    private String getSubPillarExceptionMessage() {
+        return "Impossible state because the constructors fails with randomSelection (" + randomSelection
+                + ") and sub pillars.";
+    }
+
+    private String getListIteratorExceptionMessage() {
+        return "The selector (" + this + ") does not support a ListIterator with randomSelection (" + randomSelection
+                + ").";
+    }
+
     @Override
     public ListIterator<List<Object>> listIterator() {
         boolean subPillarEnabled = subpillarConfigPolicy.isSubPillarEnabled();
@@ -222,13 +239,10 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
             if (!subPillarEnabled) {
                 return cachedBasePillarList.listIterator();
             } else {
-                throw new IllegalStateException(
-                        "Impossible state because the constructors fails with randomSelection (" + randomSelection
-                                + ") and subPillarEnabled (" + subPillarEnabled + ").");
+                throw new IllegalStateException(getSubPillarExceptionMessage());
             }
         } else {
-            throw new IllegalStateException("The selector (" + this
-                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
+            throw new IllegalStateException(getListIteratorExceptionMessage());
         }
     }
 
@@ -239,13 +253,10 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
             if (!subPillarEnabled) {
                 return cachedBasePillarList.listIterator(index);
             } else {
-                throw new IllegalStateException(
-                        "Impossible state because the constructors fails with randomSelection (" + randomSelection
-                                + ") and subPillarEnabled (" + subPillarEnabled + ").");
+                throw new IllegalStateException(getSubPillarExceptionMessage());
             }
         } else {
-            throw new IllegalStateException("The selector (" + this
-                    + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
+            throw new IllegalStateException(getListIteratorExceptionMessage());
         }
     }
 
