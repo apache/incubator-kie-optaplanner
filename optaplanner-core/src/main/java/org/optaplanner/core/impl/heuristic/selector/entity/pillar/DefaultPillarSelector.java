@@ -138,12 +138,14 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         Stream<Object> entities = StreamSupport.stream(entitySelector.spliterator(), false);
-        /*
-         * When the entity comparator is present, the entity selection will be sorted. This will result in all the
-         * pillars being sorted without having to sort them individually later.
-         */
         Comparator<?> comparator = subpillarConfigPolicy.getEntityComparator();
-        entities = (comparator == null) ? entities.sorted((Comparator) comparator) : entities;
+        if (comparator != null) {
+            /*
+             * The entity selection will be sorted. This will result in all the pillars being sorted without having to
+             * sort them individually later.
+             */
+            entities =  entities.sorted((Comparator) comparator);
+        }
         // Create all the pillars from a stream of entities; if sorted, the pillars will be sequential.
         Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
         int variableCount = variableDescriptors.size();
