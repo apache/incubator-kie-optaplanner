@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
@@ -29,7 +30,7 @@ import org.optaplanner.examples.curriculumcourse.domain.solver.RoomStrengthWeigh
 
 @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
-public class Lecture extends AbstractPersistable {
+public class Lecture extends AbstractPersistable implements Comparable<Lecture> {
 
     private Course course;
     private int lectureIndexInCourse;
@@ -123,4 +124,8 @@ public class Lecture extends AbstractPersistable {
         return course + "-" + lectureIndexInCourse;
     }
 
+    @Override
+    public int compareTo(Lecture o) {
+        return ConstraintJustification.COMPARATOR.compare(this, o);
+    }
 }

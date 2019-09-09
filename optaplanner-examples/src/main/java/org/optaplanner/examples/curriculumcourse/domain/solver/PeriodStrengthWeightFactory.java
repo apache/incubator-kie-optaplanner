@@ -16,7 +16,10 @@
 
 package org.optaplanner.examples.curriculumcourse.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
+import com.google.common.base.Functions;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Period;
@@ -37,6 +40,17 @@ public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory
 
     public static class PeriodStrengthWeight implements Comparable<PeriodStrengthWeight> {
 
+        // The higher unavailablePeriodPenaltyCount, the weaker
+        private static final Comparator<PeriodStrengthWeight> BASE_COMPARATOR =
+                Comparator.comparing((PeriodStrengthWeight w) -> w.unavailablePeriodPenaltyCount).reversed();
+        private static final Comparator<Period> PERIOD_COMPARATOR =
+                Comparator.comparing((Period p) -> p.getDay().getDayIndex())
+                        .thenComparing(p -> p.getTimeslot().getTimeslotIndex())
+                        .thenComparing(ConstraintJustification.COMPARATOR);
+        private static final Comparator<PeriodStrengthWeight> COMPARATOR =
+                Comparator.comparing(Functions.identity(), BASE_COMPARATOR)
+                        .thenComparing(w -> w.period, PERIOD_COMPARATOR);
+
         private final Period period;
         private final int unavailablePeriodPenaltyCount;
 
@@ -47,15 +61,7 @@ public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory
 
         @Override
         public int compareTo(PeriodStrengthWeight other) {
-            return new CompareToBuilder()
-                    // The higher unavailablePeriodPenaltyCount, the weaker
-                    .append(other.unavailablePeriodPenaltyCount, unavailablePeriodPenaltyCount) // Descending
-                    .append(period.getDay().getDayIndex(), other.period.getDay().getDayIndex())
-                    .append(period.getTimeslot().getTimeslotIndex(), other.period.getTimeslot().getTimeslotIndex())
-                    .append(period.getId(), other.period.getId())
-                    .toComparison();
+            return COMPARATOR.compare(this, other);
         }
-
     }
-
 }

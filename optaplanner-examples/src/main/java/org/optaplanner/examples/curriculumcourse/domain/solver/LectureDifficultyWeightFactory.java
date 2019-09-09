@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.curriculumcourse.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
@@ -39,6 +40,14 @@ public class LectureDifficultyWeightFactory implements SelectionSorterWeightFact
 
     public static class LectureDifficultyWeight implements Comparable<LectureDifficultyWeight> {
 
+        private static final Comparator<LectureDifficultyWeight> COMPARATOR =
+                Comparator.comparingInt((LectureDifficultyWeight c) -> c.lecture.getCurriculumList().size())
+                        .thenComparing(c -> c.unavailablePeriodPenaltyCount)
+                        .thenComparingInt(c -> c.lecture.getCourse().getLectureSize())
+                        .thenComparingInt(c -> c.lecture.getCourse().getStudentSize())
+                        .thenComparing(c -> c.lecture.getCourse().getMinWorkingDaySize())
+                        .thenComparing(c -> c.lecture);
+
         private final Lecture lecture;
         private final int unavailablePeriodPenaltyCount;
 
@@ -49,18 +58,7 @@ public class LectureDifficultyWeightFactory implements SelectionSorterWeightFact
 
         @Override
         public int compareTo(LectureDifficultyWeight other) {
-            Course course = lecture.getCourse();
-            Course otherCourse = other.lecture.getCourse();
-            return new CompareToBuilder()
-                    .append(course.getCurriculumList().size(), otherCourse.getCurriculumList().size())
-                    .append(unavailablePeriodPenaltyCount, other.unavailablePeriodPenaltyCount)
-                    .append(course.getLectureSize(), otherCourse.getLectureSize())
-                    .append(course.getStudentSize(), otherCourse.getStudentSize())
-                    .append(course.getMinWorkingDaySize(), otherCourse.getMinWorkingDaySize())
-                    .append(lecture.getId(), other.lecture.getId())
-                    .toComparison();
+           return COMPARATOR.compare(this, other);
         }
-
     }
-
 }

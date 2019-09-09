@@ -19,10 +19,11 @@ package org.optaplanner.examples.curriculumcourse.domain;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Course")
-public class Course extends AbstractPersistable {
+public class Course extends AbstractPersistable implements Comparable<Course> {
 
     private String code;
 
@@ -86,4 +87,8 @@ public class Course extends AbstractPersistable {
         return code;
     }
 
+    @Override
+    public int compareTo(Course o) {
+        return ConstraintJustification.COMPARATOR.compare(this, o);
+    }
 }
