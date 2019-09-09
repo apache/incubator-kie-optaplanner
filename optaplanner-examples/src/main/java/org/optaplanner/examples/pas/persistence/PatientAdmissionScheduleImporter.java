@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.optaplanner.examples.common.domain.PersistableIdComparator;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
@@ -197,7 +197,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                     }
                 }
             }
-            Collections.sort(departmentList, new PersistableIdComparator());
+            Collections.sort(departmentList, ConstraintJustification.COMPARATOR);
             patientAdmissionSchedule.setDepartmentList(departmentList);
             patientAdmissionSchedule.setDepartmentSpecialismList(departmentSpecialismList);
         }
