@@ -19,17 +19,18 @@ package org.optaplanner.examples.cloudbalancing.optional.domain;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
 public class CloudProcessDifficultyComparator implements Comparator<CloudProcess>, Serializable {
 
+    private static final Comparator<CloudProcess> COMPARATOR =
+            Comparator.comparingInt(CloudProcess::getRequiredMultiplicand)
+                    .thenComparing(ConstraintJustification.COMPARATOR);
+
     @Override
     public int compare(CloudProcess a, CloudProcess b) {
-        return new CompareToBuilder()
-                .append(a.getRequiredMultiplicand(), b.getRequiredMultiplicand())
-                .append(a.getId(), b.getId())
-                .toComparison();
+        return COMPARATOR.compare(a, b);
     }
 
 }

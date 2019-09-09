@@ -7,11 +7,12 @@ import java.util.Comparator;
  */
 public interface ConstraintJustification {
 
+    /**
+     * Sorts the {@link ConstraintJustification}s in the ascending order of their {@link #getId()}.
+     */
     Comparator<ConstraintJustification> COMPARATOR =
             Comparator.comparing((ConstraintJustification j) -> j.getClass().getName())
                     .thenComparingLong(ConstraintJustification::getId);
 
-
     Long getId();
-
 }
