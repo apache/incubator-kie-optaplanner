@@ -82,7 +82,9 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
             return constraintName.compareTo(other.constraintName);
         } else {
             for (int i = 0; i < justificationList.size() && i < other.justificationList.size(); i++) {
-                int comparison = ((Comparable) justificationList.get(i)).compareTo(other.justificationList.get(i));
+                ConstraintJustification left = (ConstraintJustification) justificationList.get(i);
+                ConstraintJustification right = (ConstraintJustification) other.justificationList.get(i);
+                int comparison = ConstraintJustification.COMPARATOR.compare(left, right);
                 if (comparison != 0) {
                     return comparison;
                 }

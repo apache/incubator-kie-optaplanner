@@ -217,11 +217,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                 }
             }
         }
-        flightList.sort(Comparator.comparing(Flight::getDepartureUTCDate)
-                .thenComparing(Flight::getDepartureAirport)
-                .thenComparing(Flight::getDepartureUTCDateTime)
-                .thenComparing(Flight::getArrivalAirport)
-                .thenComparing(Flight::getArrivalUTCDateTime));
+        flightList.sort(Flight::compareTo);
         solution.setFlightList(flightList);
     }
 
