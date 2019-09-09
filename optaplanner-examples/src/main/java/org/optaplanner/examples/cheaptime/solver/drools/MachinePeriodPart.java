@@ -27,7 +27,7 @@ import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 
-public class MachinePeriodPart {
+public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
 
     private final Machine machine;
     private final int period;

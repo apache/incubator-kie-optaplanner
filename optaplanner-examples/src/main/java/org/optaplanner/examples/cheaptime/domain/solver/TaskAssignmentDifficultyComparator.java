@@ -19,22 +19,16 @@ package org.optaplanner.examples.cheaptime.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class TaskAssignmentDifficultyComparator implements Comparator<TaskAssignment>, Serializable {
 
+    private static final Comparator<TaskAssignment> COMPARATOR = Comparator.comparing(TaskAssignment::getTask)
+            .thenComparingLong(AbstractPersistable::getId);
+
     @Override
     public int compare(TaskAssignment a, TaskAssignment b) {
-        Task aTask = a.getTask();
-        Task bTask = b.getTask();
-        return new CompareToBuilder()
-                .append(aTask.getResourceUsageMultiplicand(), bTask.getResourceUsageMultiplicand())
-                .append(aTask.getPowerConsumptionMicros(), bTask.getPowerConsumptionMicros())
-                .append(aTask.getDuration(), bTask.getDuration())
-                .append(a.getId(), b.getId())
-                .toComparison();
+        return COMPARATOR.compare(a, b);
     }
-
 }

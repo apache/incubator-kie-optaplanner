@@ -19,10 +19,11 @@ package org.optaplanner.examples.cheaptime.domain;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CtMachine")
-public class Machine extends AbstractPersistable {
+public class Machine extends AbstractPersistable implements Comparable<Machine> {
 
     private int index;
 
@@ -76,4 +77,8 @@ public class Machine extends AbstractPersistable {
         return "Machine " + id;
     }
 
+    @Override
+    public int compareTo(Machine o) {
+        return ConstraintJustification.COMPARATOR.compare(this, o);
+    }
 }
