@@ -49,7 +49,8 @@ public class EqualsLookUpStrategy implements LookUpStrategy {
                     + "Maybe the workingObject was never added because the planning solution doesn't have a @"
                     + ProblemFactCollectionProperty.class.getSimpleName()
                     + " annotation on a member with instances of the externalObject's class ("
-                    + externalObject.getClass() + ").");
+                    + externalObject.getClass() + ").\n"
+                    + "Maybe, if you're using JPA, an attached JPA entity sneaked in a proxy class, try detaching your JPA entities.");
         }
         return workingObject;
     }
