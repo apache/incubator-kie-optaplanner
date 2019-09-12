@@ -21,10 +21,10 @@
       <changeMoveSelector/>
       <swapMoveSelector/>
       <pillarChangeMoveSelector>
-        <subPillarType>SEQUENTIAL</subPillarType>
+        <subPillarType>SEQUENCE</subPillarType>
       </pillarChangeMoveSelector>
       <pillarSwapMoveSelector>
-        <subPillarType>SEQUENTIAL</subPillarType>
+        <subPillarType>SEQUENCE</subPillarType>
       </pillarSwapMoveSelector>
     </unionMoveSelector>
   </localSearch>
