@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
@@ -62,6 +61,13 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
     }
 
     public static class PatientAdmissionScheduleInputBuilder extends TxtInputBuilder<PatientAdmissionSchedule> {
+
+        private static final Comparator<Room> ROOM_COMPARATOR =
+                Comparator.comparing(Room::getDepartment, ConstraintJustification.COMPARATOR)
+                        .thenComparing(ConstraintJustification.COMPARATOR);
+        private static final Comparator<Bed> BED_COMPARATOR = Comparator.comparing(Bed::getRoom, ROOM_COMPARATOR)
+                .thenComparingInt(Bed::getIndexInRoom)
+                .thenComparing(ConstraintJustification.COMPARATOR);
 
         private PatientAdmissionSchedule patientAdmissionSchedule;
 
@@ -105,7 +111,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size()).pow(
                     patientAdmissionSchedule.getAdmissionPartList().size());
             logger.info("PatientAdmissionSchedule {} has {} specialisms, {} equipments, {} departments, {} rooms, "
-                    + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
+                            + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
                     getInputId(),
                     patientAdmissionSchedule.getSpecialismList().size(),
                     patientAdmissionSchedule.getEquipmentList().size(),
@@ -296,15 +302,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 }
                 room.setRoomEquipmentList(roomEquipmentListOfRoom);
             }
-            Collections.sort(roomList, new Comparator<Room>() {
-                @Override
-                public int compare(Room a, Room b) {
-                    return new CompareToBuilder()
-                            .append(a.getDepartment().getId(), b.getDepartment().getId())
-                            .append(a.getId(), b.getId())
-                            .toComparison();
-                }
-            });
+            Collections.sort(roomList, ROOM_COMPARATOR);
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
             patientAdmissionSchedule.setRoomEquipmentList(roomEquipmentList);
@@ -332,17 +330,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 bedList.add(bed);
                 room.getBedList().add(bed);
             }
-            Collections.sort(bedList, new Comparator<Bed>() {
-                @Override
-                public int compare(Bed a, Bed b) {
-                    return new CompareToBuilder()
-                            .append(a.getRoom().getDepartment().getId(), b.getRoom().getDepartment().getId())
-                            .append(a.getRoom().getId(), b.getRoom().getId())
-                            .append(a.getIndexInRoom(), b.getIndexInRoom())
-                            .append(a.getId(), b.getId())
-                            .toComparison();
-                }
-            });
+            Collections.sort(bedList, BED_COMPARATOR);
             patientAdmissionSchedule.setBedList(bedList);
         }
 
@@ -546,7 +534,5 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             }
             patientAdmissionSchedule.setBedDesignationList(bedDesignationList);
         }
-
     }
-
 }

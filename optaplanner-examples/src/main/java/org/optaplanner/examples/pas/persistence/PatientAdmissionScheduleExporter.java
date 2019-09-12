@@ -18,8 +18,9 @@ package org.optaplanner.examples.pas.persistence;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
@@ -42,13 +43,14 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
 
     public static class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder<PatientAdmissionSchedule> {
 
+        private static final Comparator<BedDesignation> COMPARATOR =
+                Comparator.comparing(BedDesignation::getAdmissionPart, ConstraintJustification.COMPARATOR)
+                    .thenComparing(BedDesignation::getBed, ConstraintJustification.COMPARATOR)
+                    .thenComparing(ConstraintJustification.COMPARATOR);
+
         @Override
         public void writeSolution() throws IOException {
-            Collections.sort(solution.getBedDesignationList(), (a, b) -> new CompareToBuilder()
-                    .append(a.getAdmissionPart(), b.getAdmissionPart())
-                    .append(a.getBed(), b.getBed())
-                    .append(a.getId(), b.getId())
-                    .toComparison());
+            Collections.sort(solution.getBedDesignationList(), COMPARATOR);
             for (Patient patient : solution.getPatientList()) {
                 bufferedWriter.write(Long.toString(patient.getId()));
                 for (BedDesignation bedDesignation : solution.getBedDesignationList()) {
