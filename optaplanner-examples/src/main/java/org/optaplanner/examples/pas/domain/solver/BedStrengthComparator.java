@@ -28,11 +28,16 @@ import static org.optaplanner.examples.common.domain.AbstractPersistable.default
 public class BedStrengthComparator implements Comparator<Bed>,
         Serializable {
 
+
+    private static final Comparator<Integer> NULLSAFE_INTEGER_COMPARATOR =
+            Comparator.nullsFirst(Integer::compareTo);
+    private static final Comparator<Integer> NULLSAFE_REVERSE_INTEGER_COMPARATOR =
+            NULLSAFE_INTEGER_COMPARATOR.reversed();
     private static final Comparator<Department> DEPARTMENT_COMPARATOR =
             Comparator.comparing((Department department) -> department.getMinimumAge() == null) // null minimumAge is stronger
                     .thenComparing(department -> department.getMaximumAge() == null) // null maximumAge is stronger
-                    .thenComparingInt(department -> -department.getMinimumAge()) // Descending, low minimumAge is stronger
-                    .thenComparingInt(Department::getMaximumAge); // High maximumAge is stronger
+                    .thenComparing(Department::getMinimumAge, NULLSAFE_REVERSE_INTEGER_COMPARATOR) // Descending, low minimumAge is stronger
+                    .thenComparing(Department::getMaximumAge, NULLSAFE_INTEGER_COMPARATOR); // High maximumAge is stronger
     private static final Comparator<Room> ROOM_COMPARATOR =
             Comparator.comparingInt((Room room) -> room.getRoomEquipmentList().size())
                     .thenComparingInt(room -> room.getRoomSpecialismList().size())
@@ -44,6 +49,15 @@ public class BedStrengthComparator implements Comparator<Bed>,
 
     @Override
     public int compare(Bed a, Bed b) {
+
+        if (a == null) {
+            if (b == null) {
+                return 0;
+            }
+            return -1;
+        } else if (b == null) {
+            return 1;
+        }
         return COMPARATOR.compare(a, b);
     }
 }
