@@ -16,7 +16,9 @@
 
 package org.optaplanner.examples.examination.domain.solver;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.util.Comparator;
+
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.Room;
@@ -30,6 +32,9 @@ public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<E
 
     public static class RoomStrengthWeight implements Comparable<RoomStrengthWeight> {
 
+        private static final Comparator<Room> COMPARATOR = Comparator.comparingInt(Room::getCapacity)
+                .thenComparing(ConstraintJustification.COMPARATOR);
+
         private final Room room;
 
         public RoomStrengthWeight(Room room) {
@@ -38,10 +43,7 @@ public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<E
 
         @Override
         public int compareTo(RoomStrengthWeight other) {
-            return new CompareToBuilder()
-                    .append(room.getCapacity(), other.room.getCapacity())
-                    .append(room.getId(), other.room.getId())
-                    .toComparison();
+            return COMPARATOR.compare(this.room, other.room);
         }
 
     }

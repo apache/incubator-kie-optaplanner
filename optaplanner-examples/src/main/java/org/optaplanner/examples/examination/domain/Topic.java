@@ -20,10 +20,11 @@ import java.util.List;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Topic")
-public class Topic extends AbstractPersistable {
+public class Topic extends AbstractPersistable implements Comparable<Topic> {
 
     private int duration; // in minutes
     private List<Student> studentList;
@@ -77,4 +78,8 @@ public class Topic extends AbstractPersistable {
         return Long.toString(id);
     }
 
+    @Override
+    public int compareTo(Topic o) {
+        return ConstraintJustification.COMPARATOR.compare(this, o);
+    }
 }
