@@ -19,19 +19,20 @@ package org.optaplanner.examples.nurserostering.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 
 public class EmployeeStrengthComparator implements Comparator<Employee>, Serializable {
 
+    private static final Comparator<Employee> COMPARATOR =
+            Comparator.comparingInt((Employee employee) -> -employee.getWeekendLength()) // Descending
+            .thenComparing(ConstraintJustification.COMPARATOR);
+
     @Override
     public int compare(Employee a, Employee b) {
         // TODO refactor to DifficultyWeightFactory and use getContract().getContractLineList()
-        // to sum maximumValue and minimumValue etc
-        return new CompareToBuilder()
-                .append(b.getWeekendLength(), a.getWeekendLength()) // Descending
-                .append(a.getId(), b.getId())
-                .toComparison();
+        //  to sum maximumValue and minimumValue etc
+        return COMPARATOR.compare(a, b);
     }
 
 }
