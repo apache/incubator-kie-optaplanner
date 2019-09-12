@@ -28,6 +28,11 @@ public abstract class AbstractPersistable implements ConstraintJustification, Se
             Comparator.comparing((AbstractPersistable a) -> a.getClass().getName())
                     .thenComparingLong((AbstractPersistable a) -> a.id);
 
+    /**
+     *
+     * @param <T> The class the instances of which to compare.
+     * @return A comparator that can compare all instances of all possible subclasses.
+     */
     public static <T extends AbstractPersistable> Comparator<T> defaultPersistableComparator() {
         return (Comparator<T>) DEFAULT_PERSISTABLE_COMPARATOR;
     }
@@ -41,6 +46,10 @@ public abstract class AbstractPersistable implements ConstraintJustification, Se
         this.id = id;
     }
 
+    /**
+     * @see #defaultPersistableComparator()
+     * @return A comparator that can compare all instances of all possible subclasses.
+     */
     @Override
     public Comparator<?> getConstraintJustificationComparator() {
         return defaultPersistableComparator();
