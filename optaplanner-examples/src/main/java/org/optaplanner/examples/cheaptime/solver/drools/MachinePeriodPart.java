@@ -123,6 +123,7 @@ public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
                 .toHashCode();
     }
 
+    @Override
     public int compareTo(MachinePeriodPart other) {
         return new CompareToBuilder()
                 .append(machine, other.machine)
