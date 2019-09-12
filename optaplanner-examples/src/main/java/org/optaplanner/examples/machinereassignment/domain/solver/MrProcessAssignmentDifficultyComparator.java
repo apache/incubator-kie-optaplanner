@@ -19,17 +19,18 @@ package org.optaplanner.examples.machinereassignment.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 
-public class MrProcessAssignmentDifficultyComparator implements Comparator<MrProcessAssignment>, Serializable {
+public class MrProcessAssignmentDifficultyComparator implements Comparator<MrProcessAssignment>,
+        Serializable {
+
+    private static final Comparator<MrProcessAssignment> COMPARATOR =
+            Comparator.comparingInt((MrProcessAssignment assignment) -> assignment.getProcess().getUsageMultiplicand())
+                    .thenComparing(ConstraintJustification.COMPARATOR);
 
     @Override
     public int compare(MrProcessAssignment a, MrProcessAssignment b) {
-        return new CompareToBuilder()
-                .append(a.getProcess().getUsageMultiplicand(), b.getProcess().getUsageMultiplicand())
-                .append(a.getId(), b.getId())
-                .toComparison();
+        return COMPARATOR.compare(a, b);
     }
-
 }

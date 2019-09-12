@@ -18,15 +18,15 @@ package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-public class MrMachineTransientUsage implements Serializable, Comparable<MrMachineTransientUsage> {
+public class MrMachineTransientUsage implements Serializable,
+        ConstraintJustification {
 
     private MrMachineCapacity machineCapacity;
     private long usage;
@@ -34,6 +34,11 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
     public MrMachineTransientUsage(MrMachineCapacity machineCapacity, long usage) {
         this.machineCapacity = machineCapacity;
         this.usage = usage;
+    }
+
+    @Override
+    public Long getId() {
+        throw new UnsupportedOperationException();
     }
 
     public MrMachineCapacity getMachineCapacity() {
@@ -65,20 +70,6 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
                 .append(machineCapacity)
                 .append(usage)
                 .toHashCode();
-    }
-
-    /**
-     * Used by the GUI to sort the {@link ConstraintMatch} list
-     * by {@link ConstraintMatch#getJustificationList()}.
-     * @param other never null
-     * @return comparison
-     */
-    @Override
-    public int compareTo(MrMachineTransientUsage other) {
-        return new CompareToBuilder()
-                .append(machineCapacity, other.machineCapacity)
-                .append(usage, other.usage)
-                .toComparison();
     }
 
     public MrMachine getMachine() {

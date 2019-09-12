@@ -18,13 +18,13 @@ package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 
-public class MrServiceMovedProcessesCount implements Serializable, Comparable<MrServiceMovedProcessesCount> {
+public class MrServiceMovedProcessesCount implements Serializable,
+        ConstraintJustification {
 
     private MrService service;
     private int movedProcessesCount;
@@ -32,6 +32,11 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
     public MrServiceMovedProcessesCount(MrService service, int movedProcessesCount) {
         this.service = service;
         this.movedProcessesCount = movedProcessesCount;
+    }
+
+    @Override
+    public Long getId() {
+        throw new UnsupportedOperationException();
     }
 
     public MrService getService() {
@@ -63,20 +68,6 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
                 .append(service)
                 .append(movedProcessesCount)
                 .toHashCode();
-    }
-
-    /**
-     * Used by the GUI to sort the {@link ConstraintMatch} list
-     * by {@link ConstraintMatch#getJustificationList()}.
-     * @param other never null
-     * @return comparison
-     */
-    @Override
-    public int compareTo(MrServiceMovedProcessesCount other) {
-        return new CompareToBuilder()
-                .append(service, other.service)
-                .append(movedProcessesCount, other.movedProcessesCount)
-                .toComparison();
     }
 
     public Long getServiceId() {
