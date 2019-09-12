@@ -33,7 +33,7 @@ public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<C
 
     public static class RoomStrengthWeight implements Comparable<RoomStrengthWeight> {
 
-        private static final Comparator<Room> COMPARATOR = Comparator.comparing(Room::getCapacity)
+        private static final Comparator<Room> COMPARATOR = Comparator.comparingInt(Room::getCapacity)
                 .thenComparing(defaultPersistableComparator());
 
         private final Room room;

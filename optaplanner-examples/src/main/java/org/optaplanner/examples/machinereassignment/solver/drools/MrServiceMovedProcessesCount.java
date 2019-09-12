@@ -31,7 +31,7 @@ public class MrServiceMovedProcessesCount implements Serializable,
 
     private static final Comparator<MrServiceMovedProcessesCount> COMPARATOR =
             Comparator.comparing((MrServiceMovedProcessesCount count) -> count.service, defaultPersistableComparator())
-                    .thenComparing(count -> count.movedProcessesCount);
+                    .thenComparingInt(count -> count.movedProcessesCount);
     private MrService service;
     private int movedProcessesCount;
 

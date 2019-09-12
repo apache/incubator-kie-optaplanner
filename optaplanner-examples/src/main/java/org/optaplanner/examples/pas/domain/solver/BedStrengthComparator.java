@@ -28,7 +28,6 @@ import static org.optaplanner.examples.common.domain.AbstractPersistable.default
 public class BedStrengthComparator implements Comparator<Bed>,
         Serializable {
 
-
     private static final Comparator<Integer> NULLSAFE_INTEGER_COMPARATOR =
             Comparator.nullsFirst(Integer::compareTo);
     private static final Comparator<Integer> NULLSAFE_REVERSE_INTEGER_COMPARATOR =

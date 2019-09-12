@@ -20,12 +20,13 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class TaskAssignmentDifficultyComparator implements Comparator<TaskAssignment>, Serializable {
 
     private static final Comparator<TaskAssignment> COMPARATOR = Comparator.comparing(TaskAssignment::getTask)
-            .thenComparingLong(AbstractPersistable::getId);
+            .thenComparing(defaultPersistableComparator());
 
     @Override
     public int compare(TaskAssignment a, TaskAssignment b) {

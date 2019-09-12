@@ -22,17 +22,18 @@ import java.util.Comparator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.score.constraint.ConstraintJustification;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class MrMachineUsage implements Serializable,
         ConstraintJustification {
 
     private static final Comparator<MrMachineUsage> COMPARATOR =
             Comparator.comparing((MrMachineUsage usage) -> usage.getClass().getName())
-                    .thenComparing(usage -> usage.machineCapacity, AbstractPersistable.defaultPersistableComparator())
+                    .thenComparing(usage -> usage.machineCapacity, defaultPersistableComparator())
                     .thenComparingLong(usage -> usage.usage);
     private MrMachineCapacity machineCapacity;
     private long usage;

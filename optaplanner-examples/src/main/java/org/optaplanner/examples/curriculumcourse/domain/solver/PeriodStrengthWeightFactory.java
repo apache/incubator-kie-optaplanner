@@ -43,10 +43,10 @@ public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory
 
         // The higher unavailablePeriodPenaltyCount, the weaker
         private static final Comparator<PeriodStrengthWeight> BASE_COMPARATOR =
-                Comparator.comparing((PeriodStrengthWeight w) -> w.unavailablePeriodPenaltyCount).reversed();
+                Comparator.comparingInt((PeriodStrengthWeight w) -> w.unavailablePeriodPenaltyCount).reversed();
         private static final Comparator<Period> PERIOD_COMPARATOR =
-                Comparator.comparing((Period p) -> p.getDay().getDayIndex())
-                        .thenComparing(p -> p.getTimeslot().getTimeslotIndex())
+                Comparator.comparingInt((Period p) -> p.getDay().getDayIndex())
+                        .thenComparingInt(p -> p.getTimeslot().getTimeslotIndex())
                         .thenComparing(defaultPersistableComparator());
         private static final Comparator<PeriodStrengthWeight> COMPARATOR =
                 Comparator.comparing(Functions.identity(), BASE_COMPARATOR)
