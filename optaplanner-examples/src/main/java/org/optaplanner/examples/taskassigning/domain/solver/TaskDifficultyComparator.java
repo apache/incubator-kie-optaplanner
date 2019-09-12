@@ -19,8 +19,9 @@ package org.optaplanner.examples.taskassigning.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.taskassigning.domain.Task;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class TaskDifficultyComparator implements Comparator<Task>,
         Serializable {
@@ -29,7 +30,7 @@ public class TaskDifficultyComparator implements Comparator<Task>,
             Comparator.comparing(Task::getPriority)
                     .thenComparingInt(task -> task.getTaskType().getRequiredSkillList().size())
                     .thenComparingInt(task -> task.getTaskType().getBaseDuration())
-                    .thenComparing(ConstraintJustification.COMPARATOR);
+                    .thenComparing(defaultPersistableComparator());
 
     @Override
     public int compare(Task a, Task b) {

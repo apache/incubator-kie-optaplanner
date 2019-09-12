@@ -18,10 +18,11 @@ package org.optaplanner.examples.examination.domain.solver;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.Room;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<Examination, Room> {
 
@@ -33,7 +34,7 @@ public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<E
     public static class RoomStrengthWeight implements Comparable<RoomStrengthWeight> {
 
         private static final Comparator<Room> COMPARATOR = Comparator.comparingInt(Room::getCapacity)
-                .thenComparing(ConstraintJustification.COMPARATOR);
+                .thenComparing(defaultPersistableComparator());
 
         private final Room room;
 

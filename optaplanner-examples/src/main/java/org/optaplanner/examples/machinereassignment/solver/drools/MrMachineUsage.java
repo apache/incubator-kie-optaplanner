@@ -17,10 +17,12 @@
 package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.score.constraint.ConstraintJustification;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
@@ -28,17 +30,16 @@ import org.optaplanner.examples.machinereassignment.domain.MrResource;
 public class MrMachineUsage implements Serializable,
         ConstraintJustification {
 
+    private static final Comparator<MrMachineUsage> COMPARATOR =
+            Comparator.comparing((MrMachineUsage usage) -> usage.getClass().getName())
+                    .thenComparing(usage -> usage.machineCapacity, AbstractPersistable.defaultPersistableComparator())
+                    .thenComparingLong(usage -> usage.usage);
     private MrMachineCapacity machineCapacity;
     private long usage;
 
     public MrMachineUsage(MrMachineCapacity machineCapacity, long usage) {
         this.machineCapacity = machineCapacity;
         this.usage = usage;
-    }
-
-    @Override
-    public Long getId() {
-        throw new UnsupportedOperationException();
     }
 
     public MrMachineCapacity getMachineCapacity() {
@@ -101,4 +102,8 @@ public class MrMachineUsage implements Serializable,
         return getMachine() + "-" + getResource() + "=" + usage;
     }
 
+    @Override
+    public Comparator getConstraintJustificationComparator() {
+        return COMPARATOR;
+    }
 }

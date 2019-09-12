@@ -19,10 +19,11 @@ package org.optaplanner.examples.pas.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.Department;
 import org.optaplanner.examples.pas.domain.Room;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class BedStrengthComparator implements Comparator<Bed>,
         Serializable {
@@ -39,7 +40,7 @@ public class BedStrengthComparator implements Comparator<Bed>,
     private static final Comparator<Bed> COMPARATOR =
             Comparator.comparing((Bed bed) -> bed.getRoom().getDepartment(), DEPARTMENT_COMPARATOR)
                     .thenComparing(Bed::getRoom, ROOM_COMPARATOR)
-                    .thenComparing(ConstraintJustification.COMPARATOR);
+                    .thenComparing(defaultPersistableComparator());
 
     @Override
     public int compare(Bed a, Bed b) {

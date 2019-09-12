@@ -20,12 +20,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeightFactory<Schedule, ExecutionMode> {
 
@@ -61,7 +62,7 @@ public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeight
 
         private static final Comparator<ExecutionModeStrengthWeight> COMPARATOR =
                 Comparator.comparingDouble((ExecutionModeStrengthWeight weight) -> weight.requirementDesirability)
-                        .thenComparing(weight -> weight.executionMode, ConstraintJustification.COMPARATOR);
+                        .thenComparing(weight -> weight.executionMode, defaultPersistableComparator());
 
         private final ExecutionMode executionMode;
         private final double requirementDesirability;

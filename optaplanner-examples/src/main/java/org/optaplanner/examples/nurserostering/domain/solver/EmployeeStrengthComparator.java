@@ -19,14 +19,15 @@ package org.optaplanner.examples.nurserostering.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.nurserostering.domain.Employee;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class EmployeeStrengthComparator implements Comparator<Employee>, Serializable {
 
     private static final Comparator<Employee> COMPARATOR =
             Comparator.comparingInt((Employee employee) -> -employee.getWeekendLength()) // Descending
-            .thenComparing(ConstraintJustification.COMPARATOR);
+            .thenComparing(defaultPersistableComparator());
 
     @Override
     public int compare(Employee a, Employee b) {

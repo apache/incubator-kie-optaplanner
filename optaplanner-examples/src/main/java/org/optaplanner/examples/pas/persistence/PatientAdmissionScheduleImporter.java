@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
@@ -47,6 +46,8 @@ import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
+
 public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporter<PatientAdmissionSchedule> {
 
     public static void main(String[] args) {
@@ -63,11 +64,11 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
     public static class PatientAdmissionScheduleInputBuilder extends TxtInputBuilder<PatientAdmissionSchedule> {
 
         private static final Comparator<Room> ROOM_COMPARATOR =
-                Comparator.comparing(Room::getDepartment, ConstraintJustification.COMPARATOR)
-                        .thenComparing(ConstraintJustification.COMPARATOR);
+                Comparator.comparing(Room::getDepartment, defaultPersistableComparator())
+                        .thenComparing(defaultPersistableComparator());
         private static final Comparator<Bed> BED_COMPARATOR = Comparator.comparing(Bed::getRoom, ROOM_COMPARATOR)
                 .thenComparingInt(Bed::getIndexInRoom)
-                .thenComparing(ConstraintJustification.COMPARATOR);
+                .thenComparing(defaultPersistableComparator());
 
         private PatientAdmissionSchedule patientAdmissionSchedule;
 
@@ -203,7 +204,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                     }
                 }
             }
-            Collections.sort(departmentList, ConstraintJustification.COMPARATOR);
+            Collections.sort(departmentList, defaultPersistableComparator());
             patientAdmissionSchedule.setDepartmentList(departmentList);
             patientAdmissionSchedule.setDepartmentSpecialismList(departmentSpecialismList);
         }

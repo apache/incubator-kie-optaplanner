@@ -19,12 +19,13 @@ package org.optaplanner.examples.examination.persistence;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination> {
 
@@ -50,7 +51,7 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination
 
         @Override
         public void writeSolution() throws IOException {
-            Collections.sort(solution.getExamList(), ConstraintJustification.COMPARATOR); // TODO remove me when obsolete
+            Collections.sort(solution.getExamList(), defaultPersistableComparator()); // TODO remove me when obsolete
             for (Exam exam : solution.getExamList()) {
                 bufferedWriter.write(exam.getPeriod().getId() + ", " + exam.getRoom().getId() + "\r\n");
             }

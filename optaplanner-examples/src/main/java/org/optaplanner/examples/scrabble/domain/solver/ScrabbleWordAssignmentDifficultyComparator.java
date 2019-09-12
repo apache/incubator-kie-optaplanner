@@ -19,15 +19,16 @@ package org.optaplanner.examples.scrabble.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class ScrabbleWordAssignmentDifficultyComparator implements Comparator<ScrabbleWordAssignment>,
         Serializable {
 
     private static final Comparator<ScrabbleWordAssignment> COMPARATOR =
             Comparator.comparingInt((ScrabbleWordAssignment assignment) -> assignment.getWord().length())
-                    .thenComparing(ConstraintJustification.COMPARATOR);
+                    .thenComparing(defaultPersistableComparator());
 
     @Override
     public int compare(ScrabbleWordAssignment a, ScrabbleWordAssignment b) {

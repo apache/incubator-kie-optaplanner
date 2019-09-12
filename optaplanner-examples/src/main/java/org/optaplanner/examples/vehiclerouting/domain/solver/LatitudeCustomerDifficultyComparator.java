@@ -19,9 +19,9 @@ package org.optaplanner.examples.vehiclerouting.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 /**
  * On large datasets, the constructed solution looks like a zebra crossing.
@@ -32,7 +32,7 @@ public class LatitudeCustomerDifficultyComparator implements Comparator<Customer
             Comparator.comparingDouble((Customer customer) -> customer.getLocation().getLatitude())
                     .thenComparingDouble(customer -> customer.getLocation().getLongitude())
                     .thenComparingInt(Customer::getDemand)
-                    .thenComparing(ConstraintJustification.COMPARATOR);
+                    .thenComparing(defaultPersistableComparator());
 
     @Override
     public int compare(Customer a, Customer b) {

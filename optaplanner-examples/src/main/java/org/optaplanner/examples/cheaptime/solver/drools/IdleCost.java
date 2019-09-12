@@ -22,11 +22,14 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
+
 public class IdleCost implements Comparable<IdleCost> {
 
-    private static final Comparator<IdleCost> COMPARATOR = Comparator.comparing(IdleCost::getMachine)
-            .thenComparingInt(IdleCost::getActivePeriodAfterIdle)
-            .thenComparingLong(IdleCost::getCost);
+    private static final Comparator<IdleCost> COMPARATOR =
+            Comparator.comparing(IdleCost::getMachine, defaultPersistableComparator())
+                    .thenComparingInt(IdleCost::getActivePeriodAfterIdle)
+                    .thenComparingLong(IdleCost::getCost);
 
     private final Machine machine;
     private final int activePeriodAfterIdle;
@@ -84,5 +87,4 @@ public class IdleCost implements Comparable<IdleCost> {
     public String toString() {
         return "machine = " + machine + ", activePeriodAfterIdle = " + activePeriodAfterIdle + ", cost = " + cost;
     }
-
 }

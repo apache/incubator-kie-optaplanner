@@ -18,11 +18,12 @@ package org.optaplanner.examples.tsp.domain.solver;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSorterWeightFactory<TspSolution, Visit> {
 
@@ -39,7 +40,7 @@ public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSo
                 // Decreasing: closer to depot is stronger
                 Comparator.comparingLong((DomicileDistanceVisitDifficultyWeight weight) -> -weight.domicileRoundTripDistance)
                         .thenComparingDouble(weight -> weight.visit.getLocation().getLatitude())
-                        .thenComparing(weight -> weight.visit, ConstraintJustification.COMPARATOR);
+                        .thenComparing(weight -> weight.visit, defaultPersistableComparator());
 
         private final Visit visit;
         private final long domicileRoundTripDistance;

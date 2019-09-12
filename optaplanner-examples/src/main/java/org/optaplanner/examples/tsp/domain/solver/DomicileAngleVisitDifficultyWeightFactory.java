@@ -18,11 +18,12 @@ package org.optaplanner.examples.tsp.domain.solver;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 /**
  * On large datasets, the constructed solution looks like pizza slices.
@@ -45,7 +46,7 @@ public class DomicileAngleVisitDifficultyWeightFactory
         private static final Comparator<DomicileAngleVisitDifficultyWeight> COMPARATOR =
                 Comparator.comparingDouble((DomicileAngleVisitDifficultyWeight weight) -> weight.domicileAngle)
                         .thenComparingLong(weight -> weight.domicileRoundTripDistance) // Ascending (further from the depot are more difficult)
-                        .thenComparing(weight -> weight.visit, ConstraintJustification.COMPARATOR);
+                        .thenComparing(weight -> weight.visit, defaultPersistableComparator());
 
         private final Visit visit;
         private final double domicileAngle;

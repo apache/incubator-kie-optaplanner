@@ -17,11 +17,20 @@
 package org.optaplanner.examples.common.domain;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 
 public abstract class AbstractPersistable implements ConstraintJustification, Serializable {
+
+    private static final Comparator<? extends AbstractPersistable> DEFAULT_PERSISTABLE_COMPARATOR =
+            Comparator.comparing((AbstractPersistable a) -> a.getClass().getName())
+                    .thenComparingLong((AbstractPersistable a) -> a.id);
+
+    public static <T extends AbstractPersistable> Comparator<T> defaultPersistableComparator() {
+        return (Comparator<T>) DEFAULT_PERSISTABLE_COMPARATOR;
+    }
 
     protected Long id;
 
@@ -32,8 +41,12 @@ public abstract class AbstractPersistable implements ConstraintJustification, Se
         this.id = id;
     }
 
-    @PlanningId
     @Override
+    public Comparator<?> getConstraintJustificationComparator() {
+        return defaultPersistableComparator();
+    }
+
+    @PlanningId
     public Long getId() {
         return id;
     }

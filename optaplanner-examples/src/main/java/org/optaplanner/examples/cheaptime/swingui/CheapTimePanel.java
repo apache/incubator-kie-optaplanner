@@ -43,7 +43,6 @@ import org.jfree.data.time.ohlc.OHLCSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.util.ShapeUtilities;
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
@@ -54,19 +53,21 @@ import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
+
 public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/cheaptime/swingui/cheapTimeLogo.png";
     private static final Comparator<TaskAssignment> STABLE_COMPARATOR =
             Comparator.comparing((TaskAssignment a) -> a.getTask().getStartPeriodRangeFrom())
-                    .thenComparing(a -> a.getTask().getStartPeriodRangeTo())
-                    .thenComparing(a -> a.getTask().getDuration())
-                    .thenComparing(ConstraintJustification.COMPARATOR);
+                    .thenComparingInt(a -> a.getTask().getStartPeriodRangeTo())
+                    .thenComparingInt(a -> a.getTask().getDuration())
+                    .thenComparing(defaultPersistableComparator());
     private static final Comparator<TaskAssignment> GROUP_BY_MACHINE_COMPARATOR =
-            Comparator.comparing(TaskAssignment::getMachine)
-                    .thenComparing(TaskAssignment::getStartPeriod)
-                    .thenComparing(a -> a.getTask().getDuration())
-                    .thenComparing(ConstraintJustification.COMPARATOR);
+            Comparator.comparing(TaskAssignment::getMachine, defaultPersistableComparator())
+                    .thenComparingInt(TaskAssignment::getStartPeriod)
+                    .thenComparingInt(a -> a.getTask().getDuration())
+                    .thenComparing(defaultPersistableComparator());
 
     private JCheckBox groupByMachineCheckBox;
 

@@ -23,13 +23,17 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
+
 /**
  * Calculated during initialization, not modified during score calculation.
  */
-public class CourseConflict implements Serializable, Comparable<CourseConflict> {
+public class CourseConflict implements Serializable,
+        Comparable<CourseConflict> {
 
-    private static final Comparator<CourseConflict> COMPARATOR = Comparator.comparing(CourseConflict::getLeftCourse)
-            .thenComparing(CourseConflict::getRightCourse);
+    private static final Comparator<CourseConflict> COMPARATOR =
+            Comparator.comparing(CourseConflict::getLeftCourse, defaultPersistableComparator())
+                    .thenComparing(CourseConflict::getRightCourse, defaultPersistableComparator());
 
     private final Course leftCourse;
     private final Course rightCourse;
@@ -85,5 +89,4 @@ public class CourseConflict implements Serializable, Comparable<CourseConflict> 
     public String toString() {
         return leftCourse + " & " + rightCourse;
     }
-
 }

@@ -20,13 +20,14 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporter<PatientAdmissionSchedule> {
 
@@ -44,9 +45,9 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
     public static class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder<PatientAdmissionSchedule> {
 
         private static final Comparator<BedDesignation> COMPARATOR =
-                Comparator.comparing(BedDesignation::getAdmissionPart, ConstraintJustification.COMPARATOR)
-                    .thenComparing(BedDesignation::getBed, ConstraintJustification.COMPARATOR)
-                    .thenComparing(ConstraintJustification.COMPARATOR);
+                Comparator.comparing(BedDesignation::getAdmissionPart, defaultPersistableComparator())
+                    .thenComparing(BedDesignation::getBed, defaultPersistableComparator())
+                    .thenComparing(defaultPersistableComparator());
 
         @Override
         public void writeSolution() throws IOException {

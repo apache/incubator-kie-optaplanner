@@ -18,11 +18,12 @@ package org.optaplanner.examples.pas.domain.solver;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.domain.Room;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class BedDesignationDifficultyWeightFactory
         implements SelectionSorterWeightFactory<PatientAdmissionSchedule, BedDesignation> {
@@ -49,7 +50,7 @@ public class BedDesignationDifficultyWeightFactory
                 .thenComparingInt(weight -> weight.softDisallowedCount * weight.nightCount)
                 // Descending (earlier nights are more difficult) // TODO probably because less occupancy
                 .thenComparingInt(weight -> -weight.bedDesignation.getAdmissionPart().getFirstNight().getIndex())
-                .thenComparing(weight -> weight.bedDesignation, ConstraintJustification.COMPARATOR);
+                .thenComparing(weight -> weight.bedDesignation, defaultPersistableComparator());
         private final BedDesignation bedDesignation;
         private int requiredEquipmentCount;
         private int nightCount;

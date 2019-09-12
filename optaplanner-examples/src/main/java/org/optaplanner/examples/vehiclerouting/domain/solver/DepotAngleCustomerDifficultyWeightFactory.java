@@ -18,11 +18,12 @@ package org.optaplanner.examples.vehiclerouting.domain.solver;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 /**
  * On large datasets, the constructed solution looks like pizza slices.
@@ -45,7 +46,7 @@ public class DepotAngleCustomerDifficultyWeightFactory
         private static final Comparator<DepotAngleCustomerDifficultyWeight> COMPARATOR =
                 Comparator.comparingDouble((DepotAngleCustomerDifficultyWeight weight) -> weight.depotAngle)
                         .thenComparingLong(weight -> weight.depotRoundTripDistance) // Ascending (further from the depot are more difficult)
-                        .thenComparing(weight -> weight.customer, ConstraintJustification.COMPARATOR);
+                        .thenComparing(weight -> weight.customer, defaultPersistableComparator());
 
         private final Customer customer;
         private final double depotAngle;

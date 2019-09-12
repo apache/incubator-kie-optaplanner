@@ -19,8 +19,9 @@ package org.optaplanner.examples.cloudbalancing.optional.domain;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class CloudComputerStrengthComparator implements Comparator<CloudComputer>, Serializable {
 
@@ -30,7 +31,7 @@ public class CloudComputerStrengthComparator implements Comparator<CloudComputer
     private static final Comparator<CloudComputer> COMPARATOR =
             Comparator.comparingInt(CloudComputer::getMultiplicand)
             .thenComparing(DESCENDING_COST_COMPARATOR) // Descending (but this is debatable)
-            .thenComparing(ConstraintJustification.COMPARATOR);
+            .thenComparing(defaultPersistableComparator());
 
     @Override
     public int compare(CloudComputer a, CloudComputer b) {

@@ -24,6 +24,8 @@ import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
+
 public class LectureDifficultyWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Lecture> {
 
     @Override
@@ -46,7 +48,7 @@ public class LectureDifficultyWeightFactory implements SelectionSorterWeightFact
                         .thenComparingInt(c -> c.lecture.getCourse().getLectureSize())
                         .thenComparingInt(c -> c.lecture.getCourse().getStudentSize())
                         .thenComparing(c -> c.lecture.getCourse().getMinWorkingDaySize())
-                        .thenComparing(c -> c.lecture);
+                        .thenComparing(c -> c.lecture, defaultPersistableComparator());
 
         private final Lecture lecture;
         private final int unavailablePeriodPenaltyCount;

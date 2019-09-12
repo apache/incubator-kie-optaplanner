@@ -19,11 +19,12 @@ package org.optaplanner.examples.curriculumcourse.domain.solver;
 import java.util.Comparator;
 
 import com.google.common.base.Functions;
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Period;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Period> {
 
@@ -46,7 +47,7 @@ public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory
         private static final Comparator<Period> PERIOD_COMPARATOR =
                 Comparator.comparing((Period p) -> p.getDay().getDayIndex())
                         .thenComparing(p -> p.getTimeslot().getTimeslotIndex())
-                        .thenComparing(ConstraintJustification.COMPARATOR);
+                        .thenComparing(defaultPersistableComparator());
         private static final Comparator<PeriodStrengthWeight> COMPARATOR =
                 Comparator.comparing(Functions.identity(), BASE_COMPARATOR)
                         .thenComparing(w -> w.period, PERIOD_COMPARATOR);

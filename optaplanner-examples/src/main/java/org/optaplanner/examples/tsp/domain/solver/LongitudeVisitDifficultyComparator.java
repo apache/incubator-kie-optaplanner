@@ -19,8 +19,9 @@ package org.optaplanner.examples.tsp.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.tsp.domain.Visit;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class LongitudeVisitDifficultyComparator implements Comparator<Visit>, Serializable {
 
@@ -28,7 +29,7 @@ public class LongitudeVisitDifficultyComparator implements Comparator<Visit>, Se
     private static final Comparator<Visit> COMPARATOR =
             Comparator.comparingDouble((Visit visit) -> visit.getLocation().getLongitude())
                     .thenComparingDouble(visit -> visit.getLocation().getLatitude())
-                    .thenComparing(ConstraintJustification.COMPARATOR);
+                    .thenComparing(defaultPersistableComparator());
 
     @Override
     public int compare(Visit a, Visit b) {

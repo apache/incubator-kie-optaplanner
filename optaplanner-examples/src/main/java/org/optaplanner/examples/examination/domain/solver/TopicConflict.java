@@ -23,6 +23,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.examination.domain.Topic;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
+
 /**
  * Calculated during initialization, not modified during score calculation.
  */
@@ -30,8 +32,8 @@ public class TopicConflict implements Serializable,
         Comparable<TopicConflict> {
 
     private static final Comparator<TopicConflict> COMPARATOR =
-            Comparator.comparing(TopicConflict::getLeftTopic)
-                    .thenComparing(TopicConflict::getRightTopic);
+            Comparator.comparing(TopicConflict::getLeftTopic, defaultPersistableComparator())
+                    .thenComparing(TopicConflict::getRightTopic, defaultPersistableComparator());
     private Topic leftTopic;
     private Topic rightTopic;
     private int studentSize;

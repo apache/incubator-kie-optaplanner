@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.examination.app.ExaminationApp;
@@ -53,6 +52,8 @@ import org.optaplanner.examples.examination.domain.RoomPenalty;
 import org.optaplanner.examples.examination.domain.RoomPenaltyType;
 import org.optaplanner.examples.examination.domain.Student;
 import org.optaplanner.examples.examination.domain.Topic;
+
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
 
 public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination> {
 
@@ -78,7 +79,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
     public static class ExaminationInputBuilder extends TxtInputBuilder<Examination> {
 
         private static final Comparator<Topic> COMPARATOR = Comparator.comparing(Topic::getStudentSize)
-                .thenComparing(ConstraintJustification.COMPARATOR);
+                .thenComparing(defaultPersistableComparator());
         private Examination examination;
         private Map<Topic, Set<Topic>> coincidenceMap;
         private Map<Topic, Set<Topic>> exclusionMap;

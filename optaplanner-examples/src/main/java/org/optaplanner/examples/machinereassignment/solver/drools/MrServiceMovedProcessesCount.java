@@ -17,26 +17,27 @@
 package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
+
 public class MrServiceMovedProcessesCount implements Serializable,
         ConstraintJustification {
 
+    private static final Comparator<MrServiceMovedProcessesCount> COMPARATOR =
+            Comparator.comparing((MrServiceMovedProcessesCount count) -> count.service, defaultPersistableComparator())
+                    .thenComparing(count -> count.movedProcessesCount);
     private MrService service;
     private int movedProcessesCount;
 
     public MrServiceMovedProcessesCount(MrService service, int movedProcessesCount) {
         this.service = service;
         this.movedProcessesCount = movedProcessesCount;
-    }
-
-    @Override
-    public Long getId() {
-        throw new UnsupportedOperationException();
     }
 
     public MrService getService() {
@@ -79,4 +80,8 @@ public class MrServiceMovedProcessesCount implements Serializable,
         return service + "=" + movedProcessesCount;
     }
 
+    @Override
+    public Comparator getConstraintJustificationComparator() {
+        return COMPARATOR;
+    }
 }

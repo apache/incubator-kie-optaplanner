@@ -26,7 +26,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.optaplanner.core.api.score.constraint.ConstraintJustification;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
@@ -35,15 +34,17 @@ import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
+import static org.optaplanner.examples.common.domain.AbstractPersistable.defaultPersistableComparator;
+
 public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
     // This comparison is sameBedInSameNight safe.
     private static final Comparator<BedDesignation> COMPARATOR =
             Comparator.comparing((BedDesignation bedDesignation) -> bedDesignation.getAdmissionPart().getFirstNight(),
-                    ConstraintJustification.COMPARATOR)
+                    defaultPersistableComparator())
                     .thenComparing(bedDesignation -> bedDesignation.getAdmissionPart().getLastNight(),
-                            ConstraintJustification.COMPARATOR)
-                    .thenComparing(BedDesignation::getAdmissionPart, ConstraintJustification.COMPARATOR);
+                            defaultPersistableComparator())
+                    .thenComparing(BedDesignation::getAdmissionPart, defaultPersistableComparator());
 
     @Override
     public List<Move<PatientAdmissionSchedule>> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {

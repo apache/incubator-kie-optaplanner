@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
@@ -84,7 +85,8 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
             for (int i = 0; i < justificationList.size() && i < other.justificationList.size(); i++) {
                 ConstraintJustification left = (ConstraintJustification) justificationList.get(i);
                 ConstraintJustification right = (ConstraintJustification) other.justificationList.get(i);
-                int comparison = ConstraintJustification.COMPARATOR.compare(left, right);
+                final Comparator comparator = left.getConstraintJustificationComparator();
+                int comparison = comparator.compare(left, right);
                 if (comparison != 0) {
                     return comparison;
                 }
