@@ -268,7 +268,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                 }
             }
             employee.setUnavailableDaySet(generateUnavailableDaySet(unavailableDayCount, allDateList, unavailableDayPool));
-            employee.setFlightAssignmentSet(new TreeSet<>(FlightAssignment.DATE_TIME_COMPARATOR));
+            employee.setFlightAssignmentSet(new TreeSet<>());
             logger.trace("Created employee ({}).", employee);
             employeeList.add(employee);
         }

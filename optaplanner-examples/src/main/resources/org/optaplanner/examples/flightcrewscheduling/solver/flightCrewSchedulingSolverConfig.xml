@@ -20,8 +20,12 @@
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
-      <pillarChangeMoveSelector/>
-      <pillarSwapMoveSelector/>
+      <pillarChangeMoveSelector>
+        <subPillarType>SEQUENTIAL</subPillarType>
+      </pillarChangeMoveSelector>
+      <pillarSwapMoveSelector>
+        <subPillarType>SEQUENTIAL</subPillarType>
+      </pillarSwapMoveSelector>
     </unionMoveSelector>
   </localSearch>
 </solver>

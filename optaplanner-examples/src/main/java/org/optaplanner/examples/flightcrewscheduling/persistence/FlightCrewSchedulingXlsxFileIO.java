@@ -247,7 +247,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                     }
                 }
                 employee.setUnavailableDaySet(unavailableDaySet);
-                employee.setFlightAssignmentSet(new TreeSet<>(FlightAssignment.DATE_TIME_COMPARATOR));
+                employee.setFlightAssignmentSet(new TreeSet<>());
                 nameToEmployeeMap.put(employee.getName(), employee);
                 employeeList.add(employee);
             }
