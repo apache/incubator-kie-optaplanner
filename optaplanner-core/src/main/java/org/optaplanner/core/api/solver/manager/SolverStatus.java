@@ -18,6 +18,6 @@ package org.optaplanner.core.api.solver.manager;
 
 public enum SolverStatus {
     SOLVING,
-    STOPPED,
+    NOT_SOLVING, // either hasn't started yet or finished solving
     TERMINATED_EARLY
 }

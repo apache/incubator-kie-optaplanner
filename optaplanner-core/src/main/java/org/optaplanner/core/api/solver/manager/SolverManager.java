@@ -22,23 +22,23 @@ import java.util.function.Consumer;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solver.manager.DefaultSolverManager;
 
-public interface SolverManager<Solution_> {
+public interface SolverManager<Solution_> extends AutoCloseable {
 
     static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource) {
-        return new DefaultSolverManager<>(solverConfigResource);
+        return DefaultSolverManager.createFromXmlResource(solverConfigResource);
     }
 
-    static <Solution_> DefaultSolverManager<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
-        return new DefaultSolverManager<>(solverConfigResource, classLoader);
+    static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
+        return DefaultSolverManager.createFromXmlResource(solverConfigResource, classLoader);
     }
 
     static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource, ThreadFactory threadFactory) {
-        return new DefaultSolverManager<>(solverConfigResource, threadFactory);
+        return DefaultSolverManager.createFromXmlResource(solverConfigResource, threadFactory);
     }
 
     static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource,
                                                                       ClassLoader classLoader, ThreadFactory threadFactory) {
-        return new DefaultSolverManager<>(solverConfigResource, classLoader, threadFactory);
+        return DefaultSolverManager.createFromXmlResource(solverConfigResource, classLoader, threadFactory);
     }
 
     void solve(Object problemId,
@@ -63,5 +63,4 @@ public interface SolverManager<Solution_> {
     SolverStatus getSolverStatus(Object problemId);
 
     void shutdown();
-
 }

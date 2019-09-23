@@ -62,7 +62,7 @@ public class SolverTask<Solution_> {
         } else if (solver.isSolving()) {
             return SolverStatus.SOLVING;
         } else {
-            return SolverStatus.STOPPED;
+            return SolverStatus.NOT_SOLVING;
         }
     }
 

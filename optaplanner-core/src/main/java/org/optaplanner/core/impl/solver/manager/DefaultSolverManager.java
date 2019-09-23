@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver.manager;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -41,19 +42,32 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     private SolverFactory<Solution_> solverFactory;
     private ConcurrentMap<Object, SolverTask<Solution_>> problemIdToSolverTaskMap;
 
-    public DefaultSolverManager(String solverConfigResource) {
-        this(solverConfigResource, null, null);
+    public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource) {
+        Objects.requireNonNull(solverConfigResource);
+        return new DefaultSolverManager<>(solverConfigResource, null, null);
     }
 
-    public DefaultSolverManager(String solverConfigResource, ClassLoader classLoader) {
-        this(solverConfigResource, classLoader, null);
+    public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
+        Objects.requireNonNull(solverConfigResource);
+        Objects.requireNonNull(classLoader);
+        return new DefaultSolverManager<>(solverConfigResource, classLoader, null);
     }
 
-    public DefaultSolverManager(String solverConfigResource, ThreadFactory threadFactory) {
-        this(solverConfigResource, null, threadFactory);
+    public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource, ThreadFactory threadFactory) {
+        Objects.requireNonNull(solverConfigResource);
+        Objects.requireNonNull(threadFactory);
+        return new DefaultSolverManager<>(solverConfigResource, null, threadFactory);
     }
 
-    public DefaultSolverManager(String solverConfigResource, ClassLoader classLoader, ThreadFactory threadFactory) {
+    public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource,
+                                                                             ClassLoader classLoader, ThreadFactory threadFactory) {
+        Objects.requireNonNull(solverConfigResource);
+        Objects.requireNonNull(classLoader);
+        Objects.requireNonNull(threadFactory);
+        return new DefaultSolverManager<>(solverConfigResource, classLoader, threadFactory);
+    }
+
+    private DefaultSolverManager(String solverConfigResource, ClassLoader classLoader, ThreadFactory threadFactory) {
         if (classLoader != null) {
             solverFactory = SolverFactory.createFromXmlResource(solverConfigResource, classLoader);
         } else {
@@ -110,7 +124,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         CompletableFuture<Solution_> solverFuture = CompletableFuture.supplyAsync(newSolverTask::startSolving, solverExecutorService);
         solverFuture.handle((solution_, throwable) -> {
             if (throwable != null) {
-                logger.error("Exception while solving problem (" + problemId + ").", throwable.getCause());
+                logger.error("Exception while solving problem ({}).", problemId, throwable.getCause());
                 if (onException != null) {
                     eventHandlerExecutorService.submit(() -> onException.accept(throwable.getCause()));
                 }
@@ -144,7 +158,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         logger.debug("Getting best solution of problemId ({}).", problemId);
         SolverTask<Solution_> solverTask = problemIdToSolverTaskMap.get(problemId);
         if (solverTask == null) {
-            logger.error("Problem (" + problemId + ") was not submitted.");
+            logger.error("Problem ({}) was not submitted.", problemId);
             return null;
         }
         return solverTask.getBestSolution();
@@ -155,7 +169,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         logger.debug("Getting best score of problemId ({}).", problemId);
         SolverTask<Solution_> solverTask = problemIdToSolverTaskMap.get(problemId);
         if (solverTask == null) {
-            logger.error("Problem (" + problemId + ") was not submitted.");
+            logger.error("Problem ({}) was not submitted.", problemId);
             return null;
         }
         return solverTask.getBestScore();
@@ -166,10 +180,15 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         logger.debug("Getting solver status of problemId ({}).", problemId);
         SolverTask<Solution_> solverTask = problemIdToSolverTaskMap.get(problemId);
         if (solverTask == null) {
-            logger.error("Problem (" + problemId + ") was not submitted.");
+            logger.error("Problem ({}) was not submitted.", problemId);
             return null;
         }
         return solverTask.getSolverStatus();
+    }
+
+    @Override
+    public void close() {
+        shutdown();
     }
 
     @Override
@@ -181,7 +200,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     private void stopSolvers() {
-        for (SolverTask solverTask : problemIdToSolverTaskMap.values()) {
+        for (SolverTask<Solution_> solverTask : problemIdToSolverTaskMap.values()) {
             solverTask.stopSolver();
         }
     }

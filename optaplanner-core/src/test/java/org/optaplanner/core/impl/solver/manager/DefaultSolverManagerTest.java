@@ -18,9 +18,11 @@ package org.optaplanner.core.impl.solver.manager;
 
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +36,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -70,8 +73,8 @@ public class DefaultSolverManagerTest {
                             taskAssigningSolution -> solvingEndedLatch.countDown());
         solutionChangedLatch.await(5, TimeUnit.SECONDS);
 
-        assertEquals(solverManager.getSolverStatus(tenantId), SolverStatus.SOLVING);
-        assertEquals(solverManager.getBestSolution(tenantId).getCode(), tenantId.toString());
+        assertEquals(SolverStatus.SOLVING, solverManager.getSolverStatus(tenantId));
+        assertEquals(tenantId.toString(), solverManager.getBestSolution(tenantId).getCode());
         assertTrue(solverManager.getBestScore(tenantId).isSolutionInitialized());
 
         solverManager.stopSolver(tenantId);
@@ -86,6 +89,18 @@ public class DefaultSolverManagerTest {
         solverManager.solve(tenantId, problem, taskAssigningSolution -> solutionChangedLatch.countDown(), null);
         solutionChangedLatch.countDown();
         assertTrue(MockThreadFactory.hasBeenCalled());
+    }
+
+    @Test(timeout = 5000L)
+    public void createSolverManagerWithNullArgument() {
+        assertThatThrownBy(() -> SolverManager.createFromXmlResource(null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> SolverManager.createFromXmlResource(SOLVER_CONFIG, (ClassLoader) null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> SolverManager.createFromXmlResource(SOLVER_CONFIG, (ThreadFactory) null))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> SolverManager.createFromXmlResource(SOLVER_CONFIG, null, null))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test(timeout = 5000L)
@@ -134,7 +149,8 @@ public class DefaultSolverManagerTest {
         for (int i = 0; i < problemIds.length; i++) {
             problemIds[i] = i;
         }
-        Arrays.stream(problemIds)
+        int problemCount = Runtime.getRuntime().availableProcessors() * 3;
+        IntStream.range(0, problemCount)
                 .forEach(problemId -> {
                     TestdataSolution problem = createTestProblem((long) problemId);
                     solverManager.solve(problemId, problem, null, null);
@@ -152,11 +168,9 @@ public class DefaultSolverManagerTest {
     public void shouldNotStartTwoSolverTasksWithSameProblemId() {
         TestdataSolution problem = createTestProblem(tenantId);
         solverManager.solve(tenantId, problem, null, null);
-        try {
-            solverManager.solve(tenantId, problem, null, null);
-        } catch (IllegalArgumentException e) {
-            assertEquals("Problem (" + tenantId + ") already exists.", e.getMessage());
-        }
+        assertThatThrownBy(() -> solverManager.solve(tenantId, problem, null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Problem (" + tenantId + ") already exists.");
     }
 
     @Test
@@ -173,11 +187,9 @@ public class DefaultSolverManagerTest {
 
     @Test(timeout = 5000L)
     public void shouldNotStopASolverThatHasNotBeenSubmitted() {
-        try {
-            solverManager.stopSolver(tenantId);
-        } catch (IllegalArgumentException e) {
-            assertEquals("Problem (" + tenantId + ") was not submitted.", e.getMessage());
-        }
+        assertThatThrownBy(() -> solverManager.stopSolver(tenantId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Problem (" + tenantId + ") was not submitted.");
     }
 
     @Test(timeout = 5000L)
