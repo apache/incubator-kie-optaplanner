@@ -2,12 +2,121 @@ package org.optaplanner.core.api.score.stream;
 
 import java.util.Comparator;
 
+import com.google.common.base.Functions;
 import org.junit.Test;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 import static org.junit.Assert.assertEquals;
 
 public class ConstraintCollectorsTest {
+
+    // ************************************************************************
+    // count
+    // ************************************************************************
+
+    @Test
+    public void count() {
+        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.count();
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, 1);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 3);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0);
+    }
+
+    @Test
+    public void countLong() {
+        UniConstraintCollector<Long, ?, Long> collector = ConstraintCollectors.countLong();
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        long firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, 1L);
+        // Add second value, we have two now.
+        long secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2L);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 3L);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2L);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 1L);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0L);
+    }
+
+    @Test
+    public void countDistinct() {
+        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.countDistinct(Functions.identity());
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, 1);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2);
+        // Add third value, same as the second. We now have two distinct values.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2);
+        // Retract one instance of the second value; we still only have two distinct values.
+        secondRetractor.run();
+        assertResult(collector, container, 2);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0);
+    }
+
+    @Test
+    public void countDistinctLong() {
+        UniConstraintCollector<Long, ?, Long> collector = ConstraintCollectors.countDistinctLong(Functions.identity());
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        long firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, 1L);
+        // Add second value, we have two now.
+        long secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2L);
+        // Add third value, same as the second. We still have two distinct values.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, 2L);
+        // Retract one instance of the second value. We still have two distinct values.
+        secondRetractor.run();
+        assertResult(collector, container, 2L);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 1L);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0L);
+    }
 
     // ************************************************************************
     // min
