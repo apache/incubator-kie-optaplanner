@@ -119,6 +119,62 @@ public class ConstraintCollectorsTest {
     }
 
     // ************************************************************************
+    // sum
+    // ************************************************************************
+
+    @Test
+    public void sum() {
+        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.sum(i -> i);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, firstValue);
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container,firstValue + secondValue);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, firstValue + 2 * secondValue);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, firstValue + secondValue);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, firstValue);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0);
+    }
+
+    @Test
+    public void sumLong() {
+        UniConstraintCollector<Long, ?, Long> collector = ConstraintCollectors.sumLong(l -> l);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        long firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, firstValue);
+        // Add second value, we have two now.
+        long secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, firstValue + secondValue);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, firstValue + 2 * secondValue);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, firstValue + secondValue);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, firstValue);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0L);
+    }
+
+    // ************************************************************************
     // min
     // ************************************************************************
 
