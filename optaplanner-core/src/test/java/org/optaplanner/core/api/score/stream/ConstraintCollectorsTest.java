@@ -294,7 +294,7 @@ public class ConstraintCollectorsTest {
 
     private <A, B, C> void assertResult(UniConstraintCollector<A, B, C> collector, Object container, C expectedResult) {
         C actualResult = collector.finisher().apply((B) container);
-        assertEquals("Collector (" + collector + ") did not produced expected result.", expectedResult, actualResult);
+        assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
     }
 
 }
