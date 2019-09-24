@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import com.google.common.base.Functions;
 import org.junit.Test;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 import static org.junit.Assert.assertEquals;
@@ -65,6 +66,77 @@ public class ConstraintCollectorsTest {
         firstRetractor.run();
         assertResult(collector, container, 0L);
     }
+
+    @Test
+    public void countBi() {
+        BiConstraintCollector<Integer, Integer, ?, Integer> collector = ConstraintCollectors.countBi();
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 1;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB);
+        assertResult(collector, container, 1);
+        // Add second value, we have two now.
+        int secondValueA = 1;
+        int secondValueB = 2;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, 2);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, 3);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 1);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0);
+    }
+
+    @Test
+    public void countBiLong() {
+        BiConstraintCollector<Integer, Integer, ?, Long> collector = ConstraintCollectors.countLongBi();
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 1;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB);
+        assertResult(collector, container, 1L);
+        // Add second value, we have two now.
+        int secondValueA = 1;
+        int secondValueB = 2;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, 2L);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, 3L);
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, 2L);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, 1L);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0L);
+    }
+
+    private static <A, B, C> Runnable accumulate(BiConstraintCollector<A, A, B, C> collector, Object container,
+            A valueA, A valueB) {
+        return collector.accumulator().apply((B) container, valueA, valueB);
+    }
+
+    private static <A, B, C> void assertResult(BiConstraintCollector<A, A, B, C> collector, Object container,
+            C expectedResult) {
+        C actualResult = collector.finisher().apply((B) container);
+        assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
+    }
+
+    // ************************************************************************
+    // countDistinct
+    // ************************************************************************
 
     @Test
     public void countDistinct() {
@@ -288,11 +360,12 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, null);
     }
 
-    private <A, B, C> Runnable accumulate(UniConstraintCollector<A, B, C> collector, Object container, A value) {
+    private static <A, B, C> Runnable accumulate(UniConstraintCollector<A, B, C> collector, Object container, A value) {
         return collector.accumulator().apply((B) container, value);
     }
 
-    private <A, B, C> void assertResult(UniConstraintCollector<A, B, C> collector, Object container, C expectedResult) {
+    private static <A, B, C> void assertResult(UniConstraintCollector<A, B, C> collector, Object container,
+            C expectedResult) {
         C actualResult = collector.finisher().apply((B) container);
         assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
     }
