@@ -1,8 +1,8 @@
 package org.optaplanner.core.api.score.stream;
 
 import java.util.Comparator;
+import java.util.function.Function;
 
-import com.google.common.base.Functions;
 import org.junit.Test;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
@@ -129,7 +129,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinct() {
-        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.countDistinct(Functions.identity());
+        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.countDistinct(Function.identity());
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValue = 2;
@@ -155,7 +155,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctLong() {
-        UniConstraintCollector<Long, ?, Long> collector = ConstraintCollectors.countDistinctLong(Functions.identity());
+        UniConstraintCollector<Long, ?, Long> collector = ConstraintCollectors.countDistinctLong(Function.identity());
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         long firstValue = 2;
