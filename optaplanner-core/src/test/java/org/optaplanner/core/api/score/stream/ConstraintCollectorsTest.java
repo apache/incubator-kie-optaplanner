@@ -123,17 +123,6 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, 0L);
     }
 
-    private static <A, B, C> Runnable accumulate(BiConstraintCollector<A, A, B, C> collector, Object container,
-            A valueA, A valueB) {
-        return collector.accumulator().apply((B) container, valueA, valueB);
-    }
-
-    private static <A, B, C> void assertResult(BiConstraintCollector<A, A, B, C> collector, Object container,
-            C expectedResult) {
-        C actualResult = collector.finisher().apply((B) container);
-        assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
-    }
-
     // ************************************************************************
     // countDistinct
     // ************************************************************************
@@ -244,6 +233,73 @@ public class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0L);
+    }
+
+    @Test
+    public void sumBi() {
+        BiConstraintCollector<Integer, Integer, ?, Integer> collector = ConstraintCollectors.sum(Integer::sum);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 3;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB);
+        assertResult(collector, container, firstValueA + firstValueB);
+        // Add second value, we have two now.
+        int secondValueA = 4;
+        int secondValueB = 5;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container,firstValueA + firstValueB + secondValueA + secondValueB);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, firstValueA + firstValueB + 2 * (secondValueA + secondValueB));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, firstValueA + firstValueB + secondValueA + secondValueB);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, firstValueA + firstValueB);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0);
+    }
+
+    @Test
+    public void sumBiLong() {
+        BiConstraintCollector<Integer, Integer, ?, Long> collector = ConstraintCollectors.sumLong(Integer::sum);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 3;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB);
+        assertResult(collector, container, (long)firstValueA + firstValueB);
+        // Add second value, we have two now.
+        int secondValueA = 4;
+        int secondValueB = 5;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container,(long)firstValueA + firstValueB + secondValueA + secondValueB);
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, (long)firstValueA + firstValueB + 2 * (secondValueA + secondValueB));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, (long)firstValueA + firstValueB + secondValueA + secondValueB);
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, (long)firstValueA + firstValueB);
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, 0L);
+    }
+
+    private static <A, B, C> Runnable accumulate(BiConstraintCollector<A, A, B, C> collector, Object container,
+            A valueA, A valueB) {
+        return collector.accumulator().apply((B) container, valueA, valueB);
+    }
+
+    private static <A, B, C> void assertResult(BiConstraintCollector<A, A, B, C> collector, Object container,
+            C expectedResult) {
+        C actualResult = collector.finisher().apply((B) container);
+        assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
     }
 
     // ************************************************************************

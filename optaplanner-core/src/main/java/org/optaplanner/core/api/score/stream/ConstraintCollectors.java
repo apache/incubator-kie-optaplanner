@@ -130,46 +130,46 @@ public final class ConstraintCollectors {
 
     public static <A> UniConstraintCollector<A, ?, Integer> sum(ToIntFunction<? super A> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
-                () -> new int[1],
+                LongAdder::new,
                 (resultContainer, a) -> {
                     int value = groupValueMapping.applyAsInt(a);
-                    resultContainer[0] += value;
-                    return (() -> resultContainer[0] -= value);
+                    resultContainer.add(value);
+                    return (() -> resultContainer.add(-value));
                 },
-                resultContainer -> resultContainer[0]);
+                LongAdder::intValue);
     }
 
     public static <A> UniConstraintCollector<A, ?, Long> sumLong(ToLongFunction<? super A> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
-                () -> new long[1],
+                LongAdder::new,
                 (resultContainer, a) -> {
                     long value = groupValueMapping.applyAsLong(a);
-                    resultContainer[0] += value;
-                    return (() -> resultContainer[0] -= value);
+                    resultContainer.add(value);
+                    return (() -> resultContainer.add(-value));
                 },
-                resultContainer -> resultContainer[0]);
+                LongAdder::longValue);
     }
 
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> sum(ToIntBiFunction<? super A, ? super B> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
-                () -> new int[1],
+                LongAdder::new,
                 (resultContainer, a, b) -> {
                     int value = groupValueMapping.applyAsInt(a, b);
-                    resultContainer[0] += value;
-                    return (() -> resultContainer[0] -= value);
+                    resultContainer.add(value);
+                    return (() -> resultContainer.add(-value));
                 },
-                resultContainer -> resultContainer[0]);
+                LongAdder::intValue);
     }
 
     public static <A, B> BiConstraintCollector<A, B, ?, Long> sumLong(ToLongBiFunction<? super A, ? super B> groupValueMapping) {
         return new DefaultBiConstraintCollector<>(
-                () -> new long[1],
+                LongAdder::new,
                 (resultContainer, a, b) -> {
                     long value = groupValueMapping.applyAsLong(a, b);
-                    resultContainer[0] += value;
-                    return (() -> resultContainer[0] -= value);
+                    resultContainer.add(value);
+                    return (() -> resultContainer.add(-value));
                 },
-                resultContainer -> resultContainer[0]);
+                LongAdder::longValue);
     }
 
     // ************************************************************************
