@@ -57,3 +57,86 @@ and supports <<explainingTheScore,justifications>>:
                         Talk::getDurationInMinutes);
     }
 ----
+
+[[constraintStreamsGroupingAndCollectors]]
+== Grouping and Collectors
+
+In the constraint streams framework, grouping is a mechanism to group items in a stream according to user-provider
+criteria, similar to what a `GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more
+`Collector`s, which provide various aggregation functions.
+
+For example, the following code snippet will first group all processes by the computer they run on, sum up all the
+power required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and finally
+penalize every computer whose processes consume more power than is available.
+
+[source,java,options="nowrap"]
+----
+    private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
+                .penalize("requiredCpuPowerTotal",
+                        HardSoftScore.ONE_HARD,
+                        (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
+    }
+----
+
+OptaPlanner provides several collector implementations you can use in your grouping constraint streams. This chapter
+discusses the most important ones. For a complete list, refer to the
+`org.optaplanner.core.api.score.stream.ConstraintCollectors` class.
+
+You can provide your own collectors by implementing the
+`org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface or their `Bi...`, `Tri...` counterparts.
+The following sections will focus on the collector implementations provided out of the box.
+
+=== Counting collectors
+
+Counting collectors will count all elements in a group. For example, the following use of the
+`ConstraintCollectors.count(...)` collector will give a number of items for two separate groups - one where the talks
+have unavailable speakers, and one where they don't.
+
+[source,java,options="nowrap"]
+----
+    private Constraint speakerAvailability(ConstraintFactory factory) {
+        return factory.from(Talk.class)
+                .groupBy(Talk::hasAnyUnavailableSpeaker, count())
+                .penalize("speakerAvailability",
+                        HardSoftScore.ONE_HARD,
+                        (hasUnavailableSpeaker, count) -> ...);
+    }
+----
+
+The `ConstraintCollectors.countDistinct(...)` will do the same, but it will take object equality into account. Different
+instances of objects which still `equals(...)` will therefore only count as one instance.
+
+The return value for these collectors is a 32-bit signed integer (`int`). Should that not be enough for you, please
+refer to the `countLong()` and `countDistinctLong()` variants of these collectors.
+
+=== Summing collector
+
+Summing collectors will sum the value of a particular property of all elements in the group. For an example of using a
+`ConstraintCollectors.sum(...)` collector, <<constraintStreamsGroupingAndCollectors,see above>>.
+
+The return value for this collector is a 32-bit signed integer (`int`). Should that not be enough for you, please
+refer to the `sumLong(...)` variant of this collector.
+
+=== Minimums and maximums
+
+In certain situations, it may be necessary to find a minimal or a maximal element in a group. For that, we provide
+`ConstraintCollectors.min(...)` and `ConstraintCollectors.max(...)` collectors respectively.
+
+These collectors operate on values of properties which are `Comparable` (such as `Integer`, `String` or `Duration`),
+although we also provide variants of these collectors which allow you to provide your own `Comparator`.
+
+Here's an example of finding a computer which runs the most power-demanding process:
+
+[source,java,options="nowrap"]
+----
+    private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, max(CloudProcess::getRequiredCpuPower))
+                .penalize("computerWithBiggestProcess",
+                        HardSoftScore.ONE_HARD,
+                        computer -> ...);
+    }
+----
+
