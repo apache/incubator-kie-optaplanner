@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver.manager;
 
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -40,7 +41,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     private ExecutorService solverExecutorService;
     private ExecutorService eventHandlerExecutorService;
     private SolverFactory<Solution_> solverFactory;
-    private ConcurrentMap<Object, SolverTask<Solution_>> problemIdToSolverTaskMap;
+    private ConcurrentMap<Object, SolverTask<Solution_>> problemIdToSolverTaskMap = new ConcurrentHashMap<>();
 
     public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource) {
         Objects.requireNonNull(solverConfigResource);
@@ -59,8 +60,10 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         return new DefaultSolverManager<>(solverConfigResource, null, threadFactory);
     }
 
-    public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource,
-                                                                             ClassLoader classLoader, ThreadFactory threadFactory) {
+    public static <Solution_> SolverManager<Solution_> createFromXmlResource(
+            String solverConfigResource,
+            ClassLoader classLoader,
+            ThreadFactory threadFactory) {
         Objects.requireNonNull(solverConfigResource);
         Objects.requireNonNull(classLoader);
         Objects.requireNonNull(threadFactory);
@@ -74,7 +77,6 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
             solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
         }
 
-        problemIdToSolverTaskMap = new ConcurrentHashMap<>();
         int numAvailableProcessors = Runtime.getRuntime().availableProcessors();
         int activeThreadCount = Math.max(numAvailableProcessors - 2, 1);
         logger.info("Number of available processors: {}. Active thread count: {}.", numAvailableProcessors, activeThreadCount);
@@ -90,19 +92,35 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     @Override
-    public void solve(Object problemId,
-                      Solution_ planningProblem,
-                      Consumer<Solution_> onBestSolutionChangedEvent,
-                      Consumer<Solution_> onSolvingEnded) {
+    public UUID solve(Solution_ planningProblem) {
+        UUID problemId = UUID.randomUUID();
+        solve(problemId, planningProblem);
+        return problemId;
+    }
+
+    @Override
+    public void solve(Object problemId, Solution_ planningProblem) {
+        solve(problemId, planningProblem, null, null);
+    }
+
+    @Override
+    public void solve(
+            Object problemId,
+            Solution_ planningProblem,
+            Consumer<Solution_> onBestSolutionChangedEvent,
+            Consumer<Solution_> onSolvingEnded) {
         solve(problemId, planningProblem, onBestSolutionChangedEvent, onSolvingEnded, null);
     }
 
     @Override
-    public void solve(Object problemId,
-                      Solution_ planningProblem,
-                      Consumer<Solution_> onBestSolutionChangedEvent,
-                      Consumer<Solution_> onSolvingEnded,
-                      Consumer<Throwable> onException) {
+    public void solve(
+            Object problemId,
+            Solution_ planningProblem,
+            Consumer<Solution_> onBestSolutionChangedEvent,
+            Consumer<Solution_> onSolvingEnded,
+            Consumer<Throwable> onException) {
+        Objects.requireNonNull(problemId);
+        Objects.requireNonNull(planningProblem);
         SolverTask<Solution_> newSolverTask;
         synchronized (this) {
             if (isProblemSubmitted(problemId)) {
@@ -135,6 +153,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
 
     @Override
     public void stopSolver(Object problemId) {
+        Objects.requireNonNull(problemId);
         logger.debug("Stopping solver of problemId ({}).", problemId);
         SolverTask<Solution_> solverTask;
         synchronized (this) {
@@ -150,11 +169,13 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
 
     @Override
     public boolean isProblemSubmitted(Object problemId) {
+        Objects.requireNonNull(problemId);
         return problemIdToSolverTaskMap.containsKey(problemId);
     }
 
     @Override
     public Solution_ getBestSolution(Object problemId) {
+        Objects.requireNonNull(problemId);
         logger.debug("Getting best solution of problemId ({}).", problemId);
         SolverTask<Solution_> solverTask = problemIdToSolverTaskMap.get(problemId);
         if (solverTask == null) {
@@ -166,6 +187,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
 
     @Override
     public Score<?> getBestScore(Object problemId) {
+        Objects.requireNonNull(problemId);
         logger.debug("Getting best score of problemId ({}).", problemId);
         SolverTask<Solution_> solverTask = problemIdToSolverTaskMap.get(problemId);
         if (solverTask == null) {
@@ -177,6 +199,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
 
     @Override
     public SolverStatus getSolverStatus(Object problemId) {
+        Objects.requireNonNull(problemId);
         logger.debug("Getting solver status of problemId ({}).", problemId);
         SolverTask<Solution_> solverTask = problemIdToSolverTaskMap.get(problemId);
         if (solverTask == null) {
@@ -200,8 +223,6 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     private void stopSolvers() {
-        for (SolverTask<Solution_> solverTask : problemIdToSolverTaskMap.values()) {
-            solverTask.stopSolver();
-        }
+        problemIdToSolverTaskMap.values().forEach(SolverTask::stopSolver);
     }
 }

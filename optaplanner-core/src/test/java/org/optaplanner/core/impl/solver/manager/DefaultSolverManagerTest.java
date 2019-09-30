@@ -145,10 +145,6 @@ public class DefaultSolverManagerTest {
 
     @Test
     public void shutdownShouldStopAllSolvers() {
-        int[] problemIds = new int[Runtime.getRuntime().availableProcessors() * 3];
-        for (int i = 0; i < problemIds.length; i++) {
-            problemIds[i] = i;
-        }
         int problemCount = Runtime.getRuntime().availableProcessors() * 3;
         IntStream.range(0, problemCount)
                 .forEach(problemId -> {
@@ -156,7 +152,7 @@ public class DefaultSolverManagerTest {
                     solverManager.solve(problemId, problem, null, null);
                 });
         solverManager.shutdown(); // Calling it right away while some tasks might be on the queue
-        Arrays.stream(problemIds)
+        IntStream.range(0, problemCount)
                 .forEach(problemId -> assertEquals(SolverStatus.TERMINATED_EARLY, solverManager.getSolverStatus(problemId)));
     }
 
