@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import org.junit.Assume;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -29,7 +30,8 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractConstraintStreamTest {
@@ -41,13 +43,18 @@ public abstract class AbstractConstraintStreamTest {
         return new Object[][]{
                 {false, ConstraintStreamImplType.BAVET},
                 {true, ConstraintStreamImplType.BAVET},
-//                {false, ConstraintStreamImplType.DROOLS},
-//                {true, ConstraintStreamImplType.DROOLS}
+                {false, ConstraintStreamImplType.DROOLS},
+                {true, ConstraintStreamImplType.DROOLS}
         };
     }
 
     protected final boolean constraintMatchEnabled;
     protected final ConstraintStreamImplType constraintStreamImplType;
+
+    protected void assumeBavet() {
+        Assume.assumeTrue("This functionality is not yet supported in Drools-based constraint streams.",
+                constraintStreamImplType == ConstraintStreamImplType.BAVET);
+    }
 
     public AbstractConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         this.constraintMatchEnabled = constraintMatchEnabled;
