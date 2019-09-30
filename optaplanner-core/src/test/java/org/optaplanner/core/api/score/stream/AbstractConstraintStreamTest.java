@@ -38,7 +38,7 @@ public abstract class AbstractConstraintStreamTest {
 
     protected static final String TEST_CONSTRAINT_NAME = "testConstraintName";
 
-    @Parameterized.Parameters(name = "constraintMatchEnabled={0}")
+    @Parameterized.Parameters(name = "constraintMatchEnabled={0},implType={1},")
     public static Object[][] data() {
         return new Object[][]{
                 {false, ConstraintStreamImplType.BAVET},
