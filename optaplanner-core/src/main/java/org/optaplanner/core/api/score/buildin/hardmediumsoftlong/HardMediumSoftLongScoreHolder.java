@@ -161,11 +161,7 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder<HardMediu
     public void impactScore(RuleContext kcontext, long weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, Long> matchExecutor = matchExecutorByNumberMap.get(rule);
-        if (matchExecutor == null) {
-            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
-                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
-                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
-        }
+        assertMatchExecutorNonNull(matchExecutor, rule);
         matchExecutor.accept(kcontext, weightMultiplier);
     }
 

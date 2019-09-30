@@ -23,7 +23,6 @@ import java.util.function.BiConsumer;
 
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
@@ -203,22 +202,14 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
     public void impactScore(RuleContext kcontext, int weightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, Integer> matchExecutor = matchExecutorByNumberMap.get(rule);
-        if (matchExecutor == null) {
-            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
-                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
-                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
-        }
+        assertMatchExecutorNonNull(matchExecutor, rule);
         matchExecutor.accept(kcontext, weightMultiplier);
     }
 
     private void impactScore(RuleContext kcontext, int[] hardWeightsMultiplier, int[] softWeightsMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, BendableScore> matchExecutor = matchExecutorByScoreMap.get(rule);
-        if (matchExecutor == null) {
-            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
-                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
-                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
-        }
+        assertMatchExecutorNonNull(matchExecutor, rule);
         matchExecutor.accept(kcontext, BendableScore.of(hardWeightsMultiplier, softWeightsMultiplier));
     }
 

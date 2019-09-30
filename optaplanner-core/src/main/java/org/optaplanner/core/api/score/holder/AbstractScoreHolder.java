@@ -22,12 +22,15 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -184,6 +187,14 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
     protected List<Object> extractJustificationList(RuleContext kcontext) {
         // Unlike kcontext.getMatch().getObjects(), this includes the matches of accumulate and exists
         return ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();
+    }
+
+    protected static void assertMatchExecutorNonNull(BiConsumer<RuleContext, ?> matchExecutor, Rule rule) {
+        if (matchExecutor == null) {
+            throw new IllegalStateException("The DRL rule (" + rule.getPackageName() + ":" + rule.getName()
+                    + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
+                    + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
+        }
     }
 
     public class ConstraintActivationUnMatchListener implements Runnable {
