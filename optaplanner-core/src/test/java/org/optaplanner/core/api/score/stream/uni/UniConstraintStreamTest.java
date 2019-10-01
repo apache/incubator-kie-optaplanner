@@ -111,7 +111,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1),
                 assertMatch(entity2));
 
-        // Incremental
+        // Incrementally update
         scoreDirector.beforeProblemPropertyChanged(entity3);
         entity3.setEntityGroup(entityGroup);
         scoreDirector.afterProblemPropertyChanged(entity3);
@@ -119,6 +119,24 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1),
                 assertMatch(entity2),
                 assertMatch(entity3));
+
+        // Remove entity
+        scoreDirector.beforeEntityRemoved(entity3);
+        solution.getEntityList().remove(entity3);
+        scoreDirector.afterEntityRemoved(entity3);
+        assertScore(scoreDirector,
+                assertMatch(entity1),
+                assertMatch(entity2));
+
+        // Add it back again, to make sure it was properly removed before
+        scoreDirector.beforeEntityAdded(entity3);
+        solution.getEntityList().add(entity3);
+        scoreDirector.afterEntityAdded(entity3);
+        assertScore(scoreDirector,
+                assertMatch(entity1),
+                assertMatch(entity2),
+                assertMatch(entity3));
+
     }
 
     // ************************************************************************

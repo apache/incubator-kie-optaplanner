@@ -56,7 +56,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Before
     public void assumeBavet() {
-        super.assumeBavet(); // skip tests if we're not using Bavet
+        super.assumeBavet(); // Skip tests if we're not using Bavet
     }
 
     @Test
