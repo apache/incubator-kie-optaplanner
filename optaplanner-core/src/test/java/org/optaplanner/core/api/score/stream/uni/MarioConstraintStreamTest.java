@@ -28,6 +28,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
@@ -124,16 +125,14 @@ public class MarioConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     protected KieBase loadKnowledgeBaseFromString(String drlContentString) {
-        KieBaseConfiguration kBaseConfig = null;
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(drlContentString.getBytes()), ResourceType.DRL);
         if (kbuilder.hasErrors()) {
             Assert.fail(kbuilder.getErrors().toString());
         }
-        if (kBaseConfig == null) {
-            kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        }
-        InternalKnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+        KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kBaseConfig.setProperty(PropertySpecificOption.PROPERTY_NAME, PropertySpecificOption.ALLOWED.toString());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
         kbase.addPackages( kbuilder.getKnowledgePackages());
         return kbase;
     }
