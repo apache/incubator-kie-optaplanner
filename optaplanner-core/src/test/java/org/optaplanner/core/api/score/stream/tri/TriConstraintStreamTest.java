@@ -51,8 +51,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Before
-    public void assumeBavet() {
-        super.assumeBavet(); // Skip tests if we're not using Bavet
+    public void disableAllTestsForDrools() {
+        assumeBavet(); // Skip tests if we're not using Bavet
     }
 
     // ************************************************************************
