@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightDescriptor;
@@ -83,5 +84,32 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     // ************************************************************************
 
     public abstract InnerConstraintFactory<Solution_> getConstraintFactory();
+
+    @Override
+    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return impactScore(constraintPackage, constraintName, constraintWeight, false);
+    }
+
+
+    @Override
+    public Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
+        return impactScoreConfigurable(constraintPackage, constraintName, false);
+    }
+
+    @Override
+    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return impactScore(constraintPackage, constraintName, constraintWeight,true);
+    }
+
+    @Override
+    public Constraint rewardConfigurable(String constraintPackage, String constraintName) {
+        return impactScoreConfigurable(constraintPackage, constraintName, true);
+    }
+
+    abstract protected Constraint impactScore(String constraintPackage, String constraintName,
+            Score<?> constraintWeight, boolean positively);
+
+    abstract protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+            boolean positively);
 
 }
