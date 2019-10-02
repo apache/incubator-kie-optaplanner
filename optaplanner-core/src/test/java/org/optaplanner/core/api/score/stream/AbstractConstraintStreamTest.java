@@ -87,9 +87,7 @@ public abstract class AbstractConstraintStreamTest {
                     .get(ConstraintMatchTotal.composeConstraintId(constraintPackage, TEST_CONSTRAINT_NAME));
             for (AssertableMatch assertableMatch : assertableMatches) {
                 if (constraintMatchTotal.getConstraintMatchSet().stream()
-                        .noneMatch(constraintMatch
-                                -> constraintMatch.getJustificationList().equals(assertableMatch.justificationList)
-                                && ((SimpleScore) constraintMatch.getScore()).getScore() == assertableMatch.score)) {
+                        .noneMatch(constraintMatch -> assertableMatch.isEqualTo(constraintMatch))) {
                     fail("The assertableMatch (" + assertableMatch + ") is lacking,"
                             + " it's not in the constraintMatchSet ("
                             + constraintMatchTotal.getConstraintMatchSet() + ").");
@@ -97,9 +95,7 @@ public abstract class AbstractConstraintStreamTest {
             }
             for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 if (Arrays.stream(assertableMatches)
-                        .noneMatch(assertableMatch
-                                -> assertableMatch.justificationList.equals(constraintMatch.getJustificationList())
-                                && assertableMatch.score == ((SimpleScore) constraintMatch.getScore()).getScore())) {
+                        .noneMatch(assertableMatch -> assertableMatch.isEqualTo(constraintMatch))) {
                     fail("The constraintMatch (" + constraintMatch + ") is in excess,"
                             + " it's not in the assertableMatches (" + Arrays.toString(assertableMatches) + ").");
                 }
@@ -119,12 +115,27 @@ public abstract class AbstractConstraintStreamTest {
 
     protected static class AssertableMatch {
 
-        private int score;
-        private List<Object> justificationList;
+        private final int score;
+        private final List<Object> justificationList;
 
         public AssertableMatch(int score, Object... justifications) {
             this.justificationList = Arrays.asList(justifications);
             this.score = score;
+        }
+
+        public boolean isEqualTo(ConstraintMatch constraintMatch) {
+            if (score != ((SimpleScore) constraintMatch.getScore()).getScore()) {
+                return false;
+            }
+            List<Object> actualJustificationList = constraintMatch.getJustificationList();
+            if (actualJustificationList.size() != justificationList.size()) {
+                return false;
+            }
+            /*
+             * We can not simply compare the lists, since the elements may be in different orders. The order of these
+             * lists is not relevant.
+             */
+            return justificationList.containsAll(actualJustificationList);
         }
 
         @Override

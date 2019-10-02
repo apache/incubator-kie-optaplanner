@@ -38,12 +38,14 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 
 public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
         implements UniConstraintStream<A> {
 
-    protected final List<DroolsAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
+    protected final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         super(constraintFactory);
@@ -66,7 +68,10 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
-        throw new UnsupportedOperationException();
+        DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsJoinBiConstraintStream<>(constraintFactory,
+                this, (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream, joiner);
+        childStreamList.add(stream);
+        return stream;
     }
 
     // ************************************************************************
@@ -230,12 +235,16 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return constraint;
     }
 
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
+    @Override
+    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        for (DroolsAbstractConstraintStream<Solution_> childStream : childStreamList) {
+            childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
+        }
+    }
 
-    public abstract void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            Declaration<A> aVar, PatternDSL.PatternDef<A> parentPattern);
+    public abstract Declaration<A> getVariableDeclaration();
+
+    public abstract PatternDSL.PatternDef<A> getPattern();
 
 }

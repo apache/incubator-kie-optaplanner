@@ -145,7 +145,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_0() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
         TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
         solution.getValueGroupList().add(valueGroup);
@@ -178,7 +177,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_1Equal() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -218,7 +216,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void join_2Equal() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -265,7 +262,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void fromUniquePair_0() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 0);
         TestdataLavishEntity entityB = new TestdataLavishEntity("B", solution.getFirstEntityGroup(),
                 solution.getFirstValue());
@@ -292,7 +288,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void fromUniquePair_1Equals() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 0);
         TestdataLavishEntity entityB = new TestdataLavishEntity("B", solution.getFirstEntityGroup(),
                 solution.getFirstValue());
@@ -308,8 +303,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityList().add(entityC);
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
-            return factory.fromUniquePair(TestdataLavishEntity.class,
-                    equal(TestdataLavishEntity::getIntegerProperty))
+            return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getIntegerProperty))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
@@ -677,7 +671,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void globalNodeOrder() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
