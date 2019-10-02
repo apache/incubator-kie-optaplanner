@@ -54,7 +54,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent) {
         super(constraintFactory);
         if (parent == null && !(this instanceof DroolsJoinBiConstraintStream)) {
-            throw new IllegalArgumentException("Parent of stream (" + this + ") must not be null, of not join stream.");
+            throw new IllegalArgumentException("Parent of stream (" + this + ") must not be null, or not join stream.");
         }
         this.parent = parent;
     }
