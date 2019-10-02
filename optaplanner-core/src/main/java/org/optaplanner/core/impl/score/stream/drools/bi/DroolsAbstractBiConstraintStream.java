@@ -144,7 +144,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
             ToIntBiFunction<A, B> matchWeigher) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, false);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
@@ -213,7 +213,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
             ToIntBiFunction<A, B> matchWeigher) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight, true);
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint);
+                new DroolsScoringBiConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
         return constraint;
     }
