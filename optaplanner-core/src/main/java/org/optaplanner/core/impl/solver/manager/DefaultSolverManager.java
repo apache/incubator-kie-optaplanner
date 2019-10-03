@@ -45,19 +45,19 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
 
     public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource) {
         Objects.requireNonNull(solverConfigResource);
-        return new DefaultSolverManager<>(solverConfigResource, null, null);
+        return new DefaultSolverManager<>(solverConfigResource, null, null, null);
     }
 
     public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
         Objects.requireNonNull(solverConfigResource);
         Objects.requireNonNull(classLoader);
-        return new DefaultSolverManager<>(solverConfigResource, classLoader, null);
+        return new DefaultSolverManager<>(solverConfigResource, classLoader, null, null);
     }
 
     public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource, ThreadFactory threadFactory) {
         Objects.requireNonNull(solverConfigResource);
         Objects.requireNonNull(threadFactory);
-        return new DefaultSolverManager<>(solverConfigResource, null, threadFactory);
+        return new DefaultSolverManager<>(solverConfigResource, null, null, threadFactory);
     }
 
     public static <Solution_> SolverManager<Solution_> createFromXmlResource(
@@ -67,14 +67,28 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         Objects.requireNonNull(solverConfigResource);
         Objects.requireNonNull(classLoader);
         Objects.requireNonNull(threadFactory);
-        return new DefaultSolverManager<>(solverConfigResource, classLoader, threadFactory);
+        return new DefaultSolverManager<>(solverConfigResource, classLoader, null, threadFactory);
     }
 
-    private DefaultSolverManager(String solverConfigResource, ClassLoader classLoader, ThreadFactory threadFactory) {
-        if (classLoader != null) {
-            solverFactory = SolverFactory.createFromXmlResource(solverConfigResource, classLoader);
+    public static <Solution_> SolverManager<Solution_> createFromSolverFactory(SolverFactory<Solution_> solverFactory) {
+        return new DefaultSolverManager<>(null, null, solverFactory, null);
+    }
+
+    public static <Solution_> SolverManager<Solution_> createFromSolverFactory(
+            SolverFactory<Solution_> solverFactory,
+            ThreadFactory threadFactory) {
+        Objects.requireNonNull(solverFactory);
+        Objects.requireNonNull(threadFactory);
+        return new DefaultSolverManager<>(null, null, solverFactory, threadFactory);
+    }
+
+    private DefaultSolverManager(String solverConfigResource, ClassLoader classLoader, SolverFactory<Solution_> solverFactory, ThreadFactory threadFactory) {
+        if (solverFactory != null) {
+            this.solverFactory = solverFactory;
+        } else if (classLoader != null) {
+            this.solverFactory = SolverFactory.createFromXmlResource(solverConfigResource, classLoader);
         } else {
-            solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
+            this.solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
         }
 
         int numAvailableProcessors = Runtime.getRuntime().availableProcessors();
@@ -82,7 +96,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         logger.info("Number of available processors: {}. Active thread count: {}.", numAvailableProcessors, activeThreadCount);
 
         if (threadFactory != null) {
-            solverFactory.getSolverConfig().setThreadFactoryClass(threadFactory.getClass());
+            this.solverFactory.getSolverConfig().setThreadFactoryClass(threadFactory.getClass());
             solverExecutorService = Executors.newFixedThreadPool(activeThreadCount, threadFactory); // #threads < #cpus implies a FIFO scheduling policy
             eventHandlerExecutorService = Executors.newSingleThreadExecutor(threadFactory);
         } else {

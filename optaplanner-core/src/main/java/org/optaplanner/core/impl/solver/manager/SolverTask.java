@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.solver.manager;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
@@ -32,6 +34,8 @@ public class SolverTask<Solution_> {
     private Solution_ planningProblem;
 
     public SolverTask(Object problemId, Solver<Solution_> solver, Solution_ planningProblem) {
+        Objects.requireNonNull(solver);
+        Objects.requireNonNull(planningProblem);
         this.problemId = problemId;
         this.solver = solver;
         this.planningProblem = planningProblem;

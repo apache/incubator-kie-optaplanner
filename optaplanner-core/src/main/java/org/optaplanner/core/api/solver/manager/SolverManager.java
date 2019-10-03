@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.solver.manager.DefaultSolverManager;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -38,10 +39,8 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public interface SolverManager<Solution_> extends AutoCloseable {
 
     // ************************************************************************
-    // Static creation methods: XML
+    // Static creation methods:
     // ************************************************************************
-
-    // TODO constructor that takes SolverFactory as an argument
 
     /**
      * @param solverConfigResource never null, a classpath resource
@@ -86,6 +85,28 @@ public interface SolverManager<Solution_> extends AutoCloseable {
             ClassLoader classLoader,
             ThreadFactory threadFactory) {
         return DefaultSolverManager.createFromXmlResource(solverConfigResource, classLoader, threadFactory);
+    }
+
+    /**
+     * @param solverFactory never null, a {@link SolverFactory}
+     * @param <Solution_>   the solution type, the class with the {@link PlanningSolution} annotation
+     * @return never null
+     */
+    static <Solution_> SolverManager<Solution_> createFromSolverFactory(SolverFactory<Solution_> solverFactory) {
+        return DefaultSolverManager.createFromSolverFactory(solverFactory);
+    }
+
+    /**
+     * @param solverFactory never null, a {@link SolverFactory}
+     * @param threadFactory never null, a custom {@link ThreadFactory} for thread creation, to use the default
+     *                      {@link ThreadFactory} call {@link #createFromSolverFactory(SolverFactory)}
+     * @param <Solution_>   the solution type, the class with the {@link PlanningSolution} annotation
+     * @return never null
+     */
+    static <Solution_> SolverManager<Solution_> createFromSolverFactory(
+            SolverFactory<Solution_> solverFactory,
+            ThreadFactory threadFactory) {
+        return DefaultSolverManager.createFromSolverFactory(solverFactory, threadFactory);
     }
 
     // ************************************************************************

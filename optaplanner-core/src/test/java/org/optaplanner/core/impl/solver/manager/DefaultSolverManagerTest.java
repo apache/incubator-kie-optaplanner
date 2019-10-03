@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.manager.SolverManager;
 import org.optaplanner.core.api.solver.manager.SolverStatus;
 import org.optaplanner.core.config.solver.testutil.MockThreadFactory;
@@ -104,6 +105,21 @@ public class DefaultSolverManagerTest {
     }
 
     @Test(timeout = 5000L)
+    public void createSolverManagerFromSolverFactory() throws InterruptedException {
+        solverManager = SolverManager.createFromSolverFactory(SolverFactory.createFromXmlResource(SOLVER_CONFIG));
+        basicUsageOfSolverManagerWithOneProblem();
+    }
+
+    @Test(timeout = 5000L)
+    public void customThreadFactoryClassIsUsedWithSolverFactory() throws InterruptedException {
+        solverManager = SolverManager.createFromSolverFactory(SolverFactory.createFromXmlResource(SOLVER_CONFIG), new MockThreadFactory());
+        TestdataSolution problem = createTestProblem(tenantId);
+        solverManager.solve(tenantId, problem, taskAssigningSolution -> solutionChangedLatch.countDown(), null);
+        solutionChangedLatch.countDown();
+        assertTrue(MockThreadFactory.hasBeenCalled());
+    }
+
+    @Test(timeout = 5000L)
     public void onBestSolutionChangeAndOnSolutionEnded() throws InterruptedException {
         TestdataSolution problem = createTestProblem(tenantId);
         solverManager.solve(tenantId, problem,
@@ -143,7 +159,7 @@ public class DefaultSolverManagerTest {
         logger.info("Number of bestSolutionChangedEvents: {}.", bestSolutionChangedEventCount.get());
     }
 
-    @Test
+    @Test(timeout = 60_000L)
     public void shutdownShouldStopAllSolvers() {
         int problemCount = Runtime.getRuntime().availableProcessors() * 3;
         IntStream.range(0, problemCount)
@@ -169,7 +185,7 @@ public class DefaultSolverManagerTest {
                 .hasMessageContaining("Problem (" + tenantId + ") already exists.");
     }
 
-    @Test
+    @Test(timeout = 5000L)
     public void shouldPropagateExceptionsFromSolverThread() throws Throwable {
         TestdataSolution problem = createTestProblem(tenantId);
         problem.setValueList(null); // So that solver thread throws IllegalArgumentException
