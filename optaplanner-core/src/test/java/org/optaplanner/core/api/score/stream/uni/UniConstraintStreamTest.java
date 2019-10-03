@@ -136,7 +136,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1),
                 assertMatch(entity2),
                 assertMatch(entity3));
-
     }
 
     // ************************************************************************

@@ -91,9 +91,9 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
         }
     }
 
-    private static boolean matchesComparable(Comparable left, Object right, JoinerType type) {
+    private static boolean matchesComparable(Comparable left, Object right, JoinerType joinerType) {
         int comparison = left.compareTo(right);
-        switch (type) {
+        switch (joinerType) {
             case LESS_THAN:
                 return comparison < 0;
             case LESS_THAN_OR_EQUAL:
@@ -103,18 +103,21 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
             case GREATER_THAN_OR_EQUAL:
                 return comparison >= 0;
             default:
-                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
+                throw new IllegalStateException("Unsupported joiner type (" + joinerType + ").");
         }
     }
 
-    private static boolean matchesCollection(Collection left, Collection right, JoinerType type) {
-        switch (type) {
+    private static boolean matchesCollection(Collection leftCollection, Collection rightCollection,
+            JoinerType joinerType) {
+        switch (joinerType) {
             case DISJOINT:
-                return left.stream().noneMatch(right::contains) && right.stream().noneMatch(left::contains);
+                return leftCollection.stream().noneMatch(rightCollection::contains) &&
+                        rightCollection.stream().noneMatch(leftCollection::contains);
             case INTERSECTING:
-                return left.stream().anyMatch(right::contains) || right.stream().anyMatch(left::contains);
+                return leftCollection.stream().anyMatch(rightCollection::contains) ||
+                        rightCollection.stream().anyMatch(leftCollection::contains);
             default:
-                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
+                throw new IllegalStateException("Unsupported joiner type (" + joinerType + ").");
         }
     }
 

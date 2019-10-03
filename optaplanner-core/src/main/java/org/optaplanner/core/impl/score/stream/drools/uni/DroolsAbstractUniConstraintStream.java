@@ -183,9 +183,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     protected final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            boolean positively) {
+            boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positively);
+                positive);
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint);
         childStreamList.add(stream);
@@ -193,9 +193,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     protected final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntFunction<A> matchWeigher, boolean positively) {
+            ToIntFunction<A> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positively);
+                positive);
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -203,9 +203,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     protected final Constraint impactScoreLong(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ToLongFunction<A> matchWeigher, boolean positively) {
+            Score<?> constraintWeight, ToLongFunction<A> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positively);
+                positive);
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -213,9 +213,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     protected final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, boolean positively) {
+            Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positively);
+                positive);
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -224,9 +224,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     protected final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            boolean positively) {
+            boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positively);
+                positive);
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint);
         childStreamList.add(stream);
@@ -234,9 +234,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     protected final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntFunction<A> matchWeigher, boolean positively) {
+            ToIntFunction<A> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positively);
+                positive);
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -244,9 +244,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     protected final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongFunction<A> matchWeigher, boolean positively) {
+            ToLongFunction<A> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positively);
+                positive);
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -254,9 +254,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     protected final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            Function<A, BigDecimal> matchWeigher, boolean positively) {
+            Function<A, BigDecimal> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positively);
+                positive);
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);

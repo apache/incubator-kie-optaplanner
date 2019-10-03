@@ -90,7 +90,6 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
         return impactScore(constraintPackage, constraintName, constraintWeight, false);
     }
 
-
     @Override
     public Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
         return impactScoreConfigurable(constraintPackage, constraintName, false);
@@ -107,9 +106,9 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     }
 
     abstract protected Constraint impactScore(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, boolean positively);
+            Score<?> constraintWeight, boolean positive);
 
     abstract protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            boolean positively);
+            boolean positive);
 
 }

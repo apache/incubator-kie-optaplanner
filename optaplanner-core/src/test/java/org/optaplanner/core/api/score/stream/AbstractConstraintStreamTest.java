@@ -128,13 +128,10 @@ public abstract class AbstractConstraintStreamTest {
                 return false;
             }
             List<Object> actualJustificationList = constraintMatch.getJustificationList();
+            // Can't simply compare the lists, since the elements may be in different orders. The order is not relevant.
             if (actualJustificationList.size() != justificationList.size()) {
                 return false;
             }
-            /*
-             * We can not simply compare the lists, since the elements may be in different orders. The order of these
-             * lists is not relevant.
-             */
             return justificationList.containsAll(actualJustificationList);
         }
 

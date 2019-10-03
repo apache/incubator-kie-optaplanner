@@ -144,13 +144,12 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     // ************************************************************************
-    // Penalize/impactScore
+    // Penalize/reward
     // ************************************************************************
 
     @Override
     public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
         return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, false);
-
     }
 
     @Override
@@ -210,9 +209,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            boolean positively) {
+            boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positively);
+                positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
                 this, constraint);
         childStreamList.add(stream);
@@ -220,9 +219,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     protected final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntFunction<A> matchWeigher, boolean positively) {
+            ToIntFunction<A> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positively);
+                positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
                 this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -230,9 +229,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     protected final Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongFunction<A> matchWeigher, boolean positively) {
+            ToLongFunction<A> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positively);
+                positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
                 this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -240,9 +239,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     protected final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, boolean positively) {
+            Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positively);
+                positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
                 this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -250,9 +249,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positively) {
+    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positively);
+                positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
                 this, constraint);
         childStreamList.add(stream);
@@ -260,9 +259,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     protected final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntFunction<A> matchWeigher, boolean positively) {
+            ToIntFunction<A> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positively);
+                positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
                 this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -270,9 +269,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     protected final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongFunction<A> matchWeigher, boolean positively) {
+            ToLongFunction<A> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positively);
+                positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
                 this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -280,9 +279,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     protected final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            Function<A, BigDecimal> matchWeigher, boolean positively) {
+            Function<A, BigDecimal> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positively);
+                positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
                 this, constraint, matchWeigher);
         childStreamList.add(stream);

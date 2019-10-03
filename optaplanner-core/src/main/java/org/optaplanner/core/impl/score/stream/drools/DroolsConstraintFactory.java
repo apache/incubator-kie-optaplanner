@@ -74,7 +74,6 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
                     + PlanningId.class.getSimpleName() + " annotation,"
                     + " so the pairs can be made unique ([A,B] vs [B,A]).");
         }
-        // TODO Breaks node sharing + involves unneeded indirection
         Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
         return from(fromClass).join(fromClass, joiner, Joiners.lessThan(planningIdGetter));
     }
