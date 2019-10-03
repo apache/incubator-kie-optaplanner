@@ -41,9 +41,10 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 
 public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
-        implements UniConstraintStream<A> {
+        implements InnerUniConstraintStream<A> {
 
     protected final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
@@ -108,81 +109,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntFunction<A> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongFunction<A> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            Function<A, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName,
-            ToIntFunction<A> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
-            ToLongFunction<A> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
-            Function<A, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, false);
-
-    }
-
-    @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntFunction<A> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongFunction<A> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            Function<A, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName,
-            ToIntFunction<A> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, true);
-
-    }
-
-    @Override
-    public Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
-            ToLongFunction<A> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
-            Function<A, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, true);
-    }
-
-    @Override
-    protected final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -192,7 +119,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return constraint;
     }
 
-    protected final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    @Override
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -202,7 +130,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return constraint;
     }
 
-    protected final Constraint impactScoreLong(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongFunction<A> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -212,7 +141,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return constraint;
     }
 
-    protected final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -223,7 +153,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    protected final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
@@ -233,7 +163,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntFunction<A> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
@@ -243,7 +174,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
@@ -253,7 +185,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher, boolean positive) {
         DroolsConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);

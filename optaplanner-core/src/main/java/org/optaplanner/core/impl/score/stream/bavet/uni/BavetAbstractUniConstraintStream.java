@@ -40,9 +40,10 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstrai
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFactory;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 
 public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
-        implements UniConstraintStream<A> {
+        implements InnerUniConstraintStream<A> {
 
     protected final List<BavetAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
 
@@ -148,67 +149,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurableLong(String constraintPackage, String constraintName, ToLongFunction<A> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName, Function<A, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardConfigurableLong(String constraintPackage, String constraintName, ToLongFunction<A> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName, Function<A, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, true);
-    }
-
-    @Override
-    protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -218,7 +159,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return constraint;
     }
 
-    protected final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    @Override
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -228,7 +170,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return constraint;
     }
 
-    protected final Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    @Override
+    public final Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongFunction<A> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -238,7 +181,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return constraint;
     }
 
-    protected final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -249,7 +193,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
         BavetScoringUniConstraintStream<Solution_, A> stream = new BavetScoringUniConstraintStream<>(constraintFactory,
@@ -258,7 +202,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntFunction<A> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
@@ -268,7 +213,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
@@ -278,7 +224,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);

@@ -26,14 +26,14 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 
 public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> extends BavetAbstractConstraintStream<Solution_>
-        implements TriConstraintStream<A, B, C> {
+        implements InnerTriConstraintStream<A, B, C> {
 
     protected final List<BavetAbstractTriConstraintStream<Solution_, A, B, C>> childStreamList = new ArrayList<>(2);
 
@@ -65,81 +65,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     // ************************************************************************
 
     @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntTriFunction<A, B, C> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongTriFunction<A, B, C> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher,false);
-    }
-
-    @Override
-    public Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher,false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName,
-            ToIntTriFunction<A, B, C> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
-            ToLongTriFunction<A, B, C> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
-            TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, false);
-    }
-
-    @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntTriFunction<A, B, C> matchWeigher) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, matchWeigher,true);
-
-    }
-
-    @Override
-    public Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongTriFunction<A, B, C> matchWeigher) {
-        return impactScoreLong(constraintPackage, constraintName, constraintWeight, matchWeigher,true);
-    }
-
-    @Override
-    public Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher,true);
-
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName,
-            ToIntTriFunction<A, B, C> matchWeigher) {
-        return impactScoreConfigurable(constraintPackage, constraintName, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
-            ToLongTriFunction<A, B, C> matchWeigher) {
-        return impactScoreConfigurableLong(constraintPackage, constraintName, matchWeigher, true);
-    }
-
-    @Override
-    public Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
-            TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return impactScoreConfigurableBigDecimal(constraintPackage, constraintName, matchWeigher, true);
-    }
-
-    @Override
-    protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -149,7 +75,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return constraint;
     }
 
-    protected final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    @Override
+    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -159,7 +86,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return constraint;
     }
 
-    protected final Constraint impactScoreLong(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -169,7 +97,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return constraint;
     }
 
-    protected final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
                 positive);
@@ -180,7 +109,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     @Override
-    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
@@ -189,7 +118,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
@@ -199,7 +129,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);
@@ -209,7 +140,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return constraint;
     }
 
-    protected final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
+    @Override
+    public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
                 positive);

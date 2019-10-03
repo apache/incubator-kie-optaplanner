@@ -86,22 +86,22 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     public abstract InnerConstraintFactory<Solution_> getConstraintFactory();
 
     @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+    public final Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
         return impactScore(constraintPackage, constraintName, constraintWeight, false);
     }
 
     @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
+    public final Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
         return impactScoreConfigurable(constraintPackage, constraintName, false);
     }
 
     @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+    public final Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
         return impactScore(constraintPackage, constraintName, constraintWeight,true);
     }
 
     @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName) {
+    public final Constraint rewardConfigurable(String constraintPackage, String constraintName) {
         return impactScoreConfigurable(constraintPackage, constraintName, true);
     }
 
