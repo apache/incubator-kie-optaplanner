@@ -61,38 +61,43 @@ and supports <<explainingTheScore,justifications>>:
 [[constraintStreamsGroupingAndCollectors]]
 == Grouping and Collectors
 
-In the constraint streams framework, grouping is a mechanism to group items in a stream according to user-provider
-criteria, similar to what a `GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more
-`Collector`s, which provide various aggregation functions.
+Grouping collects items in a stream according to user-provider criteria (also called "group key"), similar to what a
+`GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more `Collector`s, which provide
+various aggregation functions.
 
-For example, the following code snippet will first group all processes by the computer they run on, sum up all the
-power required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and finally
-penalize every computer whose processes consume more power than is available.
+For example, the following code snippet first groups all processes by the computer they run on, sums up all the power
+required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and finally penalizes
+every computer whose processes consume more power than is available.
 
 [source,java,options="nowrap"]
 ----
     private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
+                .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
                 .penalize("requiredCpuPowerTotal",
                         HardSoftScore.ONE_HARD,
                         (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
     }
 ----
 
-OptaPlanner provides several collector implementations you can use in your grouping constraint streams. This chapter
-discusses the most important ones. For a complete list, refer to the
+There are several collectors available out of the box. You can also provide your own collectors by implementing the
+`org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
+
+[collectorsOutOfTheBox]
+=== Out-of-the-box Collectors
+
+The following section focuses on the collector implementations provided out of the box. This section only describes the
+`int`-based variants of the collectors in detail. Many of the collectors also provide variants for other applicable
+result data types, such as `long`, `BigDecimal` or `Duration`. You can find a complete list by exploring the
 `org.optaplanner.core.api.score.stream.ConstraintCollectors` class.
 
-You can provide your own collectors by implementing the
-`org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface or their `Bi...`, `Tri...` counterparts.
-The following sections will focus on the collector implementations provided out of the box.
+[collectorsCount]
+==== Collecting `count()`
 
-=== Counting collectors
-
-Counting collectors will count all elements in a group. For example, the following use of the
-`ConstraintCollectors.count(...)` collector will give a number of items for two separate groups - one where the talks
-have unavailable speakers, and one where they don't.
+The `ConstraintCollectors.count(...)` counts all elements in a group. For example, the following use of the collector
+gives a number of items for two separate groups - one where the talks have unavailable speakers, and one where they
+don't.
 
 [source,java,options="nowrap"]
 ----
@@ -105,29 +110,58 @@ have unavailable speakers, and one where they don't.
     }
 ----
 
-The `ConstraintCollectors.countDistinct(...)` will do the same, but it will take object equality into account. Different
-instances of objects which still `equals(...)` will therefore only count as one instance.
+The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant, `countLong()`.
 
-The return value for these collectors is a 32-bit signed integer (`int`). Should that not be enough for you, please
-refer to the `countLong()` and `countDistinctLong()` variants of these collectors.
+[collectorsCountDistinct]
+==== Collecting `countDistinct()`
 
-=== Summing collector
+The `ConstraintCollectors.countDistinct(...)` counts any element in a group once, regardless of how many times it
+occurs. For example, the following use of the collector gives a number of talks in each unique room.
 
-Summing collectors will sum the value of a particular property of all elements in the group. For an example of using a
-`ConstraintCollectors.sum(...)` collector, <<constraintStreamsGroupingAndCollectors,see above>>.
+[source,java,options="nowrap"]
+----
+    private Constraint roomCount(ConstraintFactory factory) {
+        return factory.from(Talk.class)
+                .groupBy(Talk::getRoom, countDistinct())
+                .penalize("roomCount",
+                        HardSoftScore.ONE_SOFT,
+                        (room, count) -> ...);
+    }
+----
 
-The return value for this collector is a 32-bit signed integer (`int`). Should that not be enough for you, please
-refer to the `sumLong(...)` variant of this collector.
+The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant, `countLong()`.
 
-=== Minimums and maximums
+[collectorsSum]
+==== Collecting `sum()`
 
-In certain situations, it may be necessary to find a minimal or a maximal element in a group. For that, we provide
-`ConstraintCollectors.min(...)` and `ConstraintCollectors.max(...)` collectors respectively.
+To sum the values of a particular property of all elements in the group, use the `ConstraintCollectors.sum(...)`
+collector. The following code snippet first groups all processes by the computer they run on and sums up all the power
+required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector.
+
+[source,java,options="nowrap"]
+----
+    private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
+                .penalize("requiredCpuPowerTotal",
+                        HardSoftScore.ONE_SOFT,
+                        (computer, requiredCpuPower) -> requiredCpuPower);
+    }
+----
+
+The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant `sumLong()`, as
+well as a `BigDecimal`-based variant `sumBigDecimal()`.
+
+[collectorsMinMax]
+==== Minimums and maximums
+
+To extract the minimum or maximum of a group, use the `ConstraintCollectors.min(...)` and
+`ConstraintCollectors.max(...)` collectors respectively.
 
 These collectors operate on values of properties which are `Comparable` (such as `Integer`, `String` or `Duration`),
-although we also provide variants of these collectors which allow you to provide your own `Comparator`.
+although there are also variants of these collectors which allow you to provide your own `Comparator`.
 
-Here's an example of finding a computer which runs the most power-demanding process:
+The following example finds a computer which runs the most power-demanding process:
 
 [source,java,options="nowrap"]
 ----
