@@ -32,6 +32,7 @@ public class SolverTask<Solution_> {
     private final Object problemId;
     private Solver<Solution_> solver;
     private Solution_ planningProblem;
+    private boolean isPaused = false;
 
     public SolverTask(Object problemId, Solver<Solution_> solver, Solution_ planningProblem) {
         Objects.requireNonNull(solver);
@@ -43,6 +44,7 @@ public class SolverTask<Solution_> {
 
     public Solution_ startSolving() {
         logger.info("Running solverTask for problemId ({}).", problemId);
+        isPaused = false;
         return solver.solve(planningProblem);
     }
 
@@ -74,7 +76,19 @@ public class SolverTask<Solution_> {
         solver.addEventListener(eventListener);
     }
 
-    public void stopSolver() {
-        solver.terminateEarly();
+    public boolean stopSolver() {
+        return solver.terminateEarly();
+    }
+
+    public synchronized boolean pauseSolver() {
+        if (isPaused) {
+            return false;
+        }
+        isPaused = true;
+        return solver.terminateEarly();
+    }
+
+    public boolean isPaused() {
+        return isPaused;
     }
 }

@@ -116,7 +116,7 @@ public interface SolverManager<Solution_> extends AutoCloseable {
     /**
      * Submits a planning problem to be solved and returns immediately. Calling this method creates a new solver job
      * that might start solving immediately or waits until a {@link Thread} is available.
-     * To stop a solver job early, call {@link #stopSolver}.
+     * To stop a solver job early, call {@link #terminateSolver}.
      * <p>
      * To get the current best solution (which might or might not be optimal, feasible or even initialized),
      * call {@link #getBestSolution}.
@@ -129,7 +129,7 @@ public interface SolverManager<Solution_> extends AutoCloseable {
     /**
      * Submits a planning problem to be solved and returns immediately. Calling this method creates a new solver job
      * that might start solving immediately or waits until a {@link Thread} is available.
-     * To stop a solver job early, call {@link #stopSolver}.
+     * To stop a solver job early, call {@link #terminateSolver}.
      * <p>
      * To get the current best solution (which might or might not be optimal, feasible or even initialized),
      * call {@link #getBestSolution}.
@@ -143,7 +143,7 @@ public interface SolverManager<Solution_> extends AutoCloseable {
     /**
      * Submits a planning problem to be solved and returns immediately. Calling this method creates a new solver job
      * that might start solving immediately or waits until a {@link Thread} is available.
-     * To stop a solver job early, call {@link #stopSolver}.
+     * To stop a solver job early, call {@link #terminateSolver}.
      * <p>
      * To get the current best solution (which might or might not be optimal, feasible or even initialized),
      * call {@link #getBestSolution}.
@@ -165,7 +165,7 @@ public interface SolverManager<Solution_> extends AutoCloseable {
     /**
      * Submits a planning problem to be solved and returns immediately. Calling this method creates a new solver job
      * that might start solving immediately or waits until a {@link Thread} is available.
-     * To stop a solver job early, call {@link #stopSolver}.
+     * To stop a solver job early, call {@link #terminateSolver}.
      * <p>
      * To get the current best solution (which might or might not be optimal, feasible or even initialized),
      * call {@link #getBestSolution}.
@@ -187,11 +187,31 @@ public interface SolverManager<Solution_> extends AutoCloseable {
             Consumer<Throwable> onException);
 
     /**
-     * Notifies the solver that it should stop at its earliest convenience.
+     * Notifies the solver that it should stop at its earliest convenience and clean up all the resources used by the
+     * corresponding solver task. Note that after calling this method there will be no reference for problemId in the
+     * {@link SolverManager}.
      *
      * @param problemId never null, a unique id for each planning problem
+     * @return true if successful, false if no problem with problemId has been submitted
      */
-    void stopSolver(Object problemId);
+    boolean terminateSolver(Object problemId);
+
+    /**
+     * Notifies the solver that it should stop at its earliest convenience.
+     * To resume solving call {@link #resumeSolver(Object problemId)}
+     *
+     * @param problemId never null, a unique id for each planning problem
+     * @return true if successful, false if no problem with problemId has been submitted
+     */
+    boolean pauseSolver(Object problemId);
+
+    /**
+     * Resumes solving a previously stopped solver task.
+     *
+     * @param problemId never null, a unique id for each planning problem
+     * @return true if successful, false if no problem with problemId has been submitted or solver is already solving
+     */
+    boolean resumeSolver(Object problemId);
 
     /**
      * @param problemId never null, a unique id for each planning problem

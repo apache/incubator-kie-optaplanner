@@ -78,8 +78,8 @@ public class DefaultSolverManagerTest {
         assertEquals(tenantId.toString(), solverManager.getBestSolution(tenantId).getCode());
         assertTrue(solverManager.getBestScore(tenantId).isSolutionInitialized());
 
-        solverManager.stopSolver(tenantId);
-        assertEquals(SolverStatus.TERMINATED_EARLY, solverManager.getSolverStatus(tenantId));
+        solverManager.terminateSolver(tenantId);
+        assertEquals(null, solverManager.getSolverStatus(tenantId));
         logger.info(String.valueOf(solvingEndedLatch.getCount()));
     }
 
@@ -111,7 +111,7 @@ public class DefaultSolverManagerTest {
     }
 
     @Test(timeout = 5000L)
-    public void customThreadFactoryClassIsUsedWithSolverFactory() throws InterruptedException {
+    public void customThreadFactoryClassIsUsedWithSolverFactory() {
         solverManager = SolverManager.createFromSolverFactory(SolverFactory.createFromXmlResource(SOLVER_CONFIG), new MockThreadFactory());
         TestdataSolution problem = createTestProblem(tenantId);
         solverManager.solve(tenantId, problem, taskAssigningSolution -> solutionChangedLatch.countDown(), null);
@@ -127,9 +127,31 @@ public class DefaultSolverManagerTest {
                             taskAssigningSolution -> solvingEndedLatch.countDown());
         solutionChangedLatch.await(5, TimeUnit.SECONDS);
         assertEquals(SolverStatus.SOLVING, solverManager.getSolverStatus(tenantId));
-        solverManager.stopSolver(tenantId);
+        solverManager.pauseSolver(tenantId);
         solvingEndedLatch.await(5, TimeUnit.SECONDS);
         assertEquals(SolverStatus.TERMINATED_EARLY, solverManager.getSolverStatus(tenantId));
+    }
+
+    @Test(timeout = 5000L)
+    public void pauseResumeAndTerminateSolver() throws InterruptedException {
+        TestdataSolution problem = createTestProblem(tenantId);
+        solverManager.solve(tenantId, problem,
+                            taskAssigningSolution -> solutionChangedLatch.countDown(),
+                            taskAssigningSolution -> solvingEndedLatch.countDown());
+        solutionChangedLatch.await(5, TimeUnit.SECONDS);
+        assertEquals(SolverStatus.SOLVING, solverManager.getSolverStatus(tenantId));
+        logger.info("Pausing");
+        assertTrue(solverManager.pauseSolver(tenantId));
+        solvingEndedLatch.await(5, TimeUnit.SECONDS);
+        assertEquals(SolverStatus.TERMINATED_EARLY, solverManager.getSolverStatus(tenantId));
+        logger.info("Resuming");
+        solutionChangedLatch = new CountDownLatch(1);
+        assertTrue(solverManager.resumeSolver(tenantId));
+        solutionChangedLatch.await(5, TimeUnit.SECONDS);
+        assertEquals(SolverStatus.SOLVING, solverManager.getSolverStatus(tenantId));
+        logger.info("Terminating");
+        assertTrue(solverManager.terminateSolver(tenantId));
+        assertNull(solverManager.getSolverStatus(tenantId));
     }
 
     @Test(timeout = 5000L)
@@ -152,7 +174,7 @@ public class DefaultSolverManagerTest {
 
         // TODO remove sleep and stop solver, instead configure SolverManager to adjust solving duration
         Thread.sleep(500L);
-        solverManager.stopSolver(tenantId);
+        solverManager.terminateSolver(tenantId);
 
         solvingEndedLatch.await(5, TimeUnit.SECONDS);
         assertTrue(bestSolutionChangedEventCount.get() > 0);
@@ -199,9 +221,9 @@ public class DefaultSolverManagerTest {
 
     @Test(timeout = 5000L)
     public void shouldNotStopASolverThatHasNotBeenSubmitted() {
-        assertThatThrownBy(() -> solverManager.stopSolver(tenantId))
+        assertThatThrownBy(() -> solverManager.terminateSolver(tenantId))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Problem (" + tenantId + ") was not submitted.");
+                .hasMessageContaining("Problem (" + tenantId + ") was not submitted or finished solving.");
     }
 
     @Test(timeout = 5000L)
