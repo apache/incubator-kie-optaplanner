@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.api.solver.manager.SolverStatus;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,12 @@ public class SolverTask<Solution_> {
     }
 
     public Score<?> getBestScore() {
+        ScoreDirector<Solution_> scoreDirector = solver.getScoreDirectorFactory().buildScoreDirector();
+        Score<?> bestScore = solver.getBestScore();
+        if (bestScore == null) { // solverTask hasn't started solving yet, return score of uninitialized/submitted solution
+            scoreDirector.setWorkingSolution(planningProblem);
+            return scoreDirector.calculateScore();
+        }
         return solver.getBestScore();
     }
 

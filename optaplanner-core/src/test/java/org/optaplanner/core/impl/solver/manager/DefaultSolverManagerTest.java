@@ -42,6 +42,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+// TODO test submitting two different problems with two instances of problemId where problemId1.equals(problemId2) is true
 public class DefaultSolverManagerTest {
 
     public static final String SOLVER_CONFIG = "org/optaplanner/core/impl/solver/testdataSolverConfigXStream.xml";

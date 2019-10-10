@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.solver.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,12 +32,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
-import javax.swing.text.html.Option;
-
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.manager.SolverManager;
 import org.optaplanner.core.api.solver.manager.SolverStatus;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.thread.ThreadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,6 +275,14 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         logger.debug("Getting solver status of problemId ({}).", problemId);
         SolverTask<Solution_> solverTask = getSolverTask(problemId);
         return solverTask == null ? null : solverTask.getSolverStatus();
+    }
+
+    @Override
+    public Map<Object, Indictment> getIndictmentMap(Solution_ solution_) {
+        ScoreDirector<Solution_> scoreDirector = solverFactory.buildSolver().getScoreDirectorFactory().buildScoreDirector(); // TODO compare against creating an indictmentMapSolver field
+        scoreDirector.setWorkingSolution(solution_);
+        scoreDirector.calculateScore();
+        return scoreDirector.getIndictmentMap();
     }
 
     @Override

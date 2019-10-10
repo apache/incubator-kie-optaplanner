@@ -16,14 +16,19 @@
 
 package org.optaplanner.core.api.solver.manager;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.manager.DefaultSolverManager;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -249,6 +254,14 @@ public interface SolverManager<Solution_> extends AutoCloseable {
      * @return null if the problemId isn't associated with a previously submitted problem, {@link SolverStatus} otherwise
      */
     SolverStatus getSolverStatus(Object problemId);
+
+    /**
+     * Explains the impact of each planning entity or problem fact on the {@link Score}. See {@link ScoreDirector#getIndictmentMap()}
+     *
+     * @param solution_ never null, an instance of {@link PlanningSolution}
+     * @return never null, the key is a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}
+     */
+    Map<Object, Indictment> getIndictmentMap(Solution_ solution_);
 
     /**
      * Terminates all solver jobs (running and awaiting ones) and queued callbacks. No new solver jobs can be submitted

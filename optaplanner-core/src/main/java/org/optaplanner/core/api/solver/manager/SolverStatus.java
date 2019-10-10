@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.solver.manager;
 
 public enum SolverStatus {
+    // TODO add SCHEDULED status (submitted but not started solving yet)
     SOLVING,
     /**
      * either hasn't started yet or finished solving
