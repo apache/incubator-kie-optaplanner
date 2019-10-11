@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -32,7 +34,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraint
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
     protected final DroolsConstraintFactory<Solution_> constraintFactory;
-    protected final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
+    private final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         this.constraintFactory = constraintFactory;
@@ -64,17 +66,24 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
 
     public abstract List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList();
 
+    public void addChildStream(DroolsAbstractConstraintStream<Solution_> childStream) {
+        childStreamList.add(childStream);
+    }
+
+    public Collection<DroolsAbstractConstraintStream<Solution_>> getChildStreams() {
+        return Collections.unmodifiableList(childStreamList);
+    }
+
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
 
     public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        for (DroolsAbstractConstraintStream<Solution_> childStream : childStreamList) {
+        for (DroolsAbstractConstraintStream<Solution_> childStream : getChildStreams()) {
             childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
         }
     }
-
 
     // ************************************************************************
     // Getters/setters

@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.UUID;
-
 import org.drools.model.Declaration;
 import org.drools.model.PatternDSL;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
@@ -42,8 +40,10 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
         this.triJoiner = (AbstractTriJoiner<A, B, C>) triJoiner;
-        this.cPattern = otherStream.getAPattern().expr("triJoin-" + UUID.randomUUID(), getAVariableDeclaration(),
+        this.cPattern = null;
+        /*this.cPattern = otherStream.getAPattern().expr("triJoin-" + UUID.randomUUID(), getAVariableDeclaration(),
                 getBVariableDeclaration(), (c, a, b) -> matches(a, b, c));
+         */
     }
 
     // ************************************************************************
@@ -80,7 +80,8 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public Declaration<C> getCVariableDeclaration() {
-        return rightParentStream.getAVariableDeclaration();
+        return null;
+        //return rightParentStream.getAVariableDeclaration();
     }
 
     @Override
@@ -103,7 +104,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public String toString() {
-        return "TriJoin() with " + childStreamList.size()  + " children";
+        return "TriJoin() with " + getChildStreams().size()  + " children";
     }
 
 

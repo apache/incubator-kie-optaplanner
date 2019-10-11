@@ -68,7 +68,7 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public String toString() {
-        return "TriFilter() with " + childStreamList.size() + " children";
+        return "TriFilter() with " + getChildStreams().size() + " children";
     }
 
 }

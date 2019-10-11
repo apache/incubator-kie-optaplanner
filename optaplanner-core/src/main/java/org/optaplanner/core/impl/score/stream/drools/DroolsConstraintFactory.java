@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.drools.model.Global;
-import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
@@ -109,8 +108,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
             }
             DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
             droolsConstraintList.add(droolsConstraint);
-            Rule rule = droolsConstraint.createRule(scoreHolderGlobal);
-            model.addRule(rule);
+            droolsConstraint.createRules(scoreHolderGlobal).forEach(model::addRule);
         }
         // TODO when trace is active, show the Rule (DRL or exectable model) in logging
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);

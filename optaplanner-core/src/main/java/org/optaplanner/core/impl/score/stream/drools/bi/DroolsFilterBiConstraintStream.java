@@ -54,6 +54,6 @@ public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstr
 
     @Override
     public String toString() {
-        return "BiFilter() with " + childStreamList.size() + " children";
+        return "BiFilter() with " + getChildStreams().size() + " children";
     }
 }

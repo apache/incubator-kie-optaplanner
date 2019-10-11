@@ -19,24 +19,19 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.model.Declaration;
 import org.drools.model.PatternDSL;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final Class<A> fromClass;
-    private final Declaration<A> variableDeclaration;
-    private final PatternDSL.PatternDef<A> aPattern;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
-        super(constraintFactory);
+        super(constraintFactory, new RealUniAnchor(PatternDSL.declarationOf(fromClass)));
         if (fromClass == null) {
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
         this.fromClass = fromClass;
-        this.variableDeclaration = PatternDSL.declarationOf(fromClass);
-        this.aPattern = PatternDSL.pattern(variableDeclaration);
     }
 
     // ************************************************************************
@@ -50,7 +45,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
 
     @Override
     public String toString() {
-        return "From(" + fromClass.getSimpleName() + ") with " + childStreamList.size()  + " children";
+        return "From(" + fromClass.getSimpleName() + ") with " + getChildStreams().size()  + " children";
     }
 
     // ************************************************************************
@@ -61,13 +56,4 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
         return fromClass;
     }
 
-    @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return variableDeclaration;
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return aPattern;
-    }
 }

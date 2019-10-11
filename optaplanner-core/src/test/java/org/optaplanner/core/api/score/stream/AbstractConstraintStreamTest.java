@@ -19,6 +19,9 @@ package org.optaplanner.core.api.score.stream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.Assume;
 import org.junit.runner.RunWith;
@@ -28,6 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
 import static org.junit.Assert.assertEquals;
@@ -56,6 +60,11 @@ public abstract class AbstractConstraintStreamTest {
                 constraintStreamImplType == ConstraintStreamImplType.BAVET);
     }
 
+    protected void assumeDrools() {
+        Assume.assumeTrue("This functionality is not yet supported in Bavet constraint streams.",
+                constraintStreamImplType == ConstraintStreamImplType.DROOLS);
+    }
+
     public AbstractConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         this.constraintStreamImplType = constraintStreamImplType;
@@ -74,6 +83,32 @@ public abstract class AbstractConstraintStreamTest {
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
+    private static List<Object> removeIndirection(LogicalTuple logicalTuple) {
+        return IntStream.range(0, logicalTuple.getCardinality())
+                .mapToObj(logicalTuple::getItem)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Object> removeIndirection(List<Object> justificationList) {
+        final List<Object> l = justificationList.stream()
+                .flatMap(item -> {
+                    if (item instanceof LogicalTuple) {
+                        return removeIndirection((LogicalTuple) item).stream();
+                    } else {
+                        return Stream.of(item);
+                    }
+                }).collect(Collectors.toList());
+        return l;
+    }
+
+    private static List<ConstraintMatch> removeIndirections(ConstraintMatchTotal constraintMatchTotal) {
+        return constraintMatchTotal.getConstraintMatchSet().stream()
+                .map(constraintMatch -> new ConstraintMatch(constraintMatch.getConstraintPackage(),
+                        constraintMatch.getConstraintName(), removeIndirection(constraintMatch.getJustificationList()),
+                        constraintMatch.getScore()))
+                .collect(Collectors.toList());
+    }
+
     protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
             AssertableMatch... assertableMatches) {
         scoreDirector.triggerVariableListeners();
@@ -85,15 +120,18 @@ public abstract class AbstractConstraintStreamTest {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
                     .get(ConstraintMatchTotal.composeConstraintId(constraintPackage, TEST_CONSTRAINT_NAME));
+            System.out.println(constraintMatchTotal.getConstraintMatchSet());
+            List<ConstraintMatch> withoutIndirection = removeIndirections(constraintMatchTotal);
+            System.out.println(withoutIndirection);
             for (AssertableMatch assertableMatch : assertableMatches) {
-                if (constraintMatchTotal.getConstraintMatchSet().stream()
+                if (withoutIndirection.stream()
                         .noneMatch(constraintMatch -> assertableMatch.isEqualTo(constraintMatch))) {
                     fail("The assertableMatch (" + assertableMatch + ") is lacking,"
                             + " it's not in the constraintMatchSet ("
-                            + constraintMatchTotal.getConstraintMatchSet() + ").");
+                            + withoutIndirection + ").");
                 }
             }
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+            for (ConstraintMatch constraintMatch : withoutIndirection) {
                 if (Arrays.stream(assertableMatches)
                         .noneMatch(assertableMatch -> assertableMatch.isEqualTo(constraintMatch))) {
                     fail("The constraintMatch (" + constraintMatch + ") is in excess,"

@@ -18,12 +18,14 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
 import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
+import org.drools.model.consequences.ConsequenceBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -57,13 +59,26 @@ public class DroolsConstraint<Solution_> implements Constraint {
         return positive ? constraintWeight : constraintWeight.negate();
     }
 
-    public Rule createRule(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    public List<Rule> createRules(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         List<RuleItemBuilder<?>> ruleItemBuilderList = new ArrayList<>(fromStreamList.size());
         for (DroolsFromUniConstraintStream<Solution_, Object> fromStream : fromStreamList) {
             fromStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
         }
-        return PatternDSL.rule(constraintPackage, constraintName)
-                .build(ruleItemBuilderList.toArray(new RuleItemBuilder<?>[0]));
+        List<Rule> rules = new ArrayList<>();
+        int lastConsequenceFound = -1;
+        int totalItemBuilders = ruleItemBuilderList.size();
+        for (int i = 0; i < totalItemBuilders; i++) {
+            RuleItemBuilder<?> builder = ruleItemBuilderList.get(i);
+            if (builder instanceof ConsequenceBuilder.AbstractValidBuilder<?>) {
+                final String ruleName = (i == totalItemBuilders - 1) ? constraintName : UUID.randomUUID().toString();
+                List<RuleItemBuilder<?>> sub = ruleItemBuilderList.subList(lastConsequenceFound + 1, i + 1);
+                Rule rule = PatternDSL.rule(constraintPackage, ruleName)
+                        .build(sub.toArray(new RuleItemBuilder<?>[0]));
+                rules.add(rule);
+                lastConsequenceFound = i;
+            }
+        }
+        return rules;
     }
 
     // ************************************************************************
@@ -85,4 +100,9 @@ public class DroolsConstraint<Solution_> implements Constraint {
         return constraintName;
     }
 
+    @Override
+    public String toString() {
+        return "DroolsConstraint(" + constraintPackage + " " + constraintName + ") in " + fromStreamList.size() +
+                " from() stream(s)";
+    }
 }
