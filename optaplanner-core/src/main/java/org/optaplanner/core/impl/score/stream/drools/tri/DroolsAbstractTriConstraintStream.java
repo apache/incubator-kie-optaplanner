@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -39,15 +37,22 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerTriConstraintStream<A, B, C> {
 
     protected final DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent;
+    private final TriAnchor anchor;
 
     public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent) {
+        this(constraintFactory, parent, parent.getAnchor());
+    }
+
+    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriAnchor anchor) {
         super(constraintFactory);
         if (parent == null && !(this instanceof DroolsJoinTriConstraintStream)) {
             throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
                     "unless it's a join stream.");
         }
         this.parent = parent;
+        this.anchor = anchor;
     }
 
     @Override
@@ -149,16 +154,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         }
     }
 
-    public abstract Declaration<A> getAVariableDeclaration();
-
-    public abstract PatternDSL.PatternDef<A> getAPattern();
-
-    public abstract Declaration<B> getBVariableDeclaration();
-
-    public abstract PatternDSL.PatternDef<B> getBPattern();
-
-    public abstract Declaration<C> getCVariableDeclaration();
-
-    public abstract PatternDSL.PatternDef<C> getCPattern();
-
+    public TriAnchor getAnchor() {
+        return anchor;
+    }
 }

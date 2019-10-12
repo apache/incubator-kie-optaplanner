@@ -34,6 +34,7 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.BiAnchor;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
@@ -83,7 +84,7 @@ public final class UniAnchor {
         RuleMetadata<?> bMetadata = bAnchor.getAMetadata();
         PatternDSL.PatternDef newPattern = bMetadata.getPattern()
                 .expr(getAMetadata().getVariableDeclaration(),
-                        (b, a) -> BiAnchor.matches(biJoiner, inline(a), inline(b)));
+                        (b, a) -> matches(biJoiner, inline(a), inline(b)));
         if (bMetadata instanceof LogicalRuleMetadata) {
             return new BiAnchor(getAMetadata(), ((LogicalRuleMetadata) bMetadata).substitute(newPattern));
         } else {
@@ -151,6 +152,19 @@ public final class UniAnchor {
 
     public static String createContextId() {
         return UUID.randomUUID().toString();
+    }
+
+    private static <A, B> boolean matches(AbstractBiJoiner<A, B> biJoiner, A left, B right) {
+        Object[] leftMappings = biJoiner.getLeftCombinedMapping().apply(left);
+        Object[] rightMappings = biJoiner.getRightCombinedMapping().apply(right);
+        JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            if (!joinerType.matches(leftMappings[i], rightMappings[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static <A> A inline(Object item) {

@@ -30,13 +30,14 @@ import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.OriginalRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleMetadata;
+import org.optaplanner.core.impl.score.stream.drools.tri.TriAnchor;
 import org.optaplanner.core.impl.score.stream.drools.uni.UniAnchor;
+import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 import static org.drools.model.DSL.on;
 
@@ -72,6 +73,18 @@ public final class BiAnchor {
             return new BiAnchor(getAMetadata(), ((LogicalRuleMetadata) bMetadata).substitute(newPattern));
         } else {
             return new BiAnchor(getAMetadata(), ((OriginalRuleMetadata<?>) bMetadata).substitute(newPattern));
+        }
+    }
+
+    public <A, B, C> TriAnchor join(UniAnchor cAnchor, AbstractTriJoiner<A, B, C> triJoiner) {
+        RuleMetadata<?> cMetadata = cAnchor.getAMetadata();
+        PatternDSL.PatternDef newPattern = cMetadata.getPattern()
+                .expr(contextId, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration(),
+                        (c, a, b) -> matches(triJoiner, inline(a), inline(b), inline(c)));
+        if (cMetadata instanceof LogicalRuleMetadata) {
+            return new TriAnchor(getAMetadata(), getBMetadata(), ((LogicalRuleMetadata) cMetadata).substitute(newPattern));
+        } else {
+            return new TriAnchor(getAMetadata(), getBMetadata(), ((OriginalRuleMetadata) cMetadata).substitute(newPattern));
         }
     }
 
@@ -121,10 +134,10 @@ public final class BiAnchor {
         return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), consequence);
     }
 
-    public static <A, B> boolean matches(AbstractBiJoiner<A, B> biJoiner, A left, B right) {
-        Object[] leftMappings = biJoiner.getLeftCombinedMapping().apply(left);
-        Object[] rightMappings = biJoiner.getRightCombinedMapping().apply(right);
-        JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
+    private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {
+        Object[] leftMappings = triJoiner.getLeftCombinedMapping().apply(a, b);
+        Object[] rightMappings = triJoiner.getRightCombinedMapping().apply(c);
+        JoinerType[] joinerTypes = triJoiner.getJoinerTypes();
         for (int i = 0; i < joinerTypes.length; i++) {
             JoinerType joinerType = joinerTypes[i];
             if (!joinerType.matches(leftMappings[i], rightMappings[i])) {

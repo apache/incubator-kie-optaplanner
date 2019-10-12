@@ -16,10 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
@@ -30,20 +28,14 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     private final DroolsAbstractBiConstraintStream<Solution_, A, B> leftParentStream;
     private final DroolsAbstractUniConstraintStream<Solution_, C> rightParentStream;
-    private final AbstractTriJoiner<A, B, C> triJoiner;
-    private final PatternDSL.PatternDef<C> cPattern;
 
     public DroolsJoinTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             DroolsAbstractUniConstraintStream<Solution_, C> otherStream, TriJoiner<A, B, C> triJoiner) {
-        super(constraintFactory, null);
+        super(constraintFactory, null,
+                parent.getAnchor().join(otherStream.getAnchor(), (AbstractTriJoiner<A, B, C>) triJoiner));
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
-        this.triJoiner = (AbstractTriJoiner<A, B, C>) triJoiner;
-        this.cPattern = null;
-        /*this.cPattern = otherStream.getAPattern().expr("triJoin-" + UUID.randomUUID(), getAVariableDeclaration(),
-                getBVariableDeclaration(), (c, a, b) -> matches(a, b, c));
-         */
     }
 
     // ************************************************************************
@@ -56,49 +48,6 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     public DroolsAbstractUniConstraintStream<Solution_, C> getRightParentStream() {
         return rightParentStream;
-    }
-
-    @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return null;
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return null;
-    }
-
-    @Override
-    public Declaration<B> getBVariableDeclaration() {
-        return null;
-    }
-
-    @Override
-    public PatternDSL.PatternDef<B> getBPattern() {
-        return null;
-    }
-
-    @Override
-    public Declaration<C> getCVariableDeclaration() {
-        return null;
-    }
-
-    @Override
-    public PatternDSL.PatternDef<C> getCPattern() {
-        return cPattern;
-    }
-
-    private boolean matches(A a, B b, C c) {
-        Object[] leftMappings = triJoiner.getLeftCombinedMapping().apply(a, b);
-        Object[] rightMappings = triJoiner.getRightCombinedMapping().apply(c);
-        JoinerType[] joinerTypes = triJoiner.getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
-            if (!joinerType.matches(leftMappings[i], rightMappings[i])) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override

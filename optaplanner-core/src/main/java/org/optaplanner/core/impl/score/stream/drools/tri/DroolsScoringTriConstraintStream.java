@@ -19,12 +19,8 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.drools.model.Declaration;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
-import org.drools.model.consequences.ConsequenceBuilder;
-import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -83,78 +79,17 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     @Override
     public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        ruleItemBuilderList.add(getAPattern());
-        ruleItemBuilderList.add(getBPattern());
-        ruleItemBuilderList.add(getCPattern());
-        Declaration<A> aVar = getAVariableDeclaration();
-        Declaration<B> bVar = getBVariableDeclaration();
-        Declaration<C> cVar = getCVariableDeclaration();
-        ConsequenceBuilder._4<? extends AbstractScoreHolder, A, B, C> consequence;
         if (intMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar, cVar)
-                    .execute((drools, scoreHolder, a, b, c) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        int weightMultiplier = intMatchWeigher.applyAsInt(a, b, c);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, intMatchWeigher));
         } else if (longMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar, cVar)
-                    .execute((drools, scoreHolder, a, b, c) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        long weightMultiplier = longMatchWeigher.applyAsLong(a, b, c);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, longMatchWeigher));
         } else if (bigDecimalMatchWeigher != null) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar, cVar)
-                    .execute((drools, scoreHolder, a, b, c) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        BigDecimal weightMultiplier = bigDecimalMatchWeigher.apply(a, b, c);
-                        scoreHolder.impactScore(kcontext, weightMultiplier);
-                    });
+            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher));
         } else if (noMatchWeigher) {
-            consequence = PatternDSL.on(scoreHolderGlobal, aVar, bVar, cVar)
-                    .execute((drools, scoreHolder, a, b, c) -> {
-                        RuleContext kcontext = (RuleContext) drools;
-                        scoreHolder.impactScore(kcontext);
-                    });
+            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal));
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
-        ruleItemBuilderList.add(consequence);
-    }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
-    @Override
-    public Declaration<A> getAVariableDeclaration() {
-        return parent.getAVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<A> getAPattern() {
-        return parent.getAPattern();
-    }
-
-    @Override
-    public Declaration<B> getBVariableDeclaration() {
-        return parent.getBVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<B> getBPattern() {
-        return parent.getBPattern();
-    }
-
-    @Override
-    public Declaration<C> getCVariableDeclaration() {
-        return parent.getCVariableDeclaration();
-    }
-
-    @Override
-    public PatternDSL.PatternDef<C> getCPattern() {
-        return parent.getCPattern();
     }
 
     @Override
