@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
@@ -27,7 +26,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     private final Class<A> fromClass;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
-        super(constraintFactory, new RealUniAnchor(PatternDSL.declarationOf(fromClass)));
+        super(constraintFactory, new RealUniAnchor(fromClass));
         if (fromClass == null) {
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }

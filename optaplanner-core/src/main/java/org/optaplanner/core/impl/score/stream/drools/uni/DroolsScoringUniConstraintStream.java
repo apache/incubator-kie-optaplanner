@@ -24,7 +24,6 @@ import java.util.function.ToLongFunction;
 
 import org.drools.model.Global;
 import org.drools.model.RuleItemBuilder;
-import org.drools.model.consequences.ConsequenceBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
@@ -89,20 +88,17 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     @Override
     public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        ruleItemBuilderList.add(anchor.getAPattern());
-        ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> consequence;
         if (intMatchWeigher != null) {
-            consequence = anchor.prepareScoring(scoreHolderGlobal, intMatchWeigher);
+            ruleItemBuilderList.addAll(anchor.terminateWithScoring(scoreHolderGlobal, intMatchWeigher));
         } else if (longMatchWeigher != null) {
-            consequence = anchor.prepareScoring(scoreHolderGlobal, longMatchWeigher);
+            ruleItemBuilderList.addAll(anchor.terminateWithScoring(scoreHolderGlobal, longMatchWeigher));
         } else if (bigDecimalMatchWeigher != null) {
-            consequence = anchor.prepareScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            ruleItemBuilderList.addAll(anchor.terminateWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher));
         } else if (noMatchWeigher) {
-            consequence = anchor.prepareScoring(scoreHolderGlobal);
+            ruleItemBuilderList.addAll(anchor.terminateWithScoring(scoreHolderGlobal));
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
-        ruleItemBuilderList.add(consequence);
     }
 
     // ************************************************************************

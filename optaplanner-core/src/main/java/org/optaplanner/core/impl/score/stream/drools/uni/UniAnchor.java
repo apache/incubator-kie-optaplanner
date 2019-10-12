@@ -17,71 +17,38 @@
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import org.drools.model.Declaration;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL;
-import org.drools.model.consequences.ConsequenceBuilder;
-import org.kie.api.runtime.rule.RuleContext;
+import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
-public abstract class UniAnchor<T extends UniAnchor<T>> {
+public interface UniAnchor<T extends UniAnchor<T>> {
 
-    private final Declaration<?> aVariableDeclaration;
-    private final PatternDSL.PatternDef<?> aPattern;
-    private final String contextId = UUID.randomUUID().toString();
-
-    protected <A> UniAnchor(Declaration<A> aVariableDeclaration) {
-        this(aVariableDeclaration, (contextId, var) -> PatternDSL.pattern(var));
+    static String createContextId() {
+        return UUID.randomUUID().toString();
     }
 
-    protected <A> UniAnchor(Declaration<A> aVariableDeclaration, BiFunction<String, Declaration<A>,
-                PatternDSL.PatternDef<A>> patternProvider) {
-        this.aVariableDeclaration = aVariableDeclaration;
-        this.aPattern = patternProvider.apply(contextId, aVariableDeclaration);
-    }
-
-    protected <A> UniAnchor(Declaration<A> aVariableDeclaration, PatternDSL.PatternDef<A> pattern) {
-        this.aVariableDeclaration = aVariableDeclaration;
-        this.aPattern = pattern;
-    }
-
-
-    public String getContextId() {
-        return contextId;
-    }
-
-    public <A> Declaration<A> getAVariableDeclaration() {
-        return (Declaration<A>) aVariableDeclaration;
-    }
-
-    public <A> PatternDSL.PatternDef<A> getAPattern() {
-        return (PatternDSL.PatternDef<A>) aPattern;
-    }
+    String getContextId();
 
     public abstract T filter(Predicate predicate);
 
-    public ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> prepareScoring(
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        return PatternDSL.on(scoreHolderGlobal, getAVariableDeclaration())
-                .execute((drools, scoreHolder, __) -> {
-                    RuleContext kcontext = (RuleContext) drools;
-                    scoreHolder.impactScore(kcontext);
-                });
-    }
+    <A, GroupKey_> List<RuleItemBuilder<?>> terminateWithLogical(String currentContextId,
+            Function<A, GroupKey_> groupKeyMapping);
 
-    public abstract ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> prepareScoring(
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal, ToIntFunction matchWeighter);
+    List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal);
 
-    public abstract ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> prepareScoring(
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal, ToLongFunction matchWeighter);
+    List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
+            ToIntFunction matchWeighter);
 
-    public abstract ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> prepareScoring(
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal, Function<Object, BigDecimal> matchWeighter);
+    List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
+            ToLongFunction matchWeighter);
+
+    List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
+            Function<Object, BigDecimal> matchWeighter);
 }

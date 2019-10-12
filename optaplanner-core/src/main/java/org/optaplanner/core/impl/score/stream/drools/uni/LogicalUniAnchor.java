@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -26,61 +28,114 @@ import java.util.function.ToLongFunction;
 import org.drools.model.Declaration;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
+import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
 
-public final class LogicalUniAnchor extends UniAnchor<LogicalUniAnchor> {
+import static org.drools.model.DSL.on;
+
+public final class LogicalUniAnchor implements UniAnchor<LogicalUniAnchor> {
+
+    private final String contextId = UniAnchor.createContextId();
+    private final Declaration<LogicalTuple> aVariableDeclaration;
+    private final PatternDSL.PatternDef<LogicalTuple> aPattern;
 
     public LogicalUniAnchor(Declaration<LogicalTuple> aVariableDeclaration,
             BiFunction<String, Declaration<LogicalTuple>, PatternDSL.PatternDef<LogicalTuple>> patternProvider) {
-        super(aVariableDeclaration, patternProvider);
+        this.aVariableDeclaration = aVariableDeclaration;
+        this.aPattern = patternProvider.apply(contextId, aVariableDeclaration);
     }
 
-    private <A> LogicalUniAnchor(Declaration<A> aVariableDeclaration, PatternDSL.PatternDef<A> pattern) {
-        super(aVariableDeclaration, pattern);
+    private LogicalUniAnchor(Declaration<LogicalTuple> aVariableDeclaration,
+            PatternDSL.PatternDef<LogicalTuple> aPattern) {
+        this.aVariableDeclaration = aVariableDeclaration;
+        this.aPattern = aPattern;
+    }
+
+    @Override
+    public String getContextId() {
+        return contextId;
+    }
+
+    public Declaration<LogicalTuple> getAVariableDeclaration() {
+        return aVariableDeclaration;
+    }
+
+    public PatternDSL.PatternDef<LogicalTuple> getAPattern() {
+        return aPattern;
     }
 
     @Override
     public LogicalUniAnchor filter(Predicate predicate) {
-        return new LogicalUniAnchor(getAVariableDeclaration(),
-                getAPattern().expr(logicalTuple -> predicate.test(((LogicalTuple)logicalTuple).getItem(0))));
+        return new LogicalUniAnchor(aVariableDeclaration,
+                aPattern.expr(logicalTuple -> predicate.test(logicalTuple.getItem(0))));
     }
 
     @Override
-    public ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> prepareScoring(
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal, ToIntFunction matchWeighter) {
-        return PatternDSL.on(scoreHolderGlobal, getAVariableDeclaration())
-                .execute((drools, scoreHolder, logicalTuple) -> {
-                    Object a = ((LogicalTuple)logicalTuple).getItem(0);
-                    int weightMultiplier = matchWeighter.applyAsInt(a);
+    public <A, GroupKey_> List<RuleItemBuilder<?>> terminateWithLogical(final String currentContextId,
+            Function<A, GroupKey_> groupKeyMapping) {
+        ConsequenceBuilder._1<LogicalTuple> consequence = on(getAVariableDeclaration())
+                .execute((drools, logicalTuple) -> {
+                    final A a = logicalTuple.getItem(0);
+                    final GroupKey_ aMapped = groupKeyMapping.apply(a);
                     RuleContext kcontext = (RuleContext) drools;
-                    scoreHolder.impactScore(kcontext, weightMultiplier);
+                    kcontext.insertLogical(new LogicalTuple(currentContextId, aMapped));
                 });
+        return Arrays.asList(aPattern, consequence);
     }
 
     @Override
-    public ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> prepareScoring(
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal, ToLongFunction matchWeighter) {
-        return PatternDSL.on(scoreHolderGlobal, getAVariableDeclaration())
-                .execute((drools, scoreHolder, logicalTuple) -> {
-                    Object a = ((LogicalTuple)logicalTuple).getItem(0);
-                    long weightMultiplier = matchWeighter.applyAsLong(a);
-                    RuleContext kcontext = (RuleContext) drools;
-                    scoreHolder.impactScore(kcontext, weightMultiplier);
-                });
+    public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> consequence =
+                on(scoreHolderGlobal, aVariableDeclaration)
+                        .execute((drools, scoreHolder, __) -> {
+                            RuleContext kcontext = (RuleContext) drools;
+                            scoreHolder.impactScore(kcontext);
+                        });
+        return Arrays.asList(getAPattern(), consequence);
     }
 
     @Override
-    public ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> prepareScoring(
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal, Function<Object, BigDecimal> matchWeighter) {
-        return PatternDSL.on(scoreHolderGlobal, getAVariableDeclaration())
-                .execute((drools, scoreHolder, logicalTuple) -> {
-                    Object a = ((LogicalTuple)logicalTuple).getItem(0);
-                    BigDecimal weightMultiplier = matchWeighter.apply(a);
-                    RuleContext kcontext = (RuleContext) drools;
-                    scoreHolder.impactScore(kcontext, weightMultiplier);
-                });
+    public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
+            ToIntFunction matchWeighter) {
+        ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> consequence =
+                PatternDSL.on(scoreHolderGlobal, aVariableDeclaration)
+                        .execute((drools, scoreHolder, logicalTuple) -> {
+                            Object a = logicalTuple.getItem(0);
+                            int weightMultiplier = matchWeighter.applyAsInt(a);
+                            RuleContext kcontext = (RuleContext) drools;
+                            scoreHolder.impactScore(kcontext, weightMultiplier);
+                        });
+        return Arrays.asList(getAPattern(), consequence);
+    }
+
+    @Override
+    public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
+            ToLongFunction matchWeighter) {
+        ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> consequence =
+                PatternDSL.on(scoreHolderGlobal, aVariableDeclaration)
+                        .execute((drools, scoreHolder, logicalTuple) -> {
+                            Object a = logicalTuple.getItem(0);
+                            long weightMultiplier = matchWeighter.applyAsLong(a);
+                            RuleContext kcontext = (RuleContext) drools;
+                            scoreHolder.impactScore(kcontext, weightMultiplier);
+                        });
+        return Arrays.asList(getAPattern(), consequence);
+    }
+
+    @Override
+    public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
+            Function<Object, BigDecimal> matchWeighter) {
+        ConsequenceBuilder._2<? extends AbstractScoreHolder, ?> consequence =
+                PatternDSL.on(scoreHolderGlobal, aVariableDeclaration)
+                        .execute((drools, scoreHolder, logicalTuple) -> {
+                            Object a = logicalTuple.getItem(0);
+                            BigDecimal weightMultiplier = matchWeighter.apply(a);
+                            RuleContext kcontext = (RuleContext) drools;
+                            scoreHolder.impactScore(kcontext, weightMultiplier);
+                        });
+        return Arrays.asList(getAPattern(), consequence);
     }
 }
