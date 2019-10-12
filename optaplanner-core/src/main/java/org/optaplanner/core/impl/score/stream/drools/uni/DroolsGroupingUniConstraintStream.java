@@ -37,7 +37,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
 
     public DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, GroupKey_> groupKeyMapping) {
-        super(constraintFactory, new LogicalUniAnchor(declarationOf(LogicalTuple.class),
+        super(constraintFactory, new UniAnchor(declarationOf(LogicalTuple.class),
                 (contextId, var) -> pattern(var).expr(logicalTuple -> Objects.equals(logicalTuple.getContext(), contextId))));
         this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;

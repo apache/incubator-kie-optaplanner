@@ -26,7 +26,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     private final Class<A> fromClass;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
-        super(constraintFactory, new RealUniAnchor(fromClass));
+        super(constraintFactory, new UniAnchor(fromClass));
         if (fromClass == null) {
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
