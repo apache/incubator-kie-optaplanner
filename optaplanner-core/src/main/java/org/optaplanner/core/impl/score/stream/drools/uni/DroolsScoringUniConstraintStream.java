@@ -68,7 +68,7 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
             DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean noMatchWeigher,
             ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
             Function<A, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory, parent.anchor);
+        super(constraintFactory, parent.getAnchor());
         this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
@@ -89,13 +89,13 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
-            ruleItemBuilderList.addAll(anchor.terminateWithScoring(scoreHolderGlobal, intMatchWeigher));
+            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, intMatchWeigher));
         } else if (longMatchWeigher != null) {
-            ruleItemBuilderList.addAll(anchor.terminateWithScoring(scoreHolderGlobal, longMatchWeigher));
+            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, longMatchWeigher));
         } else if (bigDecimalMatchWeigher != null) {
-            ruleItemBuilderList.addAll(anchor.terminateWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher));
+            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher));
         } else if (noMatchWeigher) {
-            ruleItemBuilderList.addAll(anchor.terminateWithScoring(scoreHolderGlobal));
+            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal));
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }

@@ -51,8 +51,8 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
     @Override
     public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        final String currentContextId = anchor.getContextId();
-        ruleItemBuilderList.addAll(parent.anchor.terminateWithLogical(currentContextId, groupKeyMapping));
+        final String currentContextId = getAnchor().getContextId();
+        ruleItemBuilderList.addAll(parent.getAnchor().terminateWithLogical(currentContextId, groupKeyMapping));
         super.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
     }
 

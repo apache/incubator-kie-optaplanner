@@ -14,45 +14,54 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.uni;
+package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.ToIntBiFunction;
+import java.util.function.ToLongBiFunction;
 
 import org.drools.model.Global;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
-import org.optaplanner.core.impl.score.stream.drools.bi.BiAnchor;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.drools.uni.UniAnchor;
 
-public interface UniAnchor<T extends UniAnchor<T>> {
+public interface BiAnchor<T extends BiAnchor<T>> {
 
     static String createContextId() {
-        return UUID.randomUUID().toString();
+        return UniAnchor.createContextId();
     }
+
+    static <A, B> boolean matches(AbstractBiJoiner<A, B> biJoiner, A left, B right) {
+        Object[] leftMappings = biJoiner.getLeftCombinedMapping().apply(left);
+        Object[] rightMappings = biJoiner.getRightCombinedMapping().apply(right);
+        JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            if (!joinerType.matches(leftMappings[i], rightMappings[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     String getContextId();
 
-    public abstract T filter(Predicate predicate);
-
-    <A, B, S extends BiAnchor<S>> S join(UniAnchor bAnchor, AbstractBiJoiner<A, B> biJoiner);
-
-    <A, GroupKey_> List<RuleItemBuilder<?>> terminateWithLogical(String currentContextId,
-            Function<A, GroupKey_> groupKeyMapping);
+    public abstract T filter(BiPredicate predicate);
 
     List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal);
 
     List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            ToIntFunction matchWeighter);
+            ToIntBiFunction matchWeighter);
 
     List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            ToLongFunction matchWeighter);
+            ToLongBiFunction matchWeighter);
 
     List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            Function<Object, BigDecimal> matchWeighter);
+            BiFunction<Object, Object, BigDecimal> matchWeighter);
 }

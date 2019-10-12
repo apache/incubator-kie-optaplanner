@@ -24,8 +24,6 @@ import java.util.function.ToLongBiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -45,16 +43,23 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractConstraintStream<Solution_>
         implements InnerBiConstraintStream<A, B> {
 
+    private final BiAnchor anchor;
     protected final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
 
     public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent) {
+        this(constraintFactory, parent, parent.getAnchor());
+    }
+
+    public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiAnchor anchor) {
         super(constraintFactory);
         if (parent == null && !(this instanceof DroolsJoinBiConstraintStream)) {
             throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
                     "unless it's a join stream.");
         }
         this.parent = parent;
+        this.anchor = anchor;
     }
 
     @Override
@@ -185,12 +190,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         }
     }
 
-    public abstract Declaration<A> getAVariableDeclaration();
-
-    public abstract PatternDSL.PatternDef<A> getAPattern();
-
-    public abstract Declaration<B> getBVariableDeclaration();
-
-    public abstract PatternDSL.PatternDef<B> getBPattern();
-
+    public BiAnchor getAnchor() {
+        return anchor;
+    }
 }

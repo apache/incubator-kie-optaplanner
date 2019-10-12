@@ -32,6 +32,10 @@ import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.drools.bi.BiAnchor;
+import org.optaplanner.core.impl.score.stream.drools.bi.LogicalAndRealBiAnchor;
+import org.optaplanner.core.impl.score.stream.drools.bi.LogicalBiAnchor;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
 
 import static org.drools.model.DSL.on;
@@ -71,6 +75,23 @@ public final class LogicalUniAnchor implements UniAnchor<LogicalUniAnchor> {
     public LogicalUniAnchor filter(Predicate predicate) {
         return new LogicalUniAnchor(aVariableDeclaration,
                 aPattern.expr(logicalTuple -> predicate.test(logicalTuple.getItem(0))));
+    }
+
+    @Override
+    public <A, B, S extends BiAnchor<S>> S join(UniAnchor bAnchor, AbstractBiJoiner<A, B> biJoiner) {
+        if (bAnchor instanceof RealUniAnchor) {
+            RealUniAnchor realBAnchor = (RealUniAnchor) bAnchor;
+            realBAnchor.getAPattern().expr(getAVariableDeclaration(),
+                    (b, a) -> BiAnchor.matches(biJoiner, (A) a, (B) b));
+            return (S) new LogicalAndRealBiAnchor(getAVariableDeclaration(), getAPattern(),
+                    realBAnchor.getAVariableDeclaration(), realBAnchor.getAPattern());
+        } else {
+            LogicalUniAnchor logicalBAnchor = (LogicalUniAnchor) bAnchor;
+            logicalBAnchor.getAPattern().expr(getAVariableDeclaration(),
+                    (b, a) -> BiAnchor.matches(biJoiner, (A) a, b.getItem(0)));
+            return (S) new LogicalBiAnchor(getAVariableDeclaration(), getAPattern(),
+                    logicalBAnchor.getAVariableDeclaration(), logicalBAnchor.getAPattern());
+        }
     }
 
     @Override

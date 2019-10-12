@@ -60,28 +60,27 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public Declaration<A> getAVariableDeclaration() {
-        return leftParentStream.getAVariableDeclaration();
+        return null;
     }
 
     @Override
     public PatternDSL.PatternDef<A> getAPattern() {
-        return leftParentStream.getAPattern();
+        return null;
     }
 
     @Override
     public Declaration<B> getBVariableDeclaration() {
-        return leftParentStream.getBVariableDeclaration();
+        return null;
     }
 
     @Override
     public PatternDSL.PatternDef<B> getBPattern() {
-        return leftParentStream.getBPattern();
+        return null;
     }
 
     @Override
     public Declaration<C> getCVariableDeclaration() {
         return null;
-        //return rightParentStream.getAVariableDeclaration();
     }
 
     @Override
