@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.drools.model.Global;
-import org.drools.model.RuleItemBuilder;
+import org.drools.model.Rule;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
@@ -78,11 +79,9 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // Pattern creation
     // ************************************************************************
 
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
+    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        for (DroolsAbstractConstraintStream<Solution_> childStream : getChildStreams()) {
-            childStream.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
-        }
+        return Optional.empty();
     }
 
     // ************************************************************************

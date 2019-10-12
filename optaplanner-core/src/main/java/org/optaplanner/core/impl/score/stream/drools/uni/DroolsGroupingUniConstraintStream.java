@@ -18,11 +18,16 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 import org.drools.model.Global;
+import org.drools.model.PatternDSL;
+import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
 
@@ -49,13 +54,14 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
     }
 
     @Override
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint, Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         final String currentContextId = getAnchor().getContextId();
-        ruleItemBuilderList.addAll(parent.getAnchor().terminateWithLogical(currentContextId, groupKeyMapping));
-        super.createRuleItemBuilders(ruleItemBuilderList, scoreHolderGlobal);
+        final String ruleName = UUID.randomUUID().toString(); // Generated == groupings can be shared by many rules.
+        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
+                .build(parent.getAnchor().terminateWithLogical(currentContextId, groupKeyMapping)
+                        .toArray(new RuleItemBuilder<?>[0]));
+        return Optional.of(rule);
     }
-
     @Override
     public String toString() {
         return "GroupBy()";

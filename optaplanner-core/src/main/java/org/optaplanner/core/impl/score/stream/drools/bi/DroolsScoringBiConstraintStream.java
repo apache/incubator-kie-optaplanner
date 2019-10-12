@@ -18,13 +18,17 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.drools.model.Global;
+import org.drools.model.PatternDSL;
+import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
@@ -80,16 +84,21 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     // ************************************************************************
 
     @Override
-    public void createRuleItemBuilders(List<RuleItemBuilder<?>> ruleItemBuilderList,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint, Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
+                .build(createRuleItemBuilders(scoreHolderGlobal).toArray(new RuleItemBuilder<?>[0]));
+        return Optional.of(rule);
+    }
+
+    private List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
-            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, intMatchWeigher));
+            return getAnchor().terminateWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, longMatchWeigher));
+            return getAnchor().terminateWithScoring(scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher));
+            return getAnchor().terminateWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
-            ruleItemBuilderList.addAll(getAnchor().terminateWithScoring(scoreHolderGlobal));
+            return getAnchor().terminateWithScoring(scoreHolderGlobal);
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }

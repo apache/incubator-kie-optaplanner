@@ -18,11 +18,14 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
 import org.drools.model.Global;
+import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
@@ -40,6 +43,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 import static org.drools.model.DSL.globalOf;
@@ -95,6 +99,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
         List<DroolsConstraint<Solution_>> droolsConstraintList = new ArrayList<>(constraints.length);
         Set<String> constraintIdSet = new HashSet<>(constraints.length);
+        // Rule library is used to ensure some rules, such as groupBy()s, are shared when their streams are reused.
+        Map<DroolsAbstractConstraintStream<Solution_>, Rule> ruleLibrary = new LinkedHashMap<>();
         for (Constraint constraint : constraints) {
             if (constraint.getConstraintFactory() != this) {
                 throw new IllegalStateException("The constraint (" + constraint.getConstraintId()
@@ -108,8 +114,9 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
             }
             DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
             droolsConstraintList.add(droolsConstraint);
-            droolsConstraint.createRules(scoreHolderGlobal).forEach(model::addRule);
+            droolsConstraint.createRules(ruleLibrary, scoreHolderGlobal);
         }
+        ruleLibrary.values().forEach(model::addRule);
         // TODO when trace is active, show the Rule (DRL or exectable model) in logging
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
         return new DroolsConstraintSessionFactory<>(solutionDescriptor, kieBase, droolsConstraintList);
