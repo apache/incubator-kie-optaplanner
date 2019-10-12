@@ -20,10 +20,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.model.Declaration;
+import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
+import org.drools.model.functions.Block5;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -93,42 +96,38 @@ public final class TriAnchor {
 
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             ToIntTriFunction matchWeighter) {
-        ConsequenceBuilder._4<? extends AbstractScoreHolder, ?, ?, ?> consequence =
-                on(scoreHolderGlobal, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration(),
-                        getCMetadata().getVariableDeclaration())
-                        .execute((drools, scoreHolder, a, b, c) -> {
-                            int weightMultiplier = matchWeighter.applyAsInt(inline(a), inline(b), inline(c));
-                            RuleContext kcontext = (RuleContext) drools;
-                            scoreHolder.impactScore(kcontext, weightMultiplier);
-                        });
-        return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), getCMetadata().getPattern(),
-                consequence);
+        return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
+            int weightMultiplier = matchWeighter.applyAsInt(inline(a), inline(b), inline(c));
+            RuleContext kcontext = (RuleContext) drools;
+            scoreHolder.impactScore(kcontext, weightMultiplier);
+        });
     }
 
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             ToLongTriFunction matchWeighter) {
-        ConsequenceBuilder._4<? extends AbstractScoreHolder, ?, ?, ?> consequence =
-                on(scoreHolderGlobal, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration(),
-                        getCMetadata().getVariableDeclaration())
-                        .execute((drools, scoreHolder, a, b, c) -> {
-                            long weightMultiplier = matchWeighter.applyAsLong(inline(a), inline(b), inline(c));
-                            RuleContext kcontext = (RuleContext) drools;
-                            scoreHolder.impactScore(kcontext, weightMultiplier);
-                        });
-        return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), getCMetadata().getPattern(),
-                consequence);
+        return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
+            long weightMultiplier = matchWeighter.applyAsLong(inline(a), inline(b), inline(c));
+            RuleContext kcontext = (RuleContext) drools;
+            scoreHolder.impactScore(kcontext, weightMultiplier);
+        });
     }
 
-    public <A, B, C> List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            TriFunction<A, B, C, BigDecimal> matchWeighter) {
-        ConsequenceBuilder._4<? extends AbstractScoreHolder, ?, ?, ?> consequence =
-                on(scoreHolderGlobal, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration(),
-                        getCMetadata().getVariableDeclaration())
-                        .execute((drools, scoreHolder, a, b, c) -> {
-                            BigDecimal weightMultiplier = matchWeighter.apply(inline(a), inline(b), inline(c));
-                            RuleContext kcontext = (RuleContext) drools;
-                            scoreHolder.impactScore(kcontext, weightMultiplier);
-                        });
+    public <A, B, C> List<RuleItemBuilder<?>> terminateWithScoring(
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal, TriFunction<A, B, C, BigDecimal> matchWeighter) {
+        return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
+            BigDecimal weightMultiplier = matchWeighter.apply(inline(a), inline(b), inline(c));
+            RuleContext kcontext = (RuleContext) drools;
+            scoreHolder.impactScore(kcontext, weightMultiplier);
+        });
+    }
+
+    private <A, B, C, ScoreHolder extends AbstractScoreHolder> List<RuleItemBuilder<?>> terminateWithScoring(
+            Global<ScoreHolder> scoreHolderGlobal, Block5<Drools, ScoreHolder, A, B, C> consequenceImpl) {
+        ConsequenceBuilder._4<ScoreHolder, A, B, C> consequence =
+                on(scoreHolderGlobal, (Declaration<A>) getAMetadata().getVariableDeclaration(),
+                        (Declaration<B>) getBMetadata().getVariableDeclaration(),
+                        (Declaration<C>) getCMetadata().getVariableDeclaration())
+                        .execute(consequenceImpl);
         return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), getCMetadata().getPattern(),
                 consequence);
     }

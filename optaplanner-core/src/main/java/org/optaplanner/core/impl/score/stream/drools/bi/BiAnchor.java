@@ -24,10 +24,13 @@ import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
+import org.drools.model.Declaration;
+import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
+import org.drools.model.functions.Block4;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
@@ -100,37 +103,37 @@ public final class BiAnchor {
 
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             ToIntBiFunction matchWeighter) {
-        ConsequenceBuilder._3<? extends AbstractScoreHolder, ?, ?> consequence =
-                on(scoreHolderGlobal, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration())
-                        .execute((drools, scoreHolder, a, b) -> {
-                            int weightMultiplier = matchWeighter.applyAsInt(inline(a), inline(b));
-                            RuleContext kcontext = (RuleContext) drools;
-                            scoreHolder.impactScore(kcontext, weightMultiplier);
-                        });
-        return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), consequence);
+        return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
+            int weightMultiplier = matchWeighter.applyAsInt(inline(a), inline(b));
+            RuleContext kcontext = (RuleContext) drools;
+            scoreHolder.impactScore(kcontext, weightMultiplier);
+        });
     }
 
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             ToLongBiFunction matchWeighter) {
-        ConsequenceBuilder._3<? extends AbstractScoreHolder, ?, ?> consequence =
-                on(scoreHolderGlobal, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration())
-                        .execute((drools, scoreHolder, a, b) -> {
-                            long weightMultiplier = matchWeighter.applyAsLong(inline(a), inline(b));
-                            RuleContext kcontext = (RuleContext) drools;
-                            scoreHolder.impactScore(kcontext, weightMultiplier);
-                        });
-        return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), consequence);
+        return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
+            long weightMultiplier = matchWeighter.applyAsLong(inline(a), inline(b));
+            RuleContext kcontext = (RuleContext) drools;
+            scoreHolder.impactScore(kcontext, weightMultiplier);
+        });
     }
 
     public <A, B> List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             BiFunction<A, B, BigDecimal> matchWeighter) {
-        ConsequenceBuilder._3<? extends AbstractScoreHolder, ?, ?> consequence =
-                on(scoreHolderGlobal, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration())
-                        .execute((drools, scoreHolder, a, b) -> {
-                            BigDecimal weightMultiplier = matchWeighter.apply(inline(a), inline(b));
-                            RuleContext kcontext = (RuleContext) drools;
-                            scoreHolder.impactScore(kcontext, weightMultiplier);
-                        });
+       return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
+            BigDecimal weightMultiplier = matchWeighter.apply(inline(a), inline(b));
+            RuleContext kcontext = (RuleContext) drools;
+            scoreHolder.impactScore(kcontext, weightMultiplier);
+        });
+    }
+
+    private <A, B, ScoreHolder extends AbstractScoreHolder> List<RuleItemBuilder<?>> terminateWithScoring(
+            Global<ScoreHolder> scoreHolderGlobal, Block4<Drools, ScoreHolder, A, B> consequenceImpl) {
+        ConsequenceBuilder._3<ScoreHolder, A, B> consequence =
+                on(scoreHolderGlobal, (Declaration<A>) getAMetadata().getVariableDeclaration(),
+                        (Declaration<B>) getBMetadata().getVariableDeclaration())
+                        .execute(consequenceImpl);
         return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), consequence);
     }
 
