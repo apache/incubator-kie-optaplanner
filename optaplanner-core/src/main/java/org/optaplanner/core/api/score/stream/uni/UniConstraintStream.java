@@ -187,77 +187,66 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     // ************************************************************************
 
     /**
-     * Runs all items in the stream through a given @{@link UniConstraintCollector} and converts them into a new
-     * {@link UniConstraintStream} which only has one item in it, the result of applying
-     * {@link UniConstraintCollector#finisher()}.
+     * Runs all tuples of the stream through a given @{@link UniConstraintCollector} and converts them into a new
+     * {@link UniConstraintStream} which only has a single tuple, the result of applying {@link UniConstraintCollector}.
      *
      * @param collector never null, the collector to perform the grouping operation with
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
-     * @param <Result_> the type of a match fact in the destination {@link UniConstraintStream}
-     * @return never null.
+     * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
+     * @return never null
      */
     <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
     /**
-     * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, consisting of the set of
-     * values resulting from applying the group key mapping function on all items in the original stream. None of the
-     * items in the new stream will {@link Objects#equals(Object, Object)} any other.
+     * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, containing of the set of
+     * tuples resulting from applying the group key mapping function on all tuples of the original stream.
+     * Neither tuple of the new stream will {@link Objects#equals(Object, Object)} any other.
      *
-     * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element.
-     * @param <GroupKey_> the type of a match fact in the destination {@link UniConstraintStream}.
-     * @return never null.
+     * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element
+     * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
+     * @return never null
      */
     <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping);
 
     /**
-     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of:
+     * Expands the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of tuples which have:
      *
      * <ul>
-     *     <li>on the left, the set of values resulting from applying the group key mapping function on all items in
-     *     the original stream. None of the items in the new stream will {@link Objects#equals(Object, Object)} any
-     *     other.</li>
-     *     <li>on the right, the value of applying a given {@link UniConstraintCollector} on all the items in the
-     *     original {@link UniConstraintStream} with a matching group key.</li>
+     *     <li>As the first fact, the value resulting from applying the group key mapping function on the fact from the
+     *     original tuple.
+     *     Neither such facts of the new stream will {@link Objects#equals(Object, Object)} any other.</li>
+     *     <li>As the second fact, the value of applying a given {@link UniConstraintCollector} on all the facts of the
+     *     original tuple with a matching group key.</li>
      * </ul>
      *
-     * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element.
-     * @param <GroupKey_> the type of the left match fact in the destination {@link BiConstraintStream}.
+     * @param groupKeyMapping never null, function to convert a fact in original tuple to a different fact
+     * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
-     * @param <Result_> the type of the right match fact in the destination {@link BiConstraintStream}
-     * @return never null.
+     * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
+     * @return never null
      */
     <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
     /**
-     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of:
+     * Expand the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of tuples which have:
      *
      * <ul>
-     *     <li>on the left, the set of values resulting from applying the "A" group key mapping function on all items in
-     *     the original stream. None of the items in the new stream will {@link Objects#equals(Object, Object)} any
-     *     other.</li>
-     *     <li>on the right, the set of values resulting from applying the "B" group key mapping function on all items
-     *     in the original stream, which already passed through the "A" group key mapping. None of the items in the new
-     *     stream will {@link Objects#equals(Object, Object)} any other.</li>
+     *     <li>As the first fact, the value resulting from applying the "A" group key mapping function to the fact from
+     *     the original tuple.</li>
+     *     <li>As the second fact, the value resulting from applying the "B" group key mapping function to the fact from
+     *     the original tuple, which already passed through the "A" group key mapping.</li>
      * </ul>
      *
-     * Here's an example. Assuming:
+     * All bi tuples of the new stream will be unique.
      *
-     * <ul>
-     *     <li>The original {@link UniConstraintStream} contains items "X1", "X2", "Y1"</li>.
-     *     <li>The "A" group key mapping function returns "X" for "X1" and "X2", "Y" for "Y1".</li>
-     *     <li>The "B" group key mapping function returns "1" for "X1" and "Y1", "2" for "A2".</li>
-     * </ul>
-     *
-     * The resulting {@link BiConstraintStream} will contain elements [A, 1], [A, 2] and [B, 1].
-     *
-     * @param groupKeyAMapping never null, mapping function to convert each element in the stream to a different element.
-     * @param groupKeyBMapping never null, mapping function to convert each element in the stream to a different element.
-     * @param <GroupKeyA_> the type of "A" match fact in the destination {@link UniConstraintStream}.
-     * @param <GroupKeyB_> the type of "B" match fact in the destination {@link UniConstraintStream}.
-     * @return never null.
+     * @param groupKeyAMapping never null, function to convert first fact in the original tuple to a different fact
+     * @param groupKeyBMapping never null, function to convert second fact in the original tuple to a different fact
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
+     * @return never null
      */
     <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping,
@@ -265,29 +254,18 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * Merges the semantics of {@link #groupBy(Function, Function)} and {@link #groupBy(UniConstraintCollector)}.
-     * That is, the "A" and "B" match facts follow the {@link #groupBy(Function, Function)} semantics, and the "C" match
-     * fact is the result of applying {@link UniConstraintCollector#finisher()} on all the items in the original
-     * {@link UniConstraintStream} that fall in the group.
+     * That is, the first and second facts in the tuple follow the {@link #groupBy(Function, Function)} semantics, and
+     * the third fact is the result of applying {@link UniConstraintCollector#finisher()} on all the tuples of the
+     * original {@link UniConstraintStream} that fall in the group.
      *
-     * Here's an example. Assuming:
-     *
-     * <ul>
-     *     <li>The original {@link UniConstraintStream} contains items "X1", "X2", "Y1"</li>.
-     *     <li>The "A" group key mapping function returns "X" for "X1" and "X2", "Y" for "Y1".</li>
-     *     <li>The "B" group key mapping function returns "1" for "X1" and "Y1", "2" for "A2".</li>
-     *     <li>The collector counts all the items in the group.</li>
-     * </ul>
-     *
-     * The resulting {@link TriConstraintStream} will contain elements [A, 1, 1], [A, 2, 1] and [B, 1, 1].
-
-     * @param groupKeyAMapping never null, mapping function to convert each element in the stream to a different element.
-     * @param groupKeyBMapping never null, mapping function to convert each element in the stream to a different element.
+     * @param groupKeyAMapping never null, function to convert first fact in the original tuple to a different fact
+     * @param groupKeyBMapping never null, function to convert second fact in the original tuple to a different fact
      * @param collector never null, the collector to perform the grouping operation with
-     * @param <GroupKeyA_> the type of "A" match fact in the destination {@link UniConstraintStream}.
-     * @param <GroupKeyB_> the type of "B" match fact in the destination {@link UniConstraintStream}.
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
-     * @param <Result_> the type of "C" match fact in the destination {@link TriConstraintStream}
-     * @return never null.
+     * @param <Result_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
      */
     <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping,

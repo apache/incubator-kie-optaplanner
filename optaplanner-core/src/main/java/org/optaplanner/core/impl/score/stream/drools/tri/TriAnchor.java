@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.drools.model.Declaration;
 import org.drools.model.Drools;
@@ -33,9 +34,8 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.common.InferredRuleMetadata;
-import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.GenuineRuleMetadata;
+import org.optaplanner.core.impl.score.stream.drools.common.InferredRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.uni.UniAnchor;
 
@@ -47,11 +47,17 @@ public final class TriAnchor {
     private final RuleMetadata aMetadata;
     private final RuleMetadata bMetadata;
     private final RuleMetadata cMetadata;
+    private final Function aInliner;
+    private final Function bInliner;
+    private final Function cInliner;
 
     public TriAnchor(RuleMetadata aMetadata, RuleMetadata bMetadata, RuleMetadata cMetadata) {
         this.aMetadata = aMetadata;
         this.bMetadata = bMetadata;
         this.cMetadata = cMetadata;
+        this.aInliner = UniAnchor.getInliner(aMetadata);
+        this.bInliner = UniAnchor.getInliner(bMetadata);
+        this.cInliner = UniAnchor.getInliner(cMetadata);
     }
 
     public String getContextId() {
@@ -70,10 +76,22 @@ public final class TriAnchor {
         return (X) cMetadata;
     }
 
+    private <A> A inlineA(Object a) {
+        return (A) aInliner.apply(a);
+    }
+
+    private <B> B inlineB(Object b) {
+        return (B) bInliner.apply(b);
+    }
+
+    private <C> C inlineC(Object c) {
+        return (C) cInliner.apply(c);
+    }
+
     public TriAnchor filter(TriPredicate predicate) {
         PatternDSL.PatternDef newPattern = getCMetadata().getPattern()
                 .expr(contextId, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration(),
-                        (c, a, b) -> predicate.test(inline(a), inline(b), inline(c)));
+                        (c, a, b) -> predicate.test(inlineA(a), inlineB(b), inlineC(c)));
         if (bMetadata instanceof InferredRuleMetadata) {
             return new TriAnchor(getAMetadata(), getBMetadata(),
                     ((InferredRuleMetadata) cMetadata).substitute(newPattern));
@@ -84,20 +102,16 @@ public final class TriAnchor {
     }
 
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        ConsequenceBuilder._3<? extends AbstractScoreHolder, ?, ?> consequence =
-                on(scoreHolderGlobal, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration())
-                        .execute((drools, scoreHolder, __, ___) -> {
-                            RuleContext kcontext = (RuleContext) drools;
-                            scoreHolder.impactScore(kcontext);
-                        });
-        return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), getCMetadata().getPattern(),
-                consequence);
+        return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, __, ___, ____) -> {
+            RuleContext kcontext = (RuleContext) drools;
+            scoreHolder.impactScore(kcontext);
+        });
     }
 
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             ToIntTriFunction matchWeighter) {
         return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
-            int weightMultiplier = matchWeighter.applyAsInt(inline(a), inline(b), inline(c));
+            int weightMultiplier = matchWeighter.applyAsInt(inlineA(a), inlineB(b), inlineC(c));
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext, weightMultiplier);
         });
@@ -106,7 +120,7 @@ public final class TriAnchor {
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             ToLongTriFunction matchWeighter) {
         return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
-            long weightMultiplier = matchWeighter.applyAsLong(inline(a), inline(b), inline(c));
+            long weightMultiplier = matchWeighter.applyAsLong(inlineA(a), inlineB(b), inlineC(c));
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext, weightMultiplier);
         });
@@ -115,7 +129,7 @@ public final class TriAnchor {
     public <A, B, C> List<RuleItemBuilder<?>> terminateWithScoring(
             Global<? extends AbstractScoreHolder> scoreHolderGlobal, TriFunction<A, B, C, BigDecimal> matchWeighter) {
         return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
-            BigDecimal weightMultiplier = matchWeighter.apply(inline(a), inline(b), inline(c));
+            BigDecimal weightMultiplier = matchWeighter.apply(inlineA(a), inlineB(b), inlineC(c));
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext, weightMultiplier);
         });
@@ -130,13 +144,6 @@ public final class TriAnchor {
                         .execute(consequenceImpl);
         return Arrays.asList(getAMetadata().getPattern(), getBMetadata().getPattern(), getCMetadata().getPattern(),
                 consequence);
-    }
-
-    private static <A> A inline(Object item) {
-        if (item instanceof LogicalTuple) {
-            return ((LogicalTuple) item).getItem(0);
-        }
-        return (A) item;
     }
 
 }

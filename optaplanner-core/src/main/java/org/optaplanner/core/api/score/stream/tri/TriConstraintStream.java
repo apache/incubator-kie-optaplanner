@@ -35,9 +35,9 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 /**
  * A {@link ConstraintStream} that matches three facts.
- * @param <B> the type of the first fact in the tuple.
+ * @param <A> the type of the first fact in the tuple.
  * @param <B> the type of the second fact in the tuple.
- * @param <B> the type of the third fact in the tuple.
+ * @param <C> the type of the third fact in the tuple.
  * @see ConstraintStream
  */
 public interface TriConstraintStream<A, B, C> extends ConstraintStream {

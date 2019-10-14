@@ -120,9 +120,7 @@ public abstract class AbstractConstraintStreamTest {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
                     .get(ConstraintMatchTotal.composeConstraintId(constraintPackage, TEST_CONSTRAINT_NAME));
-            System.out.println(constraintMatchTotal.getConstraintMatchSet());
             List<ConstraintMatch> withoutIndirection = removeIndirections(constraintMatchTotal);
-            System.out.println(withoutIndirection);
             for (AssertableMatch assertableMatch : assertableMatches) {
                 if (withoutIndirection.stream()
                         .noneMatch(constraintMatch -> assertableMatch.isEqualTo(constraintMatch))) {

@@ -38,31 +38,42 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.BiAnchor;
+import org.optaplanner.core.impl.score.stream.drools.common.GenuineRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.InferredRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.GenuineRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleMetadata;
 
 import static org.drools.model.DSL.on;
 
 public final class UniAnchor {
 
+    private static final Function GENUINE_INLINER = Function.identity();
+    private static final Function INFERRED_INLINER = logicalTuple -> ((LogicalTuple)logicalTuple).getItem(0);
+
     private final String contextId = createContextId();
     private final RuleMetadata aMetadata;
+    private final Function aInliner;
 
     public <A> UniAnchor(Class<A> aVariableType) {
         Declaration<A> aVariableDeclaration = PatternDSL.declarationOf(aVariableType);
         this.aMetadata = RuleMetadata.of(aVariableDeclaration, PatternDSL.pattern(aVariableDeclaration));
+        this.aInliner = GENUINE_INLINER;
     }
 
     public UniAnchor(Declaration<LogicalTuple> aVariableDeclaration,
             BiFunction<String, Declaration<LogicalTuple>, PatternDSL.PatternDef<LogicalTuple>> patternProvider) {
         this.aMetadata = RuleMetadata.ofInferred(aVariableDeclaration,
                 patternProvider.apply(contextId, aVariableDeclaration));
+        this.aInliner = INFERRED_INLINER;
     }
 
     private <A> UniAnchor(RuleMetadata<A> aMetadata) {
         this.aMetadata = aMetadata;
+        this.aInliner = getInliner(aMetadata);
+    }
+
+    private <A> A inlineA(Object a) {
+        return (A) aInliner.apply(a);
     }
 
     public String getContextId() {
@@ -74,7 +85,7 @@ public final class UniAnchor {
     }
 
     public UniAnchor filter(Predicate predicate) {
-        PatternDSL.PatternDef newPattern = getAMetadata().getPattern().expr(a -> predicate.test(inline(a)));
+        PatternDSL.PatternDef newPattern = getAMetadata().getPattern().expr(a -> predicate.test(inlineA(a)));
         if (aMetadata instanceof InferredRuleMetadata) {
             return new UniAnchor(((InferredRuleMetadata) aMetadata).substitute(newPattern));
         } else {
@@ -84,9 +95,10 @@ public final class UniAnchor {
 
     public <A, B> BiAnchor join(UniAnchor bAnchor, AbstractBiJoiner<A, B> biJoiner) {
         RuleMetadata<?> bMetadata = bAnchor.getAMetadata();
+        Function bInliner = getInliner(bMetadata);
         PatternDSL.PatternDef newPattern = bMetadata.getPattern()
                 .expr(getAMetadata().getVariableDeclaration(),
-                        (b, a) -> matches(biJoiner, inline(a), inline(b)));
+                        (b, a) -> matches(biJoiner, inlineA(a), (B) bInliner.apply(b)));
         if (bMetadata instanceof InferredRuleMetadata) {
             return new BiAnchor(getAMetadata(), ((InferredRuleMetadata) bMetadata).substitute(newPattern));
         } else {
@@ -98,7 +110,7 @@ public final class UniAnchor {
             Function<A, GroupKey_> groupKeyMapping) {
         ConsequenceBuilder._1<?> consequence = on(getAMetadata().getVariableDeclaration())
                 .execute((drools, a) -> {
-                    final A aInlined = inline(a);
+                    final A aInlined = inlineA(a);
                     final GroupKey_ aMapped = groupKeyMapping.apply(aInlined);
                     RuleContext kcontext = (RuleContext) drools;
                     kcontext.insertLogical(new LogicalTuple(currentContextId, aMapped));
@@ -116,7 +128,7 @@ public final class UniAnchor {
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             ToIntFunction matchWeighter) {
         return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a) -> {
-            int weightMultiplier = matchWeighter.applyAsInt(inline(a));
+            int weightMultiplier = matchWeighter.applyAsInt(inlineA(a));
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext, weightMultiplier);
         });
@@ -125,7 +137,7 @@ public final class UniAnchor {
     public List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             ToLongFunction matchWeighter) {
         return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a) -> {
-            long weightMultiplier = matchWeighter.applyAsLong(inline(a));
+            long weightMultiplier = matchWeighter.applyAsLong(inlineA(a));
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext, weightMultiplier);
         });
@@ -134,7 +146,7 @@ public final class UniAnchor {
     public <A> List<RuleItemBuilder<?>> terminateWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
             Function<A, BigDecimal> matchWeighter) {
         return terminateWithScoring(scoreHolderGlobal, (drools, scoreHolder, a) -> {
-            BigDecimal weightMultiplier = matchWeighter.apply(inline(a));
+            BigDecimal weightMultiplier = matchWeighter.apply(inlineA(a));
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext, weightMultiplier);
         });
@@ -152,6 +164,10 @@ public final class UniAnchor {
         return UUID.randomUUID().toString();
     }
 
+    public static Function getInliner(RuleMetadata<?> ruleMetadata) {
+        return (ruleMetadata instanceof GenuineRuleMetadata) ? GENUINE_INLINER : INFERRED_INLINER;
+    }
+
     private static <A, B> boolean matches(AbstractBiJoiner<A, B> biJoiner, A left, B right) {
         Object[] leftMappings = biJoiner.getLeftCombinedMapping().apply(left);
         Object[] rightMappings = biJoiner.getRightCombinedMapping().apply(right);
@@ -163,13 +179,6 @@ public final class UniAnchor {
             }
         }
         return true;
-    }
-
-    private static <A> A inline(Object item) {
-        if (item instanceof LogicalTuple) {
-            return ((LogicalTuple) item).getItem(0);
-        }
-        return (A) item;
     }
 
 }
