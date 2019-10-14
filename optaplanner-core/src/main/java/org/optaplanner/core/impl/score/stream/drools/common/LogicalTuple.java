@@ -52,7 +52,7 @@ public final class LogicalTuple {
 
     /**
      *
-     * @return number of items in this tuple. Always greater than zero.
+     * @return number of facts in this tuple. Always greater than zero.
      */
     public int getCardinality() {
         return items.length;
@@ -67,7 +67,7 @@ public final class LogicalTuple {
     }
 
     /**
-     * Return an item on n-th position in the tuple.
+     * Return a fact on n-th position in the tuple.
      * @param index required position in the tuple. Must be between 0 (incl.) and {@link #getCardinality()} (excl.)
      * @param <T> type that we're expecting to see. Method may throw an exception if the cast can not be made.
      * @throws IllegalArgumentException When index out of range.

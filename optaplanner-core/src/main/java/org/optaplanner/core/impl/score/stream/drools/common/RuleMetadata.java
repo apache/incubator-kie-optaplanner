@@ -21,13 +21,13 @@ import org.drools.model.PatternDSL;
 
 public interface RuleMetadata<FactType> {
 
-    static LogicalRuleMetadata ofLogical(Declaration<LogicalTuple> variableDeclaration,
+    static InferredRuleMetadata ofInferred(Declaration<LogicalTuple> variableDeclaration,
             PatternDSL.PatternDef<LogicalTuple> pattern) {
-        return new LogicalRuleMetadata(variableDeclaration, pattern);
+        return new InferredRuleMetadata(variableDeclaration, pattern);
     }
 
-    static <A> OriginalRuleMetadata<A> of(Declaration<A> variableDeclaration, PatternDSL.PatternDef<A> pattern) {
-        return new OriginalRuleMetadata<>(variableDeclaration, pattern);
+    static <A> GenuineRuleMetadata<A> of(Declaration<A> variableDeclaration, PatternDSL.PatternDef<A> pattern) {
+        return new GenuineRuleMetadata<>(variableDeclaration, pattern);
     }
 
     Declaration<FactType> getVariableDeclaration();

@@ -25,7 +25,6 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -38,7 +37,7 @@ import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
 /**
  * A {@link ConstraintStream} that matches one fact.
- * @param <A> the type of the matched fact (either a problem fact or a {@link PlanningEntity planning entity})
+ * @param <A> the type of the first and only fact in the tuple.
  * @see ConstraintStream
  */
 public interface UniConstraintStream<A> extends ConstraintStream {

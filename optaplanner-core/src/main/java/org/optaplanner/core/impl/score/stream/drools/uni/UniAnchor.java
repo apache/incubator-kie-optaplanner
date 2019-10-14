@@ -38,9 +38,9 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.BiAnchor;
-import org.optaplanner.core.impl.score.stream.drools.common.LogicalRuleMetadata;
+import org.optaplanner.core.impl.score.stream.drools.common.InferredRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.OriginalRuleMetadata;
+import org.optaplanner.core.impl.score.stream.drools.common.GenuineRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleMetadata;
 
 import static org.drools.model.DSL.on;
@@ -57,7 +57,7 @@ public final class UniAnchor {
 
     public UniAnchor(Declaration<LogicalTuple> aVariableDeclaration,
             BiFunction<String, Declaration<LogicalTuple>, PatternDSL.PatternDef<LogicalTuple>> patternProvider) {
-        this.aMetadata = RuleMetadata.ofLogical(aVariableDeclaration,
+        this.aMetadata = RuleMetadata.ofInferred(aVariableDeclaration,
                 patternProvider.apply(contextId, aVariableDeclaration));
     }
 
@@ -75,10 +75,10 @@ public final class UniAnchor {
 
     public UniAnchor filter(Predicate predicate) {
         PatternDSL.PatternDef newPattern = getAMetadata().getPattern().expr(a -> predicate.test(inline(a)));
-        if (aMetadata instanceof LogicalRuleMetadata) {
-            return new UniAnchor(((LogicalRuleMetadata) aMetadata).substitute(newPattern));
+        if (aMetadata instanceof InferredRuleMetadata) {
+            return new UniAnchor(((InferredRuleMetadata) aMetadata).substitute(newPattern));
         } else {
-            return new UniAnchor(((OriginalRuleMetadata) aMetadata).substitute(newPattern));
+            return new UniAnchor(((GenuineRuleMetadata) aMetadata).substitute(newPattern));
         }
     }
 
@@ -87,10 +87,10 @@ public final class UniAnchor {
         PatternDSL.PatternDef newPattern = bMetadata.getPattern()
                 .expr(getAMetadata().getVariableDeclaration(),
                         (b, a) -> matches(biJoiner, inline(a), inline(b)));
-        if (bMetadata instanceof LogicalRuleMetadata) {
-            return new BiAnchor(getAMetadata(), ((LogicalRuleMetadata) bMetadata).substitute(newPattern));
+        if (bMetadata instanceof InferredRuleMetadata) {
+            return new BiAnchor(getAMetadata(), ((InferredRuleMetadata) bMetadata).substitute(newPattern));
         } else {
-            return new BiAnchor(getAMetadata(), ((OriginalRuleMetadata) bMetadata).substitute(newPattern));
+            return new BiAnchor(getAMetadata(), ((GenuineRuleMetadata) bMetadata).substitute(newPattern));
         }
     }
 

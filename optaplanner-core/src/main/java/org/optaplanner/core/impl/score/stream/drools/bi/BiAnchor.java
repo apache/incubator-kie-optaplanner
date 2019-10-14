@@ -34,9 +34,9 @@ import org.drools.model.functions.Block4;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.drools.common.LogicalRuleMetadata;
+import org.optaplanner.core.impl.score.stream.drools.common.InferredRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.OriginalRuleMetadata;
+import org.optaplanner.core.impl.score.stream.drools.common.GenuineRuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.RuleMetadata;
 import org.optaplanner.core.impl.score.stream.drools.tri.TriAnchor;
 import org.optaplanner.core.impl.score.stream.drools.uni.UniAnchor;
@@ -72,10 +72,10 @@ public final class BiAnchor {
         PatternDSL.PatternDef newPattern = bMetadata.getPattern()
                 .expr(getAMetadata().getVariableDeclaration(),
                         (b, a) -> predicate.test(inline(a), inline(b)));
-        if (bMetadata instanceof LogicalRuleMetadata) {
-            return new BiAnchor(getAMetadata(), ((LogicalRuleMetadata) bMetadata).substitute(newPattern));
+        if (bMetadata instanceof InferredRuleMetadata) {
+            return new BiAnchor(getAMetadata(), ((InferredRuleMetadata) bMetadata).substitute(newPattern));
         } else {
-            return new BiAnchor(getAMetadata(), ((OriginalRuleMetadata<?>) bMetadata).substitute(newPattern));
+            return new BiAnchor(getAMetadata(), ((GenuineRuleMetadata<?>) bMetadata).substitute(newPattern));
         }
     }
 
@@ -84,10 +84,10 @@ public final class BiAnchor {
         PatternDSL.PatternDef newPattern = cMetadata.getPattern()
                 .expr(contextId, getAMetadata().getVariableDeclaration(), getBMetadata().getVariableDeclaration(),
                         (c, a, b) -> matches(triJoiner, inline(a), inline(b), inline(c)));
-        if (cMetadata instanceof LogicalRuleMetadata) {
-            return new TriAnchor(getAMetadata(), getBMetadata(), ((LogicalRuleMetadata) cMetadata).substitute(newPattern));
+        if (cMetadata instanceof InferredRuleMetadata) {
+            return new TriAnchor(getAMetadata(), getBMetadata(), ((InferredRuleMetadata) cMetadata).substitute(newPattern));
         } else {
-            return new TriAnchor(getAMetadata(), getBMetadata(), ((OriginalRuleMetadata) cMetadata).substitute(newPattern));
+            return new TriAnchor(getAMetadata(), getBMetadata(), ((GenuineRuleMetadata) cMetadata).substitute(newPattern));
         }
     }
 

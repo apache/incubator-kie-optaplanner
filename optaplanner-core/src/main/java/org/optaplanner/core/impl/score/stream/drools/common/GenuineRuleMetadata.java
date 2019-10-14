@@ -19,27 +19,27 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import org.drools.model.Declaration;
 import org.drools.model.PatternDSL;
 
-public final class LogicalRuleMetadata implements RuleMetadata<LogicalTuple> {
+public final class GenuineRuleMetadata<A> implements RuleMetadata<A> {
 
-    private final Declaration<LogicalTuple> variableDeclaration;
-    private final PatternDSL.PatternDef<LogicalTuple> pattern;
+    private final Declaration<A> variableDeclaration;
+    private final PatternDSL.PatternDef<A> pattern;
 
-    LogicalRuleMetadata(Declaration<LogicalTuple> variableDeclaration, PatternDSL.PatternDef<LogicalTuple> pattern) {
+    GenuineRuleMetadata(Declaration<A> variableDeclaration, PatternDSL.PatternDef<A> pattern) {
         this.variableDeclaration = variableDeclaration;
         this.pattern = pattern;
     }
 
-    public LogicalRuleMetadata substitute(PatternDSL.PatternDef<LogicalTuple> newPattern) {
-        return RuleMetadata.ofLogical(variableDeclaration, newPattern);
+    public GenuineRuleMetadata<A> substitute(PatternDSL.PatternDef<A> newPattern) {
+        return RuleMetadata.of(variableDeclaration, newPattern);
     }
 
     @Override
-    public Declaration<LogicalTuple> getVariableDeclaration() {
+    public Declaration<A> getVariableDeclaration() {
         return variableDeclaration;
     }
 
     @Override
-    public PatternDSL.PatternDef<LogicalTuple> getPattern() {
+    public PatternDSL.PatternDef<A> getPattern() {
         return pattern;
     }
 }
