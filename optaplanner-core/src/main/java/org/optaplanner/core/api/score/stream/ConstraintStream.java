@@ -69,7 +69,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  *     <dt>Tuple</dt>
  *          <dd>A collection of facts that the constraint stream operates on, propagating them from operation to
  *          operation.
- *          For example, {@link UniConstraintStream} operates on single-cact tuples {A} and {@link BiConstraintStream}
+ *          For example, {@link UniConstraintStream} operates on single-fact tuples {A} and {@link BiConstraintStream}
  *          operates on two-fact tuples {A, B}.
  *          Putting facts into a tuple implies a relationship exists between these facts.</dd>
  *     <dt>Match</dt>
