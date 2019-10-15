@@ -86,7 +86,6 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     @Override
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
             Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        Object ruleId = constraint.getConstraintFactory().getRuleIdAndIncrement();
         DroolsBiCondition<A, B> condition = parent.createCondition();
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .build(createRuleItemBuilders(condition, scoreHolderGlobal)
