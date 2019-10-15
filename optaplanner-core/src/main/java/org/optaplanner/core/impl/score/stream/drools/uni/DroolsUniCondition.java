@@ -52,7 +52,7 @@ public final class DroolsUniCondition<A> {
 
     public DroolsUniCondition(Class<A> aVariableType) {
         Declaration<A> aVariableDeclaration = PatternDSL.declarationOf(aVariableType);
-        this.aMetadata = (DroolsGenuineMetadata) DroolsMetadata.of(aVariableDeclaration,
+        this.aMetadata = (DroolsGenuineMetadata) DroolsMetadata.ofGenuine(aVariableDeclaration,
                 PatternDSL.pattern(aVariableDeclaration));
     }
 

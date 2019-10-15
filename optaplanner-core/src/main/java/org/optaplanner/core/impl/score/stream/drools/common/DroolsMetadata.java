@@ -26,7 +26,8 @@ public interface DroolsMetadata<LogicalFactType, GenuineFactType> {
         return new DroolsInferredMetadata<>(variableDeclaration, pattern);
     }
 
-    static <A> DroolsGenuineMetadata<A> of(Declaration<A> variableDeclaration, PatternDSL.PatternDef<A> pattern) {
+    static <A> DroolsGenuineMetadata<A> ofGenuine(Declaration<A> variableDeclaration,
+            PatternDSL.PatternDef<A> pattern) {
         return new DroolsGenuineMetadata<>(variableDeclaration, pattern);
     }
 

@@ -90,7 +90,7 @@ public abstract class AbstractConstraintStreamTest {
     }
 
     private static List<Object> removeIndirection(List<Object> justificationList) {
-        final List<Object> l = justificationList.stream()
+        return justificationList.stream()
                 .flatMap(item -> {
                     if (item instanceof DroolsLogicalTuple) {
                         return removeIndirection((DroolsLogicalTuple) item).stream();
@@ -98,7 +98,6 @@ public abstract class AbstractConstraintStreamTest {
                         return Stream.of(item);
                     }
                 }).collect(Collectors.toList());
-        return l;
     }
 
     private static List<ConstraintMatch> removeIndirections(ConstraintMatchTotal constraintMatchTotal) {

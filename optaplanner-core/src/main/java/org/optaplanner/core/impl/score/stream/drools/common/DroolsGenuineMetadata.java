@@ -30,7 +30,7 @@ public final class DroolsGenuineMetadata<A> implements DroolsMetadata<A, A> {
     }
 
     public DroolsGenuineMetadata<A> substitute(PatternDSL.PatternDef<A> newPattern) {
-        return DroolsMetadata.of(variableDeclaration, newPattern);
+        return DroolsMetadata.ofGenuine(variableDeclaration, newPattern);
     }
 
     @Override

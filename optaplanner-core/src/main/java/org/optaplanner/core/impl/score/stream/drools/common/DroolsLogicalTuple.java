@@ -30,6 +30,9 @@ import java.util.Objects;
  */
 public final class DroolsLogicalTuple {
 
+    // Should match the maximum cardinality of streams we support. Currently it's 3 for TriStreams.
+    private static final int MAXIMUM_SUPPORTED_CARDINALITY = 3;
+
     private final String context;
     private final Object[] items;
 
@@ -39,7 +42,7 @@ public final class DroolsLogicalTuple {
         int itemCount = items.length;
         if (itemCount == 0) { // such a tuple makes no sense
             throw new IllegalArgumentException("Logical tuple must have at least one element.");
-        } else if (itemCount > 3) { // there are no quad-streams yet
+        } else if (itemCount > MAXIMUM_SUPPORTED_CARDINALITY) {
             throw new IllegalArgumentException("Logical tuple must have at most 3 elements, has " + itemCount + ".");
         }
         this.items = new Object[itemCount]; // construct a new array to make the tuple truly immutable
