@@ -72,7 +72,7 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
             DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean noMatchWeigher,
             ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
             Function<A, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory, parent.getCondition());
+        super(constraintFactory);
         this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
@@ -80,39 +80,43 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
         this.bigDecimalMatchWeigher = bigDecimalMatchWeigher;
     }
 
-    // ************************************************************************
-    // Pattern creation
-    // ************************************************************************
-
     @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         return parent.getFromStreamList();
     }
 
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
     @Override
-    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint, Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    public DroolsUniCondition<A> createCondition() {
+        throw new UnsupportedOperationException("Cannot create UniCondition from a scoring stream.");
+    }
+
+    @Override
+    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        DroolsUniCondition<A> condition = parent.createCondition();
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
-                .build(createRuleItemBuilders(scoreHolderGlobal).toArray(new RuleItemBuilder<?>[0]));
+                .build(createRuleItemBuilders(condition, scoreHolderGlobal).toArray(new RuleItemBuilder<?>[0]));
         return Optional.of(rule);
     }
 
-    private List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    private List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsUniCondition<A> condition,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
-            return getCondition().completeWithScoring(scoreHolderGlobal, intMatchWeigher);
+            return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            return getCondition().completeWithScoring(scoreHolderGlobal, longMatchWeigher);
+            return condition.completeWithScoring(scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            return getCondition().completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            return condition.completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
-            return getCondition().completeWithScoring(scoreHolderGlobal);
+            return condition.completeWithScoring(scoreHolderGlobal);
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
     }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
 
     @Override
     public String toString() {

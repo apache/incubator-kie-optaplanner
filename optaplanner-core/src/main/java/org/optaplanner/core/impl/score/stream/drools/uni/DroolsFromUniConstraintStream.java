@@ -26,7 +26,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     private final Class<A> fromClass;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
-        super(constraintFactory, new DroolsUniCondition<>(fromClass));
+        super(constraintFactory);
         if (fromClass == null) {
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
@@ -43,8 +43,8 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     }
 
     @Override
-    public String toString() {
-        return "From(" + fromClass.getSimpleName() + ") with " + getChildStreams().size()  + " children";
+    public DroolsUniCondition<A> createCondition() {
+        return new DroolsUniCondition<>(fromClass);
     }
 
     // ************************************************************************
@@ -53,6 +53,11 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
 
     public Class<A> getFromClass() {
         return fromClass;
+    }
+
+    @Override
+    public String toString() {
+        return "From(" + fromClass.getSimpleName() + ") with " + getChildStreams().size()  + " children";
     }
 
 }

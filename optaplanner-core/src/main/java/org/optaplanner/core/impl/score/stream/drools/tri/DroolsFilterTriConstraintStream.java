@@ -22,11 +22,22 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
+    private final TriPredicate<A, B, C> triPredicate;
+
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
-        super(constraintFactory, parent, parent.getCondition().filter(triPredicate));
+        super(constraintFactory, parent);
+        this.triPredicate = triPredicate;
     }
 
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
+    @Override
+    public DroolsTriCondition<A, B, C> createCondition() {
+        return parent.createCondition().andFilter(triPredicate);
+    }
 
     @Override
     public String toString() {

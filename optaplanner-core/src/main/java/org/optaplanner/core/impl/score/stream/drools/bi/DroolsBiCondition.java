@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
@@ -45,17 +46,12 @@ import static org.drools.model.DSL.on;
 
 public final class DroolsBiCondition<A, B> {
 
-    private final String contextId = DroolsUniCondition.createContextId();
     private final DroolsMetadata<Object, A> aMetadata;
     private final DroolsMetadata<Object, B> bMetadata;
 
     public DroolsBiCondition(DroolsMetadata<Object, A> aMetadata, DroolsMetadata<Object, B> bMetadata) {
         this.aMetadata = aMetadata;
         this.bMetadata = bMetadata;
-    }
-
-    public String getContextId() {
-        return contextId;
     }
 
     public DroolsMetadata<Object, A> getAMetadata() {
@@ -66,7 +62,7 @@ public final class DroolsBiCondition<A, B> {
         return bMetadata;
     }
 
-    public DroolsBiCondition<A, B> filter(BiPredicate<A, B> predicate) {
+    public DroolsBiCondition<A, B> andFilter(BiPredicate<A, B> predicate) {
         PatternDSL.PatternDef<Object> newPattern = bMetadata.getPattern()
                 .expr(aMetadata.getVariableDeclaration(),
                         (b, a) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b)));
@@ -77,10 +73,12 @@ public final class DroolsBiCondition<A, B> {
         }
     }
 
-    public <C> DroolsTriCondition<A, B, C> join(DroolsUniCondition<C> cAnchor, AbstractTriJoiner<A, B, C> triJoiner) {
+    public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cAnchor,
+            AbstractTriJoiner<A, B, C> triJoiner) {
         DroolsMetadata<Object, C> cMetadata = cAnchor.getaMetadata();
         PatternDSL.PatternDef<Object> newPattern = cMetadata.getPattern()
-                .expr(contextId, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration(),
+                .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
+                        bMetadata.getVariableDeclaration(),
                         (c, a, b) -> matches(triJoiner, aMetadata.extract(a), bMetadata.extract(b),
                                 cMetadata.extract(c)));
         if (cMetadata instanceof DroolsInferredMetadata) {

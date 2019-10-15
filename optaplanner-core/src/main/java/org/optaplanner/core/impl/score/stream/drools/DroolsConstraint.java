@@ -30,7 +30,6 @@ import org.drools.model.Rule;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
@@ -97,6 +96,7 @@ public class DroolsConstraint<Solution_> implements Constraint {
                 .map(stream -> ruleLibrary.computeIfAbsent(stream, key ->
                         key.buildRule(this, scoreHolderGlobal).orElse(null)))
                 .filter(Objects::nonNull)
+                .peek(rule -> System.out.println(rule.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -105,7 +105,7 @@ public class DroolsConstraint<Solution_> implements Constraint {
     // ************************************************************************
 
     @Override
-    public ConstraintFactory getConstraintFactory() {
+    public DroolsConstraintFactory<Solution_> getConstraintFactory() {
         return constraintFactory;
     }
 

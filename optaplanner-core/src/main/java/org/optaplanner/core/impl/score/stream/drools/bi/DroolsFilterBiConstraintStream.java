@@ -22,13 +22,22 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
+    private final BiPredicate<A, B> biPredicate;
+
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
-        super(constraintFactory, parent, parent.getCondition().filter(biPredicate));
+        super(constraintFactory, parent);
+        this.biPredicate = biPredicate;
+    }
+
+    @Override
+    public DroolsBiCondition<A, B> createCondition() {
+        return parent.createCondition().andFilter(biPredicate);
     }
 
     @Override
     public String toString() {
         return "BiFilter() with " + getChildStreams().size() + " children";
     }
+
 }

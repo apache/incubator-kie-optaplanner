@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.drools.model.Declaration;
 import org.drools.model.Drools;
@@ -36,13 +37,11 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsGenuineMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsInferredMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 
 import static org.drools.model.DSL.on;
 
 public final class DroolsTriCondition<A, B, C> {
 
-    private final String contextId = DroolsUniCondition.createContextId();
     private final DroolsMetadata<Object, A> aMetadata;
     private final DroolsMetadata<Object, B> bMetadata;
     private final DroolsMetadata<Object, C> cMetadata;
@@ -52,10 +51,6 @@ public final class DroolsTriCondition<A, B, C> {
         this.aMetadata = aMetadata;
         this.bMetadata = bMetadata;
         this.cMetadata = cMetadata;
-    }
-
-    public String getContextId() {
-        return contextId;
     }
 
     public DroolsMetadata<Object, A> getAMetadata() {
@@ -70,9 +65,10 @@ public final class DroolsTriCondition<A, B, C> {
         return cMetadata;
     }
 
-    public DroolsTriCondition<A, B, C> filter(TriPredicate<A, B, C> predicate) {
+    public DroolsTriCondition<A, B, C> andFilter(TriPredicate<A, B, C> predicate) {
         PatternDSL.PatternDef<Object> newPattern = cMetadata.getPattern()
-                .expr(contextId, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration(),
+                .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
+                        bMetadata.getVariableDeclaration(),
                         (c, a, b) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c)));
         if (cMetadata instanceof DroolsInferredMetadata) {
             return new DroolsTriCondition<>(aMetadata, bMetadata,

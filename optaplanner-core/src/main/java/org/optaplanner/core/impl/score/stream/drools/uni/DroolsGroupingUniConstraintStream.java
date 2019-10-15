@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.drools.model.Global;
@@ -39,11 +39,11 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final Function<A, GroupKey_> groupKeyMapping;
+    private final AtomicInteger ruleId = new AtomicInteger(-1);
 
     public DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, GroupKey_> groupKeyMapping) {
-        super(constraintFactory, new DroolsUniCondition<>(declarationOf(DroolsLogicalTuple.class),
-                (contextId, var) -> pattern(var).expr(logicalTuple -> Objects.equals(logicalTuple.getContext(), contextId))));
+        super(constraintFactory);
         this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;
     }
@@ -53,15 +53,45 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
         return parent.getFromStreamList();
     }
 
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
     @Override
-    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint, Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        final String currentContextId = getCondition().getContextId();
-        final String ruleName = UUID.randomUUID().toString(); // Generated == groupings can be shared by many rules.
+    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        final Object createdRuleId = createRuleIdIfAbsent(constraint.getConstraintFactory());
+        final String ruleName = "Helper rule #" + createdRuleId + " (GroupBy)";
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
-                .build(parent.getCondition().completeWithLogicalInsert(currentContextId, groupKeyMapping)
+                .build(parent.createCondition().completeWithLogicalInsert(createdRuleId, groupKeyMapping)
                         .toArray(new RuleItemBuilder<?>[0]));
         return Optional.of(rule);
     }
+
+    @Override
+    public DroolsUniCondition<GroupKey_> createCondition() {
+        return new DroolsUniCondition<>(declarationOf(DroolsLogicalTuple.class),
+                var -> pattern(var).expr(logicalTuple ->
+                        Objects.equals(logicalTuple.getRuleId(), createRuleIdIfAbsent(getConstraintFactory()))));
+    }
+
+    /**
+     * In order to be able to bind the condition in the new rule with the facts generated in the old rule, while only
+     * wanting to generate the rule ID on-demand to maintain the requirement of rule IDs being in a sequence.
+     * The idea here is that rule creating ({@link #buildRule(DroolsConstraint, Global)}) would call this first,
+     * establishing the rule ID.
+     * The later execution of the condition from {@link DroolsAbstractUniConstraintStream#createCondition()} would just
+     * retrieve the value that already exists.
+     *
+     * @param constraintFactory never null, used to generate rule IDs
+     * @return unique id for the rule
+     */
+    private int createRuleIdIfAbsent(DroolsConstraintFactory<Solution_> constraintFactory) {
+        return ruleId.updateAndGet(currentRuleId -> (currentRuleId < 0) ?
+                constraintFactory.getRuleIdAndIncrement() :
+                currentRuleId);
+    }
+
     @Override
     public String toString() {
         return "GroupBy()";

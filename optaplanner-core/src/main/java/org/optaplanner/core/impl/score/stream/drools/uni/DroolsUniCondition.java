@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -47,7 +46,6 @@ import static org.drools.model.DSL.on;
 
 public final class DroolsUniCondition<A> {
 
-    private final String contextId = createContextId();
     private final DroolsMetadata<Object, A> aMetadata;
 
     public DroolsUniCondition(Class<A> aVariableType) {
@@ -57,24 +55,20 @@ public final class DroolsUniCondition<A> {
     }
 
     public DroolsUniCondition(Declaration<DroolsLogicalTuple> aVariableDeclaration,
-            BiFunction<String, Declaration<DroolsLogicalTuple>, PatternDSL.PatternDef<DroolsLogicalTuple>> patternProvider) {
+            Function<Declaration<DroolsLogicalTuple>, PatternDSL.PatternDef<DroolsLogicalTuple>> patternProvider) {
         this.aMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration,
-                patternProvider.apply(contextId, aVariableDeclaration));
+                patternProvider.apply(aVariableDeclaration));
     }
 
     private DroolsUniCondition(DroolsMetadata<Object, A> aMetadata) {
         this.aMetadata = aMetadata;
     }
 
-    public String getContextId() {
-        return contextId;
-    }
-
     public DroolsMetadata<Object, A> getaMetadata() {
         return aMetadata;
     }
 
-    public DroolsUniCondition<A> filter(Predicate<A> predicate) {
+    public DroolsUniCondition<A> andFilter(Predicate<A> predicate) {
         PatternDSL.PatternDef<Object> newPattern = aMetadata.getPattern()
                 .expr(a -> predicate.test(aMetadata.extract(a)));
         if (aMetadata instanceof DroolsInferredMetadata) {
@@ -84,7 +78,7 @@ public final class DroolsUniCondition<A> {
         }
     }
 
-    public <B> DroolsBiCondition<A, B> join(DroolsUniCondition<B> bAnchor, AbstractBiJoiner<A, B> biJoiner) {
+    public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bAnchor, AbstractBiJoiner<A, B> biJoiner) {
         DroolsMetadata<Object, B> bMetadata = bAnchor.aMetadata;
         PatternDSL.PatternDef<Object> newPattern = bMetadata.getPattern()
                 .expr(aMetadata.getVariableDeclaration(),
@@ -96,13 +90,13 @@ public final class DroolsUniCondition<A> {
         }
     }
 
-    public <GroupKey_> List<RuleItemBuilder<?>> completeWithLogicalInsert(final String currentContextId,
+    public <GroupKey_> List<RuleItemBuilder<?>> completeWithLogicalInsert(Object ruleId,
             Function<A, GroupKey_> groupKeyMapping) {
         ConsequenceBuilder._1<?> consequence = on(aMetadata.getVariableDeclaration())
                 .execute((drools, a) -> {
-                    final GroupKey_ aMapped = groupKeyMapping.apply(aMetadata.extract(a));
+                    GroupKey_ aMapped = groupKeyMapping.apply(aMetadata.extract(a));
                     RuleContext kcontext = (RuleContext) drools;
-                    kcontext.insertLogical(new DroolsLogicalTuple(currentContextId, aMapped));
+                    kcontext.insertLogical(new DroolsLogicalTuple(ruleId, aMapped));
                 });
         return Arrays.asList(aMetadata.getPattern(), consequence);
     }

@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.drools.model.Global;
@@ -52,6 +53,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
+    private final AtomicInteger createdRuleCounter = new AtomicInteger();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -128,6 +130,20 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
+    }
+
+    /**
+     * The constraint creating code needs to call this method to retrieve an ID of the rule.
+     * This ID then needs to be used in the rule name for easier debugging.
+     * It is imperative that this method only be called once per every rule created, as it maintains an internal
+     * counter of created rules.
+     * The sequence of IDs returned will start with 1 and continue towards {@link Integer#MAX_VALUE}.
+     * As long as rule creation calls this method in the same order, the rules will always receive the same ID.
+     *
+     * @return A unique numeric ID of the rule.
+     */
+    public int getRuleIdAndIncrement() {
+        return createdRuleCounter.incrementAndGet();
     }
 
     @Override

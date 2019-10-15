@@ -43,23 +43,16 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractConstraintStream<Solution_>
         implements InnerBiConstraintStream<A, B> {
 
-    private final DroolsBiCondition<A, B> condition;
     protected final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
 
     public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent) {
-        this(constraintFactory, parent, parent.getCondition());
-    }
-
-    public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, DroolsBiCondition<A, B> condition) {
         super(constraintFactory);
         if (parent == null && !(this instanceof DroolsJoinBiConstraintStream)) {
             throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
                     "unless it's a join stream.");
         }
         this.parent = parent;
-        this.condition = condition;
     }
 
     @Override
@@ -190,7 +183,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         }
     }
 
-    public DroolsBiCondition<A, B> getCondition() {
-        return condition;
-    }
+    public abstract DroolsBiCondition<A, B> createCondition();
+
 }

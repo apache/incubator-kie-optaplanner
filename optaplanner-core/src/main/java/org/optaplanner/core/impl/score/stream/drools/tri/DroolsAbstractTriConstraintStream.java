@@ -37,22 +37,15 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerTriConstraintStream<A, B, C> {
 
     protected final DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent;
-    private final DroolsTriCondition<A, B, C> condition;
 
     public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent) {
-        this(constraintFactory, parent, parent.getCondition());
-    }
-
-    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, DroolsTriCondition<A, B, C> condition) {
         super(constraintFactory);
         if (parent == null && !(this instanceof DroolsJoinTriConstraintStream)) {
             throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
                     "unless it's a join stream.");
         }
         this.parent = parent;
-        this.condition = condition;
     }
 
     @Override
@@ -154,7 +147,5 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         }
     }
 
-    public DroolsTriCondition<A, B, C> getCondition() {
-        return condition;
-    }
+    public abstract DroolsTriCondition<A, B, C> createCondition();
 }

@@ -80,25 +80,38 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
         this.bigDecimalMatchWeigher = bigDecimalMatchWeigher;
     }
 
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
     @Override
-    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint, Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+        DroolsTriCondition<A, B, C> condition = parent.createCondition();
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
-                .build(createRuleItemBuilders(scoreHolderGlobal).toArray(new RuleItemBuilder<?>[0]));
+                .build(createRuleItemBuilders(condition, scoreHolderGlobal)
+                        .toArray(new RuleItemBuilder<?>[0]));
         return Optional.of(rule);
     }
 
-    private List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    private List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsTriCondition<A, B, C> condition,
+            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
-            return getCondition().completeWithScoring(scoreHolderGlobal, intMatchWeigher);
+            return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            return getCondition().completeWithScoring(scoreHolderGlobal, longMatchWeigher);
+            return condition.completeWithScoring(scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            return getCondition().completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            return condition.completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
-            return getCondition().completeWithScoring(scoreHolderGlobal);
+            return condition.completeWithScoring(scoreHolderGlobal);
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
+    }
+
+    @Override
+    public DroolsTriCondition<A, B, C> createCondition() {
+        throw new UnsupportedOperationException("Cannot create TriCondition from a scoring stream.");
     }
 
     @Override

@@ -24,7 +24,7 @@ import java.util.Objects;
  * type which the grouping rule logically inserts into the Drools working memory, so that the following rules can work
  * with the results of the grouping.
  *
- * Instances of this class are equal if they have the same {@link #getContext()} and their {@link #getItem(int)} all
+ * Instances of this class are equal if they have the same {@link #getRuleId()} and their {@link #getItem(int)} all
  * {@link Objects#equals(Object, Object)} as well. Drools will not re-insert a fact if equalling fact has already been
  * inserted before.
  */
@@ -33,12 +33,12 @@ public final class DroolsLogicalTuple {
     // Should match the maximum cardinality of streams we support. Currently it's 3 for TriStreams.
     private static final int MAXIMUM_SUPPORTED_CARDINALITY = 3;
 
-    private final String context;
+    private final Object ruleId;
     private final Object[] items;
 
-    public DroolsLogicalTuple(final String context, final Object... items) {
-        Objects.requireNonNull(context, "Logical tuple rule context must not be null.");
-        this.context = context;
+    public DroolsLogicalTuple(final Object ruleId, final Object... items) {
+        Objects.requireNonNull(ruleId, "Logical tuple rule context must not be null.");
+        this.ruleId = ruleId;
         int itemCount = items.length;
         if (itemCount == 0) { // such a tuple makes no sense
             throw new IllegalArgumentException("Logical tuple must have at least one element.");
@@ -65,8 +65,8 @@ public final class DroolsLogicalTuple {
      *
      * @return never null. Unique identifier of the rule that caused the tuple to be logically inserted.
      */
-    public String getContext() {
-        return context;
+    public Object getRuleId() {
+        return ruleId;
     }
 
     /**
@@ -94,13 +94,13 @@ public final class DroolsLogicalTuple {
             return false;
         }
         final DroolsLogicalTuple that = (DroolsLogicalTuple) o;
-        return Objects.equals(context, that.context) &&
+        return Objects.equals(ruleId, that.ruleId) &&
                 Arrays.equals(items, that.items); // TODO do we care about the order if items?
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(context);
+        int result = Objects.hash(ruleId);
         result = 31 * result + Arrays.hashCode(items);
         return result;
     }
@@ -108,7 +108,7 @@ public final class DroolsLogicalTuple {
     @Override
     public String toString() {
         return "DroolsLogicalTuple{" +
-                "context='" + context + '\'' +
+                "ruleId='" + ruleId + '\'' +
                 ", items=" + Arrays.toString(items) +
                 '}';
     }
