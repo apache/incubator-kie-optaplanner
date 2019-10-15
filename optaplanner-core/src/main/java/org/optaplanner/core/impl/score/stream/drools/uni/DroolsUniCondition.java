@@ -77,8 +77,8 @@ public final class DroolsUniCondition<A> {
         }
     }
 
-    public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bAnchor, AbstractBiJoiner<A, B> biJoiner) {
-        DroolsMetadata<Object, B> bMetadata = bAnchor.aMetadata;
+    public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bCondition, AbstractBiJoiner<A, B> biJoiner) {
+        DroolsMetadata<Object, B> bMetadata = bCondition.aMetadata;
         PatternDSL.PatternDef<Object> newPattern = bMetadata.getPattern()
                 .expr(aMetadata.getVariableDeclaration(),
                         (b, a) -> matches(biJoiner, aMetadata.extract(a), bMetadata.extract(b)));
