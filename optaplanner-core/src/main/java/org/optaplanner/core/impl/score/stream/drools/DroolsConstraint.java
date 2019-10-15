@@ -82,20 +82,20 @@ public class DroolsConstraint<Solution_> implements Constraint {
     /**
      * Return streams which have a given stream as a child.
      *
-     * @param streams streams to process
+     * @param constraintStreamCollection streams to process
      * @param child stream to look for
      * @return streams from the given collection whose {@link DroolsAbstractConstraintStream#getChildStreams()} contains
      * the given stream
      */
-    private Set<DroolsAbstractConstraintStream<Solution_>> predecessors(
-            Collection<DroolsAbstractConstraintStream<Solution_>> streams,
+    private Set<DroolsAbstractConstraintStream<Solution_>> getPredecessors(
+            Collection<DroolsAbstractConstraintStream<Solution_>> constraintStreamCollection,
             DroolsAbstractConstraintStream<Solution_> child) {
         Set<DroolsAbstractConstraintStream<Solution_>> predecessorSet = new LinkedHashSet<>();
-        streams.stream()
-                .filter(stream -> stream.getChildStreams().contains(child))
-                .forEach(parent -> {
-                    predecessorSet.addAll(predecessors(streams, parent));
-                    predecessorSet.add(parent);
+        constraintStreamCollection.stream()
+                .filter(constraintStream -> constraintStream.getChildStreams().contains(child))
+                .forEach(parentConstraintStream -> {
+                    predecessorSet.addAll(getPredecessors(constraintStreamCollection, parentConstraintStream));
+                    predecessorSet.add(parentConstraintStream);
                 });
         return predecessorSet;
     }
@@ -103,17 +103,17 @@ public class DroolsConstraint<Solution_> implements Constraint {
     /**
      * Each constraint applies to a single scoring stream.
      * From this stream, it needs to create rules for all of its parent streams.
-     * The method assembles the whole tree of streams, where the scoring node is the root and the from streams are the
-     * leaves.
-     * @param root scoring node for this constraint
+     * The method assembles the whole tree of streams, where the scoring stream is the root and the from() streams are
+     * the leaves.
+     * @param rootConstraintStream scoring stream for this constraint
      * @return all streams which have the root as a child, transitively
      */
     private Set<DroolsAbstractConstraintStream<Solution_>> assembleScoringStreamTree(
-            DroolsAbstractConstraintStream<Solution_> root) {
-        Set<DroolsAbstractConstraintStream<Solution_>> allStreamSet = assembleAllStreams();
-        Set<DroolsAbstractConstraintStream<Solution_>> allPredecessorSet = predecessors(allStreamSet, root);
-        allPredecessorSet.add(root);
-        return allPredecessorSet;
+            DroolsAbstractConstraintStream<Solution_> rootConstraintStream) {
+        Set<DroolsAbstractConstraintStream<Solution_>> constraintStreamSet =
+                getPredecessors(assembleAllStreams(), rootConstraintStream);
+        constraintStreamSet.add(rootConstraintStream);
+        return constraintStreamSet;
     }
 
     /**
