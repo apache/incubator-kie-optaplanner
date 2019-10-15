@@ -45,20 +45,22 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // Penalize/reward
     // ************************************************************************
 
-    protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName, Score<?> constraintWeight, boolean positive) {
+    protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
+            Score<?> constraintWeight, boolean positive, DroolsAbstractConstraintStream<Solution_> scoringStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName, constraintWeight);
         List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
         return new DroolsConstraint<>(constraintFactory,
-                constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList);
+                constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList, scoringStream);
     }
 
-    protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName, boolean positive) {
+    protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName
+            , boolean positive, DroolsAbstractConstraintStream<Solution_> scoringStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName);
         List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
         return new DroolsConstraint<>(constraintFactory,
-                constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList);
+                constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList, scoringStream);
     }
 
     // ************************************************************************

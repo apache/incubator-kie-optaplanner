@@ -98,7 +98,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
                 new DroolsScoringBiConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -107,7 +107,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
                 new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -116,7 +116,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
                 new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -125,7 +125,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
                 new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -133,7 +133,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
                 new DroolsScoringBiConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -142,7 +142,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
                 new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -151,7 +151,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
                 new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -160,7 +160,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         DroolsScoringBiConstraintStream<Solution_, A, B> stream =
                 new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     // ************************************************************************

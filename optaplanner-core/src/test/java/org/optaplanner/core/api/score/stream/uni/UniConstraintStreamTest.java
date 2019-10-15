@@ -852,6 +852,61 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(1, monitorCount.get());
     }
 
-    // TODO add test for reusing streams: have 2 scorings from the same BiConstraintStream instance
+    @Test
+    public void filteredStreamReuse() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 2);
+        TestdataLavishEntity entity1 = solution.getEntityList().get(0);
+
+        Predicate<TestdataLavishEntity> predicate = entity -> Objects.equals(entity, entity1);
+
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataLavishSolution.buildSolutionDescriptor(), (factory) -> {
+                    UniConstraintStream<TestdataLavishEntity> base = factory.from(TestdataLavishEntity.class)
+                            .filter(predicate);
+                    return new Constraint[] {
+                            base.penalize("myConstraint1", SimpleScore.ONE),
+                            base.penalize("myConstraint2", SimpleScore.ONE)
+                    };
+            }, constraintStreamImplType);
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch("myConstraint1", entity1),
+                assertMatch("myConstraint2", entity1));
+    }
+
+    @Test
+    public void groupedStreamReuse() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 2);
+        TestdataLavishEntity entity1 = solution.getEntityList().get(0);
+        TestdataLavishEntityGroup entityGroup1 = solution.getFirstEntityGroup();
+        entity1.setEntityGroup(entityGroup1);
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntityGroup entityGroup2 = new TestdataLavishEntityGroup("Some Other Group");
+        entity2.setEntityGroup(entityGroup2);
+
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataLavishSolution.buildSolutionDescriptor(), (factory) -> {
+            UniConstraintStream<TestdataLavishEntityGroup> base = factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup);
+            return new Constraint[] {
+                    base.penalize("myConstraint1", SimpleScore.ONE),
+                    base.filter(e -> !Objects.equals(e, entityGroup1))
+                            .penalize("myConstraint2", SimpleScore.ONE)
+            };
+        }, constraintStreamImplType);
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch("myConstraint1", entityGroup1),
+                assertMatch("myConstraint1", entityGroup2),
+                assertMatch("myConstraint2", entityGroup2));
+    }
 
 }

@@ -107,7 +107,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -116,7 +116,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -125,7 +125,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -134,7 +134,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -143,7 +143,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -152,7 +152,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -161,7 +161,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -170,7 +170,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         DroolsScoringUniConstraintStream<Solution_, A> stream =
                 new DroolsScoringUniConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     public abstract DroolsUniCondition<A> createCondition();

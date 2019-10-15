@@ -62,7 +62,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -71,7 +71,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -80,7 +80,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -89,7 +89,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
     }
 
     @Override
@@ -97,7 +97,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -115,7 +115,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     @Override
@@ -124,7 +124,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive);
+        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
     // ************************************************************************
