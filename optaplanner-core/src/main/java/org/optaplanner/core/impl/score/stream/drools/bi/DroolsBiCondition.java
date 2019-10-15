@@ -25,7 +25,6 @@ import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
-import org.drools.model.Declaration;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
@@ -90,15 +89,15 @@ public final class DroolsBiCondition<A, B> {
         }
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, __, ___) -> {
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext);
         });
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            ToIntBiFunction matchWeighter) {
+    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            ToIntBiFunction<A, B> matchWeighter) {
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
             int weightMultiplier = matchWeighter.applyAsInt(aMetadata.extract(a), bMetadata.extract(b));
             RuleContext kcontext = (RuleContext) drools;
@@ -106,8 +105,8 @@ public final class DroolsBiCondition<A, B> {
         });
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            ToLongBiFunction matchWeighter) {
+    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            ToLongBiFunction<A, B> matchWeighter) {
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
             long weightMultiplier = matchWeighter.applyAsLong(aMetadata.extract(a), bMetadata.extract(b));
             RuleContext kcontext = (RuleContext) drools;
@@ -115,20 +114,19 @@ public final class DroolsBiCondition<A, B> {
         });
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
+    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             BiFunction<A, B, BigDecimal> matchWeighter) {
-       return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
-           BigDecimal weightMultiplier = matchWeighter.apply(aMetadata.extract(a), bMetadata.extract(b));
+        return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b) -> {
+            BigDecimal weightMultiplier = matchWeighter.apply(aMetadata.extract(a), bMetadata.extract(b));
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext, weightMultiplier);
         });
     }
 
-    private <ScoreHolder extends AbstractScoreHolder> List<RuleItemBuilder<?>> completeWithScoring(
-            Global<ScoreHolder> scoreHolderGlobal, Block4<Drools, ScoreHolder, A, B> consequenceImpl) {
-        ConsequenceBuilder._3<ScoreHolder, A, B> consequence =
-                on(scoreHolderGlobal, (Declaration<A>) aMetadata.getVariableDeclaration(),
-                        (Declaration<B>) bMetadata.getVariableDeclaration())
+    private <ScoreHolder extends AbstractScoreHolder<?>> List<RuleItemBuilder<?>> completeWithScoring(
+            Global<ScoreHolder> scoreHolderGlobal, Block4<Drools, ScoreHolder, Object, Object> consequenceImpl) {
+        ConsequenceBuilder._3<ScoreHolder, Object, Object> consequence =
+                on(scoreHolderGlobal, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration())
                         .execute(consequenceImpl);
         return Arrays.asList(aMetadata.getPattern(), bMetadata.getPattern(), consequence);
     }

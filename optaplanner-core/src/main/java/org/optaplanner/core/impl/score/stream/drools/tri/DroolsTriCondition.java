@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.drools.model.Declaration;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.PatternDSL;
@@ -79,15 +78,15 @@ public final class DroolsTriCondition<A, B, C> {
         }
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, __, ___, ____) -> {
             RuleContext kcontext = (RuleContext) drools;
             scoreHolder.impactScore(kcontext);
         });
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            ToIntTriFunction matchWeighter) {
+    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            ToIntTriFunction<A, B, C> matchWeighter) {
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
             int weightMultiplier = matchWeighter.applyAsInt(aMetadata.extract(a), bMetadata.extract(b),
                     cMetadata.extract(c));
@@ -96,8 +95,8 @@ public final class DroolsTriCondition<A, B, C> {
         });
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder> scoreHolderGlobal,
-            ToLongTriFunction matchWeighter) {
+    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            ToLongTriFunction<A, B, C> matchWeighter) {
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
             long weightMultiplier = matchWeighter.applyAsLong(aMetadata.extract(a), bMetadata.extract(b),
                     cMetadata.extract(c));
@@ -107,7 +106,8 @@ public final class DroolsTriCondition<A, B, C> {
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal, TriFunction<A, B, C, BigDecimal> matchWeighter) {
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            TriFunction<A, B, C, BigDecimal> matchWeighter) {
         return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c) -> {
             BigDecimal weightMultiplier = matchWeighter.apply(aMetadata.extract(a), bMetadata.extract(b),
                     cMetadata.extract(c));
@@ -116,12 +116,12 @@ public final class DroolsTriCondition<A, B, C> {
         });
     }
 
-    private <ScoreHolder extends AbstractScoreHolder> List<RuleItemBuilder<?>> completeWithScoring(
-            Global<ScoreHolder> scoreHolderGlobal, Block5<Drools, ScoreHolder, A, B, C> consequenceImpl) {
-        ConsequenceBuilder._4<ScoreHolder, A, B, C> consequence =
-                on(scoreHolderGlobal, (Declaration<A>) aMetadata.getVariableDeclaration(),
-                        (Declaration<B>) bMetadata.getVariableDeclaration(),
-                        (Declaration<C>) cMetadata.getVariableDeclaration())
+    private <ScoreHolder extends AbstractScoreHolder<?>> List<RuleItemBuilder<?>> completeWithScoring(
+            Global<ScoreHolder> scoreHolderGlobal,
+            Block5<Drools, ScoreHolder, Object, Object, Object> consequenceImpl) {
+        ConsequenceBuilder._4<ScoreHolder, Object, Object, Object> consequence =
+                on(scoreHolderGlobal, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration(),
+                        cMetadata.getVariableDeclaration())
                         .execute(consequenceImpl);
         return Arrays.asList(aMetadata.getPattern(), bMetadata.getPattern(), cMetadata.getPattern(), consequence);
     }

@@ -93,8 +93,9 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
         AbstractScoreHolder<?> scoreHolder = (AbstractScoreHolder<?>) solutionDescriptor.getScoreDefinition()
                 .buildScoreHolder(false);
-        Class<? extends AbstractScoreHolder> scoreHolderClass = scoreHolder.getClass();
-        Global<? extends AbstractScoreHolder> scoreHolderGlobal = globalOf(scoreHolderClass,
+        Class<? extends AbstractScoreHolder<?>> scoreHolderClass =
+                (Class<? extends AbstractScoreHolder<?>>) scoreHolder.getClass();
+        Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal = globalOf(scoreHolderClass,
                 solutionDescriptor.getSolutionClass().getPackage().getName(),
                 DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         model.addGlobal(scoreHolderGlobal);

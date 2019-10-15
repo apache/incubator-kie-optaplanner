@@ -125,7 +125,7 @@ public class DroolsConstraint<Solution_> implements Constraint {
      * @param scoreHolderGlobal never null. The Drools global used to track changes to score within rule consequences.
      */
     public void createRules(Map<DroolsAbstractConstraintStream<Solution_>, Rule> ruleLibrary,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         assembleScoringStreamTree(scoringStream).forEach(stream -> ruleLibrary.computeIfAbsent(stream, key ->
                 key.buildRule(this, scoreHolderGlobal).orElse(null)));
     }

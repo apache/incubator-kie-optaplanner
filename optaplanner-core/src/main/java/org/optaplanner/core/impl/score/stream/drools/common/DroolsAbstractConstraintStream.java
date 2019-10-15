@@ -82,7 +82,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // ************************************************************************
 
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         return Optional.empty();
     }
 

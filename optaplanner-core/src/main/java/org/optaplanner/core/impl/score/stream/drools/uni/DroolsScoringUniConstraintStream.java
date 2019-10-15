@@ -96,7 +96,7 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
 
     @Override
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         DroolsUniCondition<A> condition = parent.createCondition();
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .build(createRuleItemBuilders(condition, scoreHolderGlobal).toArray(new RuleItemBuilder<?>[0]));
@@ -104,7 +104,7 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     }
 
     private List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsUniCondition<A> condition,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {

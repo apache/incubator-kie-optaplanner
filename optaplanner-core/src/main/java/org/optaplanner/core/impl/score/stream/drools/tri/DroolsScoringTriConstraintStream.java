@@ -86,7 +86,7 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         DroolsTriCondition<A, B, C> condition = parent.createCondition();
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .build(createRuleItemBuilders(condition, scoreHolderGlobal)
@@ -95,7 +95,7 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     private List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsTriCondition<A, B, C> condition,
-            Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
