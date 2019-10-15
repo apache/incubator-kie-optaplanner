@@ -89,13 +89,13 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
 
     private List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
-            return getAnchor().terminateWithScoring(scoreHolderGlobal, intMatchWeigher);
+            return getCondition().completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            return getAnchor().terminateWithScoring(scoreHolderGlobal, longMatchWeigher);
+            return getCondition().completeWithScoring(scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            return getAnchor().terminateWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            return getCondition().completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
-            return getAnchor().terminateWithScoring(scoreHolderGlobal);
+            return getCondition().completeWithScoring(scoreHolderGlobal);
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }

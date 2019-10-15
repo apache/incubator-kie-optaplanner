@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
@@ -33,7 +32,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             DroolsAbstractUniConstraintStream<Solution_, C> otherStream, TriJoiner<A, B, C> triJoiner) {
         super(constraintFactory, null,
-                parent.getAnchor().join(otherStream.getAnchor(), (AbstractTriJoiner<A, B, C>) triJoiner));
+                parent.getCondition().join(otherStream.getCondition(), (AbstractTriJoiner<A, B, C>) triJoiner));
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
     }

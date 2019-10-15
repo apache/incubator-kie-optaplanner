@@ -28,12 +28,12 @@ import java.util.Objects;
  * {@link Objects#equals(Object, Object)} as well. Drools will not re-insert a fact if equalling fact has already been
  * inserted before.
  */
-public final class LogicalTuple {
+public final class DroolsLogicalTuple {
 
     private final String context;
     private final Object[] items;
 
-    public LogicalTuple(final String context, final Object... items) {
+    public DroolsLogicalTuple(final String context, final Object... items) {
         Objects.requireNonNull(context, "Logical tuple rule context must not be null.");
         this.context = context;
         int itemCount = items.length;
@@ -90,7 +90,7 @@ public final class LogicalTuple {
         if (o == null || !Objects.equals(getClass(), o.getClass())) {
             return false;
         }
-        final LogicalTuple that = (LogicalTuple) o;
+        final DroolsLogicalTuple that = (DroolsLogicalTuple) o;
         return Objects.equals(context, that.context) &&
                 Arrays.equals(items, that.items); // TODO do we care about the order if items?
     }
@@ -104,7 +104,7 @@ public final class LogicalTuple {
 
     @Override
     public String toString() {
-        return "LogicalTuple{" +
+        return "DroolsLogicalTuple{" +
                 "context='" + context + '\'' +
                 ", items=" + Arrays.toString(items) +
                 '}';

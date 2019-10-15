@@ -19,27 +19,32 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import org.drools.model.Declaration;
 import org.drools.model.PatternDSL;
 
-public final class GenuineRuleMetadata<A> implements RuleMetadata<A> {
+public final class DroolsInferredMetadata<A> implements DroolsMetadata<DroolsLogicalTuple, A> {
 
-    private final Declaration<A> variableDeclaration;
-    private final PatternDSL.PatternDef<A> pattern;
+    private final Declaration<DroolsLogicalTuple> variableDeclaration;
+    private final PatternDSL.PatternDef<DroolsLogicalTuple> pattern;
 
-    GenuineRuleMetadata(Declaration<A> variableDeclaration, PatternDSL.PatternDef<A> pattern) {
+    DroolsInferredMetadata(Declaration<DroolsLogicalTuple> variableDeclaration, PatternDSL.PatternDef<DroolsLogicalTuple> pattern) {
         this.variableDeclaration = variableDeclaration;
         this.pattern = pattern;
     }
 
-    public GenuineRuleMetadata<A> substitute(PatternDSL.PatternDef<A> newPattern) {
-        return RuleMetadata.of(variableDeclaration, newPattern);
+    public DroolsInferredMetadata<A> substitute(PatternDSL.PatternDef<DroolsLogicalTuple> newPattern) {
+        return DroolsMetadata.ofInferred(variableDeclaration, newPattern);
     }
 
     @Override
-    public Declaration<A> getVariableDeclaration() {
+    public A extract(DroolsLogicalTuple container) {
+        return container.getItem(0);
+    }
+
+    @Override
+    public Declaration<DroolsLogicalTuple> getVariableDeclaration() {
         return variableDeclaration;
     }
 
     @Override
-    public PatternDSL.PatternDef<A> getPattern() {
+    public PatternDSL.PatternDef<DroolsLogicalTuple> getPattern() {
         return pattern;
     }
 }

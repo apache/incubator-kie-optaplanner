@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
 import static org.junit.Assert.assertEquals;
@@ -83,7 +83,7 @@ public abstract class AbstractConstraintStreamTest {
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
-    private static List<Object> removeIndirection(LogicalTuple logicalTuple) {
+    private static List<Object> removeIndirection(DroolsLogicalTuple logicalTuple) {
         return IntStream.range(0, logicalTuple.getCardinality())
                 .mapToObj(logicalTuple::getItem)
                 .collect(Collectors.toList());
@@ -92,8 +92,8 @@ public abstract class AbstractConstraintStreamTest {
     private static List<Object> removeIndirection(List<Object> justificationList) {
         final List<Object> l = justificationList.stream()
                 .flatMap(item -> {
-                    if (item instanceof LogicalTuple) {
-                        return removeIndirection((LogicalTuple) item).stream();
+                    if (item instanceof DroolsLogicalTuple) {
+                        return removeIndirection((DroolsLogicalTuple) item).stream();
                     } else {
                         return Stream.of(item);
                     }

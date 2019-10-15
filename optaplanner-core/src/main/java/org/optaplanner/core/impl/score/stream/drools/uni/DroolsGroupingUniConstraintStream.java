@@ -29,7 +29,7 @@ import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.LogicalTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
 
 import static org.drools.model.PatternDSL.declarationOf;
 import static org.drools.model.PatternDSL.pattern;
@@ -42,7 +42,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
 
     public DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, GroupKey_> groupKeyMapping) {
-        super(constraintFactory, new UniAnchor(declarationOf(LogicalTuple.class),
+        super(constraintFactory, new DroolsUniCondition<>(declarationOf(DroolsLogicalTuple.class),
                 (contextId, var) -> pattern(var).expr(logicalTuple -> Objects.equals(logicalTuple.getContext(), contextId))));
         this.parent = parent;
         this.groupKeyMapping = groupKeyMapping;
@@ -55,10 +55,10 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_>
 
     @Override
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint, Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
-        final String currentContextId = getAnchor().getContextId();
+        final String currentContextId = getCondition().getContextId();
         final String ruleName = UUID.randomUUID().toString(); // Generated == groupings can be shared by many rules.
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), ruleName)
-                .build(parent.getAnchor().terminateWithLogical(currentContextId, groupKeyMapping)
+                .build(parent.getCondition().completeWithLogicalInsert(currentContextId, groupKeyMapping)
                         .toArray(new RuleItemBuilder<?>[0]));
         return Optional.of(rule);
     }

@@ -38,11 +38,12 @@ import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
         implements InnerUniConstraintStream<A> {
 
-    private final UniAnchor anchor;
+    private final DroolsUniCondition<A> condition;
 
-    public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, UniAnchor anchor) {
+    public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsUniCondition<A> condition) {
         super(constraintFactory);
-        this.anchor = anchor;
+        this.condition = condition;
     }
 
     // ************************************************************************
@@ -176,7 +177,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return buildConstraintConfigurable(constraintPackage, constraintName, positive);
     }
 
-    public UniAnchor getAnchor() {
-        return anchor;
+    public DroolsUniCondition<A> getCondition() {
+        return condition;
     }
 }

@@ -19,18 +19,20 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import org.drools.model.Declaration;
 import org.drools.model.PatternDSL;
 
-public interface RuleMetadata<FactType> {
+public interface DroolsMetadata<LogicalFactType, GenuineFactType> {
 
-    static InferredRuleMetadata ofInferred(Declaration<LogicalTuple> variableDeclaration,
-            PatternDSL.PatternDef<LogicalTuple> pattern) {
-        return new InferredRuleMetadata(variableDeclaration, pattern);
+    static <A> DroolsInferredMetadata<A> ofInferred(Declaration<DroolsLogicalTuple> variableDeclaration,
+            PatternDSL.PatternDef<DroolsLogicalTuple> pattern) {
+        return new DroolsInferredMetadata<>(variableDeclaration, pattern);
     }
 
-    static <A> GenuineRuleMetadata<A> of(Declaration<A> variableDeclaration, PatternDSL.PatternDef<A> pattern) {
-        return new GenuineRuleMetadata<>(variableDeclaration, pattern);
+    static <A> DroolsGenuineMetadata<A> of(Declaration<A> variableDeclaration, PatternDSL.PatternDef<A> pattern) {
+        return new DroolsGenuineMetadata<>(variableDeclaration, pattern);
     }
 
-    Declaration<FactType> getVariableDeclaration();
+    GenuineFactType extract(LogicalFactType container);
 
-    PatternDSL.PatternDef<FactType> getPattern();
+    Declaration<LogicalFactType> getVariableDeclaration();
+
+    PatternDSL.PatternDef<LogicalFactType> getPattern();
 }

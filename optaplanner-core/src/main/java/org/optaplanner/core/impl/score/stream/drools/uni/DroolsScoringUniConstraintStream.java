@@ -72,7 +72,7 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
             DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean noMatchWeigher,
             ToIntFunction<A> intMatchWeigher, ToLongFunction<A> longMatchWeigher,
             Function<A, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory, parent.getAnchor());
+        super(constraintFactory, parent.getCondition());
         this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
@@ -98,13 +98,13 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
 
     private List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder> scoreHolderGlobal) {
         if (intMatchWeigher != null) {
-            return getAnchor().terminateWithScoring(scoreHolderGlobal, intMatchWeigher);
+            return getCondition().completeWithScoring(scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            return getAnchor().terminateWithScoring(scoreHolderGlobal, longMatchWeigher);
+            return getCondition().completeWithScoring(scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            return getAnchor().terminateWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            return getCondition().completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
-            return getAnchor().terminateWithScoring(scoreHolderGlobal);
+            return getCondition().completeWithScoring(scoreHolderGlobal);
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }

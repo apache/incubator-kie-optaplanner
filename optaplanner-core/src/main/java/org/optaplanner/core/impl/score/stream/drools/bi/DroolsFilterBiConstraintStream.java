@@ -24,7 +24,7 @@ public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstr
 
     public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
-        super(constraintFactory, parent, parent.getAnchor().filter(biPredicate));
+        super(constraintFactory, parent, parent.getCondition().filter(biPredicate));
     }
 
     @Override

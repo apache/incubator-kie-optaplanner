@@ -28,7 +28,7 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
             DroolsAbstractUniConstraintStream<Solution_, B> otherStream, BiJoiner<A, B> biJoiner) {
-        super(constraintFactory, null, parent.getAnchor().join(otherStream.getAnchor(),
+        super(constraintFactory, null, parent.getCondition().join(otherStream.getCondition(),
                 (AbstractBiJoiner<A, B>) biJoiner));
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
