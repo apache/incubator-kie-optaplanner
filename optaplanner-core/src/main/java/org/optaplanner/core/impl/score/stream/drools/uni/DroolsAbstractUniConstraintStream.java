@@ -71,7 +71,10 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        DroolsGroupingUniConstraintStream<Solution_, A, Result_> stream =
+                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
