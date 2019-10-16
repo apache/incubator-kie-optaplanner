@@ -853,7 +853,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
-    public void filteredStreamReuse() {
+    public void reuseFilteredStream() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 2);
         TestdataLavishEntity entity1 = solution.getEntityList().get(0);
@@ -879,7 +879,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
-    public void groupedStreamReuse() {
+    public void reuseGroupedStream() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 2);
         TestdataLavishEntity entity1 = solution.getEntityList().get(0);

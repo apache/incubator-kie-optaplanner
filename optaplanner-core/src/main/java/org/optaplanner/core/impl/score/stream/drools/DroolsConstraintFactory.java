@@ -140,7 +140,6 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
      * counter of created rules.
      * The sequence of IDs returned will start with 1 and continue towards {@link Integer#MAX_VALUE}.
      * As long as rule creation calls this method in the same order, the rules will always receive the same ID.
-     *
      * @return A unique numeric ID of the rule.
      */
     public int getRuleIdAndIncrement() {

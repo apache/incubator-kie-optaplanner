@@ -78,18 +78,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  *     <dt>Cardinality</dt>
  *          <dd>The number of facts in a tuple. Uni constraint streams have a cardinality of 1, bi constraint streams
  *          have a cardinality of 2, etc.</dd>
- *     <dt>Expansion</dt>
- *          <dd>An operation that increases the cardinality of a constraint stream.
- *          This typically happens through join(...) or a groupBy(...) operations.
- *          Uni constraint streams are expanded into bi constraint streams, Bi constraint streams into tri constraint
- *          streams etc.
- *          Expanding a constraint stream infers relationships between facts.</dd>
- *     <dt>Contraction</dt>
- *          <dd>An operation that decreases the cardinality of a constraint stream, typically a groupBy(...) operation.
- *          Bi constraint streams are contracted into Uni constraint streams, tri constraint streams into bi or even uni
- *          constraint streams.
- *          Contracting a constraint stream breaks relationships between facts, often discarding the facts themselves,
- *          but is capable of inferring additional facts in the process.</dd>
+ *     <dt>Conversion</dt>
+ *          <dd>An operation that changes the cardinality of a constraint stream.
+ *          This typically happens through join(...) or a groupBy(...) operations.</dd>
  * </dl>
  */
 public interface ConstraintStream {

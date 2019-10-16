@@ -95,7 +95,7 @@ public final class DroolsLogicalTuple {
         }
         final DroolsLogicalTuple that = (DroolsLogicalTuple) o;
         return Objects.equals(ruleId, that.ruleId) &&
-                Arrays.equals(items, that.items); // TODO do we care about the order if items?
+                Arrays.equals(items, that.items);
     }
 
     @Override
