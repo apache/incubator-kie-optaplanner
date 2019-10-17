@@ -21,14 +21,12 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.uni.UniConstraintCollectorAdapter;
 
 /**
  * Drools {@link AccumulateFunction} that calls {@link UniConstraintCollector} underneath.
@@ -36,7 +34,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.UniConstraintCollectorA
  * @param <ResultContainer_> implementation detail
  * @param <NewA> result of accumulation
  */
-public final class DroolsUniAccumulateFunctionAdapter<A, ResultContainer_ extends Serializable, NewA>
+public final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_ extends Serializable, NewA>
         implements AccumulateFunction<ResultContainer_> {
 
     private final Supplier<ResultContainer_> supplier;
@@ -44,10 +42,10 @@ public final class DroolsUniAccumulateFunctionAdapter<A, ResultContainer_ extend
     private final Function<ResultContainer_, NewA> finisher;
     private final Map<Object, Undo> undoMap = new HashMap<>(0);
 
-    public DroolsUniAccumulateFunctionAdapter(UniConstraintCollectorAdapter<A, ResultContainer_, NewA> collector) {
-        this.supplier = collector.get().supplier();
-        this.accumulator = collector.get().accumulator();
-        this.finisher = collector.get().finisher();
+    public DroolsUniAccumulateFunctionBridge(UniConstraintCollector<A, ResultContainer_, NewA> collector) {
+        this.supplier = collector.supplier();
+        this.accumulator = collector.accumulator();
+        this.finisher = collector.finisher();
     }
 
     @Override
@@ -110,7 +108,7 @@ public final class DroolsUniAccumulateFunctionAdapter<A, ResultContainer_ extend
     private static final class Undo {
 
         private final Runnable runnable;
-        private final AtomicLong useCount = new AtomicLong(1);
+        private long useCount = 1;
 
         public Undo(Runnable runnable) {
             this.runnable = runnable;
@@ -121,11 +119,12 @@ public final class DroolsUniAccumulateFunctionAdapter<A, ResultContainer_ extend
         }
 
         public void incrementUseCount() {
-            useCount.incrementAndGet();
+            useCount += 1;
         }
 
         public long decrementUseCountAndGet() {
-            return useCount.decrementAndGet();
+            useCount -= 1;
+            return useCount;
         }
     }
 }

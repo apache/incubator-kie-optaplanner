@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -41,11 +42,11 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsUniAccumulateFunctionAdapter;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsGenuineMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsInferredMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsUniAccumulateFunctionBridge;
 
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.declarationOf;
@@ -97,14 +98,13 @@ public final class DroolsUniCondition<A> {
         }
     }
 
-    public <ResultContainer, NewA> List<RuleItemBuilder<?>> completeWithLogicalInsert(Object ruleId,
-            UniConstraintCollector<A, ResultContainer, NewA> collector) {
+    public <ResultContainer extends Serializable, NewA> List<RuleItemBuilder<?>> completeWithLogicalInsert(
+            Object ruleId, UniConstraintCollector<A, ResultContainer, NewA> collector) {
         DroolsMetadata<Object, A> inputMetadata = getAMetadata();
         Variable<Object> inputVariable = inputMetadata.getVariableDeclaration();
         PatternDSL.PatternDef<Object> innerAccumulatePattern =
                 inputMetadata.getPattern().bind(inputVariable, inputMetadata::extract);
-        AccumulateFunction<UniConstraintCollectorAdapter<A, ResultContainer, NewA>> accumulateFunction =
-                new DroolsUniAccumulateFunctionAdapter(new UniConstraintCollectorAdapter<>(collector));
+        AccumulateFunction<ResultContainer> accumulateFunction = new DroolsUniAccumulateFunctionBridge<>(collector);
         Variable<Object> outputVariable = declarationOf(Object.class);
         ExprViewItem<Object> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
                 accFunction(() -> accumulateFunction, inputVariable).as(outputVariable));

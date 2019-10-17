@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final Function<A, NewA> groupKeyMapping;
-    private final UniConstraintCollector<A, ?, NewA> collector;
+    private final UniConstraintCollector<A, ? extends Serializable, NewA> collector;
     private final AtomicInteger ruleId = new AtomicInteger(-1);
 
     public DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -52,7 +53,8 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
         this.collector = null;
     }
 
-    public <ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <ResultContainer_ extends Serializable> DroolsGroupingUniConstraintStream(
+            DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
             UniConstraintCollector<A, ResultContainer_, NewA> collector) {
         super(constraintFactory);
