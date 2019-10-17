@@ -16,26 +16,28 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
-import java.util.function.BiPredicate;
+import java.util.function.Function;
 
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
-public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
+public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, ResultContainer_, NewB>
+        extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
-    private final BiPredicate<A, B> biPredicate;
-    private final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
+    private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
 
-    public DroolsFilterBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiPredicate<A, B> biPredicate) {
+    public DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
+            UniConstraintCollector<A, ResultContainer_, NewB> collector) {
         super(constraintFactory);
         this.parent = parent;
-        this.biPredicate = biPredicate;
     }
 
     @Override
-    public DroolsBiCondition<A, B> createCondition() {
-        return parent.createCondition().andFilter(biPredicate);
+    public DroolsBiCondition<NewA, NewB> createCondition() {
+        return null;
     }
 
     @Override
@@ -45,7 +47,6 @@ public class DroolsFilterBiConstraintStream<Solution_, A, B> extends DroolsAbstr
 
     @Override
     public String toString() {
-        return "BiFilter() with " + getChildStreams().size() + " children";
+        return "BiGroup() with " + getChildStreams().size() + " children";
     }
-
 }
