@@ -26,18 +26,18 @@ import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupBiTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
-public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, B> extends BavetAbstractUniNode<A> {
+public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> extends BavetAbstractUniNode<A> {
 
     private final BavetAbstractUniNode<A> parentNode;
     private final Function<A, NewA> groupKeyMapping;
-    private final UniConstraintCollector<A, ResultContainer_, B> collector;
-    private final BavetGroupBiNode<NewA, ResultContainer_, B> groupNode;
+    private final UniConstraintCollector<A, ResultContainer_, NewB> collector;
+    private final BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode;
 
-    private final Map<NewA, BavetGroupBiTuple<NewA, ResultContainer_, B>> tupleMap;
+    private final Map<NewA, BavetGroupBiTuple<NewA, ResultContainer_, NewB>> tupleMap;
 
     public BavetGroupBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
-            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, B> collector,
-            BavetGroupBiNode<NewA, ResultContainer_, B> groupNode) {
+            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, NewB> collector,
+            BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode) {
         super(session, nodeOrder);
         this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
@@ -47,13 +47,13 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, B> extends
     }
 
     @Override
-    public BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, B> createTuple(BavetAbstractUniTuple<A> parentTuple) {
+    public BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> createTuple(BavetAbstractUniTuple<A> parentTuple) {
         return new BavetGroupBridgeUniTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, B> tuple) {
+    public void refresh(BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> tuple) {
         if (tuple.getChildTuple() != null) {
-            BavetGroupBiTuple<NewA, ResultContainer_, B> childTuple = tuple.getChildTuple();
+            BavetGroupBiTuple<NewA, ResultContainer_, NewB> childTuple = tuple.getChildTuple();
             NewA oldGroupKey = childTuple.getGroupKey();
             int parentCount = childTuple.decreaseParentCount();
             tuple.getUndoAccumulator().run();
@@ -71,7 +71,7 @@ public final class BavetGroupBridgeUniNode<A, NewA, ResultContainer_, B> extends
         if (tuple.isActive()) {
             A a = tuple.getFactA();
             NewA groupKey = groupKeyMapping.apply(a);
-            BavetGroupBiTuple<NewA, ResultContainer_, B> childTuple = tupleMap.computeIfAbsent(groupKey,
+            BavetGroupBiTuple<NewA, ResultContainer_, NewB> childTuple = tupleMap.computeIfAbsent(groupKey,
                     k -> groupNode.createTuple(groupKey, collector.supplier().get()));
             int parentCount = childTuple.increaseParentCount();
 
