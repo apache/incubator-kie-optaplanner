@@ -400,6 +400,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
                 solution.getFirstValue());
         solution.getEntityList().add(entity3);
+        // Insert the same entity twice, make sure it doesn't matter.
+        // This will exercise code in Drools that removes duplicates.
+        solution.getEntityList().add(entity3);
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)

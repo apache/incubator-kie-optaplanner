@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.common;
+package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -34,13 +34,13 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
  * @param <ResultContainer_> implementation detail
  * @param <NewA> result of accumulation
  */
-public final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_ extends Serializable, NewA>
+final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_ extends Serializable, NewA>
         implements AccumulateFunction<ResultContainer_> {
 
     private final Supplier<ResultContainer_> supplier;
     private final BiFunction<ResultContainer_, A, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
-    private final Map<Object, Undo> undoMap = new HashMap<>(0);
+    private final Map<Object, Runnable> undoMap = new HashMap<>(0);
 
     public DroolsUniAccumulateFunctionBridge(UniConstraintCollector<A, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
@@ -66,20 +66,18 @@ public final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_ extends
     public void accumulate(ResultContainer_ context, Object value) {
         undoMap.compute(value, (k, v) -> {
            if (v == null) {
-               Runnable runnable = accumulator.apply(context, (A) value);
-               return new Undo(runnable);
+               return accumulator.apply(context, (A) value);
            } else {
-               v.incrementUseCount();
-               return v;
+               throw new IllegalStateException("Undo for (" + value +  ") already exists.");
            }
         });
     }
 
     @Override
     public void reverse(ResultContainer_ context, Object value) {
-        Undo undo = undoMap.get(value);
-        if (undo.decrementUseCountAndGet() == 0) { // Don't keep empty counters
-            undoMap.remove(value);
+        Runnable undo = undoMap.remove(value);
+        if (undo == null) {
+            throw new IllegalStateException("Undo for (" + value +  ") does not exist.");
         }
         undo.run();
     }

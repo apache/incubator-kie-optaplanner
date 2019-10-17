@@ -46,7 +46,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsGenuineMetadat
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsInferredMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsUniAccumulateFunctionBridge;
 
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.declarationOf;
