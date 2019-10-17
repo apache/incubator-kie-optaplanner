@@ -29,7 +29,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class SolverTaskTest {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/core/impl/solver/testdataSolverConfigXStream.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/core/api/solver/testdataSolverConfig.xml";
 
     @Test
     public void getBestScoreDoesntReturnNullIfSolutionUninitialized() throws InterruptedException {

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver.manager;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -33,7 +34,7 @@ public class SolverTask<Solution_> {
     private final Object problemId;
     private Solver<Solution_> solver;
     private Solution_ planningProblem;
-    private boolean isPaused = false;
+    private AtomicBoolean isPaused = new AtomicBoolean(false);
 
     public SolverTask(Object problemId, Solver<Solution_> solver, Solution_ planningProblem) {
         Objects.requireNonNull(solver);
@@ -45,7 +46,7 @@ public class SolverTask<Solution_> {
 
     public Solution_ startSolving() {
         logger.info("Running solverTask for problemId ({}).", problemId);
-        isPaused = false;
+        isPaused.set(false);
         return solver.solve(planningProblem);
     }
 
@@ -53,7 +54,7 @@ public class SolverTask<Solution_> {
         return problemId;
     }
 
-    public synchronized Solution_ getBestSolution() {
+    public Solution_ getBestSolution() {
         // TODO possible race condition: planningProblem might change by solver thread
         Solution_ bestSolution = solver.getBestSolution();
         return bestSolution == null ? planningProblem : bestSolution;
@@ -69,7 +70,7 @@ public class SolverTask<Solution_> {
         return solver.getBestScore();
     }
 
-    public synchronized SolverStatus getSolverStatus() {
+    public SolverStatus getSolverStatus() {
         if (solver.isTerminateEarly()) {
             return SolverStatus.TERMINATED_EARLY;
         } else if (solver.isSolving()) {
@@ -87,15 +88,14 @@ public class SolverTask<Solution_> {
         return solver.terminateEarly();
     }
 
-    public synchronized boolean pauseSolver() {
-        if (isPaused) {
-            return false;
+    public boolean pauseSolver() {
+        if (isPaused.compareAndSet(false, true)) {
+            return solver.terminateEarly();
         }
-        isPaused = true;
-        return solver.terminateEarly();
+        return false;
     }
 
     public boolean isPaused() {
-        return isPaused;
+        return isPaused.get();
     }
 }

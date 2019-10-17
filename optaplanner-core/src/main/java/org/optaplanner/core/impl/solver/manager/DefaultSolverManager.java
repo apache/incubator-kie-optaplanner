@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +33,6 @@ import java.util.function.Consumer;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.manager.SolverManager;
 import org.optaplanner.core.api.solver.manager.SolverStatus;
@@ -52,8 +50,8 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     private SolverFactory<Solution_> solverFactory;
     private ConcurrentMap<Object, SolverTask<Solution_>> problemIdToSolverTaskMap = new ConcurrentHashMap<>();
     private ConcurrentMap<Object, List<Future>> problemIdToEventHandlerFuturesMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<Object, Optional<Consumer<Solution_>>> problemIdToOnSolvingEndedMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<Object, Optional<Consumer<Throwable>>> problemIdToOnExceptionMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<Object, Consumer<Solution_>> problemIdToOnSolvingEndedMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<Object, Consumer<Throwable>> problemIdToOnExceptionMap = new ConcurrentHashMap<>();
 
     public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource) {
         Objects.requireNonNull(solverConfigResource);
@@ -155,8 +153,13 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
             newSolverTask = new SolverTask<>(problemId, solverFactory.buildSolver(), planningProblem);
             problemIdToSolverTaskMap.put(problemId, newSolverTask);
             problemIdToEventHandlerFuturesMap.put(problemId, Collections.synchronizedList(new ArrayList<>()));
-            problemIdToOnSolvingEndedMap.put(problemId, Optional.ofNullable(onSolvingEnded));
-            problemIdToOnExceptionMap.put(problemId, Optional.ofNullable(onException));
+            if (onSolvingEnded != null) {
+                problemIdToOnSolvingEndedMap.put(problemId, onSolvingEnded);
+            }
+            if (onException != null) {
+                problemIdToOnExceptionMap.put(problemId, onException);
+            }
+
             logger.info("A new solver task was created with problemId ({}).", problemId);
         }
 
@@ -174,27 +177,28 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
 
     private void submitSolverTask(SolverTask<Solution_> solverTask) {
         final Object problemId = solverTask.getProblemId();
-        final Consumer<Solution_> onSolvingEnded = problemIdToOnSolvingEndedMap.get(problemId).orElse(solution_ -> {
-        });
-        final Consumer<Throwable> onException = problemIdToOnExceptionMap.get(problemId).orElse(throwable -> {
-        });
+        final Consumer<Solution_> onSolvingEnded = problemIdToOnSolvingEndedMap.get(problemId);
+        final Consumer<Throwable> onException = problemIdToOnExceptionMap.get(problemId);
         CompletableFuture<Solution_> solverFuture = CompletableFuture.supplyAsync(solverTask::startSolving, solverExecutorService);
+        // TODO refactor lambdas in a separate method
         solverFuture.handle((solution_, throwable) -> {
-            handleThrowable(onException, throwable, "Exception while solving problem ({" + problemId + "}).");
-            CompletableFuture<Void> solvingEndedFuture = CompletableFuture.supplyAsync(() -> {
-                onSolvingEnded.accept(solution_);
-                return null;
-            }, eventHandlerExecutorService);
-            // TODO possible NPE if onSolvingEnded is invoked after cleanupResources
-            problemIdToEventHandlerFuturesMap.get(problemId).add(solvingEndedFuture);
-            return solvingEndedFuture;
+            handleThrowable(throwable, onException, "Exception while solving problem ({" + problemId + "}).");
+            if (onSolvingEnded != null) {
+                CompletableFuture<Void> solvingEndedFuture = CompletableFuture.supplyAsync(() -> {
+                    onSolvingEnded.accept(solution_);
+                    return null;
+                }, eventHandlerExecutorService);
+                // TODO possible NPE if onSolvingEnded is invoked after cleanupResources
+                problemIdToEventHandlerFuturesMap.get(problemId).add(solvingEndedFuture);
+            }
+            return null;
         }).handle((voidCompletableFuture, throwable) -> { // clean-up resources after onSolvingEnded returns
-            handleThrowable(onException, throwable, "Exception while executing onSolvingEnded of problem ({" + problemId + "}).");
+            handleThrowable(throwable, onException, "Exception while executing onSolvingEnded of problem ({" + problemId + "}).");
             return !solverTask.isPaused() && cleanupResources(problemId);
         });
     }
 
-    private void handleThrowable(Consumer<Throwable> onException, Throwable throwable, String message) {
+    private void handleThrowable(Throwable throwable, Consumer<Throwable> onException, String message) {
         if (throwable != null) {
             logger.error(message, throwable.getCause());
             if (onException != null) {

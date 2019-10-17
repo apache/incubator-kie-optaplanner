@@ -45,7 +45,7 @@ import static org.junit.Assert.assertTrue;
 // TODO test submitting two different problems with two instances of problemId where problemId1.equals(problemId2) is true
 public class DefaultSolverManagerTest {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/core/impl/solver/testdataSolverConfigXStream.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/core/api/solver/testdataSolverConfig.xml";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -192,7 +192,12 @@ public class DefaultSolverManagerTest {
                 });
         solverManager.shutdown(); // Calling it right away while some tasks might be on the queue
         IntStream.range(0, problemCount)
-                .forEach(problemId -> assertEquals(SolverStatus.TERMINATED_EARLY, solverManager.getSolverStatus(problemId)));
+                .forEach(problemId -> {
+                    SolverStatus solverStatus = solverManager.getSolverStatus(problemId);
+                    if (solverStatus != null) { // if solverStatus == null then solving ended before calling shutdown
+                        assertEquals(SolverStatus.TERMINATED_EARLY, solverStatus);
+                    }
+                });
     }
 
     // ****************************
