@@ -48,6 +48,10 @@ public final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_ extends
         this.finisher = collector.finisher();
     }
 
+    public DroolsUniAccumulateFunctionBridge() {
+        throw new UnsupportedOperationException("Serialization is not supported.");
+    }
+
     @Override
     public ResultContainer_ createContext() {
         return supplier.get();
