@@ -233,18 +233,6 @@ public final class ConstraintCollectors {
                 (resultContainer) -> resultContainer.size() == 0 ? null : keySupplier.apply(resultContainer));
     }
 
-    // ************************************************************************
-    // conversion
-    // ************************************************************************
-
-    public static <A, B, ResultContainer_, X> BiConstraintCollector<A, B, ResultContainer_, X> convert(
-            UniConstraintCollector<A, ResultContainer_, X> collector) {
-        return new DefaultBiConstraintCollector<>(
-                collector.supplier(),
-                ((resultContainer_, a, b) -> collector.accumulator().apply(resultContainer_, a)),
-                (resultContainer_ -> collector.finisher().apply(resultContainer_)));
-    }
-
     private ConstraintCollectors() {
     }
 
