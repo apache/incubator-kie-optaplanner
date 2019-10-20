@@ -20,6 +20,14 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+
+/**
+ * Each context is uniquely identified by its ID.
+ * This is necessary so that the Drools accumulate function can properly undo in
+ * {@link DroolsUniAccumulateFunctionBridge} and its Bi, Tri, ... alternatives.
+ * @param <ResultContainer_> The same type from {@link UniConstraintCollector} and its Bi, Tri, ... alternatives.
+ */
 public final class DroolsAccumulateContext<ResultContainer_> implements Serializable {
 
     private static final AtomicLong CONTEXT_COUNTER = new AtomicLong();

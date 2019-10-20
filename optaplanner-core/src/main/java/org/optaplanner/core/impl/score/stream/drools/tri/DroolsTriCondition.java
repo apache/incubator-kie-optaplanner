@@ -17,10 +17,11 @@
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -34,7 +35,6 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsGenuineMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsInferredMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
 
@@ -70,13 +70,7 @@ public final class DroolsTriCondition<A, B, C> {
                 .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(),
                         (c, a, b) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c)));
-        if (cMetadata instanceof DroolsInferredMetadata) {
-            return new DroolsTriCondition<>(aMetadata, bMetadata,
-                    ((DroolsInferredMetadata) cMetadata).substitute(patternSupplier));
-        } else {
-            return new DroolsTriCondition<>(aMetadata, bMetadata,
-                    ((DroolsGenuineMetadata) cMetadata).substitute(patternSupplier));
-        }
+        return new DroolsTriCondition<>(aMetadata, bMetadata, cMetadata.substitute(patternSupplier));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
@@ -124,7 +118,15 @@ public final class DroolsTriCondition<A, B, C> {
                 on(scoreHolderGlobal, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration(),
                         cMetadata.getVariableDeclaration())
                         .execute(consequenceImpl);
-        return Arrays.asList(aMetadata.buildPattern(), bMetadata.buildPattern(), cMetadata.buildPattern(), consequence);
+        if (aMetadata instanceof DroolsInferredMetadata && bMetadata instanceof DroolsInferredMetadata &&
+                cMetadata instanceof DroolsInferredMetadata) {
+            // In case of logical tuples, all patterns will be the same logical tuple, and therefore we just add one.
+            return Stream.of(cMetadata.buildPattern(), consequence)
+                    .collect(Collectors.toList());
+        } else {
+            return Stream.of(aMetadata.buildPattern(), bMetadata.buildPattern(), cMetadata.buildPattern(), consequence)
+                    .collect(Collectors.toList());
+        }
     }
 
 }

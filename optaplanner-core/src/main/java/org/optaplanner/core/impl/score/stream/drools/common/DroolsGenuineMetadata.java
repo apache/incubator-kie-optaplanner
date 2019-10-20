@@ -31,10 +31,6 @@ public final class DroolsGenuineMetadata<A> implements DroolsMetadata<A, A> {
         this.patternBuilder = patternBuilder;
     }
 
-    public DroolsGenuineMetadata<A> substitute(Supplier<PatternDSL.PatternDef<A>> patternBuilder) {
-        return new DroolsGenuineMetadata<>(variableDeclaration, patternBuilder);
-    }
-
     @Override
     public A extract(A container) {
         return container;
@@ -49,4 +45,10 @@ public final class DroolsGenuineMetadata<A> implements DroolsMetadata<A, A> {
     public PatternDSL.PatternDef<A> buildPattern() {
         return patternBuilder.get();
     }
+
+    @Override
+    public DroolsGenuineMetadata<A> substitute(Supplier<PatternDSL.PatternDef<A>> patternBuilder) {
+        return new DroolsGenuineMetadata<>(variableDeclaration, patternBuilder);
+    }
+
 }

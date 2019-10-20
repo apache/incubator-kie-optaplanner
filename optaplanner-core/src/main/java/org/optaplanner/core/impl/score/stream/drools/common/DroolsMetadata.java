@@ -19,19 +19,19 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.util.function.Supplier;
 
 import org.drools.model.Declaration;
-import org.drools.model.PatternDSL;
+import org.drools.model.PatternDSL.PatternDef;
 
 import static org.drools.model.PatternDSL.pattern;
 
 public interface DroolsMetadata<LogicalFactType, GenuineFactType> {
 
     static <A> DroolsInferredMetadata<A> ofInferred(Declaration<DroolsLogicalTuple> variableDeclaration,
-            Supplier<PatternDSL.PatternDef<DroolsLogicalTuple>> patternBuilder) {
+            Supplier<PatternDef<DroolsLogicalTuple>> patternBuilder) {
         return ofInferred(variableDeclaration, patternBuilder, 0);
     }
 
     static <A> DroolsInferredMetadata<A> ofInferred(Declaration<DroolsLogicalTuple> variableDeclaration,
-            Supplier<PatternDSL.PatternDef<DroolsLogicalTuple>> patternBuilder, int itemId) {
+            Supplier<PatternDef<DroolsLogicalTuple>> patternBuilder, int itemId) {
         return new DroolsInferredMetadata<>(variableDeclaration, patternBuilder, itemId);
     }
 
@@ -43,6 +43,8 @@ public interface DroolsMetadata<LogicalFactType, GenuineFactType> {
 
     Declaration<LogicalFactType> getVariableDeclaration();
 
-    PatternDSL.PatternDef<LogicalFactType> buildPattern();
+    PatternDef<LogicalFactType> buildPattern();
+
+    DroolsMetadata<LogicalFactType, GenuineFactType> substitute(Supplier<PatternDef<LogicalFactType>> patternBuilder);
 
 }
