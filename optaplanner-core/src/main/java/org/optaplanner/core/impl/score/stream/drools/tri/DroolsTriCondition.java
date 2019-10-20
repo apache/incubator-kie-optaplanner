@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -65,16 +66,16 @@ public final class DroolsTriCondition<A, B, C> {
     }
 
     public DroolsTriCondition<A, B, C> andFilter(TriPredicate<A, B, C> predicate) {
-        PatternDSL.PatternDef<Object> newPattern = cMetadata.getPattern()
+        Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> cMetadata.buildPattern()
                 .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(),
                         (c, a, b) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c)));
         if (cMetadata instanceof DroolsInferredMetadata) {
             return new DroolsTriCondition<>(aMetadata, bMetadata,
-                    ((DroolsInferredMetadata) cMetadata).substitute(newPattern));
+                    ((DroolsInferredMetadata) cMetadata).substitute(patternSupplier));
         } else {
             return new DroolsTriCondition<>(aMetadata, bMetadata,
-                    ((DroolsGenuineMetadata) cMetadata).substitute(newPattern));
+                    ((DroolsGenuineMetadata) cMetadata).substitute(patternSupplier));
         }
     }
 
@@ -123,7 +124,7 @@ public final class DroolsTriCondition<A, B, C> {
                 on(scoreHolderGlobal, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration(),
                         cMetadata.getVariableDeclaration())
                         .execute(consequenceImpl);
-        return Arrays.asList(aMetadata.getPattern(), bMetadata.getPattern(), cMetadata.getPattern(), consequence);
+        return Arrays.asList(aMetadata.buildPattern(), bMetadata.buildPattern(), cMetadata.buildPattern(), consequence);
     }
 
 }

@@ -22,6 +22,7 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Collectors;
@@ -61,8 +62,8 @@ public final class DroolsBiCondition<A, B> {
             Function<Declaration<DroolsLogicalTuple>, PatternDSL.PatternDef<DroolsLogicalTuple>> patternProvider) {
         // We share both the declaration and the pattern, as the data is all coming from the same DroolsLogicalTuple.
         PatternDSL.PatternDef<DroolsLogicalTuple> pattern = patternProvider.apply(aVariableDeclaration);
-        this.aMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration, pattern, 0);
-        this.bMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration, pattern, 1);
+        this.aMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration, () -> pattern, 0);
+        this.bMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration, () -> pattern, 1);
     }
 
     public DroolsMetadata<Object, A> getAMetadata() {
@@ -74,20 +75,20 @@ public final class DroolsBiCondition<A, B> {
     }
 
     public DroolsBiCondition<A, B> andFilter(BiPredicate<A, B> predicate) {
-        PatternDSL.PatternDef<Object> newPattern = bMetadata.getPattern()
+        Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> bMetadata.buildPattern()
                 .expr(aMetadata.getVariableDeclaration(),
                         (b, a) -> predicate.test(aMetadata.extract(a), bMetadata.extract(b)));
         if (bMetadata instanceof DroolsInferredMetadata) {
-            return new DroolsBiCondition<>(aMetadata, ((DroolsInferredMetadata) bMetadata).substitute(newPattern));
+            return new DroolsBiCondition<>(aMetadata, ((DroolsInferredMetadata) bMetadata).substitute(patternSupplier));
         } else {
-            return new DroolsBiCondition<>(aMetadata, ((DroolsGenuineMetadata) bMetadata).substitute(newPattern));
+            return new DroolsBiCondition<>(aMetadata, ((DroolsGenuineMetadata) bMetadata).substitute(patternSupplier));
         }
     }
 
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
             AbstractTriJoiner<A, B, C> triJoiner) {
         DroolsMetadata<Object, C> cMetadata = cCondition.getAMetadata();
-        PatternDSL.PatternDef<Object> newPattern = cMetadata.getPattern()
+        Supplier<PatternDSL.PatternDef<Object>> newPattern = () -> cMetadata.buildPattern()
                 .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(),
                         (c, a, b) -> matches(triJoiner, aMetadata.extract(a), bMetadata.extract(b),
@@ -140,7 +141,7 @@ public final class DroolsBiCondition<A, B> {
         ConsequenceBuilder._3<ScoreHolder, Object, Object> consequence =
                 on(scoreHolderGlobal, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration())
                         .execute(consequenceImpl);
-        return Stream.of(aMetadata.getPattern(), bMetadata.getPattern(), consequence)
+        return Stream.of(aMetadata.buildPattern(), bMetadata.buildPattern(), consequence)
                 .distinct() // In case of logical tuples, the patterns will be shared and should only show up once.
                 .collect(Collectors.toList());
     }

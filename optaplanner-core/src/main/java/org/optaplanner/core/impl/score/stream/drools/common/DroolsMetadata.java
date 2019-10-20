@@ -16,29 +16,33 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.function.Supplier;
+
 import org.drools.model.Declaration;
 import org.drools.model.PatternDSL;
+
+import static org.drools.model.PatternDSL.pattern;
 
 public interface DroolsMetadata<LogicalFactType, GenuineFactType> {
 
     static <A> DroolsInferredMetadata<A> ofInferred(Declaration<DroolsLogicalTuple> variableDeclaration,
-            PatternDSL.PatternDef<DroolsLogicalTuple> pattern) {
-        return ofInferred(variableDeclaration, pattern, 0);
+            Supplier<PatternDSL.PatternDef<DroolsLogicalTuple>> patternBuilder) {
+        return ofInferred(variableDeclaration, patternBuilder, 0);
     }
 
     static <A> DroolsInferredMetadata<A> ofInferred(Declaration<DroolsLogicalTuple> variableDeclaration,
-            PatternDSL.PatternDef<DroolsLogicalTuple> pattern, int itemId) {
-        return new DroolsInferredMetadata<>(variableDeclaration, pattern, itemId);
+            Supplier<PatternDSL.PatternDef<DroolsLogicalTuple>> patternBuilder, int itemId) {
+        return new DroolsInferredMetadata<>(variableDeclaration, patternBuilder, itemId);
     }
 
-    static <A> DroolsGenuineMetadata<A> ofGenuine(Declaration<A> variableDeclaration,
-            PatternDSL.PatternDef<A> pattern) {
-        return new DroolsGenuineMetadata<>(variableDeclaration, pattern);
+    static <A> DroolsGenuineMetadata<A> ofGenuine(Declaration<A> variableDeclaration) {
+        return new DroolsGenuineMetadata<>(variableDeclaration, () -> pattern(variableDeclaration));
     }
 
     GenuineFactType extract(LogicalFactType container);
 
     Declaration<LogicalFactType> getVariableDeclaration();
 
-    PatternDSL.PatternDef<LogicalFactType> getPattern();
+    PatternDSL.PatternDef<LogicalFactType> buildPattern();
+
 }
