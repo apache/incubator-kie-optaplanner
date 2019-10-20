@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +109,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public <ResultContainer_ extends Serializable, Result_> UniConstraintStream<Result_> groupBy(
+    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException(); // TODO
     }
@@ -121,7 +120,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public <GroupKey_, ResultContainer_ extends Serializable, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         BavetGroupBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge
@@ -140,7 +139,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_ extends Serializable, Result_>
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
     TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
             Function<A, GroupKeyB_> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {

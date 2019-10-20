@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,7 +36,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstr
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.PatternDSL.pattern;
 
-public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, ResultContainer_ extends Serializable, NewB>
+public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, ResultContainer_, NewB>
         extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;

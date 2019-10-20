@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -103,7 +102,7 @@ public final class DroolsUniCondition<A> {
         }
     }
 
-    public <ResultContainer extends Serializable, NewA, NewB> List<RuleItemBuilder<?>> completeWithLogicalInsert(
+    public <ResultContainer, NewA, NewB> List<RuleItemBuilder<?>> completeWithLogicalInsert(
             Object ruleId, Function<A, NewA> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer, NewB> collector) {
         Function1<Object, A> extractor = o -> getAMetadata().extract(o);
@@ -137,7 +136,7 @@ public final class DroolsUniCondition<A> {
                 outerAccumulatePattern, consequence);
     }
 
-    public <ResultContainer extends Serializable, NewA> List<RuleItemBuilder<?>> completeWithLogicalInsert(
+    public <ResultContainer, NewA> List<RuleItemBuilder<?>> completeWithLogicalInsert(
             Object ruleId, UniConstraintCollector<A, ResultContainer, NewA> collector) {
         DroolsMetadata<Object, A> inputMetadata = getAMetadata();
         Variable<Object> inputVariable = inputMetadata.getVariableDeclaration();

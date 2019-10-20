@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -75,7 +74,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
-    public <ResultContainer_ extends Serializable, Result_> UniConstraintStream<Result_> groupBy(
+    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         DroolsGroupingUniConstraintStream<Solution_, A, Result_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
@@ -92,7 +91,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public <GroupKey_, ResultContainer_ extends Serializable, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         DroolsGroupingBiConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
@@ -107,7 +106,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_ extends Serializable, Result_>
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
     TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
             Function<A, GroupKeyB_> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
