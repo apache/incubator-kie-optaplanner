@@ -224,7 +224,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
      * @return never null
      */
-    <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+    <GroupKey_, ResultContainer_ extends Serializable, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
@@ -263,8 +263,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param <Result_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
      * @return never null
      */
-    <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
-            Function<A, GroupKeyA_> groupKeyAMapping,
+    <GroupKeyA_, GroupKeyB_, ResultContainer_ extends Serializable, Result_>
+    TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
             Function<A, GroupKeyB_> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 

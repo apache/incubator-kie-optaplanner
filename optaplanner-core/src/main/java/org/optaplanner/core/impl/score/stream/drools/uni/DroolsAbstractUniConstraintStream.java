@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
@@ -60,9 +61,12 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
+        DroolsAbstractUniConstraintStream<Solution_, B> castOtherStream =
+                (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream;
         DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsJoinBiConstraintStream<>(constraintFactory,
-                this, (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream, joiner);
+                this, castOtherStream, joiner);
         addChildStream(stream);
+        castOtherStream.addChildStream(stream);
         return stream;
     }
 
@@ -88,9 +92,12 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+    public <GroupKey_, ResultContainer_ extends Serializable, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        DroolsGroupingBiConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
@@ -100,8 +107,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_>
-    groupBy(Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_ extends Serializable, Result_>
+    TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping,
+            Function<A, GroupKeyB_> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException();
     }

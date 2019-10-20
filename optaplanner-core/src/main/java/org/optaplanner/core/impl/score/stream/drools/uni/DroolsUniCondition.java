@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.DSL;
 import org.drools.model.Declaration;
 import org.drools.model.Drools;
@@ -34,6 +35,8 @@ import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block3;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Predicate2;
 import org.drools.model.view.ExprViewItem;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.RuleContext;
@@ -50,6 +53,8 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.from;
+import static org.drools.model.PatternDSL.pattern;
 
 public final class DroolsUniCondition<A> {
 
@@ -58,7 +63,7 @@ public final class DroolsUniCondition<A> {
     public DroolsUniCondition(Class<A> aVariableType) {
         Declaration<A> aVariableDeclaration = declarationOf(aVariableType);
         this.aMetadata = (DroolsGenuineMetadata) DroolsMetadata.ofGenuine(aVariableDeclaration,
-                PatternDSL.pattern(aVariableDeclaration));
+                pattern(aVariableDeclaration));
     }
 
     public DroolsUniCondition(Declaration<DroolsLogicalTuple> aVariableDeclaration,
@@ -95,6 +100,39 @@ public final class DroolsUniCondition<A> {
         } else {
             return new DroolsBiCondition<>(aMetadata, ((DroolsGenuineMetadata) bMetadata).substitute(newPattern));
         }
+    }
+
+    public <ResultContainer extends Serializable, NewA, NewB> List<RuleItemBuilder<?>> completeWithLogicalInsert(
+            Object ruleId, Function<A, NewA> groupKeyMapping,
+            UniConstraintCollector<A, ResultContainer, NewB> collector) {
+        Function1<Object, A> extractor = o -> getAMetadata().extract(o);
+        Function1<Object, NewA> grouper = a -> groupKeyMapping.apply(extractor.apply(a));
+        // Accumulate all NewA into a set.
+        PatternDSL.PatternDef<Object> aPattern = getAMetadata().getPattern();
+        Variable<NewA> innerNewADeclaration = (Variable<NewA>) declarationOf(Object.class);
+        PatternDSL.PatternDef<Object> innerNewACollectingPattern = aPattern.bind(innerNewADeclaration, grouper);
+        Variable<Object> setOfNewADeclaration = declarationOf(Object.class);
+        ExprViewItem<Object> collectingPattern = DSL.accumulate(innerNewACollectingPattern,
+                accFunction(CollectSetAccumulateFunction::new, innerNewADeclaration).as(setOfNewADeclaration));
+        // Operate individually with every NewA from that set, creating the final grouping.
+        Variable<NewA> actualNewADeclaration =
+                (Variable<NewA>) declarationOf(Object.class, from(setOfNewADeclaration));
+        // And run an accumulate on all A which match NewA, applying the collector.
+        Predicate2<Object, NewA> matcher = (a, newA) -> grouper.apply(a).equals(newA);
+        Variable<A> inputVariable = (Variable<A>) getAMetadata().getVariableDeclaration();
+        PatternDSL.PatternDef<Object> innerAccumulatePattern = aPattern.expr(actualNewADeclaration, matcher)
+                .bind(inputVariable, extractor);
+        AccumulateFunction<ResultContainer> accumulateFunction = new DroolsUniAccumulateFunctionBridge<>(collector);
+        Variable<Object> outputVariable = declarationOf(Object.class);
+        ExprViewItem<Object> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
+                accFunction(() -> accumulateFunction, inputVariable).as(outputVariable));
+        ConsequenceBuilder._2<?, ?> consequence = on(actualNewADeclaration, outputVariable)
+                .execute((drools, newA, newB) -> {
+                    RuleContext kcontext = (RuleContext) drools;
+                    kcontext.insertLogical(new DroolsLogicalTuple(ruleId, newA, newB));
+                });
+        return Arrays.asList(collectingPattern, pattern(setOfNewADeclaration), pattern(actualNewADeclaration),
+                outerAccumulatePattern, consequence);
     }
 
     public <ResultContainer extends Serializable, NewA> List<RuleItemBuilder<?>> completeWithLogicalInsert(

@@ -454,7 +454,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_count() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -489,7 +488,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_countDistinct() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -534,7 +532,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_min() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);
@@ -564,7 +561,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @Test
     public void groupBy_1Mapping1Collector_max() {
-        assumeBavet();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);

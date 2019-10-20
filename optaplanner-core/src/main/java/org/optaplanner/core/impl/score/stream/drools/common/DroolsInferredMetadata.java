@@ -23,10 +23,13 @@ public final class DroolsInferredMetadata<A> implements DroolsMetadata<DroolsLog
 
     private final Declaration<DroolsLogicalTuple> variableDeclaration;
     private final PatternDSL.PatternDef<DroolsLogicalTuple> pattern;
+    private final int itemId;
 
-    DroolsInferredMetadata(Declaration<DroolsLogicalTuple> variableDeclaration, PatternDSL.PatternDef<DroolsLogicalTuple> pattern) {
+    DroolsInferredMetadata(Declaration<DroolsLogicalTuple> variableDeclaration,
+            PatternDSL.PatternDef<DroolsLogicalTuple> pattern, int itemId) {
         this.variableDeclaration = variableDeclaration;
         this.pattern = pattern;
+        this.itemId = itemId;
     }
 
     public DroolsInferredMetadata<A> substitute(PatternDSL.PatternDef<DroolsLogicalTuple> newPattern) {
@@ -35,7 +38,7 @@ public final class DroolsInferredMetadata<A> implements DroolsMetadata<DroolsLog
 
     @Override
     public A extract(DroolsLogicalTuple container) {
-        return container.getItem(0);
+        return container.getItem(itemId);
     }
 
     @Override

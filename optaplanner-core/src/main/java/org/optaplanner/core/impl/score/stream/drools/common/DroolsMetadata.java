@@ -23,7 +23,12 @@ public interface DroolsMetadata<LogicalFactType, GenuineFactType> {
 
     static <A> DroolsInferredMetadata<A> ofInferred(Declaration<DroolsLogicalTuple> variableDeclaration,
             PatternDSL.PatternDef<DroolsLogicalTuple> pattern) {
-        return new DroolsInferredMetadata<>(variableDeclaration, pattern);
+        return ofInferred(variableDeclaration, pattern, 0);
+    }
+
+    static <A> DroolsInferredMetadata<A> ofInferred(Declaration<DroolsLogicalTuple> variableDeclaration,
+            PatternDSL.PatternDef<DroolsLogicalTuple> pattern, int itemId) {
+        return new DroolsInferredMetadata<>(variableDeclaration, pattern, itemId);
     }
 
     static <A> DroolsGenuineMetadata<A> ofGenuine(Declaration<A> variableDeclaration,
