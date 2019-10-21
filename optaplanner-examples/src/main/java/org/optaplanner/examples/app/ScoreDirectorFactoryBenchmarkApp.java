@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -28,27 +31,45 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
+import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingConstraintProvider;
 import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingIncrementalScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingMapBasedEasyScoreCalculator;
+import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
+import org.optaplanner.examples.conferencescheduling.domain.Talk;
 import org.optaplanner.examples.conferencescheduling.optional.score.ConferenceSchedulingConstraintProvider;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
+import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.optional.score.CourseScheduleConstraintProvider;
+import org.optaplanner.examples.flightcrewscheduling.domain.Employee;
+import org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment;
+import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 import org.optaplanner.examples.flightcrewscheduling.optional.score.FlightCrewSchedulingConstraintProvider;
 import org.optaplanner.examples.flightcrewscheduling.persistence.FlightCrewSchedulingXlsxFileIO;
+import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
+import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO;
 import org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentConstraintProvider;
 import org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator;
 import org.optaplanner.examples.nqueens.domain.NQueens;
+import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator;
 import org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider;
 import org.optaplanner.examples.nqueens.solver.score.NQueensMapBasedEasyScoreCalculator;
+import org.optaplanner.examples.rocktour.domain.RockShow;
+import org.optaplanner.examples.rocktour.domain.RockStandstill;
+import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 import org.optaplanner.examples.rocktour.optional.score.RockTourConstraintProvider;
 import org.optaplanner.examples.rocktour.persistence.RockTourXlsxFileIO;
+import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
+import org.optaplanner.examples.taskassigning.domain.TaskOrEmployee;
 import org.optaplanner.examples.taskassigning.solver.score.TaskAssigningConstraintProvider;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingConstraintProvider;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO;
 import org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingEasyScoreCalculator;
@@ -76,34 +97,37 @@ public class ScoreDirectorFactoryBenchmarkApp {
                         "unsolved/400computers-1200processes.xml",
                         CloudBalancingMapBasedEasyScoreCalculator.class,
                         CloudBalancingIncrementalScoreCalculator.class,
-                        CloudBalancingConstraintProvider.class),
+                        CloudBalancingConstraintProvider.class, CloudBalance.class, CloudProcess.class),
                 new BenchmarkDescriptor("conferenceScheduling", null, ConferenceSchedulingXlsxFileIO.class,
                         "unsolved/72talks-12timeslots-10rooms.xlsx",
-                        null, null, ConferenceSchedulingConstraintProvider.class),
+                        null, null, ConferenceSchedulingConstraintProvider.class,
+                        ConferenceSolution.class, Talk.class),
                 new BenchmarkDescriptor("curriculumCourse", CourseSchedule.class, null,
                         "unsolved/comp08.xml",
-                        null, null, CourseScheduleConstraintProvider.class),
+                        null, null, CourseScheduleConstraintProvider.class,
+                        CourseSchedule.class, Lecture.class),
                 new BenchmarkDescriptor("flightCrewScheduling", null, FlightCrewSchedulingXlsxFileIO.class,
-                        "unsolved/175flights-7days-US.xlsx",
-                        null, null, FlightCrewSchedulingConstraintProvider.class),
+                        "unsolved/175flights-7days-US.xlsx", null, null,
+                        FlightCrewSchedulingConstraintProvider.class, FlightCrewSolution.class, FlightAssignment.class,
+                        Employee.class),
                 new BenchmarkDescriptor("machineReassignment", null, MachineReassignmentFileIO.class,
-                        "import/model_b_2.txt",
-                        null, MachineReassignmentIncrementalScoreCalculator.class,
-                        MachineReassignmentConstraintProvider.class),
+                        "import/model_b_2.txt", null, MachineReassignmentIncrementalScoreCalculator.class,
+                        MachineReassignmentConstraintProvider.class, MachineReassignment.class, MrProcessAssignment.class),
                 new BenchmarkDescriptor("nQueens", NQueens.class, null,
                         "unsolved/256queens.xml",
                         NQueensMapBasedEasyScoreCalculator.class, NQueensAdvancedIncrementalScoreCalculator.class,
-                        NQueensConstraintProvider.class),
+                        NQueensConstraintProvider.class, NQueens.class, Queen.class),
                 new BenchmarkDescriptor("rockTour", null, RockTourXlsxFileIO.class,
                         "unsolved/47shows.xlsx", null, null,
-                        RockTourConstraintProvider.class),
+                        RockTourConstraintProvider.class, RockTourSolution.class, RockShow.class, RockStandstill.class),
                 new BenchmarkDescriptor("taskAssigning", TaskAssigningSolution.class, null,
-                        "unsolved/100tasks-5employees.xml",
-                        null, null, TaskAssigningConstraintProvider.class),
+                        "unsolved/100tasks-5employees.xml", null, null,
+                        TaskAssigningConstraintProvider.class, TaskAssigningSolution.class, TaskOrEmployee.class, Task.class),
                 new BenchmarkDescriptor("vehicleRouting", VehicleRoutingSolution.class, VehicleRoutingFileIO.class,
                         "import/vrpweb/timewindowed/air/Solomon_025_C101.vrp",
                         VehicleRoutingEasyScoreCalculator.class, VehicleRoutingIncrementalScoreCalculator.class,
-                        VehicleRoutingConstraintProvider.class)
+                        VehicleRoutingConstraintProvider.class, VehicleRoutingSolution.class, Standstill.class,
+                        Customer.class, TimeWindowedCustomer.class)
         };
         Map<String, Object> model = new HashMap<>();
         model.put("benchmarkDescriptors", descriptors);
@@ -123,12 +147,15 @@ public class ScoreDirectorFactoryBenchmarkApp {
         private final String easyScoreCalculator;
         private final String incrementalScoreCalculator;
         private final String constraintProvider;
+        private final String solutionClass;
+        private final Set<String> entityClasses;
 
         public <Solution_> BenchmarkDescriptor(String exampleId, Class<?> xStreamAnnotatedClass,
-                Class<? extends SolutionFileIO> solutionFileIoClass, String inputSolutionFile,
+                Class<? extends SolutionFileIO<Solution_>> solutionFileIoClass, String inputSolutionFile,
                 Class<? extends EasyScoreCalculator<Solution_>> easyScoreCalculatorClass,
                 Class<? extends IncrementalScoreCalculator<Solution_>> incrementalScoreCalculatorClass,
-                Class<? extends ConstraintProvider> constraintProviderClass) {
+                Class<? extends ConstraintProvider> constraintProviderClass, Class<Solution_> solutionClass,
+                Class<?>... entityClasses) {
             this.exampleId = exampleId;
             if (solutionFileIoClass == null && xStreamAnnotatedClass == null) {
                 throw new IllegalArgumentException("Example (" + exampleId +
@@ -160,6 +187,10 @@ public class ScoreDirectorFactoryBenchmarkApp {
             this.constraintProvider = constraintProviderClass == null ?
                     null :
                     constraintProviderClass.getCanonicalName();
+            this.solutionClass = solutionClass.getCanonicalName();
+            this.entityClasses = Stream.of(entityClasses)
+                    .map(Class::getCanonicalName)
+                    .collect(Collectors.toSet());
         }
 
         public String getExampleId() {
@@ -192,6 +223,14 @@ public class ScoreDirectorFactoryBenchmarkApp {
 
         public String getConstraintProvider() {
             return constraintProvider;
+        }
+
+        public String getSolutionClass() {
+            return solutionClass;
+        }
+
+        public Set<String> getEntityClasses() {
+            return entityClasses;
         }
     }
 }

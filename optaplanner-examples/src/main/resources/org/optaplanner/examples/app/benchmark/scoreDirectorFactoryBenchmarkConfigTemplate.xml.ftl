@@ -36,40 +36,11 @@
   </#if>
 </#macro>
 
-<#macro solverDetails exampleId>
-  <#if exampleId == "cloudBalancing">
-    <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-    <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
-  <#elseif exampleId == "conferenceScheduling">
-    <solutionClass>org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution</solutionClass>
-    <entityClass>org.optaplanner.examples.conferencescheduling.domain.Talk</entityClass>
-  <#elseif exampleId == "curriculumCourse">
-    <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
-    <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
-  <#elseif exampleId == "nQueens">
-    <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
-    <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
-  <#elseif exampleId == "flightCrewScheduling">
-    <solutionClass>org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution</solutionClass>
-    <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment</entityClass>
-    <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.Employee</entityClass>
-  <#elseif exampleId == "machineReassignment">
-    <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-    <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
-  <#elseif exampleId == "rockTour">
-    <solutionClass>org.optaplanner.examples.rocktour.domain.RockTourSolution</solutionClass>
-    <entityClass>org.optaplanner.examples.rocktour.domain.RockShow</entityClass>
-    <entityClass>org.optaplanner.examples.rocktour.domain.RockStandstill</entityClass>
-  <#elseif exampleId == "taskAssigning">
-    <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
-    <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
-    <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
-  <#elseif exampleId == "vehicleRouting">
-    <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
-    <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
-    <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
-    <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
-  </#if>
+<#macro solverDetails benchmarkDescriptor>
+  <solutionClass>${benchmarkDescriptor.getSolutionClass()}</solutionClass>
+  <#list benchmarkDescriptor.getEntityClasses() as entityClass>
+    <entityClass>${entityClass}</entityClass>
+  </#list>
   <constructionHeuristic/>
   <localSearch />
 </#macro>
@@ -97,7 +68,7 @@
           <easyScoreCalculatorClass>${benchmarkDescriptor.getEasyScoreCalculator()}</easyScoreCalculatorClass>
           <@scoreDirectorDetails benchmarkDescriptor.getExampleId()/>
         </scoreDirectorFactory>
-        <@solverDetails benchmarkDescriptor.getExampleId()/>
+        <@solverDetails benchmarkDescriptor/>
       </solver>
     </solverBenchmark>
   </#if>
@@ -110,7 +81,7 @@
           <incrementalScoreCalculatorClass>${benchmarkDescriptor.getIncrementalScoreCalculator()}</incrementalScoreCalculatorClass>
           <@scoreDirectorDetails benchmarkDescriptor.getExampleId()/>
         </scoreDirectorFactory>
-        <@solverDetails benchmarkDescriptor.getExampleId()/>
+        <@solverDetails benchmarkDescriptor/>
       </solver>
     </solverBenchmark>
   </#if>
@@ -124,7 +95,7 @@
           <constraintProviderClass>${benchmarkDescriptor.getConstraintProvider()}</constraintProviderClass>
           <@scoreDirectorDetails benchmarkDescriptor.getExampleId()/>
         </scoreDirectorFactory>
-        <@solverDetails benchmarkDescriptor.getExampleId()/>
+        <@solverDetails benchmarkDescriptor/>
       </solver>
     </solverBenchmark>
     <solverBenchmark>
@@ -136,7 +107,7 @@
           <constraintProviderClass>${benchmarkDescriptor.getConstraintProvider()}</constraintProviderClass>
           <@scoreDirectorDetails benchmarkDescriptor.getExampleId()/>
         </scoreDirectorFactory>
-        <@solverDetails benchmarkDescriptor.getExampleId()/>
+        <@solverDetails benchmarkDescriptor/>
       </solver>
     </solverBenchmark>
   </#if>
@@ -149,7 +120,7 @@
           <scoreDrl>${benchmarkDescriptor.getDrlFile()}</scoreDrl>
           <@scoreDirectorDetails benchmarkDescriptor.getExampleId()/>
         </scoreDirectorFactory>
-        <@solverDetails benchmarkDescriptor.getExampleId()/>
+        <@solverDetails benchmarkDescriptor/>
       </solver>
     </solverBenchmark>
   </#if>
