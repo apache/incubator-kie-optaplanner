@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.drools.model.Global;
@@ -42,7 +41,7 @@ public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, ResultContaine
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final Function<A, NewA> groupKeyMapping;
     private final UniConstraintCollector<A, ResultContainer_, NewB> collector;
-    private final AtomicInteger ruleId = new AtomicInteger(-1);
+    private int ruleId = -1;
 
     public DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
@@ -87,9 +86,10 @@ public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, ResultContaine
      * @return unique id for the rule
      */
     private int createRuleIdIfAbsent(DroolsConstraintFactory<Solution_> constraintFactory) {
-        return ruleId.updateAndGet(currentRuleId -> (currentRuleId < 0) ?
-                constraintFactory.getRuleIdAndIncrement() :
-                currentRuleId);
+        if (ruleId < 0) {
+            ruleId = constraintFactory.getNextRuleId();
+        }
+        return ruleId;
     }
 
     @Override
