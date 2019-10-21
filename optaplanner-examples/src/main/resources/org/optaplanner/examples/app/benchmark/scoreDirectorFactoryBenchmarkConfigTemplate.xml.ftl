@@ -27,44 +27,44 @@
   </inheritedSolverBenchmark>
 
 <#macro scoreDirectorDetails exampleId>
-  <#if exampleId == "cloudbalancing">
+  <#if exampleId == "cloudBalancing">
     <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
-  <#elseif exampleId == "nqueens">
+  <#elseif exampleId == "nQueens">
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-  <#elseif exampleId == "vehiclerouting">
+  <#elseif exampleId == "vehicleRouting">
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </#if>
 </#macro>
 
 <#macro solverDetails exampleId>
-  <#if exampleId == "cloudbalancing">
+  <#if exampleId == "cloudBalancing">
     <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
     <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
-  <#elseif exampleId == "conferencescheduling">
+  <#elseif exampleId == "conferenceScheduling">
     <solutionClass>org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution</solutionClass>
     <entityClass>org.optaplanner.examples.conferencescheduling.domain.Talk</entityClass>
-  <#elseif exampleId == "curriculumcourse">
+  <#elseif exampleId == "curriculumCourse">
     <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
     <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
-  <#elseif exampleId == "nqueens">
+  <#elseif exampleId == "nQueens">
     <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
     <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
-  <#elseif exampleId == "flightcrewscheduling">
+  <#elseif exampleId == "flightCrewScheduling">
     <solutionClass>org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution</solutionClass>
     <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.FlightAssignment</entityClass>
     <entityClass>org.optaplanner.examples.flightcrewscheduling.domain.Employee</entityClass>
-  <#elseif exampleId == "machinereassignment">
+  <#elseif exampleId == "machineReassignment">
     <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
     <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
-  <#elseif exampleId == "rocktour">
+  <#elseif exampleId == "rockTour">
     <solutionClass>org.optaplanner.examples.rocktour.domain.RockTourSolution</solutionClass>
     <entityClass>org.optaplanner.examples.rocktour.domain.RockShow</entityClass>
     <entityClass>org.optaplanner.examples.rocktour.domain.RockStandstill</entityClass>
-  <#elseif exampleId == "taskassigning">
+  <#elseif exampleId == "taskAssigning">
     <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
     <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
     <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
-  <#elseif exampleId == "vehiclerouting">
+  <#elseif exampleId == "vehicleRouting">
     <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
     <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
     <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>

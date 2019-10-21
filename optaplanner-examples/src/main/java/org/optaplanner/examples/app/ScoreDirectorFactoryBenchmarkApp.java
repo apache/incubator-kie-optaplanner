@@ -72,36 +72,36 @@ public class ScoreDirectorFactoryBenchmarkApp {
 
     public static void main(String... args) {
         BenchmarkDescriptor[] descriptors = {
-                new BenchmarkDescriptor("cloudbalancing", CloudBalance.class, null,
-                        "unsolved/400computers-1200processes.xml", "cloudBalancingScoreRules.drl",
+                new BenchmarkDescriptor("cloudBalancing", CloudBalance.class, null,
+                        "unsolved/400computers-1200processes.xml",
                         CloudBalancingMapBasedEasyScoreCalculator.class,
                         CloudBalancingIncrementalScoreCalculator.class,
                         CloudBalancingConstraintProvider.class),
-                new BenchmarkDescriptor("conferencescheduling", null, ConferenceSchedulingXlsxFileIO.class,
-                        "unsolved/72talks-12timeslots-10rooms.xlsx", "conferenceSchedulingScoreRules.drl",
+                new BenchmarkDescriptor("conferenceScheduling", null, ConferenceSchedulingXlsxFileIO.class,
+                        "unsolved/72talks-12timeslots-10rooms.xlsx",
                         null, null, ConferenceSchedulingConstraintProvider.class),
-                new BenchmarkDescriptor("curriculumcourse", CourseSchedule.class, null,
-                        "unsolved/comp08.xml", "curriculumCourseScoreRules.drl",
+                new BenchmarkDescriptor("curriculumCourse", CourseSchedule.class, null,
+                        "unsolved/comp08.xml",
                         null, null, CourseScheduleConstraintProvider.class),
-                new BenchmarkDescriptor("flightcrewscheduling", null, FlightCrewSchedulingXlsxFileIO.class,
-                        "unsolved/175flights-7days-US.xlsx", "flightCrewSchedulingScoreRules.drl",
+                new BenchmarkDescriptor("flightCrewScheduling", null, FlightCrewSchedulingXlsxFileIO.class,
+                        "unsolved/175flights-7days-US.xlsx",
                         null, null, FlightCrewSchedulingConstraintProvider.class),
-                new BenchmarkDescriptor("machinereassignment", null, MachineReassignmentFileIO.class,
-                        "import/model_b_2.txt", "machineReassignmentScoreRules.drl",
+                new BenchmarkDescriptor("machineReassignment", null, MachineReassignmentFileIO.class,
+                        "import/model_b_2.txt",
                         null, MachineReassignmentIncrementalScoreCalculator.class,
                         MachineReassignmentConstraintProvider.class),
-                new BenchmarkDescriptor("nqueens", NQueens.class, null,
-                        "unsolved/256queens.xml", "nQueensScoreRules.drl",
+                new BenchmarkDescriptor("nQueens", NQueens.class, null,
+                        "unsolved/256queens.xml",
                         NQueensMapBasedEasyScoreCalculator.class, NQueensAdvancedIncrementalScoreCalculator.class,
                         NQueensConstraintProvider.class),
-                new BenchmarkDescriptor("rocktour", null, RockTourXlsxFileIO.class,
-                        "unsolved/47shows.xlsx", "rockTourScoreRules.drl", null, null,
+                new BenchmarkDescriptor("rockTour", null, RockTourXlsxFileIO.class,
+                        "unsolved/47shows.xlsx", null, null,
                         RockTourConstraintProvider.class),
-                new BenchmarkDescriptor("taskassigning", TaskAssigningSolution.class, null,
-                        "unsolved/100tasks-5employees.xml", "taskAssigningScoreRules.drl",
+                new BenchmarkDescriptor("taskAssigning", TaskAssigningSolution.class, null,
+                        "unsolved/100tasks-5employees.xml",
                         null, null, TaskAssigningConstraintProvider.class),
-                new BenchmarkDescriptor("vehiclerouting", VehicleRoutingSolution.class, VehicleRoutingFileIO.class,
-                        "import/vrpweb/timewindowed/air/Solomon_025_C101.vrp", "vehicleRoutingScoreRules.drl",
+                new BenchmarkDescriptor("vehicleRouting", VehicleRoutingSolution.class, VehicleRoutingFileIO.class,
+                        "import/vrpweb/timewindowed/air/Solomon_025_C101.vrp",
                         VehicleRoutingEasyScoreCalculator.class, VehicleRoutingIncrementalScoreCalculator.class,
                         VehicleRoutingConstraintProvider.class)
         };
@@ -125,7 +125,7 @@ public class ScoreDirectorFactoryBenchmarkApp {
         private final String constraintProvider;
 
         public <Solution_> BenchmarkDescriptor(String exampleId, Class<?> xStreamAnnotatedClass,
-                Class<? extends SolutionFileIO> solutionFileIoClass, String inputSolutionFile, String drlFileName,
+                Class<? extends SolutionFileIO> solutionFileIoClass, String inputSolutionFile,
                 Class<? extends EasyScoreCalculator<Solution_>> easyScoreCalculatorClass,
                 Class<? extends IncrementalScoreCalculator<Solution_>> incrementalScoreCalculatorClass,
                 Class<? extends ConstraintProvider> constraintProviderClass) {
@@ -136,18 +136,19 @@ public class ScoreDirectorFactoryBenchmarkApp {
             }
             this.solutionFileIoClass = solutionFileIoClass == null ? null : solutionFileIoClass.getCanonicalName();
             this.xStreamAnnotatedClass = xStreamAnnotatedClass == null ? null : xStreamAnnotatedClass.getCanonicalName();
-            String fullInputSolutionPath = "data/" + exampleId + "/" + inputSolutionFile;
+            String parentFolder = exampleId.toLowerCase();
+            String fullInputSolutionPath = "data/" + parentFolder + "/" + inputSolutionFile;
             if (!new File(fullInputSolutionPath).exists()) {
                 throw new IllegalArgumentException("No input solution (" + inputSolutionFile + ") for example (" + exampleId + ").");
             }
             this.inputSolutionFile = fullInputSolutionPath;
-            String fullDrlPath = "org/optaplanner/examples/" + exampleId + "/solver/" + drlFileName;
+            String fullDrlPath = "org/optaplanner/examples/" + parentFolder + "/solver/" + exampleId + "ScoreRules.drl";
             try (InputStream stream = getClass().getResourceAsStream("/" + fullDrlPath)) {
                 if (stream == null) {
-                    throw new IllegalArgumentException("No DRL (" + drlFileName + ") for example (" + exampleId + ").");
+                    throw new IllegalArgumentException("No DRL (" + fullDrlPath + ") for example (" + exampleId + ").");
                 }
             } catch (IOException e) {
-                throw new IllegalArgumentException("No DRL (" + drlFileName + ") for example (" + exampleId + ").", e);
+                throw new IllegalArgumentException("No DRL (" + fullDrlPath + ") for example (" + exampleId + ").", e);
             }
             this.drlFile = fullDrlPath;
             this.easyScoreCalculator = easyScoreCalculatorClass == null ?
