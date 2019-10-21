@@ -17,22 +17,21 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.io.Serializable;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 /**
- * Each context is uniquely identified by its ID.
+ * Each context is uniquely identified by its {@link System#identityHashCode(Object)}.
  * This is necessary so that the Drools accumulate function can properly undo in
  * {@link DroolsUniAccumulateFunctionBridge} and its Bi, Tri, ... alternatives.
  * @param <ResultContainer_> The same type from {@link UniConstraintCollector} and its Bi, Tri, ... alternatives.
  */
 public final class DroolsAccumulateContext<ResultContainer_> implements Serializable {
 
-    private static final AtomicLong CONTEXT_COUNTER = new AtomicLong();
-    private final long id = CONTEXT_COUNTER.getAndIncrement();
     private final ResultContainer_ container;
+    private final Map<Object, Runnable> undoMap = new HashMap<>();
 
     public DroolsAccumulateContext(ResultContainer_ container) {
         this.container = container;
@@ -42,20 +41,7 @@ public final class DroolsAccumulateContext<ResultContainer_> implements Serializ
         return container;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !Objects.equals(getClass(), o.getClass())) {
-            return false;
-        }
-        final DroolsAccumulateContext context = (DroolsAccumulateContext) o;
-        return id == context.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public Map<Object, Runnable> getUndoMap() {
+        return undoMap;
     }
 }

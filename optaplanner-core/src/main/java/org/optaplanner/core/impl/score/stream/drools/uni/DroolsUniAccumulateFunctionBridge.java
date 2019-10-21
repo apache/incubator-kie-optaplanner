@@ -18,9 +18,6 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -41,8 +38,6 @@ final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_, NewA>
     private final Supplier<ResultContainer_> supplier;
     private final BiFunction<ResultContainer_, A, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
-    // Weak in order to prevent a memory leak, as the the context is kept by Drools outside of our control.
-    private final Map<DroolsAccumulateContext<ResultContainer_>, Map<Object, Runnable>> undoMaps = new WeakHashMap<>(0);
 
     public DroolsUniAccumulateFunctionBridge(UniConstraintCollector<A, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
@@ -61,19 +56,12 @@ final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_, NewA>
 
     @Override
     public void init(DroolsAccumulateContext<ResultContainer_> context) {
-        undoMaps.compute(context, (k, v) -> {
-            if (v == null) {
-                return new HashMap<>(1);
-            } else {
-                v.clear();
-                return v;
-            }
-        });
+        context.getUndoMap().clear();
     }
 
     @Override
     public void accumulate(DroolsAccumulateContext<ResultContainer_> context, Object value) {
-        undoMaps.get(context).compute(value, (k, v) -> {
+        context.getUndoMap().compute(value, (k, v) -> {
            if (v == null) {
                return accumulator.apply(context.getContainer(), (A) value);
            } else {
@@ -84,7 +72,7 @@ final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_, NewA>
 
     @Override
     public void reverse(DroolsAccumulateContext<ResultContainer_> context, Object value) {
-        Runnable undo = undoMaps.get(context).remove(value);
+        Runnable undo = context.getUndoMap().remove(value);
         if (undo == null) {
             throw new IllegalStateException("Undo for (" + value +  ") does not exist.");
         }
