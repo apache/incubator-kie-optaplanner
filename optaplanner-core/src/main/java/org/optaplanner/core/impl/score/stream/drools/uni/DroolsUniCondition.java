@@ -119,11 +119,11 @@ public final class DroolsUniCondition<A> {
     public <ResultContainer, NewA, NewB> List<RuleItemBuilder<?>> completeWithLogicalInsert(
             Object ruleId, Function<A, NewA> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer, NewB> collector) {
-        Function1<Object, A> extractor = o -> getAMetadata().extract(o);
+        Function1<Object, A> extractor = aMetadata::extract;
         Function1<Object, NewA> grouper = a -> groupKeyMapping.apply(extractor.apply(a));
         // Accumulate all NewA into a set.
         Declaration<NewA> innerNewADeclaration = (Declaration<NewA>) declarationOf(Object.class);
-        PatternDSL.PatternDef<Object> innerNewACollectingPattern = getAMetadata().buildPattern()
+        PatternDSL.PatternDef<Object> innerNewACollectingPattern = aMetadata.buildPattern()
                 .bind(innerNewADeclaration, grouper);
         Declaration<Object> setOfNewADeclaration = declarationOf(Object.class);
         ExprViewItem<Object> collectingPattern = DSL.accumulate(innerNewACollectingPattern,
@@ -133,7 +133,7 @@ public final class DroolsUniCondition<A> {
                 (Declaration<NewA>) declarationOf(Object.class, from(setOfNewADeclaration));
         // And run an accumulate on all A which match NewA, applying the collector.
         Predicate2<Object, NewA> matcher = (a, newA) -> grouper.apply(a).equals(newA);
-        Declaration<A> aVariable = (Declaration<A>) getAMetadata().getVariableDeclaration();
+        Declaration<A> aVariable = (Declaration<A>) aMetadata.getVariableDeclaration();
         PatternDSL.PatternDef<Object> innerAccumulatePattern = aMetadata.buildPattern()
                 .expr(actualNewADeclaration, matcher)
                 .bind(aVariable, extractor);
