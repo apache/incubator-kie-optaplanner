@@ -67,6 +67,7 @@ public final class DroolsTriCondition<A, B, C> {
     }
 
     public DroolsTriCondition<A, B, C> andFilter(TriPredicate<A, B, C> predicate) {
+        // The expression ID is required yet seemingly unused. A random UUID is generated.
         Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> cMetadata.buildPattern()
                 .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(),

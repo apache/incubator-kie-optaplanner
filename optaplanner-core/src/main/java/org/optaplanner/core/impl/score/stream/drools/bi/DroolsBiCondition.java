@@ -60,7 +60,7 @@ public final class DroolsBiCondition<A, B> {
 
     public DroolsBiCondition(Declaration<DroolsLogicalTuple> aVariableDeclaration,
             Function<Declaration<DroolsLogicalTuple>, PatternDSL.PatternDef<DroolsLogicalTuple>> patternProvider) {
-        // We share both the declaration and the pattern, as the data is all coming from the same DroolsLogicalTuple.
+        // Share both the declaration and the pattern, as the data is all coming from the same DroolsLogicalTuple.
         PatternDSL.PatternDef<DroolsLogicalTuple> pattern = patternProvider.apply(aVariableDeclaration);
         this.aMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration, () -> pattern, 0);
         this.bMetadata = (DroolsInferredMetadata) DroolsMetadata.ofInferred(aVariableDeclaration, () -> pattern, 1);
@@ -84,6 +84,7 @@ public final class DroolsBiCondition<A, B> {
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
             AbstractTriJoiner<A, B, C> triJoiner) {
         DroolsMetadata<Object, C> cMetadata = cCondition.getAMetadata();
+        // The expression ID is required yet seemingly unused. A random UUID is generated.
         Supplier<PatternDSL.PatternDef<Object>> newPattern = () -> cMetadata.buildPattern()
                 .expr(UUID.randomUUID().toString(), aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(),

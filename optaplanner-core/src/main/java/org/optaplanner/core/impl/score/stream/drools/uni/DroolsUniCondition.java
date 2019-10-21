@@ -94,6 +94,28 @@ public final class DroolsUniCondition<A> {
         return new DroolsBiCondition<>(aMetadata, bMetadata.substitute(patternSupplier));
     }
 
+    /**
+     * The goal of this method is to create the left-hand side of a rule to look like this:
+     *
+     * <pre>
+     * when
+     *     accumulate(Person(), $set: collectSet(Person::getCity))
+     *     $newA : City() from $set // grouping
+     *     accumulate(Person(getCity() == $newA), $newB: collect(ConstraintCollectors.count()))
+     * then
+     *     insertLogical($newA, $newB);
+     * end
+     * </pre>
+     *
+     * Note: This is pseudo-code and the actual Drools code will look slightly different in terms of syntax.
+     * @param ruleId never null, id of the context in which the new facts will be inserted
+     * @param groupKeyMapping never null, grouping to apply
+     * @param collector never null, collector to apply
+     * @param <ResultContainer> implementation detail, unimportant
+     * @param <NewA> type of the first logical fact
+     * @param <NewB> type of the second logical fact
+     * @return
+     */
     public <ResultContainer, NewA, NewB> List<RuleItemBuilder<?>> completeWithLogicalInsert(
             Object ruleId, Function<A, NewA> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer, NewB> collector) {
