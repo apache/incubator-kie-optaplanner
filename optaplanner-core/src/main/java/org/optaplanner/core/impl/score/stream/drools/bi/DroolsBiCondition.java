@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -135,8 +136,7 @@ public final class DroolsBiCondition<A, B> {
             return Stream.of(bMetadata.buildPattern(), consequence)
                     .collect(Collectors.toList());
         } else {
-            return Stream.of(aMetadata.buildPattern(), bMetadata.buildPattern(), consequence)
-                    .collect(Collectors.toList());
+            return Arrays.asList(aMetadata.buildPattern(), bMetadata.buildPattern(), consequence);
         }
     }
 
