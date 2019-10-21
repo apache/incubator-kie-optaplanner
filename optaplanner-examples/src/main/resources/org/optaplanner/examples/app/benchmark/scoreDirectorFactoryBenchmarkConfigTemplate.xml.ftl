@@ -49,8 +49,8 @@
   <problemBenchmarks>
     <#if benchmarkDescriptor.getSolutionFileIoClass()??>
       <solutionFileIOClass>${benchmarkDescriptor.getSolutionFileIoClass()}</solutionFileIOClass>
-    <#elseif benchmarkDescriptor.getXStreamAnnotatedClass()??>
-      <xStreamAnnotatedClass>${benchmarkDescriptor.getXStreamAnnotatedClass()}</xStreamAnnotatedClass>
+    <#else>
+      <xStreamAnnotatedClass>${benchmarkDescriptor.getSolutionClass()}</xStreamAnnotatedClass>
     </#if>
     <inputSolutionFile>${benchmarkDescriptor.getInputSolutionFile()}</inputSolutionFile>
     <problemStatisticType>BEST_SCORE</problemStatisticType>

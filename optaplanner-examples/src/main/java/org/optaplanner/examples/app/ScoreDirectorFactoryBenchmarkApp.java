@@ -93,41 +93,34 @@ public class ScoreDirectorFactoryBenchmarkApp {
 
     public static void main(String... args) {
         BenchmarkDescriptor[] descriptors = {
-                new BenchmarkDescriptor("cloudBalancing", CloudBalance.class, null,
-                        "unsolved/400computers-1200processes.xml",
-                        CloudBalancingMapBasedEasyScoreCalculator.class,
-                        CloudBalancingIncrementalScoreCalculator.class,
-                        CloudBalancingConstraintProvider.class, CloudBalance.class, CloudProcess.class),
-                new BenchmarkDescriptor("conferenceScheduling", null, ConferenceSchedulingXlsxFileIO.class,
-                        "unsolved/72talks-12timeslots-10rooms.xlsx",
-                        null, null, ConferenceSchedulingConstraintProvider.class,
-                        ConferenceSolution.class, Talk.class),
-                new BenchmarkDescriptor("curriculumCourse", CourseSchedule.class, null,
-                        "unsolved/comp08.xml",
-                        null, null, CourseScheduleConstraintProvider.class,
-                        CourseSchedule.class, Lecture.class),
-                new BenchmarkDescriptor("flightCrewScheduling", null, FlightCrewSchedulingXlsxFileIO.class,
-                        "unsolved/175flights-7days-US.xlsx", null, null,
-                        FlightCrewSchedulingConstraintProvider.class, FlightCrewSolution.class, FlightAssignment.class,
-                        Employee.class),
-                new BenchmarkDescriptor("machineReassignment", null, MachineReassignmentFileIO.class,
-                        "import/model_b_2.txt", null, MachineReassignmentIncrementalScoreCalculator.class,
-                        MachineReassignmentConstraintProvider.class, MachineReassignment.class, MrProcessAssignment.class),
-                new BenchmarkDescriptor("nQueens", NQueens.class, null,
-                        "unsolved/256queens.xml",
-                        NQueensMapBasedEasyScoreCalculator.class, NQueensAdvancedIncrementalScoreCalculator.class,
-                        NQueensConstraintProvider.class, NQueens.class, Queen.class),
-                new BenchmarkDescriptor("rockTour", null, RockTourXlsxFileIO.class,
-                        "unsolved/47shows.xlsx", null, null,
-                        RockTourConstraintProvider.class, RockTourSolution.class, RockShow.class, RockStandstill.class),
-                new BenchmarkDescriptor("taskAssigning", TaskAssigningSolution.class, null,
-                        "unsolved/100tasks-5employees.xml", null, null,
-                        TaskAssigningConstraintProvider.class, TaskAssigningSolution.class, TaskOrEmployee.class, Task.class),
-                new BenchmarkDescriptor("vehicleRouting", VehicleRoutingSolution.class, VehicleRoutingFileIO.class,
-                        "import/vrpweb/timewindowed/air/Solomon_025_C101.vrp",
+                new BenchmarkDescriptor("cloudBalancing", "unsolved/400computers-1200processes.xml",
+                        CloudBalancingMapBasedEasyScoreCalculator.class, CloudBalancingIncrementalScoreCalculator.class,
+                        null, CloudBalancingConstraintProvider.class, CloudBalance.class, CloudProcess.class),
+                new BenchmarkDescriptor("conferenceScheduling", "unsolved/72talks-12timeslots-10rooms.xlsx",
+                        null, null, ConferenceSchedulingXlsxFileIO.class,
+                        ConferenceSchedulingConstraintProvider.class, ConferenceSolution.class, Talk.class),
+                new BenchmarkDescriptor("curriculumCourse", "unsolved/comp08.xml", null, null, null,
+                        CourseScheduleConstraintProvider.class, CourseSchedule.class, Lecture.class),
+                new BenchmarkDescriptor("flightCrewScheduling", "unsolved/175flights-7days-US.xlsx", null, null,
+                        FlightCrewSchedulingXlsxFileIO.class, FlightCrewSchedulingConstraintProvider.class,
+                        FlightCrewSolution.class, FlightAssignment.class, Employee.class),
+                new BenchmarkDescriptor("machineReassignment", "import/model_b_2.txt", null,
+                        MachineReassignmentIncrementalScoreCalculator.class, MachineReassignmentFileIO.class,
+                        MachineReassignmentConstraintProvider.class, MachineReassignment.class,
+                        MrProcessAssignment.class),
+                new BenchmarkDescriptor("nQueens", "unsolved/256queens.xml", NQueensMapBasedEasyScoreCalculator.class,
+                        NQueensAdvancedIncrementalScoreCalculator.class, null, NQueensConstraintProvider.class,
+                        NQueens.class, Queen.class),
+                new BenchmarkDescriptor("rockTour", "unsolved/47shows.xlsx", null, null,
+                        RockTourXlsxFileIO.class, RockTourConstraintProvider.class, RockTourSolution.class,
+                        RockShow.class, RockStandstill.class),
+                new BenchmarkDescriptor("taskAssigning", "unsolved/100tasks-5employees.xml", null, null, null,
+                        TaskAssigningConstraintProvider.class, TaskAssigningSolution.class, TaskOrEmployee.class,
+                        Task.class),
+                new BenchmarkDescriptor("vehicleRouting", "import/vrpweb/timewindowed/air/Solomon_025_C101.vrp",
                         VehicleRoutingEasyScoreCalculator.class, VehicleRoutingIncrementalScoreCalculator.class,
-                        VehicleRoutingConstraintProvider.class, VehicleRoutingSolution.class, Standstill.class,
-                        Customer.class, TimeWindowedCustomer.class)
+                        VehicleRoutingFileIO.class, VehicleRoutingConstraintProvider.class,
+                        VehicleRoutingSolution.class, Standstill.class, Customer.class, TimeWindowedCustomer.class)
         };
         Map<String, Object> model = new HashMap<>();
         model.put("benchmarkDescriptors", descriptors);
@@ -141,7 +134,6 @@ public class ScoreDirectorFactoryBenchmarkApp {
 
         private final String exampleId;
         private final String solutionFileIoClass;
-        private final String xStreamAnnotatedClass;
         private final String inputSolutionFile;
         private final String drlFile;
         private final String easyScoreCalculator;
@@ -150,19 +142,14 @@ public class ScoreDirectorFactoryBenchmarkApp {
         private final String solutionClass;
         private final Set<String> entityClasses;
 
-        public <Solution_> BenchmarkDescriptor(String exampleId, Class<?> xStreamAnnotatedClass,
-                Class<? extends SolutionFileIO<Solution_>> solutionFileIoClass, String inputSolutionFile,
+        public <Solution_> BenchmarkDescriptor(String exampleId, String inputSolutionFile,
                 Class<? extends EasyScoreCalculator<Solution_>> easyScoreCalculatorClass,
                 Class<? extends IncrementalScoreCalculator<Solution_>> incrementalScoreCalculatorClass,
+                Class<? extends SolutionFileIO<Solution_>> solutionFileIoClass,
                 Class<? extends ConstraintProvider> constraintProviderClass, Class<Solution_> solutionClass,
                 Class<?>... entityClasses) {
             this.exampleId = exampleId;
-            if (solutionFileIoClass == null && xStreamAnnotatedClass == null) {
-                throw new IllegalArgumentException("Example (" + exampleId +
-                        ") provides neither solutionFileIoClass nor xStreamAnnotatedClass.");
-            }
             this.solutionFileIoClass = solutionFileIoClass == null ? null : solutionFileIoClass.getCanonicalName();
-            this.xStreamAnnotatedClass = xStreamAnnotatedClass == null ? null : xStreamAnnotatedClass.getCanonicalName();
             String parentFolder = exampleId.toLowerCase();
             String fullInputSolutionPath = "data/" + parentFolder + "/" + inputSolutionFile;
             if (!new File(fullInputSolutionPath).exists()) {
@@ -195,10 +182,6 @@ public class ScoreDirectorFactoryBenchmarkApp {
 
         public String getExampleId() {
             return exampleId;
-        }
-
-        public String getXStreamAnnotatedClass() {
-            return xStreamAnnotatedClass;
         }
 
         public String getSolutionFileIoClass() {
