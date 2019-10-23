@@ -92,32 +92,32 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 public class ScoreDirectorFactoryBenchmarkApp {
 
     public static void main(String... args) {
-        BenchmarkDescriptor[] descriptors = {
-                new BenchmarkDescriptor("cloudBalancing", "unsolved/1600computers-4800processes.xml",
+        ProblemDescriptor[] descriptors = {
+                new ProblemDescriptor("cloudBalancing", "unsolved/1600computers-4800processes.xml",
                         CloudBalancingMapBasedEasyScoreCalculator.class, CloudBalancingIncrementalScoreCalculator.class,
                         null, CloudBalancingConstraintProvider.class, CloudBalance.class, CloudProcess.class),
-                new BenchmarkDescriptor("conferenceScheduling", "unsolved/216talks-18timeslots-20rooms.xlsx",
+                new ProblemDescriptor("conferenceScheduling", "unsolved/216talks-18timeslots-20rooms.xlsx",
                         null, null, ConferenceSchedulingXlsxFileIO.class,
                         ConferenceSchedulingConstraintProvider.class, ConferenceSolution.class, Talk.class),
-                new BenchmarkDescriptor("curriculumCourse", "unsolved/comp07.xml", null, null, null,
+                new ProblemDescriptor("curriculumCourse", "unsolved/comp07.xml", null, null, null,
                         CourseScheduleConstraintProvider.class, CourseSchedule.class, Lecture.class),
-                new BenchmarkDescriptor("flightCrewScheduling", "unsolved/875flights-7days-Europe.xlsx", null, null,
+                new ProblemDescriptor("flightCrewScheduling", "unsolved/875flights-7days-Europe.xlsx", null, null,
                         FlightCrewSchedulingXlsxFileIO.class, FlightCrewSchedulingConstraintProvider.class,
                         FlightCrewSolution.class, FlightAssignment.class, Employee.class),
-                new BenchmarkDescriptor("machineReassignment", "import/model_b_10.txt", null,
+                new ProblemDescriptor("machineReassignment", "import/model_b_10.txt", null,
                         MachineReassignmentIncrementalScoreCalculator.class, MachineReassignmentFileIO.class,
                         MachineReassignmentConstraintProvider.class, MachineReassignment.class,
                         MrProcessAssignment.class),
-                new BenchmarkDescriptor("nQueens", "unsolved/256queens.xml", NQueensMapBasedEasyScoreCalculator.class,
+                new ProblemDescriptor("nQueens", "unsolved/256queens.xml", NQueensMapBasedEasyScoreCalculator.class,
                         NQueensAdvancedIncrementalScoreCalculator.class, null, NQueensConstraintProvider.class,
                         NQueens.class, Queen.class),
-                new BenchmarkDescriptor("rockTour", "unsolved/47shows.xlsx", null, null,
+                new ProblemDescriptor("rockTour", "unsolved/47shows.xlsx", null, null,
                         RockTourXlsxFileIO.class, RockTourConstraintProvider.class, RockTourSolution.class,
                         RockShow.class, RockStandstill.class),
-                new BenchmarkDescriptor("taskAssigning", "unsolved/500tasks-20employees.xml", null, null, null,
+                new ProblemDescriptor("taskAssigning", "unsolved/500tasks-20employees.xml", null, null, null,
                         TaskAssigningConstraintProvider.class, TaskAssigningSolution.class, TaskOrEmployee.class,
                         Task.class),
-                new BenchmarkDescriptor("vehicleRouting", "import/belgium/basic/air/belgium-n2750-k55.vrp",
+                new ProblemDescriptor("vehicleRouting", "import/belgium/basic/air/belgium-n2750-k55.vrp",
                         VehicleRoutingEasyScoreCalculator.class, VehicleRoutingIncrementalScoreCalculator.class,
                         VehicleRoutingFileIO.class, VehicleRoutingConstraintProvider.class,
                         VehicleRoutingSolution.class, Standstill.class, Customer.class, TimeWindowedCustomer.class)
@@ -130,7 +130,7 @@ public class ScoreDirectorFactoryBenchmarkApp {
         benchmark.benchmarkAndShowReportInBrowser();
     }
 
-    public static final class BenchmarkDescriptor {
+    public static final class ProblemDescriptor {
 
         private final String exampleId;
         private final String solutionFileIoClass;
@@ -142,7 +142,7 @@ public class ScoreDirectorFactoryBenchmarkApp {
         private final String solutionClass;
         private final Set<String> entityClasses;
 
-        public <Solution_> BenchmarkDescriptor(String exampleId, String inputSolutionFile,
+        public <Solution_> ProblemDescriptor(String exampleId, String inputSolutionFile,
                 Class<? extends EasyScoreCalculator<Solution_>> easyScoreCalculatorClass,
                 Class<? extends IncrementalScoreCalculator<Solution_>> incrementalScoreCalculatorClass,
                 Class<? extends SolutionFileIO<Solution_>> solutionFileIoClass,
