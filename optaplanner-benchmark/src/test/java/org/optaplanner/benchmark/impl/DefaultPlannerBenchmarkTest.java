@@ -26,7 +26,7 @@ public class DefaultPlannerBenchmarkTest {
     public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
-    public void throwIllegalStateExceptionWhenBenchmarkingStartedTwice() {
+    public void throwIllegalStateException_WhenBenchmarkingStartedTwice() {
         exceptionRule.expect(IllegalStateException.class);
         exceptionRule.expectMessage("This benchmark has already ran before.");
 
@@ -43,7 +43,7 @@ public class DefaultPlannerBenchmarkTest {
     }
 
     @Test
-    public void throwIllegalArgumentExceptionWhenSolverResultBenchmarkResultListIsEmpty() {
+    public void throwIllegalArgumentException_WhenSolverResultBenchmarkResultListIsEmpty() {
         exceptionRule.expect(IllegalArgumentException.class);
         exceptionRule.expectMessage("The solverBenchmarkResultList");
         exceptionRule.expectMessage("cannot be empty.");
@@ -62,7 +62,7 @@ public class DefaultPlannerBenchmarkTest {
     }
 
     @Test
-    public void throwIllegalArgumentExceptionWhenBenchmarkDirectoryIsNull() {
+    public void throwIllegalArgumentException_WhenBenchmarkDirectoryIsNull() {
         exceptionRule.expect(IllegalArgumentException.class);
         exceptionRule.expectMessage("The benchmarkDirectory");
         exceptionRule.expectMessage("must not be null.");
