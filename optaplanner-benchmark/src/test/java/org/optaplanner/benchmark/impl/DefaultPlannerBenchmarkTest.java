@@ -5,10 +5,9 @@ import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.optaplanner.benchmark.api.*;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -22,14 +21,8 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class DefaultPlannerBenchmarkTest {
 
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
-
     @Test
     public void throwIllegalStateException_WhenBenchmarkingStartedTwice() {
-        exceptionRule.expect(IllegalStateException.class);
-        exceptionRule.expectMessage("This benchmark has already ran before.");
-
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(
@@ -39,15 +32,13 @@ public class DefaultPlannerBenchmarkTest {
 
         DefaultPlannerBenchmark benchmark = (DefaultPlannerBenchmark) benchmarkFactory.buildPlannerBenchmark(solution);
         benchmark.benchmarkingStarted();
-        benchmark.benchmarkingStarted();
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(benchmark::benchmarkingStarted).withMessage("This benchmark has already ran before.");
     }
 
     @Test
     public void throwIllegalArgumentException_WhenSolverResultBenchmarkResultListIsEmpty() {
-        exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("The solverBenchmarkResultList");
-        exceptionRule.expectMessage("cannot be empty.");
-
         SolverConfigContext solverConfigContext = mock(SolverConfigContext.class);
         File benchmarkDirectory = mock(File.class);
         ExecutorService executorService = mock(ExecutorService.class);
@@ -58,15 +49,13 @@ public class DefaultPlannerBenchmarkTest {
         DefaultPlannerBenchmark benchmark = new DefaultPlannerBenchmark(benchmarkResultWithEmptySolverResultList,
                                                                         solverConfigContext, benchmarkDirectory,
                                                                         executorService, executorService, benchmarkReport);
-        benchmark.benchmarkingStarted();
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(benchmark::benchmarkingStarted)
+                .withMessageStartingWith("The solverBenchmarkResultList").withMessageEndingWith("cannot be empty.");
     }
 
     @Test
     public void throwIllegalArgumentException_WhenBenchmarkDirectoryIsNull() {
-        exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("The benchmarkDirectory");
-        exceptionRule.expectMessage("must not be null.");
-
         SolverConfigContext solverConfigContext = mock(SolverConfigContext.class);
         ExecutorService executorService = mock(ExecutorService.class);
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
@@ -78,6 +67,7 @@ public class DefaultPlannerBenchmarkTest {
         DefaultPlannerBenchmark benchmark = new DefaultPlannerBenchmark(plannerBenchmarkResult,
                                                                         solverConfigContext, null,
                                                                         executorService, executorService, benchmarkReport);
-        benchmark.benchmarkingStarted();
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(benchmark::benchmarkingStarted)
+                .withMessageStartingWith("The benchmarkDirectory").withMessageEndingWith("must not be null.");
     }
 }
