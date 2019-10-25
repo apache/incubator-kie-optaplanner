@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ConstraintCollectorsTest {
 
@@ -194,7 +194,7 @@ public class ConstraintCollectorsTest {
         // Add second value, we have two now.
         int secondValue = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container,firstValue + secondValue);
+        assertResult(collector, container, firstValue + secondValue);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValue);
         assertResult(collector, container, firstValue + 2 * secondValue);
@@ -248,7 +248,7 @@ public class ConstraintCollectorsTest {
         int secondValueA = 4;
         int secondValueB = 5;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
-        assertResult(collector, container,firstValueA + firstValueB + secondValueA + secondValueB);
+        assertResult(collector, container, firstValueA + firstValueB + secondValueA + secondValueB);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
         assertResult(collector, container, firstValueA + firstValueB + 2 * (secondValueA + secondValueB));

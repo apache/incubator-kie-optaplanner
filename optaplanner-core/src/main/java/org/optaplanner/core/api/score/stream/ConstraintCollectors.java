@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
@@ -193,6 +195,29 @@ public final class ConstraintCollectors {
                     long value = groupValueMapping.applyAsLong(a, b);
                     resultContainer[0] += value;
                     return (() -> resultContainer[0] -= value);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A> UniConstraintCollector<A, ?, Duration> sum(Function<? super A, Duration> groupValueMapping) {
+        return new DefaultUniConstraintCollector<>(
+                () -> new Duration[]{Duration.ZERO},
+                (resultContainer, a) -> {
+                    Duration value = groupValueMapping.apply(a);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Duration> sum(
+            BiFunction<? super A, ? super B, Duration> groupValueMapping) {
+        return new DefaultBiConstraintCollector<>(
+                () -> new Duration[]{Duration.ZERO},
+                (resultContainer, a, b) -> {
+                    Duration value = groupValueMapping.apply(a, b);
+                    resultContainer[0] = resultContainer[0].plus(value);
+                    return (() -> resultContainer[0] = resultContainer[0].minus(value));
                 },
                 resultContainer -> resultContainer[0]);
     }
