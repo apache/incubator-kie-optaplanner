@@ -28,10 +28,6 @@ import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public class MachineReassignmentConstraintProvider implements ConstraintProvider {
 
-    // WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
-    // It works but it has many API gaps.
-    // Therefore, it is not rich enough yet to handle complex constraints.
-
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[]{
