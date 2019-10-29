@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
@@ -69,5 +71,25 @@ public class DefaultPlannerBenchmarkTest {
                                                                         executorService, executorService, benchmarkReport);
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(benchmark::benchmarkingStarted)
                 .withMessageStartingWith("The benchmarkDirectory").withMessageEndingWith("must not be null.");
+    }
+
+    @Test
+    public void propagateExceptionMessage_WhenExceptionThrownDuringWarmUp() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(
+                PlannerBenchmarkConfig.createFromSolverConfig(solverConfig));
+
+        TestdataSolution solution = mock(TestdataSolution.class);
+        String exceptionMessage = "Message to be received with ExecutionException call.";
+        when(solution.getEntityList()).thenThrow(new UnsupportedOperationException(exceptionMessage));
+
+        DefaultPlannerBenchmark benchmark = (DefaultPlannerBenchmark) benchmarkFactory.buildPlannerBenchmark(solution);
+
+        try {
+            benchmark.benchmark();
+        } catch (PlannerBenchmarkException e) {
+            assertEquals(exceptionMessage, e.getCause().getMessage());
+        }
     }
 }
