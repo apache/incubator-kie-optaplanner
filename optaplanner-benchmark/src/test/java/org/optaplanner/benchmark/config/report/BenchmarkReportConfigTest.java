@@ -15,36 +15,35 @@ import static org.mockito.Mockito.mock;
 public class BenchmarkReportConfigTest {
 
     @Test
-    public void inheritBenchmarkReportConfig_WhenCallingConstructorWithConfigParameter() {
-        BenchmarkReportConfig inheritance = new BenchmarkReportConfig();
-        inheritance.setLocale(Locale.CANADA);
-        inheritance.setSolverRankingType(SolverRankingType.TOTAL_RANKING);
-        inheritance.setSolverRankingComparatorClass(TotalScoreSolverRankingComparator.class);
-        inheritance.setSolverRankingWeightFactoryClass(TotalRankSolverRankingWeightFactory.class);
+    public void inheritBenchmarkReportConfig() {
+        BenchmarkReportConfig inheritedReportConfig = new BenchmarkReportConfig();
+        inheritedReportConfig.setLocale(Locale.CANADA);
+        inheritedReportConfig.setSolverRankingType(SolverRankingType.TOTAL_RANKING);
+        inheritedReportConfig.setSolverRankingComparatorClass(TotalScoreSolverRankingComparator.class);
+        inheritedReportConfig.setSolverRankingWeightFactoryClass(TotalRankSolverRankingWeightFactory.class);
 
-        BenchmarkReportConfig inheritor = new BenchmarkReportConfig(inheritance);
+        BenchmarkReportConfig reportConfig = new BenchmarkReportConfig(inheritedReportConfig);
 
-        assertThat(inheritor.getLocale()).isEqualTo(inheritance.getLocale());
-        assertThat(inheritor.getSolverRankingType()).isEqualTo(inheritance.getSolverRankingType());
-        assertThat(inheritor.getSolverRankingComparatorClass()).isEqualTo(inheritance.getSolverRankingComparatorClass());
-        assertThat(inheritor.getSolverRankingWeightFactoryClass()).isEqualTo(inheritance.getSolverRankingWeightFactoryClass());
+        assertThat(reportConfig.getLocale()).isEqualTo(inheritedReportConfig.getLocale());
+        assertThat(reportConfig.getSolverRankingType()).isEqualTo(inheritedReportConfig.getSolverRankingType());
+        assertThat(reportConfig.getSolverRankingComparatorClass()).isEqualTo(inheritedReportConfig.getSolverRankingComparatorClass());
+        assertThat(reportConfig.getSolverRankingWeightFactoryClass()).isEqualTo(inheritedReportConfig.getSolverRankingWeightFactoryClass());
     }
 
     @Test
-    public void throwIllegalStateException_WhenConfigContainsSolverRankingTypeAndSolverRankingComparatorClass() {
+    public void buildWithSolverRankingTypeAndSolverRankingComparatorClass() {
         BenchmarkReportConfig config = new BenchmarkReportConfig();
         config.setSolverRankingType(SolverRankingType.TOTAL_RANKING);
         config.setSolverRankingComparatorClass(TotalScoreSolverRankingComparator.class);
 
         PlannerBenchmarkResult result = mock(PlannerBenchmarkResult.class);
+
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> config.buildBenchmarkReport(result))
-                .withMessageStartingWith("The PlannerBenchmark cannot have a solverRankingType (")
-                .withMessageContaining(") and a solverRankingComparatorClass (")
-                .withMessageEndingWith(") at the same time.");
+                .withMessageContaining("solverRankingType").withMessageContaining("solverRankingComparatorClass");
     }
 
     @Test
-    public void throwIllegalStateException_WhenConfigContainsSolverRankingTypeAndSolverRankingWeightFactoryClass() {
+    public void buildWithSolverRankingTypeAndSolverRankingWeightFactoryClass() {
         BenchmarkReportConfig config = new BenchmarkReportConfig();
         config.setSolverRankingType(SolverRankingType.TOTAL_RANKING);
         config.setSolverRankingWeightFactoryClass(TotalRankSolverRankingWeightFactory.class);
@@ -52,13 +51,11 @@ public class BenchmarkReportConfigTest {
         PlannerBenchmarkResult result = mock(PlannerBenchmarkResult.class);
 
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> config.buildBenchmarkReport(result))
-                .withMessageStartingWith("The PlannerBenchmark cannot have a solverRankingType (")
-                .withMessageContaining(") and a solverRankingWeightFactoryClass (")
-                .withMessageEndingWith(") at the same time.");
+                .withMessageContaining("solverRankingType").withMessageContaining("solverRankingWeightFactoryClass");
     }
 
     @Test
-    public void throwIllegalStateException_WhenConfigContainsSolverRankingComparatorClassAndSolverRankingWeightFactoryClass() {
+    public void buildWithSolverRankingComparatorClassAndSolverRankingWeightFactoryClass() {
         BenchmarkReportConfig config = new BenchmarkReportConfig();
         config.setSolverRankingComparatorClass(TotalScoreSolverRankingComparator.class);
         config.setSolverRankingWeightFactoryClass(TotalRankSolverRankingWeightFactory.class);
@@ -66,8 +63,6 @@ public class BenchmarkReportConfigTest {
         PlannerBenchmarkResult result = mock(PlannerBenchmarkResult.class);
 
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> config.buildBenchmarkReport(result))
-                .withMessageStartingWith("The PlannerBenchmark cannot have a solverRankingComparatorClass (")
-                .withMessageContaining(") and a solverRankingWeightFactoryClass (")
-                .withMessageEndingWith(") at the same time.");
+                .withMessageContaining("solverRankingComparatorClass").withMessageContaining("solverRankingWeightFactoryClass");
     }
 }

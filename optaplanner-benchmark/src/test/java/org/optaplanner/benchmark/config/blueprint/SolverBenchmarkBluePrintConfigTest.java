@@ -1,20 +1,16 @@
 package org.optaplanner.benchmark.config.blueprint;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class SolverBenchmarkBluePrintConfigTest {
 
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
-
     @Test
-    public void throwIllegalArgumentException_WhenValidateOnUnassignedSolverBenchmarkBluePrintType() {
-        exceptionRule.expect(IllegalArgumentException.class);
-        exceptionRule.expectMessage("The solverBenchmarkBluePrint must have a solverBenchmarkBluePrintType (");
-
+    public void withoutSolverBenchmarkBluePrintType() {
         SolverBenchmarkBluePrintConfig config = new SolverBenchmarkBluePrintConfig();
-        config.validate();
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(config::validate)
+                .withMessageContaining("solverBenchmarkBluePrintType");
     }
 }
