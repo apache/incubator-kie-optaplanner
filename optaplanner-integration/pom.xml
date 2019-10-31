@@ -28,12 +28,10 @@
     <module>optaplanner-workbench-models</module>
   </modules>
 
-
   <properties>
-    <version.io.quarkus>0.22.0</version.io.quarkus>
-    <!-- Remove once https://github.com/kiegroup/droolsjbpm-build-bootstrap/pull/1075 is merged-->
-    <version.javax.validation>2.0.1.Final</version.javax.validation>
+    <version.io.quarkus>0.27.0</version.io.quarkus>
     <version.org.hibernate.validator>6.0.17.Final</version.org.hibernate.validator>
+    <version.org.wildfly.common>1.5.0.Final-format-001</version.org.wildfly.common>
   </properties>
   <dependencyManagement>
     <dependencies>
