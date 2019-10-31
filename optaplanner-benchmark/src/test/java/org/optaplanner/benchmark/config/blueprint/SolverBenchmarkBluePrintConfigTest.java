@@ -9,7 +9,7 @@ public class SolverBenchmarkBluePrintConfigTest {
     @Test
     public void withoutSolverBenchmarkBluePrintType() {
         SolverBenchmarkBluePrintConfig config = new SolverBenchmarkBluePrintConfig();
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(config::validate)
                 .withMessageContaining("solverBenchmarkBluePrintType");
     }
