@@ -53,9 +53,9 @@ import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
-import static com.google.common.base.Functions.identity;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.nullsFirst;
+import static java.util.function.Function.identity;
 
 public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
