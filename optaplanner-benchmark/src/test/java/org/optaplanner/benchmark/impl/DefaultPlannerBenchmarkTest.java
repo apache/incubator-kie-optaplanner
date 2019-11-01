@@ -45,7 +45,7 @@ public class DefaultPlannerBenchmarkTest {
         ExecutorService executorService = mock(ExecutorService.class);
         BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
 
-        //solverBenchmarkResultList is empty when instantiated by default constructor
+        // solverBenchmarkResultList is empty when instantiated by default constructor
         PlannerBenchmarkResult benchmarkResult = new PlannerBenchmarkResult();
 
         DefaultPlannerBenchmark benchmark = new DefaultPlannerBenchmark(benchmarkResult, solverConfigContext,
