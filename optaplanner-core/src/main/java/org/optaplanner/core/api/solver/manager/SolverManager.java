@@ -118,40 +118,33 @@ public interface SolverManager<Solution_> extends AutoCloseable {
     // Interface methods
     // ************************************************************************
 
-    /**
-     * Submits a planning problem to be solved and returns immediately. Calling this method creates a new solver job
-     * that might start solving immediately or waits until a {@link Thread} is available.
-     * To stop a solver job early, call {@link #terminateSolver}.
-     * <p>
-     * To get the current best solution (which might or might not be optimal, feasible or even initialized),
-     * call {@link #getBestSolution}.
-     *
-     * @param planningProblem never null, an instance of {@link PlanningSolution}, usually its planning variables are uninitialized
-     * @return a Universally Unique Identifier "UUID" for the submitted problem
-     */
-    UUID solve(Solution_ planningProblem);
+    // TODO consider an overloaded method for each solve* that returns a UUID
+    UUID solveBatch(Solution_ planningProblem,
+                    Consumer<Solution_> bestSolutionAtTerminationConsumer);
+
+    void solveBatch(Object problemId,
+                    Solution_ planningProblem,
+                    Consumer<Solution_> bestSolutionAtTerminationConsumer);
+
+    void solveBatch(Object problemId,
+                    Solution_ planningProblem,
+                    Consumer<Solution_> bestSolutionAtTerminationConsumer,
+                    Consumer<Throwable> onException);
+
+    void solveBestEvents(Object problemId,
+                         Solution_ planningProblem,
+                         Consumer<Solution_> bestSolutionDuringSolvingConsumer);
+
+    void solveBestEvents(Object problemId,
+                         Solution_ planningProblem,
+                         Consumer<Solution_> bestSolutionDuringSolvingConsumer,
+                         Consumer<Throwable> onException);
 
     /**
      * Submits a planning problem to be solved and returns immediately. Calling this method creates a new solver job
      * that might start solving immediately or waits until a {@link Thread} is available.
      * To stop a solver job early, call {@link #terminateSolver}.
      * <p>
-     * To get the current best solution (which might or might not be optimal, feasible or even initialized),
-     * call {@link #getBestSolution}.
-     *
-     * @param problemId       never null, a unique id for each planning problem
-     * @param planningProblem never null, an instance of {@link PlanningSolution}, usually its planning variables are uninitialized
-     */
-
-    void solve(Object problemId, Solution_ planningProblem);
-
-    /**
-     * Submits a planning problem to be solved and returns immediately. Calling this method creates a new solver job
-     * that might start solving immediately or waits until a {@link Thread} is available.
-     * To stop a solver job early, call {@link #terminateSolver}.
-     * <p>
-     * To get the current best solution (which might or might not be optimal, feasible or even initialized),
-     * call {@link #getBestSolution}.
      *
      * @param problemId                  never null, a unique id for each planning problem
      * @param planningProblem            never null, an instance of {@link PlanningSolution}, usually its planning variables are uninitialized
@@ -171,9 +164,6 @@ public interface SolverManager<Solution_> extends AutoCloseable {
      * Submits a planning problem to be solved and returns immediately. Calling this method creates a new solver job
      * that might start solving immediately or waits until a {@link Thread} is available.
      * To stop a solver job early, call {@link #terminateSolver}.
-     * <p>
-     * To get the current best solution (which might or might not be optimal, feasible or even initialized),
-     * call {@link #getBestSolution}.
      *
      * @param problemId                  never null, a unique id for each planning problem
      * @param planningProblem            never null, an instance of {@link PlanningSolution}, usually its planning variables are uninitialized
@@ -192,31 +182,12 @@ public interface SolverManager<Solution_> extends AutoCloseable {
             Consumer<Throwable> onException);
 
     /**
-     * Notifies the solver that it should stop at its earliest convenience and clean up all the resources used by the
-     * corresponding solver task. Note that after calling this method there will be no reference for problemId in the
-     * {@link SolverManager}.
-     *
-     * @param problemId never null, a unique id for each planning problem
-     * @return true if successful, false if no problem with problemId has been submitted
-     */
-    boolean terminateSolver(Object problemId);
-
-    /**
      * Notifies the solver that it should stop at its earliest convenience.
-     * To resume solving call {@link #resumeSolver(Object problemId)}
+     * Note that after calling this method there will be no reference for problemId in the {@link SolverManager}.
      *
      * @param problemId never null, a unique id for each planning problem
-     * @return true if successful, false if no problem with problemId has been submitted
      */
-    boolean pauseSolver(Object problemId);
-
-    /**
-     * Resumes solving a previously stopped solver task.
-     *
-     * @param problemId never null, a unique id for each planning problem
-     * @return true if successful, false if no problem with problemId has been submitted or solver is already solving
-     */
-    boolean resumeSolver(Object problemId);
+    void terminateSolver(Object problemId);
 
     /**
      * @param problemId never null, a unique id for each planning problem
@@ -224,44 +195,15 @@ public interface SolverManager<Solution_> extends AutoCloseable {
      */
     boolean isProblemSubmitted(Object problemId);
 
-    /**
-     * The best solution is the {@link PlanningSolution best solution} found during solving:
-     * it might or might not be optimal, feasible or even initialized.
-     * <p>
-     * This method is useful in rare asynchronous situations (although {@code onBestSolutionChangedEvent} callback
-     * of {@link #solve} is often more appropriate).
-     *
-     * @param problemId never null, a unique id for each planning problem
-     * @return null if the problemId isn't associated with a previously submitted problem, or
-     * {@link PlanningSolution best solution} which might be uninitialized with a null {@link Score} if the solver job
-     * has not started yet
-     */
-    Solution_ getBestSolution(Object problemId);
-
-    /**
-     * Returns the {@link Score} of the {@link #getBestSolution}.
-     * <p>
-     * This is useful for generic code, which doesn't know the type of the {@link PlanningSolution}
-     * to retrieve the {@link Score} from the {@link #getBestSolution} easily.
-     *
-     * @param problemId never null, a unique id for each planning problem
-     * @return null if the problemId isn't associated with a previously submitted problem, the solver job has not started yet
-     */
-    Score<?> getBestScore(Object problemId);
-
-    /**
-     * @param problemId never null, a unique id for each planning problem
-     * @return null if the problemId isn't associated with a previously submitted problem, {@link SolverStatus} otherwise
-     */
-    SolverStatus getSolverStatus(Object problemId);
+    // TODO getSolveStatus once SolverStatus is specified
 
     /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}. See {@link ScoreDirector#getIndictmentMap()}
      *
-     * @param solution_ never null, an instance of {@link PlanningSolution}
+     * @param solution never null, an instance of {@link PlanningSolution}
      * @return never null, the key is a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}
      */
-    Map<Object, Indictment> getIndictmentMap(Solution_ solution_);
+    Map<Object, Indictment> getIndictmentMap(Solution_ solution);
 
     /**
      * Terminates all solver jobs (running and awaiting ones) and queued callbacks. No new solver jobs can be submitted

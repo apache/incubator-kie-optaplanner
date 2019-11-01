@@ -17,13 +17,9 @@
 package org.optaplanner.core.impl.solver.manager;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
-import org.optaplanner.core.api.solver.manager.SolverStatus;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +30,6 @@ public class SolverTask<Solution_> {
     private final Object problemId;
     private Solver<Solution_> solver;
     private Solution_ planningProblem;
-    private AtomicBoolean isPaused = new AtomicBoolean(false);
 
     public SolverTask(Object problemId, Solver<Solution_> solver, Solution_ planningProblem) {
         Objects.requireNonNull(solver);
@@ -46,7 +41,6 @@ public class SolverTask<Solution_> {
 
     public Solution_ startSolving() {
         logger.info("Running solverTask for problemId ({}).", problemId);
-        isPaused.set(false);
         return solver.solve(planningProblem);
     }
 
@@ -54,48 +48,11 @@ public class SolverTask<Solution_> {
         return problemId;
     }
 
-    public Solution_ getBestSolution() {
-        // TODO possible race condition: planningProblem might change by solver thread
-        Solution_ bestSolution = solver.getBestSolution();
-        return bestSolution == null ? planningProblem : bestSolution;
-    }
-
-    public Score<?> getBestScore() {
-        ScoreDirector<Solution_> scoreDirector = solver.getScoreDirectorFactory().buildScoreDirector();
-        Score<?> bestScore = solver.getBestScore();
-        if (bestScore == null) { // solverTask hasn't started solving yet, return score of uninitialized/submitted solution
-            scoreDirector.setWorkingSolution(planningProblem);
-            return scoreDirector.calculateScore();
-        }
-        return solver.getBestScore();
-    }
-
-    public SolverStatus getSolverStatus() {
-        if (solver.isTerminateEarly()) {
-            return SolverStatus.TERMINATED_EARLY;
-        } else if (solver.isSolving()) {
-            return SolverStatus.SOLVING;
-        } else {
-            return SolverStatus.NOT_SOLVING;
-        }
-    }
-
     public void addEventListener(SolverEventListener<Solution_> eventListener) {
         solver.addEventListener(eventListener);
     }
 
-    public boolean stopSolver() {
+    public boolean terminateEarly() {
         return solver.terminateEarly();
-    }
-
-    public boolean pauseSolver() {
-        if (isPaused.compareAndSet(false, true)) {
-            return solver.terminateEarly();
-        }
-        return false;
-    }
-
-    public boolean isPaused() {
-        return isPaused.get();
     }
 }

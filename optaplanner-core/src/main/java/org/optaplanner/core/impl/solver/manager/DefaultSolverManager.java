@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.solver.manager;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,17 +23,16 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.manager.SolverManager;
-import org.optaplanner.core.api.solver.manager.SolverStatus;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.thread.ThreadUtils;
 import org.slf4j.Logger;
@@ -49,9 +46,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     private ExecutorService eventHandlerExecutorService;
     private SolverFactory<Solution_> solverFactory;
     private ConcurrentMap<Object, SolverTask<Solution_>> problemIdToSolverTaskMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<Object, List<Future>> problemIdToEventHandlerFuturesMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<Object, Consumer<Solution_>> problemIdToOnSolvingEndedMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<Object, Consumer<Throwable>> problemIdToOnExceptionMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<Object, List<Future>> problemIdToFuturesMap = new ConcurrentHashMap<>();
 
     public static <Solution_> SolverManager<Solution_> createFromXmlResource(String solverConfigResource) {
         Objects.requireNonNull(solverConfigResource);
@@ -116,15 +111,32 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     @Override
-    public UUID solve(Solution_ planningProblem) {
+    public UUID solveBatch(Solution_ solution_, Consumer<Solution_> bestSolutionAtTerminationConsumer) {
         UUID problemId = UUID.randomUUID();
-        solve(problemId, planningProblem);
+        solveBatch(problemId, solution_, bestSolutionAtTerminationConsumer);
         return problemId;
     }
 
     @Override
-    public void solve(Object problemId, Solution_ planningProblem) {
-        solve(problemId, planningProblem, null, null);
+    public void solveBatch(Object problemId, Solution_ planningProblem, Consumer<Solution_> bestSolutionAtTerminationConsumer) {
+        solveBatch(problemId, planningProblem, bestSolutionAtTerminationConsumer, null);
+    }
+
+    @Override
+    public void solveBatch(Object problemId, Solution_ planningProblem, Consumer<Solution_> bestSolutionAtTerminationConsumer, Consumer<Throwable> onException) {
+        Objects.requireNonNull(bestSolutionAtTerminationConsumer);
+        solve(problemId, planningProblem, null, bestSolutionAtTerminationConsumer, onException);
+    }
+
+    @Override
+    public void solveBestEvents(Object problemId, Solution_ planningProblem, Consumer<Solution_> bestSolutionDuringSolvingConsumer) {
+        solveBestEvents(problemId, planningProblem, bestSolutionDuringSolvingConsumer, null);
+    }
+
+    @Override
+    public void solveBestEvents(Object problemId, Solution_ planningProblem, Consumer<Solution_> bestSolutionDuringSolvingConsumer, Consumer<Throwable> onException) {
+        Objects.requireNonNull(bestSolutionDuringSolvingConsumer);
+        solve(problemId, planningProblem, bestSolutionDuringSolvingConsumer, null, onException);
     }
 
     @Override
@@ -152,14 +164,7 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
             }
             newSolverTask = new SolverTask<>(problemId, solverFactory.buildSolver(), planningProblem);
             problemIdToSolverTaskMap.put(problemId, newSolverTask);
-            problemIdToEventHandlerFuturesMap.put(problemId, Collections.synchronizedList(new ArrayList<>()));
-            if (onSolvingEnded != null) {
-                problemIdToOnSolvingEndedMap.put(problemId, onSolvingEnded);
-            }
-            if (onException != null) {
-                problemIdToOnExceptionMap.put(problemId, onException);
-            }
-
+            problemIdToFuturesMap.put(problemId, new CopyOnWriteArrayList<>());
             logger.info("A new solver task was created with problemId ({}).", problemId);
         }
 
@@ -168,18 +173,11 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
             newSolverTask.addEventListener(bestSolutionChangedEvent -> {
                 Future<?> bestSolutionChangedEventFuture = eventHandlerExecutorService.submit(
                         () -> onBestSolutionChangedEvent.accept(bestSolutionChangedEvent.getNewBestSolution()));
-                problemIdToEventHandlerFuturesMap.get(problemId).add(bestSolutionChangedEventFuture);
+                problemIdToFuturesMap.get(problemId).add(bestSolutionChangedEventFuture);
             });
         }
 
-        submitSolverTask(newSolverTask);
-    }
-
-    private void submitSolverTask(SolverTask<Solution_> solverTask) {
-        final Object problemId = solverTask.getProblemId();
-        final Consumer<Solution_> onSolvingEnded = problemIdToOnSolvingEndedMap.get(problemId);
-        final Consumer<Throwable> onException = problemIdToOnExceptionMap.get(problemId);
-        CompletableFuture<Solution_> solverFuture = CompletableFuture.supplyAsync(solverTask::startSolving, solverExecutorService);
+        CompletableFuture<Solution_> solverFuture = CompletableFuture.supplyAsync(newSolverTask::startSolving, solverExecutorService);
         // TODO refactor lambdas in a separate method
         solverFuture.handle((solution_, throwable) -> {
             handleThrowable(throwable, onException, "Exception while solving problem ({" + problemId + "}).");
@@ -188,14 +186,16 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
                     onSolvingEnded.accept(solution_);
                     return null;
                 }, eventHandlerExecutorService);
-                // TODO possible NPE if onSolvingEnded is invoked after cleanupResources
-                problemIdToEventHandlerFuturesMap.get(problemId).add(solvingEndedFuture);
+                // possible NPE if this is invoked after cleanupResources, unless solverFuture is cancelled first
+                problemIdToFuturesMap.get(problemId).add(solvingEndedFuture);
+                return solvingEndedFuture;
             }
             return null;
         }).handle((voidCompletableFuture, throwable) -> { // clean-up resources after onSolvingEnded returns
             handleThrowable(throwable, onException, "Exception while executing onSolvingEnded of problem ({" + problemId + "}).");
-            return !solverTask.isPaused() && cleanupResources(problemId);
+            return cleanupResources(problemId);
         });
+        problemIdToFuturesMap.get(problemId).add(solverFuture);
     }
 
     private void handleThrowable(Throwable throwable, Consumer<Throwable> onException, String message) {
@@ -208,47 +208,23 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     @Override
-    public boolean terminateSolver(Object problemId) {
+    public void terminateSolver(Object problemId) {
         Objects.requireNonNull(problemId);
-        logger.debug("Terminating solver of problemId ({}).", problemId);
+        logger.info("Terminating solver of problemId ({}).", problemId);
         synchronized (this) { // should be synchronized to avoid cleaning up resources in onSolvingEnded if it's executed after solverTask.terminateSolver() and before cleanUpResources()
             if (!isProblemSubmitted(problemId)) {
-                throw new IllegalArgumentException("Problem (" + problemId + ") was not submitted or finished solving.");
+                throw new IllegalArgumentException("Problem (" + problemId + ") either was not submitted or finished solving.");
             }
-            SolverTask<Solution_> solverTask = problemIdToSolverTaskMap.get(problemId);
-            boolean willTerminate = solverTask.stopSolver();
-            if (!willTerminate) {
-                logger.error("Cannot terminate solver of problemId ({}).", problemId);
-                return false;
-            }
-            // TODO test scenario: submit a problem -> terminate -> re-submit same problem
-            //      -> onSolvingEnded for first submission is invoked and might override recent data updates by solving again
-            List<Future> problemEventHandlersFutures = problemIdToEventHandlerFuturesMap.get(problemId);
+            problemIdToSolverTaskMap.get(problemId).terminateEarly();
+
+            // TODO consider not cancelling futures and not cleaning up resources manually for graceful termination
+            //     con: need a feedback mechanism to inform the user after termination is done
+            //   Problem if not cancelled: submit a problem -> terminate -> re-submit same problem
+            //     -> onSolvingEnded for first submission is invoked and might override recent data updates by solving again
+            List<Future> problemEventHandlersFutures = problemIdToFuturesMap.get(problemId);
             problemEventHandlersFutures.forEach(future -> future.cancel(false)); // if the event handler is executing (i.e. in the middle of persisting) don't interrupt it
-            return cleanupResources(problemId);
+            cleanupResources(problemId);
         }
-    }
-
-    @Override
-    public synchronized boolean pauseSolver(Object problemId) {
-        logger.debug("Pausing solver of problemId ({}).", problemId);
-        SolverTask<Solution_> solverTask = getSolverTask(problemId);
-        return solverTask != null && solverTask.pauseSolver();
-    }
-
-    @Override
-    public synchronized boolean resumeSolver(Object problemId) {
-        logger.debug("Pausing solver of problemId ({}).", problemId);
-        SolverTask<Solution_> solverTask = getSolverTask(problemId);
-        if (solverTask == null) {
-            return false;
-        }
-        if (!solverTask.isPaused()) {
-            logger.error("Solver of problemId ({}) is already solving.", problemId);
-            return false;
-        }
-        submitSolverTask(solverTask);
-        return true;
     }
 
     @Override
@@ -258,33 +234,9 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
     }
 
     @Override
-    public Solution_ getBestSolution(Object problemId) {
-        Objects.requireNonNull(problemId);
-        logger.debug("Getting best solution of problemId ({}).", problemId);
-        SolverTask<Solution_> solverTask = getSolverTask(problemId);
-        return solverTask == null ? null : solverTask.getBestSolution();
-    }
-
-    @Override
-    public Score<?> getBestScore(Object problemId) {
-        Objects.requireNonNull(problemId);
-        logger.debug("Getting best score of problemId ({}).", problemId);
-        SolverTask<Solution_> solverTask = getSolverTask(problemId);
-        return solverTask == null ? null : solverTask.getBestScore();
-    }
-
-    @Override
-    public SolverStatus getSolverStatus(Object problemId) {
-        Objects.requireNonNull(problemId);
-        logger.debug("Getting solver status of problemId ({}).", problemId);
-        SolverTask<Solution_> solverTask = getSolverTask(problemId);
-        return solverTask == null ? null : solverTask.getSolverStatus();
-    }
-
-    @Override
-    public Map<Object, Indictment> getIndictmentMap(Solution_ solution_) {
+    public Map<Object, Indictment> getIndictmentMap(Solution_ solution) {
         ScoreDirector<Solution_> scoreDirector = solverFactory.buildSolver().getScoreDirectorFactory().buildScoreDirector(); // TODO compare against creating an indictmentMapSolver field
-        scoreDirector.setWorkingSolution(solution_);
+        scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
         return scoreDirector.getIndictmentMap();
     }
@@ -299,31 +251,16 @@ public class DefaultSolverManager<Solution_> implements SolverManager<Solution_>
         logger.info("Shutting down {}.", DefaultSolverManager.class.getName());
         ThreadUtils.shutdownAwaitOrKill(solverExecutorService, "", "solverExecutorService");
         ThreadUtils.shutdownAwaitOrKill(eventHandlerExecutorService, "", "eventHandlerExecutorService");
-        stopSolvers(); // without this: shutdownAwaitOrKill appears to only interrupt currently running tasks, those that are queued start solving
-    }
-
-    private SolverTask<Solution_> getSolverTask(Object problemId) {
-        SolverTask<Solution_> solverTask = problemIdToSolverTaskMap.get(problemId);
-        if (solverTask == null) {
-            logger.error("Problem ({}) was not submitted or finished solving.", problemId);
-            return null;
-        }
-        return solverTask;
+        problemIdToSolverTaskMap.keySet().forEach(this::cleanupResources);
     }
 
     private synchronized boolean cleanupResources(Object problemId) {
         if (isProblemSubmitted(problemId)) {
+            logger.info("Cleaning up resources for problemId ({}).", problemId);
             problemIdToSolverTaskMap.remove(problemId);
-            problemIdToEventHandlerFuturesMap.remove(problemId);
-            problemIdToOnSolvingEndedMap.remove(problemId);
-            problemIdToOnExceptionMap.remove(problemId);
-            problemIdToEventHandlerFuturesMap.remove(problemId);
+            problemIdToFuturesMap.remove(problemId);
             return true;
         }
         return false;
-    }
-
-    private void stopSolvers() {
-        problemIdToSolverTaskMap.values().forEach(SolverTask::stopSolver);
     }
 }
