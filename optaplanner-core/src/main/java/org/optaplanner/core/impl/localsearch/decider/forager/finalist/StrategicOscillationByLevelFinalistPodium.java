@@ -96,8 +96,8 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
             Number[] moveLevelNumbers = moveScore.toLevelNumbers();
             for (int i = 0; i < referenceLevelNumbers.length; i++) {
                 // True if it has an improvement at the current level.
-                boolean moveIsHigher = ((Comparable) moveLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
-                boolean finalistIsHigher = ((Comparable) finalistLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
+                boolean moveIsHigher = compareLevelNumbersAgainstReference(moveLevelNumbers, i) > 0;
+                boolean finalistIsHigher = compareLevelNumbersAgainstReference(finalistLevelNumbers, i) > 0;
                 if (moveIsHigher) {
                     // Current move has improvement.
                     if (finalistIsHigher) {
@@ -123,6 +123,10 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
          * improvement compared to the reference score, so now we compare which one is better.
          */
         return moveScore.compareTo(finalistScore);
+    }
+
+    private int compareLevelNumbersAgainstReference(Number[] actualLevelNumbers, int level) {
+        return ((Comparable) actualLevelNumbers[level]).compareTo(referenceLevelNumbers[level]);
     }
 
     @Override
