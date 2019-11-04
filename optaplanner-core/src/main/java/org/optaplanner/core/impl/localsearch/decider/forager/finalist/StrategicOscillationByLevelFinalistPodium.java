@@ -34,7 +34,6 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
     protected Score finalistScore;
     protected Score referenceScore;
     protected Number[] finalistLevelNumbers;
-    protected boolean hasImproving;
 
     public StrategicOscillationByLevelFinalistPodium(boolean referenceBestScoreInsteadOfLastStepScore) {
         this.referenceBestScoreInsteadOfLastStepScore = referenceBestScoreInsteadOfLastStepScore;
@@ -51,7 +50,6 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
                 : stepScope.getPhaseScope().getLastCompletedStepScope().getScore();
         finalistScore = null;
         finalistLevelNumbers = null;
-        hasImproving = false;
     }
 
     @Override
@@ -65,12 +63,10 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
             finalistScore = null;
             finalistLevelNumbers = null;
         }
-        Score moveScore = moveScope.getScore();
-        Number[] moveLevelNumbers = moveScore.toLevelNumbers();
-        int comparison = doComparison(moveScore, moveLevelNumbers);
+        int comparison = doComparison(moveScope);
         if (comparison > 0) {
-            finalistScore = moveScore;
-            finalistLevelNumbers = moveLevelNumbers;
+            finalistScore = moveScope.getScore();
+            finalistLevelNumbers = moveScope.getScore().toLevelNumbers();
             finalistList.clear();
             finalistList.add(moveScope);
         } else if (comparison == 0) {
@@ -78,11 +74,14 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
         }
     }
 
-    private int doComparison(Score moveScore, Number[] moveLevelNumbers) {
+    private int doComparison(LocalSearchMoveScope moveScope) {
         if (finalistScore == null) {
             return 1;
         }
 
+        Score moveScore = moveScope.getScore();
+        Score bestStepScore = moveScope.getStepScope().getScore();
+        boolean hasImproving = bestStepScore != null && bestStepScore.compareTo(moveScore) > 0;
         if (!hasImproving && moveScore.compareTo(referenceScore) > 0) {
             /*
              * Found an improving move.
@@ -94,11 +93,11 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
         }
         if (!hasImproving) {
             // There are no improving moves (including this one) so far. Checking is this a strategic oscillation move.
+            Number[] moveLevelNumbers = moveScore.toLevelNumbers();
             for (int i = 0; i < referenceLevelNumbers.length; i++) {
-                boolean moveIsHigher = ((Comparable) moveLevelNumbers[i]).compareTo(
-                        referenceLevelNumbers[i]) > 0;// True if it has and improvement at the current level.
-                boolean finalistIsHigher = ((Comparable) finalistLevelNumbers[i]).compareTo(
-                        referenceLevelNumbers[i]) > 0;// True if it has and improvement at the current level.
+                // True if it has an improvement at the current level.
+                boolean moveIsHigher = ((Comparable) moveLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
+                boolean finalistIsHigher = ((Comparable) finalistLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
                 if (moveIsHigher) {
                     // Current move has improvement.
                     if (finalistIsHigher) {
