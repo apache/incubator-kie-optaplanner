@@ -31,8 +31,10 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
+import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 import static org.drools.model.DSL.on;
 
@@ -84,6 +86,19 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
                 on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB(), ruleStructure.getC())
                         .execute(consequenceImpl);
         return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
+    }
+
+    private static <A, B, C, D> boolean matches(AbstractQuadJoiner<A, B, C, D> joiner, A a, B b, C c, D d) {
+        JoinerType[] joinerTypes = joiner.getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = joiner.getLeftMapping(i).apply(a, b, c);
+            Object rightMapping = joiner.getRightMapping(i).apply(d);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -18,6 +18,8 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -39,12 +41,10 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent) {
         super(constraintFactory);
-        /*
-        if (parent == null && !(this instanceof DroolsJoinTriConstraintStream)) {
+        if (parent == null && !(this instanceof DroolsJoinQuadConstraintStream)) {
             throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
                     "unless it's a join stream.");
         }
-         */
         this.parent = parent;
     }
 
@@ -131,17 +131,14 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         if (parent == null) {
-            /*
-            DroolsJoinQuadConstraintStream<Solution_, A, B, C> joinStream =
-                    (DroolsJoinQuadConstraintStream<Solution_, A, B, C>) this;
+            DroolsJoinQuadConstraintStream<Solution_, A, B, C, D> joinStream =
+                    (DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>) this;
             List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList =
                     joinStream.getLeftParentStream().getFromStreamList();
             List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList =
                     joinStream.getRightParentStream().getFromStreamList();
             return Stream.concat(leftParentFromStreamList.stream(), rightParentFromStreamList.stream())
                     .collect(Collectors.toList()); // TODO Should we distinct?
-             */
-            return null;
         } else {
             return parent.getFromStreamList();
         }
