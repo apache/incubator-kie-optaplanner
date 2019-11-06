@@ -197,26 +197,6 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     }
 
     // ************************************************************************
-    // Group by
-    // ************************************************************************
-
-    <GroupKey_> UniConstraintStream<GroupKey_> groupBy(
-            TriFunction<A, B, C, GroupKey_> groupKeyMapping);
-
-    <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
-            TriFunction<A, B, C, GroupKey_> groupKeyMapping,
-            TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector);
-
-    <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
-            TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
-            TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping);
-
-    <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
-            TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
-            TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
-            TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector);
-
-    // ************************************************************************
     // Penalize/reward
     // ************************************************************************
 
