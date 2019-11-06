@@ -35,6 +35,9 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 
@@ -64,7 +67,11 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream,
             QuadJoiner<A, B, C, D> joiner) {
-        throw new UnsupportedOperationException();
+        DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsJoinQuadConstraintStream<>(constraintFactory, this,
+                        (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream, joiner);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override

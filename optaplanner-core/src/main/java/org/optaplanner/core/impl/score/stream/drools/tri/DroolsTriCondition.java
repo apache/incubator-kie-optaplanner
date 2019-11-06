@@ -34,8 +34,12 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsInferredMetadata;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
+import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 import static org.drools.model.DSL.on;
 
@@ -71,6 +75,17 @@ public final class DroolsTriCondition<A, B, C> {
                 .expr("Filter using " + predicate, aMetadata.getVariableDeclaration(),
                         bMetadata.getVariableDeclaration(), filter);
         return new DroolsTriCondition<>(aMetadata, bMetadata, cMetadata.substitute(patternSupplier));
+    }
+
+    public <D> DroolsQuadCondition<A, B, C, D> andJoin(DroolsUniCondition<D> dCondition,
+            AbstractQuadJoiner<A, B, C, D> joiner) {
+        DroolsMetadata<Object, D> dMetadata = dCondition.getAMetadata();
+        Supplier<PatternDSL.PatternDef<Object>> newPattern = () -> dMetadata.buildPattern()
+                .expr("Filter using " + joiner, aMetadata.getVariableDeclaration(),
+                        bMetadata.getVariableDeclaration(), cMetadata.getVariableDeclaration(),
+                        (d, a, b, c) -> matches(joiner, aMetadata.extract(a), bMetadata.extract(b),
+                                cMetadata.extract(c), dMetadata.extract(d)));
+        return new DroolsQuadCondition<>(aMetadata, bMetadata, cMetadata, dMetadata.substitute(newPattern));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
@@ -126,6 +141,19 @@ public final class DroolsTriCondition<A, B, C> {
             return Arrays.asList(aMetadata.buildPattern(), bMetadata.buildPattern(), cMetadata.buildPattern(),
                     consequence);
         }
+    }
+
+    private static <A, B, C, D> boolean matches(AbstractQuadJoiner<A, B, C, D> joiner, A a, B b, C c, D d) {
+        JoinerType[] joinerTypes = joiner.getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = joiner.getLeftMapping(i).apply(a, b, c);
+            Object rightMapping = joiner.getRightMapping(i).apply(d);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
