@@ -24,6 +24,7 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -80,7 +81,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     }
 
     /**
-     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link BiJoiner}
+     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link TriJoiner}
      * is true (for the properties it extracts from both facts).
      * <p>
      * Important: This is faster and more scalable than a {@link #join(UniConstraintStream) join}
@@ -90,7 +91,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param otherStream never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which the {@link BiJoiner} is true
+     * @return a stream that matches every combination of [A, B] and C for which the {@link TriFunction} is true
      */
     <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner);
 
@@ -112,7 +113,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     }
 
     /**
-     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link BiJoiner}
+     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link TriJoiner}
      * is true (for the properties it extracts from both facts).
      * <p>
      * Important: This is faster and more scalable than a {@link #join(Class, TriJoiner) join}
@@ -126,7 +127,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param otherClass never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which the {@link BiJoiner} is true
+     * @return a stream that matches every combination of [A, B] and C for which the {@link TriJoiner} is true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
         return join(getConstraintFactory().from(otherClass), joiner);
@@ -138,7 +139,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which all the {@link BiJoiner joiners} are true
+     * @return a stream that matches every combination of [A, B] and C for which all the {@link TriJoiner joiners}
+     * are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
@@ -152,7 +154,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which all the {@link BiJoiner joiners} are true
+     * @return a stream that matches every combination of [A, B] and C for which all the {@link TriJoiner joiners}
+     * are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
@@ -167,7 +170,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner3 never null
      * @param joiner4 never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which all the {@link BiJoiner joiners} are true
+     * @return a stream that matches every combination of [A, B] and C for which all the {@link TriJoiner joiners}
+     * are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
@@ -183,7 +187,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param otherClass never null
      * @param joiners never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of [A, B] and C for which all the {@link BiJoiner joiners} are true
+     * @return a stream that matches every combination of [A, B] and C for which all the {@link TriJoiner joiners}
+     * are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         return join(otherClass, AbstractTriJoiner.merge(joiners));
@@ -220,14 +225,16 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      * <p>
-     * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongBiFunction)} or {@link #penalizeBigDecimal(String, Score, BiFunction)} instead.
+     * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongBiFunction)} or
+     * {@link #penalizeBigDecimal(String, Score, BiFunction)} instead.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
     default Constraint penalize(String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
-        return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+        return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -238,7 +245,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher);
+    Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntBiFunction<A, B> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
@@ -248,8 +256,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalizeLong(String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
-        return penalizeLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    default Constraint penalizeLong(String constraintName, Score<?> constraintWeight,
+            ToLongBiFunction<A, B> matchWeigher) {
+        return penalizeLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -260,7 +270,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher);
+    Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToLongBiFunction<A, B> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
@@ -270,8 +281,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
-        return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
+            BiFunction<A, B, BigDecimal> matchWeigher) {
+        return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                constraintWeight, matchWeigher);
     }
 
     /**
@@ -282,13 +295,15 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher);
+    Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            BiFunction<A, B, BigDecimal> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      * <p>
-     * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongBiFunction)} or {@link #penalizeConfigurableBigDecimal(String, BiFunction)} instead.
+     * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongBiFunction)} or
+     * {@link #penalizeConfigurableBigDecimal(String, BiFunction)} instead.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -304,7 +319,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeConfigurable(String constraintPackage, String constraintName, ToIntBiFunction<A, B> matchWeigher);
+    Constraint penalizeConfigurable(String constraintPackage, String constraintName,
+            ToIntBiFunction<A, B> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -314,7 +330,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null
      */
     default Constraint penalizeConfigurableLong(String constraintName, ToLongBiFunction<A, B> matchWeigher) {
-        return penalizeConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return penalizeConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
@@ -324,7 +341,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeConfigurableLong(String constraintPackage, String constraintName, ToLongBiFunction<A, B> matchWeigher);
+    Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
+            ToLongBiFunction<A, B> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -333,8 +351,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint penalizeConfigurableBigDecimal(String constraintName, BiFunction<A, B, BigDecimal> matchWeigher) {
-        return penalizeConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+    default Constraint penalizeConfigurableBigDecimal(String constraintName,
+            BiFunction<A, B, BigDecimal> matchWeigher) {
+        return penalizeConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
@@ -344,21 +364,24 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName, BiFunction<A, B, BigDecimal> matchWeigher);
+    Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
+            BiFunction<A, B, BigDecimal> matchWeigher);
 
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      * <p>
-     * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongBiFunction)} or {@link #rewardBigDecimal(String, Score, BiFunction)} instead.
+     * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongBiFunction)} or
+     * {@link #rewardBigDecimal(String, Score, BiFunction)} instead.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
     default Constraint reward(String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
-        return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+        return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -368,7 +391,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher);
+    Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntBiFunction<A, B> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
@@ -378,8 +402,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint rewardLong(String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
-        return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    default Constraint rewardLong(String constraintName, Score<?> constraintWeight,
+            ToLongBiFunction<A, B> matchWeigher) {
+        return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -389,7 +415,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher);
+    Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToLongBiFunction<A, B> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
@@ -399,8 +426,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
-    default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
-        return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight, matchWeigher);
+    default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
+            BiFunction<A, B, BigDecimal> matchWeigher) {
+        return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
     }
 
     /**
@@ -410,13 +439,15 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher);
+    Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            BiFunction<A, B, BigDecimal> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      * <p>
-     * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongBiFunction)} or {@link #rewardConfigurableBigDecimal(String, BiFunction)} instead.
+     * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongBiFunction)} or
+     * {@link #rewardConfigurableBigDecimal(String, BiFunction)} instead.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -442,7 +473,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null
      */
     default Constraint rewardConfigurableLong(String constraintName, ToLongBiFunction<A, B> matchWeigher) {
-        return rewardConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return rewardConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
@@ -452,7 +484,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardConfigurableLong(String constraintPackage, String constraintName, ToLongBiFunction<A, B> matchWeigher);
+    Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
+            ToLongBiFunction<A, B> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
@@ -462,7 +495,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return never null
      */
     default Constraint rewardConfigurableBigDecimal(String constraintName, BiFunction<A, B, BigDecimal> matchWeigher) {
-        return rewardConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+        return rewardConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
     }
 
     /**
@@ -472,7 +506,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
-    Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName, BiFunction<A, B, BigDecimal> matchWeigher);
+    Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
+            BiFunction<A, B, BigDecimal> matchWeigher);
 
 }
 
