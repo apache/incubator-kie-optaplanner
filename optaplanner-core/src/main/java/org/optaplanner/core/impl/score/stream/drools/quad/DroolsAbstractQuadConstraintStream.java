@@ -50,7 +50,10 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public QuadConstraintStream<A, B, C, D> filter(QuadPredicate<A, B, C, D> predicate) {
-        throw new UnsupportedOperationException();
+        DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsFilterQuadConstraintStream<>(constraintFactory, this, predicate);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
