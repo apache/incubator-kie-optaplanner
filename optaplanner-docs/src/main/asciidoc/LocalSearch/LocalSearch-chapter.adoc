@@ -579,7 +579,7 @@ Great Deluge takes as starting water level best score from construction heuristi
       <greatDelugeWaterLevelIncrementRatio>0.00000005</greatDelugeWaterLevelIncrementRatio>
     </acceptor>
     <forager>
-      <acceptedCountLimit>4</acceptedCountLimit>
+      <acceptedCountLimit>1</acceptedCountLimit>
     </forager>
   </localSearch>
 ----
@@ -590,7 +590,7 @@ If `greatDelugeWaterLevelIncrementScore` is set, the water level is increased by
 [source,xml,options="nowrap"]
 ----
 <acceptor>
-  <greatDelugeWaterLevelIncrementScore>100</greatDelugeWaterLevelIncrementScore>
+  <greatDelugeWaterLevelIncrementScore>10</greatDelugeWaterLevelIncrementScore>
 </acceptor>
 ----
 To avoid hard coding the water level increment, configure a `greatDelugeWaterLevelIncrementRatio` (recommended) when the water level is increased by percentual value, so there is no need to know the size of the problem or value of a scoring function.
@@ -598,7 +598,7 @@ To avoid hard coding the water level increment, configure a `greatDelugeWaterLev
 [source,xml,options="nowrap"]
 ----
 <acceptor>
-  <greatDelugeWaterLevelIncrementRatio>100</greatDelugeWaterLevelIncrementRatio>
+  <greatDelugeWaterLevelIncrementRatio>0.00000005</greatDelugeWaterLevelIncrementRatio>
 </acceptor>
 ----
 
