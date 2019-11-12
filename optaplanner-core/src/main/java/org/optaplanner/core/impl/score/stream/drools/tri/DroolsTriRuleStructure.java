@@ -1,0 +1,79 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.core.impl.score.stream.drools.tri;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
+
+import org.drools.model.PatternDSL;
+import org.drools.model.RuleItemBuilder;
+import org.drools.model.Variable;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
+
+public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
+
+    private final Variable<A> a;
+    private final Variable<B> b;
+    private final Variable<C> c;
+    private final Supplier<PatternDSL.PatternDef<?>> targetPattern;
+    private final List<RuleItemBuilder<?>> supportingRuleItems;
+
+    public DroolsTriRuleStructure(DroolsBiRuleStructure<A, B> abRuleStructure,
+            final DroolsUniRuleStructure<C> cRuleStructure) {
+        this.a = abRuleStructure.getA();
+        this.b = abRuleStructure.getB();
+        this.c = cRuleStructure.getA();
+        this.targetPattern = cRuleStructure::getAPattern;
+        List<RuleItemBuilder<?>> ruleItems = new ArrayList<>(abRuleStructure.getSupportingRuleItems());
+        ruleItems.add(abRuleStructure.getTargetPattern());
+        ruleItems.addAll(cRuleStructure.getSupportingRuleItems());
+        this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
+    }
+
+    public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, final Variable<C> cVariable,
+            Supplier<PatternDSL.PatternDef<?>> targetPattern, List<RuleItemBuilder<?>> supportingRuleItems) {
+        this.a = aVariable;
+        this.b = bVariable;
+        this.c = cVariable;
+        this.targetPattern = targetPattern;
+        this.supportingRuleItems = supportingRuleItems;
+    }
+
+    public Variable<A> getA() {
+        return a;
+    }
+
+    public Variable<B> getB() {
+        return b;
+    }
+
+    public Variable<C> getC() {
+        return c;
+    }
+
+    public PatternDSL.PatternDef<Object> getTargetPattern() {
+        return (PatternDSL.PatternDef<Object>) targetPattern.get();
+    }
+
+    public List<RuleItemBuilder<?>> getSupportingRuleItems() {
+        return supportingRuleItems;
+    }
+}

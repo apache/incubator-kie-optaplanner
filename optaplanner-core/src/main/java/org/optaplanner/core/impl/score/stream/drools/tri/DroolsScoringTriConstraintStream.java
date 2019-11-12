@@ -87,7 +87,7 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     @Override
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsTriCondition<A, B, C> condition = parent.createCondition();
+        DroolsTriCondition<A, B, C> condition = parent.getCondition();
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .build(createRuleItemBuilders(condition, scoreHolderGlobal)
                         .toArray(new RuleItemBuilder<?>[0]));
@@ -110,8 +110,8 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public DroolsTriCondition<A, B, C> createCondition() {
-        throw new UnsupportedOperationException("Cannot create TriCondition from a scoring stream.");
+    public DroolsTriCondition<A, B, C> getCondition() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own TriCondition.");
     }
 
     @Override

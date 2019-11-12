@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -51,11 +52,11 @@ public class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
     }
 
     public List<DroolsGroupByAccumulator.Pair<A, NewB>> finish() {
-        List<Pair<A, NewB>> results = new ArrayList<>(useCount.size());
+        List<DroolsGroupByAccumulator.Pair<A, NewB>> results = new ArrayList<>(useCount.size());
         for (Map.Entry<A, ResultContainer> entry: containers.entrySet()) {
             ResultContainer container = entry.getValue();
             if (useCount.containsKey(container)) {
-                results.add(new Pair<>(entry.getKey(), finisher.apply(container)));
+                results.add(new DroolsGroupByAccumulator.Pair<>(entry.getKey(), finisher.apply(container)));
             }
         }
         return results;
@@ -78,6 +79,28 @@ public class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
             return value;
         }
 
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || !Objects.equals(getClass(), o.getClass())) {
+                return false;
+            }
+            final DroolsGroupByAccumulator.Pair<?, ?> pair = (DroolsGroupByAccumulator.Pair<?, ?>) o;
+            return Objects.equals(key, pair.key) &&
+                    Objects.equals(value, pair.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(key, value);
+        }
+
+        @Override
+        public String toString() {
+            return "Pair[" + key + ", " + value + "]";
+        }
     }
 
 }

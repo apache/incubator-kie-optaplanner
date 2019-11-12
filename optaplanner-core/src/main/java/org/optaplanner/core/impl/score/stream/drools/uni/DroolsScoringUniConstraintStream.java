@@ -90,14 +90,14 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     // ************************************************************************
 
     @Override
-    public DroolsUniCondition<A> createCondition() {
-        throw new UnsupportedOperationException("Cannot create UniCondition from a scoring stream.");
+    public DroolsUniCondition<A> getCondition() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own UniCondition.");
     }
 
     @Override
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsUniCondition<A> condition = parent.createCondition();
+        DroolsUniCondition<A> condition = parent.getCondition();
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .build(createRuleItemBuilders(condition, scoreHolderGlobal).toArray(new RuleItemBuilder<?>[0]));
         return Optional.of(rule);

@@ -89,7 +89,7 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     @Override
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsBiCondition<A, B> condition = parent.createCondition();
+        DroolsBiCondition<A, B> condition = parent.getCondition();
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .build(createRuleItemBuilders(condition, scoreHolderGlobal)
                         .toArray(new RuleItemBuilder<?>[0]));
@@ -112,8 +112,8 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     }
 
     @Override
-    public DroolsBiCondition<A, B> createCondition() {
-        throw new UnsupportedOperationException("Cannot create BiCondition from a scoring stream.");
+    public DroolsBiCondition<A, B> getCondition() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own BiCondition.");
     }
 
     @Override

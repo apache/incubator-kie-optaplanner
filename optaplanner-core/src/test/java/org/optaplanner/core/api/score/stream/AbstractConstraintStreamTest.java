@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Assume;
@@ -32,7 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsLogicalTuple;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupByAccumulator;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
 import static org.junit.Assert.assertEquals;
@@ -84,17 +83,15 @@ public abstract class AbstractConstraintStreamTest {
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
-    private static List<Object> removeIndirection(DroolsLogicalTuple logicalTuple) {
-        return IntStream.range(0, logicalTuple.getCardinality())
-                .mapToObj(logicalTuple::getItem)
-                .collect(Collectors.toList());
+    private static List<Object> removeIndirection(DroolsGroupByAccumulator.Pair pair) {
+        return Arrays.asList(pair.getKey(), pair.getValue());
     }
 
     private static List<Object> removeIndirection(List<Object> justificationList) {
         return justificationList.stream()
                 .flatMap(item -> {
-                    if (item instanceof DroolsLogicalTuple) {
-                        return removeIndirection((DroolsLogicalTuple) item).stream();
+                    if (item instanceof DroolsGroupByAccumulator.Pair) {
+                        return removeIndirection((DroolsGroupByAccumulator.Pair) item).stream();
                     } else {
                         return Stream.of(item);
                     }

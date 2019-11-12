@@ -54,8 +54,8 @@ public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumu
             Declaration[] declarations, Declaration[] innerDeclarations, final WorkingMemory workingMemory) {
         InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) workingMemory;
         Object handleObject = handle.getObject();
-        final A groupKey = (A) innerDeclarations[0].getValue(internalWorkingMemory, handleObject);
-        final B toCollect = (B) innerDeclarations[2].getValue(internalWorkingMemory, handleObject);
+        final B toCollect = (B) innerDeclarations[1].getValue(internalWorkingMemory, handleObject);
+        final A groupKey = (A) innerDeclarations[2].getValue(internalWorkingMemory, handleObject);
         ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle, groupKey, toCollect);
     }
 
