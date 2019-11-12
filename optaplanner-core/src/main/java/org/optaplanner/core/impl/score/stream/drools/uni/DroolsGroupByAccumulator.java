@@ -26,14 +26,14 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public class GroupByAcc<A, B, ResultContainer, NewB> {
+public class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
     private final Map<ResultContainer, Long> useCount = new HashMap<>(0);
     private final Map<A, ResultContainer> containers = new HashMap<>(0);
     private final Supplier<ResultContainer> supplier;
     private final BiFunction<ResultContainer, B, Runnable> accumulator;
     private final Function<ResultContainer, NewB> finisher;
 
-    public GroupByAcc(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsGroupByAccumulator(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
@@ -50,7 +50,7 @@ public class GroupByAcc<A, B, ResultContainer, NewB> {
         };
     }
 
-    public List<GroupByAcc.Pair<A, NewB>> finish() {
+    public List<DroolsGroupByAccumulator.Pair<A, NewB>> finish() {
         List<Pair<A, NewB>> results = new ArrayList<>(useCount.size());
         for (Map.Entry<A, ResultContainer> entry: containers.entrySet()) {
             ResultContainer container = entry.getValue();

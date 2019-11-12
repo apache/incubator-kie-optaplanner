@@ -24,19 +24,19 @@ import java.util.Map;
 import org.drools.core.common.InternalFactHandle;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public class DroolsAccumulate<A, B, ResultContainer, NewB> implements Serializable {
+public class DroolsGroupBy<A, B, ResultContainer, NewB> implements Serializable {
 
     private static final long serialVersionUID = 510l;
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
     private final UniConstraintCollector<B, ResultContainer, NewB> collector;
-    private GroupByAcc<A, B, ResultContainer, NewB> acc;
+    private DroolsGroupByAccumulator<A, B, ResultContainer, NewB> acc;
 
-    public DroolsAccumulate(UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsGroupBy(UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.collector = collector;
     }
 
     public void init() {
-        acc = new GroupByAcc<>(collector);
+        acc = new DroolsGroupByAccumulator<>(collector);
         undoMap.clear();
     }
 
@@ -56,7 +56,7 @@ public class DroolsAccumulate<A, B, ResultContainer, NewB> implements Serializab
         undo.run();
     }
 
-    public List<GroupByAcc.Pair<A, NewB>> getResult() {
+    public List<DroolsGroupByAccumulator.Pair<A, NewB>> getResult() {
         return acc.finish();
     }
 

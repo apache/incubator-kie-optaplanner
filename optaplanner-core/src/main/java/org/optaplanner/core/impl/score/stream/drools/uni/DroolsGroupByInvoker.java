@@ -30,23 +30,23 @@ import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public class DroolsAccumulateInvoker<A, B, ResultContainer, NewB> implements Accumulator, CompiledInvoker {
+public class DroolsGroupByInvoker<A, B, ResultContainer, NewB> implements Accumulator, CompiledInvoker {
 
     private final UniConstraintCollector<B, ResultContainer, NewB> collector;
 
-    public DroolsAccumulateInvoker(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsGroupByInvoker(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.collector = collector;
     }
 
     @Override
     public Serializable createContext() {
-        return new DroolsAccumulate<>(collector);
+        return new DroolsGroupBy<>(collector);
     }
 
     @Override
     public void init(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
             WorkingMemory workingMemory) {
-        ((DroolsAccumulate<A, B, ResultContainer, NewB>) context).init();
+        ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).init();
     }
 
     @Override
@@ -56,19 +56,19 @@ public class DroolsAccumulateInvoker<A, B, ResultContainer, NewB> implements Acc
         Object handleObject = handle.getObject();
         final A groupKey = (A) innerDeclarations[0].getValue(internalWorkingMemory, handleObject);
         final B toCollect = (B) innerDeclarations[2].getValue(internalWorkingMemory, handleObject);
-        ((DroolsAccumulate<A, B, ResultContainer, NewB>) context).accumulate(handle, groupKey, toCollect);
+        ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle, groupKey, toCollect);
     }
 
     @Override
     public void reverse(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
             Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
-        ((DroolsAccumulate<A, B, ResultContainer, NewB>) context).reverse(handle);
+        ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).reverse(handle);
     }
 
     @Override
     public Object getResult(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
             WorkingMemory workingMemory) {
-        return ((DroolsAccumulate<A, B, ResultContainer, NewB>) context).getResult();
+        return ((DroolsGroupBy<A, B, ResultContainer, NewB>) context).getResult();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class DroolsAccumulateInvoker<A, B, ResultContainer, NewB> implements Acc
 
     @Override
     public String getMethodBytecode() {
-        Class<?> accumulateClass = DroolsAccumulate.class;
+        Class<?> accumulateClass = DroolsGroupBy.class;
         String classFileName = accumulateClass.getCanonicalName().replace('.', '/') + ".class";
         try (InputStream is = getClass().getClassLoader().getResourceAsStream(classFileName)) {
             final byte[] data = new byte[1024];
