@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.stream;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -90,7 +91,14 @@ public abstract class AbstractConstraintStreamTest {
     private static List<Object> removeIndirection(List<Object> justificationList) {
         return justificationList.stream()
                 .flatMap(item -> {
-                    if (item instanceof DroolsGroupByAccumulator.Pair) {
+                    if (item instanceof Collection) {
+                        /*
+                         * Removes results of intermediate accumulate operations from constraint matches. In CS-D, those are
+                         * typically by-products of other operations and including them would mean that constraint
+                         * matches of CS-D would be incomparable to CS-B.
+                         */
+                        return Stream.empty();
+                    } else if (item instanceof DroolsGroupByAccumulator.Pair) {
                         return removeIndirection((DroolsGroupByAccumulator.Pair) item).stream();
                     } else {
                         return Stream.of(item);

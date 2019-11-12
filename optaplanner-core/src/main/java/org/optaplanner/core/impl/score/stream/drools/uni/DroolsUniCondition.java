@@ -27,6 +27,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.model.BetaIndex;
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -37,8 +38,8 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block3;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
-import org.drools.model.functions.Predicate3;
 import org.drools.model.view.ExprViewItem;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.RuleContext;
@@ -53,6 +54,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAccumulateCont
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.from;
 import static org.drools.model.PatternDSL.pattern;
 
@@ -73,9 +75,9 @@ public final class DroolsUniCondition<A> {
     }
 
     public DroolsUniCondition<A> andFilter(Predicate<A> predicate) {
-        Predicate2<Object, A> filter = (__, a) -> predicate.test(a);
+        Predicate1<Object> filter = a -> predicate.test((A) a);
         DroolsUniRuleStructure<A> newStructure = new DroolsUniRuleStructure<>(aRuleStructure.getA(),
-                () -> aRuleStructure.getAPattern().expr("Filter using " + predicate, aRuleStructure.getA(), filter),
+                () -> aRuleStructure.getAPattern().expr("Filter using " + predicate, filter),
                 aRuleStructure.getSupportingRuleItems());
         return new DroolsUniCondition<>(newStructure);
     }
@@ -175,7 +177,7 @@ public final class DroolsUniCondition<A> {
             PatternDSL.PatternDef bPattern = bRuleStructure.getAPattern();
             JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
             for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
-                bPattern = join(bVariable, bPattern, biJoiner, mappingIndex);
+                bPattern = join(bPattern, biJoiner, mappingIndex);
             }
             return bPattern;
         };
@@ -184,20 +186,39 @@ public final class DroolsUniCondition<A> {
         return new DroolsBiCondition<>(new DroolsBiRuleStructure<>(aRuleStructure, newBRuleStructure));
     }
 
-    private <B> PatternDSL.PatternDef<Object> join(Variable<B> bVariable, PatternDSL.PatternDef<Object> bPattern,
+    private <B> PatternDSL.PatternDef<Object> join(PatternDSL.PatternDef<Object> bPattern,
             AbstractBiJoiner<A, B> biJoiner, int mappingIndex) {
         JoinerType joinerType = biJoiner.getJoinerTypes()[mappingIndex];
         Function<A, Object> leftMapping = biJoiner.getLeftMapping(mappingIndex);
         Function<B, Object> rightMapping = biJoiner.getRightMapping(mappingIndex);
         Function1<A, Object> leftExtractor = leftMapping::apply;
-        Function1<B, Object> rightExtractor = rightMapping::apply;
-        Predicate3<Object, A, B> predicate = (__, a, b) -> {
+        Function1<Object, Object> rightExtractor = b -> rightMapping.apply((B) b);
+        Predicate2<Object, A> predicate = (b, a) -> {
             Object left = leftExtractor.apply(a);
             Object right = rightExtractor.apply(b);
             return joinerType.matches(left, right);
         };
-        return bPattern.expr("Join using joiner #" + mappingIndex + " in " + biJoiner, aRuleStructure.getA(), bVariable,
-                predicate);
+        BetaIndex<Object, A, Object> betaIndex = betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex,
+                rightExtractor, leftExtractor);
+        return bPattern.expr("Join using joiner #" + mappingIndex + " in " + biJoiner, aRuleStructure.getA(),
+                predicate, betaIndex);
+    }
+
+    public static Index.ConstraintType getConstraintType(JoinerType type) {
+        switch (type) {
+            case EQUAL:
+                return Index.ConstraintType.EQUAL;
+            case LESS_THAN:
+                return Index.ConstraintType.LESS_THAN;
+            case LESS_THAN_OR_EQUAL:
+                return Index.ConstraintType.LESS_OR_EQUAL;
+            case GREATER_THAN:
+                return Index.ConstraintType.GREATER_THAN;
+            case GREATER_THAN_OR_EQUAL:
+                return Index.ConstraintType.GREATER_OR_EQUAL;
+            default:
+                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
+        }
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

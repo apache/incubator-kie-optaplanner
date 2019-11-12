@@ -28,7 +28,7 @@ import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block5;
-import org.drools.model.functions.Predicate4;
+import org.drools.model.functions.Predicate3;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -51,12 +51,12 @@ public final class DroolsTriCondition<A, B, C> {
     }
 
     public DroolsTriCondition<A, B, C> andFilter(TriPredicate<A, B, C> predicate) {
-        Predicate4<Object, A, B, C> filter = (__, a, b, c) -> predicate.test(a, b, c);
+        Predicate3<Object, A, B> filter = (c, a, b) -> predicate.test(a, b, (C) c);
         Variable<A> aVariable = ruleStructure.getA();
         Variable<B> bVariable = ruleStructure.getB();
         Variable<C> cVariable = ruleStructure.getC();
         Supplier<PatternDSL.PatternDef<?>> newTargetPattern = () -> ruleStructure.getTargetPattern()
-                .expr("Filter using " + predicate, aVariable, bVariable, cVariable, filter);
+                .expr("Filter using " + predicate, aVariable, bVariable, filter);
         DroolsTriRuleStructure<A, B, C> newRuleStructure = new DroolsTriRuleStructure<>(aVariable, bVariable, cVariable,
                 newTargetPattern, ruleStructure.getSupportingRuleItems());
         return new DroolsTriCondition<>(newRuleStructure);

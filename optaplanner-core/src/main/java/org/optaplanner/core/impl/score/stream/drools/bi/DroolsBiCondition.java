@@ -32,7 +32,7 @@ import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block4;
-import org.drools.model.functions.Predicate3;
+import org.drools.model.functions.Predicate2;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
@@ -57,11 +57,11 @@ public final class DroolsBiCondition<A, B> {
     }
 
     public DroolsBiCondition<A, B> andFilter(BiPredicate<A, B> predicate) {
-        Predicate3<Object, A, B> filter = (__, a, b) -> predicate.test(a, b);
+        Predicate2<Object, A> filter = (b, a) -> predicate.test(a, (B) b);
         Variable<A> aVariable = ruleStructure.getA();
         Variable<B> bVariable = ruleStructure.getB();
         Supplier<PatternDSL.PatternDef<?>> newTargetPattern = () -> ruleStructure.getTargetPattern()
-                .expr("Filter using " + predicate, aVariable, bVariable, filter);
+                .expr("Filter using " + predicate, aVariable, filter);
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
                 newTargetPattern, ruleStructure.getSupportingRuleItems());
         return new DroolsBiCondition<>(newRuleStructure);
@@ -72,8 +72,8 @@ public final class DroolsBiCondition<A, B> {
         DroolsUniRuleStructure<C> cRuleStructure = cCondition.getARuleStructure();
         Variable<C> cVariable = cRuleStructure.getA();
         Supplier<PatternDSL.PatternDef<?>> cPattern = () -> cRuleStructure.getAPattern()
-                .expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(), cVariable,
-                        (__, a, b, c) -> matches(triJoiner, a, b, c));
+                .expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(),
+                        (c, a, b) -> matches(triJoiner, a, b, (C) c));
         DroolsUniRuleStructure<C> newCRuleStructure = new DroolsUniRuleStructure<>(cVariable, cPattern,
                 cRuleStructure.getSupportingRuleItems());
         return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure));
