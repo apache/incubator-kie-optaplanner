@@ -329,7 +329,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @Test
-    public void groupBy_filtered() {
+    public void groupBy_1Mapping0Collect_filtered() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
@@ -351,6 +351,33 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector, assertMatchWithScore(-1, entityGroup1));
+    }
+
+    @Test
+    public void groupBy_1Mapping1Collect_filtered() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, count())
+                    .filter((entityGroup, count) -> count > 1)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, entityGroup1, 2),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 8));
     }
 
     @Test
