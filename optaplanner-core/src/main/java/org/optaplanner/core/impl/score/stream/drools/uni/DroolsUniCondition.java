@@ -54,6 +54,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAccumulateCont
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.*;
 import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.from;
 import static org.drools.model.PatternDSL.pattern;
@@ -77,7 +78,8 @@ public final class DroolsUniCondition<A> {
     public DroolsUniCondition<A> andFilter(Predicate<A> predicate) {
         Predicate1<Object> filter = a -> predicate.test((A) a);
         DroolsUniRuleStructure<A> newStructure = new DroolsUniRuleStructure<>(aRuleStructure.getA(),
-                () -> aRuleStructure.getAPattern().expr("Filter using " + predicate, filter),
+                () -> aRuleStructure.getAPattern().expr("Filter using " + predicate, filter,
+                        alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1, a -> predicate.test((A) a), true)),
                 aRuleStructure.getSupportingRuleItems());
         return new DroolsUniCondition<>(newStructure);
     }
@@ -113,7 +115,7 @@ public final class DroolsUniCondition<A> {
         Variable<Set> setOfGroupKeys = aRuleStructure.createVariable(Set.class,"setOfGroupKey");
         PatternDSL.PatternDef<Set> pattern = pattern(setOfGroupKeys)
                 .expr("Set of groupKey", set -> !set.isEmpty(),
-                        PatternDSL.alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1, Set::isEmpty, false));
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
         ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
                 accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfGroupKeys));
         Variable<NewA> groupKey = aRuleStructure.createVariable("groupKey", from(setOfGroupKeys));
@@ -128,8 +130,8 @@ public final class DroolsUniCondition<A> {
      *
      * <pre>
      * when
-     *     $list(size > 0): accumulate(Person(), $list: Pair.of(Person::getCity, ConstraintCollectors.count()))
-     *     Pair($newA: left, $newB: right) from $list
+     *     set(size > 0): accumulate(Person(), $set: Pair.of(Person::getCity, ConstraintCollectors.count()))
+     *     Pair($newA: left, $newB: right) from $set
      * then
      *     ...
      * end
@@ -147,24 +149,24 @@ public final class DroolsUniCondition<A> {
             Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer, NewB> collector) {
         Variable<A> collectingOnVar = aRuleStructure.createVariable(aRuleStructure.getA().getType(), "collectingOn");
         Variable<NewA> groupKeyVar = aRuleStructure.createVariable("groupKey");
-        Variable<List> listOfPairsVar = aRuleStructure.createVariable(List.class,"listOfPairs");
+        Variable<Set> setOfPairsVar = aRuleStructure.createVariable(Set.class,"setOfPairs");
         // Prepare the list of pairs.
-        PatternDSL.PatternDef<List> pattern = pattern(listOfPairsVar)
-                .expr("List of groupBy+collect pairs", list -> !list.isEmpty(),
-                        PatternDSL.alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1, List::isEmpty, false));
+        PatternDSL.PatternDef<Set> pattern = pattern(setOfPairsVar)
+                .expr("Set of groupBy+collect pairs", set -> !set.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
         PatternDSL.PatternDef<Object> innerNewACollectingPattern = aRuleStructure.getAPattern()
                 .bind(groupKeyVar, a -> groupKeyMapping.apply((A) a))
                 .bind(collectingOnVar, a -> (A) a);
         ExprViewItem<Object> accumulate = DSL.accumulate(innerNewACollectingPattern,
-                accFunction(() -> new DroolsGroupByInvoker<>(collector)).as(listOfPairsVar));
+                accFunction(() -> new DroolsGroupByInvoker<>(collector)).as(setOfPairsVar));
         // Load one pair from the list.
         Variable<DroolsGroupByAccumulator.Pair> onePairVar = aRuleStructure.createVariable(
-                DroolsGroupByAccumulator.Pair.class, "pair", from(listOfPairsVar));
+                DroolsGroupByAccumulator.Pair.class, "pair", from(setOfPairsVar));
         Variable<NewA> newAVar = aRuleStructure.createVariable("newA");
         Variable<NewB> newBVar = aRuleStructure.createVariable("newB");
         Supplier<PatternDSL.PatternDef<?>> finalPairPattern = () -> pattern(onePairVar)
-                .bind(newAVar, pair -> (NewA) pair.getKey(), PatternDSL.reactOn("key"))
-                .bind(newBVar, pair -> (NewB) pair.getValue(), PatternDSL.reactOn("value"));
+                .bind(newAVar, pair -> (NewA) pair.key)
+                .bind(newBVar, pair -> (NewB) pair.value);
         DroolsBiRuleStructure<NewA, NewB> newRuleStructure = new DroolsBiRuleStructure<>(newAVar, newBVar,
                 finalPairPattern, rebuildRuleItems(aRuleStructure, pattern, accumulate));
         return new DroolsBiCondition<>(newRuleStructure);
@@ -174,7 +176,7 @@ public final class DroolsUniCondition<A> {
         DroolsUniRuleStructure<B> bRuleStructure = bCondition.aRuleStructure;
         Variable<B> bVariable = bRuleStructure.getA();
         Supplier<PatternDSL.PatternDef<?>> newBPattern = () -> {
-            PatternDSL.PatternDef bPattern = bRuleStructure.getAPattern();
+            PatternDef bPattern = bRuleStructure.getAPattern();
             JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
             for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
                 bPattern = join(bPattern, biJoiner, mappingIndex);

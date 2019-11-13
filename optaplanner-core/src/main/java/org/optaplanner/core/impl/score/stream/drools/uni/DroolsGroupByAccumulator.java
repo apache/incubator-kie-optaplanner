@@ -16,19 +16,21 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
-    private final Map<ResultContainer, Long> useCount = new HashMap<>(0);
+public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
+
+    private final Map<ResultContainer, Long> containersInUse = new HashMap<>(0);
     private final Map<A, ResultContainer> containers = new HashMap<>(0);
     private final Supplier<ResultContainer> supplier;
     private final BiFunction<ResultContainer, B, Runnable> accumulator;
@@ -40,43 +42,49 @@ public class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
         this.finisher = collector.finisher();
     }
 
+    private static Long increment(Long count) {
+        return count == null ? 1L : count + 1L;
+    }
+
+    private static Long decrement(Long count) {
+        return count == 1L ? null : count - 1L;
+    }
+
     public Runnable accumulate(A key, B value) {
-        ResultContainer container = containers.computeIfAbsent(key, k -> supplier.get());
+        ResultContainer container = containers.computeIfAbsent(key, __ -> supplier.get());
         Runnable undo = accumulator.apply(container, value);
-        useCount.compute(container, (k, count) -> count == null ? 1 : count + 1); // Increment use counter.
+        containersInUse.compute(container, (__, count) -> increment(count)); // Increment use counter.
         return () -> {
             undo.run();
-            // Decrement use counter. If 0, container is ignored. This prevents empty groups from showing up in results.
-            useCount.compute(container, (k, count) -> count == 1 ? null : count - 1);
+            // Decrement use counter. If 0, container is ignored during finishing. Removes empty groups from results.
+            containersInUse.compute(container, (__, count) -> decrement(count));
         };
     }
 
-    public List<DroolsGroupByAccumulator.Pair<A, NewB>> finish() {
-        List<DroolsGroupByAccumulator.Pair<A, NewB>> results = new ArrayList<>(useCount.size());
+    public Set<DroolsGroupByAccumulator.Pair<A, NewB>> finish() {
+        // Set of performance improvements for various cases.
+        if (containersInUse.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<Pair<A, NewB>> results = new LinkedHashSet<>(containersInUse.size());
         for (Map.Entry<A, ResultContainer> entry: containers.entrySet()) {
             ResultContainer container = entry.getValue();
-            if (useCount.containsKey(container)) {
+            if (containersInUse.containsKey(container)) {
                 results.add(new DroolsGroupByAccumulator.Pair<>(entry.getKey(), finisher.apply(container)));
             }
         }
         return results;
     }
 
-    public static class Pair<K,V> {
+    public static final class Pair<K,V> {
         public final K key;
         public final V value;
+        private final int hashCode;
 
-        public Pair( K key, V value ) {
+        public Pair(K key, V value) {
             this.key = key;
             this.value = value;
-        }
-
-        public K getKey() {
-            return key;
-        }
-
-        public V getValue() {
-            return value;
+            this.hashCode = Objects.hash(key, value);
         }
 
         @Override
@@ -94,7 +102,7 @@ public class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
 
         @Override
         public int hashCode() {
-            return Objects.hash(key, value);
+            return hashCode;
         }
 
         @Override

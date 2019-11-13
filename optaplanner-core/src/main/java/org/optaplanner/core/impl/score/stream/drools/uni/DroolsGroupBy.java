@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.common.InternalFactHandle;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
@@ -56,7 +56,7 @@ public class DroolsGroupBy<A, B, ResultContainer, NewB> implements Serializable 
         undo.run();
     }
 
-    public List<DroolsGroupByAccumulator.Pair<A, NewB>> getResult() {
+    public Set<DroolsGroupByAccumulator.Pair<A, NewB>> getResult() {
         return acc.finish();
     }
 

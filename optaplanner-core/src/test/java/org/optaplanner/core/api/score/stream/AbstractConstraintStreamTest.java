@@ -84,8 +84,8 @@ public abstract class AbstractConstraintStreamTest {
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
-    private static List<Object> removeIndirection(DroolsGroupByAccumulator.Pair pair) {
-        return Arrays.asList(pair.getKey(), pair.getValue());
+    private static Stream<Object> removeIndirection(DroolsGroupByAccumulator.Pair pair) {
+        return Stream.of(pair.key, pair.value);
     }
 
     private static List<Object> removeIndirection(List<Object> justificationList) {
@@ -99,7 +99,7 @@ public abstract class AbstractConstraintStreamTest {
                          */
                         return Stream.empty();
                     } else if (item instanceof DroolsGroupByAccumulator.Pair) {
-                        return removeIndirection((DroolsGroupByAccumulator.Pair) item).stream();
+                        return removeIndirection((DroolsGroupByAccumulator.Pair) item);
                     } else {
                         return Stream.of(item);
                     }
