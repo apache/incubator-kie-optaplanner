@@ -19,10 +19,17 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.math.BigDecimal;
 
 import org.drools.model.Drools;
+import org.drools.model.PatternDSL;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
+/**
+ * Encapsulates the low-level rule creation and manipulation operations via the Drools executable model DSL
+ * (see {@link PatternDSL}.
+ *
+ * @param <T> type of Drools rule that we operate on
+ */
 public abstract class DroolsCondition<T extends DroolsRuleStructure> {
 
     protected final T ruleStructure;

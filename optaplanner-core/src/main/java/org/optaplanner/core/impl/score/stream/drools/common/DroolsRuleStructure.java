@@ -26,6 +26,9 @@ import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 
+/**
+ * Represents the left-hand side of a Drools rule.
+ */
 public abstract class DroolsRuleStructure {
 
     private static final AtomicInteger COUNTER = new AtomicInteger();
@@ -45,7 +48,7 @@ public abstract class DroolsRuleStructure {
      * @return new variable declaration, not yet bound to anything
      */
     public final <X> Variable<X> createVariable(Class<X> clz, String name) {
-        return DSL.declarationOf(clz, decorateName(name));
+        return DSL.declarationOf(clz, decorateVariableName(name));
     }
 
     /**
@@ -63,10 +66,10 @@ public abstract class DroolsRuleStructure {
      * @return new variable declaration, not yet bound to anything
      */
     public final <X> Variable<X> createVariable(Class<X> clz, String name, DeclarationSource source) {
-        return DSL.declarationOf(clz, decorateName(name), source);
+        return DSL.declarationOf(clz, decorateVariableName(name), source);
     }
 
-    private String decorateName(String name) {
+    private String decorateVariableName(String name) {
         return "$" + name + "_" + id;
     }
 
@@ -112,6 +115,11 @@ public abstract class DroolsRuleStructure {
      *
      * The primary pattern would be the latter one ($a2), as that is the pattern you would use to further constrain your
      * output in both $a1 and $a2.
+     *
+     * It is recommended that the pattern returned by this method always be a fresh instance.
+     * {@link PatternDSL.PatternDef}s are mutable and therefore, if a single instance was mutated by multiple
+     * {@link DroolsCondition}s, different rules would unintentionally become interconnected. This results in weird bugs
+     * that are hard to track.
      *
      * @return the primary pattern as defined
      */
