@@ -48,10 +48,12 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
         return a;
     }
 
-    public PatternDSL.PatternDef<Object> getAPattern() {
+    @Override
+    public PatternDSL.PatternDef<Object> getPrimaryPattern() {
         return (PatternDSL.PatternDef<Object>) aPattern.get();
     }
 
+    @Override
     public List<RuleItemBuilder<?>> getSupportingRuleItems() {
         return supportingRuleItems;
     }

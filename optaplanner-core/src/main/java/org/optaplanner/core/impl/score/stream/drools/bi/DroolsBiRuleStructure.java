@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -38,9 +37,16 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
             final DroolsUniRuleStructure<B> bRuleStructure) {
         this.a = aRuleStructure.getA();
         this.b = bRuleStructure.getA();
-        this.targetPattern = bRuleStructure::getAPattern;
-        List<RuleItemBuilder<?>> ruleItems = new ArrayList<>(aRuleStructure.getSupportingRuleItems());
-        ruleItems.add(aRuleStructure.getAPattern());
+        this.targetPattern = bRuleStructure::getPrimaryPattern;
+        /*
+         * Assemble the new rule structure in the following order:
+         * - First, the supporting rule items from aRuleStructure.
+         * - Second, the primary pattern from aRuleStructure.
+         * - And finally, the supporting rule items from bRuleStructure.
+         *
+         * This makes sure that left-hand side of the rule represented by this object is properly ordered.
+         */
+        List<RuleItemBuilder<?>> ruleItems = aRuleStructure.rebuildSupportingRuleItems(aRuleStructure.getPrimaryPattern());
         ruleItems.addAll(bRuleStructure.getSupportingRuleItems());
         this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
     }
@@ -61,10 +67,12 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
         return b;
     }
 
-    public PatternDSL.PatternDef<Object> getTargetPattern() {
+    @Override
+    public PatternDSL.PatternDef<Object> getPrimaryPattern() {
         return (PatternDSL.PatternDef<Object>) targetPattern.get();
     }
 
+    @Override
     public List<RuleItemBuilder<?>> getSupportingRuleItems() {
         return supportingRuleItems;
     }
