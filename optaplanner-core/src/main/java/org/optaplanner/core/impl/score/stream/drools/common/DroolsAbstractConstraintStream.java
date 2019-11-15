@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsScoringUniConstraintStream;
 
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
@@ -81,6 +82,14 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // Pattern creation
     // ************************************************************************
 
+    /**
+     * Assemble a rule that will process this stream and turn it into a constraint match. Will be ignored unless on a
+     * scoring stream such as {@link DroolsScoringUniConstraintStream}.
+     *
+     * @param constraint constraint to be penalized
+     * @param scoreHolderGlobal contains the score to be affected
+     * @return rule representing this constraint stream
+     */
     public Optional<Rule> buildRule(DroolsConstraint<Solution_> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         return Optional.empty();
