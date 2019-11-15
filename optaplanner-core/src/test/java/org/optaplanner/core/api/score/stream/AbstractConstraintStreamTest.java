@@ -16,9 +16,7 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,6 +35,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractConstraintStreamTest {
@@ -88,33 +87,35 @@ public abstract class AbstractConstraintStreamTest {
         return Stream.of(pair.key, pair.value);
     }
 
-    private static List<Object> removeIndirection(List<Object> justificationList) {
+    private static List<Object> removeIndirection(List<Object> justificationList, int expectedJustificationCount) {
         return justificationList.stream()
                 .flatMap(item -> {
-                    if (item instanceof Collection) {
+                    if (item instanceof DroolsGroupByAccumulator.Pair) {
                         /*
-                         * Removes results of intermediate accumulate operations from constraint matches. In CS-D, those are
-                         * typically by-products of other operations and including them would mean that constraint
-                         * matches of CS-D would be incomparable to CS-B.
+                         * In the case of Drools-based CS, the justification may be both in the form of (A, B) and
+                         * Pair<A, B>. In the latter case, we adapt to the former.
                          */
-                        return Stream.empty();
-                    } else if (item instanceof DroolsGroupByAccumulator.Pair) {
                         return removeIndirection((DroolsGroupByAccumulator.Pair) item);
                     } else {
                         return Stream.of(item);
                     }
-                }).collect(Collectors.toList());
+                })
+                .limit(expectedJustificationCount) // We are only interested in justifications that the test asserts.
+                .collect(Collectors.toList());
     }
 
-    private List<ConstraintMatch> removeIndirections(ConstraintMatchTotal constraintMatchTotal) {
-        if (constraintStreamImplType != ConstraintStreamImplType.DROOLS) {
-            return new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
-        }
+    private static ConstraintMatch removeIndirections(ConstraintMatch constraintMatch, int expectedJustificationCount) {
+        return new ConstraintMatch(constraintMatch.getConstraintPackage(), constraintMatch.getConstraintName(),
+                removeIndirection(constraintMatch.getJustificationList(), expectedJustificationCount),
+                constraintMatch.getScore());
+    }
+
+    private List<ConstraintMatch> removeIndirections(ConstraintMatchTotal constraintMatchTotal,
+            int expectedJustificationCount) {
         return constraintMatchTotal.getConstraintMatchSet().stream()
-                .map(constraintMatch -> new ConstraintMatch(constraintMatch.getConstraintPackage(),
-                        constraintMatch.getConstraintName(), removeIndirection(constraintMatch.getJustificationList()),
-                        constraintMatch.getScore()))
+                .map(constraintMatch -> removeIndirections(constraintMatch, expectedJustificationCount))
                 .collect(Collectors.toList());
+
     }
 
     protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
@@ -127,24 +128,32 @@ public abstract class AbstractConstraintStreamTest {
         if (constraintMatchEnabled) {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             for (AssertableMatch assertableMatch : assertableMatches) {
+                int expectedJustificationCount = assertableMatch.justificationList.size();
                 ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
-                        .get(ConstraintMatchTotal.composeConstraintId(constraintPackage, assertableMatch.constraintName));
-                List<ConstraintMatch> withoutIndirection = removeIndirections(constraintMatchTotal);
-                if (withoutIndirection.stream()
-                        .noneMatch(constraintMatch -> assertableMatch.isEqualTo(constraintMatch))) {
+                        .get(composeConstraintId(constraintPackage, assertableMatch.constraintName));
+                List<ConstraintMatch> directMatches = removeIndirections(constraintMatchTotal, expectedJustificationCount);
+                if (directMatches.stream().noneMatch(assertableMatch::isEqualTo)) {
                     fail("The assertableMatch (" + assertableMatch + ") is lacking,"
                             + " it's not in the constraintMatchSet ("
-                            + withoutIndirection + ").");
+                            + directMatches + ").");
                 }
             }
-            List<ConstraintMatch> withoutIndirection = scoreDirector.getConstraintMatchTotalMap().values()
+            List<ConstraintMatch> constraintMatches = scoreDirector.getConstraintMatchTotalMap().values()
                     .stream()
-                    .flatMap(t -> removeIndirections(t).stream())
+                    .flatMap(t -> t.getConstraintMatchSet().stream())
                     .collect(Collectors.toList());
-            for (ConstraintMatch constraintMatch : withoutIndirection) {
+            for (ConstraintMatch constraintMatch : constraintMatches) {
                 if (Arrays.stream(assertableMatches)
-                        .filter(assertableMatch -> assertableMatch.constraintName.equals(constraintMatch.getConstraintName()))
-                        .noneMatch(assertableMatch -> assertableMatch.isEqualTo(constraintMatch))) {
+                        .filter(assertableMatch -> {
+                            int expectedJustificationCount = assertableMatch.justificationList.size();
+                            ConstraintMatch directMatch = removeIndirections(constraintMatch, expectedJustificationCount);
+                            return assertableMatch.constraintName.equals(directMatch.getConstraintName());
+                        })
+                        .noneMatch(assertableMatch -> {
+                            int expectedJustificationCount = assertableMatch.justificationList.size();
+                            ConstraintMatch directMatch = removeIndirections(constraintMatch, expectedJustificationCount);
+                            return assertableMatch.isEqualTo(directMatch);
+                        })) {
                     fail("The constraintMatch (" + constraintMatch + ") is in excess,"
                             + " it's not in the assertableMatches (" + Arrays.toString(assertableMatches) + ").");
                 }
