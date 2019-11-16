@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.drools.model.Global;
+import org.drools.model.PatternDSL;
 import org.drools.model.Rule;
+import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -61,10 +63,10 @@ public class DroolsConstraint<Solution_> implements Constraint {
     }
 
     public Rule createRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        Rule result = scoringStream.buildRule(this, scoreHolderGlobal)
-                        .orElseThrow(() -> new IllegalStateException("Scoring stream (" + scoringStream +
-                                ") did not result in a rule. This is a programming error."));
-        LOGGER.trace("Constraint stream {} created new Drools rule: {}.", scoringStream, result);
+        final Rule result = PatternDSL.rule(getConstraintPackage(), getConstraintName())
+                .build(scoringStream.createRuleItemBuilders(scoreHolderGlobal)
+                        .toArray(new RuleItemBuilder<?>[0]));
+        LOGGER.trace("Constraint stream {} resulted in a new Drools rule: {}.", scoringStream, result);
         return result;
     }
 
