@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.model.DSL;
 import org.drools.model.DeclarationSource;
-import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 
@@ -105,7 +104,7 @@ public abstract class DroolsRuleStructure {
     }
 
     /**
-     * Returns the pattern that the subsequent streams should constrain. Consider the following left-hand side of a
+     * Returns the pattern that the subsequent streams may further expand. Consider the following left-hand side of a
      * Drools rule:
      *
      * <pre>
@@ -113,17 +112,12 @@ public abstract class DroolsRuleStructure {
      *     $a2: A(this != $a1)
      * </pre>
      *
-     * The primary pattern would be the latter one ($a2), as that is the pattern you would use to further constrain your
+     * The primary pattern would be the latter one ($a2), as that is the pattern you would use to further expand your
      * output in both $a1 and $a2.
-     *
-     * It is recommended that the pattern returned by this method always be a fresh instance.
-     * {@link PatternDSL.PatternDef}s are mutable and therefore, if a single instance was mutated by multiple
-     * {@link DroolsCondition}s, different rules would unintentionally become interconnected. This results in weird bugs
-     * that are hard to track.
      *
      * @return the primary pattern as defined
      */
-    public abstract PatternDSL.PatternDef<Object> getPrimaryPattern();
+    public abstract DroolsPatternBuilder<Object> getPrimaryPattern();
 
     /**
      * Every other pattern necessary for the {@link #getPrimaryPattern()} to function properly within the Drools rule's

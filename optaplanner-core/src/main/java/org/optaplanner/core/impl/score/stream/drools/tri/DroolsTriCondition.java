@@ -18,11 +18,9 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.drools.model.Drools;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -34,6 +32,7 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 
 import static org.drools.model.DSL.on;
 
@@ -48,8 +47,9 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
         Variable<A> aVariable = ruleStructure.getA();
         Variable<B> bVariable = ruleStructure.getB();
         Variable<C> cVariable = ruleStructure.getC();
-        Supplier<PatternDSL.PatternDef<?>> newTargetPattern = () -> ruleStructure.getPrimaryPattern()
-                .expr("Filter using " + predicate, aVariable, bVariable, cVariable, filter);
+        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
+                .expand("Filtering using " + predicate,
+                        p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, filter));
         DroolsTriRuleStructure<A, B, C> newRuleStructure = new DroolsTriRuleStructure<>(aVariable, bVariable, cVariable,
                 newTargetPattern, ruleStructure.getSupportingRuleItems());
         return new DroolsTriCondition<>(newRuleStructure);
@@ -84,7 +84,7 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
         ConsequenceBuilder._4<ScoreHolder, A, B, C> consequence =
                 on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB(), ruleStructure.getC())
                         .execute(consequenceImpl);
-        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern(), consequence);
+        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
     }
 
 }

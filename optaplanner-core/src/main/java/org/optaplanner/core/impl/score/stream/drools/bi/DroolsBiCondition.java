@@ -20,13 +20,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.drools.model.Drools;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -35,6 +33,7 @@ import org.drools.model.functions.Predicate3;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
@@ -53,8 +52,9 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         Predicate3<Object, A, B> filter = (__, a, b) -> predicate.test(a, b);
         Variable<A> aVariable = ruleStructure.getA();
         Variable<B> bVariable = ruleStructure.getB();
-        Supplier<PatternDSL.PatternDef<?>> newTargetPattern = () -> ruleStructure.getPrimaryPattern()
-                .expr("Filter using " + predicate, aVariable, bVariable, filter);
+        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
+                .expand("BiFiltering using " + predicate,
+                        p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
                 newTargetPattern, ruleStructure.getSupportingRuleItems());
         return new DroolsBiCondition<>(newRuleStructure);
@@ -64,13 +64,13 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
             AbstractTriJoiner<A, B, C> triJoiner) {
         DroolsUniRuleStructure<C> cRuleStructure = cCondition.getRuleStructure();
         Variable<C> cVariable = cRuleStructure.getA();
-        Supplier<PatternDSL.PatternDef<?>> cPattern = () -> cRuleStructure.getPrimaryPattern()
-                .expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(), cVariable,
-                        (__, a, b, c) -> matches(triJoiner, a, b, c));
+        DroolsPatternBuilder<Object> cPattern = cRuleStructure.getPrimaryPattern()
+                .expand("Joining with " + cVariable,
+                        p -> p.expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(), cVariable,
+                        (__, a, b, c) -> matches(triJoiner, a, b, c)));
         DroolsUniRuleStructure<C> newCRuleStructure = new DroolsUniRuleStructure<>(cVariable, cPattern,
                 cRuleStructure.getSupportingRuleItems());
         return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure));
-
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
@@ -101,7 +101,7 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         ConsequenceBuilder._3<ScoreHolder, A, B> consequence =
                 on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB())
                         .execute(consequenceImpl);
-        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern(), consequence);
+        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
     }
 
     private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {

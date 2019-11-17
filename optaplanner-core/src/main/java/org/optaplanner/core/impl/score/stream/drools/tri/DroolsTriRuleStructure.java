@@ -18,12 +18,11 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
@@ -32,7 +31,7 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     private final Variable<A> a;
     private final Variable<B> b;
     private final Variable<C> c;
-    private final Supplier<PatternDSL.PatternDef<?>> primaryPattern;
+    private final DroolsPatternBuilder<?> primaryPattern;
     private final List<RuleItemBuilder<?>> supportingRuleItems;
 
     public DroolsTriRuleStructure(DroolsBiRuleStructure<A, B> abRuleStructure,
@@ -40,7 +39,7 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
         this.a = abRuleStructure.getA();
         this.b = abRuleStructure.getB();
         this.c = cRuleStructure.getA();
-        this.primaryPattern = cRuleStructure::getPrimaryPattern;
+        this.primaryPattern = cRuleStructure.getPrimaryPattern();
         /*
          * Assemble the new rule structure in the following order:
          * - First, the supporting rule items from abRuleStructure.
@@ -49,13 +48,14 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
          *
          * This makes sure that left-hand side of the rule represented by this object is properly ordered.
          */
-        List<RuleItemBuilder<?>> ruleItems = abRuleStructure.rebuildSupportingRuleItems(abRuleStructure.getPrimaryPattern());
+        List<RuleItemBuilder<?>> ruleItems =
+                abRuleStructure.rebuildSupportingRuleItems(abRuleStructure.getPrimaryPattern().build());
         ruleItems.addAll(cRuleStructure.getSupportingRuleItems());
         this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
     }
 
     public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, final Variable<C> cVariable,
-            Supplier<PatternDSL.PatternDef<?>> primaryPattern, List<RuleItemBuilder<?>> supportingRuleItems) {
+            DroolsPatternBuilder<?> primaryPattern, List<RuleItemBuilder<?>> supportingRuleItems) {
         this.a = aVariable;
         this.b = bVariable;
         this.c = cVariable;
@@ -76,8 +76,8 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     }
 
     @Override
-    public PatternDSL.PatternDef<Object> getPrimaryPattern() {
-        return (PatternDSL.PatternDef<Object>) primaryPattern.get();
+    public DroolsPatternBuilder<Object> getPrimaryPattern() {
+        return (DroolsPatternBuilder<Object>) primaryPattern;
     }
 
     @Override

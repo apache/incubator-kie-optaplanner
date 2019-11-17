@@ -18,20 +18,19 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 
 public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
 
     private final Variable<A> a;
-    private final Supplier<PatternDSL.PatternDef<?>> aPattern;
+    private final DroolsPatternBuilder<?> aPattern;
     private final List<RuleItemBuilder<?>> supportingRuleItems;
 
-    public DroolsUniRuleStructure(Variable<A> aVariable, Supplier<PatternDSL.PatternDef<?>> aPattern,
+    public DroolsUniRuleStructure(Variable<A> aVariable, DroolsPatternBuilder<?> aPattern,
             List<RuleItemBuilder<?>> supportingRuleItems) {
         this.a = aVariable;
         this.aPattern = aPattern;
@@ -40,7 +39,7 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
 
     public DroolsUniRuleStructure(Class<A> aClass) {
         this.a = createVariable(aClass,"base");
-        this.aPattern = () -> PatternDSL.pattern(a);
+        this.aPattern = new DroolsPatternBuilder<>(a);
         this.supportingRuleItems = Collections.emptyList();
     }
 
@@ -49,8 +48,8 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
     }
 
     @Override
-    public PatternDSL.PatternDef<Object> getPrimaryPattern() {
-        return (PatternDSL.PatternDef<Object>) aPattern.get();
+    public DroolsPatternBuilder<Object> getPrimaryPattern() {
+        return (DroolsPatternBuilder<Object>) aPattern;
     }
 
     @Override

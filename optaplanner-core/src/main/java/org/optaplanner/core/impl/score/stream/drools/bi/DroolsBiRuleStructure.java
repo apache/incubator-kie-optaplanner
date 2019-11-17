@@ -18,11 +18,10 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
@@ -30,14 +29,14 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
 
     private final Variable<A> a;
     private final Variable<B> b;
-    private final Supplier<PatternDSL.PatternDef<?>> targetPattern;
+    private final DroolsPatternBuilder<?> targetPattern;
     private final List<RuleItemBuilder<?>> supportingRuleItems;
 
     public DroolsBiRuleStructure(DroolsUniRuleStructure<A> aRuleStructure,
             final DroolsUniRuleStructure<B> bRuleStructure) {
         this.a = aRuleStructure.getA();
         this.b = bRuleStructure.getA();
-        this.targetPattern = bRuleStructure::getPrimaryPattern;
+        this.targetPattern = bRuleStructure.getPrimaryPattern();
         /*
          * Assemble the new rule structure in the following order:
          * - First, the supporting rule items from aRuleStructure.
@@ -46,13 +45,13 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
          *
          * This makes sure that left-hand side of the rule represented by this object is properly ordered.
          */
-        List<RuleItemBuilder<?>> ruleItems = aRuleStructure.rebuildSupportingRuleItems(aRuleStructure.getPrimaryPattern());
+        List<RuleItemBuilder<?>> ruleItems = aRuleStructure.rebuildSupportingRuleItems(aRuleStructure.getPrimaryPattern().build());
         ruleItems.addAll(bRuleStructure.getSupportingRuleItems());
         this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
     }
 
-    public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable,
-            Supplier<PatternDSL.PatternDef<?>> targetPattern, List<RuleItemBuilder<?>> supportingRuleItems) {
+    public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable, DroolsPatternBuilder<?> targetPattern,
+            List<RuleItemBuilder<?>> supportingRuleItems) {
         this.a = aVariable;
         this.b = bVariable;
         this.targetPattern = targetPattern;
@@ -68,8 +67,8 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     }
 
     @Override
-    public PatternDSL.PatternDef<Object> getPrimaryPattern() {
-        return (PatternDSL.PatternDef<Object>) targetPattern.get();
+    public DroolsPatternBuilder<Object> getPrimaryPattern() {
+        return (DroolsPatternBuilder<Object>) targetPattern;
     }
 
     @Override
