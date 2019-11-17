@@ -34,6 +34,12 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     private final DroolsPatternBuilder<?> primaryPattern;
     private final List<RuleItemBuilder<?>> supportingRuleItems;
 
+    /**
+     * Builds a final version of the AB pattern as it will no longer be mutated, and turns the C pattern into the new
+     * primary pattern.
+     * @param aRuleStructure
+     * @param bRuleStructure
+     */
     public DroolsTriRuleStructure(DroolsBiRuleStructure<A, B> abRuleStructure,
             final DroolsUniRuleStructure<C> cRuleStructure) {
         this.a = abRuleStructure.getA();

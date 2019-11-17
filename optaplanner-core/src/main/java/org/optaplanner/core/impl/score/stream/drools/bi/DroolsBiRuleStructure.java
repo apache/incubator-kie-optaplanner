@@ -32,6 +32,12 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     private final DroolsPatternBuilder<?> targetPattern;
     private final List<RuleItemBuilder<?>> supportingRuleItems;
 
+    /**
+     * Builds a final version of the A pattern as it will no longer be mutated, and turns the B pattern into the new
+     * primary pattern.
+     * @param aRuleStructure
+     * @param bRuleStructure
+     */
     public DroolsBiRuleStructure(DroolsUniRuleStructure<A> aRuleStructure,
             final DroolsUniRuleStructure<B> bRuleStructure) {
         this.a = aRuleStructure.getA();
@@ -45,7 +51,8 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
          *
          * This makes sure that left-hand side of the rule represented by this object is properly ordered.
          */
-        List<RuleItemBuilder<?>> ruleItems = aRuleStructure.rebuildSupportingRuleItems(aRuleStructure.getPrimaryPattern().build());
+        List<RuleItemBuilder<?>> ruleItems =
+                aRuleStructure.rebuildSupportingRuleItems(aRuleStructure.getPrimaryPattern().build());
         ruleItems.addAll(bRuleStructure.getSupportingRuleItems());
         this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
     }

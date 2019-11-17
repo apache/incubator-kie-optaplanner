@@ -57,21 +57,22 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
         return () -> {
             undo.run();
             // Decrement use counter. If 0, container is ignored during finishing. Removes empty groups from results.
-            containersInUse.compute(container, (__, count) -> decrement(count));
+            Long currentCount = containersInUse.compute(container, (__, count) -> decrement(count));
+            if (currentCount == null) {
+                containers.remove(key);
+            }
         };
     }
 
     public Set<DroolsGroupByAccumulator.Pair<A, NewB>> finish() {
         // Set of performance improvements for various cases.
-        if (containersInUse.isEmpty()) {
+        if (containers.isEmpty()) {
             return Collections.emptySet();
         }
-        Set<Pair<A, NewB>> results = new LinkedHashSet<>(containersInUse.size());
+        Set<Pair<A, NewB>> results = new LinkedHashSet<>(containers.size());
         for (Map.Entry<A, ResultContainer> entry: containers.entrySet()) {
             ResultContainer container = entry.getValue();
-            if (containersInUse.containsKey(container)) {
-                results.add(new DroolsGroupByAccumulator.Pair<>(entry.getKey(), finisher.apply(container)));
-            }
+            results.add(new DroolsGroupByAccumulator.Pair<>(entry.getKey(), finisher.apply(container)));
         }
         return results;
     }
