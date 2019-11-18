@@ -65,7 +65,6 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
     }
 
     public Set<DroolsGroupByAccumulator.Pair<A, NewB>> finish() {
-        // Set of performance improvements for various cases.
         if (containers.isEmpty()) {
             return Collections.emptySet();
         }
