@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -28,7 +29,7 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> {
+public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
 
     private final Map<ResultContainer, Long> containersInUse = new HashMap<>(0);
     private final Map<A, ResultContainer> containers = new HashMap<>(0);
