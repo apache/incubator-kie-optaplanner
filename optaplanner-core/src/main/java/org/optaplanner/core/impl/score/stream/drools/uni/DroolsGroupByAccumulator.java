@@ -17,8 +17,8 @@
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -31,11 +31,14 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
 
-    private final Map<ResultContainer, Long> containersInUse = new HashMap<>(0);
-    private final Map<A, ResultContainer> containers = new HashMap<>(0);
+    // Containers may be identical in type and contents, yet they should still not count as the same container.
+    private final Map<ResultContainer, Long> containersInUse = new IdentityHashMap<>(0);
+    // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
+    private final Map<A, ResultContainer> containers = new LinkedHashMap<>(0);
     private final Supplier<ResultContainer> supplier;
     private final BiFunction<ResultContainer, B, Runnable> accumulator;
     private final Function<ResultContainer, NewB> finisher;
+    private final Set<Pair<A, NewB>> result = new LinkedHashSet<>(0);
 
     public DroolsGroupByAccumulator(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.supplier = collector.supplier();
@@ -65,16 +68,13 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> impleme
         };
     }
 
-    public Set<DroolsGroupByAccumulator.Pair<A, NewB>> finish() {
-        if (containers.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<Pair<A, NewB>> results = new LinkedHashSet<>(containers.size());
+    public Set<Pair<A, NewB>> finish() {
+        result.clear();
         for (Map.Entry<A, ResultContainer> entry: containers.entrySet()) {
             ResultContainer container = entry.getValue();
-            results.add(new DroolsGroupByAccumulator.Pair<>(entry.getKey(), finisher.apply(container)));
+            result.add(new Pair<>(entry.getKey(), finisher.apply(container)));
         }
-        return results;
+        return result;
     }
 
     public static final class Pair<K,V> {
@@ -96,7 +96,7 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> impleme
             if (o == null || !Objects.equals(getClass(), o.getClass())) {
                 return false;
             }
-            final DroolsGroupByAccumulator.Pair<?, ?> pair = (DroolsGroupByAccumulator.Pair<?, ?>) o;
+            final Pair<?, ?> pair = (Pair<?, ?>) o;
             return Objects.equals(key, pair.key) &&
                     Objects.equals(value, pair.value);
         }
