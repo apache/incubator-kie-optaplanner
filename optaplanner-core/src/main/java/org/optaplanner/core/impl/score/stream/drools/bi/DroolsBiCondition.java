@@ -53,8 +53,7 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         Variable<A> aVariable = ruleStructure.getA();
         Variable<B> bVariable = ruleStructure.getB();
         DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
-                .expand("BiFiltering using " + predicate,
-                        p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
+                .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
                 newTargetPattern, ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsBiCondition<>(newRuleStructure);
@@ -65,9 +64,8 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         DroolsUniRuleStructure<C> cRuleStructure = cCondition.getRuleStructure();
         Variable<C> cVariable = cRuleStructure.getA();
         DroolsPatternBuilder<Object> cPattern = cRuleStructure.getPrimaryPattern()
-                .expand("Joining with " + cVariable,
-                        p -> p.expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(), cVariable,
-                        (__, a, b, c) -> matches(triJoiner, a, b, c)));
+                .expand(p -> p.expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(),
+                        cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c)));
         DroolsUniRuleStructure<C> newCRuleStructure = new DroolsUniRuleStructure<>(cVariable, cPattern,
                 cRuleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure,

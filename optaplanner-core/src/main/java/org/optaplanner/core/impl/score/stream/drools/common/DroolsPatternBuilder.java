@@ -22,8 +22,6 @@ import java.util.function.UnaryOperator;
 import org.drools.model.DeclarationSource;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.drools.model.PatternDSL.pattern;
 
@@ -34,7 +32,7 @@ import static org.drools.model.PatternDSL.pattern;
  * This class makes it nearly impossible for {@link PatternDSL.PatternDef}s to be unknowingly shared.
  *
  * <p>Instances of this class are immutable.
- * Mutating methods (such as {@link #expand(String, UnaryOperator)}) create a new instance, effectively preventing
+ * Mutating methods (such as {@link #expand(UnaryOperator)}) create a new instance, effectively preventing
  * streams from sharing patterns.
  * Patterns are only built when {@link #build()} or {@link #build(DeclarationSource)} is called. Callers must ensure
  * that {@link PatternDSL.PatternDef}s obtained by these methods are never mutated, as that defeats the purpose.
@@ -51,7 +49,6 @@ import static org.drools.model.PatternDSL.pattern;
  */
 public final class DroolsPatternBuilder<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DroolsPatternBuilder.class);
     private final Variable<T> baseVariable;
     private final Function<PatternDSL.PatternDef<T>, PatternDSL.PatternDef<T>> builder;
 
@@ -61,10 +58,7 @@ public final class DroolsPatternBuilder<T> {
      */
     public DroolsPatternBuilder(Variable<T> baseVariable) {
         this.baseVariable = baseVariable;
-        this.builder = p -> {
-            LOGGER.trace("Starting pattern for {}.", baseVariable);
-            return p;
-        };
+        this.builder = Function.identity();
     }
 
     private DroolsPatternBuilder(Variable<T> baseVariable,
@@ -76,7 +70,6 @@ public final class DroolsPatternBuilder<T> {
     /**
      * Mutate the existing {@link PatternDSL.PatternDef}, adding a new operation, such as a new filter or a new variable
      * binding.
-     * @param expander operation to mutate the stream
      * @return copy of the {@link DroolsPatternBuilder} with the new expanding operation included.
      */
     public DroolsPatternBuilder<T> expand(UnaryOperator<PatternDSL.PatternDef<T>> expander) {
@@ -84,30 +77,13 @@ public final class DroolsPatternBuilder<T> {
         return new DroolsPatternBuilder<>(baseVariable, newBuilder);
     }
 
-    /**
-     * Mutate the existing {@link PatternDSL.PatternDef}, adding a new operation, such as a new filter or a new variable
-     * binding.
-     * @param description descriptive name for the operation, to be printed in trace logging
-     * @param expander operation to mutate the stream
-     * @return copy of the {@link DroolsPatternBuilder} with the new expanding operation included.
-     */
-    public DroolsPatternBuilder<T> expand(String description, UnaryOperator<PatternDSL.PatternDef<T>> expander) {
-        UnaryOperator<PatternDSL.PatternDef<T>> expanderWithLogging = p -> {
-            LOGGER.trace("Expanding {} pattern with '{}'.", baseVariable, description);
-            return expander.apply(p);
-        };
-        return expand(expanderWithLogging);
-    }
-
     private PatternDSL.PatternDef<T> build(PatternDSL.PatternDef<T> basePattern) {
-        PatternDSL.PatternDef<T> result = builder.apply(basePattern);
-        LOGGER.trace("Pattern for {} finished: {}.", baseVariable, result);
-        return result;
+        return builder.apply(basePattern);
     }
 
     /**
      * Builds a new instance of the pattern, with all the {@link UnaryOperator}s from
-     * {@link #expand(String, UnaryOperator)} applied.
+     * {@link #expand(UnaryOperator)} applied.
      * @return should no longer be mutated to guarantee that rules can not influence one another
      */
     public PatternDSL.PatternDef<T> build() {
@@ -116,7 +92,7 @@ public final class DroolsPatternBuilder<T> {
 
     /**
      * Builds a new instance of the pattern, with all the {@link UnaryOperator}s from
-     * {@link #expand(String, UnaryOperator)} applied.
+     * {@link #expand(UnaryOperator)} applied.
      * @param declarationSource will be applied to the newly created pattern
      * @return should no longer be mutated to guarantee that rules can not influence one another
      */

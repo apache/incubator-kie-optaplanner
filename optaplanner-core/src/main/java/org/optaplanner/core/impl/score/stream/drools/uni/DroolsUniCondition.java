@@ -89,8 +89,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
     public DroolsUniCondition<A> andFilter(Predicate<A> predicate) {
         Predicate1<Object> filter = a -> predicate.test((A) a);
         DroolsPatternBuilder<Object> patternWithFilter = ruleStructure.getPrimaryPattern()
-                .expand("Filtering using " + predicate,
-                        p -> p.expr("Filter using " + predicate, filter,
+                .expand(p -> p.expr("Filter using " + predicate, filter,
                                 alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1, a -> predicate.test((A) a), true)));
         DroolsUniRuleStructure<A> newStructure = new DroolsUniRuleStructure<>(ruleStructure.getA(), patternWithFilter,
                 ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
@@ -116,8 +115,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
     public <NewA> DroolsUniCondition<NewA> andGroup(Function<A, NewA> groupKeyMapping) {
         Variable<NewA> mappedVariable = ruleStructure.createVariable("mapped");
         PatternDSL.PatternDef<Object> innerAccumulatePattern = ruleStructure.getPrimaryPattern()
-                .expand("Binding mapped variable " + mappedVariable,
-                        p -> p.bind(mappedVariable, k -> groupKeyMapping.apply((A) k)))
+                .expand(p -> p.bind(mappedVariable, k -> groupKeyMapping.apply((A) k)))
                 .build();
         Variable<Set> setOfGroupKeys = ruleStructure.createVariable(Set.class, "setOfGroupKey");
         PatternDSL.PatternDef<Set> pattern = pattern(setOfGroupKeys)
@@ -163,9 +161,8 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                 .expr("Set of groupBy+collect pairs", set -> !set.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
         PatternDSL.PatternDef<Object> innerNewACollectingPattern = ruleStructure.getPrimaryPattern()
-                .expand("Binding group key" + groupKeyVar + " and collected " + collectingOnVar,
-                        p -> p.bind(groupKeyVar, a -> groupKeyMapping.apply((A) a))
-                                .bind(collectingOnVar, a -> (A) a))
+                .expand(p -> p.bind(groupKeyVar, a -> groupKeyMapping.apply((A) a))
+                        .bind(collectingOnVar, a -> (A) a))
                 .build();
         ExprViewItem<Object> accumulate = DSL.accumulate(innerNewACollectingPattern,
                 accFunction(() -> new DroolsGroupByInvoker<>(collector)).as(setOfPairsVar));
@@ -175,8 +172,8 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         Variable<NewA> newAVar = ruleStructure.createVariable("newA");
         Variable<NewB> newBVar = ruleStructure.createVariable("newB");
         DroolsPatternBuilder<DroolsGroupByAccumulator.Pair> finalPairPattern = new DroolsPatternBuilder<>(onePairVar)
-                .expand("Binding newA " + newAVar, p -> p.bind(newAVar, pair -> (NewA) pair.key))
-                .expand("Binding newB " + newAVar, p -> p.bind(newBVar, pair -> (NewB) pair.value));
+                .expand(p -> p.bind(newAVar, pair -> (NewA) pair.key))
+                .expand(p -> p.bind(newBVar, pair -> (NewB) pair.value));
         DroolsBiRuleStructure<NewA, NewB> newRuleStructure = new DroolsBiRuleStructure<>(newAVar, newBVar,
                 finalPairPattern, ruleStructure.rebuildSupportingRuleItems(pattern, accumulate),
                 ruleStructure.getVariableIdSupplier());
@@ -193,7 +190,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
             int currentMappingIndex = mappingIndex;
             Variable<Object> joinVar = ruleStructure.createVariable("joinVar" + currentMappingIndex);
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
-            newAPattern = newAPattern.expand("Binding left join variable " + currentMappingIndex + " in " + biJoiner,
+            newAPattern = newAPattern.expand(
                     p -> p.bind(joinVar, a -> leftMapping.apply((A) a)));
             joinVars[currentMappingIndex] = joinVar;
         }
@@ -213,7 +210,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
             Predicate2<Object, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
                 return joinerType.matches(a, rightExtractor.apply(b));
             };
-            newBPattern = newBPattern.expand("Binding right join variable " + currentMappingIndex + " in " + biJoiner,
+            newBPattern = newBPattern.expand(
                     p -> {
                         BetaIndex<Object, A, Object> betaIndex = betaIndexedBy(Object.class,
                                 getConstraintType(joinerType), currentMappingIndex, rightExtractor, leftMapping::apply);
