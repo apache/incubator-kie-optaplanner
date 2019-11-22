@@ -44,8 +44,6 @@ import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
  */
 public final class ConstraintCollectors {
 
-    private static final Runnable NOOP = () -> { /* don't do anything */ };
-
     // ************************************************************************
     // count
     // ************************************************************************
@@ -163,9 +161,6 @@ public final class ConstraintCollectors {
                 () -> new int[1],
                 (resultContainer, a) -> {
                     int value = groupValueMapping.applyAsInt(a);
-                    if (value == 0) {
-                        return NOOP;
-                    }
                     resultContainer[0] += value;
                     return (() -> resultContainer[0] -= value);
                 },
@@ -177,9 +172,6 @@ public final class ConstraintCollectors {
                 () -> new long[1],
                 (resultContainer, a) -> {
                     long value = groupValueMapping.applyAsLong(a);
-                    if (value == 0) {
-                        return NOOP;
-                    }
                     resultContainer[0] += value;
                     return (() -> resultContainer[0] -= value);
                 },
@@ -192,9 +184,6 @@ public final class ConstraintCollectors {
                 () -> new BigDecimal[] { BigDecimal.ZERO },
                 (resultContainer, a) -> {
                     BigDecimal value = groupValueMapping.apply(a);
-                    if (value.signum() == 0) {
-                        return NOOP;
-                    }
                     resultContainer[0] = resultContainer[0].add(value);
                     return (() -> resultContainer[0] = resultContainer[0].subtract(value));
                 },
@@ -207,9 +196,6 @@ public final class ConstraintCollectors {
                 () -> new BigInteger[] { BigInteger.ZERO },
                 (resultContainer, a) -> {
                     BigInteger value = groupValueMapping.apply(a);
-                    if (value.signum() == 0) {
-                        return NOOP;
-                    }
                     resultContainer[0] = resultContainer[0].add(value);
                     return (() -> resultContainer[0] = resultContainer[0].subtract(value));
                 },
@@ -221,9 +207,6 @@ public final class ConstraintCollectors {
                 () -> new Duration[] { Duration.ZERO },
                 (resultContainer, a) -> {
                     Duration value = groupValueMapping.apply(a);
-                    if (value.isZero()) {
-                        return NOOP;
-                    }
                     resultContainer[0] = resultContainer[0].plus(value);
                     return (() -> resultContainer[0] = resultContainer[0].minus(value));
                 },
@@ -235,9 +218,6 @@ public final class ConstraintCollectors {
                 () -> new Period[] { Period.ZERO },
                 (resultContainer, a) -> {
                     Period value = groupValueMapping.apply(a);
-                    if (value.isZero()) {
-                        return NOOP;
-                    }
                     resultContainer[0] = resultContainer[0].plus(value);
                     return (() -> resultContainer[0] = resultContainer[0].minus(value));
                 },
@@ -250,9 +230,6 @@ public final class ConstraintCollectors {
                 () -> new int[1],
                 (resultContainer, a, b) -> {
                     int value = groupValueMapping.applyAsInt(a, b);
-                    if (value == 0) {
-                        return NOOP;
-                    }
                     resultContainer[0] += value;
                     return (() -> resultContainer[0] -= value);
                 },
@@ -265,9 +242,6 @@ public final class ConstraintCollectors {
                 () -> new long[1],
                 (resultContainer, a, b) -> {
                     long value = groupValueMapping.applyAsLong(a, b);
-                    if (value == 0) {
-                        return NOOP;
-                    }
                     resultContainer[0] += value;
                     return (() -> resultContainer[0] -= value);
                 },
@@ -280,9 +254,6 @@ public final class ConstraintCollectors {
                 () -> new BigDecimal[] { BigDecimal.ZERO },
                 (resultContainer, a, b) -> {
                     BigDecimal value = groupValueMapping.apply(a, b);
-                    if (value.signum() == 0) {
-                        return NOOP;
-                    }
                     resultContainer[0] = resultContainer[0].add(value);
                     return (() -> resultContainer[0] = resultContainer[0].subtract(value));
                 },
@@ -295,9 +266,6 @@ public final class ConstraintCollectors {
                 () -> new BigInteger[] { BigInteger.ZERO },
                 (resultContainer, a, b) -> {
                     BigInteger value = groupValueMapping.apply(a, b);
-                    if (value.signum() == 0) {
-                        return NOOP;
-                    }
                     resultContainer[0] = resultContainer[0].add(value);
                     return (() -> resultContainer[0] = resultContainer[0].subtract(value));
                 },
@@ -310,9 +278,6 @@ public final class ConstraintCollectors {
                 () -> new Duration[] { Duration.ZERO },
                 (resultContainer, a, b) -> {
                     Duration value = groupValueMapping.apply(a, b);
-                    if (value.isZero()) {
-                        return NOOP;
-                    }
                     resultContainer[0] = resultContainer[0].plus(value);
                     return (() -> resultContainer[0] = resultContainer[0].minus(value));
                 },
@@ -325,9 +290,6 @@ public final class ConstraintCollectors {
                 () -> new Period[] { Period.ZERO },
                 (resultContainer, a, b) -> {
                     Period value = groupValueMapping.apply(a, b);
-                    if (value.isZero()) {
-                        return NOOP;
-                    }
                     resultContainer[0] = resultContainer[0].plus(value);
                     return (() -> resultContainer[0] = resultContainer[0].minus(value));
                 },
