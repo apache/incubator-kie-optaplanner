@@ -32,7 +32,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
             throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
         this.fromClass = fromClass;
-        this.condition = new DroolsUniCondition<>(fromClass);
+        this.condition = new DroolsUniCondition<>(fromClass, constraintFactory.getVariableIdSupplier());
     }
 
     // ************************************************************************

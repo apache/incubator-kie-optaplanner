@@ -56,7 +56,7 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
                 .expand("BiFiltering using " + predicate,
                         p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
-                newTargetPattern, ruleStructure.getSupportingRuleItems());
+                newTargetPattern, ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsBiCondition<>(newRuleStructure);
     }
 
@@ -69,8 +69,9 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
                         p -> p.expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(), cVariable,
                         (__, a, b, c) -> matches(triJoiner, a, b, c)));
         DroolsUniRuleStructure<C> newCRuleStructure = new DroolsUniRuleStructure<>(cVariable, cPattern,
-                cRuleStructure.getSupportingRuleItems());
-        return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure));
+                cRuleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+        return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure,
+                ruleStructure.getVariableIdSupplier()));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

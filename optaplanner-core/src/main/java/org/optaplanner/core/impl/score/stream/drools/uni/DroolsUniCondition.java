@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -60,8 +61,8 @@ import static org.drools.model.PatternDSL.pattern;
 
 public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleStructure<A>> {
 
-    public DroolsUniCondition(Class<A> aVariableType) {
-        this(new DroolsUniRuleStructure<>(aVariableType));
+    public DroolsUniCondition(Class<A> aVariableType, LongSupplier variableIdSupplier) {
+        this(new DroolsUniRuleStructure<>(aVariableType, variableIdSupplier));
     }
 
     public DroolsUniCondition(DroolsUniRuleStructure<A> ruleStructure) {
@@ -92,7 +93,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                         p -> p.expr("Filter using " + predicate, filter,
                                 alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1, a -> predicate.test((A) a), true)));
         DroolsUniRuleStructure<A> newStructure = new DroolsUniRuleStructure<>(ruleStructure.getA(), patternWithFilter,
-                ruleStructure.getSupportingRuleItems());
+                ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsUniCondition<>(newStructure);
     }
 
@@ -107,7 +108,8 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         ExprViewItem<Object> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
                 accFunction(() -> accumulateFunction, inputVariable).as(outputVariable));
         DroolsUniRuleStructure<NewA> newRuleStructure = new DroolsUniRuleStructure<>(outputVariable,
-                accumulateResult, ruleStructure.rebuildSupportingRuleItems(outerAccumulatePattern));
+                accumulateResult, ruleStructure.rebuildSupportingRuleItems(outerAccumulatePattern),
+                ruleStructure.getVariableIdSupplier());
         return new DroolsUniCondition<>(newRuleStructure);
     }
 
@@ -126,7 +128,8 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         Variable<NewA> groupKey = ruleStructure.createVariable("groupKey", from(setOfGroupKeys));
         DroolsPatternBuilder<NewA> finalGroupKeyPattern = new DroolsPatternBuilder<>(groupKey);
         DroolsUniRuleStructure<NewA> newRuleStructure = new DroolsUniRuleStructure<>(groupKey,
-                finalGroupKeyPattern, ruleStructure.rebuildSupportingRuleItems(pattern, accumulate));
+                finalGroupKeyPattern, ruleStructure.rebuildSupportingRuleItems(pattern, accumulate),
+                ruleStructure.getVariableIdSupplier());
         return new DroolsUniCondition<>(newRuleStructure);
     }
 
@@ -175,7 +178,8 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                 .expand("Binding newA " + newAVar, p -> p.bind(newAVar, pair -> (NewA) pair.key))
                 .expand("Binding newB " + newAVar, p -> p.bind(newBVar, pair -> (NewB) pair.value));
         DroolsBiRuleStructure<NewA, NewB> newRuleStructure = new DroolsBiRuleStructure<>(newAVar, newBVar,
-                finalPairPattern, ruleStructure.rebuildSupportingRuleItems(pattern, accumulate));
+                finalPairPattern, ruleStructure.rebuildSupportingRuleItems(pattern, accumulate),
+                ruleStructure.getVariableIdSupplier());
         return new DroolsBiCondition<>(newRuleStructure);
     }
 
@@ -194,7 +198,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
             joinVars[currentMappingIndex] = joinVar;
         }
         DroolsUniRuleStructure<A> newARuleStructure = new DroolsUniRuleStructure<>(ruleStructure.getA(), newAPattern,
-                ruleStructure.getSupportingRuleItems());
+                ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         // We rebuild the B pattern, joining with the new A pattern using its freshly bound join variables.
         DroolsUniRuleStructure<B> bRuleStructure = bCondition.ruleStructure;
         Variable<B> bVariable = bRuleStructure.getA();
@@ -218,9 +222,10 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                     });
         }
         DroolsUniRuleStructure<B> newBRuleStructure = new DroolsUniRuleStructure<>(bVariable, newBPattern,
-                bRuleStructure.getSupportingRuleItems());
+                bRuleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         // And finally we return the new condition that is based on the new A and B patterns.
-        return new DroolsBiCondition<>(new DroolsBiRuleStructure<>(newARuleStructure, newBRuleStructure));
+        return new DroolsBiCondition<>(new DroolsBiRuleStructure<>(newARuleStructure, newBRuleStructure,
+                ruleStructure.getVariableIdSupplier()));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

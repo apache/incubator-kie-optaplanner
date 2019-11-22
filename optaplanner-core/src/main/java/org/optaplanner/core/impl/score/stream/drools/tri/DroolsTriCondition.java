@@ -51,7 +51,7 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
                 .expand("Filtering using " + predicate,
                         p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, filter));
         DroolsTriRuleStructure<A, B, C> newRuleStructure = new DroolsTriRuleStructure<>(aVariable, bVariable, cVariable,
-                newTargetPattern, ruleStructure.getSupportingRuleItems());
+                newTargetPattern, ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsTriCondition<>(newRuleStructure);
     }
 

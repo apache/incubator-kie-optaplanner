@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.LongSupplier;
 
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
@@ -37,11 +38,13 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     /**
      * Builds a final version of the AB pattern as it will no longer be mutated, and turns the C pattern into the new
      * primary pattern.
-     * @param aRuleStructure
-     * @param bRuleStructure
+     * @param abRuleStructure
+     * @param cRuleStructure
+     * @param variableIdSupplier
      */
     public DroolsTriRuleStructure(DroolsBiRuleStructure<A, B> abRuleStructure,
-            final DroolsUniRuleStructure<C> cRuleStructure) {
+            DroolsUniRuleStructure<C> cRuleStructure, LongSupplier variableIdSupplier) {
+        super(variableIdSupplier);
         this.a = abRuleStructure.getA();
         this.b = abRuleStructure.getB();
         this.c = cRuleStructure.getA();
@@ -61,7 +64,9 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     }
 
     public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, final Variable<C> cVariable,
-            DroolsPatternBuilder<?> primaryPattern, List<RuleItemBuilder<?>> supportingRuleItems) {
+            DroolsPatternBuilder<?> primaryPattern, List<RuleItemBuilder<?>> supportingRuleItems,
+            LongSupplier variableIdSupplier) {
+        super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.c = cVariable;

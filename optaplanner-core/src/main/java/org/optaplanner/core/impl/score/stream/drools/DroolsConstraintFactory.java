@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
+import java.util.function.LongSupplier;
 
 import org.drools.model.Global;
 import org.drools.model.impl.ModelImpl;
@@ -49,7 +50,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final AtomicInteger createdRuleCounter = new AtomicInteger();
+    private final AtomicLong createdVariableCounter = new AtomicLong();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -127,16 +128,13 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
     }
 
     /**
-     * The constraint creating code needs to call this method to retrieve an ID of the rule.
-     * This ID then needs to be used in the rule name for easier debugging.
-     * It is imperative that this method only be called once per every rule created, as it maintains an internal
-     * counter of created rules.
-     * The sequence of IDs returned will start with 1 and continue towards {@link Integer#MAX_VALUE}.
-     * As long as rule creation calls this method in the same order, the rules will always receive the same ID.
-     * @return A unique numeric ID of the rule.
+     * In order to guarantee that all variables have unique names within the context of a rule, we need to be able to
+     * uniquely identify them. This ID supplier is used by all variable-creating code.
+     *
+     * @return supplier that returns a unique number each time it is invoked
      */
-    public int getNextRuleId() {
-        return createdRuleCounter.incrementAndGet();
+    public LongSupplier getVariableIdSupplier() {
+        return createdVariableCounter::incrementAndGet;
     }
 
     @Override

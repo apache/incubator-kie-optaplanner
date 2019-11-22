@@ -18,24 +18,30 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.LongSupplier;
 
 import org.drools.model.DSL;
 import org.drools.model.DeclarationSource;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 /**
  * Represents the left-hand side of a Drools rule.
  */
 public abstract class DroolsRuleStructure {
 
-    private static final AtomicInteger COUNTER = new AtomicInteger();
-    private final long id = COUNTER.getAndIncrement();
+    private final LongSupplier variableIdSupplier;
+
+    protected DroolsRuleStructure(LongSupplier variableIdSupplier) {
+        this.variableIdSupplier = variableIdSupplier;
+    }
 
     /**
      * Declare a new {@link Variable} in this rule, with a given name and no declared source. Delegates to
      * {@link DSL#declarationOf(Class, String)}.
+     * Creating variables via this method guarantees unique variable name within the context of a rule through the use
+     * of {@link DroolsConstraintFactory#getVariableIdSupplier()}.
      *
      * @param clz type of the variable. Using {@link Object} will work in all cases, but Drools will spend unnecessary
      * amount of time looking up applicable instances of that variable, as it has to traverse instances of all types in
@@ -53,6 +59,8 @@ public abstract class DroolsRuleStructure {
     /**
      * Declare a new {@link Variable} in this rule, with a given name and a declaration source.
      * Delegates to {@link DSL#declarationOf(Class, String, DeclarationSource)}.
+     * Creating variables via this method guarantees unique variable names within the context of a rule through the use
+     * of {@link DroolsConstraintFactory#getVariableIdSupplier()}.
      *
      * @param clz type of the variable. Using {@link Object} will work in all cases, but Drools will spend unnecessary
      * amount of time looking up applicable instances of that variable, as it has to traverse instances of all types in
@@ -69,7 +77,7 @@ public abstract class DroolsRuleStructure {
     }
 
     private String decorateVariableName(String name) {
-        return "$" + name + "_" + id;
+        return "$var" + variableIdSupplier.getAsLong() + "_" + name;
     }
 
     /**
@@ -101,6 +109,10 @@ public abstract class DroolsRuleStructure {
             supporting.add(ruleItem);
         }
         return supporting;
+    }
+
+    public LongSupplier getVariableIdSupplier() {
+        return variableIdSupplier;
     }
 
     /**

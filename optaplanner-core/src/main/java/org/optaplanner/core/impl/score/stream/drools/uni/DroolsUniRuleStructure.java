@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.LongSupplier;
 
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
@@ -31,13 +32,15 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
     private final List<RuleItemBuilder<?>> supportingRuleItems;
 
     public DroolsUniRuleStructure(Variable<A> aVariable, DroolsPatternBuilder<?> aPattern,
-            List<RuleItemBuilder<?>> supportingRuleItems) {
+            List<RuleItemBuilder<?>> supportingRuleItems, LongSupplier variableIdSupplier) {
+        super(variableIdSupplier);
         this.a = aVariable;
         this.aPattern = aPattern;
         this.supportingRuleItems = Collections.unmodifiableList(supportingRuleItems);
     }
 
-    public DroolsUniRuleStructure(Class<A> aClass) {
+    public DroolsUniRuleStructure(Class<A> aClass, LongSupplier varialeIdSupplier) {
+        super(varialeIdSupplier);
         this.a = createVariable(aClass,"base");
         this.aPattern = new DroolsPatternBuilder<>(a);
         this.supportingRuleItems = Collections.emptyList();

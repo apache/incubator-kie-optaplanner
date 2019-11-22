@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.LongSupplier;
 
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
@@ -37,9 +38,11 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
      * primary pattern.
      * @param aRuleStructure
      * @param bRuleStructure
+     * @param variableIdSupplier
      */
-    public DroolsBiRuleStructure(DroolsUniRuleStructure<A> aRuleStructure,
-            final DroolsUniRuleStructure<B> bRuleStructure) {
+    public DroolsBiRuleStructure(DroolsUniRuleStructure<A> aRuleStructure, DroolsUniRuleStructure<B> bRuleStructure,
+            LongSupplier variableIdSupplier) {
+        super(variableIdSupplier);
         this.a = aRuleStructure.getA();
         this.b = bRuleStructure.getA();
         this.targetPattern = bRuleStructure.getPrimaryPattern();
@@ -58,7 +61,8 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     }
 
     public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable, DroolsPatternBuilder<?> targetPattern,
-            List<RuleItemBuilder<?>> supportingRuleItems) {
+            List<RuleItemBuilder<?>> supportingRuleItems, LongSupplier variableIdSupplier) {
+        super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.targetPattern = targetPattern;
