@@ -196,7 +196,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
                 + ") does not support an int weightMultiplier (" + weightMultiplier + ").");
     }
 
-    private List<Object> extractJustificationList(RuleContext kcontext) {
+    protected List<Object> extractJustificationList(RuleContext kcontext) {
         // Unlike kcontext.getMatch().getObjects(), this includes the matches of accumulate and exists
         Activation activation = (Activation) kcontext.getMatch();
         return justificationListAdapter.apply(activation.getObjectsDeep(), kcontext.getRule());
