@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 
@@ -34,7 +35,6 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
 
     private final List<Object> justificationList;
     private final Score score;
-    private final int hashCode;
 
     /**
      * @param constraintPackage never null
@@ -42,16 +42,12 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
      * @param justificationList never null, sometimes empty
      * @param score never null
      */
-    public ConstraintMatch(String constraintPackage, String constraintName,
-            List<Object> justificationList, Score score) {
+    public ConstraintMatch(String constraintPackage, String constraintName, List<Object> justificationList,
+            Score score) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.justificationList = new ArrayList<>(justificationList);
         this.score = score;
-        this.hashCode = (((17 * 37)
-                + constraintPackage.hashCode()) * 37
-                + constraintName.hashCode()) * 37
-                + justificationList.hashCode();
     }
 
     public String getConstraintPackage() {
@@ -129,7 +125,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
 
     @Override
     public int hashCode() {
-        return hashCode;
+        return Objects.hash(constraintPackage, constraintName, justificationList);
     }
 
     @Override

@@ -22,10 +22,12 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.drools.core.common.AgendaItem;
+import org.drools.core.spi.Activation;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleContext;
@@ -47,6 +49,8 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
     protected final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
     protected final Map<Object, Indictment> indictmentMap;
     protected final Score_ zeroScore;
+    private BiFunction<List<Object>, Rule, List<Object>> justificationListAdapter =
+            (justificationList, __) -> justificationList;
 
     protected AbstractScoreHolder(boolean constraintMatchEnabled, Score_ zeroScore) {
         this.constraintMatchEnabled = constraintMatchEnabled;
@@ -192,9 +196,10 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
                 + ") does not support an int weightMultiplier (" + weightMultiplier + ").");
     }
 
-    protected List<Object> extractJustificationList(RuleContext kcontext) {
+    private List<Object> extractJustificationList(RuleContext kcontext) {
         // Unlike kcontext.getMatch().getObjects(), this includes the matches of accumulate and exists
-        return ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();
+        Activation activation = (Activation) kcontext.getMatch();
+        return justificationListAdapter.apply(activation.getObjectsDeep(), kcontext.getRule());
     }
 
     public class ConstraintActivationUnMatchListener implements Runnable {
@@ -223,5 +228,19 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
                 }
             }
         }
+    }
+
+    /**
+     * Used for Drools-based constraint streams (CS-D) to convert justification list to the same format as the one used
+     * by Bavet constraint streams.
+     * This is necessary because CS-D uses some advanced Drools constructions leveraging various metadata objects.
+     * Had we not called this adapter, these metadata objects would have been present in the justification list,
+     * defeating its purpose.
+     * Code outside of CS-D has no need to call this method.
+     *
+     * @param justificationListAdapter function to clean up the justification list
+     */
+    public void setJustificationListAdapter(BiFunction<List<Object>, Rule, List<Object>> justificationListAdapter) {
+        this.justificationListAdapter = justificationListAdapter;
     }
 }
