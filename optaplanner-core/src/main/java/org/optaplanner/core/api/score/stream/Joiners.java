@@ -148,7 +148,7 @@ public final class Joiners {
         return new SingleQuadJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
-    // TODO other TriJoiner methods
+    // TODO other QuadJoiner methods
 
     private Joiners() {}
 
