@@ -22,12 +22,12 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    private final QuadPredicate<A, B, C, D> predicate;
+    private final DroolsQuadCondition<A, B, C, D> condition;
 
     public DroolsFilterQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadPredicate<A, B, C, D> predicate) {
         super(constraintFactory, parent);
-        this.predicate = predicate;
+        this.condition = parent.getCondition().andFilter(predicate);
     }
 
     // ************************************************************************
@@ -35,8 +35,8 @@ public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public DroolsQuadCondition<A, B, C, D> createCondition() {
-        return parent.createCondition().andFilter(predicate);
+    public DroolsQuadCondition<A, B, C, D> getCondition() {
+        return condition;
     }
 
     @Override

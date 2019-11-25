@@ -19,15 +19,17 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
     private final DroolsAbstractTriConstraintStream<Solution_, A, B, C> leftParentStream;
     private final DroolsAbstractUniConstraintStream<Solution_, D> rightParentStream;
-    private final AbstractQuadJoiner<A, B, C, D> joiner;
+    private final DroolsQuadCondition<A, B, C, D> condition;
 
     public DroolsJoinQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
@@ -35,7 +37,8 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         super(constraintFactory, null);
         this.leftParentStream = parent;
         this.rightParentStream = otherStream;
-        this.joiner = (AbstractQuadJoiner<A, B, C, D>) joiner;
+        this.condition = parent.getCondition().andJoin(otherStream.getCondition(),
+                (AbstractQuadJoiner<A, B, C, D>) joiner);
     }
 
     // ************************************************************************
@@ -43,8 +46,8 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public DroolsQuadCondition<A, B, C, D> createCondition() {
-        return leftParentStream.createCondition().andJoin(rightParentStream.createCondition(), joiner);
+    public DroolsQuadCondition<A, B, C, D> getCondition() {
+        return condition;
     }
 
     // ************************************************************************

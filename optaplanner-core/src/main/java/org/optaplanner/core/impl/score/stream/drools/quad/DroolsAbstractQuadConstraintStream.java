@@ -147,5 +147,5 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         }
     }
 
-    public abstract DroolsQuadCondition<A, B, C, D> createCondition();
+    public abstract DroolsQuadCondition<A, B, C, D> getCondition();
 }

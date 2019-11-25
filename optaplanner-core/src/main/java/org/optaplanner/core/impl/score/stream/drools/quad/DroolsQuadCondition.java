@@ -17,121 +17,78 @@
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.drools.model.Drools;
 import org.drools.model.Global;
-import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
+import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block6;
-import org.drools.model.functions.Predicate4;
-import org.kie.api.runtime.rule.RuleContext;
+import org.drools.model.functions.Predicate5;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsInferredMetadata;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsMetadata;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 
 import static org.drools.model.DSL.on;
 
-public final class DroolsQuadCondition<A, B, C, D> {
+public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<DroolsQuadRuleStructure<A, B, C, D>> {
 
-    private final DroolsMetadata<Object, A> aMetadata;
-    private final DroolsMetadata<Object, B> bMetadata;
-    private final DroolsMetadata<Object, C> cMetadata;
-    private final DroolsMetadata<Object, D> dMetadata;
-
-    public DroolsQuadCondition(DroolsMetadata<Object, A> aMetadata, DroolsMetadata<Object, B> bMetadata,
-            DroolsMetadata<Object, C> cMetadata, DroolsMetadata<Object, D> dMetadata) {
-        this.aMetadata = aMetadata;
-        this.bMetadata = bMetadata;
-        this.cMetadata = cMetadata;
-        this.dMetadata = dMetadata;
-    }
-
-    public DroolsMetadata<Object, A> getAMetadata() {
-        return aMetadata;
-    }
-
-    public DroolsMetadata<Object, B> getBMetadata() {
-        return bMetadata;
-    }
-
-    public DroolsMetadata<Object, C> getCMetadata() {
-        return cMetadata;
-    }
-
-    public DroolsMetadata<Object, D> getDMetadata() {
-        return dMetadata;
+    public DroolsQuadCondition(DroolsQuadRuleStructure<A, B, C, D> ruleStructure) {
+        super(ruleStructure);
     }
 
     public DroolsQuadCondition<A, B, C, D> andFilter(QuadPredicate<A, B, C, D> predicate) {
-        Predicate4<Object, Object, Object, Object> filter = (d, a, b, c) -> predicate.test(aMetadata.extract(a),
-                bMetadata.extract(b), cMetadata.extract(c), dMetadata.extract(d));
-        Supplier<PatternDSL.PatternDef<Object>> patternSupplier = () -> dMetadata.buildPattern()
-                .expr("Filter using " + predicate, aMetadata.getVariableDeclaration(),
-                        bMetadata.getVariableDeclaration(), cMetadata.getVariableDeclaration(), filter);
-        return new DroolsQuadCondition<>(aMetadata, bMetadata, cMetadata, dMetadata.substitute(patternSupplier));
+        Predicate5<Object, A, B, C, D> filter = (__, a, b, c, d) -> predicate.test(a, b, c, (D) d);
+        Variable<A> aVariable = ruleStructure.getA();
+        Variable<B> bVariable = ruleStructure.getB();
+        Variable<C> cVariable = ruleStructure.getC();
+        Variable<D> dVariable = ruleStructure.getD();
+        DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
+                .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, dVariable, filter));
+        DroolsQuadRuleStructure<A, B, C, D> newRuleStructure = new DroolsQuadRuleStructure<>(aVariable, bVariable,
+                cVariable, dVariable, newTargetPattern, ruleStructure.getSupportingRuleItems(),
+                ruleStructure.getVariableIdSupplier());
+        return new DroolsQuadCondition<>(newRuleStructure);
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, __, ___, ____, _____) -> {
-            RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext);
-        });
+        return completeWithScoring(scoreHolderGlobal,
+                (drools, scoreHolder, a, b, c, d) -> impactScore(drools, scoreHolder));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             ToIntQuadFunction<A, B, C, D> matchWeighter) {
-        ToIntQuadFunction<Object, Object, Object, Object> weightMultiplier = (a, b, c, d) -> matchWeighter.applyAsInt(
-                aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c), dMetadata.extract(d));
-        return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c, d) -> {
-            RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier.applyAsInt(a, b, c, d));
-        });
+        return completeWithScoring(scoreHolderGlobal,
+                (drools, scoreHolder, a, b, c, d) -> impactScore(drools, scoreHolder,
+                        matchWeighter.applyAsInt(a, b, c, d)));
+
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             ToLongQuadFunction<A, B, C, D> matchWeighter) {
-        ToLongQuadFunction<Object, Object, Object, Object> weightMultiplier = (a, b, c, d) -> matchWeighter.applyAsLong(
-                aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c), dMetadata.extract(d));
-        return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c, d) -> {
-            RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier.applyAsLong(a, b, c, d));
-        });
+        return completeWithScoring(scoreHolderGlobal,
+                (drools, scoreHolder, a, b, c, d) -> impactScore(drools, scoreHolder,
+                        matchWeighter.applyAsLong(a, b, c, d)));
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(
-            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
-        QuadFunction<Object, Object, Object, Object, BigDecimal> weightMultiplier = (a, b, c, d) -> matchWeighter.apply(
-                aMetadata.extract(a), bMetadata.extract(b), cMetadata.extract(c), dMetadata.extract(d));
-        return completeWithScoring(scoreHolderGlobal, (drools, scoreHolder, a, b, c, d) -> {
-            RuleContext kcontext = (RuleContext) drools;
-            scoreHolder.impactScore(kcontext, weightMultiplier.apply(a, b, c, d));
-        });
+        return completeWithScoring(scoreHolderGlobal,
+                (drools, scoreHolder, a, b, c, d) -> impactScore(drools, scoreHolder, matchWeighter.apply(a, b, c, d)));
     }
 
     private <ScoreHolder extends AbstractScoreHolder<?>> List<RuleItemBuilder<?>> completeWithScoring(
-            Global<ScoreHolder> scoreHolderGlobal,
-            Block6<Drools, ScoreHolder, Object, Object, Object, Object> consequenceImpl) {
-        ConsequenceBuilder._5<ScoreHolder, Object, Object, Object, Object> consequence =
-                on(scoreHolderGlobal, aMetadata.getVariableDeclaration(), bMetadata.getVariableDeclaration(),
-                        cMetadata.getVariableDeclaration(), dMetadata.getVariableDeclaration())
+            Global<ScoreHolder> scoreHolderGlobal, Block6<Drools, ScoreHolder, A, B, C, D> consequenceImpl) {
+        ConsequenceBuilder._5<ScoreHolder, A, B, C, D> consequence =
+                on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB(), ruleStructure.getC(),
+                        ruleStructure.getD())
                         .execute(consequenceImpl);
-        if (aMetadata instanceof DroolsInferredMetadata && bMetadata instanceof DroolsInferredMetadata &&
-                cMetadata instanceof DroolsInferredMetadata) {
-            // In case of logical tuples, all patterns will be the same logical tuple, and therefore we just add one.
-            return Arrays.asList(dMetadata.buildPattern(), consequence);
-        } else {
-            return Arrays.asList(aMetadata.buildPattern(), bMetadata.buildPattern(), cMetadata.buildPattern(),
-                    dMetadata.buildPattern(), consequence);
-        }
+        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
     }
 
 }
