@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -46,7 +45,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
             Score score) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
-        this.justificationList = new ArrayList<>(justificationList);
+        this.justificationList = Collections.unmodifiableList(justificationList);
         this.score = score;
     }
 
@@ -59,7 +58,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
     }
 
     public List<Object> getJustificationList() {
-        return Collections.unmodifiableList(justificationList);
+        return justificationList;
     }
 
     public Score getScore() {

@@ -38,7 +38,9 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> impleme
     private final Supplier<ResultContainer> supplier;
     private final BiFunction<ResultContainer, B, Runnable> accumulator;
     private final Function<ResultContainer, NewB> finisher;
-    private final Set<Pair<A, NewB>> result = new LinkedHashSet<>(0);
+    // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
+    // It doesn't make sense to serialize this anyway, as it is recreated every time.
+    private final transient Set<Pair<A, NewB>> result = new LinkedHashSet<>(0);
 
     public DroolsGroupByAccumulator(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.supplier = collector.supplier();
