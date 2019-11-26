@@ -222,19 +222,19 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         ConstraintStreamScoreDirectorFactory<TestdataSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSolution.buildSolutionDescriptor(), (factory) -> new Constraint[]{
-                factory.from(TestdataEntity.class)
-                        .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
+                factory.fromUniquePair(TestdataEntity.class)
+                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                         .join(TestdataValue.class)
                         .reward("myConstraint1", SimpleScore.ONE),
-                factory.from(TestdataEntity.class)
-                        .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
+                factory.fromUniquePair(TestdataEntity.class)
+                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                         .join(TestdataValue.class)
-                        .reward("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
+                        .reward("myConstraint2", SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
         }, constraintStreamImplType);
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleScore.of(42), scoreDirector.calculateScore());
+        assertEquals(SimpleScore.of(21), scoreDirector.calculateScore());
     }
 
     @Test
@@ -250,19 +250,19 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[]{
-                factory.from(TestdataEntity.class)
-                        .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
+                factory.fromUniquePair(TestdataEntity.class)
+                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                         .join(TestdataValue.class)
                         .reward("myConstraint1", SimpleLongScore.ONE),
-                factory.from(TestdataEntity.class)
-                        .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
+                factory.fromUniquePair(TestdataEntity.class)
+                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                         .join(TestdataValue.class)
-                        .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
+                        .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity1, entity2, value, extra) -> 20L)
         }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleLongScore.of(42L), scoreDirector.calculateScore());
+        assertEquals(SimpleLongScore.of(21L), scoreDirector.calculateScore());
     }
 
     @Test
@@ -278,19 +278,19 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[]{
-                factory.from(TestdataEntity.class)
-                        .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
+                factory.fromUniquePair(TestdataEntity.class)
+                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                         .join(TestdataValue.class)
                         .reward("myConstraint1", SimpleBigDecimalScore.ONE),
-                factory.from(TestdataEntity.class)
-                        .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
+                factory.fromUniquePair(TestdataEntity.class)
+                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                         .join(TestdataValue.class)
-                        .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity, value, extra) -> new BigDecimal("0.2"))
+                        .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
         }, constraintStreamImplType);
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("2.4")), scoreDirector.calculateScore());
+        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("1.2")), scoreDirector.calculateScore());
     }
 
     // ************************************************************************
