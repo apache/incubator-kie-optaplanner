@@ -55,7 +55,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * Exhaustively test each tuple of facts against the {@link TriPredicate}
      * and match if {@link TriPredicate#test(Object, Object, Object)} returns true.
      * <p>
-     * Important: This is slower and less scalable than {@link BiConstraintStream#join(Class, TriJoiner[])}
+     * Important: This is slower and less scalable than {@link BiConstraintStream#join(UniConstraintStream, TriJoiner)}
      * with a proper {@link TriJoiner} predicate (such as {@link Joiners#equal(BiFunction, Function)},
      * because the latter applies hashing and/or indexing, so it doesn't create every combination just to filter it out.
      * @param predicate never null
@@ -100,7 +100,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     /**
      * Create a new {@link QuadConstraintStream} for every combination of [A, B, C] and D.
      * <p>
-     * Important: {@link QuadConstraintStream#filter(QuadPredicate)}  Filtering} this is slower and less scalable
+     * Important: {@link QuadConstraintStream#filter(QuadPredicate)} Filtering} this is slower and less scalable
      * than a {@link #join(Class, QuadJoiner)},
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of [A, B, C] and D.

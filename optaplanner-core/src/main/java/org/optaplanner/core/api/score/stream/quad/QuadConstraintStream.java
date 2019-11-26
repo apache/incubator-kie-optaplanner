@@ -53,8 +53,8 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * and match if {@link QuadPredicate#test(Object, Object, Object, Object)} returns true.
      * <p>
      * Important: This is slower and less scalable than
-     * {@link TriConstraintStream#join(UniConstraintStream, QuadJoiner)}
-     * with a proper {@link QuadJoiner} predicate (such as {@link Joiners#equal(TriFunction, Function)},
+     * {@link TriConstraintStream#join(UniConstraintStream, QuadJoiner)} with a proper {@link QuadJoiner} predicate
+     * (such as {@link Joiners#equal(TriFunction, Function)},
      * because the latter applies hashing and/or indexing, so it doesn't create every combination just to filter it out.
      * @param predicate never null
      * @return never null

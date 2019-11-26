@@ -68,7 +68,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Create a new {@link TriConstraintStream} for every combination of [A, B] and C.
      * <p>
-     * Important: {@link TriConstraintStream#filter(TriPredicate)}  Filtering} this is slower and less scalable
+     * Important: {@link TriConstraintStream#filter(TriPredicate)} Filtering} this is slower and less scalable
      * than a {@link #join(UniConstraintStream, TriJoiner)},
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of [A, B] and C.
@@ -98,7 +98,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Create a new {@link TriConstraintStream} for every combination of [A, B] and C.
      * <p>
-     * Important: {@link TriConstraintStream#filter(TriPredicate)}  Filtering} this is slower and less scalable
+     * Important: {@link TriConstraintStream#filter(TriPredicate)} Filtering} this is slower and less scalable
      * than a {@link #join(Class, TriJoiner)},
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of [A, B] and C.
