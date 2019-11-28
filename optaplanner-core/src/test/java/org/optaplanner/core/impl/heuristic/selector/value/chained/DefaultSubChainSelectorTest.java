@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
@@ -47,17 +48,19 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseL
 
 public class DefaultSubChainSelectorTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void notChainedVariableDescriptor() {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         when(variableDescriptor.isChained()).thenReturn(false);
 
-        new DefaultSubChainSelector(valueSelector, true, 1, 1);
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 1, 1))
+                .withMessageContaining("chained");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void neverEndingValueSelector() {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
@@ -65,27 +68,33 @@ public class DefaultSubChainSelectorTest {
         when(variableDescriptor.isChained()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(true);
 
-        new DefaultSubChainSelector(valueSelector, true, 1, 1);
+        Assertions.assertThatIllegalStateException()
+                .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 1, 1))
+                .withMessageContaining("neverEnding");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void minimumSubChainSizeIsZero() {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         when(variableDescriptor.isChained()).thenReturn(true);
 
-        new DefaultSubChainSelector(valueSelector, true, 0, 1);
+        Assertions.assertThatIllegalStateException()
+                .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 0, 1))
+                .withMessageContaining("at least 1");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void minimumSubChainSizeIsGreaterThanMaximumSubChainSize() {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor variableDescriptor = mock(GenuineVariableDescriptor.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         when(variableDescriptor.isChained()).thenReturn(true);
 
-        new DefaultSubChainSelector(valueSelector, true, 2, 1);
+        Assertions.assertThatIllegalStateException()
+                .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 2, 1))
+                .withMessageContaining("at least maximumSubChainSize");
     }
 
     @Test
@@ -583,3 +592,4 @@ public class DefaultSubChainSelectorTest {
         }
     }
 }
+
