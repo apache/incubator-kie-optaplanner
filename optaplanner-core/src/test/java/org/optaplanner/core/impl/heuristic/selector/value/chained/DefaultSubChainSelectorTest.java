@@ -180,12 +180,12 @@ public class DefaultSubChainSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
         assertAllCodesOfSubChainSelector(subChainSelector,
-                                         "[a1]", "[a1, a2]", "[a1, a2, a3]", "[a1, a2, a3, a4]",
-                                         "[a2]", "[a2, a3]", "[a2, a3, a4]",
-                                         "[a3]", "[a3, a4]",
-                                         "[a4]",
-                                         "[b1]", "[b1, b2]",
-                                         "[b2]");
+                "[a1]", "[a1, a2]", "[a1, a2, a3]", "[a1, a2, a3, a4]",
+                "[a2]", "[a2, a3]", "[a2, a3, a4]",
+                "[a3]", "[a3, a4]",
+                "[a4]",
+                "[b1]", "[b1, b2]",
+                "[b2]");
         subChainSelector.stepEnded(stepScopeA1);
 
         scoreDirector.changeVariableFacade(variableDescriptor, a4, a2);
@@ -197,12 +197,12 @@ public class DefaultSubChainSelectorTest {
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA2);
         assertAllCodesOfSubChainSelector(subChainSelector,
-                                         "[a1]", "[a1, a2]", "[a1, a2, a4]",
-                                         "[a2]", "[a2, a4]",
-                                         "[a4]",
-                                         "[b1]", "[b1, a3]", "[b1, a3, b2]",
-                                         "[a3]", "[a3, b2]",
-                                         "[b2]");
+                "[a1]", "[a1, a2]", "[a1, a2, a4]",
+                "[a2]", "[a2, a4]",
+                "[a4]",
+                "[b1]", "[b1, a3]", "[b1, a3, b2]",
+                "[a3]", "[a3, b2]",
+                "[b2]");
         subChainSelector.stepEnded(stepScopeA2);
 
         subChainSelector.phaseEnded(phaseScopeA);
@@ -215,12 +215,12 @@ public class DefaultSubChainSelectorTest {
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB1);
         assertAllCodesOfSubChainSelector(subChainSelector,
-                                         "[a1]", "[a1, a2]", "[a1, a2, a4]",
-                                         "[a2]", "[a2, a4]",
-                                         "[a4]",
-                                         "[b1]", "[b1, a3]", "[b1, a3, b2]",
-                                         "[a3]", "[a3, b2]",
-                                         "[b2]");
+                "[a1]", "[a1, a2]", "[a1, a2, a4]",
+                "[a2]", "[a2, a4]",
+                "[a4]",
+                "[b1]", "[b1, a3]", "[b1, a3, b2]",
+                "[a3]", "[a3, b2]",
+                "[b2]");
         subChainSelector.stepEnded(stepScopeB1);
 
         subChainSelector.phaseEnded(phaseScopeB);
@@ -338,7 +338,10 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.stepStarted(stepScopeA1);
 
         assertAllCodesOfSubChainSelector(subChainSelector,
-                                         "[a1, a2]", "[a1, a2, a3]", "[a2, a3]", "[a2, a3, a4]", "[a3, a4]", "[b1, b2]");
+                "[a1, a2]", "[a1, a2, a3]",
+                "[a2, a3]", "[a2, a3, a4]",
+                "[a3, a4]",
+                "[b1, b2]");
 
         subChainSelector.stepEnded(stepScopeA1);
 
@@ -438,16 +441,16 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.stepStarted(stepScopeA1);
 
         assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
-                                                         new SubChain(Arrays.<Object>asList(a1)),
-                                                         new SubChain(Arrays.<Object>asList(a2)),
-                                                         new SubChain(Arrays.<Object>asList(a3)),
-                                                         new SubChain(Arrays.<Object>asList(a4)),
-                                                         new SubChain(Arrays.<Object>asList(a1, a2)),
-                                                         new SubChain(Arrays.<Object>asList(a2, a3)),
-                                                         new SubChain(Arrays.<Object>asList(a3, a4)),
-                                                         new SubChain(Arrays.<Object>asList(a1, a2, a3)),
-                                                         new SubChain(Arrays.<Object>asList(a2, a3, a4)),
-                                                         new SubChain(Arrays.<Object>asList(a1, a2, a3, a4)));
+                new SubChain(Arrays.<Object>asList(a1)),
+                new SubChain(Arrays.<Object>asList(a2)),
+                new SubChain(Arrays.<Object>asList(a3)),
+                new SubChain(Arrays.<Object>asList(a4)),
+                new SubChain(Arrays.<Object>asList(a1, a2)),
+                new SubChain(Arrays.<Object>asList(a2, a3)),
+                new SubChain(Arrays.<Object>asList(a3, a4)),
+                new SubChain(Arrays.<Object>asList(a1, a2, a3)),
+                new SubChain(Arrays.<Object>asList(a2, a3, a4)),
+                new SubChain(Arrays.<Object>asList(a1, a2, a3, a4)));
 
         subChainSelector.stepEnded(stepScopeA1);
 
@@ -496,11 +499,11 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.stepStarted(stepScopeA1);
 
         assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
-                                                         new SubChain(Arrays.<Object>asList(a1, a2)),
-                                                         new SubChain(Arrays.<Object>asList(a2, a3)),
-                                                         new SubChain(Arrays.<Object>asList(a3, a4)),
-                                                         new SubChain(Arrays.<Object>asList(a1, a2, a3)),
-                                                         new SubChain(Arrays.<Object>asList(a2, a3, a4)));
+                new SubChain(Arrays.<Object>asList(a1, a2)),
+                new SubChain(Arrays.<Object>asList(a2, a3)),
+                new SubChain(Arrays.<Object>asList(a3, a4)),
+                new SubChain(Arrays.<Object>asList(a1, a2, a3)),
+                new SubChain(Arrays.<Object>asList(a2, a3, a4)));
 
         subChainSelector.stepEnded(stepScopeA1);
 
@@ -549,8 +552,8 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.stepStarted(stepScopeA1);
 
         assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
-                                                         new SubChain(Arrays.<Object>asList(a1, a2, a3)),
-                                                         new SubChain(Arrays.<Object>asList(a2, a3, a4)));
+                new SubChain(Arrays.<Object>asList(a1, a2, a3)),
+                new SubChain(Arrays.<Object>asList(a2, a3, a4)));
 
         subChainSelector.stepEnded(stepScopeA1);
 
