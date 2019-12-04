@@ -181,6 +181,11 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         return new DroolsBiCondition<>(newRuleStructure);
     }
 
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(Function<A, NewA> groupKeyAMapping,
+            Function<A, NewB> groupKeyBMapping) {
+        throw new UnsupportedOperationException();
+    }
+
     public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bCondition, AbstractBiJoiner<A, B> biJoiner) {
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
         // We rebuild the A pattern, binding variables for left parts of the joins.

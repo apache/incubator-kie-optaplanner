@@ -226,7 +226,6 @@ public interface UniConstraintStream<A> extends ConstraintStream {
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
-    /*
     /**
      * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of tuples which have:
      *
@@ -244,10 +243,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param <GroupKeyB_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
      * @return never null
      */
-    // TODO implement this
-    //<GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
-    //        Function<A, GroupKeyA_> groupKeyAMapping,
-    //        Function<A, GroupKeyB_> groupKeyBMapping);
+    <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping);
 
     /*
     /**
