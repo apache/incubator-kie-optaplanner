@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
@@ -37,6 +38,7 @@ import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstr
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsJoinTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
 
 public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractConstraintStream<Solution_>
@@ -62,6 +64,48 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         addChildStream(stream);
         return stream;
     }
+
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
+
+    @Override
+    public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
+        DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_> stream =
+                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        addChildStream(stream);
+        return stream;
+    }
+
+    @Override
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            BiFunction<A, B, GroupKey_> groupKeyMapping,
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+        /*
+        DroolsGroupingBiConstraintStream<Solution_, A, GroupKey_, Result_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        addChildStream(stream);
+        return stream;
+         */
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
+        /*
+        DroolsGroupingBiConstraintStream<Solution_, A, GroupKeyA_, GroupKeyB_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                        groupKeyBMapping);
+        addChildStream(stream);
+        return stream;
+         */
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
+    // Penalize/reward
+    // ************************************************************************
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,

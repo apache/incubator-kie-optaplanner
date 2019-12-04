@@ -17,19 +17,28 @@
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+import java.util.stream.Stream;
 
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
+import org.drools.model.Index;
+import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Predicate3;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
@@ -40,7 +49,11 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.from;
 import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleStructure<A, B>> {
 
@@ -57,6 +70,27 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
                 newTargetPattern, ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsBiCondition<>(newRuleStructure);
+    }
+
+    public <NewA> DroolsUniCondition<NewA> andGroup(BiFunction<A, B, NewA> groupKeyMapping) {
+        Variable<NewA> mappedVariable = ruleStructure.createVariable("biMapped");
+        PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
+                        .expand(p -> p.bind(mappedVariable, ruleStructure.getA(), (b, a) -> groupKeyMapping.apply((A) a, (B) b)))
+                        .build();
+        ViewItem[] items = Stream.concat(ruleStructure.getSupportingRuleItems().stream(), Stream.of(mainAccumulatePattern))
+                .toArray(ViewItem[]::new);
+        ViewItem<?> innerAccumulatePattern = PatternDSL.and(items[0], Arrays.copyOfRange(items, 1, items.length));
+        Variable<Set> setOfGroupKeys = ruleStructure.createVariable(Set.class, "setOfGroupKey");
+        PatternDSL.PatternDef<Set> pattern = pattern(setOfGroupKeys)
+                .expr("Set of groupKey", set -> !set.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
+        ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
+                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfGroupKeys));
+        Variable<NewA> groupKey = ruleStructure.createVariable("groupKey", from(setOfGroupKeys));
+        DroolsPatternBuilder<NewA> finalGroupKeyPattern = new DroolsPatternBuilder<>(groupKey);
+        DroolsUniRuleStructure<NewA> newRuleStructure = new DroolsUniRuleStructure<>(groupKey,
+                finalGroupKeyPattern, Arrays.asList(pattern, accumulate), ruleStructure.getVariableIdSupplier());
+        return new DroolsUniCondition<>(newRuleStructure);
     }
 
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
