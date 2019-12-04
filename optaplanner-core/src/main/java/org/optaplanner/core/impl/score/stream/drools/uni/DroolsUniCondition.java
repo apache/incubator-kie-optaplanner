@@ -90,7 +90,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         Predicate1<Object> filter = a -> predicate.test((A) a);
         DroolsPatternBuilder<Object> patternWithFilter = ruleStructure.getPrimaryPattern()
                 .expand(p -> p.expr("Filter using " + predicate, filter,
-                                alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1, a -> predicate.test((A) a), true)));
+                        alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1, a -> predicate.test((A) a), true)));
         DroolsUniRuleStructure<A> newStructure = new DroolsUniRuleStructure<>(ruleStructure.getA(), patternWithFilter,
                 ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsUniCondition<>(newStructure);
@@ -136,7 +136,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
      *
      * <pre>
      * when
-     *     set(size > 0): accumulate(Person(), $set: Pair.of(Person::getCity, ConstraintCollectors.count()))
+     *     set(size > 0): accumulate(Person(), $set: collectSet(Pair.of(Person::getCity, ConstraintCollectors.count())))
      *     Pair($newA: left, $newB: right) from $set
      * then
      *     ...
@@ -168,11 +168,11 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                 accFunction(() -> new DroolsGroupByInvoker<>(collector, groupKeyVar, collectingOnVar))
                         .as(setOfPairsVar));
         // Load one pair from the list.
-        Variable<DroolsGroupByAccumulator.Pair> onePairVar = ruleStructure.createVariable(
-                DroolsGroupByAccumulator.Pair.class, "pair", from(setOfPairsVar));
+        Variable<DroolsValuePair> onePairVar = ruleStructure.createVariable(
+                DroolsValuePair.class, "pair", from(setOfPairsVar));
         Variable<NewA> newAVar = ruleStructure.createVariable("newA");
         Variable<NewB> newBVar = ruleStructure.createVariable("newB");
-        DroolsPatternBuilder<DroolsGroupByAccumulator.Pair> finalPairPattern = new DroolsPatternBuilder<>(onePairVar)
+        DroolsPatternBuilder<DroolsValuePair> finalPairPattern = new DroolsPatternBuilder<>(onePairVar)
                 .expand(p -> p.bind(newAVar, pair -> (NewA) pair.key))
                 .expand(p -> p.bind(newBVar, pair -> (NewB) pair.value));
         DroolsBiRuleStructure<NewA, NewB> newRuleStructure = new DroolsBiRuleStructure<>(newAVar, newBVar,
@@ -181,9 +181,50 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         return new DroolsBiCondition<>(newRuleStructure);
     }
 
+    /**
+     * The goal of this method is to create the left-hand side of a rule to look like this:
+     *
+     * <pre>
+     * when
+     *     set(size > 0): accumulate(Person(), $set: collectSet(Pair.of(Person::getCity, Person::getName)))
+     *     Pair($newA: left, $newB: right) from $set
+     * then
+     *     ...
+     * end
+     * </pre>
+     * <p>
+     * Note: This is pseudo-code and the actual Drools code will look slightly different in terms of syntax.
+     * @param groupKeyAMapping never null, first grouping to apply
+     * @param groupKeyBMapping never null, second grouping to apply
+     * @param <NewA> type of the first logical fact
+     * @param <NewB> type of the second logical fact
+     * @return
+     */
     public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping) {
-        throw new UnsupportedOperationException();
+        Variable<DroolsValuePair<NewA, NewB>> pairVar = ruleStructure.createVariable("grouped");
+        Variable<Set> setOfPairsVar = ruleStructure.createVariable(Set.class, "setOfPairs");
+        // Prepare the list of pairs.
+        PatternDSL.PatternDef<Set> pattern = pattern(setOfPairsVar)
+                .expr("Set of biGroupBy pairs", set -> !set.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
+        PatternDSL.PatternDef<Object> innerNewACollectingPattern = ruleStructure.getPrimaryPattern()
+                .expand(p -> p.bind(pairVar,
+                        a -> new DroolsValuePair<>(groupKeyAMapping.apply((A) a), groupKeyBMapping.apply((A) a))))
+                .build();
+        ExprViewItem<Object> accumulate = DSL.accumulate(innerNewACollectingPattern,
+                accFunction(CollectSetAccumulateFunction::new, pairVar).as(setOfPairsVar));
+        // Load one pair from the list.
+        Variable<DroolsValuePair> onePairVar = ruleStructure.createVariable(DroolsValuePair.class, "pair", from(setOfPairsVar));
+        Variable<NewA> newAVar = ruleStructure.createVariable("newA");
+        Variable<NewB> newBVar = ruleStructure.createVariable("newB");
+        DroolsPatternBuilder<DroolsValuePair> finalPairPattern = new DroolsPatternBuilder<>(onePairVar)
+                .expand(p -> p.bind(newAVar, pair -> (NewA) pair.key))
+                .expand(p -> p.bind(newBVar, pair -> (NewB) pair.value));
+        DroolsBiRuleStructure<NewA, NewB> newRuleStructure = new DroolsBiRuleStructure<>(newAVar, newBVar,
+                finalPairPattern, ruleStructure.rebuildSupportingRuleItems(pattern, accumulate),
+                ruleStructure.getVariableIdSupplier());
+        return new DroolsBiCondition<>(newRuleStructure);
     }
 
     public <B> DroolsBiCondition<A, B> andJoin(DroolsUniCondition<B> bCondition, AbstractBiJoiner<A, B> biJoiner) {
