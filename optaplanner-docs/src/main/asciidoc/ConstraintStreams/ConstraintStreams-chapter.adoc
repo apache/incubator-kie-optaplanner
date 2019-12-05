@@ -45,7 +45,7 @@ that uses a functional approach:
 However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>:
 When the planning variable of a single `Talk` changes, to recalculate the score,
 the normal Streams API has to execute the entire stream from scratch.
-The ConstraintStreams API allows you to write similar code in pure Java, while reaping the performance benefits of
+The ConstraintStreams API enables you to write similar code in pure Java, while reaping the performance benefits of
 incremental score calculation.
 This is an example of the same code, using the Constraint Streams API:
 
@@ -60,16 +60,16 @@ This is an example of the same code, using the Constraint Streams API:
     }
 ----
 
-This constraint stream goes over all instances of class `Shift` amongst <<problemFacts,problem facts>> and
+This constraint stream iterates over all instances of class `Shift` in the <<problemFacts,problem facts>> and
 <<planningEntity,planning entities>> in the <<planningProblemAndPlanningSolution,planning problem>>.
-It finds all which are assigned to employee `Ann` and for every such instance (also called "a match"), it adds a soft
-penalty of 1 to the overall <<calculateTheScore,score>>.
+It finds every `Shift` which is assigned to employee `Ann` and for every such instance (also called a match), it adds a
+soft penalty of `1` to the overall <<calculateTheScore,score>>.
 The following figure illustrates this process on a problem with 4 different shifts:
 
 image::ConstraintStreams/constraintStreamIntroduction.png[align="center"]
 
-If any of the instances change during solving, the constraint stream automatically detects it and only recalculates
-the minimum necessary portion of the problem that is affected by the change.
+If any of the instances change during solving, the constraint stream automatically detects the change
+and only recalculates the minimum necessary portion of the problem that is affected by the change.
 The following figure illustrates this <<incrementalScoreCalculation,incremental score calculation>>:
 
 image::ConstraintStreams/constraintStreamIncrementalCalculation.png[align="center"]
@@ -80,10 +80,11 @@ image::ConstraintStreams/constraintStreamJustification.png[align="center"]
 ////
 
 
-[[constraintStreamsFirst]]
-== Your First Constraint Stream
+[[constraintStreamsConfiguration]]
+== Creating a constraint stream
 
-To use the ConstraintStreams API in your project, first write a pure Java `ConstraintProvider` implementation like this:
+To use the ConstraintStreams API in your project, first write a pure Java `ConstraintProvider` implementation similar
+to the following example:
 
 [source,java,options="nowrap"]
 ----
@@ -105,7 +106,7 @@ To use the ConstraintStreams API in your project, first write a pure Java `Const
     }
 ----
 
-Then use the following in your solver config:
+Add the following code to your solver configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -119,11 +120,11 @@ Then use the following in your solver config:
 
 
 [[constraintStreamsCardinality]]
-== Constraint Stream Cardinality
+== Constraint stream Ccrdinality
 
-Stream cardinality is a measure of how many objects a single constraint match consists of.
+Constraint stream cardinality is a measure of how many objects a single constraint match consists of.
 The simplest constraint stream has a cardinality of 1, meaning each constraint match only consists of 1 object.
-Therefore, it is called a `UniStream`:
+Therefore, it is called a `UniConstraintStream`:
 
 [source,java,options="nowrap"]
 ----
@@ -159,7 +160,7 @@ The latter can also decrease stream cardinality:
     }
 ----
 
-The following constraint stream cardinalities are currently supported.
+The following constraint stream cardinalities are currently supported:
 
 |===
 |Cardinality|Prefix|Defining interface
@@ -171,11 +172,11 @@ The following constraint stream cardinalities are currently supported.
 
 
 [[constraintStreamsBuildingBlocks]]
-== Building Blocks
+== Building blocks
 
-Constraint streams are chains of different operations, also called building blocks.
+Constraint streams are chains of different operations, called building blocks.
 Each constraint stream starts with a `from(...)` building block and is terminated by either a penalty or a reward.
-This is an example of the simplest possible constraint stream:
+The following example shows the simplest possible constraint stream:
 
 [source,java,options="nowrap"]
 ----
@@ -185,8 +186,8 @@ This is an example of the simplest possible constraint stream:
     }
 ----
 
-This constraint stream will go over all known and initialized instances of `Shift`.
-To include instances yet uninitialized, replace the `from()` building block with `fromUnfiltered()`:
+This constraint stream iterates over all known and initialized instances of `Shift`.
+To include uninitialized instances, replace the `from()` building block with `fromUnfiltered()`:
 
 [source,java,options="nowrap"]
 ----
@@ -201,31 +202,33 @@ To include instances yet uninitialized, replace the `from()` building block with
 === Penalties And Rewards
 
 The purpose of constraint streams is to build up a <<whatIsAScore,score>> for a <<planningProblemAndPlanningSolution,solution>>.
-To accomplish that, every constraint stream must be terminated by a call to either a `penalize()` or a `reward()`
+To do this, every constraint stream must be terminated by a call to either a `penalize()` or a `reward()`
 building block.
-As their names suggest, the former makes the score worse while the latter improves it.
+The `penalize()` building block makes the score worse and the `reward()` building block improves the score.
 Penalties and rewards have several components:
 
 Constraint name::
-Human readable descriptive name for the constraint, which must be unique within the entire `ConstraintProvider`.
+The human readable descriptive name for the constraint, which must be unique within the entire `ConstraintProvider`
+implementation.
 Constraint weight::
 A constant score value indicating how much every breach of the constraint affects the score.
-Valid examples include `SimpleScore.ONE`, `HardSoftScore.ONE_HARD`, `HardMediumSoftScore.of(1, 2, 3)`, ...
+Valid examples include `SimpleScore.ONE`, `HardSoftScore.ONE_HARD` and `HardMediumSoftScore.of(1, 2, 3)`, ...
 Constraint match weigher (Optional)::
-A function indicating how many times the constraint weight should be applied in the score.
-This number is typically determined from the contents of the constraint stream.
-Defaults to 1.
+The penalty or reward score impact is the constraint weight multiplied by the match weigh.
+This number is determined by applying the match weigher function to the contents of the constraint stream.
+The default value is `1`.
 Constraint package (Optional)::
-Java package that the constraint resides in.
+Java package that contains the constraint.
 Defaults to the package where the `ConstraintProvider` resides.
 
-The ConstraintStreams API supports many different types of penalties and we suggest you browse the API in your IDE for
-the full list of method overloads. Here are some examples:
+The ConstraintStreams API supports many different types of penalties.
+Browse the API in your IDE for the full list of method overloads.
+Here are some examples:
 
 Simple penalty::
 `penalize("Constraint name", SimpleScore.ONE)`
 Makes the score worse by 1 per every match in the constraint stream.
-In place of `SimpleScore.ONE`, you may use any `Score` depending on the needs of your problem.
+The score type must be the same type as used on the `@PlanningScore` annotated member on the planning solution.
 Dynamic penalty::
 `penalize("Constraint name", SimpleScore.ONE, Shift::getHours)`
 Makes the score worse by the number of hours in every matching `Shift` in the constraint stream.
@@ -243,12 +246,12 @@ affect score in the opposite direction.
 
 
 [[constraintStreamsFilter]]
-=== Filter
+=== Filtering
 
-Filtering allows you to reduce the number of constraint matches in your stream.
-It first enumerate all constraint matches and then applies a predicate to filter some of them out.
+Filtering enables you to reduce the number of constraint matches in your stream.
+It first enumerate all constraint matches and then applies a predicate to filter some matches out.
 The predicate is a function that only returns `true` if the match is to continue in the stream.
-The following constraint stream will remove all of Beth's shifts from all `Shift` matches:
+The following constraint stream removes all of Beth's shifts from all `Shift` matches:
 
 [source,java,options="nowrap"]
 ----
@@ -259,8 +262,8 @@ The following constraint stream will remove all of Beth's shifts from all `Shift
     }
 ----
 
-For a bi constraint match of `Shift` and `DayOff`, here's how to get a list of shifts where an employee has asked for a
-day off:
+The following example retrieves a list of shifts where an employee has asked for a day off from a bi-constraint match
+of `Shift`and `DayOff`:
 
 [source,java,options="nowrap"]
 ----
@@ -278,7 +281,7 @@ image::ConstraintStreams/constraintStreamFilter.png[align="center"]
 
 [NOTE]
 ====
-For reasons of performance, using the <<constraintStreamsJoin,join>> building block with appropriate `Joiner`s is
+For performance reasons, using the <<constraintStreamsJoin,join>> building block with the appropriate `Joiner`s is
 preferrable when possible.
 Using a `Joiner` creates only the constraint matches that are necessary, while filtered join creates all possible
 constraint matches and only then filters some of them out.
@@ -297,29 +300,29 @@ cardinality:
 
 
 [[constraintStreamsJoin]]
-=== Join
+=== Joining
 
-Joining is a way to increase <<constraintStreamsCardinality,stream cardinality>> and it is similar to inner join
+Joining is a way to increase <<constraintStreamsCardinality,stream cardinality>> and it is similar to the inner join
 operation in SQL. As the following figure illustrates, a join creates a cartesian product of the streams being joined:
 
 image::ConstraintStreams/constraintStreamJoinWithoutJoiners.png[align="center"]
 
-This is inefficient, as the resulting stream may contain constraint matches that are of no interest to your constraint.
-Therefore, we recommend using `Joiner` to restrict your joins only to the matches you are actually interested in, as
-illustrated in this figure:
+Doing this is inefficient because the resulting stream might contain constraint matches that are of no interest to your
+constraint.
+Use `Joiner` to restrict your joins only to the matches you are actually interested in, as illustrated in the following
+figure:
 
 image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
 
-For a list of all supported `Joiner` implementations, please refer to the
-`org.optaplanner.core.api.score.stream.Joiners` class.
+For a list of all supported `Joiner` implementations, refer to the `org.optaplanner.core.api.score.stream.Joiners` class.
 
 
 [[constraintStreamsGroupingAndCollectors]]
-=== Grouping and Collectors
+=== Grouping and collectors
 
 Grouping collects items in a stream according to user-provider criteria (also called "group key"), similar to what a
-`GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more `Collector`, which provide
-various aggregation functions. The following figure illustrates a simple `groupBy()` operation:
+`GROUP BY` SQL clause does. Additionally, some grouping operations also accept one or more `Collector` instances, which
+provide various aggregation functions. The following figure illustrates a simple `groupBy()` operation:
 
 image::ConstraintStreams/constraintStreamGroupBy.png[align="center"]
 
@@ -341,8 +344,8 @@ every computer whose processes consume more power than is available.
 
 [NOTE]
 ====
-Information may be lost during grouping.
-In the example above, `filter()` and all subsequent operations no longer have direct access to the original
+Information might be lost during grouping.
+In the previous example, `filter()` and all subsequent operations no longer have direct access to the original
 `CloudProcess` instance.
 ====
 
@@ -350,7 +353,7 @@ There are several collectors available out of the box. You can also provide your
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
 
 [collectorsOutOfTheBox]
-==== Out-of-the-box Collectors
+==== Out-of-the-box collectors
 
 The following section focuses on the collector implementations provided out of the box. This section only describes the
 `int`-based variants of the collectors in detail. Many of the collectors also provide variants for other applicable
@@ -449,14 +452,13 @@ The following example finds a computer which runs the most power-demanding proce
 [[constraintStreamsImplementations]]
 == Variant implementation types
 
-Constraint streams come in two flavours, a default implementation using Drools under the hood and a pure Java-based
+Constraint streams come in two flavors, a default implementation using Drools under the hood and a pure Java-based
 implementation called _Bavet_.
-Drools-based implementation is more feature-complete.
-Both of these implementations use the same `ConstraintProvider` API, no Java code changes are necessary to switch
-between the two.
+The Drools-based implementation is more feature-complete.
+Both of these variants implement the same `ConstraintProvider` API.
+No Java code changes are necessary to switch between the two.
 
-Bavet is an experimental implementation focusing on raw speed, which often significantly outperforms the default
-implementation, or even Drools itself.
+Bavet is an experimental implementation that focuses on raw speed and provides superior performance.
 However, it lacks features and therefore many of the <<examplesOverview,examples>> are not supported.
 To try it out, implement the `ConstraintProvider` interface and use the following in your solver config:
 
