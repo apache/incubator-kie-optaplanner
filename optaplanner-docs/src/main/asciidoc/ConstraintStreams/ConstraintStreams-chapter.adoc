@@ -43,7 +43,7 @@ that uses a functional approach:
 ----
 
 However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>:
-When the planning variable of a single `Talk` changes, to recalculate the score,
+When the planning variable of a single `Shift` changes, to recalculate the score,
 the normal Streams API has to execute the entire stream from scratch.
 The ConstraintStreams API enables you to write similar code in pure Java, while reaping the performance benefits of
 incremental score calculation.
