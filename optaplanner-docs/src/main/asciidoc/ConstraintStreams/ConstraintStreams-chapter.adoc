@@ -286,8 +286,7 @@ Using a `Joiner` creates only the constraint matches that are necessary, while f
 constraint matches and only then filters some of them out.
 ====
 
-For reference, we include a list of predicate functions required for filtering constraint streams of different
-cardinality:
+The following functions are required for filtering constraint streams of different cardinality:
 
 |===
 |Cardinality|Filtering Predicate
