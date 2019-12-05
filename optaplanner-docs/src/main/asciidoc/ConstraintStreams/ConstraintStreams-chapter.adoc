@@ -84,7 +84,7 @@ image::ConstraintStreams/constraintStreamJustification.png[align="center"]
 == Creating a constraint stream
 
 To use the ConstraintStreams API in your project, first write a pure Java `ConstraintProvider` implementation similar
-to the following example:
+to the following example.
 
 [source,java,options="nowrap"]
 ----
@@ -92,19 +92,24 @@ to the following example:
 
         @Override
         public Constraint[] defineConstraints(ConstraintFactory factory) {
-            return new Constraint[] { // Provide as many constraints as you like. This example only provides one.
-                    firstConstraint(factory)
+            return new Constraint[] {
+                    penalizeEveryShift(factory)
             };
         }
 
-        private Constraint firstConstraint(ConstraintFactory factory) {
-            return factory.from(...) // Choose the initial source of the constraint stream.
-                // Add as many building blocks as you need.
-                .penalize(...); // And finally define the penalty associated with this constraint.
+        private Constraint penalizeEveryShift(ConstraintFactory factory) {
+            return factory.from(Shift.class)
+                .penalize("Penalize a shift", HardSoftScore.ONE_SOFT);
         }
 
     }
 ----
+
+[NOTE]
+====
+This example contains one constraint, `penalizeEveryShift(...)`.
+However, you can include as many as you require.
+====
 
 Add the following code to your solver configuration:
 
@@ -199,7 +204,7 @@ To include uninitialized instances, replace the `from()` building block with `fr
 
 
 [[constraintStreamsPenaltiesRewards]]
-=== Penalties And Rewards
+=== Penalties and rewards
 
 The purpose of constraint streams is to build up a <<whatIsAScore,score>> for a <<planningProblemAndPlanningSolution,solution>>.
 To do this, every constraint stream must be terminated by a call to either a `penalize()` or a `reward()`
@@ -207,39 +212,33 @@ building block.
 The `penalize()` building block makes the score worse and the `reward()` building block improves the score.
 Penalties and rewards have several components:
 
-Constraint name::
-The human readable descriptive name for the constraint, which must be unique within the entire `ConstraintProvider`
-implementation.
-Constraint weight::
-A constant score value indicating how much every breach of the constraint affects the score.
-Valid examples include `SimpleScore.ONE`, `HardSoftScore.ONE_HARD` and `HardMediumSoftScore.of(1, 2, 3)`, ...
-Constraint match weigher (Optional)::
-The penalty or reward score impact is the constraint weight multiplied by the match weigh.
-This number is determined by applying the match weigher function to the contents of the constraint stream.
+- Constraint name is the human readable descriptive name for the constraint, which must be unique within the entire
+`ConstraintProvider` implementation.
+- Constraint weight is a constant score value indicating how much every breach of the constraint affects the score.
+Valid examples include `SimpleScore.ONE`, `HardSoftScore.ONE_HARD` and `HardMediumSoftScore.of(1, 2, 3)`.
+- Constraint match weigher is an optional function indicating how many times the constraint weight should be applied in
+the score.
+The penalty or reward score impact is the constraint weight multiplied by the match weight.
 The default value is `1`.
-Constraint package (Optional)::
-Java package that contains the constraint.
-Defaults to the package where the `ConstraintProvider` resides.
+- Constraint package is the Java package that contains the constraint.
+The default value is the package that contains the `ConstraintProvider` implementation or the value from
+<<constraintConfiguration,constraint configuration>>, if implemented.
 
 The ConstraintStreams API supports many different types of penalties.
 Browse the API in your IDE for the full list of method overloads.
 Here are some examples:
 
-Simple penalty::
-`penalize("Constraint name", SimpleScore.ONE)`
-Makes the score worse by 1 per every match in the constraint stream.
+- Simple penalty (`penalize("Constraint name", SimpleScore.ONE)`) makes the score worse by `1` per every match in the
+constraint stream.
 The score type must be the same type as used on the `@PlanningScore` annotated member on the planning solution.
-Dynamic penalty::
-`penalize("Constraint name", SimpleScore.ONE, Shift::getHours)`
-Makes the score worse by the number of hours in every matching `Shift` in the constraint stream.
+- Dynamic penalty (`penalize("Constraint name", SimpleScore.ONE, Shift::getHours)`) makes the score worse by the number
+of hours in every matching `Shift` in the constraint stream.
 This is an example of using a constraint match weigher.
-Configurable penalty::
-`penalizeConfigurable("Constraint name")`
-Makes the score worse using constraint weights defined in <<constraintConfiguration,constraint configuration>>.
-Configurable dynamic penalty::
-`penalizeConfigurable("Constraint name", Shift::getHours)`
-Makes the score worse using constraint weights defined in <<constraintConfiguration,constraint configuration>>,
-multiplied by the number of hours in every matching `Shift` in the constraint stream.
+- Configurable penalty (`penalizeConfigurable("Constraint name")`) makes the score worse using constraint weights
+defined in <<constraintConfiguration,constraint configuration>>.
+- Configurable dynamic penalty(`penalizeConfigurable("Constraint name", Shift::getHours)`) makes the score worse using
+constraint weights defined in <<constraintConfiguration,constraint configuration>>, multiplied by the number of hours in
+every matching `Shift` in the constraint stream.
 
 By replacing the keyword `penalize` by `reward` in the name of these building blocks, you will get operations that
 affect score in the opposite direction.
