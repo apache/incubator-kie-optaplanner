@@ -468,4 +468,41 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
     }
 
+    @Test
+    public void joinerEqualsAndSameness() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 1, 2);
+        // The two bigDecimals are not the same, but they equals()
+        String decimal = "0.01";
+        BigDecimal bigDecimal1 = new BigDecimal(decimal);
+        BigDecimal bigDecimal2 = new BigDecimal(decimal);
+        TestdataLavishEntity entity1 = solution.getEntityList().get(0);
+        entity1.setBigDecimalProperty(bigDecimal1);
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        entity2.setBigDecimalProperty(bigDecimal2);
+        // Entity 3's BigDecimal property is the same as Entity 1's and equals() Entity 2's.
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("My Entity 0", solution.getFirstEntityGroup(), entity1.getValue());
+        entity3.setBigDecimalProperty(bigDecimal1);
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getBigDecimalProperty))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                // Each entity's BigDecimal property is joined to itself.
+                assertMatch(entity1, entity1),
+                assertMatch(entity2, entity2),
+                assertMatch(entity3, entity3),
+                // Each entity's BigDecimal property is joined to each other entity's.
+                assertMatch(entity1, entity2),
+                assertMatch(entity1, entity3),
+                assertMatch(entity2, entity1),
+                assertMatch(entity2, entity3),
+                assertMatch(entity3, entity1),
+                assertMatch(entity3, entity2));
+    }
+
 }
