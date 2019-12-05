@@ -125,7 +125,7 @@ Add the following code to your solver configuration:
 
 
 [[constraintStreamsCardinality]]
-== Constraint stream Ccrdinality
+== Constraint stream cardinality
 
 Constraint stream cardinality is a measure of how many objects a single constraint match consists of.
 The simplest constraint stream has a cardinality of 1, meaning each constraint match only consists of 1 object.
@@ -212,17 +212,17 @@ building block.
 The `penalize()` building block makes the score worse and the `reward()` building block improves the score.
 Penalties and rewards have several components:
 
-- Constraint name is the human readable descriptive name for the constraint, which must be unique within the entire
-`ConstraintProvider` implementation.
+- Constraint package is the Java package that contains the constraint.
+The default value is the package that contains the `ConstraintProvider` implementation or the value from
+<<constraintConfiguration,constraint configuration>>, if implemented.
+- Constraint name is the human readable descriptive name for the constraint, which
+(together with the constraint package) must be unique within the entire `ConstraintProvider` implementation.
 - Constraint weight is a constant score value indicating how much every breach of the constraint affects the score.
 Valid examples include `SimpleScore.ONE`, `HardSoftScore.ONE_HARD` and `HardMediumSoftScore.of(1, 2, 3)`.
 - Constraint match weigher is an optional function indicating how many times the constraint weight should be applied in
 the score.
 The penalty or reward score impact is the constraint weight multiplied by the match weight.
 The default value is `1`.
-- Constraint package is the Java package that contains the constraint.
-The default value is the package that contains the `ConstraintProvider` implementation or the value from
-<<constraintConfiguration,constraint configuration>>, if implemented.
 
 The ConstraintStreams API supports many different types of penalties.
 Browse the API in your IDE for the full list of method overloads.
@@ -290,11 +290,11 @@ For reference, we include a list of predicate functions required for filtering c
 cardinality:
 
 |===
-|Stream Cardinality|Filtering Predicate
-|1                 |`java.util.function.Predicate<A>`
-|2                 |`java.util.function.BiPredicate<A, B>`
-|3                 |`org.optaplanner.core.api.function.TriPredicate<A, B, C>`
-|4                 |`org.optaplanner.core.api.function.QuadPredicate<A, B, C, D>`
+|Cardinality|Filtering Predicate
+|1          |`java.util.function.Predicate<A>`
+|2          |`java.util.function.BiPredicate<A, B>`
+|3          |`org.optaplanner.core.api.function.TriPredicate<A, B, C>`
+|4          |`org.optaplanner.core.api.function.QuadPredicate<A, B, C, D>`
 |===
 
 
@@ -313,7 +313,14 @@ figure:
 
 image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
 
-For a list of all supported `Joiner` implementations, refer to the `org.optaplanner.core.api.score.stream.Joiners` class.
+The following `Joiner` types are supported:
+
+- `equalTo` for joining constraint matches where they `equals()` one another.
+- `greaterThan`, `greaterThanOrEqual`, `lessThan` and `lessThanOrEqual` for joining `Comparable` constraint matches per
+the prescribed ordering.
+
+For a full list of all supported `Joiner` implementations and their various overloads, refer to the
+`org.optaplanner.core.api.score.stream.Joiners` class.
 
 
 [[constraintStreamsGroupingAndCollectors]]
