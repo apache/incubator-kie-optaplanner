@@ -223,7 +223,6 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
 
     @Override
     public int compareTo(HardSoftDoubleScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
             return initScore < other.getInitScore() ? -1 : 1;
         } else if (hardScore != other.getHardScore()) {

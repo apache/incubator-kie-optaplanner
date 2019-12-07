@@ -18,9 +18,9 @@ package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
+import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
@@ -29,6 +29,10 @@ import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
 public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeConsecutiveAssignmentStart>,
         Serializable {
+
+    private static final Comparator<EmployeeConsecutiveAssignmentStart> COMPARATOR =
+            Comparator.comparing(EmployeeConsecutiveAssignmentStart::getEmployee)
+                    .thenComparing(EmployeeConsecutiveAssignmentStart::getShiftDate);
 
     private Employee employee;
     private ShiftDate shiftDate;
@@ -76,10 +80,7 @@ public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeCo
 
     @Override
     public int compareTo(EmployeeConsecutiveAssignmentStart other) {
-        return new CompareToBuilder()
-                .append(employee, other.employee)
-                .append(shiftDate, other.shiftDate)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override

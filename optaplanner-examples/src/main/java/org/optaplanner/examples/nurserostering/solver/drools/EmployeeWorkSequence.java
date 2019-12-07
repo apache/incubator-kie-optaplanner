@@ -17,13 +17,18 @@
 package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 
 public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, Serializable {
+
+    private static final Comparator<EmployeeWorkSequence> COMPARATOR =
+            Comparator.comparing(EmployeeWorkSequence::getEmployee)
+                    .thenComparingInt(EmployeeWorkSequence::getFirstDayIndex)
+                    .thenComparingInt(EmployeeWorkSequence::getLastDayIndex);
 
     private Employee employee;
     private int firstDayIndex;
@@ -82,11 +87,7 @@ public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, S
 
     @Override
     public int compareTo(EmployeeWorkSequence other) {
-        return new CompareToBuilder()
-                .append(employee, other.employee)
-                .append(firstDayIndex, other.firstDayIndex)
-                .append(lastDayIndex, other.lastDayIndex)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override

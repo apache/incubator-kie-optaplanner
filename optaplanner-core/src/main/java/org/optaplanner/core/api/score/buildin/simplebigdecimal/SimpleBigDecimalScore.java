@@ -192,7 +192,6 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
 
     @Override
     public int compareTo(SimpleBigDecimalScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
             return initScore < other.getInitScore() ? -1 : 1;
         } else {

@@ -253,7 +253,6 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
 
     @Override
     public int compareTo(HardMediumSoftLongScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
             return initScore < other.getInitScore() ? -1 : 1;
         } else if (hardScore != other.getHardScore()) {

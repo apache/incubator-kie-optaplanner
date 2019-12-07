@@ -176,7 +176,6 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
 
     @Override
     public int compareTo(SimpleScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
             return initScore < other.getInitScore() ? -1 : 1;
         } else {

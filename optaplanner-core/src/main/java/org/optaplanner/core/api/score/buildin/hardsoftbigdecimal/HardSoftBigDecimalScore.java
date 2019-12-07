@@ -234,7 +234,6 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
 
     @Override
     public int compareTo(HardSoftBigDecimalScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (initScore != other.getInitScore()) {
             return initScore < other.getInitScore() ? -1 : 1;
         }

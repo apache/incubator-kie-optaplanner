@@ -413,7 +413,6 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     @Override
     public int compareTo(BendableBigDecimalScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         validateCompatible(other);
         if (initScore != other.getInitScore()) {
             return initScore < other.getInitScore() ? -1 : 1;

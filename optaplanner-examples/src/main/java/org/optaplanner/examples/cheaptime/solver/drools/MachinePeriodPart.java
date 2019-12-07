@@ -17,17 +17,25 @@
 package org.optaplanner.examples.cheaptime.solver.drools;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 
+import static java.util.Comparator.comparing;
+
 public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
+
+    private static final Comparator<MachinePeriodPart> COMPARATOR =
+            comparing((MachinePeriodPart machinePeriodPart) -> machinePeriodPart.machine.getIndex())
+                    .thenComparingInt(MachinePeriodPart::getPeriod)
+                    .thenComparing(MachinePeriodPart::isActive)
+                    .thenComparingInt(machinePeriodPart -> machinePeriodPart.resourceAvailableList.length);
 
     private final Machine machine;
     private final int period;
@@ -120,12 +128,7 @@ public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
 
     @Override
     public int compareTo(MachinePeriodPart other) {
-        return new CompareToBuilder()
-                .append(machine, other.machine)
-                .append(period, other.period)
-                .append(active, other.active)
-                .append(resourceAvailableList, other.resourceAvailableList)
-                .toComparison();
+        return COMPARATOR.compare(this, other);
     }
 
     @Override

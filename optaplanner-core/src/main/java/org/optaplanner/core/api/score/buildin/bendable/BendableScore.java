@@ -386,7 +386,6 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     @Override
     public int compareTo(BendableScore other) {
-        // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         validateCompatible(other);
         if (initScore != other.getInitScore()) {
             return initScore < other.getInitScore() ? -1 : 1;
