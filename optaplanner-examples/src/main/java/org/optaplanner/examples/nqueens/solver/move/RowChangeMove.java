@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nqueens.domain.NQueens;
@@ -88,10 +87,7 @@ public class RowChangeMove extends AbstractMove<NQueens> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(queen)
-                .append(toRow)
-                .toHashCode();
+        return Objects.hash(queen, toRow);
     }
 
     @Override

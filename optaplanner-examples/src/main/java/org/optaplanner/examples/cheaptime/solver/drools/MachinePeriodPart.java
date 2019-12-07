@@ -18,10 +18,10 @@ package org.optaplanner.examples.cheaptime.solver.drools;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
@@ -115,12 +115,7 @@ public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(machine)
-                .append(period)
-                .append(active)
-                .append(resourceAvailableList)
-                .toHashCode();
+        return Objects.hash(machine, period, active, resourceAvailableList);
     }
 
     @Override

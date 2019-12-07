@@ -18,9 +18,9 @@ package org.optaplanner.examples.examination.domain.solver;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.examination.domain.Topic;
 
 /**
@@ -84,10 +84,7 @@ public class TopicConflict implements Serializable,
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(leftTopic)
-                .append(rightTopic)
-                .toHashCode();
+        return Objects.hash(leftTopic, rightTopic);
     }
 
     @Override

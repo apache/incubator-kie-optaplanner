@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
@@ -98,10 +97,7 @@ public class CloudProcessSwapMove extends AbstractMove<CloudBalance> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(leftCloudProcess)
-                .append(rightCloudProcess)
-                .toHashCode();
+        return Objects.hash(leftCloudProcess, rightCloudProcess);
     }
 
     @Override

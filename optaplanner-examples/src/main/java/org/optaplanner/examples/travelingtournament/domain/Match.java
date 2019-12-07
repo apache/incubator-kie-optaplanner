@@ -16,9 +16,10 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
+import java.util.Objects;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -88,12 +89,7 @@ public class Match extends AbstractPersistable {
      * @see #solutionEquals(Object)
      */
     public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(homeTeam)
-                .append(awayTeam)
-                .append(day)
-                .toHashCode();
+        return Objects.hash(id, homeTeam, awayTeam, day);
     }
 
     @Override

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
@@ -183,11 +182,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(variableDescriptorList)
-                .append(leftPillar)
-                .append(rightPillar)
-                .toHashCode();
+        return Objects.hash(variableDescriptorList, leftPillar, rightPillar);
     }
 
     @Override

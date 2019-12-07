@@ -17,9 +17,9 @@
 package org.optaplanner.examples.projectjobscheduling.solver.score.drools;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
 public class RenewableResourceUsedDay implements Serializable {
@@ -57,10 +57,7 @@ public class RenewableResourceUsedDay implements Serializable {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(resource)
-                .append(usedDay)
-                .toHashCode();
+        return Objects.hash(resource, usedDay);
     }
 
     @Override

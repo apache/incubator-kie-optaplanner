@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -122,11 +121,7 @@ public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(entity)
-                .append(variableDescriptor)
-                .append(toPlanningValue)
-                .toHashCode();
+        return Objects.hash(entity, variableDescriptor, toPlanningValue);
     }
 
     @Override

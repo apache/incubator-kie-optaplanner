@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -154,11 +153,7 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(subChain)
-                .append(variableDescriptor)
-                .append(toPlanningValue)
-                .toHashCode();
+        return Objects.hash(subChain, variableDescriptor, toPlanningValue);
     }
 
     @Override

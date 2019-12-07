@@ -18,9 +18,9 @@ package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
@@ -68,10 +68,7 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(machineCapacity)
-                .append(usage)
-                .toHashCode();
+        return Objects.hash(machineCapacity, usage);
     }
 
     public MrMachine getMachine() {

@@ -18,9 +18,9 @@ package org.optaplanner.examples.curriculumcourse.domain.solver;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
 
 /**
@@ -73,10 +73,7 @@ public class CourseConflict implements Serializable,
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(leftCourse)
-                .append(rightCourse)
-                .toHashCode();
+        return Objects.hash(leftCourse, rightCourse);
     }
 
     @Override

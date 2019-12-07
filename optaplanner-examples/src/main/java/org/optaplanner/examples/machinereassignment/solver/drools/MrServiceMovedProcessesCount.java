@@ -18,12 +18,13 @@ package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
 
 public class MrServiceMovedProcessesCount implements Serializable, Comparable<MrServiceMovedProcessesCount> {
 
@@ -63,10 +64,7 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(service)
-                .append(movedProcessesCount)
-                .toHashCode();
+        return Objects.hash(service, movedProcessesCount);
     }
 
     public Long getServiceId() {

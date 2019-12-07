@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.travelingtournament.domain.Day;
@@ -118,10 +118,7 @@ public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(firstMatchList)
-                .append(secondMatchList)
-                .toHashCode();
+        return Objects.hash(firstMatchList, secondMatchList);
     }
 
     @Override

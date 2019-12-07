@@ -17,10 +17,10 @@
 package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
@@ -68,10 +68,7 @@ public class EmployeeConsecutiveWeekendAssignmentStart implements Comparable<Emp
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(employee)
-                .append(sundayIndex)
-                .toHashCode();
+        return Objects.hash(employee, sundayIndex);
     }
 
     @Override

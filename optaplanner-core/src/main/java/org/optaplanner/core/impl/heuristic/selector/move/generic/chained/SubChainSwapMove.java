@@ -19,9 +19,9 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -182,11 +182,7 @@ public class SubChainSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(variableDescriptor)
-                .append(leftSubChain)
-                .append(rightSubChain)
-                .toHashCode();
+        return Objects.hash(variableDescriptor, leftSubChain, rightSubChain);
     }
 
     @Override

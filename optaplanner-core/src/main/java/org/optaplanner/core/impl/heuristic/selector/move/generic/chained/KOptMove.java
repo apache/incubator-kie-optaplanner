@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -188,10 +188,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(entity)
-                .append(values)
-                .toHashCode();
+        return Objects.hash(entity, values);
     }
 
     @Override

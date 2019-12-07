@@ -18,10 +18,10 @@ package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
@@ -71,10 +71,7 @@ public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeCo
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(employee)
-                .append(shiftDate)
-                .toHashCode();
+        return Objects.hash(employee, shiftDate);
     }
 
     @Override

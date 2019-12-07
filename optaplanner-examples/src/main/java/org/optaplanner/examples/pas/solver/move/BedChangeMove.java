@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.pas.domain.Bed;
@@ -86,10 +85,7 @@ public class BedChangeMove extends AbstractMove<PatientAdmissionSchedule> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(bedDesignation)
-                .append(toBed)
-                .toHashCode();
+        return Objects.hash(bedDesignation, toBed);
     }
 
     @Override
