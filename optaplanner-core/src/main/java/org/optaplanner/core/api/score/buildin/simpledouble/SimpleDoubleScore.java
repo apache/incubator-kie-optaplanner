@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.simpledouble;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -174,10 +176,7 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((17 * 37)
-                + initScore) * 37
-                + Double.valueOf(score).hashCode();
+        return Objects.hash(initScore, score);
     }
 
     @Override

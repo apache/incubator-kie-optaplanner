@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -228,11 +229,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37)
-                + initScore) * 37
-                + hardScore.stripTrailingZeros().hashCode()) * 37
-                + softScore.stripTrailingZeros().hashCode();
+        return Objects.hash(initScore, hardScore.stripTrailingZeros(), softScore.stripTrailingZeros());
     }
 
     @Override

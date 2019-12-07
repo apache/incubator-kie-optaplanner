@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -246,12 +248,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((((17 * 37)
-                + initScore) * 37
-                + hardScore) * 37
-                + mediumScore) * 37
-                + softScore;
+        return Objects.hash(initScore, hardScore, mediumScore, softScore);
     }
 
     @Override

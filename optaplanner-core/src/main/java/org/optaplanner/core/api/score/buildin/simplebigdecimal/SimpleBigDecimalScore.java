@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
@@ -186,10 +187,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((17 * 37)
-                + initScore) * 37
-                + score.stripTrailingZeros().hashCode();
+        return Objects.hash(initScore, score.stripTrailingZeros());
     }
 
     @Override

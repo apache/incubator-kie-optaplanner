@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoft;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
@@ -210,11 +212,7 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37)
-                + initScore) * 37
-                + hardScore) * 37
-                + softScore;
+        return Objects.hash(initScore, hardScore, softScore);
     }
 
     @Override

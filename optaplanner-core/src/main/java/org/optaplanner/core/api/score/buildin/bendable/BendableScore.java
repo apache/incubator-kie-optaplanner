@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.buildin.bendable;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -380,11 +381,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        int hashCode = (17 * 37) + initScore;
-        hashCode = (37 * hashCode) + Arrays.hashCode(hardScores);
-        hashCode = (37 * hashCode) + Arrays.hashCode(softScores);
-        return hashCode;
+        return Objects.hash(initScore, Arrays.hashCode(hardScores), Arrays.hashCode(softScores));
     }
 
     @Override

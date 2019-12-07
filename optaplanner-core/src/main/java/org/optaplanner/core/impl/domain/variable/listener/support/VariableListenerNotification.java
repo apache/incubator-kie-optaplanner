@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import java.util.Objects;
+
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 
@@ -58,8 +60,7 @@ public class VariableListenerNotification {
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37) + System.identityHashCode(entity))) * 37 + type.hashCode();
+        return Objects.hash(entity, type);
     }
 
 }

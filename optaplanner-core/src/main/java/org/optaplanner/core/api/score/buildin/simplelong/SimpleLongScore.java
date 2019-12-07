@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
 
@@ -169,10 +171,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((17 * 37)
-                + initScore) * 37
-                + Long.valueOf(score).hashCode();
+        return Objects.hash(initScore, score);
     }
 
     @Override

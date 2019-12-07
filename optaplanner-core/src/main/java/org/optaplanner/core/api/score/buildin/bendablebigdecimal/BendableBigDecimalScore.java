@@ -19,6 +19,8 @@ package org.optaplanner.core.api.score.buildin.bendablebigdecimal;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -402,15 +404,11 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     @Override
     public int hashCode() {
-        // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        int hashCode = (17 * 37) + initScore;
-        for (BigDecimal hardScore : hardScores) {
-            hashCode = (37 * hashCode) + hardScore.stripTrailingZeros().hashCode();
-        }
-        for (BigDecimal softScore : softScores) {
-            hashCode = (37 * hashCode) + softScore.stripTrailingZeros().hashCode();
-        }
-        return hashCode;
+        int[] scoreHashCodes = Stream.concat(Arrays.stream(hardScores), Arrays.stream(softScores))
+                .map(BigDecimal::stripTrailingZeros)
+                .mapToInt(BigDecimal::hashCode)
+                .toArray();
+        return Objects.hash(initScore, Arrays.hashCode(scoreHashCodes));
     }
 
     @Override
