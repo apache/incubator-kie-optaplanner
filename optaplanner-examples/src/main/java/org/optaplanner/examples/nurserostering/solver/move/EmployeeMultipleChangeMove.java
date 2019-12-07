@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nurserostering.domain.Employee;
@@ -80,19 +79,17 @@ public class EmployeeMultipleChangeMove extends AbstractMove<NurseRoster> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeMultipleChangeMove) {
-            EmployeeMultipleChangeMove other = (EmployeeMultipleChangeMove) o;
-            return new EqualsBuilder()
-                    .append(fromEmployee, other.fromEmployee)
-                    .append(shiftAssignmentList, other.shiftAssignmentList)
-                    .append(toEmployee, other.toEmployee)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final EmployeeMultipleChangeMove that = (EmployeeMultipleChangeMove) o;
+        return Objects.equals(fromEmployee, that.fromEmployee) &&
+                Objects.equals(shiftAssignmentList, that.shiftAssignmentList) &&
+                Objects.equals(toEmployee, that.toEmployee);
     }
 
     @Override

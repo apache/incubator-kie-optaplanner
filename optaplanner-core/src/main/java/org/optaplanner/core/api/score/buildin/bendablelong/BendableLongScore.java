@@ -349,7 +349,6 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof BendableLongScore) {

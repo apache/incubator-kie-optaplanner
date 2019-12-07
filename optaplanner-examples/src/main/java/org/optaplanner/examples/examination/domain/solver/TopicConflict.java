@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.examination.domain.Topic;
 
 /**
@@ -68,18 +67,16 @@ public class TopicConflict implements Serializable,
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof TopicConflict) {
-            TopicConflict other = (TopicConflict) o;
-            return new EqualsBuilder()
-                    .append(leftTopic, other.leftTopic)
-                    .append(rightTopic, other.rightTopic)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final TopicConflict that = (TopicConflict) o;
+        return Objects.equals(leftTopic, that.leftTopic) &&
+                Objects.equals(rightTopic, that.rightTopic);
     }
 
     @Override

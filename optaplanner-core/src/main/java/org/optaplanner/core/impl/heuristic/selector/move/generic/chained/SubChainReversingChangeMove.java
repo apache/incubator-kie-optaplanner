@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -164,25 +163,22 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof SubChainReversingChangeMove) {
-            SubChainReversingChangeMove<?> other = (SubChainReversingChangeMove) o;
-            return new EqualsBuilder()
-                    .append(subChain, other.subChain)
-                    .append(variableDescriptor.getVariableName(),
-                            other.variableDescriptor.getVariableName())
-                    .append(toPlanningValue, other.toPlanningValue)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final SubChainReversingChangeMove<?> that = (SubChainReversingChangeMove<?>) o;
+        return Objects.equals(subChain, that.subChain) &&
+                Objects.equals(variableDescriptor.getVariableName(), that.variableDescriptor.getVariableName()) &&
+                Objects.equals(toPlanningValue, that.toPlanningValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(subChain, variableDescriptor, toPlanningValue);
+        return Objects.hash(subChain, variableDescriptor.getVariableName(), toPlanningValue);
     }
 
     @Override

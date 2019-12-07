@@ -21,7 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
@@ -105,25 +104,25 @@ public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MachinePeriodPart) {
-            MachinePeriodPart other = (MachinePeriodPart) o;
-            return new EqualsBuilder()
-                    .append(machine, other.machine)
-                    .append(period, other.period)
-                    .append(active, other.active)
-                    .append(resourceAvailableList, other.resourceAvailableList)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final MachinePeriodPart that = (MachinePeriodPart) o;
+        return period == that.period &&
+                active == that.active &&
+                Objects.equals(machine, that.machine) &&
+                Arrays.equals(resourceAvailableList, that.resourceAvailableList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(machine, period, active, resourceAvailableList);
+        int result = Objects.hash(machine, period, active);
+        result = 31 * result + Arrays.hashCode(resourceAvailableList);
+        return result;
     }
 
     @Override

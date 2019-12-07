@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.travelingtournament.domain.Day;
@@ -102,18 +101,16 @@ public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MatchChainRotationsMove) {
-            MatchChainRotationsMove other = (MatchChainRotationsMove) o;
-            return new EqualsBuilder()
-                    .append(firstMatchList, other.firstMatchList)
-                    .append(secondMatchList, other.secondMatchList)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final MatchChainRotationsMove that = (MatchChainRotationsMove) o;
+        return Objects.equals(firstMatchList, that.firstMatchList) &&
+                Objects.equals(secondMatchList, that.secondMatchList);
     }
 
     @Override

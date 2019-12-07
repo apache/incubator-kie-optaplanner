@@ -157,7 +157,6 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof SimpleScore) {

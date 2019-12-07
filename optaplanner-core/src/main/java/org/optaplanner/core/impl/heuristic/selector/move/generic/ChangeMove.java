@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -104,19 +103,17 @@ public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof ChangeMove) {
-            ChangeMove<?> other = (ChangeMove) o;
-            return new EqualsBuilder()
-                    .append(entity, other.entity)
-                    .append(variableDescriptor, other.variableDescriptor)
-                    .append(toPlanningValue, other.toPlanningValue)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final ChangeMove<?> that = (ChangeMove<?>) o;
+        return Objects.equals(entity, that.entity) &&
+                Objects.equals(variableDescriptor, that.variableDescriptor) &&
+                Objects.equals(toPlanningValue, that.toPlanningValue);
     }
 
     @Override

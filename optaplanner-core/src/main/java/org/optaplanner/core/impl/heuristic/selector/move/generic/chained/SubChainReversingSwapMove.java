@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -175,19 +174,17 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof SubChainReversingSwapMove) {
-            SubChainReversingSwapMove<?> other = (SubChainReversingSwapMove) o;
-            return new EqualsBuilder()
-                    .append(variableDescriptor, other.variableDescriptor)
-                    .append(leftSubChain, other.leftSubChain)
-                    .append(rightSubChain, other.rightSubChain)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final SubChainReversingSwapMove<?> that = (SubChainReversingSwapMove<?>) o;
+        return Objects.equals(variableDescriptor, that.variableDescriptor) &&
+                Objects.equals(leftSubChain, that.leftSubChain) &&
+                Objects.equals(rightSubChain, that.rightSubChain);
     }
 
     @Override

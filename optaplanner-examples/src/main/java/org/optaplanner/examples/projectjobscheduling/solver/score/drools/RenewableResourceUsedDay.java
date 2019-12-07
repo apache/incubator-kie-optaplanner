@@ -19,7 +19,6 @@ package org.optaplanner.examples.projectjobscheduling.solver.score.drools;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
 public class RenewableResourceUsedDay implements Serializable {
@@ -41,18 +40,16 @@ public class RenewableResourceUsedDay implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof RenewableResourceUsedDay) {
-            RenewableResourceUsedDay other = (RenewableResourceUsedDay) o;
-            return new EqualsBuilder()
-                    .append(resource, other.resource)
-                    .append(usedDay, other.usedDay)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final RenewableResourceUsedDay that = (RenewableResourceUsedDay) o;
+        return usedDay == that.usedDay &&
+                Objects.equals(resource, that.resource);
     }
 
     @Override

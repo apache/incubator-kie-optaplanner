@@ -76,18 +76,16 @@ public class CloudComputerChangeMove extends AbstractMove<CloudBalance> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof CloudComputerChangeMove) {
-            CloudComputerChangeMove other = (CloudComputerChangeMove) o;
-            return new EqualsBuilder()
-                    .append(cloudProcess, other.cloudProcess)
-                    .append(toCloudComputer, other.toCloudComputer)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final CloudComputerChangeMove that = (CloudComputerChangeMove) o;
+        return Objects.equals(cloudProcess, that.cloudProcess) &&
+                Objects.equals(toCloudComputer, that.toCloudComputer);
     }
 
     @Override

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nqueens.domain.NQueens;
@@ -71,18 +70,16 @@ public class RowChangeMove extends AbstractMove<NQueens> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof RowChangeMove) {
-            RowChangeMove other = (RowChangeMove) o;
-            return new EqualsBuilder()
-                    .append(queen, other.queen)
-                    .append(toRow, other.toRow)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final RowChangeMove that = (RowChangeMove) o;
+        return Objects.equals(queen, that.queen) &&
+                Objects.equals(toRow, that.toRow);
     }
 
     @Override

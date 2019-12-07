@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
@@ -81,18 +80,16 @@ public class CloudProcessSwapMove extends AbstractMove<CloudBalance> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof CloudProcessSwapMove) {
-            CloudProcessSwapMove other = (CloudProcessSwapMove) o;
-            return new EqualsBuilder()
-                    .append(leftCloudProcess, other.leftCloudProcess)
-                    .append(rightCloudProcess, other.rightCloudProcess)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final CloudProcessSwapMove that = (CloudProcessSwapMove) o;
+        return Objects.equals(leftCloudProcess, that.leftCloudProcess) &&
+                Objects.equals(rightCloudProcess, that.rightCloudProcess);
     }
 
     @Override

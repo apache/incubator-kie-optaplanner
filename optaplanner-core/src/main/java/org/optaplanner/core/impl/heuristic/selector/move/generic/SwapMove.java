@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
@@ -152,23 +151,22 @@ public class SwapMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof SwapMove) {
-            SwapMove<?> other = (SwapMove) o;
-            return new EqualsBuilder()
-                    .append(leftEntity, other.leftEntity)
-                    .append(rightEntity, other.rightEntity)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final SwapMove<?> swapMove = (SwapMove<?>) o;
+        return Objects.equals(variableDescriptorList, swapMove.variableDescriptorList) &&
+                Objects.equals(leftEntity, swapMove.leftEntity) &&
+                Objects.equals(rightEntity, swapMove.rightEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(leftEntity, rightEntity);
+        return Objects.hash(variableDescriptorList, leftEntity, rightEntity);
     }
 
     @Override

@@ -198,7 +198,6 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
 
     @Override
     public boolean equals(Object o) {
-        // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
         } else if (o instanceof HardSoftLongScore) {

@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
@@ -165,19 +164,17 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof PillarSwapMove) {
-            PillarSwapMove<?> other = (PillarSwapMove) o;
-            return new EqualsBuilder()
-                    .append(variableDescriptorList, other.variableDescriptorList)
-                    .append(leftPillar, other.leftPillar)
-                    .append(rightPillar, other.rightPillar)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final PillarSwapMove<?> that = (PillarSwapMove<?>) o;
+        return Objects.equals(variableDescriptorList, that.variableDescriptorList) &&
+                Objects.equals(leftPillar, that.leftPillar) &&
+                Objects.equals(rightPillar, that.rightPillar);
     }
 
     @Override

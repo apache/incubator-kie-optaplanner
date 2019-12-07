@@ -17,12 +17,12 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -172,23 +172,23 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof KOptMove) {
-            KOptMove<?> other = (KOptMove) o;
-            return new EqualsBuilder()
-                    .append(entity, other.entity)
-                    .append(values, other.values)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final KOptMove<?> kOptMove = (KOptMove<?>) o;
+        return Objects.equals(entity, kOptMove.entity) &&
+                Arrays.equals(values, kOptMove.values);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(entity, values);
+        int result = Objects.hash(entity);
+        result = 31 * result + Arrays.hashCode(values);
+        return result;
     }
 
     @Override

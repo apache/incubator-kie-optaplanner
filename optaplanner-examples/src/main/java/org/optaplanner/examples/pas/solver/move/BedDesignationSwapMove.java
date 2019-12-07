@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.pas.domain.Bed;
@@ -72,18 +71,16 @@ public class BedDesignationSwapMove extends AbstractMove<PatientAdmissionSchedul
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof BedDesignationSwapMove) {
-            BedDesignationSwapMove other = (BedDesignationSwapMove) o;
-            return new EqualsBuilder()
-                    .append(leftBedDesignation, other.leftBedDesignation)
-                    .append(rightBedDesignation, other.rightBedDesignation)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final BedDesignationSwapMove that = (BedDesignationSwapMove) o;
+        return Objects.equals(leftBedDesignation, that.leftBedDesignation) &&
+                Objects.equals(rightBedDesignation, that.rightBedDesignation);
     }
 
     @Override

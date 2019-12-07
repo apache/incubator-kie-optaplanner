@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
@@ -52,18 +51,16 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MrMachineTransientUsage) {
-            MrMachineTransientUsage other = (MrMachineTransientUsage) o;
-            return new EqualsBuilder()
-                    .append(machineCapacity, other.machineCapacity)
-                    .append(usage, other.usage)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final MrMachineTransientUsage that = (MrMachineTransientUsage) o;
+        return usage == that.usage &&
+                Objects.equals(machineCapacity, that.machineCapacity);
     }
 
     @Override

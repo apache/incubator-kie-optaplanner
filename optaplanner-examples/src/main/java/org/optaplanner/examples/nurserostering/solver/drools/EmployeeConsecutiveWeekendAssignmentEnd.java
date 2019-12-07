@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
@@ -55,18 +54,16 @@ public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<Emplo
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeConsecutiveWeekendAssignmentEnd) {
-            EmployeeConsecutiveWeekendAssignmentEnd other = (EmployeeConsecutiveWeekendAssignmentEnd) o;
-            return new EqualsBuilder()
-                    .append(employee, other.employee)
-                    .append(sundayIndex, other.sundayIndex)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final EmployeeConsecutiveWeekendAssignmentEnd that = (EmployeeConsecutiveWeekendAssignmentEnd) o;
+        return sundayIndex == that.sundayIndex &&
+                Objects.equals(employee, that.employee);
     }
 
     @Override

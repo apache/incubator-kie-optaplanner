@@ -21,7 +21,6 @@ import java.time.DayOfWeek;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
@@ -59,18 +58,16 @@ public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeCo
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeConsecutiveAssignmentStart) {
-            EmployeeConsecutiveAssignmentStart other = (EmployeeConsecutiveAssignmentStart) o;
-            return new EqualsBuilder()
-                    .append(employee, other.employee)
-                    .append(shiftDate, other.shiftDate)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final EmployeeConsecutiveAssignmentStart that = (EmployeeConsecutiveAssignmentStart) o;
+        return Objects.equals(employee, that.employee) &&
+                Objects.equals(shiftDate, that.shiftDate);
     }
 
     @Override

@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 
 public class EmployeeWeekendSequence implements Comparable<EmployeeWeekendSequence>, Serializable {
@@ -65,19 +64,17 @@ public class EmployeeWeekendSequence implements Comparable<EmployeeWeekendSequen
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeWeekendSequence) {
-            EmployeeWeekendSequence other = (EmployeeWeekendSequence) o;
-            return new EqualsBuilder()
-                    .append(employee, other.employee)
-                    .append(firstSundayIndex, other.firstSundayIndex)
-                    .append(lastSundayIndex, other.lastSundayIndex)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final EmployeeWeekendSequence that = (EmployeeWeekendSequence) o;
+        return firstSundayIndex == that.firstSundayIndex &&
+                lastSundayIndex == that.lastSundayIndex &&
+                Objects.equals(employee, that.employee);
     }
 
     @Override

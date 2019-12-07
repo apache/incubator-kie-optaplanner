@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
 
 /**
@@ -57,18 +56,16 @@ public class CourseConflict implements Serializable,
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof CourseConflict) {
-            CourseConflict other = (CourseConflict) o;
-            return new EqualsBuilder()
-                    .append(leftCourse, other.leftCourse)
-                    .append(rightCourse, other.rightCourse)
-                    .isEquals();
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        final CourseConflict that = (CourseConflict) o;
+        return Objects.equals(leftCourse, that.leftCourse) &&
+                Objects.equals(rightCourse, that.rightCourse);
     }
 
     @Override
