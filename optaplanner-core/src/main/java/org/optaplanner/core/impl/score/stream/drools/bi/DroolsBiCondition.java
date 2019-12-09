@@ -24,6 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+import java.util.stream.Stream;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.DSL;
@@ -76,8 +77,9 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
                         .expand(p -> p.bind(mappedVariable, ruleStructure.getA(), (b, a) -> groupKeyMapping.apply((A) a, (B) b)))
                         .build();
-        // Nests all previous patterns into the accumulate pattern; accumulate will be the first pattern of the rule.
-        ViewItem<?> innerAccumulatePattern = mergePatterns(mainAccumulatePattern, ruleStructure.getSupportingRuleItems());
+        ViewItem[] items = Stream.concat(ruleStructure.getSupportingRuleItems().stream(), Stream.of(mainAccumulatePattern))
+                .toArray(ViewItem[]::new);
+        ViewItem<?> innerAccumulatePattern = PatternDSL.and(items[0], Arrays.copyOfRange(items, 1, items.length));
         Variable<Set> setOfGroupKeys = ruleStructure.createVariable(Set.class, "setOfGroupKey");
         PatternDSL.PatternDef<Set> pattern = pattern(setOfGroupKeys)
                 .expr("Set of groupKey", set -> !set.isEmpty(),
