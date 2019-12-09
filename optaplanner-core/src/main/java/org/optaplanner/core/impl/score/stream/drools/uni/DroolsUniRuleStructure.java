@@ -29,21 +29,24 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
 
     private final Variable<A> a;
     private final DroolsPatternBuilder<?> aPattern;
-    private final List<RuleItemBuilder<?>> supportingRuleItems;
+    private final List<RuleItemBuilder<?>> openRuleItems;
+    private final List<RuleItemBuilder<?>> closedRuleItems;
 
     public DroolsUniRuleStructure(Variable<A> aVariable, DroolsPatternBuilder<?> aPattern,
-            List<RuleItemBuilder<?>> supportingRuleItems, LongSupplier variableIdSupplier) {
+            List<RuleItemBuilder<?>> openRuleItems, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.aPattern = aPattern;
-        this.supportingRuleItems = Collections.unmodifiableList(supportingRuleItems);
+        this.openRuleItems = Collections.unmodifiableList(openRuleItems);
+        this.closedRuleItems = Collections.emptyList();
     }
 
     public DroolsUniRuleStructure(Class<A> aClass, LongSupplier varialeIdSupplier) {
         super(varialeIdSupplier);
         this.a = createVariable(aClass,"base");
         this.aPattern = new DroolsPatternBuilder<>(a);
-        this.supportingRuleItems = Collections.emptyList();
+        this.openRuleItems = Collections.emptyList();
+        this.closedRuleItems = Collections.emptyList();
     }
 
     public Variable<A> getA() {
@@ -56,8 +59,12 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getSupportingRuleItems() {
-        return supportingRuleItems;
+    public List<RuleItemBuilder<?>> getOpenRuleItems() {
+        return openRuleItems;
     }
 
+    @Override
+    public List<RuleItemBuilder<?>> getClosedRuleItems() {
+        return closedRuleItems;
+    }
 }

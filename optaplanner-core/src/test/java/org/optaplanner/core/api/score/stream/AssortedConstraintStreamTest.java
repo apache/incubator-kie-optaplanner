@@ -70,4 +70,41 @@ public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1));
     }
 
+    @Test
+    public void bigroupBiregroupedRegrouped() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                    .groupBy((entityA, entityB) -> entityA.getEntityGroup())
+                    .groupBy(Function.identity(), ConstraintCollectors.count())
+                    .groupBy((entityGroup, count) -> count)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, entityGroup1, 1),
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1));
+
+        // Incremental
+        Stream.of(entity1, entity2).forEach(entity -> {
+            scoreDirector.beforeEntityRemoved(entity);
+            solution.getEntityList().remove(entity);
+            scoreDirector.afterEntityRemoved(entity);
+        });
+        assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1));
+    }
+
 }

@@ -33,7 +33,8 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     private final Variable<B> b;
     private final Variable<C> c;
     private final DroolsPatternBuilder<?> primaryPattern;
-    private final List<RuleItemBuilder<?>> supportingRuleItems;
+    private final List<RuleItemBuilder<?>> openRuleItems;
+    private final List<RuleItemBuilder<?>> closedRuleItems;
 
     /**
      * Builds a final version of the AB pattern as it will no longer be mutated, and turns the C pattern into the new
@@ -59,19 +60,21 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
          */
         List<RuleItemBuilder<?>> ruleItems =
                 abRuleStructure.rebuildSupportingRuleItems(abRuleStructure.getPrimaryPattern().build());
-        ruleItems.addAll(cRuleStructure.getSupportingRuleItems());
-        this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
+        ruleItems.addAll(cRuleStructure.getOpenRuleItems());
+        this.openRuleItems = Collections.unmodifiableList(ruleItems);
+        this.closedRuleItems = Collections.emptyList();
     }
 
     public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
-            DroolsPatternBuilder<?> primaryPattern, List<RuleItemBuilder<?>> supportingRuleItems,
+            DroolsPatternBuilder<?> primaryPattern, List<RuleItemBuilder<?>> openRuleItems,
             LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.c = cVariable;
         this.primaryPattern = primaryPattern;
-        this.supportingRuleItems = supportingRuleItems;
+        this.openRuleItems = Collections.unmodifiableList(openRuleItems);
+        this.closedRuleItems = Collections.emptyList();
     }
 
     public Variable<A> getA() {
@@ -92,7 +95,12 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getSupportingRuleItems() {
-        return supportingRuleItems;
+    public List<RuleItemBuilder<?>> getOpenRuleItems() {
+        return openRuleItems;
+    }
+
+    @Override
+    public List<RuleItemBuilder<?>> getClosedRuleItems() {
+        return closedRuleItems;
     }
 }

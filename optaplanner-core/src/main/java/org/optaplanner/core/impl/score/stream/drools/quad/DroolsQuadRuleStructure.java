@@ -34,7 +34,8 @@ public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
     private final Variable<C> c;
     private final Variable<D> d;
     private final DroolsPatternBuilder<?> primaryPattern;
-    private final List<RuleItemBuilder<?>> supportingRuleItems;
+    private final List<RuleItemBuilder<?>> openRuleItems;
+    private final List<RuleItemBuilder<?>> closedRuleItems;
 
     /**
      * Builds a final version of the ABC pattern as it will no longer be mutated, and turns the D pattern into the new
@@ -61,20 +62,22 @@ public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
          */
         List<RuleItemBuilder<?>> ruleItems =
                 abcRuleStructure.rebuildSupportingRuleItems(abcRuleStructure.getPrimaryPattern().build());
-        ruleItems.addAll(dRuleStructure.getSupportingRuleItems());
-        this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
+        ruleItems.addAll(dRuleStructure.getOpenRuleItems());
+        this.openRuleItems = Collections.unmodifiableList(ruleItems);
+        this.closedRuleItems = Collections.emptyList();
     }
 
     public DroolsQuadRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,
             Variable<D> dVariable, DroolsPatternBuilder<?> primaryPattern,
-            List<RuleItemBuilder<?>> supportingRuleItems, LongSupplier variableIdSupplier) {
+            List<RuleItemBuilder<?>> openRuleItems, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
         this.c = cVariable;
         this.d = dVariable;
         this.primaryPattern = primaryPattern;
-        this.supportingRuleItems = supportingRuleItems;
+        this.openRuleItems = Collections.unmodifiableList(openRuleItems);
+        this.closedRuleItems = Collections.emptyList();
     }
 
     public Variable<A> getA() {
@@ -99,7 +102,12 @@ public class DroolsQuadRuleStructure<A, B, C, D> extends DroolsRuleStructure {
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getSupportingRuleItems() {
-        return supportingRuleItems;
+    public List<RuleItemBuilder<?>> getOpenRuleItems() {
+        return openRuleItems;
+    }
+
+    @Override
+    public List<RuleItemBuilder<?>> getClosedRuleItems() {
+        return closedRuleItems;
     }
 }

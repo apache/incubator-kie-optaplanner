@@ -68,7 +68,7 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
-                newTargetPattern, ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsBiCondition<>(newRuleStructure);
     }
 
@@ -77,7 +77,7 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
                         .expand(p -> p.bind(mappedVariable, ruleStructure.getA(), (b, a) -> groupKeyMapping.apply((A) a, (B) b)))
                         .build();
-        ViewItem[] items = Stream.concat(ruleStructure.getSupportingRuleItems().stream(), Stream.of(mainAccumulatePattern))
+        ViewItem[] items = Stream.concat(ruleStructure.getOpenRuleItems().stream(), Stream.of(mainAccumulatePattern))
                 .toArray(ViewItem[]::new);
         ViewItem<?> innerAccumulatePattern = PatternDSL.and(items[0], Arrays.copyOfRange(items, 1, items.length));
         Variable<Set> setOfGroupKeys = ruleStructure.createVariable(Set.class, "setOfGroupKey");
@@ -101,7 +101,7 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
                 .expand(p -> p.expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(),
                         cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c)));
         DroolsUniRuleStructure<C> newCRuleStructure = new DroolsUniRuleStructure<>(cVariable, cPattern,
-                cRuleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+                cRuleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
     }
@@ -134,7 +134,7 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         ConsequenceBuilder._3<ScoreHolder, A, B> consequence =
                 on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB())
                         .execute(consequenceImpl);
-        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
+        return ruleStructure.finish(consequence);
     }
 
     private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {

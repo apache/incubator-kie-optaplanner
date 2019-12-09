@@ -92,7 +92,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                 .expand(p -> p.expr("Filter using " + predicate, filter,
                         alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1, a -> predicate.test((A) a), true)));
         DroolsUniRuleStructure<A> newStructure = new DroolsUniRuleStructure<>(ruleStructure.getA(), patternWithFilter,
-                ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+                ruleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
         return new DroolsUniCondition<>(newStructure);
     }
 
@@ -242,7 +242,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
             joinVars[currentMappingIndex] = joinVar;
         }
         DroolsUniRuleStructure<A> newARuleStructure = new DroolsUniRuleStructure<>(ruleStructure.getA(), newAPattern,
-                ruleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+                ruleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
         // We rebuild the B pattern, joining with the new A pattern using its freshly bound join variables.
         DroolsUniRuleStructure<B> bRuleStructure = bCondition.ruleStructure;
         Variable<B> bVariable = bRuleStructure.getA();
@@ -266,7 +266,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                     });
         }
         DroolsUniRuleStructure<B> newBRuleStructure = new DroolsUniRuleStructure<>(bVariable, newBPattern,
-                bRuleStructure.getSupportingRuleItems(), ruleStructure.getVariableIdSupplier());
+                bRuleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
         // And finally we return the new condition that is based on the new A and B patterns.
         return new DroolsBiCondition<>(new DroolsBiRuleStructure<>(newARuleStructure, newBRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
@@ -298,6 +298,6 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
             Global<ScoreHolder> scoreHolderGlobal, Block3<Drools, ScoreHolder, A> consequenceImpl) {
         ConsequenceBuilder._2<ScoreHolder, A> consequence = on(scoreHolderGlobal, ruleStructure.getA())
                 .execute(consequenceImpl);
-        return ruleStructure.rebuildSupportingRuleItems(ruleStructure.getPrimaryPattern().build(), consequence);
+        return ruleStructure.finish(consequence);
     }
 }
