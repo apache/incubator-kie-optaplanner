@@ -104,25 +104,23 @@ public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final MachinePeriodPart that = (MachinePeriodPart) o;
-        return period == that.period &&
-                active == that.active &&
-                Objects.equals(machine, that.machine) &&
-                Arrays.equals(resourceAvailableList, that.resourceAvailableList);
+        final MachinePeriodPart other = (MachinePeriodPart) o;
+        return Objects.equals(machine, other.machine) &&
+                period == other.period &&
+                active == other.active &&
+                Arrays.equals(resourceAvailableList, other.resourceAvailableList);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(machine, period, active);
-        result = 31 * result + Arrays.hashCode(resourceAvailableList);
-        return result;
+        return Objects.hash(machine, period, active, Arrays.hashCode(resourceAvailableList));
     }
 
     @Override

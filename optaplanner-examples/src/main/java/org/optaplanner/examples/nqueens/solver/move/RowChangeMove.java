@@ -70,16 +70,16 @@ public class RowChangeMove extends AbstractMove<NQueens> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final RowChangeMove that = (RowChangeMove) o;
-        return Objects.equals(queen, that.queen) &&
-                Objects.equals(toRow, that.toRow);
+        final RowChangeMove other = (RowChangeMove) o;
+        return Objects.equals(queen, other.queen) &&
+                Objects.equals(toRow, other.toRow);
     }
 
     @Override

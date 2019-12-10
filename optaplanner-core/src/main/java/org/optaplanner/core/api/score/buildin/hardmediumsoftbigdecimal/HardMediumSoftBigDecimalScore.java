@@ -266,13 +266,14 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     @Override
     public int compareTo(HardMediumSoftBigDecimalScore other) {
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         }
         int hardScoreComparison = hardScore.compareTo(other.getHardScore());
-        int mediumScoreComparison = mediumScore.compareTo(other.getMediumScore());
         if (hardScoreComparison != 0) {
             return hardScoreComparison;
-        } else if (mediumScoreComparison != 0) {
+        }
+        int mediumScoreComparison = mediumScore.compareTo(other.getMediumScore());
+        if (mediumScoreComparison != 0) {
             return mediumScoreComparison;
         } else {
             return softScore.compareTo(other.getSoftScore());

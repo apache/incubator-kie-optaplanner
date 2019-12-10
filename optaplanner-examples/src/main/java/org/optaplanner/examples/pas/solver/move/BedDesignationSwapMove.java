@@ -62,25 +62,25 @@ public class BedDesignationSwapMove extends AbstractMove<PatientAdmissionSchedul
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        return Arrays.<BedDesignation>asList(leftBedDesignation, rightBedDesignation);
+        return Arrays.asList(leftBedDesignation, rightBedDesignation);
     }
 
     @Override
     public Collection<? extends Object> getPlanningValues() {
-        return Arrays.<Bed>asList(leftBedDesignation.getBed(), rightBedDesignation.getBed());
+        return Arrays.asList(leftBedDesignation.getBed(), rightBedDesignation.getBed());
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final BedDesignationSwapMove that = (BedDesignationSwapMove) o;
-        return Objects.equals(leftBedDesignation, that.leftBedDesignation) &&
-                Objects.equals(rightBedDesignation, that.rightBedDesignation);
+        final BedDesignationSwapMove other = (BedDesignationSwapMove) o;
+        return Objects.equals(leftBedDesignation, other.leftBedDesignation) &&
+                Objects.equals(rightBedDesignation, other.rightBedDesignation);
     }
 
     @Override

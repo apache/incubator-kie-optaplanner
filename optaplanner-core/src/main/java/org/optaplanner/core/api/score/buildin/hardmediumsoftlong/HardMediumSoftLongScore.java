@@ -253,11 +253,11 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     @Override
     public int compareTo(HardMediumSoftLongScore other) {
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else if (hardScore != other.getHardScore()) {
-            return hardScore < other.getHardScore() ? -1 : 1;
+            return Long.compare(hardScore, other.getHardScore());
         } else if (mediumScore != other.getMediumScore()) {
-            return mediumScore < other.getMediumScore() ? -1 : 1;
+            return Long.compare(mediumScore, other.getMediumScore());
         } else {
             return Long.compare(softScore, other.getSoftScore());
         }

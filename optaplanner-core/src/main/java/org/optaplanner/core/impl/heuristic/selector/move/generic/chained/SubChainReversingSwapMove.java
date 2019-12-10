@@ -174,17 +174,17 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final SubChainReversingSwapMove<?> that = (SubChainReversingSwapMove<?>) o;
-        return Objects.equals(variableDescriptor, that.variableDescriptor) &&
-                Objects.equals(leftSubChain, that.leftSubChain) &&
-                Objects.equals(rightSubChain, that.rightSubChain);
+        final SubChainReversingSwapMove<?> other = (SubChainReversingSwapMove<?>) o;
+        return Objects.equals(variableDescriptor, other.variableDescriptor) &&
+                Objects.equals(leftSubChain, other.leftSubChain) &&
+                Objects.equals(rightSubChain, other.rightSubChain);
     }
 
     @Override

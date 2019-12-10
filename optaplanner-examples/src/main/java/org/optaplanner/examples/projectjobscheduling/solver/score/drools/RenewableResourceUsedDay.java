@@ -47,9 +47,9 @@ public class RenewableResourceUsedDay implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final RenewableResourceUsedDay that = (RenewableResourceUsedDay) o;
-        return usedDay == that.usedDay &&
-                Objects.equals(resource, that.resource);
+        final RenewableResourceUsedDay other = (RenewableResourceUsedDay) o;
+        return usedDay == other.usedDay &&
+                Objects.equals(resource, other.resource);
     }
 
     @Override

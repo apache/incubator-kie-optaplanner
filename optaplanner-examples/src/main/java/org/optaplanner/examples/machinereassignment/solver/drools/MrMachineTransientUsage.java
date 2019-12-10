@@ -51,16 +51,16 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final MrMachineTransientUsage that = (MrMachineTransientUsage) o;
-        return usage == that.usage &&
-                Objects.equals(machineCapacity, that.machineCapacity);
+        final MrMachineTransientUsage other = (MrMachineTransientUsage) o;
+        return Objects.equals(machineCapacity, other.machineCapacity) &&
+                usage == other.usage;
     }
 
     @Override

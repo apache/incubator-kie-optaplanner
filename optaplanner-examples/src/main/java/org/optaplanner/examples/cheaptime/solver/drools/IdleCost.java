@@ -54,7 +54,7 @@ public class IdleCost implements Comparable<IdleCost> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -62,9 +62,9 @@ public class IdleCost implements Comparable<IdleCost> {
             return false;
         }
         final IdleCost idleCost = (IdleCost) o;
-        return activePeriodAfterIdle == idleCost.activePeriodAfterIdle &&
-                cost == idleCost.cost &&
-                Objects.equals(machine, idleCost.machine);
+        return Objects.equals(machine, idleCost.machine) &&
+                activePeriodAfterIdle == idleCost.activePeriodAfterIdle &&
+                cost == idleCost.cost;
     }
 
     @Override

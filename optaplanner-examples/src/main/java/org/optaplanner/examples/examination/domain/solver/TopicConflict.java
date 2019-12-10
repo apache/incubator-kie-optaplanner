@@ -67,16 +67,16 @@ public class TopicConflict implements Serializable,
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final TopicConflict that = (TopicConflict) o;
-        return Objects.equals(leftTopic, that.leftTopic) &&
-                Objects.equals(rightTopic, that.rightTopic);
+        final TopicConflict other = (TopicConflict) o;
+        return Objects.equals(leftTopic, other.leftTopic) &&
+                Objects.equals(rightTopic, other.rightTopic);
     }
 
     @Override

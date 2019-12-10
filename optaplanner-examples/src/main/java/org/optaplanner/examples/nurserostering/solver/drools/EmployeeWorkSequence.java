@@ -64,17 +64,17 @@ public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, S
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final EmployeeWorkSequence that = (EmployeeWorkSequence) o;
-        return firstDayIndex == that.firstDayIndex &&
-                lastDayIndex == that.lastDayIndex &&
-                Objects.equals(employee, that.employee);
+        final EmployeeWorkSequence other = (EmployeeWorkSequence) o;
+        return Objects.equals(employee, other.employee) &&
+                firstDayIndex == other.firstDayIndex &&
+                lastDayIndex == other.lastDayIndex;
     }
 
     @Override

@@ -56,16 +56,16 @@ public class CourseConflict implements Serializable,
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final CourseConflict that = (CourseConflict) o;
-        return Objects.equals(leftCourse, that.leftCourse) &&
-                Objects.equals(rightCourse, that.rightCourse);
+        final CourseConflict other = (CourseConflict) o;
+        return Objects.equals(leftCourse, other.leftCourse) &&
+                Objects.equals(rightCourse, other.rightCourse);
     }
 
     @Override

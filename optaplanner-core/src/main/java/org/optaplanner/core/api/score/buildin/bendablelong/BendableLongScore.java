@@ -385,16 +385,16 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     public int compareTo(BendableLongScore other) {
         validateCompatible(other);
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         }
         for (int i = 0; i < hardScores.length; i++) {
             if (hardScores[i] != other.getHardScore(i)) {
-                return hardScores[i] < other.getHardScore(i) ? -1 : 1;
+                return Long.compare(hardScores[i], other.getHardScore(i));
             }
         }
         for (int i = 0; i < softScores.length; i++) {
             if (softScores[i] != other.getSoftScore(i)) {
-                return softScores[i] < other.getSoftScore(i) ? -1 : 1;
+                return Long.compare(softScores[i], other.getSoftScore(i));
             }
         }
         return 0;

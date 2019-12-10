@@ -414,7 +414,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     public int compareTo(BendableBigDecimalScore other) {
         validateCompatible(other);
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         }
         for (int i = 0; i < hardScores.length; i++) {
             int hardScoreComparison = hardScores[i].compareTo(other.getHardScore(i));

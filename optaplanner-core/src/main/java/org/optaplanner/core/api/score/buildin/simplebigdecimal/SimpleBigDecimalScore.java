@@ -192,7 +192,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     @Override
     public int compareTo(SimpleBigDecimalScore other) {
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else {
             return score.compareTo(other.getScore());
         }

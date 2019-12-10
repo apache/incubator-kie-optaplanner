@@ -79,17 +79,17 @@ public class EmployeeMultipleChangeMove extends AbstractMove<NurseRoster> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final EmployeeMultipleChangeMove that = (EmployeeMultipleChangeMove) o;
-        return Objects.equals(fromEmployee, that.fromEmployee) &&
-                Objects.equals(shiftAssignmentList, that.shiftAssignmentList) &&
-                Objects.equals(toEmployee, that.toEmployee);
+        final EmployeeMultipleChangeMove other = (EmployeeMultipleChangeMove) o;
+        return Objects.equals(fromEmployee, other.fromEmployee) &&
+                Objects.equals(shiftAssignmentList, other.shiftAssignmentList) &&
+                Objects.equals(toEmployee, other.toEmployee);
     }
 
     @Override

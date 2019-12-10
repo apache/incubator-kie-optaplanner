@@ -172,7 +172,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -186,9 +186,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(entity);
-        result = 31 * result + Arrays.hashCode(values);
-        return result;
+        return Objects.hash(entity, Arrays.hashCode(values));
     }
 
     @Override

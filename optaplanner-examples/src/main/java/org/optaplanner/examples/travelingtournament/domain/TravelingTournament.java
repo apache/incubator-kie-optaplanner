@@ -16,9 +16,9 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
@@ -115,7 +115,7 @@ public class TravelingTournament extends AbstractPersistable {
     @Override
     public int hashCode() {
         int[] hashes = matchList.stream().mapToInt(Match::solutionHashCode).toArray();
-        return Objects.hash(hashes);
+        return Arrays.hashCode(hashes);
     }
 
 }

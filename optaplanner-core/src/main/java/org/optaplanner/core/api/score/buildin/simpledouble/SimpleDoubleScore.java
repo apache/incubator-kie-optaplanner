@@ -181,7 +181,7 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
     @Override
     public int compareTo(SimpleDoubleScore other) {
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else {
             return Double.compare(score, other.getScore());
         }

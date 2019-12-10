@@ -57,16 +57,16 @@ public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeCons
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final EmployeeConsecutiveAssignmentEnd that = (EmployeeConsecutiveAssignmentEnd) o;
-        return Objects.equals(employee, that.employee) &&
-                Objects.equals(shiftDate, that.shiftDate);
+        final EmployeeConsecutiveAssignmentEnd other = (EmployeeConsecutiveAssignmentEnd) o;
+        return Objects.equals(employee, other.employee) &&
+                Objects.equals(shiftDate, other.shiftDate);
     }
 
     @Override

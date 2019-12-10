@@ -135,17 +135,17 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final SubChainChangeMove<?> that = (SubChainChangeMove<?>) o;
-        return Objects.equals(subChain, that.subChain) &&
-                Objects.equals(variableDescriptor, that.variableDescriptor) &&
-                Objects.equals(toPlanningValue, that.toPlanningValue);
+        final SubChainChangeMove<?> other = (SubChainChangeMove<?>) o;
+        return Objects.equals(subChain, other.subChain) &&
+                Objects.equals(variableDescriptor, other.variableDescriptor) &&
+                Objects.equals(toPlanningValue, other.toPlanningValue);
     }
 
     @Override

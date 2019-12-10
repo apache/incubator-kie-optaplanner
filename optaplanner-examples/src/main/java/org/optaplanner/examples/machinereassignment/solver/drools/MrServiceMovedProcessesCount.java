@@ -47,16 +47,16 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final MrServiceMovedProcessesCount that = (MrServiceMovedProcessesCount) o;
-        return movedProcessesCount == that.movedProcessesCount &&
-                Objects.equals(service, that.service);
+        final MrServiceMovedProcessesCount other = (MrServiceMovedProcessesCount) o;
+        return Objects.equals(service, other.service) &&
+                movedProcessesCount == other.movedProcessesCount ;
     }
 
     @Override

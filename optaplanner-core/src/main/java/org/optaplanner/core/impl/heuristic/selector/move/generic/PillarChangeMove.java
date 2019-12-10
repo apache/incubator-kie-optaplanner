@@ -123,17 +123,17 @@ public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final PillarChangeMove<?> that = (PillarChangeMove<?>) o;
-        return Objects.equals(variableDescriptor, that.variableDescriptor) &&
-                Objects.equals(pillar, that.pillar) &&
-                Objects.equals(toPlanningValue, that.toPlanningValue);
+        final PillarChangeMove<?> other = (PillarChangeMove<?>) o;
+        return Objects.equals(variableDescriptor, other.variableDescriptor) &&
+                Objects.equals(pillar, other.pillar) &&
+                Objects.equals(toPlanningValue, other.toPlanningValue);
     }
 
     @Override

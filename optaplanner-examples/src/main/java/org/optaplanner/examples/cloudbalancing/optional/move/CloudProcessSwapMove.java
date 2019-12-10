@@ -80,16 +80,16 @@ public class CloudProcessSwapMove extends AbstractMove<CloudBalance> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final CloudProcessSwapMove that = (CloudProcessSwapMove) o;
-        return Objects.equals(leftCloudProcess, that.leftCloudProcess) &&
-                Objects.equals(rightCloudProcess, that.rightCloudProcess);
+        final CloudProcessSwapMove other = (CloudProcessSwapMove) o;
+        return Objects.equals(leftCloudProcess, other.leftCloudProcess) &&
+                Objects.equals(rightCloudProcess, other.rightCloudProcess);
     }
 
     @Override

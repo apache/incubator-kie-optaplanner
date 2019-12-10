@@ -68,7 +68,7 @@ public class AnchorVariableDemand implements Demand<AnchorVariableSupply> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getClass().getName(), sourceVariableDescriptor);
+        return Objects.hash(AnchorVariableDemand.class.getName(), sourceVariableDescriptor);
     }
 
     @Override

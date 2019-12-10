@@ -59,7 +59,7 @@ public class VariableListenerNotification {
 
     @Override
     public int hashCode() {
-        return Objects.hash(entity, type);
+        return Objects.hash(System.identityHashCode(entity), type);
     }
 
 }

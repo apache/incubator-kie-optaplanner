@@ -64,7 +64,7 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getClass().getName(), sourceVariableDescriptor);
+        return Objects.hash(SingletonInverseVariableDemand.class.getName(), sourceVariableDescriptor);
     }
 
     @Override

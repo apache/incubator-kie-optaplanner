@@ -68,16 +68,16 @@ public class BedChangeMove extends AbstractMove<PatientAdmissionSchedule> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final BedChangeMove that = (BedChangeMove) o;
-        return Objects.equals(bedDesignation, that.bedDesignation) &&
-                Objects.equals(toBed, that.toBed);
+        final BedChangeMove other = (BedChangeMove) o;
+        return Objects.equals(bedDesignation, other.bedDesignation) &&
+                Objects.equals(toBed, other.toBed);
     }
 
     @Override

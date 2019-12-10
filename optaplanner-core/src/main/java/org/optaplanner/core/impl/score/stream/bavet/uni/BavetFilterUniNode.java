@@ -49,7 +49,7 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(parentNode, predicate);
+        return Objects.hash(System.identityHashCode(parentNode), System.identityHashCode(predicate));
     }
 
     @Override

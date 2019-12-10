@@ -330,16 +330,16 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final TailChainSwapMove<?> that = (TailChainSwapMove<?>) o;
-        return Objects.equals(leftEntity, that.leftEntity) &&
-                Objects.equals(rightValue, that.rightValue);
+        final TailChainSwapMove<?> other = (TailChainSwapMove<?>) o;
+        return Objects.equals(leftEntity, other.leftEntity) &&
+                Objects.equals(rightValue, other.rightValue);
     }
 
     @Override

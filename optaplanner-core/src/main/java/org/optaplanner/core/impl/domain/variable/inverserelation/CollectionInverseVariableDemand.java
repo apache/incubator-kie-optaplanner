@@ -67,7 +67,7 @@ public class CollectionInverseVariableDemand implements Demand<CollectionInverse
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getClass().getName(), sourceVariableDescriptor);
+        return Objects.hash(CollectionInverseVariableDemand.class.getName(), sourceVariableDescriptor);
     }
 
     @Override

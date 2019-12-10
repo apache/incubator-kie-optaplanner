@@ -38,15 +38,15 @@ public class PeriodWrapper {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final PeriodWrapper that = (PeriodWrapper) o;
-        return period == that.period;
+        final PeriodWrapper other = (PeriodWrapper) o;
+        return period == other.period;
     }
 
     @Override

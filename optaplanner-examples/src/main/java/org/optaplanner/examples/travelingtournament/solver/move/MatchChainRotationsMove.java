@@ -101,16 +101,16 @@ public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final MatchChainRotationsMove that = (MatchChainRotationsMove) o;
-        return Objects.equals(firstMatchList, that.firstMatchList) &&
-                Objects.equals(secondMatchList, that.secondMatchList);
+        final MatchChainRotationsMove other = (MatchChainRotationsMove) o;
+        return Objects.equals(firstMatchList, other.firstMatchList) &&
+                Objects.equals(secondMatchList, other.secondMatchList);
     }
 
     @Override

@@ -51,16 +51,16 @@ public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> 
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final MrMachineUsage that = (MrMachineUsage) o;
-        return usage == that.usage &&
-                Objects.equals(machineCapacity, that.machineCapacity);
+        final MrMachineUsage other = (MrMachineUsage) o;
+        return Objects.equals(machineCapacity, other.machineCapacity) &&
+                usage == other.usage;
     }
 
     @Override

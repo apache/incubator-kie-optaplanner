@@ -217,9 +217,9 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
     @Override
     public int compareTo(HardSoftScore other) {
         if (initScore != other.getInitScore()) {
-            return initScore < other.getInitScore() ? -1 : 1;
+            return Integer.compare(initScore, other.getInitScore());
         } else if (hardScore != other.getHardScore()) {
-            return hardScore < other.getHardScore() ? -1 : 1;
+            return Integer.compare(hardScore, other.getHardScore());
         } else {
             return Integer.compare(softScore, other.getSoftScore());
         }

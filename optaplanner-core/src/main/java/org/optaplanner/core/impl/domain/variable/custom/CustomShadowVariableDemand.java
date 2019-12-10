@@ -61,7 +61,7 @@ public class CustomShadowVariableDemand implements Demand<SingletonInverseVariab
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getClass().getName(), targetShadowVariableDescriptor);
+        return Objects.hash(CustomShadowVariableDemand.class.getName(), targetShadowVariableDescriptor);
     }
 
     @Override
