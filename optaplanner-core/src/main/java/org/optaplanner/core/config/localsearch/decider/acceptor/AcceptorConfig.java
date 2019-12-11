@@ -193,18 +193,22 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         this.fadingUndoMoveTabuSize = fadingUndoMoveTabuSize;
     }
 
+    @Deprecated
     public Integer getSolutionTabuSize() {
         return solutionTabuSize;
     }
 
+    @Deprecated
     public void setSolutionTabuSize(Integer solutionTabuSize) {
         this.solutionTabuSize = solutionTabuSize;
     }
 
+    @Deprecated
     public Integer getFadingSolutionTabuSize() {
         return fadingSolutionTabuSize;
     }
 
+    @Deprecated
     public void setFadingSolutionTabuSize(Integer fadingSolutionTabuSize) {
         this.fadingSolutionTabuSize = fadingSolutionTabuSize;
     }
@@ -340,11 +344,13 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         return this;
     }
 
+    @Deprecated
     public AcceptorConfig withSolutionTabuSize(Integer solutionTabuSize) {
         this.solutionTabuSize = solutionTabuSize;
         return this;
     }
 
+    @Deprecated
     public AcceptorConfig withFadingSolutionTabuSize(Integer fadingSolutionTabuSize) {
         this.fadingSolutionTabuSize = fadingSolutionTabuSize;
         return this;
