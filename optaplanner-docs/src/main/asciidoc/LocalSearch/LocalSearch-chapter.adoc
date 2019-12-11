@@ -388,6 +388,14 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
     </acceptor>
 ----
 
+[IMPORTANT]
+====
+When using move tabu and undo move tabu with <<customMoves,custom moves>>,
+make sure that no `Move` implementations reference any planning entities or values in their `hashCode` methods.
+Failure to do so will result in runtime exceptions being thrown due to the `hashCode` not being constant,
+as the referenced entities and values are modified by the local search algorithm.
+====
+
 Sometimes it's useful to combine tabu types:
 
 [source,xml,options="nowrap"]
