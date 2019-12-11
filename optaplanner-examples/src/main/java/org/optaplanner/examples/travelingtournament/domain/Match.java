@@ -73,11 +73,11 @@ public class Match extends AbstractPersistable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Match match = (Match) o;
-        return Objects.equals(id, match.id) &&
-                Objects.equals(homeTeam, match.homeTeam) &&
-                Objects.equals(awayTeam, match.awayTeam) &&
-                Objects.equals(day, match.day);
+        final Match other = (Match) o;
+        return Objects.equals(id, other.id) &&
+                Objects.equals(homeTeam, other.homeTeam) &&
+                Objects.equals(awayTeam, other.awayTeam) &&
+                Objects.equals(day, other.day);
     }
 
     /**

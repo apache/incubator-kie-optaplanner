@@ -61,10 +61,10 @@ public class IdleCost implements Comparable<IdleCost> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final IdleCost idleCost = (IdleCost) o;
-        return Objects.equals(machine, idleCost.machine) &&
-                activePeriodAfterIdle == idleCost.activePeriodAfterIdle &&
-                cost == idleCost.cost;
+        final IdleCost other = (IdleCost) o;
+        return Objects.equals(machine, other.machine) &&
+                activePeriodAfterIdle == other.activePeriodAfterIdle &&
+                cost == other.cost;
     }
 
     @Override
