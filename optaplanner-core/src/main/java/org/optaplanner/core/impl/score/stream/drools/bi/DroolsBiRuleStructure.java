@@ -94,4 +94,5 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     public List<RuleItemBuilder<?>> getClosedRuleItems() {
         return closedRuleItems;
     }
+
 }

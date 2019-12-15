@@ -18,9 +18,11 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import org.drools.model.Drools;
 import org.drools.model.Global;
+import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -64,11 +66,10 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
             AbstractQuadJoiner<A, B, C, D> quadJoiner) {
         DroolsUniRuleStructure<D> dRuleStructure = dCondition.getRuleStructure();
         Variable<D> dVariable = dRuleStructure.getA();
-        DroolsPatternBuilder<Object> cPattern = dRuleStructure.getPrimaryPattern()
-                .expand(p -> p.expr("Filter using " + quadJoiner, ruleStructure.getA(), ruleStructure.getB(),
-                        ruleStructure.getC(), dVariable, (__, a, b, c, d) -> matches(quadJoiner, a, b, c, d)));
-        DroolsUniRuleStructure<D> newDRuleStructure = new DroolsUniRuleStructure<>(dVariable, cPattern,
-                dRuleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
+        UnaryOperator<PatternDSL.PatternDef<Object>> expander =
+                p -> p.expr("Filter using " + quadJoiner, ruleStructure.getA(), ruleStructure.getB(),
+                        ruleStructure.getC(), dVariable, (__, a, b, c, d) -> matches(quadJoiner, a, b, c, d));
+        DroolsUniRuleStructure<D> newDRuleStructure = dRuleStructure.amend(expander);
         return new DroolsQuadCondition<>(new DroolsQuadRuleStructure<>(ruleStructure, newDRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
     }

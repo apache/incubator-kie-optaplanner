@@ -17,15 +17,22 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.LongSupplier;
 
 import org.drools.model.DSL;
 import org.drools.model.DeclarationSource;
+import org.drools.model.PatternDSL;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
+
+import static org.drools.model.DSL.from;
 
 /**
  * Represents the left-hand side of a Drools rule.
@@ -53,7 +60,7 @@ public abstract class DroolsRuleStructure {
      * @param <X> Generic type of the variable.
      * @return new variable declaration, not yet bound to anything
      */
-    public final <X> Variable<X> createVariable(Class<X> clz, String name) {
+    public final <X> Variable<? extends X> createVariable(Class<X> clz, String name) {
         return DSL.declarationOf(clz, decorateVariableName(name));
     }
 
@@ -73,7 +80,7 @@ public abstract class DroolsRuleStructure {
      * @param <X> Generic type of the variable.
      * @return new variable declaration, not yet bound to anything
      */
-    public final <X> Variable<X> createVariable(Class<X> clz, String name, DeclarationSource source) {
+    public final <X> Variable<? extends X> createVariable(Class<X> clz, String name, DeclarationSource source) {
         return DSL.declarationOf(clz, decorateVariableName(name), source);
     }
 
@@ -153,5 +160,15 @@ public abstract class DroolsRuleStructure {
     public abstract List<RuleItemBuilder<?>> getOpenRuleItems();
 
     public abstract List<RuleItemBuilder<?>> getClosedRuleItems();
+
+    public <NewA> DroolsUniRuleStructure<NewA> regroup(Variable<Set<NewA>> newASource,
+            PatternDSL.PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<NewA> newA = createVariable("groupKey", from(newASource));
+        DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
+        // The accumulate and collect pattern are the new open items, as they go together with the new primary pattern.
+        List<RuleItemBuilder<?>> newOpenItems = Arrays.asList(collectPattern, accumulatePattern);
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, newOpenItems, getClosedRuleItems(),
+                getVariableIdSupplier());
+    }
 
 }

@@ -95,8 +95,7 @@ public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-1, entityGroup1, 1),
-                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1));
+                assertMatchWithScore(-1, 2));
 
         // Incremental
         Stream.of(entity1, entity2).forEach(entity -> {

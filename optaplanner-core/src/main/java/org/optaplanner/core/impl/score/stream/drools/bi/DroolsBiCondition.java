@@ -24,6 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
@@ -50,7 +51,6 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.from;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
@@ -80,16 +80,14 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         ViewItem[] items = Stream.concat(ruleStructure.getOpenRuleItems().stream(), Stream.of(mainAccumulatePattern))
                 .toArray(ViewItem[]::new);
         ViewItem<?> innerAccumulatePattern = PatternDSL.and(items[0], Arrays.copyOfRange(items, 1, items.length));
-        Variable<Set> setOfGroupKeys = ruleStructure.createVariable(Set.class, "setOfGroupKey");
-        PatternDSL.PatternDef<Set> pattern = pattern(setOfGroupKeys)
+        Variable<Set<NewA>> setOfGroupKeys =
+                (Variable<Set<NewA>>) ruleStructure.createVariable(Set.class, "setOfGroupKey");
+        PatternDSL.PatternDef<Set<NewA>> pattern = pattern(setOfGroupKeys)
                 .expr("Set of groupKey", set -> !set.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
         ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
                 accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfGroupKeys));
-        Variable<NewA> groupKey = ruleStructure.createVariable("groupKey", from(setOfGroupKeys));
-        DroolsPatternBuilder<NewA> finalGroupKeyPattern = new DroolsPatternBuilder<>(groupKey);
-        DroolsUniRuleStructure<NewA> newRuleStructure = new DroolsUniRuleStructure<>(groupKey,
-                finalGroupKeyPattern, Arrays.asList(pattern, accumulate), ruleStructure.getVariableIdSupplier());
+        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.regroup(setOfGroupKeys, pattern, accumulate);
         return new DroolsUniCondition<>(newRuleStructure);
     }
 
@@ -97,11 +95,9 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
             AbstractTriJoiner<A, B, C> triJoiner) {
         DroolsUniRuleStructure<C> cRuleStructure = cCondition.getRuleStructure();
         Variable<C> cVariable = cRuleStructure.getA();
-        DroolsPatternBuilder<Object> cPattern = cRuleStructure.getPrimaryPattern()
-                .expand(p -> p.expr("Filter using " + triJoiner, ruleStructure.getA(), ruleStructure.getB(),
-                        cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c)));
-        DroolsUniRuleStructure<C> newCRuleStructure = new DroolsUniRuleStructure<>(cVariable, cPattern,
-                cRuleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
+        UnaryOperator<PatternDSL.PatternDef<Object>> expander = p -> p.expr("Filter using " + triJoiner,
+                ruleStructure.getA(), ruleStructure.getB(), cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c));
+        DroolsUniRuleStructure<C> newCRuleStructure = cRuleStructure.amend(expander);
         return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
     }
