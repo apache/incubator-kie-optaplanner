@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.LongSupplier;
@@ -50,19 +51,15 @@ public class DroolsTriRuleStructure<A, B, C> extends DroolsRuleStructure {
         this.b = abRuleStructure.getB();
         this.c = cRuleStructure.getA();
         this.primaryPattern = cRuleStructure.getPrimaryPattern();
-        /*
-         * Assemble the new rule structure in the following order:
-         * - First, the supporting rule items from abRuleStructure.
-         * - Second, the primary pattern from abRuleStructure.
-         * - And finally, the supporting rule items from cRuleStructure.
-         *
-         * This makes sure that left-hand side of the rule represented by this object is properly ordered.
-         */
-        List<RuleItemBuilder<?>> ruleItems =
-                abRuleStructure.rebuildSupportingRuleItems(abRuleStructure.getPrimaryPattern().build());
-        ruleItems.addAll(cRuleStructure.getOpenRuleItems());
-        this.openRuleItems = Collections.unmodifiableList(ruleItems);
-        this.closedRuleItems = Collections.emptyList();
+        List<RuleItemBuilder<?>> newOpenItems = new ArrayList<>();
+        newOpenItems.addAll(abRuleStructure.getOpenRuleItems());
+        newOpenItems.add(abRuleStructure.getPrimaryPattern().build());
+        newOpenItems.addAll(cRuleStructure.getOpenRuleItems());
+        this.openRuleItems = Collections.unmodifiableList(newOpenItems);
+        List<RuleItemBuilder<?>> newClosedItems = new ArrayList<>();
+        newClosedItems.addAll(abRuleStructure.getClosedRuleItems());
+        newClosedItems.addAll(cRuleStructure.getClosedRuleItems());
+        this.closedRuleItems = Collections.unmodifiableList(newClosedItems);
     }
 
     public DroolsTriRuleStructure(Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable,

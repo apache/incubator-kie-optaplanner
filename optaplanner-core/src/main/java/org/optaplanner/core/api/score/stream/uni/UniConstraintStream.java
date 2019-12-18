@@ -197,8 +197,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
     /**
-     * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, containing of the set of
-     * tuples resulting from applying the group key mapping function on all tuples of the original stream.
+     * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, containing the set of tuples
+     * resulting from applying the group key mapping function on all tuples of the original stream.
      * Neither tuple of the new stream will {@link Objects#equals(Object, Object)} any other.
      * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element
      * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple

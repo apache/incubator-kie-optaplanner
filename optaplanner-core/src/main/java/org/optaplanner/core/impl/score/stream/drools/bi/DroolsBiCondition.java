@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -25,7 +24,6 @@ import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.DSL;
@@ -68,7 +66,8 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
         DroolsBiRuleStructure<A, B> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
-                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
+                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getClosedRuleItems(),
+                ruleStructure.getVariableIdSupplier());
         return new DroolsBiCondition<>(newRuleStructure);
     }
 
@@ -77,17 +76,15 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
                         .expand(p -> p.bind(mappedVariable, ruleStructure.getA(), (b, a) -> groupKeyMapping.apply((A) a, (B) b)))
                         .build();
-        ViewItem[] items = Stream.concat(ruleStructure.getOpenRuleItems().stream(), Stream.of(mainAccumulatePattern))
-                .toArray(ViewItem[]::new);
-        ViewItem<?> innerAccumulatePattern = PatternDSL.and(items[0], Arrays.copyOfRange(items, 1, items.length));
-        Variable<Set<NewA>> setOfGroupKeys =
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
+        Variable<Set<NewA>> setOfMappings =
                 (Variable<Set<NewA>>) ruleStructure.createVariable(Set.class, "setOfGroupKey");
-        PatternDSL.PatternDef<Set<NewA>> pattern = pattern(setOfGroupKeys)
-                .expr("Set of groupKey", set -> !set.isEmpty(),
+        PatternDSL.PatternDef<Set<NewA>> pattern = pattern(setOfMappings)
+                .expr("Set of " + mappedVariable.getName(), set -> !set.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
         ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfGroupKeys));
-        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.regroup(setOfGroupKeys, pattern, accumulate);
+                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfMappings));
+        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.regroup(setOfMappings, pattern, accumulate);
         return new DroolsUniCondition<>(newRuleStructure);
     }
 

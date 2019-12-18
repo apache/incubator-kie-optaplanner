@@ -88,14 +88,18 @@ public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
             return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                     .groupBy((entityA, entityB) -> entityA.getEntityGroup())
                     .groupBy(Function.identity(), ConstraintCollectors.count())
-                    .groupBy((entityGroup, count) -> count)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+                    .groupBy((entityGroup, count) -> {
+                        System.out.println(entityGroup + " " + count);
+                        return count;
+                    })
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, w -> w * 2);
         });
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-1, 2));
+                assertMatchWithScore(-1),
+                assertMatchWithScore(-1));
 
         // Incremental
         Stream.of(entity1, entity2).forEach(entity -> {

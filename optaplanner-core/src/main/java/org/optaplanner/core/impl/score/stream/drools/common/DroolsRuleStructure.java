@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.LongSupplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.model.DSL;
 import org.drools.model.DeclarationSource;
@@ -30,7 +32,9 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsValuePair;
 
 import static org.drools.model.DSL.from;
 
@@ -104,21 +108,6 @@ public abstract class DroolsRuleStructure {
         return (Variable<X>) createVariable(Object.class, name, source);
     }
 
-    /**
-     * Takes {@link #getOpenRuleItems()}, puts them into a new {@link List}, and adds additional
-     * {@link RuleItemBuilder}s after it.
-     *
-     * @param toAdd the additional items to add
-     * @return new list containing both the existing supporting rule items and the new ones
-     */
-    public final List<RuleItemBuilder<?>> rebuildSupportingRuleItems(RuleItemBuilder<?>... toAdd) {
-        List<RuleItemBuilder<?>> supporting = new ArrayList<>(getOpenRuleItems());
-        for (RuleItemBuilder<?> ruleItem : toAdd) {
-            supporting.add(ruleItem);
-        }
-        return supporting;
-    }
-
     public final List<RuleItemBuilder<?>> finish(ConsequenceBuilder.AbstractValidBuilder<?> consequence) {
         List<RuleItemBuilder<?>> closed = getClosedRuleItems();
         List<RuleItemBuilder<?>> open = getOpenRuleItems();
@@ -161,14 +150,28 @@ public abstract class DroolsRuleStructure {
 
     public abstract List<RuleItemBuilder<?>> getClosedRuleItems();
 
+    private List<RuleItemBuilder<?>> mergeClosedItems(RuleItemBuilder<?>... newClosedItems) {
+        return Stream.concat(getClosedRuleItems().stream(), Stream.of(newClosedItems))
+                .collect(Collectors.toList());
+    }
+
     public <NewA> DroolsUniRuleStructure<NewA> regroup(Variable<Set<NewA>> newASource,
             PatternDSL.PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<NewA> newA = createVariable("groupKey", from(newASource));
         DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
-        // The accumulate and collect pattern are the new open items, as they go together with the new primary pattern.
-        List<RuleItemBuilder<?>> newOpenItems = Arrays.asList(collectPattern, accumulatePattern);
-        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, newOpenItems, getClosedRuleItems(),
-                getVariableIdSupplier());
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, Arrays.asList(collectPattern),
+                mergeClosedItems(accumulatePattern), getVariableIdSupplier());
+    }
+
+    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<DroolsValuePair<NewA, NewB>> newSource,
+            PatternDSL.PatternDef<Set<DroolsValuePair<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<NewA> newA = createVariable("newA");
+        Variable<NewB> newB = createVariable("newB");
+        DroolsPatternBuilder<DroolsValuePair<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
+                .expand(p -> p.bind(newA, pair -> (NewA) pair.key))
+                .expand(p -> p.bind(newB, pair -> (NewB) pair.value));
+        return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, Arrays.asList(collectPattern),
+                mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
 
 }
