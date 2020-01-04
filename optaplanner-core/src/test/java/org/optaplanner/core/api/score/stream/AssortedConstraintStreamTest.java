@@ -35,6 +35,75 @@ public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
+    public void collectedAndFiltered() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(ConstraintCollectors.count())
+                    .filter(count -> count == 10)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, i -> i);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatchWithScore(-10, 10));
+
+        // Incremental
+        Stream.of(entity1, entity2).forEach(entity -> {
+            scoreDirector.beforeEntityRemoved(entity);
+            solution.getEntityList().remove(entity);
+            scoreDirector.afterEntityRemoved(entity);
+        });
+        assertScore(scoreDirector); // There is less than 10 entities, and therefore there are no penalties.
+    }
+
+    @Test
+    public void collectedFilteredRecollected() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup1);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(ConstraintCollectors.count())
+                    .filter(count -> count == 10)
+                    .groupBy(ConstraintCollectors.count())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatchWithScore(-1, 1));
+
+        // Incremental
+        Stream.of(entity1, entity2).forEach(entity -> {
+            scoreDirector.beforeEntityRemoved(entity);
+            solution.getEntityList().remove(entity);
+            scoreDirector.afterEntityRemoved(entity);
+        });
+        assertScore(scoreDirector); // There is less than 10 entities, and therefore there are no penalties.
+    }
+
+    @Test
     public void bigroupBiregrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
