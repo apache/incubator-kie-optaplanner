@@ -75,6 +75,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+        throwWhenGroupByNotAllowed();
         DroolsGroupingUniConstraintStream<Solution_, A, Result_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
         addChildStream(stream);
@@ -83,6 +84,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
+        throwWhenGroupByNotAllowed();
         DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
@@ -92,6 +94,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
+        throwWhenGroupByNotAllowed();
         DroolsGroupingBiConstraintStream<Solution_, A, GroupKey_, Result_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
@@ -101,6 +104,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
+        throwWhenGroupByNotAllowed();
         DroolsGroupingBiConstraintStream<Solution_, A, GroupKeyA_, GroupKeyB_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping);

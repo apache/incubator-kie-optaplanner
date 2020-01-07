@@ -56,6 +56,11 @@ public class DroolsGroupingBiConstraintStream<Solution_, A, NewA, NewB>
     }
 
     @Override
+    public boolean isGroupByAllowed() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "BiGroup() with " + getChildStreams().size() + " children";
     }

@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.stream;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -69,6 +70,7 @@ public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
+    @Ignore("Regrouping not yet supported.")
     public void collectedFilteredRecollected() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -104,6 +106,7 @@ public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
+    @Ignore("Regrouping not yet supported.")
     public void bigroupBiregrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -140,6 +143,7 @@ public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
+    @Ignore("Regrouping not yet supported.")
     public void bigroupBiregroupedRegrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -157,10 +161,7 @@ public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
             return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                     .groupBy((entityA, entityB) -> entityA.getEntityGroup())
                     .groupBy(Function.identity(), ConstraintCollectors.count())
-                    .groupBy((entityGroup, count) -> {
-                        System.out.println(entityGroup + " " + count);
-                        return count;
-                    })
+                    .groupBy((entityGroup, count) -> count)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, w -> w * 2);
         });
 
