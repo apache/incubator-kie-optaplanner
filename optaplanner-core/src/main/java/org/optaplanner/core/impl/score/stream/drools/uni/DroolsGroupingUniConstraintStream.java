@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, A, NewA>
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping) {
         super(constraintFactory);
         this.parent = parent;
-        this.condition = parent.getCondition().andGroup(groupKeyMapping);
+        this.condition = parent.getCondition().andGroupBi(groupKeyMapping);
     }
 
     @Override

@@ -328,6 +328,37 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, TEST_CONSTRAINT_NAME, solution.getFirstEntity().toString(), 5));
     }
 
+    @Test
+    public void groupBy_2Mapping0Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 3);
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        TestdataLavishEntityGroup group1 = solution.getEntityGroupList().get(0);
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+        TestdataLavishEntityGroup group3 = solution.getEntityGroupList().get(2);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, group1, group2),
+                assertMatchWithScore(-1, group1, group3),
+                assertMatchWithScore(-1, group2, group3));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, group2, group3));
+    }
+
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

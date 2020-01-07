@@ -89,6 +89,15 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         return stream;
     }
 
+    @Override
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping);
+        addChildStream(stream);
+        return stream;
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

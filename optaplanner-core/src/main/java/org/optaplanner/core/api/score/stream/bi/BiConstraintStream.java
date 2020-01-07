@@ -225,12 +225,20 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector);
 
-    /*
-    // TODO implement this
-    <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
-            BiFunction<A, B, GroupKeyA_> groupKeyAMapping,
-            BiFunction<A, B, GroupKeyB_> groupKeyBMapping);
+    /**
+     * Convert the {@link BiConstraintStream} to a different {@link BiConstraintStream}, consisting of unique tuples.
+     * <p>
+     * The first fact is the value resulting from applying the "A" group key mapping function to the original tuple.
+     * The second fact is the value resulting from applying the "B" group key mapping function on all the tuples with
+     * the same "A" group key.
+     * @param groupKeyAMapping never null, function to convert facts in the original tuple to a new fact
+     * @param groupKeyBMapping never null, function to convert facts in the original tuple to another new fact
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
+     * @return never null
      */
+    <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping);
 
     /*
     // TODO implement this
