@@ -14,35 +14,39 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.uni;
+package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import org.drools.core.common.InternalFactHandle;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
-final class DroolsUniGroupBy<A, B, ResultContainer, NewB> implements Serializable {
+final class DroolsBiGroupBy<A, B, ResultContainer, NewA, NewB> implements Serializable {
 
     private static final long serialVersionUID = 510l;
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
-    private final UniConstraintCollector<B, ResultContainer, NewB> collector;
-    private DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> acc;
+    private final BiFunction<A, B, NewA> groupKeyMapping;
+    private final BiConstraintCollector<A, B, ResultContainer, NewB> collector;
+    private DroolsBiGroupByAccumulator<A, B, ResultContainer, NewA, NewB> acc;
 
-    public DroolsUniGroupBy(UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsBiGroupBy(BiFunction<A, B, NewA> groupKeyMapping,
+            BiConstraintCollector<A, B, ResultContainer, NewB> collector) {
+        this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
     }
 
     public void init() {
-        acc = new DroolsUniGroupByAccumulator<>(collector);
+        acc = new DroolsBiGroupByAccumulator<>(groupKeyMapping, collector);
         undoMap.clear();
     }
 
-    public void accumulate(InternalFactHandle handle, A groupKey, B collected) {
-        Runnable undo = acc.accumulate(groupKey, collected);
+    public void accumulate(InternalFactHandle handle, A a, B b) {
+        Runnable undo = acc.accumulate(a, b);
         Runnable previousUndo = this.undoMap.put(handle.getId(), undo);
         if (previousUndo != null) {
             throw new IllegalStateException("Undo for fact handle (" + handle.getId() + ") already exists.");
@@ -57,7 +61,7 @@ final class DroolsUniGroupBy<A, B, ResultContainer, NewB> implements Serializabl
         undo.run();
     }
 
-    public Set<BiTuple<A, NewB>> getResult() {
+    public Set<BiTuple<NewA, NewB>> getResult() {
         return acc.finish();
     }
 
