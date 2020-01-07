@@ -49,6 +49,6 @@ public final class DroolsValuePair<K,V> {
 
     @Override
     public String toString() {
-        return "Pair[" + key + ", " + value + "]";
+        return "Pair(" + key + ", " + value + ")";
     }
 }
