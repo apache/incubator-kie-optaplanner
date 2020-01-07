@@ -32,15 +32,15 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
 
     // Containers may be identical in type and contents, yet they should still not count as the same container.
-    private final Map<ResultContainer, Long> containersInUse = new IdentityHashMap<>(0);
+    private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
     // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
-    private final Map<A, ResultContainer> containers = new LinkedHashMap<>(0);
+    private final Map<A, ResultContainer> containersMap = new LinkedHashMap<>(0);
     private final Supplier<ResultContainer> supplier;
     private final BiFunction<ResultContainer, B, Runnable> accumulator;
     private final Function<ResultContainer, NewB> finisher;
     // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
     // It doesn't make sense to serialize this anyway, as it is recreated every time.
-    private final transient Set<BiTuple<A, NewB>> result = new LinkedHashSet<>(0);
+    private final transient Set<BiTuple<A, NewB>> resultSet = new LinkedHashSet<>(0);
 
     public DroolsUniGroupByAccumulator(UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.supplier = collector.supplier();
@@ -57,25 +57,25 @@ final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> implements 
     }
 
     public Runnable accumulate(A key, B value) {
-        ResultContainer container = containers.computeIfAbsent(key, __ -> supplier.get());
+        ResultContainer container = containersMap.computeIfAbsent(key, __ -> supplier.get());
         Runnable undo = accumulator.apply(container, value);
-        containersInUse.compute(container, (__, count) -> increment(count)); // Increment use counter.
+        containersInUseMap.compute(container, (__, count) -> increment(count)); // Increment use counter.
         return () -> {
             undo.run();
             // Decrement use counter. If 0, container is ignored during finishing. Removes empty groups from results.
-            Long currentCount = containersInUse.compute(container, (__, count) -> decrement(count));
+            Long currentCount = containersInUseMap.compute(container, (__, count) -> decrement(count));
             if (currentCount == null) {
-                containers.remove(key);
+                containersMap.remove(key);
             }
         };
     }
 
     public Set<BiTuple<A, NewB>> finish() {
-        result.clear();
-        for (Map.Entry<A, ResultContainer> entry: containers.entrySet()) {
+        resultSet.clear();
+        for (Map.Entry<A, ResultContainer> entry: containersMap.entrySet()) {
             ResultContainer container = entry.getValue();
-            result.add(new BiTuple<>(entry.getKey(), finisher.apply(container)));
+            resultSet.add(new BiTuple<>(entry.getKey(), finisher.apply(container)));
         }
-        return result;
+        return resultSet;
     }
 }

@@ -43,8 +43,8 @@ final class DroolsUniGroupBy<A, B, ResultContainer, NewB> implements Serializabl
 
     public void accumulate(InternalFactHandle handle, A groupKey, B collected) {
         Runnable undo = acc.accumulate(groupKey, collected);
-        Runnable previousUndo = this.undoMap.put(handle.getId(), undo);
-        if (previousUndo != null) {
+        Runnable oldUndo = this.undoMap.put(handle.getId(), undo);
+        if (oldUndo != null) {
             throw new IllegalStateException("Undo for fact handle (" + handle.getId() + ") already exists.");
         }
     }

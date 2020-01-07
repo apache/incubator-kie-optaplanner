@@ -34,7 +34,6 @@ import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
@@ -202,7 +201,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * Runs all tuples of the stream through a given @{@link BiConstraintCollector} and converts them into a new
-     * {@link UniConstraintStream} which only has a single tuple, the result of applying {@link UniConstraintCollector}.
+     * {@link UniConstraintStream} which only has a single tuple, the result of applying {@link BiConstraintCollector}.
      * @param collector never null, the collector to perform the grouping operation with
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
@@ -224,9 +223,9 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Convert the {@link BiConstraintStream} to a different {@link BiConstraintStream}, consisting of unique tuples.
      * <p>
-     * The first fact is the value resulting from applying the group key mapping function on the original tuple.
-     * The second fact is the value of applying a given {@link BiConstraintCollector} on all the tuples with the same
-     * group key.
+     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The second fact is the return value of a given {@link BiConstraintCollector} applied on incoming tuples with the
+     * same first fact.
      * @param groupKeyMapping never null, function to convert a fact in original tuple to a different fact
      * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
@@ -240,9 +239,9 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Convert the {@link BiConstraintStream} to a different {@link BiConstraintStream}, consisting of unique tuples.
      * <p>
-     * The first fact is the value resulting from applying the "A" group key mapping function to the original tuple.
-     * The second fact is the value resulting from applying the "B" group key mapping function on all the tuples with
-     * the same "A" group key.
+     * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
+     * The second fact is the return value of the second group key mapping function, applied on incoming tuples with
+     * the same first fact.
      * @param groupKeyAMapping never null, function to convert facts in the original tuple to a new fact
      * @param groupKeyBMapping never null, function to convert facts in the original tuple to another new fact
      * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple

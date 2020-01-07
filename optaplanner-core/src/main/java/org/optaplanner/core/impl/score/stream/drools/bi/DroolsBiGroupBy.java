@@ -47,8 +47,8 @@ final class DroolsBiGroupBy<A, B, ResultContainer, NewA, NewB> implements Serial
 
     public void accumulate(InternalFactHandle handle, A a, B b) {
         Runnable undo = acc.accumulate(a, b);
-        Runnable previousUndo = this.undoMap.put(handle.getId(), undo);
-        if (previousUndo != null) {
+        Runnable oldUndo = this.undoMap.put(handle.getId(), undo);
+        if (oldUndo != null) {
             throw new IllegalStateException("Undo for fact handle (" + handle.getId() + ") already exists.");
         }
     }
