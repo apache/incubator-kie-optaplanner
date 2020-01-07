@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,19 @@ import java.util.Set;
 import org.drools.core.common.InternalFactHandle;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public class DroolsGroupBy<A, B, ResultContainer, NewB> implements Serializable {
+final class DroolsUniGroupBy<A, B, ResultContainer, NewB> implements Serializable {
 
     private static final long serialVersionUID = 510l;
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
     private final UniConstraintCollector<B, ResultContainer, NewB> collector;
-    private DroolsGroupByAccumulator<A, B, ResultContainer, NewB> acc;
+    private DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> acc;
 
-    public DroolsGroupBy(UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsUniGroupBy(UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.collector = collector;
     }
 
     public void init() {
-        acc = new DroolsGroupByAccumulator<>(collector);
+        acc = new DroolsUniGroupByAccumulator<>(collector);
         undoMap.clear();
     }
 

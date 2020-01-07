@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
+final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
 
     // Containers may be identical in type and contents, yet they should still not count as the same container.
     private final Map<ResultContainer, Long> containersInUse = new IdentityHashMap<>(0);
@@ -41,7 +41,7 @@ public final class DroolsGroupByAccumulator<A, B, ResultContainer, NewB> impleme
     // It doesn't make sense to serialize this anyway, as it is recreated every time.
     private final transient Set<DroolsValuePair<A, NewB>> result = new LinkedHashSet<>(0);
 
-    public DroolsGroupByAccumulator(final UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsUniGroupByAccumulator(UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();

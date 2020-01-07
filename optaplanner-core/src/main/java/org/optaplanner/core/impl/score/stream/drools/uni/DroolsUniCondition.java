@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,7 +145,7 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                 .build();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(innerNewACollectingPattern);
         ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(() -> new DroolsGroupByInvoker<>(collector, groupKeyVar, collectingOnVar))
+                accFunction(() -> new DroolsUniGroupByInvoker<>(collector, groupKeyVar, collectingOnVar))
                         .as(setOfPairsVar));
         // Load one pair from the list.
         Variable<DroolsValuePair<NewA, NewB>> onePairVar =
