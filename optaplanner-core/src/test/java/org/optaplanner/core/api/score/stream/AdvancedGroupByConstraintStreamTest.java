@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
-public class AssortedConstraintStreamTest extends AbstractConstraintStreamTest {
+public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
 
-    public AssortedConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
+    public AdvancedGroupByConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);
     }
 
