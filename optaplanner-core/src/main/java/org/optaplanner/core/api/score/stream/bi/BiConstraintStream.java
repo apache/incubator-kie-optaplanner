@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.stream.bi;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -198,6 +199,14 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     // Group by
     // ************************************************************************
 
+    /**
+     * Convert the {@link BiConstraintStream} to a {@link UniConstraintStream}, containing the set of tuples resulting
+     * from applying the group key mapping function on all tuples of the original stream. Neither tuple of the new
+     * stream will {@link Objects#equals(Object, Object)} any other.
+     * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element
+     * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
     <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping);
 
     /*

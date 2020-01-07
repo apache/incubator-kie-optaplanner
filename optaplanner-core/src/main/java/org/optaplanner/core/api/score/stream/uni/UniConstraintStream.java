@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -207,15 +207,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping);
 
     /**
-     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of tuples which have:
-     *
-     * <ul>
-     *     <li>As the first fact, the value resulting from applying the group key mapping function on the fact from the
-     *     original tuple.
-     *     Neither such facts of the new stream will {@link Objects#equals(Object, Object)} any other.</li>
-     *     <li>As the second fact, the value of applying a given {@link UniConstraintCollector} on all the facts of the
-     *     original tuple with a matching group key.</li>
-     * </ul>
+     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples with two
+     * facts.
+     * <p>
+     * The first fact is the value resulting from applying the group key mapping function on the fact from the original
+     * tuple. The second fact is the value of applying a given {@link UniConstraintCollector} on all the facts of the
+     * original tuple with a matching group key.
      * @param groupKeyMapping never null, function to convert a fact in original tuple to a different fact
      * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
@@ -227,16 +224,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
 
     /**
-     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of tuples which have:
-     *
-     * <ul>
-     *     <li>As the first fact, the value resulting from applying the "A" group key mapping function to the fact from
-     *     the original tuple.</li>
-     *     <li>As the second fact, the value resulting from applying the "B" group key mapping function to the fact from
-     *     the original tuple, which already passed through the "A" group key mapping.</li>
-     * </ul>
-     *
-     * All bi tuples of the new stream will be unique.
+     * Convert the {@link UniConstraintStream} to a {@link BiConstraintStream}, consisting of unique tuples with two
+     * facts.
+     * <p>
+     * The first fact is the value resulting from applying the "A" group key mapping function to the fact from the
+     * original tuple. The second fact is the value resulting from applying the "B" group key mapping function to the
+     * fact from the original tuple, which already passed through the "A" group key mapping.
      * @param groupKeyAMapping never null, function to convert first fact in the original tuple to a different fact
      * @param groupKeyBMapping never null, function to convert second fact in the original tuple to a different fact
      * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
