@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
@@ -76,34 +75,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;
-    }
-
-    @Override
-    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
-            BiFunction<A, B, GroupKey_> groupKeyMapping,
-            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        throwWhenGroupByNotAllowed();
-        /*
-        DroolsGroupingBiConstraintStream<Solution_, A, GroupKey_, Result_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
-        addChildStream(stream);
-        return stream;
-         */
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
-            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
-        throwWhenGroupByNotAllowed();
-        /*
-        DroolsGroupingBiConstraintStream<Solution_, A, GroupKeyA_, GroupKeyB_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping);
-        addChildStream(stream);
-        return stream;
-         */
-        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************
