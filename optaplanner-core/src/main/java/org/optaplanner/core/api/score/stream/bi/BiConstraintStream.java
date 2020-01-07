@@ -34,6 +34,7 @@ import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
@@ -198,6 +199,17 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     // ************************************************************************
     // Group by
     // ************************************************************************
+
+    /**
+     * Runs all tuples of the stream through a given @{@link BiConstraintCollector} and converts them into a new
+     * {@link UniConstraintStream} which only has a single tuple, the result of applying {@link UniConstraintCollector}.
+     * @param collector never null, the collector to perform the grouping operation with
+     * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
+     * @return never null
+     */
+    <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector);
 
     /**
      * Convert the {@link BiConstraintStream} to a {@link UniConstraintStream}, containing the set of tuples resulting

@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.LongSupplier;
@@ -152,6 +153,14 @@ public abstract class DroolsRuleStructure {
     private List<RuleItemBuilder<?>> mergeClosedItems(RuleItemBuilder<?>... newClosedItems) {
         return Stream.concat(getClosedRuleItems().stream(), Stream.of(newClosedItems))
                 .collect(Collectors.toList());
+    }
+
+    public <NewA> DroolsUniRuleStructure<NewA> recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
+        DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
+        // The accumulate pattern is the new open item, as it is where the primary pattern gets the variable from.
+        List<RuleItemBuilder<?>> newOpenItems = Collections.singletonList(accumulatePattern);
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, newOpenItems, getClosedRuleItems(),
+                getVariableIdSupplier());
     }
 
     public <NewA> DroolsUniRuleStructure<NewA> regroup(Variable<Set<NewA>> newASource,
