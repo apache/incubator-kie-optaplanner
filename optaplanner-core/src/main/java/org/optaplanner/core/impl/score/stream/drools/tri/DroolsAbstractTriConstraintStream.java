@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,10 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
@@ -141,6 +143,35 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+    }
+
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
+
+    @Override
+    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping, TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping, TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
     }
 
     // ************************************************************************

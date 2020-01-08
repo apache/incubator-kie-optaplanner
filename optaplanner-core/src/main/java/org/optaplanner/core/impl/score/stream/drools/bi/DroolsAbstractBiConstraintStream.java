@@ -108,6 +108,11 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
         return stream;
     }
 
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************
