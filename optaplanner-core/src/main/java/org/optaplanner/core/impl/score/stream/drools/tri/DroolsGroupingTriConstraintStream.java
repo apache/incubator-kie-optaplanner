@@ -16,10 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
 public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
@@ -30,6 +33,13 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
     public <A, ResultContainer_> DroolsGroupingTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ResultContainer_, NewC> collector) {
+        super(constraintFactory, parent);
+        this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
+    }
+
+    public <A, B, ResultContainer_> DroolsGroupingTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyAMapping,
+            BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, NewC> collector) {
         super(constraintFactory, parent);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
