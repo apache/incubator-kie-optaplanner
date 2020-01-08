@@ -16,120 +16,38 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.util.function.Function;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.SubnetworkTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
-public class DroolsUniGroupByInvoker<A, B, ResultContainer, NewB> implements Accumulator, CompiledInvoker {
+public class DroolsUniGroupByInvoker<A, B, ResultContainer, NewB>
+        extends DroolsAbstractGroupByInvoker<ResultContainer, BiTuple<A, B>> {
 
     private final UniConstraintCollector<B, ResultContainer, NewB> collector;
-    private final Variable<A> groupKeyVar;
-    private final Variable<B> collectingVar;
+    private final Variable<A> aVariable;
+    private final Variable<B> bVariable;
 
-    public DroolsUniGroupByInvoker(UniConstraintCollector<B, ResultContainer, NewB> collector, Variable<A> groupKeyVar,
-            Variable<B> collectingVar) {
+    public DroolsUniGroupByInvoker(UniConstraintCollector<B, ResultContainer, NewB> collector, Variable<A> aVariable,
+            Variable<B> bVariable) {
         this.collector = collector;
-        this.groupKeyVar = groupKeyVar;
-        this.collectingVar = collectingVar;
+        this.aVariable = aVariable;
+        this.bVariable = bVariable;
     }
 
     @Override
-    public Serializable createContext() {
+    protected DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, ?> newContext() {
         return new DroolsUniGroupBy<>(collector);
     }
 
     @Override
-    public void init(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
-            WorkingMemory workingMemory) {
-        ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).init();
-    }
-
-    @Override
-    public void accumulate(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, final WorkingMemory workingMemory) {
-        InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) workingMemory;
-        Object handleObject = handle.getObject();
-        final A groupKey = getValue(groupKeyVar, internalWorkingMemory, handleObject, innerDeclarations);
-        final B toCollect = getValue(collectingVar, internalWorkingMemory, handleObject, innerDeclarations);
-        ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle,
-                new BiTuple<>(groupKey, toCollect));
-    }
-
-    private static <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
-            Declaration... innerDeclarations) {
-        Declaration declaration = getDeclarationForVariable(var, innerDeclarations);
-        Object actualHandleObject = handleObject instanceof SubnetworkTuple ?
-                ((SubnetworkTuple)handleObject).getObject(declaration) :
-                handleObject;
-        return (X) declaration.getValue(internalWorkingMemory, actualHandleObject);
-    }
-
-    /**
-     * Declarations in Drools appear to show up in random order. Therefore, we need to match the proper declaration
-     * not by directly addressing within the array, but by looking it up based on the associated variable.
-     * @param variable
-     * @param declarations
-     * @return
-     */
-    private static Declaration getDeclarationForVariable(Variable<?> variable, Declaration... declarations) {
-        for (Declaration declaration: declarations) {
-            if (declaration.getIdentifier().equals(variable.getName())) {
-                return declaration;
-            }
-        }
-        throw new IllegalStateException("Could not find declaration for variable (" + variable + ").");
-    }
-
-    @Override
-    public void reverse(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
-        ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).reverse(handle);
-    }
-
-    @Override
-    public Object getResult(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
-            WorkingMemory workingMemory) {
-        return ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).getResult();
-    }
-
-    @Override
-    public boolean supportsReverse() {
-        return true;
-    }
-
-    @Override
-    public Object createWorkingMemoryContext() {
-        return null;
-    }
-
-    @Override
-    public String getMethodBytecode() {
-        Class<?> accumulateClass = DroolsUniGroupBy.class;
-        String classFileName = accumulateClass.getCanonicalName().replace('.', '/') + ".class";
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream(classFileName)) {
-            final byte[] data = new byte[1024];
-            int byteCount;
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            while ((byteCount = is.read(data, 0, 1024)) > -1) {
-                bos.write(data, 0, byteCount);
-            }
-            return bos.toString();
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to getResourceAsStream for " + accumulateClass);
-        }
+    protected <X> BiTuple<A, B> createInput(Function<Variable<X>, X> valueFinder) {
+        final A a = materialize(aVariable, valueFinder);
+        final B b = materialize(bVariable, valueFinder);
+        return new BiTuple<>(a, b);
     }
 
 }

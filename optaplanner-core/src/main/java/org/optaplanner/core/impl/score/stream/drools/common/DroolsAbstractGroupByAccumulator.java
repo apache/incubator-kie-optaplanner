@@ -33,22 +33,6 @@ public abstract class DroolsAbstractGroupByAccumulator<ResultContainer, InTuple,
     // It doesn't make sense to serialize this anyway, as it is recreated every time.
     private final transient Set<OutTuple> resultSet = new LinkedHashSet<>(0);
 
-    private static Long increment(Long count) {
-        return count == null ? 1L : count + 1L;
-    }
-
-    private static Long decrement(Long count) {
-        return count == 1L ? null : count - 1L;
-    }
-
-    protected abstract KeyTuple toKey(InTuple tuple);
-
-    protected abstract ResultContainer newContainer();
-
-    protected abstract Runnable process(InTuple tuple, ResultContainer container);
-
-    protected abstract OutTuple toResult(KeyTuple key, ResultContainer container);
-
     public Runnable accumulate(InTuple input) {
         KeyTuple key = toKey(input);
         ResultContainer container = containersMap.computeIfAbsent(key, __ -> newContainer());
@@ -64,6 +48,14 @@ public abstract class DroolsAbstractGroupByAccumulator<ResultContainer, InTuple,
         };
     }
 
+    private static Long increment(Long count) {
+        return count == null ? 1L : count + 1L;
+    }
+
+    private static Long decrement(Long count) {
+        return count == 1L ? null : count - 1L;
+    }
+
     public Set<OutTuple> finish() {
         resultSet.clear();
         for (Map.Entry<KeyTuple, ResultContainer> entry : containersMap.entrySet()) {
@@ -71,4 +63,13 @@ public abstract class DroolsAbstractGroupByAccumulator<ResultContainer, InTuple,
         }
         return resultSet;
     }
+
+    protected abstract KeyTuple toKey(InTuple tuple);
+
+    protected abstract ResultContainer newContainer();
+
+    protected abstract Runnable process(InTuple tuple, ResultContainer container);
+
+    protected abstract OutTuple toResult(KeyTuple key, ResultContainer container);
+
 }

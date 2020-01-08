@@ -16,24 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
 import java.util.function.Function;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.SubnetworkTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
-public class DroolsUniToTriGroupByInvoker<A, ResultContainer, NewA, NewB, NewC> implements Accumulator, CompiledInvoker {
+public class DroolsUniToTriGroupByInvoker<A, ResultContainer, NewA, NewB, NewC>
+    extends DroolsAbstractGroupByInvoker<ResultContainer, A> {
 
     private final UniConstraintCollector<A, ResultContainer, NewC> collector;
     private final Function<A, NewA> groupKeyAMapping;
@@ -49,91 +40,13 @@ public class DroolsUniToTriGroupByInvoker<A, ResultContainer, NewA, NewB, NewC> 
     }
 
     @Override
-    public Serializable createContext() {
+    protected DroolsAbstractGroupBy<ResultContainer, A, ?> newContext() {
         return new DroolsUniToTriGroupBy<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     @Override
-    public void init(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
-            WorkingMemory workingMemory) {
-        castContext(context).init();
-    }
-
-    @Override
-    public void accumulate(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, final WorkingMemory workingMemory) {
-        InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) workingMemory;
-        Object handleObject = handle.getObject();
-        final A groupKey = getValue(aVariable, internalWorkingMemory, handleObject, innerDeclarations);
-        castContext(context).accumulate(handle, groupKey);
-    }
-
-    private static <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
-            Declaration... innerDeclarations) {
-        Declaration declaration = getDeclarationForVariable(var, innerDeclarations);
-        Object actualHandleObject = handleObject instanceof SubnetworkTuple ?
-                ((SubnetworkTuple)handleObject).getObject(declaration) :
-                handleObject;
-        return (X) declaration.getValue(internalWorkingMemory, actualHandleObject);
-    }
-
-    private DroolsUniToTriGroupBy<A, ResultContainer, NewA, NewB, NewC> castContext(Object context) {
-        return (DroolsUniToTriGroupBy<A, ResultContainer, NewA, NewB, NewC>) context;
-    }
-
-    /**
-     * Declarations in Drools appear to show up in random order. Therefore, we need to match the proper declaration
-     * not by directly addressing within the array, but by looking it up based on the associated variable.
-     * @param variable
-     * @param declarations
-     * @return
-     */
-    private static Declaration getDeclarationForVariable(Variable<?> variable, Declaration... declarations) {
-        for (Declaration declaration: declarations) {
-            if (declaration.getIdentifier().equals(variable.getName())) {
-                return declaration;
-            }
-        }
-        throw new IllegalStateException("Could not find declaration for variable (" + variable + ").");
-    }
-
-    @Override
-    public void reverse(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
-            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
-        castContext(context).reverse(handle);
-    }
-
-    @Override
-    public Object getResult(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
-            WorkingMemory workingMemory) {
-        return castContext(context).getResult();
-    }
-
-    @Override
-    public boolean supportsReverse() {
-        return true;
-    }
-
-    @Override
-    public Object createWorkingMemoryContext() {
-        return null;
-    }
-
-    @Override
-    public String getMethodBytecode() {
-        Class<?> accumulateClass = DroolsUniToTriGroupBy.class;
-        String classFileName = accumulateClass.getCanonicalName().replace('.', '/') + ".class";
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream(classFileName)) {
-            final byte[] data = new byte[1024];
-            int byteCount;
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            while ((byteCount = is.read(data, 0, 1024)) > -1) {
-                bos.write(data, 0, byteCount);
-            }
-            return bos.toString();
-        } catch (final IOException e) {
-            throw new RuntimeException("Unable to getResourceAsStream for " + accumulateClass);
-        }
+    protected <X> A createInput(Function<Variable<X>, X> valueFinder) {
+        return materialize(aVariable, valueFinder);
     }
 
 }

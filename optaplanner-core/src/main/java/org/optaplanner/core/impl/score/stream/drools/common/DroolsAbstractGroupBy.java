@@ -29,8 +29,6 @@ public abstract class DroolsAbstractGroupBy<ResultContainer, InTuple, OutTuple> 
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
     private DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, ?, OutTuple> acc;
 
-    protected abstract DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, ?, OutTuple> newAccumulator();
-
     public void init() {
         acc = newAccumulator();
         undoMap.clear();
@@ -55,5 +53,7 @@ public abstract class DroolsAbstractGroupBy<ResultContainer, InTuple, OutTuple> 
     public Set<OutTuple> getResult() {
         return acc.finish();
     }
+
+    protected abstract DroolsAbstractGroupByAccumulator<ResultContainer, InTuple, ?, OutTuple> newAccumulator();
 
 }
