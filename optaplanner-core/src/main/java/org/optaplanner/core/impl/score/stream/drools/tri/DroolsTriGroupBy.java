@@ -48,7 +48,7 @@ final class DroolsTriGroupBy<A, B, C, ResultContainer, NewA, NewB, NewC> impleme
     }
 
     public void accumulate(InternalFactHandle handle, A a, B b, C c) {
-        Runnable undo = acc.accumulate(a, b, c);
+        Runnable undo = acc.accumulate(new TriTuple<>(a, b, c));
         Runnable oldUndo = this.undoMap.put(handle.getId(), undo);
         if (oldUndo != null) {
             throw new IllegalStateException("Undo for fact handle (" + handle.getId() + ") already exists.");

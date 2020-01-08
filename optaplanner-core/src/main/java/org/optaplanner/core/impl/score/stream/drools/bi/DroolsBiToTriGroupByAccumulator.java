@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
-import java.io.Serializable;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -29,22 +23,17 @@ import java.util.function.Supplier;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsBiToTriGroupByAccumulator<A, B, ResultContainer, NewA, NewB, NewC> implements Serializable {
+final class DroolsBiToTriGroupByAccumulator<A, B, ResultContainer, NewA, NewB, NewC> extends
+        DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
 
-    // Containers may be identical in type and contents, yet they should still not count as the same container.
-    private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
-    // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
-    private final Map<BiTuple<NewA, NewB>, ResultContainer> containersMap = new LinkedHashMap<>(0);
     private final BiFunction<A, B, NewA> groupKeyAMapping;
     private final BiFunction<A, B, NewB> groupKeyBMapping;
     private final Supplier<ResultContainer> supplier;
     private final TriFunction<ResultContainer, A, B, Runnable> accumulator;
     private final Function<ResultContainer, NewC> finisher;
-    // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
-    // It doesn't make sense to serialize this anyway, as it is recreated every time.
-    private final transient Set<TriTuple<NewA, NewB, NewC>> resultSet = new LinkedHashSet<>(0);
 
     public DroolsBiToTriGroupByAccumulator(BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer, NewC> collector) {
@@ -55,37 +44,25 @@ final class DroolsBiToTriGroupByAccumulator<A, B, ResultContainer, NewA, NewB, N
         this.finisher = collector.finisher();
     }
 
-    private static Long increment(Long count) {
-        return count == null ? 1L : count + 1L;
+    @Override
+    protected BiTuple<NewA, NewB> toKey(BiTuple<A, B> abBiTuple) {
+        return new BiTuple<>(groupKeyAMapping.apply(abBiTuple._1, abBiTuple._2),
+                groupKeyBMapping.apply(abBiTuple._1, abBiTuple._2));
     }
 
-    private static Long decrement(Long count) {
-        return count == 1L ? null : count - 1L;
+    @Override
+    protected ResultContainer newContainer() {
+        return supplier.get();
     }
 
-    public Runnable accumulate(A a, B b) {
-        BiTuple<NewA, NewB> key = new BiTuple<>(groupKeyAMapping.apply(a, b), groupKeyBMapping.apply(a, b));
-        ResultContainer container = containersMap.computeIfAbsent(key, __ -> supplier.get());
-        Runnable undo = accumulator.apply(container, a, b);
-        containersInUseMap.compute(container, (__, count) -> increment(count)); // Increment use counter.
-        return () -> {
-            undo.run();
-            // Decrement use counter. If 0, container is ignored during finishing. Removes empty groups from results.
-            Long currentCount = containersInUseMap.compute(container, (__, count) -> decrement(count));
-            if (currentCount == null) {
-                containersMap.remove(key);
-            }
-        };
+    @Override
+    protected Runnable process(BiTuple<A, B> abBiTuple, ResultContainer container) {
+        return accumulator.apply(container, abBiTuple._1, abBiTuple._2);
     }
 
-    public Set<TriTuple<NewA, NewB, NewC>> finish() {
-        resultSet.clear();
-        for (Map.Entry<BiTuple<NewA, NewB>, ResultContainer> entry : containersMap.entrySet()) {
-            BiTuple<NewA, NewB> key = entry.getKey();
-            ResultContainer container = entry.getValue();
-            TriTuple<NewA, NewB, NewC> result = new TriTuple<>(key._1, key._2, finisher.apply(container));
-            resultSet.add(result);
-        }
-        return resultSet;
+    @Override
+    protected TriTuple<NewA, NewB, NewC> toResult(BiTuple<NewA, NewB> key, ResultContainer container) {
+        return new TriTuple<>(key._1, key._2, finisher.apply(container));
     }
+
 }

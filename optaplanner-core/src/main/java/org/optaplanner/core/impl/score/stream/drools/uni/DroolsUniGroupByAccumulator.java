@@ -16,31 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.io.Serializable;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 
-final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> implements Serializable {
+final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB>
+        extends DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, A, BiTuple<A, NewB>> {
 
-    // Containers may be identical in type and contents, yet they should still not count as the same container.
-    private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
-    // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
-    private final Map<A, ResultContainer> containersMap = new LinkedHashMap<>(0);
     private final Supplier<ResultContainer> supplier;
     private final BiFunction<ResultContainer, B, Runnable> accumulator;
     private final Function<ResultContainer, NewB> finisher;
-    // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
-    // It doesn't make sense to serialize this anyway, as it is recreated every time.
-    private final transient Set<BiTuple<A, NewB>> resultSet = new LinkedHashSet<>(0);
 
     public DroolsUniGroupByAccumulator(UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.supplier = collector.supplier();
@@ -48,34 +37,23 @@ final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> implements 
         this.finisher = collector.finisher();
     }
 
-    private static Long increment(Long count) {
-        return count == null ? 1L : count + 1L;
+    @Override
+    protected A toKey(BiTuple<A, B> abBiTuple) {
+        return abBiTuple._1;
     }
 
-    private static Long decrement(Long count) {
-        return count == 1L ? null : count - 1L;
+    @Override
+    protected ResultContainer newContainer() {
+        return supplier.get();
     }
 
-    public Runnable accumulate(A key, B value) {
-        ResultContainer container = containersMap.computeIfAbsent(key, __ -> supplier.get());
-        Runnable undo = accumulator.apply(container, value);
-        containersInUseMap.compute(container, (__, count) -> increment(count)); // Increment use counter.
-        return () -> {
-            undo.run();
-            // Decrement use counter. If 0, container is ignored during finishing. Removes empty groups from results.
-            Long currentCount = containersInUseMap.compute(container, (__, count) -> decrement(count));
-            if (currentCount == null) {
-                containersMap.remove(key);
-            }
-        };
+    @Override
+    protected Runnable process(BiTuple<A, B> abBiTuple, ResultContainer container) {
+        return accumulator.apply(container, abBiTuple._2);
     }
 
-    public Set<BiTuple<A, NewB>> finish() {
-        resultSet.clear();
-        for (Map.Entry<A, ResultContainer> entry: containersMap.entrySet()) {
-            ResultContainer container = entry.getValue();
-            resultSet.add(new BiTuple<>(entry.getKey(), finisher.apply(container)));
-        }
-        return resultSet;
+    @Override
+    protected BiTuple<A, NewB> toResult(A key, ResultContainer container) {
+        return new BiTuple<>(key, finisher.apply(container));
     }
 }

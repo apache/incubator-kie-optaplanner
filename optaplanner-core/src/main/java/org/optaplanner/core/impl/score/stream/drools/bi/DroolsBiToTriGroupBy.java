@@ -24,6 +24,7 @@ import java.util.function.BiFunction;
 
 import org.drools.core.common.InternalFactHandle;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsBiToTriGroupBy<A, B, ResultContainer, NewA, NewB, NewC> implements Serializable {
@@ -48,7 +49,7 @@ final class DroolsBiToTriGroupBy<A, B, ResultContainer, NewA, NewB, NewC> implem
     }
 
     public void accumulate(InternalFactHandle handle, A a, B b) {
-        Runnable undo = acc.accumulate(a, b);
+        Runnable undo = acc.accumulate(new BiTuple<>(a, b));
         Runnable oldUndo = this.undoMap.put(handle.getId(), undo);
         if (oldUndo != null) {
             throw new IllegalStateException("Undo for fact handle (" + handle.getId() + ") already exists.");
