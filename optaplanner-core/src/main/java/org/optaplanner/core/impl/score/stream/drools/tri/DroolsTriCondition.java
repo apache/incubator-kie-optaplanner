@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -31,6 +32,7 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block5;
 import org.drools.model.functions.Predicate4;
+import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -39,6 +41,9 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
@@ -85,6 +90,31 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
                 ruleStructure.getVariableIdSupplier()));
     }
 
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(TriFunction<A, B, C, NewA> groupKeyAMapping,
+            TriFunction<A, B, C, NewB> groupKeyBMapping) {
+        Variable<BiTuple<NewA, NewB>> mappedVariable = ruleStructure.createVariable("biMapped");
+        PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
+                .expand(p -> p.bind(mappedVariable, ruleStructure.getA(), ruleStructure.getB(),
+                        (c, a, b) -> {
+                            final NewA newA = groupKeyAMapping.apply(a, b, (C) c);
+                            final NewB newB = groupKeyBMapping.apply(a, b, (C) c);
+                            return new BiTuple<>(newA, newB);
+                        }))
+                .build();
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
+        Variable<Set<BiTuple<NewA, NewB>>> setOfPairs =
+                (Variable<Set<BiTuple<NewA, NewB>>>) ruleStructure.createVariable(Set.class, "setOfPairs");
+        PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> pattern = pattern(setOfPairs)
+                .expr("Set of " + mappedVariable.getName(), set -> !set.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
+        ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
+                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfPairs));
+        Variable<BiTuple<NewA, NewB>> onePairVar =
+                (Variable<BiTuple<NewA, NewB>>) ruleStructure.createVariable(BiTuple.class, "pair", from(setOfPairs));
+        DroolsBiRuleStructure<NewA, NewB> newRuleStructure = ruleStructure.regroupBi(onePairVar, pattern, accumulate);
+        return new DroolsBiCondition<>(newRuleStructure);
+    }
+
     public <ResultContainer, NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
             TriFunction<A, B, C, NewA> groupKeyAMapping, TriFunction<A, B, C, NewB> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainer, NewC> collector) {
@@ -108,7 +138,6 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
                 accumulate);
         return new DroolsTriCondition<>(newRuleStructure);
     }
-
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         return completeWithScoring(scoreHolderGlobal,

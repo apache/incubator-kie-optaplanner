@@ -183,7 +183,8 @@ public abstract class DroolsRuleStructure {
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
 
-    public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC> regroupBiToTri(Variable<TriTuple<NewA, NewB, NewC>> newSource,
+    public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC> regroupBiToTri(
+            Variable<TriTuple<NewA, NewB, NewC>> newSource,
             PatternDSL.PatternDef<Set<TriTuple<NewA, NewB, NewC>>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
