@@ -32,6 +32,7 @@ import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
 public class DroolsBiGroupByInvoker<A, B, ResultContainer, NewA, NewB> implements Accumulator, CompiledInvoker {
 
@@ -67,7 +68,7 @@ public class DroolsBiGroupByInvoker<A, B, ResultContainer, NewA, NewB> implement
         Object handleObject = handle.getObject();
         final A groupKey = getValue(aVariable, internalWorkingMemory, handleObject, innerDeclarations);
         final B toCollect = getValue(bVariable, internalWorkingMemory, handleObject, innerDeclarations);
-        castContext(context).accumulate(handle, groupKey, toCollect);
+        castContext(context).accumulate(handle, new BiTuple<>(groupKey, toCollect));
     }
 
     private static <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,

@@ -16,24 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
-import org.drools.core.common.InternalFactHandle;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsUniToTriGroupBy<A, ResultContainer, NewA, NewB, NewC> implements Serializable {
+final class DroolsUniToTriGroupBy<A, ResultContainer, NewA, NewB, NewC>
+        extends DroolsAbstractGroupBy<ResultContainer, A, TriTuple<NewA, NewB, NewC>> {
 
-    private static final long serialVersionUID = 510l;
-    private final Map<Long, Runnable> undoMap = new HashMap<>(0);
     private final Function<A, NewA> groupKeyAMapping;
     private final Function<A, NewB> groupKeyBMapping;
     private final UniConstraintCollector<A, ResultContainer, NewC> collector;
-    private DroolsUniToTriGroupByAccumulator<A, ResultContainer, NewA, NewB, NewC> acc;
 
     public DroolsUniToTriGroupBy(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer, NewC> collector) {
@@ -42,29 +37,9 @@ final class DroolsUniToTriGroupBy<A, ResultContainer, NewA, NewB, NewC> implemen
         this.collector = collector;
     }
 
-    public void init() {
-        acc = new DroolsUniToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
-        undoMap.clear();
-    }
-
-    public void accumulate(InternalFactHandle handle, A a) {
-        Runnable undo = acc.accumulate(a);
-        Runnable oldUndo = this.undoMap.put(handle.getId(), undo);
-        if (oldUndo != null) {
-            throw new IllegalStateException("Undo for fact handle (" + handle.getId() + ") already exists.");
-        }
-    }
-
-    public void reverse(InternalFactHandle handle) {
-        final Runnable undo = this.undoMap.remove(handle.getId());
-        if (undo == null) {
-            throw new IllegalStateException("No undo for fact handle (" + handle.getId() + ")");
-        }
-        undo.run();
-    }
-
-    public Set<TriTuple<NewA, NewB, NewC>> getResult() {
-        return acc.finish();
+    @Override
+    protected DroolsAbstractGroupByAccumulator<ResultContainer, A, ?, TriTuple<NewA, NewB, NewC>> newAccumulator() {
+        return new DroolsUniToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
 }

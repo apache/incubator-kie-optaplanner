@@ -31,6 +31,7 @@ import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
 public class DroolsUniGroupByInvoker<A, B, ResultContainer, NewB> implements Accumulator, CompiledInvoker {
 
@@ -63,7 +64,8 @@ public class DroolsUniGroupByInvoker<A, B, ResultContainer, NewB> implements Acc
         Object handleObject = handle.getObject();
         final A groupKey = getValue(groupKeyVar, internalWorkingMemory, handleObject, innerDeclarations);
         final B toCollect = getValue(collectingVar, internalWorkingMemory, handleObject, innerDeclarations);
-        ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle, groupKey, toCollect);
+        ((DroolsUniGroupBy<A, B, ResultContainer, NewB>) context).accumulate(handle,
+                new BiTuple<>(groupKey, toCollect));
     }
 
     private static <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,

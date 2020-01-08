@@ -16,49 +16,23 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.drools.core.common.InternalFactHandle;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 
-final class DroolsUniGroupBy<A, B, ResultContainer, NewB> implements Serializable {
+final class DroolsUniGroupBy<A, B, ResultContainer, NewB>
+        extends DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, BiTuple<A, NewB>> {
 
-    private static final long serialVersionUID = 510l;
-    private final Map<Long, Runnable> undoMap = new HashMap<>(0);
     private final UniConstraintCollector<B, ResultContainer, NewB> collector;
-    private DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB> acc;
 
     public DroolsUniGroupBy(UniConstraintCollector<B, ResultContainer, NewB> collector) {
         this.collector = collector;
     }
 
-    public void init() {
-        acc = new DroolsUniGroupByAccumulator<>(collector);
-        undoMap.clear();
-    }
-
-    public void accumulate(InternalFactHandle handle, A groupKey, B collected) {
-        Runnable undo = acc.accumulate(new BiTuple<>(groupKey, collected));
-        Runnable oldUndo = this.undoMap.put(handle.getId(), undo);
-        if (oldUndo != null) {
-            throw new IllegalStateException("Undo for fact handle (" + handle.getId() + ") already exists.");
-        }
-    }
-
-    public void reverse(InternalFactHandle handle) {
-        final Runnable undo = this.undoMap.remove(handle.getId());
-        if (undo == null) {
-            throw new IllegalStateException("No undo for fact handle (" + handle.getId() + ")");
-        }
-        undo.run();
-    }
-
-    public Set<BiTuple<A, NewB>> getResult() {
-        return acc.finish();
+    @Override
+    protected DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, ?, BiTuple<A, NewB>> newAccumulator() {
+        return new DroolsUniGroupByAccumulator<>(collector);
     }
 
 }

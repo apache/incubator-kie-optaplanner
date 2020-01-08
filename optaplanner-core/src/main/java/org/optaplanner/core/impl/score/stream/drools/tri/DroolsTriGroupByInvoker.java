@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.function.BiFunction;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -32,8 +31,8 @@ import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 public class DroolsTriGroupByInvoker<A, B, C, ResultContainer, NewA, NewB, NewC> implements Accumulator,
         CompiledInvoker {
@@ -76,7 +75,7 @@ public class DroolsTriGroupByInvoker<A, B, C, ResultContainer, NewA, NewB, NewC>
         final A groupKeyA = getValue(aVariable, internalWorkingMemory, handleObject, innerDeclarations);
         final B groupKeyB = getValue(bVariable, internalWorkingMemory, handleObject, innerDeclarations);
         final C groupKeyC = getValue(cVariable, internalWorkingMemory, handleObject, innerDeclarations);
-        castContext(context).accumulate(handle, groupKeyA, groupKeyB, groupKeyC);
+        castContext(context).accumulate(handle, new TriTuple<>(groupKeyA, groupKeyB, groupKeyC));
     }
 
     private static <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
