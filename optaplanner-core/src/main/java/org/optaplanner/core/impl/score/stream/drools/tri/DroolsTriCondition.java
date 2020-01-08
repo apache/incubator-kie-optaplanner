@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,8 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
         DroolsPatternBuilder<Object> newTargetPattern = ruleStructure.getPrimaryPattern()
                 .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, filter));
         DroolsTriRuleStructure<A, B, C> newRuleStructure = new DroolsTriRuleStructure<>(aVariable, bVariable, cVariable,
-                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getVariableIdSupplier());
+                newTargetPattern, ruleStructure.getOpenRuleItems(), ruleStructure.getClosedRuleItems(),
+                ruleStructure.getVariableIdSupplier());
         return new DroolsTriCondition<>(newRuleStructure);
     }
 

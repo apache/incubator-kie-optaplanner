@@ -69,7 +69,7 @@ final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
             throw new IllegalStateException("Undo for (" + value +  ") already exists.");
         }
         BiTuple<A, B> values = (BiTuple<A, B>) value;
-        Runnable undo = accumulator.apply(context.getContainer(), values.key, values.value);
+        Runnable undo = accumulator.apply(context.getContainer(), values._1, values._2);
         undoMap.put(value, undo);
     }
 

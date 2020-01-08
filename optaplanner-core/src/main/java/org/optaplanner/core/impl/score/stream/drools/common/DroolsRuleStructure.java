@@ -34,6 +34,7 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
 import static org.drools.model.DSL.from;
@@ -176,9 +177,22 @@ public abstract class DroolsRuleStructure {
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
         DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
-                .expand(p -> p.bind(newA, pair -> (NewA) pair.key))
-                .expand(p -> p.bind(newB, pair -> (NewB) pair.value));
+                .expand(p -> p.bind(newA, pair -> (NewA) pair._1))
+                .expand(p -> p.bind(newB, pair -> (NewB) pair._2));
         return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, Arrays.asList(collectPattern),
+                mergeClosedItems(accumulatePattern), getVariableIdSupplier());
+    }
+
+    public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC> regroupBiToTri(Variable<TriTuple<NewA, NewB, NewC>> newSource,
+            PatternDSL.PatternDef<Set<TriTuple<NewA, NewB, NewC>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<NewA> newA = createVariable("newA");
+        Variable<NewB> newB = createVariable("newB");
+        Variable<NewC> newC = createVariable("newC");
+        DroolsPatternBuilder<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
+                .expand(p -> p.bind(newA, pair -> (NewA) pair._1))
+                .expand(p -> p.bind(newB, pair -> (NewB) pair._2))
+                .expand(p -> p.bind(newC, pair -> (NewC) pair._3));
+        return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, Arrays.asList(collectPattern),
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
 
