@@ -150,7 +150,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
+    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
+            TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException();
     }
 
@@ -160,18 +161,28 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping, TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            TriFunction<A, B, C, GroupKey_> groupKeyMapping,
+            TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping) {
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping, TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_>
+    groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
+            TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                        groupKeyBMapping, collector);
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************

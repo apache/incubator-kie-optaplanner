@@ -51,7 +51,6 @@ import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniToTriGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 import static org.drools.model.DSL.accFunction;
@@ -181,8 +180,6 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
                 accumulate);
         return new DroolsTriCondition<>(newRuleStructure);
     }
-
-
 
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
             AbstractTriJoiner<A, B, C> triJoiner) {
