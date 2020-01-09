@@ -17,15 +17,16 @@ public class TestdataComparableDifferentValuesCalculator implements EasyScoreCal
         Map<TestdataComparableValue, Integer> alreadyUsedValues = new HashMap<>();
 
         for (TestdataComparableEntity entity : solution.getEntityList()) {
-            if (entity.getValue() != null) {
-                TestdataComparableValue value = entity.getValue();
-                if (alreadyUsedValues.containsKey(value)) {
-                    int incrementedValue = alreadyUsedValues.get(value) + 1;
-                    alreadyUsedValues.put(value, incrementedValue);
-                    score -= incrementedValue;
-                } else {
-                    alreadyUsedValues.put(value, 1);
-                }
+            if (entity.getValue() == null) {
+                continue;
+            }
+            TestdataComparableValue value = entity.getValue();
+            if (alreadyUsedValues.containsKey(value)) {
+                int incrementedValue = alreadyUsedValues.get(value) + 1;
+                alreadyUsedValues.put(value, incrementedValue);
+                score -= incrementedValue;
+            } else {
+                alreadyUsedValues.put(value, 1);
             }
         }
         return SimpleScore.of(score);
