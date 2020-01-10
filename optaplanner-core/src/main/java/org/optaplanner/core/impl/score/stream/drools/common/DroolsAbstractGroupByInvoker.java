@@ -17,7 +17,10 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -30,29 +33,26 @@ import org.drools.model.Variable;
 
 public abstract class DroolsAbstractGroupByInvoker<ResultContainer, InTuple> implements Accumulator {
 
-    protected static <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
-            Declaration... innerDeclarations) {
-        Declaration declaration = getDeclarationForVariable(var, innerDeclarations);
-        Object actualHandleObject = handleObject instanceof SubnetworkTuple ?
-                ((SubnetworkTuple) handleObject).getObject(declaration) :
-                handleObject;
-        return (X) declaration.getValue(internalWorkingMemory, actualHandleObject);
+    /**
+     * This will memoize the map based on the input array of declarations. For each accumulate, there should only be
+     * one, but this code is being called so often that the memoization has a meaningful impact.
+     */
+    private final Function<Declaration[], Map<String, Declaration>> memoizingDeclarationMapper =
+            Memoizer.memoize(DroolsAbstractGroupByInvoker::getDeclarationMap);
+
+    private static Map<String, Declaration> getDeclarationMap(Declaration... declarations) {
+        return Arrays.stream(declarations)
+                .collect(Collectors.toMap(Declaration::getIdentifier, Function.identity()));
     }
 
-    /**
-     * Declarations in Drools appear to show up in random order. Therefore, we need to match the proper declaration
-     * not by directly addressing within the array, but by looking it up based on the associated variable.
-     * @param variable
-     * @param declarations
-     * @return
-     */
-    private static Declaration getDeclarationForVariable(Variable<?> variable, Declaration... declarations) {
-        for (Declaration declaration : declarations) {
-            if (declaration.getIdentifier().equals(variable.getName())) {
-                return declaration;
-            }
-        }
-        throw new IllegalStateException("Could not find declaration for variable (" + variable + ").");
+    protected <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
+            Declaration... innerDeclarations) {
+        Map<String, Declaration> declarations = memoizingDeclarationMapper.apply(innerDeclarations);
+        Declaration varDeclaration = declarations.get(var.getName());
+        Object actualHandleObject = handleObject instanceof SubnetworkTuple ?
+                ((SubnetworkTuple) handleObject).getObject(varDeclaration) :
+                handleObject;
+        return (X) varDeclaration.getValue(internalWorkingMemory, actualHandleObject);
     }
 
     protected static <X, X2> X materialize(Variable<X> var, Function<Variable<X2>, X2> valueFinder) {
