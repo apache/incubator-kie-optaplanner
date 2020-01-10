@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.exhaustivesearch.event;
+package org.optaplanner.core.impl.testdata.phase.event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableEntity;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableSolution;
 
-public class ExhaustiveSearchListener extends PhaseLifecycleListenerAdapter<TestdataComparableSolution> {
+public class TestdataStepValueListener extends PhaseLifecycleListenerAdapter<TestdataComparableSolution> {
 
     private final List<String> dataConfigurations = new ArrayList<>();
 

@@ -27,7 +27,7 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.exhaustivesearch.event.ExhaustiveSearchListener;
+import org.optaplanner.core.impl.testdata.phase.event.TestdataStepValueListener;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableEntity;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableSolution;
@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * the score is -1) The score is reduced for every duplicate present. (meaning a solution of 1111 has the score of -4)
  */
 @RunWith(Parameterized.class)
-public class ExhaustiveSearchTest {
+public class BlackBoxExhaustiveSearchPhaseTest {
 
     private final ExhaustiveSearchType exhaustiveSearchType;
     private final NodeExplorationType nodeExplorationType;
@@ -58,8 +58,8 @@ public class ExhaustiveSearchTest {
     private TestdataComparableSolution solution;
     private SolverConfig solverConfig;
 
-    public ExhaustiveSearchTest(ExhaustiveSearchType exhaustiveSearchType, NodeExplorationType nodeExplorationType,
-                                EntitySorterManner entitySorterManner, ValueSorterManner valueSorterManner, List<String> steps) {
+    public BlackBoxExhaustiveSearchPhaseTest(ExhaustiveSearchType exhaustiveSearchType, NodeExplorationType nodeExplorationType,
+                                             EntitySorterManner entitySorterManner, ValueSorterManner valueSorterManner, List<String> steps) {
         this.exhaustiveSearchType = exhaustiveSearchType;
         this.nodeExplorationType = nodeExplorationType;
         this.entitySorterManner = entitySorterManner;
@@ -422,7 +422,7 @@ public class ExhaustiveSearchTest {
         } else {
             Solver<TestdataComparableSolution> solver = solverFactory.buildSolver();
 
-            ExhaustiveSearchListener listener = new ExhaustiveSearchListener();
+            TestdataStepValueListener listener = new TestdataStepValueListener();
             ((DefaultSolver<TestdataComparableSolution>) solver).addPhaseLifecycleListener(listener);
 
             solver.solve(solution);
