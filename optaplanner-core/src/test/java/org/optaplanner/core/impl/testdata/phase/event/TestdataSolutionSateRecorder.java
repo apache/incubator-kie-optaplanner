@@ -10,28 +10,28 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableEntity;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableSolution;
 
-public class TestdataStepValueListener extends PhaseLifecycleListenerAdapter<TestdataComparableSolution> {
+public class TestdataSolutionSateRecorder extends PhaseLifecycleListenerAdapter<TestdataComparableSolution> {
 
-    private final List<String> dataConfigurations = new ArrayList<>();
+    private final List<String> solutionStates = new ArrayList<>();
 
     @Override
     public void stepEnded(AbstractStepScope<TestdataComparableSolution> abstractStepScope) {
-        addConfiguration(abstractStepScope.getWorkingSolution());
+        addSolutionState(abstractStepScope.getWorkingSolution());
     }
 
     @Override
     public void solvingEnded(DefaultSolverScope<TestdataComparableSolution> solverScope) {
-        addConfiguration(solverScope.getBestSolution());
+        addSolutionState(solverScope.getBestSolution());
     }
 
-    private void addConfiguration(TestdataComparableSolution solution) {
-        dataConfigurations.add(solution.getEntityList().stream()
+    private void addSolutionState(TestdataComparableSolution solution) {
+        solutionStates.add(solution.getEntityList().stream()
                                        .map(TestdataComparableEntity::getValue)
                                        .map(value -> value == null ? "-" : value.getCode())
                                        .collect(Collectors.joining()));
     }
 
-    public List<String> getTestdataConfigurations() {
-        return dataConfigurations;
+    public List<String> getSolutionStates() {
+        return solutionStates;
     }
 }

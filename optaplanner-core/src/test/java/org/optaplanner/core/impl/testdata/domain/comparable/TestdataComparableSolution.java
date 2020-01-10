@@ -10,6 +10,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
 public class TestdataComparableSolution extends TestdataObject {
@@ -18,7 +19,7 @@ public class TestdataComparableSolution extends TestdataObject {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataComparableSolution.class, TestdataComparableEntity.class);
     }
 
-    private List<TestdataComparableValue> valueList;
+    private List<TestdataValue> valueList;
     private List<TestdataComparableEntity> entityList;
 
     private SimpleScore score;
@@ -32,11 +33,11 @@ public class TestdataComparableSolution extends TestdataObject {
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    public List<TestdataComparableValue> getValueList() {
+    public List<TestdataValue> getValueList() {
         return valueList;
     }
 
-    public void setValueList(List<TestdataComparableValue> valueList) {
+    public void setValueList(List<TestdataValue> valueList) {
         this.valueList = valueList;
     }
 

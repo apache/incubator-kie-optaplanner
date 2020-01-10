@@ -27,11 +27,11 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.testdata.phase.event.TestdataStepValueListener;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableEntity;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableSolution;
-import org.optaplanner.core.impl.testdata.domain.comparable.TestdataComparableValue;
+import org.optaplanner.core.impl.testdata.phase.event.TestdataSolutionSateRecorder;
 import org.optaplanner.core.impl.testdata.score.director.TestdataComparableDifferentValuesCalculator;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * The tests run through all available configuration combinations related to ExhaustiveSearch and compares the results
  * with manually calculated data. It tries to find the best solution for 3 values and 4 entities. When the same value
  * is held by different entities, the score is reduced by 1.
- *
+ * <p>
  * A solution state is represented by a string containing 4
  * characters representing entity values. Uninitialized entities are marked by '-' character. (e.g. "1-21" means that
  * the first and the fourth entity have value 1, the second entity doesn't have a value and the third entity has 2,
@@ -404,9 +404,9 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                                              new TestdataComparableEntity("entity2"),
                                              new TestdataComparableEntity("entity3"),
                                              new TestdataComparableEntity("entity1")));
-        solution.setValueList(Arrays.asList(new TestdataComparableValue("1"),
-                                            new TestdataComparableValue("3"),
-                                            new TestdataComparableValue("2")));
+        solution.setValueList(Arrays.asList(new TestdataValue("1"),
+                                            new TestdataValue("3"),
+                                            new TestdataValue("2")));
     }
 
     @Test
@@ -422,12 +422,12 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         } else {
             Solver<TestdataComparableSolution> solver = solverFactory.buildSolver();
 
-            TestdataStepValueListener listener = new TestdataStepValueListener();
+            TestdataSolutionSateRecorder listener = new TestdataSolutionSateRecorder();
             ((DefaultSolver<TestdataComparableSolution>) solver).addPhaseLifecycleListener(listener);
 
             solver.solve(solution);
 
-            assertThat(listener.getTestdataConfigurations()).containsExactlyElementsOf(steps);
+            assertThat(listener.getSolutionStates()).containsExactlyElementsOf(steps);
         }
     }
 }

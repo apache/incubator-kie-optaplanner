@@ -6,6 +6,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity(difficultyComparatorClass = TestdataCodeComparator.class)
 public class TestdataComparableEntity extends TestdataObject {
@@ -24,7 +25,7 @@ public class TestdataComparableEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private TestdataComparableValue value;
+    private TestdataValue value;
 
     public TestdataComparableEntity() {
     }
@@ -33,18 +34,18 @@ public class TestdataComparableEntity extends TestdataObject {
         super(code);
     }
 
-    public TestdataComparableEntity(String code, TestdataComparableValue value) {
+    public TestdataComparableEntity(String code, TestdataValue value) {
         this(code);
         this.value = value;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"valueRange"},
             strengthComparatorClass = TestdataCodeComparator.class)
-    public TestdataComparableValue getValue() {
+    public TestdataValue getValue() {
         return value;
     }
 
-    public void setValue(TestdataComparableValue value) {
+    public void setValue(TestdataValue value) {
         this.value = value;
     }
 
