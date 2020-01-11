@@ -276,6 +276,38 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @Test
+    public void groupBy_1Mapping1Collector_count() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .groupBy((entity, group, value) -> value, countTri())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, count) -> count);
+        });
+
+        TestdataLavishValue value1 = solution.getFirstValue();
+        TestdataLavishValue value2 = solution.getValueList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, value2, 1),
+                assertMatchWithScore(-2, value1, 2));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, value2, 1),
+                assertMatchWithScore(-1, value1, 1));
+    }
+
+    @Test
     public void groupBy_2Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);

@@ -165,7 +165,11 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             TriFunction<A, B, C, GroupKey_> groupKeyMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
