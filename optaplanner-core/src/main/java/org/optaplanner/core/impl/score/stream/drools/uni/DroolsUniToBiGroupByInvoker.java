@@ -20,34 +20,31 @@ import java.util.function.Function;
 
 import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
-public class DroolsUniGroupByInvoker<A, B, ResultContainer, NewB>
-        extends DroolsAbstractGroupByInvoker<ResultContainer, BiTuple<A, B>> {
+public class DroolsUniToBiGroupByInvoker<A, ResultContainer, NewA, NewB>
+    extends DroolsAbstractGroupByInvoker<ResultContainer, A> {
 
-    private final UniConstraintCollector<B, ResultContainer, NewB> collector;
+    private final UniConstraintCollector<A, ResultContainer, NewB> collector;
+    private final Function<A, NewA> groupKeyMapping;
     private final Variable<A> aVariable;
-    private final Variable<B> bVariable;
 
-    public DroolsUniGroupByInvoker(UniConstraintCollector<B, ResultContainer, NewB> collector, Variable<A> aVariable,
-            Variable<B> bVariable) {
+    public DroolsUniToBiGroupByInvoker(Function<A, NewA> groupKeyMapping,
+            UniConstraintCollector<A, ResultContainer, NewB> collector, Variable<A> aVariable) {
         this.collector = collector;
+        this.groupKeyMapping = groupKeyMapping;
         this.aVariable = aVariable;
-        this.bVariable = bVariable;
     }
 
     @Override
-    protected DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, ?> newContext() {
-        return new DroolsUniGroupBy<>(collector);
+    protected DroolsAbstractGroupBy<ResultContainer, A, ?> newContext() {
+        return new DroolsUniToBiGroupBy<>(groupKeyMapping, collector);
     }
 
     @Override
-    protected <X> BiTuple<A, B> createInput(Function<Variable<X>, X> valueFinder) {
-        final A a = materialize(aVariable, valueFinder);
-        final B b = materialize(bVariable, valueFinder);
-        return new BiTuple<>(a, b);
+    protected <X> A createInput(Function<Variable<X>, X> valueFinder) {
+        return materialize(aVariable, valueFinder);
     }
 
 }

@@ -16,23 +16,28 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.util.function.Function;
+
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 
-final class DroolsUniGroupBy<A, B, ResultContainer, NewB>
-        extends DroolsAbstractGroupBy<ResultContainer, BiTuple<A, B>, BiTuple<A, NewB>> {
+final class DroolsUniToBiGroupBy<A, ResultContainer, NewA, NewB>
+        extends DroolsAbstractGroupBy<ResultContainer, A, BiTuple<NewA, NewB>> {
 
-    private final UniConstraintCollector<B, ResultContainer, NewB> collector;
+    private final Function<A, NewA> groupKeyMapping;
+    private final UniConstraintCollector<A, ResultContainer, NewB> collector;
 
-    public DroolsUniGroupBy(UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsUniToBiGroupBy(Function<A, NewA> groupKeyMapping,
+            UniConstraintCollector<A, ResultContainer, NewB> collector) {
+        this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
     }
 
     @Override
-    protected DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, ?, BiTuple<A, NewB>> newAccumulator() {
-        return new DroolsUniGroupByAccumulator<>(collector);
+    protected DroolsAbstractGroupByAccumulator<ResultContainer, A, ?, BiTuple<NewA, NewB>> newAccumulator() {
+        return new DroolsUniToBiGroupByAccumulator<>(groupKeyMapping, collector);
     }
 
 }

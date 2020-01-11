@@ -24,22 +24,25 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 
-final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB>
-        extends DroolsAbstractGroupByAccumulator<ResultContainer, BiTuple<A, B>, A, BiTuple<A, NewB>> {
+final class DroolsUniToBiGroupByAccumulator<A, ResultContainer, NewA, NewB>
+    extends DroolsAbstractGroupByAccumulator<ResultContainer, A, NewA, BiTuple<NewA, NewB>> {
 
+    private final Function<A, NewA> groupKeyMapping;
     private final Supplier<ResultContainer> supplier;
-    private final BiFunction<ResultContainer, B, Runnable> accumulator;
+    private final BiFunction<ResultContainer, A, Runnable> accumulator;
     private final Function<ResultContainer, NewB> finisher;
 
-    public DroolsUniGroupByAccumulator(UniConstraintCollector<B, ResultContainer, NewB> collector) {
+    public DroolsUniToBiGroupByAccumulator(Function<A, NewA> groupKeyMapping,
+            UniConstraintCollector<A, ResultContainer, NewB> collector) {
+        this.groupKeyMapping = groupKeyMapping;
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
     @Override
-    protected A toKey(BiTuple<A, B> abBiTuple) {
-        return abBiTuple._1;
+    protected NewA toKey(A a) {
+        return groupKeyMapping.apply(a);
     }
 
     @Override
@@ -48,12 +51,13 @@ final class DroolsUniGroupByAccumulator<A, B, ResultContainer, NewB>
     }
 
     @Override
-    protected Runnable process(BiTuple<A, B> abBiTuple, ResultContainer container) {
-        return accumulator.apply(container, abBiTuple._2);
+    protected Runnable process(A a, ResultContainer container) {
+        return accumulator.apply(container, a);
     }
 
     @Override
-    protected BiTuple<A, NewB> toResult(A key, ResultContainer container) {
+    protected BiTuple<NewA, NewB> toResult(NewA key, ResultContainer container) {
         return new BiTuple<>(key, finisher.apply(container));
     }
+
 }

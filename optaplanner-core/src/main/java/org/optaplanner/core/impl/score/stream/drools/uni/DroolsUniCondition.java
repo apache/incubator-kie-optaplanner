@@ -110,23 +110,16 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
 
     public <ResultContainer, NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(
             Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer, NewB> collector) {
-        Variable<A> collectingOnVar =
-                (Variable<A>) ruleStructure.createVariable(ruleStructure.getA().getType(), "collectingOn");
-        Variable<NewA> groupKeyVar = ruleStructure.createVariable("groupKey");
         Variable<Set<BiTuple<NewA, NewB>>> setOfPairsVar =
                 (Variable<Set<BiTuple<NewA, NewB>>>) ruleStructure.createVariable(Set.class, "setOfPairs");
-        String exprName = "Set of pairs of " + collectingOnVar.getName() + " and " + groupKeyVar.getName();
         PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> pattern = pattern(setOfPairsVar)
-                .expr(exprName, set -> !set.isEmpty(),
+                .expr("Set of resulting pairs", set -> !set.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
         // Prepare the list of pairs.
-        PatternDSL.PatternDef<Object> innerNewACollectingPattern = ruleStructure.getPrimaryPattern()
-                .expand(p -> p.bind(groupKeyVar, a -> groupKeyMapping.apply((A) a))
-                        .bind(collectingOnVar, a -> (A) a))
-                .build();
+        PatternDSL.PatternDef<Object> innerNewACollectingPattern = ruleStructure.getPrimaryPattern().build();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(innerNewACollectingPattern);
         ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(() -> new DroolsUniGroupByInvoker<>(collector, groupKeyVar, collectingOnVar))
+                accFunction(() -> new DroolsUniToBiGroupByInvoker<>(groupKeyMapping, collector, getRuleStructure().getA()))
                         .as(setOfPairsVar));
         // Load one pair from the list.
         Variable<BiTuple<NewA, NewB>> onePairVar =
