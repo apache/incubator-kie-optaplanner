@@ -108,24 +108,10 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         return group((pattern, carrier) -> pattern.bind(carrier, a -> groupKeyMapping.apply((A) a)));
     }
 
-    public <ResultContainer, NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(
-            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ResultContainer, NewB> collector) {
-        Variable<Set<BiTuple<NewA, NewB>>> setOfPairsVar =
-                (Variable<Set<BiTuple<NewA, NewB>>>) ruleStructure.createVariable(Set.class, "setOfPairs");
-        PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> pattern = pattern(setOfPairsVar)
-                .expr("Set of resulting pairs", set -> !set.isEmpty(),
-                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
-        // Prepare the list of pairs.
-        PatternDSL.PatternDef<Object> innerNewACollectingPattern = ruleStructure.getPrimaryPattern().build();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(innerNewACollectingPattern);
-        ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(() -> new DroolsUniToBiGroupByInvoker<>(groupKeyMapping, collector, getRuleStructure().getA()))
-                        .as(setOfPairsVar));
-        // Load one pair from the list.
-        Variable<BiTuple<NewA, NewB>> onePairVar =
-                (Variable<BiTuple<NewA, NewB>>) ruleStructure.createVariable(BiTuple.class, "pair", from(setOfPairsVar));
-        DroolsBiRuleStructure<NewA, NewB> newRuleStructure = ruleStructure.regroupBi(onePairVar, pattern, accumulate);
-        return new DroolsBiCondition<>(newRuleStructure);
+    public <__, NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(
+            Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, __, NewB> collector) {
+        return groupWithCollect(() -> new DroolsUniToBiGroupByInvoker<>(groupKeyMapping, collector,
+                getRuleStructure().getA()));
     }
 
     /**

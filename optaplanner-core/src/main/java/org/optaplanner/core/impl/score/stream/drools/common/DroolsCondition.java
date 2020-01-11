@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
@@ -34,11 +35,14 @@ import org.drools.model.view.ViewItem;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.from;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
@@ -122,5 +126,22 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
         return new DroolsUniCondition<>(newRuleStructure);
     }
 
+    public <NewA, NewB, __, InTuple> DroolsBiCondition<NewA, NewB> groupWithCollect(
+            Supplier<? extends DroolsAbstractGroupByInvoker<__, InTuple>> invokerSupplier) {
+        Variable<Set<BiTuple<NewA, NewB>>> setOfPairsVar =
+                (Variable<Set<BiTuple<NewA, NewB>>>) ruleStructure.createVariable(Set.class, "setOfPairs");
+        PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> pattern = pattern(setOfPairsVar)
+                .expr("Set of resulting pairs", set -> !set.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
+        // Prepare the list of pairs.
+        PatternDSL.PatternDef<Object> innerNewACollectingPattern = ruleStructure.getPrimaryPattern().build();
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(innerNewACollectingPattern);
+        ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern, accFunction(invokerSupplier).as(setOfPairsVar));
+        // Load one pair from the list.
+        Variable<BiTuple<NewA, NewB>> onePairVar =
+                (Variable<BiTuple<NewA, NewB>>) ruleStructure.createVariable(BiTuple.class, "pair", from(setOfPairsVar));
+        DroolsBiRuleStructure<NewA, NewB> newRuleStructure = ruleStructure.regroupBi(onePairVar, pattern, accumulate);
+        return new DroolsBiCondition<>(newRuleStructure);
+    }
 
 }
