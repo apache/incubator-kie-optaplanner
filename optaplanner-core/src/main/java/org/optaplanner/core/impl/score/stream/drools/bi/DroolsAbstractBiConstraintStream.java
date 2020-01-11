@@ -74,7 +74,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         throwWhenGroupByNotAllowed();
-        DroolsGroupingUniConstraintStream<Solution_, A, Result_> stream =
+        DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
         addChildStream(stream);
         return stream;
@@ -83,7 +83,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
         throwWhenGroupByNotAllowed();
-        DroolsGroupingUniConstraintStream<Solution_, A, GroupKey_> stream =
+        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;

@@ -40,6 +40,7 @@ import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadCons
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 
 public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
@@ -158,7 +159,11 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping) {
-        throw new UnsupportedOperationException();
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
+                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
