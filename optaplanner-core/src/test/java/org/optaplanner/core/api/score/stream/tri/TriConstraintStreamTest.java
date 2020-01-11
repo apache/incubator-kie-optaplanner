@@ -276,6 +276,33 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @Test
+    public void groupBy_OMapping1Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .groupBy(countTri())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, count -> count);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-3, 3));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, 2));
+    }
+
+    @Test
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);

@@ -154,7 +154,11 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
+                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override

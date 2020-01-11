@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
@@ -59,6 +60,15 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
     public <A, B, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.condition = parent.getCondition().andCollect(collector);
+    }
+
+    public <A, B, C, ResultContainer_> DroolsGroupingUniConstraintStream(
+            DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
         super(constraintFactory);
         this.parent = parent;
         this.condition = parent.getCondition().andCollect(collector);

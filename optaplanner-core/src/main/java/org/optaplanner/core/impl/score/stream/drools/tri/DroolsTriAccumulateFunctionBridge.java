@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.bi;
+package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -23,25 +23,25 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAccumulateContext;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
+final class DroolsTriAccumulateFunctionBridge<A, B, C, ResultContainer_, NewA>
         implements AccumulateFunction<DroolsAccumulateContext<ResultContainer_>> {
 
     private final Supplier<ResultContainer_> supplier;
-    private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
+    private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsBiAccumulateFunctionBridge(BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
+    public DroolsTriAccumulateFunctionBridge(TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
-    public DroolsBiAccumulateFunctionBridge() {
+    public DroolsTriAccumulateFunctionBridge() {
         throw new UnsupportedOperationException("Serialization is not supported.");
     }
 
@@ -61,8 +61,8 @@ final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
         if (undoMap.containsKey(value)) {
             throw new IllegalStateException("Undo for (" + value +  ") already exists.");
         }
-        BiTuple<A, B> values = (BiTuple<A, B>) value;
-        Runnable undo = accumulator.apply(context.getContainer(), values._1, values._2);
+        TriTuple<A, B, C> values = (TriTuple<A, B, C>) value;
+        Runnable undo = accumulator.apply(context.getContainer(), values._1, values._2, values._3);
         undoMap.put(value, undo);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,6 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAccumulateContext;
 
-/**
- * Drools {@link AccumulateFunction} that calls {@link UniConstraintCollector} underneath.
- * @param <A> input to accumulate
- * @param <ResultContainer_> implementation detail
- * @param <NewA> result of accumulation
- */
 final class DroolsUniAccumulateFunctionBridge<A, ResultContainer_, NewA>
         implements AccumulateFunction<DroolsAccumulateContext<ResultContainer_>> {
 
