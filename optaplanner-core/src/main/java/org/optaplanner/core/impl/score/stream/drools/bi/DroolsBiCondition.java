@@ -25,7 +25,6 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.UnaryOperator;
 
-import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
@@ -36,7 +35,6 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Predicate3;
-import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -61,6 +59,19 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
 
     public DroolsBiCondition(DroolsBiRuleStructure<A, B> ruleStructure) {
         super(ruleStructure);
+    }
+
+    private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {
+        JoinerType[] joinerTypes = triJoiner.getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = triJoiner.getLeftMapping(i).apply(a, b);
+            Object rightMapping = triJoiner.getRightMapping(i).apply(c);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public DroolsBiCondition<A, B> andFilter(BiPredicate<A, B> predicate) {
@@ -94,26 +105,11 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
 
     public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping) {
-        Variable<BiTuple<NewA, NewB>> mappedVariable = ruleStructure.createVariable("biMapped");
-        PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
-                .expand(p -> p.bind(mappedVariable, ruleStructure.getA(), (b, a) -> {
-                    NewA newA = groupKeyAMapping.apply(a, (B) b);
-                    NewB newB = groupKeyBMapping.apply(a, (B) b);
-                    return new BiTuple<>(newA, newB);
-                }))
-                .build();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
-        Variable<Set<BiTuple<NewA, NewB>>> setOfPairs =
-                (Variable<Set<BiTuple<NewA, NewB>>>) ruleStructure.createVariable(Set.class, "setOfPairs");
-        PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> pattern = pattern(setOfPairs)
-                .expr("Set of " + mappedVariable.getName(), set -> !set.isEmpty(),
-                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
-        ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfPairs));
-        Variable<BiTuple<NewA, NewB>> onePairVar =
-                (Variable<BiTuple<NewA, NewB>>) ruleStructure.createVariable(BiTuple.class, "pair", from(setOfPairs));
-        DroolsBiRuleStructure<NewA, NewB> newRuleStructure = ruleStructure.regroupBi(onePairVar, pattern, accumulate);
-        return new DroolsBiCondition<>(newRuleStructure);
+        return groupBi((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), (b, a) -> {
+            final NewA newA = groupKeyAMapping.apply(a, (B) b);
+            final NewB newB = groupKeyBMapping.apply(a, (B) b);
+            return new BiTuple<>(newA, newB);
+        }));
     }
 
     public <ResultContainer, NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
@@ -181,18 +177,4 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
                         .execute(consequenceImpl);
         return ruleStructure.finish(consequence);
     }
-
-    private static <A, B, C> boolean matches(AbstractTriJoiner<A, B, C> triJoiner, A a, B b, C c) {
-        JoinerType[] joinerTypes = triJoiner.getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
-            Object leftMapping = triJoiner.getLeftMapping(i).apply(a, b);
-            Object rightMapping = triJoiner.getRightMapping(i).apply(c);
-            if (!joinerType.matches(leftMapping, rightMapping)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 }
