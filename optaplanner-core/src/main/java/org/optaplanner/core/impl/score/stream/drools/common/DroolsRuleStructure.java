@@ -185,12 +185,13 @@ public abstract class DroolsRuleStructure {
     }
 
     public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC> regroupBiToTri(
-            Variable<TriTuple<NewA, NewB, NewC>> newSource,
+            Variable<Set<TriTuple<NewA, NewB, NewC>>> newSource,
             PatternDSL.PatternDef<Set<TriTuple<NewA, NewB, NewC>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<TriTuple<NewA, NewB, NewC>> newTuple = createVariable("groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
         Variable<NewC> newC = createVariable("newC");
-        DroolsPatternBuilder<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
+        DroolsPatternBuilder<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
                 .expand(p -> p.bind(newA, pair -> (NewA) pair._1))
                 .expand(p -> p.bind(newB, pair -> (NewB) pair._2))
                 .expand(p -> p.bind(newC, pair -> (NewC) pair._3));

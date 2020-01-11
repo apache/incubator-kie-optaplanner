@@ -91,11 +91,11 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
 
     public <NewA, __> DroolsUniCondition<NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
         DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
-        return collect(bridge, (pattern, carrier) -> pattern.bind(carrier, a -> (A) a));
+        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, a -> (A) a));
     }
 
     public <NewA> DroolsUniCondition<NewA> andGroup(Function<A, NewA> groupKeyMapping) {
-        return group((pattern, carrier) -> pattern.bind(carrier, a -> groupKeyMapping.apply((A) a)));
+        return group((pattern, tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a)));
     }
 
     public <__, NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(

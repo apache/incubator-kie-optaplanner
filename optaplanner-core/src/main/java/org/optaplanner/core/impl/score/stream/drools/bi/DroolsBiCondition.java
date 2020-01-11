@@ -39,7 +39,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
-import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
@@ -80,12 +79,12 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
 
     public <NewA, __> DroolsUniCondition<NewA> andCollect(BiConstraintCollector<A, B, __, NewA> collector) {
         DroolsBiAccumulateFunctionBridge<A, B, __, NewA> bridge = new DroolsBiAccumulateFunctionBridge<>(collector);
-        return collect(bridge, (pattern, carrier) -> pattern.bind(carrier, ruleStructure.getA(),
+        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
                 (b, a) -> new BiTuple<>((A) a, (B) b)));
     }
 
     public <NewA> DroolsUniCondition<NewA> andGroup(BiFunction<A, B, NewA> groupKeyMapping) {
-        return group((pattern, carrier) -> pattern.bind(carrier, ruleStructure.getA(),
+        return group((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
                 (b, a) -> groupKeyMapping.apply(a, (B) b)));
     }
 

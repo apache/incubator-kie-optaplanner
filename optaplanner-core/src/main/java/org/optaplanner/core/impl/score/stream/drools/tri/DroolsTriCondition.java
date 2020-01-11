@@ -82,12 +82,12 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
     public <NewA, __> DroolsUniCondition<NewA> andCollect(TriConstraintCollector<A, B, C, __, NewA> collector) {
         DroolsTriAccumulateFunctionBridge<A, B, C, __, NewA> bridge =
                 new DroolsTriAccumulateFunctionBridge<>(collector);
-        return collect(bridge, (pattern, carrier) -> pattern.bind(carrier, ruleStructure.getA(),
+        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
                 ruleStructure.getB(), (c, a, b) -> new TriTuple<>((A) a, (B) b, (C) c)));
     }
 
     public <NewA> DroolsUniCondition<NewA> andGroup(TriFunction<A, B, C, NewA> groupKeyMapping) {
-        return super.group((pattern, carrier) -> pattern.bind(carrier, ruleStructure.getA(), ruleStructure.getB(),
+        return super.group((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
                 (c, a, b) -> groupKeyMapping.apply(a, b, (C) c)));
     }
 
@@ -107,9 +107,9 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
                 }));
     }
 
-    public <ResultContainer, NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
+    public <NewA, NewB, NewC, __> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
             TriFunction<A, B, C, NewA> groupKeyAMapping, TriFunction<A, B, C, NewB> groupKeyBMapping,
-            TriConstraintCollector<A, B, C, ResultContainer, NewC> collector) {
+            TriConstraintCollector<A, B, C, __, NewC> collector) {
         return groupBiWithCollect(() -> new DroolsTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping, collector,
                 getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC()));
     }
