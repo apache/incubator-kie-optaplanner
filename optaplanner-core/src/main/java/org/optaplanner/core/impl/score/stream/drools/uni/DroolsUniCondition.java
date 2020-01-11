@@ -101,24 +101,11 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
 
     public <NewA, __> DroolsUniCondition<NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
         DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
-        return super.andCollect(bridge,
-                (pattern, ruleStructure, carrier) -> pattern.bind(carrier, a -> (A) a));
+        return collect(bridge, (pattern, carrier) -> pattern.bind(carrier, a -> (A) a));
     }
 
     public <NewA> DroolsUniCondition<NewA> andGroup(Function<A, NewA> groupKeyMapping) {
-        Variable<NewA> mappedVariable = ruleStructure.createVariable("mapped");
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleStructure.getPrimaryPattern()
-                .expand(p -> p.bind(mappedVariable, k -> groupKeyMapping.apply((A) k)))
-                .build());
-        Variable<Set<NewA>> setOfGroupKeys = (Variable<Set<NewA>>) ruleStructure.createVariable(Set.class, "setOfGroupKey");
-        AlphaIndex<Set<NewA>, Integer> index = alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1,
-                Set::size, 0);
-        PatternDSL.PatternDef<Set<NewA>> pattern = pattern(setOfGroupKeys)
-                .expr("Set of " + mappedVariable.getName(), set -> !set.isEmpty(), index);
-        ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfGroupKeys));
-        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.regroup(setOfGroupKeys, pattern, accumulate);
-        return new DroolsUniCondition<>(newRuleStructure);
+        return group((pattern, carrier) -> pattern.bind(carrier, a -> groupKeyMapping.apply((A) a)));
     }
 
     public <ResultContainer, NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(

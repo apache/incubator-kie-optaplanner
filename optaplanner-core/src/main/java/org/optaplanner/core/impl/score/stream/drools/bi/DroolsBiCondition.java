@@ -77,26 +77,13 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
 
     public <NewA, __> DroolsUniCondition<NewA> andCollect(BiConstraintCollector<A, B, __, NewA> collector) {
         DroolsBiAccumulateFunctionBridge<A, B, __, NewA> bridge = new DroolsBiAccumulateFunctionBridge<>(collector);
-        return super.andCollect(bridge,
-                (pattern, ruleStructure, carrier) -> pattern.bind(carrier, ruleStructure.getA(),
-                        (b, a) -> new BiTuple<>((A) a, (B) b)));
+        return collect(bridge, (pattern, carrier) -> pattern.bind(carrier, ruleStructure.getA(),
+                (b, a) -> new BiTuple<>((A) a, (B) b)));
     }
 
     public <NewA> DroolsUniCondition<NewA> andGroup(BiFunction<A, B, NewA> groupKeyMapping) {
-        Variable<NewA> mappedVariable = ruleStructure.createVariable("biMapped");
-        PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
-                        .expand(p -> p.bind(mappedVariable, ruleStructure.getA(), (b, a) -> groupKeyMapping.apply((A) a, (B) b)))
-                        .build();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
-        Variable<Set<NewA>> setOfMappings =
-                (Variable<Set<NewA>>) ruleStructure.createVariable(Set.class, "setOfGroupKey");
-        PatternDSL.PatternDef<Set<NewA>> pattern = pattern(setOfMappings)
-                .expr("Set of " + mappedVariable.getName(), set -> !set.isEmpty(),
-                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Set::size, 0));
-        ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(setOfMappings));
-        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.regroup(setOfMappings, pattern, accumulate);
-        return new DroolsUniCondition<>(newRuleStructure);
+        return group((pattern, carrier) -> pattern.bind(carrier, ruleStructure.getA(),
+                (b, a) -> groupKeyMapping.apply(a, (B) b)));
     }
 
     public <NewA, NewB, __> DroolsBiCondition<NewA, NewB> andGroupWithCollect(BiFunction<A, B, NewA> groupKeyMapping,
