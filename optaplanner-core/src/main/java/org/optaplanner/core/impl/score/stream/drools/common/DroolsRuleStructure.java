@@ -172,11 +172,12 @@ public abstract class DroolsRuleStructure {
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
 
-    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<BiTuple<NewA, NewB>> newSource,
+    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<Set<BiTuple<NewA, NewB>>> newSource,
             PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<BiTuple<NewA, NewB>> newTuple = createVariable("groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
-        DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newSource)
+        DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
                 .expand(p -> p.bind(newA, pair -> (NewA) pair._1))
                 .expand(p -> p.bind(newB, pair -> (NewB) pair._2));
         return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, Arrays.asList(collectPattern),
