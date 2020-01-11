@@ -34,7 +34,6 @@ import org.drools.model.functions.Block5;
 import org.drools.model.functions.Predicate4;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -45,7 +44,6 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAccumulateContext;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
@@ -56,7 +54,6 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.from;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
@@ -94,20 +91,11 @@ public final class DroolsTriCondition<A, B, C> extends DroolsCondition<DroolsTri
     }
 
     public <NewA, __> DroolsUniCondition<NewA> andCollect(TriConstraintCollector<A, B, C, __, NewA> collector) {
-        Variable<TriTuple<A, B, C>> tupleVariable = ruleStructure.createVariable("tuple");
-        PatternDSL.PatternDef<Object> mainAccumulatePattern = ruleStructure.getPrimaryPattern()
-                .expand(p -> p.bind(tupleVariable, ruleStructure.getA(), ruleStructure.getB(), (c, a, b) -> {
-                    return new TriTuple<>((A) a, (B) b, (C) c);
-                }))
-                .build();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
-        AccumulateFunction<DroolsAccumulateContext<__>> accumulateFunction =
+        DroolsTriAccumulateFunctionBridge<A, B, C, __, NewA> bridge =
                 new DroolsTriAccumulateFunctionBridge<>(collector);
-        Variable<NewA> outputVariable = (Variable<NewA>) declarationOf(Object.class, "collected");
-        ViewItem<?> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
-                accFunction(() -> accumulateFunction, tupleVariable).as(outputVariable));
-        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.recollect(outputVariable, outerAccumulatePattern);
-        return new DroolsUniCondition<>(newRuleStructure);
+        return super.andCollect(bridge,
+                (pattern, ruleStructure, carrier) -> pattern.bind(carrier, ruleStructure.getA(), ruleStructure.getB(),
+                        (c, a, b) -> new TriTuple<>((A) a, (B) b, (C) c)));
     }
 
     public <NewA> DroolsUniCondition<NewA> andGroup(TriFunction<A, B, C, NewA> groupKeyMapping) {

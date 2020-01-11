@@ -43,7 +43,6 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
@@ -51,14 +50,12 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAccumulateContext;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 
 import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.betaIndexedBy;
@@ -102,17 +99,10 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         return new DroolsUniCondition<>(newStructure);
     }
 
-    public <NewA, ResultContainer> DroolsUniCondition<NewA> andCollect(
-            UniConstraintCollector<A, ResultContainer, NewA> collector) {
-        Variable<A> inputVariable = ruleStructure.getA();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleStructure.getPrimaryPattern().build());
-        AccumulateFunction<DroolsAccumulateContext<ResultContainer>> accumulateFunction =
-                new DroolsUniAccumulateFunctionBridge<>(collector);
-        Variable<NewA> outputVariable = (Variable<NewA>) declarationOf(Object.class, "collected");
-        ViewItem<?> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
-                accFunction(() -> accumulateFunction, inputVariable).as(outputVariable));
-        DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.recollect(outputVariable, outerAccumulatePattern);
-        return new DroolsUniCondition<>(newRuleStructure);
+    public <NewA, __> DroolsUniCondition<NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
+        DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
+        return super.andCollect(bridge,
+                (pattern, ruleStructure, carrier) -> pattern.bind(carrier, a -> (A) a));
     }
 
     public <NewA> DroolsUniCondition<NewA> andGroup(Function<A, NewA> groupKeyMapping) {
