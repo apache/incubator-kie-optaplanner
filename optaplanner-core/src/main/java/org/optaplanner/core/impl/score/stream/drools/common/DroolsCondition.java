@@ -44,7 +44,6 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
 import static org.drools.model.DSL.accFunction;
-import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
@@ -70,7 +69,7 @@ public abstract class DroolsCondition<T extends DroolsRuleStructure> {
                 .expand(p -> bindFunction.apply(p, tupleVariable))
                 .build();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
-        Variable<NewA> outputVariable = (Variable<NewA>) declarationOf(Object.class, "collected");
+        Variable<NewA> outputVariable = ruleStructure.createVariable("collected");
         ViewItem<?> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
                 accFunction(() -> accumulateFunctionBridge, tupleVariable).as(outputVariable));
         DroolsUniRuleStructure<NewA> newRuleStructure = ruleStructure.recollect(outputVariable, outerAccumulatePattern);

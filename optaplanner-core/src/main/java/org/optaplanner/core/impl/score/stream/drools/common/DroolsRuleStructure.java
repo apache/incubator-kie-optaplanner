@@ -174,7 +174,8 @@ public abstract class DroolsRuleStructure {
 
     public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<Set<BiTuple<NewA, NewB>>> newSource,
             PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
-        Variable<BiTuple<NewA, NewB>> newTuple = createVariable("groupKey", from(newSource));
+        Variable<BiTuple<NewA, NewB>> newTuple =
+                (Variable<BiTuple<NewA, NewB>>) createVariable(BiTuple.class,"groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
         DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
@@ -187,7 +188,8 @@ public abstract class DroolsRuleStructure {
     public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC> regroupBiToTri(
             Variable<Set<TriTuple<NewA, NewB, NewC>>> newSource,
             PatternDSL.PatternDef<Set<TriTuple<NewA, NewB, NewC>>> collectPattern, ViewItem<?> accumulatePattern) {
-        Variable<TriTuple<NewA, NewB, NewC>> newTuple = createVariable("groupKey", from(newSource));
+        Variable<TriTuple<NewA, NewB, NewC>> newTuple =
+                (Variable<TriTuple<NewA, NewB, NewC>>) createVariable(TriTuple.class, "groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
         Variable<NewC> newC = createVariable("newC");
