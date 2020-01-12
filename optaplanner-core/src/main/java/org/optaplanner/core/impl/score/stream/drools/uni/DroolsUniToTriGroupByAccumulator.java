@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -33,18 +28,11 @@ import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 final class DroolsUniToTriGroupByAccumulator<A, ResultContainer, NewA, NewB, NewC>
     extends DroolsAbstractGroupByAccumulator<ResultContainer, A, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
 
-    // Containers may be identical in type and contents, yet they should still not count as the same container.
-    private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
-    // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
-    private final Map<BiTuple<NewA, NewB>, ResultContainer> containersMap = new LinkedHashMap<>(0);
     private final Function<A, NewA> groupKeyAMapping;
     private final Function<A, NewB> groupKeyBMapping;
     private final Supplier<ResultContainer> supplier;
     private final BiFunction<ResultContainer, A, Runnable> accumulator;
     private final Function<ResultContainer, NewC> finisher;
-    // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
-    // It doesn't make sense to serialize this anyway, as it is recreated every time.
-    private final transient Set<TriTuple<NewA, NewB, NewC>> resultSet = new LinkedHashSet<>(0);
 
     public DroolsUniToTriGroupByAccumulator(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer, NewC> collector) {
