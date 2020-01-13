@@ -32,7 +32,6 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
@@ -257,7 +256,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     /**
      * Combines the semantics of {@link #groupBy(TriFunction, TriFunction)} and {@link #groupBy(TriConstraintCollector)}.
      * That is, the first and second facts in the tuple follow the {@link #groupBy(TriFunction, TriFunction)} semantics,
-     * and the third fact is the result of applying {@link BiConstraintCollector#finisher()} on all the tuples of the
+     * and the third fact is the result of applying {@link TriConstraintCollector#finisher()} on all the tuples of the
      * original {@link UniConstraintStream} that fall in the group.
      * @param groupKeyAMapping never null, function to convert first fact in the original tuple to a different fact
      * @param groupKeyBMapping never null, function to convert second fact in the original tuple to a different fact

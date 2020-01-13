@@ -19,21 +19,22 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * Represents a predicate (boolean-valued function) of four arguments.
- * This is the four-arity specialization of {@link Predicate}.
+ * Represents a predicate (boolean-valued function) of five arguments.
+ * This is the five-arity specialization of {@link Predicate}.
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
- * whose functional method is {@link #test(Object, Object, Object, Object)}.
+ * whose functional method is {@link #test(Object, Object, Object, Object, Object)}.
  *
  * @param <A> the type of the first argument to the predicate
  * @param <B> the type of the second argument the predicate
  * @param <C> the type of the third argument the predicate
  * @param <D> the type of the fourth argument the predicate
+ * @param <E> the type of the fifth argument the predicate
  *
  * @see Predicate
  */
 @FunctionalInterface
-public interface QuadPredicate<A, B, C, D> {
+public interface PentaPredicate<A, B, C, D, E> {
 
     /**
      * Evaluates this predicate on the given arguments.
@@ -42,10 +43,11 @@ public interface QuadPredicate<A, B, C, D> {
      * @param b the second input argument
      * @param c the third input argument
      * @param d the fourth input argument
+     * @param e the fifth input argument
      * @return {@code true} if the input arguments match the predicate,
      * otherwise {@code false}
      */
-    boolean test(A a, B b, C c, D d);
+    boolean test(A a, B b, C c, D d, E e);
 
     /**
      * Returns a composed predicate that represents a short-circuiting logical
@@ -62,9 +64,10 @@ public interface QuadPredicate<A, B, C, D> {
      * AND of this predicate and the {@code other} predicate
      * @throws NullPointerException if other is null
      */
-    default QuadPredicate<A, B, C, D> and(QuadPredicate<? super A, ? super B, ? super C, ? super D> other) {
+    default PentaPredicate<A, B, C, D, E> and(PentaPredicate<? super A, ? super B, ? super C, ? super D,
+            ? super E> other) {
         Objects.requireNonNull(other);
-        return (A a, B b, C c, D d) -> test(a, b, c, d) && other.test(a, b, c, d);
+        return (A a, B b, C c, D d, E e) -> test(a, b, c, d, e) && other.test(a, b, c, d, e);
     }
 
     /**
@@ -74,8 +77,8 @@ public interface QuadPredicate<A, B, C, D> {
      * @return a predicate that represents the logical negation of this
      * predicate
      */
-    default QuadPredicate<A, B, C, D> negate() {
-        return (A a, B b, C c, D d) -> !test(a, b, c, d);
+    default PentaPredicate<A, B, C, D, E> negate() {
+        return (A a, B b, C c, D d, E e) -> !test(a, b, c, d, e);
     }
 
     /**
@@ -93,8 +96,9 @@ public interface QuadPredicate<A, B, C, D> {
      * OR of this predicate and the {@code other} predicate
      * @throws NullPointerException if other is null
      */
-    default QuadPredicate<A, B, C, D> or(QuadPredicate<? super A, ? super B, ? super C, ? super D> other) {
+    default PentaPredicate<A, B, C, D, E> or(PentaPredicate<? super A, ? super B, ? super C, ? super D,
+            ? super E> other) {
         Objects.requireNonNull(other);
-        return (A a, B b, C c, D d) -> test(a, b, c, d) || other.test(a, b, c, d);
+        return (A a, B b, C c, D d, E e) -> test(a, b, c, d, e) || other.test(a, b, c, d, e);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,11 @@ import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
@@ -55,6 +59,47 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         addChildStream(stream);
         return stream;
     }
+
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
+
+    @Override
+    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
+            QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
+            QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
+            QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
+            QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
+            QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
+            QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
+    // Penalize/reward
+    // ************************************************************************
 
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
