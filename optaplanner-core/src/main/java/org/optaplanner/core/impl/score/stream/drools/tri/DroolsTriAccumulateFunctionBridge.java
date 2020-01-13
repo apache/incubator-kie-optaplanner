@@ -48,7 +48,7 @@ final class DroolsTriAccumulateFunctionBridge<A, B, C, ResultContainer_, NewA>
 
     @Override
     protected Runnable accumulate(ResultContainer_ container, TriTuple<A, B, C> tuple) {
-        return accumulator.apply(container, tuple._1, tuple._2, tuple._3);
+        return accumulator.apply(container, tuple.a, tuple.b, tuple.c);
     }
 
     @Override

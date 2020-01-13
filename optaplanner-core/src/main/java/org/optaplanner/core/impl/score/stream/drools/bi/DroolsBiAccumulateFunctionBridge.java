@@ -48,7 +48,7 @@ final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
 
     @Override
     protected Runnable accumulate(ResultContainer_ container, BiTuple<A, B> tuple) {
-        return accumulator.apply(container, tuple._1, tuple._2);
+        return accumulator.apply(container, tuple.a, tuple.b);
     }
 
     @Override

@@ -82,10 +82,10 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
                      */
                     if (item instanceof BiTuple) {
                         BiTuple<?, ?> pair = (BiTuple<?, ?>) item;
-                        return Stream.of(pair._1, pair._2);
+                        return Stream.of(pair.a, pair.b);
                     } else if (item instanceof TriTuple) {
                         TriTuple<?, ?, ?> pair = (TriTuple<?, ?, ?>) item;
-                        return Stream.of(pair._1, pair._2, pair._3);
+                        return Stream.of(pair.a, pair.b, pair.c);
                     } else {
                         return Stream.of(item);
                     }

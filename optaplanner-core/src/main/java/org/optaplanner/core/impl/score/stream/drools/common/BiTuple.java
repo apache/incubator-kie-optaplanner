@@ -19,14 +19,14 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.util.Objects;
 
 public final class BiTuple<A, B> {
-    public final A _1;
-    public final B _2;
+    public final A a;
+    public final B b;
     private final int hashCode;
 
-    public BiTuple(A _1, B _2) {
-        this._1 = _1;
-        this._2 = _2;
-        this.hashCode = Objects.hash(_1, _2);
+    public BiTuple(A a, B b) {
+        this.a = a;
+        this.b = b;
+        this.hashCode = Objects.hash(a, b);
     }
 
     @Override
@@ -38,8 +38,8 @@ public final class BiTuple<A, B> {
             return false;
         }
         final BiTuple<?, ?> other = (BiTuple<?, ?>) o;
-        return Objects.equals(_1, other._1) &&
-                Objects.equals(_2, other._2);
+        return Objects.equals(a, other.a) &&
+                Objects.equals(b, other.b);
     }
 
     @Override
@@ -49,6 +49,6 @@ public final class BiTuple<A, B> {
 
     @Override
     public String toString() {
-        return "BiTuple(" + _1 + ", " + _2 + ")";
+        return "BiTuple(" + a + ", " + b + ")";
     }
 }

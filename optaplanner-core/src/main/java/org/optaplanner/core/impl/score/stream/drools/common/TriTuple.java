@@ -19,16 +19,16 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.util.Objects;
 
 public final class TriTuple<A, B, C> {
-    public final A _1;
-    public final B _2;
-    public final C _3;
+    public final A a;
+    public final B b;
+    public final C c;
     private final int hashCode;
 
-    public TriTuple(A _1, B _2, C _3) {
-        this._1 = _1;
-        this._2 = _2;
-        this._3 = _3;
-        this.hashCode = Objects.hash(_1, _2, _3);
+    public TriTuple(A a, B b, C c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.hashCode = Objects.hash(a, b, c);
     }
 
     @Override
@@ -40,9 +40,9 @@ public final class TriTuple<A, B, C> {
             return false;
         }
         final TriTuple<?, ?, ?> other = (TriTuple<?, ?, ?>) o;
-        return Objects.equals(_1, other._1) &&
-                Objects.equals(_2, other._2) &&
-                Objects.equals(_3, other._3);
+        return Objects.equals(a, other.a) &&
+                Objects.equals(b, other.b) &&
+                Objects.equals(c, other.c);
     }
 
     @Override
@@ -52,6 +52,6 @@ public final class TriTuple<A, B, C> {
 
     @Override
     public String toString() {
-        return "TriTuple(" + _1 + ", " + _2  + ", " + _3 + ")";
+        return "TriTuple(" + a + ", " + b + ", " + c + ")";
     }
 }

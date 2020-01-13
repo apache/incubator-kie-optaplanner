@@ -43,7 +43,7 @@ final class DroolsBiGroupByAccumulator<A, B, ResultContainer, NewA, NewB>
 
     @Override
     protected NewA toKey(BiTuple<A, B> tuple) {
-        return groupKeyMapping.apply(tuple._1, tuple._2);
+        return groupKeyMapping.apply(tuple.a, tuple.b);
     }
 
     @Override
@@ -53,7 +53,7 @@ final class DroolsBiGroupByAccumulator<A, B, ResultContainer, NewA, NewB>
 
     @Override
     protected Runnable process(BiTuple<A, B> tuple, ResultContainer container) {
-        return accumulator.apply(container, tuple._1, tuple._2);
+        return accumulator.apply(container, tuple.a, tuple.b);
     }
 
     @Override

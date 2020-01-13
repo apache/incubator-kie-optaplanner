@@ -179,8 +179,8 @@ public abstract class DroolsRuleStructure {
         Variable<NewA> newA = createVariable("newA");
         Variable<NewB> newB = createVariable("newB");
         DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
-                .expand(p -> p.bind(newA, pair -> (NewA) pair._1))
-                .expand(p -> p.bind(newB, pair -> (NewB) pair._2));
+                .expand(p -> p.bind(newA, pair -> (NewA) pair.a))
+                .expand(p -> p.bind(newB, pair -> (NewB) pair.b));
         return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, Arrays.asList(collectPattern),
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }
@@ -194,9 +194,9 @@ public abstract class DroolsRuleStructure {
         Variable<NewB> newB = createVariable("newB");
         Variable<NewC> newC = createVariable("newC");
         DroolsPatternBuilder<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
-                .expand(p -> p.bind(newA, pair -> (NewA) pair._1))
-                .expand(p -> p.bind(newB, pair -> (NewB) pair._2))
-                .expand(p -> p.bind(newC, pair -> (NewC) pair._3));
+                .expand(p -> p.bind(newA, pair -> (NewA) pair.a))
+                .expand(p -> p.bind(newB, pair -> (NewB) pair.b))
+                .expand(p -> p.bind(newC, pair -> (NewC) pair.c));
         return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, Arrays.asList(collectPattern),
                 mergeClosedItems(accumulatePattern), getVariableIdSupplier());
     }

@@ -60,7 +60,7 @@ final class DroolsUniToTriGroupByAccumulator<A, ResultContainer, NewA, NewB, New
 
     @Override
     protected TriTuple<NewA, NewB, NewC> toResult(BiTuple<NewA, NewB> key, ResultContainer container) {
-        return new TriTuple<>(key._1, key._2, finisher.apply(container));
+        return new TriTuple<>(key.a, key.b, finisher.apply(container));
     }
 
 }

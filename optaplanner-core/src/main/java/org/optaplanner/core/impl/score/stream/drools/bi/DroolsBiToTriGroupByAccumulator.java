@@ -46,8 +46,8 @@ final class DroolsBiToTriGroupByAccumulator<A, B, ResultContainer, NewA, NewB, N
 
     @Override
     protected BiTuple<NewA, NewB> toKey(BiTuple<A, B> abBiTuple) {
-        return new BiTuple<>(groupKeyAMapping.apply(abBiTuple._1, abBiTuple._2),
-                groupKeyBMapping.apply(abBiTuple._1, abBiTuple._2));
+        return new BiTuple<>(groupKeyAMapping.apply(abBiTuple.a, abBiTuple.b),
+                groupKeyBMapping.apply(abBiTuple.a, abBiTuple.b));
     }
 
     @Override
@@ -57,12 +57,12 @@ final class DroolsBiToTriGroupByAccumulator<A, B, ResultContainer, NewA, NewB, N
 
     @Override
     protected Runnable process(BiTuple<A, B> abBiTuple, ResultContainer container) {
-        return accumulator.apply(container, abBiTuple._1, abBiTuple._2);
+        return accumulator.apply(container, abBiTuple.a, abBiTuple.b);
     }
 
     @Override
     protected TriTuple<NewA, NewB, NewC> toResult(BiTuple<NewA, NewB> key, ResultContainer container) {
-        return new TriTuple<>(key._1, key._2, finisher.apply(container));
+        return new TriTuple<>(key.a, key.b, finisher.apply(container));
     }
 
 }

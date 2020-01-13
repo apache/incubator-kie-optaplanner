@@ -44,7 +44,7 @@ final class DroolsTriToBiGroupByAccumulator<A, B, C, ResultContainer, NewA, NewB
 
     @Override
     protected NewA toKey(TriTuple<A, B, C> abcTriTuple) {
-        return groupKeyMapping.apply(abcTriTuple._1, abcTriTuple._2, abcTriTuple._3);
+        return groupKeyMapping.apply(abcTriTuple.a, abcTriTuple.b, abcTriTuple.c);
     }
 
     @Override
@@ -54,7 +54,7 @@ final class DroolsTriToBiGroupByAccumulator<A, B, C, ResultContainer, NewA, NewB
 
     @Override
     protected Runnable process(TriTuple<A, B, C> abcTriTuple, ResultContainer container) {
-        return accumulator.apply(container, abcTriTuple._1, abcTriTuple._2, abcTriTuple._3);
+        return accumulator.apply(container, abcTriTuple.a, abcTriTuple.b, abcTriTuple.c);
     }
 
     @Override
