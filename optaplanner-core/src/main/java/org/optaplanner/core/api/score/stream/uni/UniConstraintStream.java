@@ -270,12 +270,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collectorC never null, the collector to perform the first grouping operation with
      * @param collectorD never null, the collector to perform the first grouping operation with
-     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
-     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
-     * @param <ResultC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
-     * @param <ResultD_> the type of the fourth fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
      * @return never null
      */
     <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>

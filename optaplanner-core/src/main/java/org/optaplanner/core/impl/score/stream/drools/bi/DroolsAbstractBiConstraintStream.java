@@ -28,6 +28,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -117,6 +118,11 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
                         groupKeyBMapping, collector);
         addChildStream(stream);
         return stream;
+    }
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC, BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
+        return null;
     }
 
     // ************************************************************************

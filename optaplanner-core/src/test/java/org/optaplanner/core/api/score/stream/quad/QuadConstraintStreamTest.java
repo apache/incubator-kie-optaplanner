@@ -281,6 +281,43 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group1, value1, 1));
     }
 
+    @Test
+    public void groupBy_2Mapping2Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .groupBy((entity1, group, value, entity2) -> group, (entity1, group, value, entity2) -> value,
+                            countQuad(), countQuad())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, value, count, sameCount) -> count + sameCount);
+        });
+
+        TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
+        TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
+        TestdataLavishValue value1 = solution.getFirstValue();
+        TestdataLavishValue value2 = solution.getValueList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, group2, value2, 1, 1),
+                assertMatchWithScore(-8, group1, value1, 4, 4));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, group2, value2, 1, 1),
+                assertMatchWithScore(-2, group1, value1, 1, 1));
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

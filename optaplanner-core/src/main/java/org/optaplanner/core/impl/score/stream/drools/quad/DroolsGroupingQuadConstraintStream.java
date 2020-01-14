@@ -18,6 +18,8 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
@@ -27,10 +29,23 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
 
     private final DroolsQuadCondition<NewA, NewB, NewC, NewD> condition;
 
-    public <A, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+    public <A, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
+            DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC, NewC> collectorC,
             UniConstraintCollector<A, ResultContainerD, NewD> collectorD) {
+        super(constraintFactory, parent);
+        this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
+                collectorC, collectorD);
+    }
+
+    public <A, B, C, D, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
+            DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
+            QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
+            QuadConstraintCollector<A, B, C, D, ResultContainerC, NewC> collectorC,
+            QuadConstraintCollector<A, B, C, D, ResultContainerD, NewD> collectorD) {
         super(constraintFactory, parent);
         this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD);

@@ -271,6 +271,31 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
             TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector);
 
+    /**
+     * Combines the semantics of {@link #groupBy(TriFunction, TriFunction)} and {@link #groupBy(TriConstraintCollector)}.
+     * That is, the first and second facts in the tuple follow the {@link #groupBy(TriFunction, TriFunction)} semantics.
+     * The third fact is the result of applying the first {@link TriConstraintCollector#finisher()} on all the tuples
+     * of the original {@link TriConstraintStream} that belong to the group.
+     * The fourth fact is the result of applying the second {@link TriConstraintCollector#finisher()} on all the tuples
+     * of the original {@link TriConstraintStream} that belong to the group
+     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param collectorC never null, the collector to perform the first grouping operation with
+     * @param collectorD never null, the collector to perform the first grouping operation with
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
+            TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
+            TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD);
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

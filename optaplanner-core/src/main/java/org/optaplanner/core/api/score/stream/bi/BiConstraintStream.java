@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -268,6 +269,31 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector);
+
+    /**
+     * Combines the semantics of {@link #groupBy(BiFunction, BiFunction)} and {@link #groupBy(BiConstraintCollector)}.
+     * That is, the first and second facts in the tuple follow the {@link #groupBy(BiFunction, BiFunction)} semantics.
+     * The third fact is the result of applying the first {@link BiConstraintCollector#finisher()} on all the tuples
+     * of the original {@link BiConstraintStream} that belong to the group.
+     * The fourth fact is the result of applying the second {@link BiConstraintCollector#finisher()} on all the tuples
+     * of the original {@link BiConstraintStream} that belong to the group
+     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param collectorC never null, the collector to perform the first grouping operation with
+     * @param collectorD never null, the collector to perform the first grouping operation with
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link QuadConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+            BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
+            BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD);
 
     // ************************************************************************
     // Penalize/reward

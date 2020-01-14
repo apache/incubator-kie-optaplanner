@@ -122,6 +122,21 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         return stream;
     }
 
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
+            QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
+            QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
+            QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
+                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                        groupKeyBMapping, collectorC, collectorD);
+        addChildStream(stream);
+        return stream;
+    }
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

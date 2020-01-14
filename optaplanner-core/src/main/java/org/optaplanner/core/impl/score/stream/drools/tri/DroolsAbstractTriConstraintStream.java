@@ -204,6 +204,11 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         return stream;
     }
 
+    @Override
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping, TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC, TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
+        return null;
+    }
+
     // ************************************************************************
     // Pattern creation
     // ************************************************************************

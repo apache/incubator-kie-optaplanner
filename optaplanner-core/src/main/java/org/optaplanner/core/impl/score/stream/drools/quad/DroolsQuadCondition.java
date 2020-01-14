@@ -100,6 +100,15 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
                 getRuleStructure().getD()));
     }
 
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD> andGroupBiWithCollectBi(
+            QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
+            QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
+            QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
+        return groupBiWithCollectBi(() -> new DroolsQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
+                collectorC, collectorD, getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
+                getRuleStructure().getD()));
+    }
+
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         return completeWithScoring(scoreHolderGlobal,
                 (drools, scoreHolder, a, b, c, d) -> impactScore(drools, scoreHolder));
