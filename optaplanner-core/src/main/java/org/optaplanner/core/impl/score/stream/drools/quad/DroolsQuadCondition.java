@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 
 import static org.drools.model.DSL.on;
@@ -74,8 +75,8 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
                 ruleStructure.getC(), (d, a, b, c) -> groupKeyMapping.apply(a, b, c, (D) d)));
     }
 
-    public <NewA, NewB, __> DroolsBiCondition<NewA, NewB> andGroupWithCollect(QuadFunction<A, B, C, D, NewA> groupKeyMapping,
-            QuadConstraintCollector<A, B, C, D, __, NewB> collector) {
+    public <NewA, NewB, __> DroolsBiCondition<NewA, NewB> andGroupWithCollect(
+            QuadFunction<A, B, C, D, NewA> groupKeyMapping, QuadConstraintCollector<A, B, C, D, __, NewB> collector) {
         return groupWithCollect(() -> new DroolsQuadToBiGroupByInvoker<>(groupKeyMapping, collector,
                 getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
                 getRuleStructure().getD()));
@@ -89,6 +90,14 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
                     final NewB newB = groupKeyBMapping.apply(a, b, c, (D) d);
                     return new BiTuple<>(newA, newB);
                 }));
+    }
+
+    public <NewA, NewB, NewC, __> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
+            QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
+            QuadConstraintCollector<A, B, C, D, __, NewC> collector) {
+        return groupBiWithCollect(() -> new DroolsQuadToTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
+                collector, getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
+                getRuleStructure().getD()));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
