@@ -32,14 +32,17 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Predicate3;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriToQuadGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
@@ -108,6 +111,13 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
             BiConstraintCollector<A, B, ?, NewC> collector) {
         return groupBiWithCollect(() -> new DroolsBiToTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping, collector,
                 getRuleStructure().getA(), getRuleStructure().getB()));
+    }
+
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD> andGroupBiWithCollectBi(
+            BiFunction<A, B, NewA> groupKeyAMapping, BiFunction<A, B, NewB> groupKeyBMapping,
+            BiConstraintCollector<A, B, ?, NewC> collectorC, BiConstraintCollector<A, B, ?, NewD> collectorD) {
+        return groupBiWithCollectBi(() -> new DroolsBiToQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
+                collectorC, collectorD, getRuleStructure().getA(), getRuleStructure().getB()));
     }
 
     public <C> DroolsTriCondition<A, B, C> andJoin(DroolsUniCondition<C> cCondition,
