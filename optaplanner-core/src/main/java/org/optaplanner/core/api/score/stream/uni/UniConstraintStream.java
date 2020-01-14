@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
@@ -257,6 +258,31 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
+
+    /**
+     * Combines the semantics of {@link #groupBy(Function, Function)} and {@link #groupBy(UniConstraintCollector)}.
+     * That is, the first and second facts in the tuple follow the {@link #groupBy(Function, Function)} semantics.
+     * The third fact is the result of applying the first {@link UniConstraintCollector#finisher()} on all the tuples
+     * of the original {@link UniConstraintStream} that belong to the group.
+     * The fourth fact is the result of applying the second {@link UniConstraintCollector#finisher()} on all the tuples
+     * of the original {@link UniConstraintStream} that belong to the group
+     * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
+     * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
+     * @param collectorC never null, the collector to perform the first grouping operation with
+     * @param collectorD never null, the collector to perform the first grouping operation with
+     * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultC_> the type of the third fact in the destination {@link TriConstraintStream}'s tuple
+     * @param <ResultContainerD_> the mutable accumulation type (often hidden as an implementation detail)
+     * @param <ResultD_> the type of the fourth fact in the destination {@link TriConstraintStream}'s tuple
+     * @return never null
+     */
+    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
+            UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+            UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD);
 
     // ************************************************************************
     // Penalize/reward

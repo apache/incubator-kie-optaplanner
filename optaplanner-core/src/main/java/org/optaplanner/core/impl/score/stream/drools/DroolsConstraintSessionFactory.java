@@ -33,6 +33,7 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 import static java.util.stream.Collectors.toList;
@@ -86,6 +87,9 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
                     } else if (item instanceof TriTuple) {
                         TriTuple<?, ?, ?> pair = (TriTuple<?, ?, ?>) item;
                         return Stream.of(pair.a, pair.b, pair.c);
+                    } else if (item instanceof QuadTuple) {
+                        QuadTuple<?, ?, ?, ?> pair = (QuadTuple<?, ?, ?, ?>) item;
+                        return Stream.of(pair.a, pair.b, pair.c, pair.d);
                     } else {
                         return Stream.of(item);
                     }

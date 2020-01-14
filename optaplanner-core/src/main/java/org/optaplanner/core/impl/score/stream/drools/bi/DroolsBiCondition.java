@@ -88,8 +88,8 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
                 (b, a) -> groupKeyMapping.apply(a, (B) b)));
     }
 
-    public <NewA, NewB, __> DroolsBiCondition<NewA, NewB> andGroupWithCollect(BiFunction<A, B, NewA> groupKeyMapping,
-            BiConstraintCollector<A, B, __, NewB> collector) {
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupWithCollect(BiFunction<A, B, NewA> groupKeyMapping,
+            BiConstraintCollector<A, B, ?, NewB> collector) {
         return groupWithCollect(() -> new DroolsBiGroupByInvoker<>(groupKeyMapping, collector,
                 getRuleStructure().getA(), getRuleStructure().getB()));
     }
@@ -103,9 +103,9 @@ public final class DroolsBiCondition<A, B> extends DroolsCondition<DroolsBiRuleS
         }));
     }
 
-    public <ResultContainer, NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
+    public <NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC> andGroupBiWithCollect(
             BiFunction<A, B, NewA> groupKeyAMapping, BiFunction<A, B, NewB> groupKeyBMapping,
-            BiConstraintCollector<A, B, ResultContainer, NewC> collector) {
+            BiConstraintCollector<A, B, ?, NewC> collector) {
         return groupBiWithCollect(() -> new DroolsBiToTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping, collector,
                 getRuleStructure().getA(), getRuleStructure().getB()));
     }

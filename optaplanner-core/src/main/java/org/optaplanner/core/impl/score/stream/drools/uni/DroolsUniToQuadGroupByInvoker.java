@@ -23,25 +23,28 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
-public class DroolsUniToTriGroupByInvoker<A, NewA, NewB, NewC>
+public class DroolsUniToQuadGroupByInvoker<A, NewA, NewB, NewC, NewD>
     extends DroolsAbstractGroupByInvoker<A> {
 
-    private final UniConstraintCollector<A, ?, NewC> collector;
     private final Function<A, NewA> groupKeyAMapping;
     private final Function<A, NewB> groupKeyBMapping;
+    private final UniConstraintCollector<A, ?, NewC> collectorC;
+    private final UniConstraintCollector<A, ?, NewD> collectorD;
     private final Variable<A> aVariable;
 
-    public DroolsUniToTriGroupByInvoker(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
-            UniConstraintCollector<A, ?, NewC> collector, Variable<A> aVariable) {
-        this.collector = collector;
+    public DroolsUniToQuadGroupByInvoker(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
+            UniConstraintCollector<A, ?, NewC> collectorC, UniConstraintCollector<A, ?, NewD> collectorD,
+            Variable<A> aVariable) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
+        this.collectorC = collectorC;
+        this.collectorD = collectorD;
         this.aVariable = aVariable;
     }
 
     @Override
     protected DroolsAbstractGroupBy<A, ?> newContext() {
-        return new DroolsUniToTriGroupBy<>(groupKeyAMapping, groupKeyBMapping, collector);
+        return new DroolsUniToQuadGroupBy<>(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
     @Override

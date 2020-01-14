@@ -23,12 +23,12 @@ import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsQuadToTriGroupByAccumulator<A, B, C, D, ResultContainer, NewA, NewB, NewC> extends
-        DroolsAbstractGroupByAccumulator<ResultContainer, QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
+        DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>, TriTuple<NewA, NewB, NewC>> {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyAMapping;
     private final QuadFunction<A, B, C, D, NewB> groupKeyBMapping;

@@ -18,35 +18,31 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 
 import java.util.function.Function;
 
-import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
-public class DroolsUniToTriGroupByInvoker<A, NewA, NewB, NewC>
-    extends DroolsAbstractGroupByInvoker<A> {
+final class DroolsUniToQuadGroupBy<A, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
+        extends DroolsAbstractGroupBy<A, QuadTuple<NewA, NewB, NewC, NewD>> {
 
-    private final UniConstraintCollector<A, ?, NewC> collector;
     private final Function<A, NewA> groupKeyAMapping;
     private final Function<A, NewB> groupKeyBMapping;
-    private final Variable<A> aVariable;
+    private final UniConstraintCollector<A, ResultContainerC, NewC> collectorC;
+    private final UniConstraintCollector<A, ResultContainerD, NewD> collectorD;
 
-    public DroolsUniToTriGroupByInvoker(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
-            UniConstraintCollector<A, ?, NewC> collector, Variable<A> aVariable) {
-        this.collector = collector;
+    public DroolsUniToQuadGroupBy(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
+            UniConstraintCollector<A, ResultContainerC, NewC> collectorC,
+            UniConstraintCollector<A, ResultContainerD, NewD> collectorD) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
-        this.aVariable = aVariable;
+        this.collectorC = collectorC;
+        this.collectorD = collectorD;
     }
 
     @Override
-    protected DroolsAbstractGroupBy<A, ?> newContext() {
-        return new DroolsUniToTriGroupBy<>(groupKeyAMapping, groupKeyBMapping, collector);
-    }
-
-    @Override
-    protected <X> A createInput(Function<Variable<X>, X> valueFinder) {
-        return materialize(aVariable, valueFinder);
+    protected GroupByAccumulator<A, QuadTuple<NewA, NewB, NewC, NewD>> newAccumulator() {
+        return new DroolsUniToQuadGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
 }

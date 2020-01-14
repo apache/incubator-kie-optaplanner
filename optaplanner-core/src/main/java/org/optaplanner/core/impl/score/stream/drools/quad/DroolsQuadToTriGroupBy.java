@@ -16,19 +16,15 @@
 
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
-import java.util.function.BiFunction;
-
 import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsQuadToTriGroupBy<A, B, C, D, ResultContainer, NewA, NewB, NewC>
-        extends DroolsAbstractGroupBy<ResultContainer, QuadTuple<A, B, C, D>, TriTuple<NewA, NewB, NewC>> {
+        extends DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, TriTuple<NewA, NewB, NewC>> {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyAMapping;
     private final QuadFunction<A, B, C, D, NewB> groupKeyBMapping;
@@ -43,7 +39,7 @@ final class DroolsQuadToTriGroupBy<A, B, C, D, ResultContainer, NewA, NewB, NewC
     }
 
     @Override
-    protected DroolsAbstractGroupByAccumulator<ResultContainer, QuadTuple<A, B, C, D>, ?, TriTuple<NewA, NewB, NewC>> newAccumulator() {
+    protected DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, QuadTuple<A, B, C, D>, ?, TriTuple<NewA, NewB, NewC>> newAccumulator() {
         return new DroolsQuadToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 

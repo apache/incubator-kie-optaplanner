@@ -25,10 +25,10 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
-public class DroolsQuadToBiGroupByInvoker<A, B, C, D, ResultContainer, NewA, NewB>
-        extends DroolsAbstractGroupByInvoker<ResultContainer, QuadTuple<A, B, C, D>> {
+public class DroolsQuadToBiGroupByInvoker<A, B, C, D, NewA, NewB>
+        extends DroolsAbstractGroupByInvoker<QuadTuple<A, B, C, D>> {
 
-    private final QuadConstraintCollector<A, B, C, D, ResultContainer, NewB> collector;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewB> collector;
     private final QuadFunction<A, B, C, D, NewA> groupKeyMapping;
     private final Variable<A> aVariable;
     private final Variable<B> bVariable;
@@ -36,8 +36,8 @@ public class DroolsQuadToBiGroupByInvoker<A, B, C, D, ResultContainer, NewA, New
     private final Variable<D> dVariable;
 
     public DroolsQuadToBiGroupByInvoker(QuadFunction<A, B, C, D, NewA> groupKeyMapping,
-            QuadConstraintCollector<A, B, C, D, ResultContainer, NewB> collector, Variable<A> aVariable,
-            Variable<B> bVariable, Variable<C> cVariable, Variable<D> dVariable) {
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collector, Variable<A> aVariable, Variable<B> bVariable,
+            Variable<C> cVariable, Variable<D> dVariable) {
         this.collector = collector;
         this.groupKeyMapping = groupKeyMapping;
         this.aVariable = aVariable;
@@ -47,7 +47,7 @@ public class DroolsQuadToBiGroupByInvoker<A, B, C, D, ResultContainer, NewA, New
     }
 
     @Override
-    protected DroolsAbstractGroupBy<ResultContainer, QuadTuple<A, B, C, D>, ?> newContext() {
+    protected DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, ?> newContext() {
         return new DroolsQuadToBiGroupBy<>(groupKeyMapping, collector);
     }
 

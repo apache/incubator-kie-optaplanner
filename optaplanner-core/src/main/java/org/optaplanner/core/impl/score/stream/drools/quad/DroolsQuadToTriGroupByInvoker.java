@@ -25,10 +25,10 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
-public class DroolsQuadToTriGroupByInvoker<A, B, C, D, ResultContainer, NewA, NewB, NewC>
-        extends DroolsAbstractGroupByInvoker<ResultContainer, QuadTuple<A, B, C, D>> {
+public class DroolsQuadToTriGroupByInvoker<A, B, C, D, NewA, NewB, NewC>
+        extends DroolsAbstractGroupByInvoker<QuadTuple<A, B, C, D>> {
 
-    private final QuadConstraintCollector<A, B, C, D, ResultContainer, NewC> collector;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewC> collector;
     private final QuadFunction<A, B, C, D, NewA> groupKeyAMapping;
     private final QuadFunction<A, B, C, D, NewB> groupKeyBMapping;
     private final Variable<A> aVariable;
@@ -37,9 +37,8 @@ public class DroolsQuadToTriGroupByInvoker<A, B, C, D, ResultContainer, NewA, Ne
     private final Variable<D> dVariable;
 
     public DroolsQuadToTriGroupByInvoker(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
-            QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
-            QuadConstraintCollector<A, B, C, D, ResultContainer, NewC> collector, Variable<A> aVariable,
-            Variable<B> bVariable, Variable<C> cVariable, Variable<D> dVariable) {
+            QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> collector,
+            Variable<A> aVariable, Variable<B> bVariable, Variable<C> cVariable, Variable<D> dVariable) {
         this.collector = collector;
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
@@ -50,7 +49,7 @@ public class DroolsQuadToTriGroupByInvoker<A, B, C, D, ResultContainer, NewA, Ne
     }
 
     @Override
-    protected DroolsAbstractGroupBy<ResultContainer, QuadTuple<A, B, C, D>, ?> newContext() {
+    protected DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, ?> newContext() {
         return new DroolsQuadToTriGroupBy<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
