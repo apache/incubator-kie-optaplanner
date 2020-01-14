@@ -100,7 +100,12 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping) {
-        throw new UnsupportedOperationException();
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
+                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                        groupKeyBMapping);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override

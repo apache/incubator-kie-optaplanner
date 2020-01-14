@@ -33,6 +33,7 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
@@ -78,6 +79,16 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
         return groupWithCollect(() -> new DroolsQuadToBiGroupByInvoker<>(groupKeyMapping, collector,
                 getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
                 getRuleStructure().getD()));
+    }
+
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB> andGroupBi(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
+            QuadFunction<A, B, C, D, NewB> groupKeyBMapping) {
+        return groupBi((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
+                ruleStructure.getC(), (d, a, b, c) -> {
+                    final NewA newA = groupKeyAMapping.apply(a, b, c, (D) d);
+                    final NewB newB = groupKeyBMapping.apply(a, b, c, (D) d);
+                    return new BiTuple<>(newA, newB);
+                }));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

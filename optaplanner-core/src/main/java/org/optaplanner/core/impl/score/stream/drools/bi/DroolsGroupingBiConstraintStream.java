@@ -92,6 +92,15 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         this.parent = parent;
         this.condition = parent.getCondition().andGroupWithCollect(groupKeyMapping, collector);
     }
+
+    public <A, B, C, D, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.condition = parent.getCondition().andGroupBi(groupKeyAMapping, groupKeyBMapping);
+    }
+
     @Override
     public DroolsBiCondition<NewA, NewB> getCondition() {
         return condition;
