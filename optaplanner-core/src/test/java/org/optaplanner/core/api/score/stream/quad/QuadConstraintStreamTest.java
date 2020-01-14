@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.stream.quad;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.function.Function;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -149,6 +150,30 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         scoreDirector.afterEntityRemoved(entity);
         assertScore(scoreDirector,
                 assertMatchWithScore(-2, 2)); // E2 G2 V2 E2, E3 G1 V1 E3
+    }
+
+    @Test
+    public void groupBy_1Mapping0Collector() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .groupBy((entity1, group, value, entity2) -> value)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        TestdataLavishValue value1 = solution.getFirstValue();
+        TestdataLavishValue value2 = solution.getValueList().get(1);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, value2),
+                assertMatchWithScore(-1, value1));
     }
 
     // ************************************************************************

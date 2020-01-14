@@ -67,6 +67,10 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
                 (d, a, b, c) -> new QuadTuple<>((A) a, (B) b, (C) c, (D) d)));
     }
 
+    public <NewA> DroolsUniCondition<NewA> andGroup(QuadFunction<A, B, C, D, NewA> groupKeyMapping) {
+        return super.group((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
+                ruleStructure.getC(), (d, a, b, c) -> groupKeyMapping.apply(a, b, c, (D) d)));
+    }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         return completeWithScoring(scoreHolderGlobal,

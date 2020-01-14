@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
@@ -90,6 +91,15 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         super(constraintFactory);
         this.parent = parent;
         this.condition = parent.getCondition().andCollect(collector);
+    }
+
+
+    public <A, B, C, D> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
+            DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
+            QuadFunction<A, B, C, D, NewA> groupKeyMapping) {
+        super(constraintFactory);
+        this.parent = parent;
+        this.condition = parent.getCondition().andGroup(groupKeyMapping);
     }
 
     @Override

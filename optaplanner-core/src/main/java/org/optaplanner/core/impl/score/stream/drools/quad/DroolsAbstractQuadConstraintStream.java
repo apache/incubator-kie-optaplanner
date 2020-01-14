@@ -77,7 +77,11 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping) {
-        throw new UnsupportedOperationException();
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
+                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
