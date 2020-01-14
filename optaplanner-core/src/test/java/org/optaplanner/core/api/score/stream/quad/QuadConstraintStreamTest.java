@@ -18,7 +18,6 @@ package org.optaplanner.core.api.score.stream.quad;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.function.Function;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -159,8 +158,8 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
                             TestdataLavishEntity::getEntityGroup))
                     .groupBy((entity1, group, value, entity2) -> value)
@@ -174,6 +173,40 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector,
                 assertMatchWithScore(-1, value2),
                 assertMatchWithScore(-1, value1));
+    }
+
+    @Test
+    public void groupBy_1Mapping1Collector_count() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                            TestdataLavishEntity::getEntityGroup))
+                    .groupBy((entity1, group, value, entity2) -> value, countQuad())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, count) -> count);
+        });
+
+        TestdataLavishValue value1 = solution.getFirstValue();
+        TestdataLavishValue value2 = solution.getValueList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, value2, 1),
+                assertMatchWithScore(-4, value1, 4));
+
+        // Incremental
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, value2, 1),
+                assertMatchWithScore(-1, value1, 1));
     }
 
     // ************************************************************************
