@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,11 @@ import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
+import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 
 import static org.drools.model.DSL.on;
 
@@ -55,6 +58,15 @@ public final class DroolsQuadCondition<A, B, C, D> extends DroolsCondition<Drool
                 ruleStructure.getVariableIdSupplier());
         return new DroolsQuadCondition<>(newRuleStructure);
     }
+
+    public <NewA, __> DroolsUniCondition<NewA> andCollect(QuadConstraintCollector<A, B, C, D, __, NewA> collector) {
+        DroolsQuadAccumulateFunctionBridge<A, B, C, D, __, NewA> bridge =
+                new DroolsQuadAccumulateFunctionBridge<>(collector);
+        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
+                ruleStructure.getB(), ruleStructure.getC(),
+                (d, a, b, c) -> new QuadTuple<>((A) a, (B) b, (C) c, (D) d)));
+    }
+
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         return completeWithScoring(scoreHolderGlobal,

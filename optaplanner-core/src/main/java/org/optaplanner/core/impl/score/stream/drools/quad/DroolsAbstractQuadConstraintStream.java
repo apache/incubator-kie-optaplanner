@@ -35,6 +35,7 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.InnerQuadConstraintStream;
 
 public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
@@ -67,7 +68,11 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        throwWhenGroupByNotAllowed();
+        DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
+                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
+        addChildStream(stream);
+        return stream;
     }
 
     @Override
