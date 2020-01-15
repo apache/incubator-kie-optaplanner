@@ -24,15 +24,15 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsBiToTriGroupBy<A, B, ResultContainer, NewA, NewB, NewC>
+final class DroolsBiToTriGroupBy<A, B, NewA, NewB, NewC>
         extends DroolsAbstractGroupBy<BiTuple<A, B>, TriTuple<NewA, NewB, NewC>> {
 
     private final BiFunction<A, B, NewA> groupKeyAMapping;
     private final BiFunction<A, B, NewB> groupKeyBMapping;
-    private final BiConstraintCollector<A, B, ResultContainer, NewC> collector;
+    private final BiConstraintCollector<A, B, ?, NewC> collector;
 
     public DroolsBiToTriGroupBy(BiFunction<A, B, NewA> groupKeyAMapping, BiFunction<A, B, NewB> groupKeyBMapping,
-            BiConstraintCollector<A, B, ResultContainer, NewC> collector) {
+            BiConstraintCollector<A, B, ?, NewC> collector) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
         this.collector = collector;

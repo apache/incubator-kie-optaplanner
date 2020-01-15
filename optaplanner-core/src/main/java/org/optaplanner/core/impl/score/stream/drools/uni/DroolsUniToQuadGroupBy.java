@@ -23,17 +23,16 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
-final class DroolsUniToQuadGroupBy<A, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
+final class DroolsUniToQuadGroupBy<A, NewA, NewB, NewC, NewD>
         extends DroolsAbstractGroupBy<A, QuadTuple<NewA, NewB, NewC, NewD>> {
 
     private final Function<A, NewA> groupKeyAMapping;
     private final Function<A, NewB> groupKeyBMapping;
-    private final UniConstraintCollector<A, ResultContainerC, NewC> collectorC;
-    private final UniConstraintCollector<A, ResultContainerD, NewD> collectorD;
+    private final UniConstraintCollector<A, ?, NewC> collectorC;
+    private final UniConstraintCollector<A, ?, NewD> collectorD;
 
     public DroolsUniToQuadGroupBy(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
-            UniConstraintCollector<A, ResultContainerC, NewC> collectorC,
-            UniConstraintCollector<A, ResultContainerD, NewD> collectorD) {
+            UniConstraintCollector<A, ?, NewC> collectorC, UniConstraintCollector<A, ?, NewD> collectorD) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
         this.collectorC = collectorC;

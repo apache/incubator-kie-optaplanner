@@ -16,27 +16,24 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsTriToQuadGroupBy<A, B, C, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
+final class DroolsTriToQuadGroupBy<A, B, C, NewA, NewB, NewC, NewD>
         extends DroolsAbstractGroupBy<TriTuple<A, B, C>, QuadTuple<NewA, NewB, NewC, NewD>> {
 
     private final TriFunction<A, B, C, NewA> groupKeyAMapping;
     private final TriFunction<A, B, C, NewB> groupKeyBMapping;
-    private final TriConstraintCollector<A, B, C, ResultContainerC, NewC> collectorC;
-    private final TriConstraintCollector<A, B, C, ResultContainerD, NewD> collectorD;
+    private final TriConstraintCollector<A, B, C, ?, NewC> collectorC;
+    private final TriConstraintCollector<A, B, C, ?, NewD> collectorD;
 
     public DroolsTriToQuadGroupBy(TriFunction<A, B, C, NewA> groupKeyAMapping,
-            TriFunction<A, B, C, NewB> groupKeyBMapping,
-            TriConstraintCollector<A, B, C, ResultContainerC, NewC> collectorC,
-            TriConstraintCollector<A, B, C, ResultContainerD, NewD> collectorD) {
+            TriFunction<A, B, C, NewB> groupKeyBMapping, TriConstraintCollector<A, B, C, ?, NewC> collectorC,
+            TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
         this.collectorC = collectorC;

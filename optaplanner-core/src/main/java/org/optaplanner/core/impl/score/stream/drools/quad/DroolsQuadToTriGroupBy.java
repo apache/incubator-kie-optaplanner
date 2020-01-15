@@ -19,27 +19,26 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsQuadToTriGroupBy<A, B, C, D, ResultContainer, NewA, NewB, NewC>
+final class DroolsQuadToTriGroupBy<A, B, C, D, NewA, NewB, NewC>
         extends DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, TriTuple<NewA, NewB, NewC>> {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyAMapping;
     private final QuadFunction<A, B, C, D, NewB> groupKeyBMapping;
-    private final QuadConstraintCollector<A, B, C, D, ResultContainer, NewC> collector;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewC> collector;
 
     public DroolsQuadToTriGroupBy(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
-            QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
-            QuadConstraintCollector<A, B, C, D, ResultContainer, NewC> collector) {
+            QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> collector) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
         this.collector = collector;
     }
 
     @Override
-    protected DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, QuadTuple<A, B, C, D>, ?, TriTuple<NewA, NewB, NewC>> newAccumulator() {
+    protected GroupByAccumulator<QuadTuple<A, B, C, D>, TriTuple<NewA, NewB, NewC>> newAccumulator() {
         return new DroolsQuadToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 

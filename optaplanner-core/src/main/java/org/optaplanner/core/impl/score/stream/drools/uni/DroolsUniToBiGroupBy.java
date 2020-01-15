@@ -23,14 +23,13 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 
-final class DroolsUniToBiGroupBy<A, ResultContainer, NewA, NewB>
+final class DroolsUniToBiGroupBy<A, NewA, NewB>
         extends DroolsAbstractGroupBy<A, BiTuple<NewA, NewB>> {
 
     private final Function<A, NewA> groupKeyMapping;
-    private final UniConstraintCollector<A, ResultContainer, NewB> collector;
+    private final UniConstraintCollector<A, ?, NewB> collector;
 
-    public DroolsUniToBiGroupBy(Function<A, NewA> groupKeyMapping,
-            UniConstraintCollector<A, ResultContainer, NewB> collector) {
+    public DroolsUniToBiGroupBy(Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ?, NewB> collector) {
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
     }

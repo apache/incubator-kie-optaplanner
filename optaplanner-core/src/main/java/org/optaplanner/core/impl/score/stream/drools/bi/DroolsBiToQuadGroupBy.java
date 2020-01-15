@@ -18,25 +18,22 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.util.function.BiFunction;
 
-import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
-final class DroolsBiToQuadGroupBy<A, B, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
+final class DroolsBiToQuadGroupBy<A, B, NewA, NewB, NewC, NewD>
         extends DroolsAbstractGroupBy<BiTuple<A, B>, QuadTuple<NewA, NewB, NewC, NewD>> {
 
     private final BiFunction<A, B, NewA> groupKeyAMapping;
     private final BiFunction<A, B, NewB> groupKeyBMapping;
-    private final BiConstraintCollector<A, B, ResultContainerC, NewC> collectorC;
-    private final BiConstraintCollector<A, B, ResultContainerD, NewD> collectorD;
+    private final BiConstraintCollector<A, B, ?, NewC> collectorC;
+    private final BiConstraintCollector<A, B, ?, NewD> collectorD;
 
     public DroolsBiToQuadGroupBy(BiFunction<A, B, NewA> groupKeyAMapping, BiFunction<A, B, NewB> groupKeyBMapping,
-            BiConstraintCollector<A, B, ResultContainerC, NewC> collectorC,
-            BiConstraintCollector<A, B, ResultContainerD, NewD> collectorD) {
+            BiConstraintCollector<A, B, ?, NewC> collectorC, BiConstraintCollector<A, B, ?, NewD> collectorD) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
         this.collectorC = collectorC;

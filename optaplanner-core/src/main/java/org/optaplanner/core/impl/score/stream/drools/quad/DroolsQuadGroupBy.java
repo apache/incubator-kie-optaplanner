@@ -16,27 +16,23 @@
 
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
-import java.util.function.Function;
-
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
-final class DroolsQuadGroupBy<A, B, C, D, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
+final class DroolsQuadGroupBy<A, B, C, D, NewA, NewB, NewC, NewD>
         extends DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, QuadTuple<NewA, NewB, NewC, NewD>> {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyAMapping;
     private final QuadFunction<A, B, C, D, NewB> groupKeyBMapping;
-    private final QuadConstraintCollector<A, B, C, D, ResultContainerC, NewC> collectorC;
-    private final QuadConstraintCollector<A, B, C, D, ResultContainerD, NewD> collectorD;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD;
 
     public DroolsQuadGroupBy(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
-            QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
-            QuadConstraintCollector<A, B, C, D, ResultContainerC, NewC> collectorC,
-            QuadConstraintCollector<A, B, C, D, ResultContainerD, NewD> collectorD) {
+            QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
+            QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
         this.groupKeyAMapping = groupKeyAMapping;
         this.groupKeyBMapping = groupKeyBMapping;
         this.collectorC = collectorC;
