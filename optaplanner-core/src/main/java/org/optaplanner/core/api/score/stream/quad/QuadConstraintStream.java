@@ -96,7 +96,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of a given {@link QuadConstraintCollector} applied on all incoming tuples
      * with the same first fact.
-     * @param groupKeyMapping never null, function to convert the a fact in original tuple to a different fact
+     * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
      * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
