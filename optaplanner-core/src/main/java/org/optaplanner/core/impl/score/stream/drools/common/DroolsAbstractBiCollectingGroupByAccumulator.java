@@ -38,14 +38,11 @@ public abstract class DroolsAbstractBiCollectingGroupByAccumulator<ResultContain
     private final transient Set<OutTuple> resultSet = new LinkedHashSet<>(0);
 
     private <ResultContainer> Runnable accumulate(InTuple input, Supplier<ResultContainer> containerSupplier,
-            BiFunction<InTuple, ResultContainer, Runnable> inputProcessor,
-            Supplier<Map<KeyTuple, ResultContainer>> containersMapSupplier,
-            Supplier<Map<ResultContainer, Long>> containersInUseMapSupplier) {
+            BiFunction<InTuple, ResultContainer, Runnable> inputProcessor, Map<KeyTuple, ResultContainer> containersMap,
+            Map<ResultContainer, Long> containersInUseMap) {
         KeyTuple key = toKey(input);
-        Map<KeyTuple, ResultContainer> containersMap = containersMapSupplier.get();
         ResultContainer container = containersMap.computeIfAbsent(key, __ -> containerSupplier.get());
         Runnable undo = inputProcessor.apply(input, container);
-        Map<ResultContainer, Long> containersInUseMap = containersInUseMapSupplier.get();
         containersInUseMap.compute(container, (__, count) -> increment(count)); // Increment use counter.
         return () -> {
             undo.run();
@@ -59,10 +56,10 @@ public abstract class DroolsAbstractBiCollectingGroupByAccumulator<ResultContain
 
     @Override
     public Runnable accumulate(InTuple input) {
-        Runnable firstUndo = accumulate(input, this::newFirstContainer, this::processFirst, () -> containersMap1,
-                () -> containersInUseMap1);
-        Runnable secondUndo = accumulate(input, this::newSecondContainer, this::processSecond, () -> containersMap2,
-                () -> containersInUseMap2);
+        Runnable firstUndo = accumulate(input, this::newFirstContainer, this::processFirst, containersMap1,
+                containersInUseMap1);
+        Runnable secondUndo = accumulate(input, this::newSecondContainer, this::processSecond, containersMap2,
+                containersInUseMap2);
         return () -> {
             firstUndo.run();
             secondUndo.run();
