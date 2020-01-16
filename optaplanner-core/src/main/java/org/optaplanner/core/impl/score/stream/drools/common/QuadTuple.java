@@ -55,6 +55,6 @@ public final class QuadTuple<A, B, C, D> {
 
     @Override
     public String toString() {
-        return "TriTuple(" + a + ", " + b + ", " + c  + ", " + d + ")";
+        return "QuadTuple(" + a + ", " + b + ", " + c  + ", " + d + ")";
     }
 }
