@@ -32,7 +32,6 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Predicate3;
-import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
@@ -42,7 +41,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
-import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriToQuadGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;

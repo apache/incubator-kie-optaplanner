@@ -21,7 +21,6 @@ import java.util.function.Function;
 import org.drools.model.Variable;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;

@@ -20,9 +20,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.drools.model.Variable;
-import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
