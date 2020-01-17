@@ -38,14 +38,14 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * The tests run through all available configuration combinations related to ExhaustiveSearch and compares the results
+ * The test runs through all available configuration combinations related to ExhaustiveSearch and compares the results
  * with manually calculated data. It tries to find the best solution for 3 values and 4 entities. When the same value
  * is held by different entities, the score is reduced by 1.
  * <p>
- * A solution state is represented by a string containing 4
- * characters representing entity values. Uninitialized entities are marked by '-' character. (e.g. "1-21" means that
- * the first and the fourth entity have value 1, the second entity doesn't have a value and the third entity has 2,
- * the score is -1) The score is reduced for every duplicate present. (meaning a solution of 1111 has the score of -4)
+ * A solution state is represented by a string containing 4 characters representing entity values. Uninitialized
+ * entities are marked by '-' character. (e.g. "1-21" means that the first and the fourth entity have value 1,
+ * the second entity doesn't have a value and the third entity has 2, the score is -1) The score is reduced for
+ * every duplicate present. (meaning a solution of 1111 has the score of -4)
  */
 @RunWith(Parameterized.class)
 public class BlackBoxExhaustiveSearchPhaseTest {
