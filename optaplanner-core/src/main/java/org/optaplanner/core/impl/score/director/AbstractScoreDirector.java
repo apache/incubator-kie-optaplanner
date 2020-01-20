@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
@@ -712,17 +713,12 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                 = uncorruptedScoreDirector.getConstraintMatchTotals();
 
         // The order of justificationLists for score rules that include accumulates isn't stable, so we make it stable.
-        ClassAndPlanningIdComparator comparator = new ClassAndPlanningIdComparator(false);
-        for (ConstraintMatchTotal constraintMatchTotal : corruptedConstraintMatchTotals) {
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                constraintMatch.getJustificationList().sort(comparator);
-            }
-        }
-        for (ConstraintMatchTotal constraintMatchTotal : uncorruptedConstraintMatchTotals) {
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                constraintMatch.getJustificationList().sort(comparator);
-            }
-        }
+        Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
+        Stream.of(corruptedConstraintMatchTotals, uncorruptedConstraintMatchTotals)
+                .flatMap(Collection::stream)
+                .flatMap(constraintMatchTotal -> constraintMatchTotal.getConstraintMatchSet().stream())
+                .distinct()
+                .forEach(constraintMatch -> constraintMatch.getJustificationList().sort(comparator));
 
         Map<List<Object>, ConstraintMatch> corruptedMap = createConstraintMatchMap(corruptedConstraintMatchTotals);
         Map<List<Object>, ConstraintMatch> excessMap = new LinkedHashMap<>(corruptedMap);
