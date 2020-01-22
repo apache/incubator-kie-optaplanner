@@ -136,8 +136,13 @@ public abstract class DroolsRuleStructure {
 
     public abstract List<ViewItemBuilder<?>> getDependents();
 
-    private List<ViewItemBuilder<?>> mergeClosedItems(ViewItemBuilder<?>... newClosedItems) {
+    protected List<ViewItemBuilder<?>> mergeShelved(ViewItemBuilder<?>... newClosedItems) {
         return Stream.concat(getShelvedRuleItems().stream(), Stream.of(newClosedItems))
+                .collect(Collectors.toList());
+    }
+
+    protected List<ViewItemBuilder<?>> mergeDependents(ViewItemBuilder<?>... newDependents) {
+        return Stream.concat(getDependents().stream(), Stream.of(newDependents))
                 .collect(Collectors.toList());
     }
 
@@ -153,7 +158,7 @@ public abstract class DroolsRuleStructure {
             PatternDSL.PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<NewA> newA = createVariable("groupKey", from(newASource));
         DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
-        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeClosedItems(accumulatePattern),
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeShelved(accumulatePattern),
                 Arrays.asList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 
@@ -166,7 +171,7 @@ public abstract class DroolsRuleStructure {
         DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
                 .expand(p -> p.bind(newA, tuple -> tuple.a))
                 .expand(p -> p.bind(newB, tuple -> tuple.b));
-        return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, mergeClosedItems(accumulatePattern),
+        return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, mergeShelved(accumulatePattern),
                 Arrays.asList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 
@@ -182,7 +187,7 @@ public abstract class DroolsRuleStructure {
                 .expand(p -> p.bind(newA, tuple -> tuple.a))
                 .expand(p -> p.bind(newB, tuple -> tuple.b))
                 .expand(p -> p.bind(newC, tuple -> tuple.c));
-        return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, mergeClosedItems(accumulatePattern),
+        return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, mergeShelved(accumulatePattern),
                 Arrays.asList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 
@@ -201,7 +206,7 @@ public abstract class DroolsRuleStructure {
                 .expand(p -> p.bind(newB, tuple -> tuple.b))
                 .expand(p -> p.bind(newC, tuple -> tuple.c))
                 .expand(p -> p.bind(newD, tuple -> tuple.d));
-        return new DroolsQuadRuleStructure<>(newA, newB, newC, newD, newPrimaryPattern, mergeClosedItems(accumulatePattern),
+        return new DroolsQuadRuleStructure<>(newA, newB, newC, newD, newPrimaryPattern, mergeShelved(accumulatePattern),
                 Arrays.asList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 

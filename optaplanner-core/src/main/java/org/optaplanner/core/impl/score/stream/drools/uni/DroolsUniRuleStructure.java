@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.function.LongSupplier;
 import java.util.function.UnaryOperator;
 
+import org.drools.model.PatternDSL;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
+import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
@@ -80,7 +82,9 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
     }
 
     public <B> DroolsUniRuleStructure<A> exists(PatternDef<B> existencePattern) {
-        throw new UnsupportedOperationException();
+        ExprViewItem item = PatternDSL.exists(existencePattern);
+        return new DroolsUniRuleStructure<>(a, aPattern, shelved, prerequisites, mergeDependents(item),
+                getVariableIdSupplier());
     }
 
     public DroolsUniRuleStructure<A> amend(UnaryOperator<PatternDef<Object>> expander) {

@@ -240,11 +240,11 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         return applyFilters(newARuleStructure, existencePattern, biPredicate);
     }
 
-    private <B> DroolsUniCondition<A> applyFilters(DroolsUniRuleStructure<A> newRuleStructure,
+    private <B> DroolsUniCondition<A> applyFilters(DroolsUniRuleStructure<A> targetRuleStructure,
             PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate) {
         existencePattern = existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
                 (b, a) -> biPredicate.test(a, b));
-        return new DroolsUniCondition<>(newRuleStructure.exists(existencePattern));
+        return new DroolsUniCondition<>(targetRuleStructure.exists(existencePattern));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
