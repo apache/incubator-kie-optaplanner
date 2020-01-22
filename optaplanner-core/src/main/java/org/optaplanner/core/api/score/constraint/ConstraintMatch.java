@@ -84,8 +84,6 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
             return constraintPackage.compareTo(other.constraintPackage);
         } else if (!constraintName.equals(other.constraintName)) {
             return constraintName.compareTo(other.constraintName);
-        } else if (justificationList.size() != other.justificationList.size()) {
-            return Integer.compare(justificationList.size(), other.justificationList.size());
         } else {
             /*
              * TODO Come up with a better cache.
@@ -103,7 +101,11 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
                     return comparison;
                 }
             }
-            return 0;
+            if (justificationList.size() != other.justificationList.size()) {
+                return justificationList.size() < other.justificationList.size() ? -1 : 1;
+            } else {
+                return 0;
+            }
         }
     }
 
