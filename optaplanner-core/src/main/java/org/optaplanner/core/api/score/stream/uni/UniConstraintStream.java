@@ -192,9 +192,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
         int indexOfFirstFilter = -1;
         for (int i = 0; i < joinerCount; i++) {
             BiJoiner<A, B> joiner = joiners[i];
-            if (joiner instanceof FilteringBiJoiner) { // From now on, we only allow filtering joiners.
-                indexOfFirstFilter = i;
-            } else if (indexOfFirstFilter >= 0) { // Indexing joiner found after a filtering joiner.
+            boolean hasAFilter = indexOfFirstFilter >= 0;
+            if (joiner instanceof FilteringBiJoiner) {
+                if (!hasAFilter) { // From now on, we only allow filtering joiners.
+                    indexOfFirstFilter = i;
+                }
+            } else if (hasAFilter) {
                 throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                         + joiners[indexOfFirstFilter] + ").");
             }
@@ -206,10 +209,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
         BiConstraintStream<A, B> joined = indexOfFirstFilter == 0 ?
                 join(otherClass) :
                 join(otherClass, Arrays.copyOf(joiners, indexOfFirstFilter));
-        /*
-         * Follow it up with all the filters.
-         * We merge all the filters into one, so that we don't pay the penalty for lack of indexing more than once.
-         */
+        // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
         BiPredicate<A, B> resultingFilter = (a, b) -> true;
         for (int i = indexOfFirstFilter; i < joinerCount; i++) {
             FilteringBiJoiner<A, B> filteringJoiner = (FilteringBiJoiner<A, B>) joiners[i];

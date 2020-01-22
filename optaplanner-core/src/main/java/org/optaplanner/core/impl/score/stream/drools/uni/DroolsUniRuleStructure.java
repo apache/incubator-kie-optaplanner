@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.function.LongSupplier;
 import java.util.function.UnaryOperator;
 
-import org.drools.model.PatternDSL;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
@@ -71,13 +71,17 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
         return closedRuleItems;
     }
 
+    public <B> DroolsUniRuleStructure<A> exists(PatternDef<B> existencePattern) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Add another condition on the primary pattern without changing anything else about the rule.
      *
      * @param expander
      * @return
      */
-    public DroolsUniRuleStructure<A> amend(UnaryOperator<PatternDSL.PatternDef<Object>> expander) {
+    public DroolsUniRuleStructure<A> amend(UnaryOperator<PatternDef<Object>> expander) {
         return new DroolsUniRuleStructure<>(a, getPrimaryPattern().expand(expander), openRuleItems, closedRuleItems,
                 getVariableIdSupplier());
     }

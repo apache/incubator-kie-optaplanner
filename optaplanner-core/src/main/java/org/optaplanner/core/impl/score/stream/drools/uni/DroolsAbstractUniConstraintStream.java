@@ -53,7 +53,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public DroolsAbstractUniConstraintStream<Solution_, A> filter(Predicate<A> predicate) {
-        DroolsFilterUniConstraintStream<Solution_, A> stream = new DroolsFilterUniConstraintStream<>(constraintFactory, this, predicate);
+        DroolsFilterUniConstraintStream<Solution_, A> stream =
+                new DroolsFilterUniConstraintStream<>(constraintFactory, this, predicate);
         addChildStream(stream);
         return stream;
     }
@@ -83,7 +84,10 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     public <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        throw new UnsupportedOperationException();
+        DroolsExistsUniConstraintStream<Solution_, A> stream =
+                new DroolsExistsUniConstraintStream<>(constraintFactory, this, otherClass, joiners);
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************
