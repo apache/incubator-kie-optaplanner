@@ -17,14 +17,10 @@
 package org.optaplanner.core.api.score.constraint;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConstraintMatchTest {
 
@@ -72,13 +68,6 @@ public class ConstraintMatchTest {
                 new ConstraintMatch("a.c", "a", Arrays.asList("a", "ab"), SimpleScore.ZERO),
                 new ConstraintMatch("a.c", "a", Arrays.asList("a", "c"), SimpleScore.ZERO)
         );
-    }
-
-    @Test
-    public void listIsModifiable() { // The list is sorted externally in AbstractScoreDirector.
-        ConstraintMatch match = new ConstraintMatch("a.b", "a", Arrays.asList("b", "a"), SimpleScore.ZERO);
-        Collections.sort(match.getJustificationList(), Comparator.comparing(a -> ((String) a)));
-        assertThat(match.getJustificationList()).containsExactly("a", "b");
     }
 
 }
