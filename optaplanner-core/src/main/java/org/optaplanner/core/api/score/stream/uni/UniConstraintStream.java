@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.stream.uni;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -34,6 +35,7 @@ import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
 /**
@@ -124,7 +126,13 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner) {
-        return join(getConstraintFactory().from(otherClass), joiner);
+        if (joiner instanceof FilteringBiJoiner) {
+            FilteringBiJoiner<A, B> filteringJoiner = (FilteringBiJoiner<A, B>) joiner;
+            return join(otherClass)
+                    .filter(filteringJoiner.getFilter());
+        } else {
+            return join(getConstraintFactory().from(otherClass), joiner);
+        }
     }
 
     /**
@@ -136,7 +144,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return a stream that matches every combination of A and B for which all the {@link BiJoiner joiners} are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2) {
-        return join(otherClass, AbstractBiJoiner.merge(joiner1, joiner2));
+        return join(otherClass, new BiJoiner[] {joiner1, joiner2});
     }
 
     /**
@@ -150,7 +158,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3) {
-        return join(otherClass, AbstractBiJoiner.merge(joiner1, joiner2, joiner3));
+        return join(otherClass, new BiJoiner[] {joiner1, joiner2, joiner3});
     }
 
     /**
@@ -165,7 +173,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
-        return join(otherClass, AbstractBiJoiner.merge(joiner1, joiner2, joiner3, joiner4));
+        return join(otherClass, new BiJoiner[] {joiner1, joiner2, joiner3, joiner4});
     }
 
     /**
@@ -180,7 +188,34 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return a stream that matches every combination of A and B for which all the {@link BiJoiner joiners} are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        return join(otherClass, AbstractBiJoiner.merge(joiners));
+        int joinerCount = joiners.length;
+        int indexOfFirstFilter = -1;
+        for (int i = 0; i < joinerCount; i++) {
+            BiJoiner<A, B> joiner = joiners[i];
+            if (joiner instanceof FilteringBiJoiner) { // From now on, we only allow filtering joiners.
+                indexOfFirstFilter = i;
+            } else if (indexOfFirstFilter >= 0) { // Indexing joiner found after a filtering joiner.
+                throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
+                        + joiners[indexOfFirstFilter] + ").");
+            }
+        }
+        if (indexOfFirstFilter < 0) { // Only found indexing joiners.
+            return join(otherClass, AbstractBiJoiner.merge(joiners));
+        }
+        // Assemble the join stream.
+        BiConstraintStream<A, B> joined = indexOfFirstFilter == 0 ?
+                join(otherClass) :
+                join(otherClass, Arrays.copyOf(joiners, indexOfFirstFilter));
+        /*
+         * Follow it up with all the filters.
+         * We merge all the filters into one, so that we don't pay the penalty for lack of indexing more than once.
+         */
+        BiPredicate<A, B> resultingFilter = (a, b) -> true;
+        for (int i = indexOfFirstFilter; i < joinerCount; i++) {
+            FilteringBiJoiner<A, B> filteringJoiner = (FilteringBiJoiner<A, B>) joiners[i];
+            resultingFilter = resultingFilter.and(filteringJoiner.getFilter());
+        }
+        return joined.filter(resultingFilter);
     }
 
     // ************************************************************************
