@@ -32,11 +32,12 @@ import static org.optaplanner.core.impl.score.stream.common.JoinerType.GREATER_T
 import static org.optaplanner.core.impl.score.stream.common.JoinerType.INTERSECTING;
 import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN;
 import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN_OR_EQUAL;
+import static org.optaplanner.core.impl.score.stream.common.JoinerType.NOT_EQUAL;
 
 public class JoinerTypeTest {
 
     @Test
-    public void equals() {
+    public void equal() {
         assertTrue(EQUAL.matches(1, 1));
         assertFalse(EQUAL.matches(1, 2));
         assertFalse(EQUAL.matches(1, null));
@@ -44,11 +45,11 @@ public class JoinerTypeTest {
     }
 
     @Test
-    public void notEquals() {
-        assertFalse(EQUAL.matches(1, 1));
-        assertTrue(EQUAL.matches(1, 2));
-        assertTrue(EQUAL.matches(1, null));
-        assertTrue(EQUAL.matches(null, 1));
+    public void notEqual() {
+        assertFalse(NOT_EQUAL.matches(1, 1));
+        assertTrue(NOT_EQUAL.matches(1, 2));
+        assertTrue(NOT_EQUAL.matches(1, null));
+        assertTrue(NOT_EQUAL.matches(null, 1));
     }
 
     @Test
