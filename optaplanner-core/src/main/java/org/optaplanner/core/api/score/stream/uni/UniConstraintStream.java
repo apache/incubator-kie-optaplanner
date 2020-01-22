@@ -219,6 +219,88 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     // ************************************************************************
+    // If Exists
+    // ************************************************************************
+
+    /**
+     * Create a new {@link UniConstraintStream} for every A, if B exists.
+     * @param otherClass never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every A where a B exists
+     */
+    default <B> UniConstraintStream<A> ifExists(Class<B> otherClass) {
+        return ifExists(otherClass, new NoneBiJoiner<>());
+    }
+
+    /**
+     * Create a new {@link UniConstraintStream} for every A where B exists for which the {@link BiJoiner} is true
+     * (for the properties it extracts from both facts).
+     * <p>
+     * This method has overloaded methods with multiple {@link BiJoiner} parameters.
+     * @param otherClass never null
+     * @param joiner never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every A where B exists for which the {@link BiJoiner} is true
+     */
+    default <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B> joiner) {
+        return ifExists(otherClass, new BiJoiner[] { joiner });
+    }
+
+    /**
+     * As defined by {@link #ifExists(Class, BiJoiner)}.
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every A where B exists for which all the {@link BiJoiner}s are true
+     */
+    default <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2) {
+        return ifExists(otherClass, new BiJoiner[] {joiner1, joiner2});
+    }
+
+    /**
+     * As defined by {@link #ifExists(Class, BiJoiner)}.
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every A where B exists for which all the {@link BiJoiner}s are true
+     */
+    default <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
+            BiJoiner<A, B> joiner3) {
+        return ifExists(otherClass, new BiJoiner[] {joiner1, joiner2, joiner3});
+    }
+
+    /**
+     * As defined by {@link #ifExists(Class, BiJoiner)}.
+     * @param otherClass never null
+     * @param joiner1 never null
+     * @param joiner2 never null
+     * @param joiner3 never null
+     * @param joiner4 never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every A where B exists for which all the {@link BiJoiner}s are true
+     */
+    default <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
+            BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
+        return ifExists(otherClass, new BiJoiner[] {joiner1, joiner2, joiner3, joiner4});
+    }
+
+    /**
+     * As defined by {@link #ifExists(Class, BiJoiner)}.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     * @param otherClass never null
+     * @param joiners never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every A where B exists for which all the {@link BiJoiner}s are true
+     */
+    <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners);
+
+    // ************************************************************************
     // Group by
     // ************************************************************************
 

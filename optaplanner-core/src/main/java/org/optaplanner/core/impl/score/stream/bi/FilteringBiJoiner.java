@@ -29,26 +29,27 @@ public final class FilteringBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<A, Object> getLeftMapping(int joinerId) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Function<A, Object[]> getLeftCombinedMapping() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Function<B, Object> getRightMapping(int joinerId) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Function<B, Object[]> getRightCombinedMapping() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public JoinerType[] getJoinerTypes() {
-        return new JoinerType[0];
+        throw new UnsupportedOperationException();
     }
+
 }

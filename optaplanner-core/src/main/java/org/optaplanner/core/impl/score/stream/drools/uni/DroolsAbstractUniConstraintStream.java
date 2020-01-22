@@ -78,6 +78,15 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     // ************************************************************************
+    // If (Not) Exists
+    // ************************************************************************
+
+    @Override
+    public <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
     // Group by
     // ************************************************************************
 

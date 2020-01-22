@@ -109,6 +109,15 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     // ************************************************************************
+    // If (Not) Exists
+    // ************************************************************************
+
+    @Override
+    public <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        throw new UnsupportedOperationException();
+    }
+
+    // ************************************************************************
     // Group by
     // ************************************************************************
 
