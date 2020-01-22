@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,14 @@ public class JoinerTypeTest {
         assertFalse(EQUAL.matches(1, 2));
         assertFalse(EQUAL.matches(1, null));
         assertFalse(EQUAL.matches(null, 1));
+    }
+
+    @Test
+    public void notEquals() {
+        assertFalse(EQUAL.matches(1, 1));
+        assertTrue(EQUAL.matches(1, 2));
+        assertTrue(EQUAL.matches(1, null));
+        assertTrue(EQUAL.matches(null, 1));
     }
 
     @Test

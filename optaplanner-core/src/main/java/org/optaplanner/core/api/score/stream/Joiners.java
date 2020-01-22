@@ -44,6 +44,10 @@ public final class Joiners {
     // BiJoiner
     // ************************************************************************
 
+    public static <A> BiJoiner<A, A> equal() {
+        return equal(Function.identity());
+    }
+
     public static <A, Property_> BiJoiner<A, A> equal(Function<A, Property_> mapping) {
         return equal(mapping, mapping);
     }
@@ -51,6 +55,19 @@ public final class Joiners {
     public static <A, B, Property_> BiJoiner<A, B> equal(Function<A, Property_> leftMapping,
             Function <B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
+    }
+
+    public static <A> BiJoiner<A, A> notEqual() {
+        return notEqual(Function.identity());
+    }
+
+    public static <A, Property_> BiJoiner<A, A> notEqual(Function<A, Property_> mapping) {
+        return notEqual(mapping, mapping);
+    }
+
+    public static <A, B, Property_> BiJoiner<A, B> notEqual(Function<A, Property_> leftMapping,
+            Function <B, Property_> rightMapping) {
+        return new SingleBiJoiner<>(leftMapping, JoinerType.NOT_EQUAL, rightMapping);
     }
 
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThan(Function<A, Property_> mapping) {

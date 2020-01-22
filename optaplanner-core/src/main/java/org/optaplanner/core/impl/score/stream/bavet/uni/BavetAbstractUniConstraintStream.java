@@ -42,6 +42,7 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFactory;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.uni.InnerUniConstraintStream;
 
 public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
@@ -95,6 +96,18 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     .filter(((FilteringBiJoiner<A, B>) joiner).getFilter());
         }
         AbstractBiJoiner<A, B> castedJoiner = (AbstractBiJoiner<A, B>) joiner;
+        for (JoinerType type: castedJoiner.getJoinerTypes()) {
+            switch (type) {
+                case EQUAL:
+                case LESS_THAN:
+                case LESS_THAN_OR_EQUAL:
+                case GREATER_THAN:
+                case GREATER_THAN_OR_EQUAL:
+                    continue;
+                default:
+                    throw new UnsupportedOperationException("Unsupported joiner type (" + type + ").");
+            }
+        }
         BavetIndexFactory indexFactory = new BavetIndexFactory(castedJoiner);
         BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge = new BavetJoinBridgeUniConstraintStream<>(
                 constraintFactory, this, true, castedJoiner.getLeftCombinedMapping(), indexFactory);

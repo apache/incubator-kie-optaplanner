@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.function.BiPredicate;
 
 public enum JoinerType {
     EQUAL(Objects::equals),
+    NOT_EQUAL((a, b) -> !Objects.equals(a, b)),
     LESS_THAN((a, b) -> ((Comparable) a).compareTo(b) < 0),
     LESS_THAN_OR_EQUAL((a, b) -> ((Comparable) a).compareTo(b) <= 0),
     GREATER_THAN((a, b) -> ((Comparable) a).compareTo(b) > 0),
