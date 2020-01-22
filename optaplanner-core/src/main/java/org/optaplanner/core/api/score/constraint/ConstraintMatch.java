@@ -17,7 +17,7 @@
 package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +46,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
             Score score) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
-        this.justificationList = new ArrayList<>(justificationList);
+        this.justificationList = Collections.unmodifiableList(justificationList);
         this.score = score;
     }
 
@@ -84,6 +84,8 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
             return constraintPackage.compareTo(other.constraintPackage);
         } else if (!constraintName.equals(other.constraintName)) {
             return constraintName.compareTo(other.constraintName);
+        } else if (justificationList.size() != other.justificationList.size()) {
+            return Integer.compare(justificationList.size(), other.justificationList.size());
         } else {
             /*
              * TODO Come up with a better cache.
@@ -101,11 +103,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
                     return comparison;
                 }
             }
-            if (justificationList.size() != other.justificationList.size()) {
-                return justificationList.size() < other.justificationList.size() ? -1 : 1;
-            } else {
-                return 0;
-            }
+            return 0;
         }
     }
 
