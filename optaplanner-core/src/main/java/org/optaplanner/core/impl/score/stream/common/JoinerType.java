@@ -22,7 +22,6 @@ import java.util.function.BiPredicate;
 
 public enum JoinerType {
     EQUAL(Objects::equals),
-    NOT_EQUAL((a, b) -> !Objects.equals(a, b)),
     LESS_THAN((a, b) -> ((Comparable) a).compareTo(b) < 0),
     LESS_THAN_OR_EQUAL((a, b) -> ((Comparable) a).compareTo(b) <= 0),
     GREATER_THAN((a, b) -> ((Comparable) a).compareTo(b) > 0),

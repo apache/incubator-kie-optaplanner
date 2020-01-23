@@ -74,8 +74,6 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         switch (type) {
             case EQUAL:
                 return Index.ConstraintType.EQUAL;
-            case NOT_EQUAL:
-                return Index.ConstraintType.NOT_EQUAL;
             case LESS_THAN:
                 return Index.ConstraintType.LESS_THAN;
             case LESS_THAN_OR_EQUAL:

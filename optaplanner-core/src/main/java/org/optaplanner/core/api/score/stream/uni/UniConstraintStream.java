@@ -303,19 +303,18 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     <B> UniConstraintStream<A> ifExists(Class<B> otherClass, BiJoiner<A, B>... joiners);
 
     /**
-     * Create a new {@link UniConstraintStream} for every A, if another A exists that is
-     * {@link Joiners#notEqual(Function)}.
+     * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link #equals(Object)}
+     * the first.
      * @param otherClass never null
      * @return a stream that matches every A where a different A exists
      */
     default UniConstraintStream<A> ifExistsOther(Class<A> otherClass) {
-        return ifExists(otherClass, Joiners.notEqual());
+        return ifExists(otherClass, Joiners.filtering((a, b) -> !a.equals(b)));
     }
 
     /**
-     * Create a new {@link UniConstraintStream} for every A, if another A exists that is
-     * {@link Joiners#notEqual(Function)} and for which the {@link BiJoiner} is true
-     * (for the properties it extracts from both facts).
+     * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link #equals(Object)}
+     * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * @param otherClass never null
@@ -375,8 +374,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return a stream that matches every A where a different A exists for which all the {@link BiJoiner}s are true
      */
     default UniConstraintStream<A> ifExistsOther(Class<A> otherClass, BiJoiner<A, A>... joiners) {
-        BiJoiner<A, A> otherness = Joiners.notEqual();
-        BiJoiner[] allJoiners = Stream.concat(Stream.of(otherness), Arrays.stream(joiners))
+        BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !a.equals(b));
+        BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifExists(otherClass, allJoiners);
     }

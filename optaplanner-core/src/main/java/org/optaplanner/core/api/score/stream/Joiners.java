@@ -57,19 +57,6 @@ public final class Joiners {
         return new SingleBiJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
-    public static <A> BiJoiner<A, A> notEqual() {
-        return notEqual(Function.identity());
-    }
-
-    public static <A, Property_> BiJoiner<A, A> notEqual(Function<A, Property_> mapping) {
-        return notEqual(mapping, mapping);
-    }
-
-    public static <A, B, Property_> BiJoiner<A, B> notEqual(Function<A, Property_> leftMapping,
-            Function <B, Property_> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.NOT_EQUAL, rightMapping);
-    }
-
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThan(Function<A, Property_> mapping) {
         return lessThan(mapping, mapping);
     }
