@@ -265,39 +265,6 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity3, entity3));
     }
 
-    @Test
-    public void joinOther() {
-        assumeDrools();
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
-        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
-        solution.getEntityGroupList().add(entityGroup);
-        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
-        solution.getEntityList().add(entity1);
-        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
-        solution.getEntityList().add(entity2);
-
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
-            return factory.from(TestdataLavishEntity.class)
-                    .joinOther(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
-
-        // From scratch
-        scoreDirector.setWorkingSolution(solution);
-        assertScore(scoreDirector,
-                assertMatch(solution.getFirstEntity(), entity2),
-                assertMatch(entity2, solution.getFirstEntity()));
-
-        // Incremental
-        scoreDirector.beforeProblemPropertyChanged(entity2);
-        entity2.setEntityGroup(entityGroup);
-        scoreDirector.afterProblemPropertyChanged(entity2);
-        assertScore(scoreDirector,
-                assertMatch(entity1, entity2),
-                assertMatch(entity2, entity1));
-    }
-
     // ************************************************************************
     // IfExists
     // ************************************************************************
