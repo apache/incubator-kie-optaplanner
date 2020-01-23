@@ -99,10 +99,10 @@ public final class Joiners {
     /**
      * Applies a filter to the joined tuple, with the semantics of {@link BiConstraintStream#filter(BiPredicate)}.
      *
-     * @param filter filter to apply
+     * @param filter never null, filter to apply
      * @param <A> type of the first fact in the tuple
      * @param <B> type of the second fact in the tuple
-     * @return the joiner
+     * @return never null
      */
     public static <A, B> BiJoiner<A, B> filtering(BiPredicate<A, B> filter) {
         return new FilteringBiJoiner<>(filter);

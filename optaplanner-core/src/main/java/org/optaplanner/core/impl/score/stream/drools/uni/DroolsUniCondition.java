@@ -178,24 +178,30 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractBiJoiner<A, B> finalJoiner = null;
-        BiPredicate<A, B> finalFilter = (a, b) -> true;
+        BiPredicate<A, B> finalFilter = null;
         for (int i = 0; i < biJoiners.length; i++) {
             AbstractBiJoiner<A, B> biJoiner = (AbstractBiJoiner<A, B>) biJoiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
             if (biJoiner instanceof NoneBiJoiner && biJoiners.length > 1) {
                 throw new IllegalStateException("If present, " + NoneBiJoiner.class + " must be the only joiner, got "
                         + Arrays.toString(biJoiners) + " instead.");
-            } else if (biJoiner instanceof FilteringBiJoiner) {
+            } else if (!(biJoiner instanceof FilteringBiJoiner)) {
+                if (hasAFilter) {
+                    throw new IllegalStateException("Indexing joiner (" + biJoiner + ") must not follow a filtering joiner ("
+                            + biJoiners[indexOfFirstFilter] + ").");
+                } else { // Merge this Joiner with the existing Joiners.
+                    finalJoiner = finalJoiner == null ?
+                            biJoiner :
+                            AbstractBiJoiner.merge(finalJoiner, biJoiner);
+                }
+            } else {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
                 // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
-                finalFilter = finalFilter.and(biJoiner.getFilter());
-            } else if (hasAFilter) {
-                throw new IllegalStateException("Indexing joiner (" + biJoiner + ") must not follow a filtering joiner ("
-                        + biJoiners[indexOfFirstFilter] + ").");
-            } else { // Merge all indexing Joiners.
-                finalJoiner = finalJoiner == null ? biJoiner : AbstractBiJoiner.merge(finalJoiner, biJoiner);
+                finalFilter = finalFilter == null ?
+                        biJoiner.getFilter() :
+                        finalFilter.and(biJoiner.getFilter());
             }
         }
         return applyJoiners(otherClass, finalJoiner, finalFilter);
@@ -242,9 +248,11 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
 
     private <B> DroolsUniCondition<A> applyFilters(DroolsUniRuleStructure<A> targetRuleStructure,
             PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate) {
-        existencePattern = existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
-                (b, a) -> biPredicate.test(a, b));
-        return new DroolsUniCondition<>(targetRuleStructure.exists(existencePattern));
+        PatternDef<B> possiblyFilteredexistencePattern = biPredicate == null ?
+                existencePattern :
+                existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
+                        (b, a) -> biPredicate.test(a, b));
+        return new DroolsUniCondition<>(targetRuleStructure.exists(possiblyFilteredexistencePattern));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
