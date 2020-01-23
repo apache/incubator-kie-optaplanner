@@ -53,7 +53,8 @@ public final class FilteringBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public JoinerType[] getJoinerTypes() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
+                "joiner internally.");
     }
 
 }
