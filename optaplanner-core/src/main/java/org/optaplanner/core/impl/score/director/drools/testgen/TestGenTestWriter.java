@@ -76,6 +76,7 @@ class TestGenTestWriter {
         imports.add("org.kie.api.builder.KieFileSystem");
         imports.add("org.kie.api.runtime.KieContainer");
         imports.add("org.kie.api.runtime.KieSession");
+        imports.add("org.drools.compiler.kie.builder.impl.DrlProject");
         if (!scoreDrlFileList.isEmpty()) {
             imports.add("java.io.File");
         }

@@ -1,7 +1,6 @@
 package org.optaplanner.testgen;
 
 import java.io.File;
-
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.junit.Assert;
 import org.junit.Test;
