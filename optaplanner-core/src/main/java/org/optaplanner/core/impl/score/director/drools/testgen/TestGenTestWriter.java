@@ -126,7 +126,7 @@ class TestGenTestWriter {
                     .append("                .newClassPathResource(\"").append(drl).append("\"));\n");
         });
         sb
-                .append("        kieServices.newKieBuilder(kfs).buildAll();\n")
+                .append("        kieServices.newKieBuilder(kfs).buildAll(DrlProject.class);\n")
                 .append("        KieContainer kieContainer = kieServices.newKieContainer("
                         + "kieServices.getRepository().getDefaultReleaseId());\n")
                 .append("        KieSession kieSession = kieContainer.newKieSession();\n\n");
