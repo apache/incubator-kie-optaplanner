@@ -13,21 +13,21 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataComparableSolution extends TestdataObject {
+public class TestdataSolutionWithDifficultyComparatorEntity extends TestdataObject {
 
-    public static SolutionDescriptor<TestdataComparableSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataComparableSolution.class, TestdataComparableEntity.class);
+    public static SolutionDescriptor<TestdataSolutionWithDifficultyComparatorEntity> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataSolutionWithDifficultyComparatorEntity.class, TestdataEntityWithDifficultyComparator.class);
     }
 
     private List<TestdataValue> valueList;
-    private List<TestdataComparableEntity> entityList;
+    private List<TestdataEntityWithDifficultyComparator> entityList;
 
     private SimpleScore score;
 
-    public TestdataComparableSolution() {
+    public TestdataSolutionWithDifficultyComparatorEntity() {
     }
 
-    public TestdataComparableSolution(String code) {
+    public TestdataSolutionWithDifficultyComparatorEntity(String code) {
         super(code);
     }
 
@@ -42,11 +42,11 @@ public class TestdataComparableSolution extends TestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataComparableEntity> getEntityList() {
+    public List<TestdataEntityWithDifficultyComparator> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataComparableEntity> entityList) {
+    public void setEntityList(List<TestdataEntityWithDifficultyComparator> entityList) {
         this.entityList = entityList;
     }
 
