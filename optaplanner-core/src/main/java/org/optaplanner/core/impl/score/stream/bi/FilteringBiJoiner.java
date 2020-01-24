@@ -28,7 +28,7 @@ public final class FilteringBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     @Override
-    public Function<A, Object> getLeftMapping(int joinerId) {
+    public Function<A, Object> getLeftMapping(int index) {
         throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
                 "joiner internally.");
     }
@@ -40,7 +40,7 @@ public final class FilteringBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     @Override
-    public Function<B, Object> getRightMapping(int joinerId) {
+    public Function<B, Object> getRightMapping(int index) {
         throw new UnsupportedOperationException("Impossible state: this joiner should never be treated like a normal " +
                 "joiner internally.");
     }

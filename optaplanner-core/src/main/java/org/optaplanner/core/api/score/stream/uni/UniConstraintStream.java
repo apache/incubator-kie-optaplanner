@@ -26,6 +26,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -128,17 +129,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null, a stream that matches every combination of A and B for which the {@link BiJoiner} is true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner) {
-        if (joiner instanceof FilteringBiJoiner) {
-            FilteringBiJoiner<A, B> filteringJoiner = (FilteringBiJoiner<A, B>) joiner;
-            return join(otherClass)
-                    .filter(filteringJoiner.getFilter());
-        } else {
-            return join(getConstraintFactory().from(otherClass), joiner);
-        }
+        return join(getConstraintFactory().from(otherClass), joiner);
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner...)}.
+     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
+     * filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -151,7 +147,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner...)}.
+     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
+     * filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -166,7 +163,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #join(Class, BiJoiner...)}.
+     * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
+     * filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -252,7 +250,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, BiJoiner...)}.
+     * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
+     * filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -264,7 +263,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, BiJoiner...)}.
+     * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
+     * filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -278,7 +278,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, BiJoiner...)}.
+     * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
+     * filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -293,7 +294,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExists(Class, BiJoiner...)}.
+     * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
+     * filtering joiners.
      * <p>
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
@@ -313,7 +315,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return never null, a stream that matches every A where a different A exists
      */
     default UniConstraintStream<A> ifExistsOther(Class<A> otherClass) {
-        return ifExists(otherClass, Joiners.filtering((a, b) -> !a.equals(b)));
+        return ifExists(otherClass, Joiners.filtering(ObjectUtils::notEqual));
     }
 
     /**
@@ -331,7 +333,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner...)}.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
+     * before filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -343,7 +346,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner...)}.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
+     * before filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -357,7 +361,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * As defined by {@link #ifExistsOther(Class, BiJoiner)...}.
+     * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
+     * before filtering joiners.
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -383,7 +388,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * are true
      */
     default UniConstraintStream<A> ifExistsOther(Class<A> otherClass, BiJoiner<A, A>... joiners) {
-        BiJoiner<A, A> otherness = Joiners.filtering((a, b) -> !a.equals(b));
+        BiJoiner<A, A> otherness = Joiners.filtering(ObjectUtils::notEqual);
         BiJoiner[] allJoiners = Stream.concat(Arrays.stream(joiners), Stream.of(otherness))
                 .toArray(BiJoiner[]::new);
         return ifExists(otherClass, allJoiners);
