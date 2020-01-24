@@ -81,8 +81,11 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
         return dependents;
     }
 
-    public <B> DroolsUniRuleStructure<A> exists(PatternDef<B> existencePattern) {
+    public <B> DroolsUniRuleStructure<A> existsOrNot(PatternDef<B> existencePattern, boolean shouldExist) {
         ExprViewItem item = PatternDSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = PatternDSL.not(item);
+        }
         return new DroolsUniRuleStructure<>(a, aPattern, shelved, prerequisites, mergeDependents(item),
                 getVariableIdSupplier());
     }

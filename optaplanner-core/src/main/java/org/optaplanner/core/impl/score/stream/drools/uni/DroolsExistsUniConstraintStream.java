@@ -25,12 +25,17 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final DroolsUniCondition<A> condition;
+    private final String streamName;
 
     public <B> DroolsExistsUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractUniConstraintStream<Solution_, A> parent, Class<B> otherClass, BiJoiner<A, B>... joiners) {
+            DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean shouldExist, Class<B> otherClass,
+            BiJoiner<A, B>... joiners) {
         super(constraintFactory);
         this.parent = parent;
-        this.condition = parent.getCondition().andIfExists(otherClass, joiners);
+        this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
+        this.condition = shouldExist ?
+                parent.getCondition().andIfExists(otherClass, joiners) :
+                parent.getCondition().andIfNotExists(otherClass, joiners);
     }
 
     @Override
@@ -54,7 +59,7 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
 
     @Override
     public String toString() {
-        return "IfExists() with " + getChildStreams().size()  + " children";
+        return streamName + " with " + getChildStreams().size()  + " children";
     }
 
 }

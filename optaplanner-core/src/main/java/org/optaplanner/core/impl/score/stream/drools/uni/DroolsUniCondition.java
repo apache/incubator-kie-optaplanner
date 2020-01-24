@@ -175,6 +175,15 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
     }
 
     public <B> DroolsUniCondition<A> andIfExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
+        return andIfExistsOrNot(true, otherClass, biJoiners);
+    }
+
+    public <B> DroolsUniCondition<A> andIfNotExists(Class<B> otherClass, BiJoiner<A, B>... biJoiners) {
+        return andIfExistsOrNot(false, otherClass, biJoiners);
+    }
+
+    private <B> DroolsUniCondition<A> andIfExistsOrNot(boolean shouldExist, Class<B> otherClass,
+            BiJoiner<A, B>... biJoiners) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractBiJoiner<A, B> finalJoiner = null;
@@ -204,15 +213,15 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                         finalFilter.and(biJoiner.getFilter());
             }
         }
-        return applyJoiners(otherClass, finalJoiner, finalFilter);
+        return applyJoiners(otherClass, finalJoiner, finalFilter, shouldExist);
     }
 
     private <B> DroolsUniCondition<A> applyJoiners(Class<B> otherClass, AbstractBiJoiner<A, B> biJoiner,
-            BiPredicate<A, B> biPredicate) {
+            BiPredicate<A, B> biPredicate, boolean shouldExist) {
         Declaration<B> toExist = PatternDSL.declarationOf(otherClass);
         PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
         if (biJoiner == null) {
-            return applyFilters(ruleStructure, existencePattern, biPredicate);
+            return applyFilters(ruleStructure, existencePattern, biPredicate, shouldExist);
         }
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
         // We rebuild the A pattern, binding variables for left parts of the joins.
@@ -243,16 +252,16 @@ public final class DroolsUniCondition<A> extends DroolsCondition<DroolsUniRuleSt
                         joinVars[currentMappingIndex], predicate, index);
         }
         // And finally we add the filter to the B pattern
-        return applyFilters(newARuleStructure, existencePattern, biPredicate);
+        return applyFilters(newARuleStructure, existencePattern, biPredicate, shouldExist);
     }
 
     private <B> DroolsUniCondition<A> applyFilters(DroolsUniRuleStructure<A> targetRuleStructure,
-            PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate) {
+            PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate, boolean shouldExist) {
         PatternDef<B> possiblyFilteredexistencePattern = biPredicate == null ?
                 existencePattern :
                 existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
                         (b, a) -> biPredicate.test(a, b));
-        return new DroolsUniCondition<>(targetRuleStructure.exists(possiblyFilteredexistencePattern));
+        return new DroolsUniCondition<>(targetRuleStructure.existsOrNot(possiblyFilteredexistencePattern, shouldExist));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
