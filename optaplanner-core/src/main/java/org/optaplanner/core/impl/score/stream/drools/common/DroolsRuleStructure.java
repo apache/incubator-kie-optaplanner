@@ -104,8 +104,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
     }
 
     /**
-     * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String)} for
-     * details.
+     * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String)} for details.
      */
     public final <X> Variable<X> createVariable(String name, DeclarationSource source) {
         return (Variable<X>) createVariable(Object.class, name, source);
@@ -190,7 +189,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
     /**
      * See {@link #getPrimaryPatternBuilder()} for a definition.
      *
-     * @return never null, a list of preceding items that are required by the primary pattern.
+     * @return never null, a list of preceding items that are required by the primary pattern
      */
     public abstract List<ViewItemBuilder<?>> getPrerequisites();
 
@@ -206,7 +205,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
      * In this example, any further Person filters or joiners will still be applied on the primary pattern.
      * Yet the rule overall would not function properly without also including the dependent pattern.
      *
-     * @return never null, a list of subsequent items that are required by the primary pattern.
+     * @return never null, a list of subsequent items that are required by the primary pattern
      */
     public abstract List<ViewItemBuilder<?>> getDependents();
 
