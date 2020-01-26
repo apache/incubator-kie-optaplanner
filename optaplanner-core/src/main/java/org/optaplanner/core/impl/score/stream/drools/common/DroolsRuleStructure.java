@@ -42,7 +42,7 @@ import static org.drools.model.DSL.from;
 
 /**
  * Represents the left-hand side of a Drools rule.
- * @param <PatternVar> type of the variable of the primary pattern
+ * @param <PatternVar> type of the variable of the primary pattern (see {@link #getPrimaryPatternBuilder()})
  */
 public abstract class DroolsRuleStructure<PatternVar> {
 
@@ -128,12 +128,86 @@ public abstract class DroolsRuleStructure<PatternVar> {
         return variableIdSupplier;
     }
 
+    /**
+     * Primary pattern is the Drools pattern to which operations such as filter and join will be applied.
+     * Consider the following example left hand side DRL:
+     *
+     * <pre>
+     *     $person: Person()
+     *     $lesson: Lesson($person in people)
+     * </pre>
+     *
+     * Here, Lesson is the primary pattern of this rule.
+     * We can use filters to restrict matched Lesson instances, and we can use $person variable in those filters.
+     * But the Person() instances themselves are now fixed and the Person pattern can be found in
+     * {@link #getPrerequisites()} and no longer modified.
+     *
+     * <p>
+     * The primary pattern is provided as a builder.
+     * This is necessary since the patterns are shared and modified between different classes and it would therefore be
+     * possible for one class to modify the other's pattern.
+     * This way, the pattern is only constructed when necessary, at which point it will no longer be shared.
+     *
+     * @return never null, builder that will be used to obtain the final version of the primary pattern
+     */
     public abstract DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder();
 
+    /**
+     * Patterns that are no longer of any use to the primary pattern, yet are required for the Drools rule to function.
+     * Consider the following example left hand side DRL:
+     *
+     * <pre>
+     *     $tuples: Set() from accumulate(...) // This is the shelved pattern.
+     *     $person: Person() from $tuples // This is the prerequisite pattern, referencing the shelved pattern.
+     *     $lesson: Lesson($person in people) // This is the primary pattern, referencing the prerequisite pattern.
+     * </pre>
+     *
+     * In this example, any further Person filters or joiners will still be applied on the primary pattern.
+     * Yet the rule overall would not function properly without also including the shelved pattern.
+     *
+     * <p>
+     * The difference between these and {@link #getPrerequisites()} is that the latter would be folded inside a
+     * subsequent accumulate pattern, while shelved patterns (typically representing previous accumulate patterns)
+     * wouldn't.
+     * Consider the following example left hand side DRL:
+     *
+     * <pre>
+     *     $tuples: Set() from accumulate(...) // This is original the shelved pattern from above.
+     *     $otherTuples: Set() from accumulate(
+     *          and(
+     *              $person: Person() from $tuples, // This is the original prerequisite pattern from above.
+     *              $lesson: Lesson($person in people) // This is the original primary pattern from above.
+     *          ),
+     *          collectCount()
+     *     )
+     *     $otherPerson: Person() from $otherTuples // This is the new primary pattern.
+     * </pre>
+     *
+     * @return never null, a list of preceding items that are required by the primary pattern.
+     */
     public abstract List<ViewItemBuilder<?>> getShelvedRuleItems();
 
+    /**
+     * See {@link #getPrimaryPatternBuilder()} for a definition.
+     *
+     * @return never null, a list of preceding items that are required by the primary pattern.
+     */
     public abstract List<ViewItemBuilder<?>> getPrerequisites();
 
+    /**
+     * Patterns that follow up on the primary pattern, yet are not used for filtering or joining.
+     * Consider the following example left hand side DRL:
+     *
+     * <pre>
+     *     $person: Person() // This is the primary pattern.
+     *     exists Person(this != $person) // This is the dependent, immutable pattern.
+     * </pre>
+     *
+     * In this example, any further Person filters or joiners will still be applied on the primary pattern.
+     * Yet the rule overall would not function properly without also including the dependent pattern.
+     *
+     * @return never null, a list of subsequent items that are required by the primary pattern.
+     */
     public abstract List<ViewItemBuilder<?>> getDependents();
 
     protected List<ViewItemBuilder<?>> mergeShelved(ViewItemBuilder<?>... newClosedItems) {
