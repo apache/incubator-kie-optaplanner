@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +26,7 @@ import java.util.stream.Stream;
 
 import org.drools.model.DSL;
 import org.drools.model.DeclarationSource;
-import org.drools.model.PatternDSL;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
@@ -43,8 +42,9 @@ import static org.drools.model.DSL.from;
 
 /**
  * Represents the left-hand side of a Drools rule.
+ * @param <PatternVar> type of the variable of the primary pattern
  */
-public abstract class DroolsRuleStructure {
+public abstract class DroolsRuleStructure<PatternVar> {
 
     private final LongSupplier variableIdSupplier;
 
@@ -128,7 +128,7 @@ public abstract class DroolsRuleStructure {
         return variableIdSupplier;
     }
 
-    public abstract DroolsPatternBuilder<Object> getPrimaryPatternBuilder();
+    public abstract DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder();
 
     public abstract List<ViewItemBuilder<?>> getShelvedRuleItems();
 
@@ -146,7 +146,7 @@ public abstract class DroolsRuleStructure {
                 .collect(Collectors.toList());
     }
 
-    public <NewA> DroolsUniRuleStructure<NewA> recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
+    public <NewA> DroolsUniRuleStructure<NewA, NewA> recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
         DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
         // The accumulate pattern is the new prerequisite, as it is where the primary pattern gets the variable from.
         List<ViewItemBuilder<?>> newPrerequisites = Collections.singletonList(accumulatePattern);
@@ -154,16 +154,17 @@ public abstract class DroolsRuleStructure {
                 getDependents(), getVariableIdSupplier());
     }
 
-    public <NewA> DroolsUniRuleStructure<NewA> regroup(Variable<Set<NewA>> newASource,
-            PatternDSL.PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
+    public <NewA> DroolsUniRuleStructure<NewA, NewA> regroup(Variable<Set<NewA>> newASource,
+            PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<NewA> newA = createVariable("groupKey", from(newASource));
         DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
         return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Arrays.asList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 
-    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB> regroupBi(Variable<Set<BiTuple<NewA, NewB>>> newSource,
-            PatternDSL.PatternDef<Set<BiTuple<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
+    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB, BiTuple<NewA, NewB>> regroupBi(
+            Variable<Set<BiTuple<NewA, NewB>>> newSource, PatternDef<Set<BiTuple<NewA, NewB>>> collectPattern,
+            ViewItem<?> accumulatePattern) {
         Variable<BiTuple<NewA, NewB>> newTuple =
                 (Variable<BiTuple<NewA, NewB>>) createVariable(BiTuple.class,"groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");
@@ -172,12 +173,12 @@ public abstract class DroolsRuleStructure {
                 .expand(p -> p.bind(newA, tuple -> tuple.a))
                 .expand(p -> p.bind(newB, tuple -> tuple.b));
         return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Arrays.asList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 
-    public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC> regroupBiToTri(
+    public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>> regroupBiToTri(
             Variable<Set<TriTuple<NewA, NewB, NewC>>> newSource,
-            PatternDSL.PatternDef<Set<TriTuple<NewA, NewB, NewC>>> collectPattern, ViewItem<?> accumulatePattern) {
+            PatternDef<Set<TriTuple<NewA, NewB, NewC>>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<TriTuple<NewA, NewB, NewC>> newTuple =
                 (Variable<TriTuple<NewA, NewB, NewC>>) createVariable(TriTuple.class, "groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");
@@ -188,13 +189,12 @@ public abstract class DroolsRuleStructure {
                 .expand(p -> p.bind(newB, tuple -> tuple.b))
                 .expand(p -> p.bind(newC, tuple -> tuple.c));
         return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Arrays.asList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadRuleStructure<NewA, NewB, NewC, NewD> regroupBiToQuad(
-            Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource,
-            PatternDSL.PatternDef<Set<QuadTuple<NewA, NewB, NewC, NewD>>> collectPattern,
-            ViewItem<?> accumulatePattern) {
+    public <NewA, NewB, NewC, NewD> DroolsQuadRuleStructure<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
+    regroupBiToQuad(Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource,
+            PatternDef<Set<QuadTuple<NewA, NewB, NewC, NewD>>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<QuadTuple<NewA, NewB, NewC, NewD>> newTuple =
                 (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) createVariable(QuadTuple.class, "groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");
@@ -207,7 +207,7 @@ public abstract class DroolsRuleStructure {
                 .expand(p -> p.bind(newC, tuple -> tuple.c))
                 .expand(p -> p.bind(newD, tuple -> tuple.d));
         return new DroolsQuadRuleStructure<>(newA, newB, newC, newD, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Arrays.asList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
     }
 
 }

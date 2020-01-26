@@ -245,5 +245,5 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
     }
 
-    public abstract DroolsUniCondition<A> getCondition();
+    public abstract DroolsUniCondition<A, ?> getCondition();
 }

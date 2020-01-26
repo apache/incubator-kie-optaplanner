@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
-    private final DroolsUniCondition<A> condition;
+    private final DroolsUniCondition<A, ?> condition;
     private final String streamName;
 
     public <B> DroolsExistsUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -53,7 +53,7 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public DroolsUniCondition<A> getCondition() {
+    public DroolsUniCondition<A, ?> getCondition() {
         return condition;
     }
 
