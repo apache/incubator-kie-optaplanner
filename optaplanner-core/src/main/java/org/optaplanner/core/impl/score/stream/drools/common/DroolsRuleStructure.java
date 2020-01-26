@@ -172,7 +172,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
      * Consider the following example left hand side DRL:
      *
      * <pre>
-     *     $tuples: Set() from accumulate(...) // This is original the shelved pattern from above.
+     *     $tuples: Set() from accumulate(...) // This is the original shelved pattern from above.
      *     $otherTuples: Set() from accumulate(
      *          and(
      *              $person: Person() from $tuples, // This is the original prerequisite pattern from above.
