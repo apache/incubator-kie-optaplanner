@@ -149,7 +149,7 @@ public final class DroolsBiCondition<A, B, PatternVar>
         }
         // There is no gamma index in Drools, therefore we replace joining with a filter.
         TriPredicate<A, B, C> joinFilter = (a, b, c) -> matches(joiner, a, b, c);
-        TriPredicate<A, B, C> result = joinFilter.and(predicate);
+        TriPredicate<A, B, C> result = predicate == null ? joinFilter : joinFilter.and(predicate);
         // And finally we add the filter to the C pattern
         return applyFilters(existencePattern, result, shouldExist);
     }

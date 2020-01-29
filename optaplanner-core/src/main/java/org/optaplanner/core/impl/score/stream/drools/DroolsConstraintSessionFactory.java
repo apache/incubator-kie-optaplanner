@@ -77,7 +77,7 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
     /**
      * Converts justification list to another justification list, this one matching the expected scoring stream.
      * For example, if a scoring stream of cardinality 2 operates on facts of A and B, the list returned by this
-     * method will only have these two facts and in that order.
+     * method will only have these two facts. Order is not guaranteed.
      *
      * <p>
      * Due to the nature of the justification list coming from Drools, this method is very fragile.
@@ -109,7 +109,7 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
             justificationList.remove(match);
             matching[i] = match;
         }
-        // Fill the remaining places with Object matches, but keep their original place coming from expectedMatches.
+        // Fill the remaining places with Object matches, but keep their original order coming from expectedMatches.
         for (int i = 0; i < expectedMatches.length; i++) {
             if (matching[i] != null) {
                 continue;
@@ -124,12 +124,13 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
             // The justifications will be enumerated. A, B, C, ...
             return Arrays.asList(matching);
         }
-        // The justifications will all come from a single tuple (eg. BiTuple<A, B>).
         Object item = matching[0];
         Class expectedMatch = expectedMatches[0];
         if (FactTuple.class.isAssignableFrom(expectedMatch)) {
+            // The justifications will all come from a single tuple (eg. BiTuple<A, B>).
             return ((FactTuple) item).asList();
         } else {
+            // This comes from a uni stream.
             return Collections.singletonList(item);
         }
     }
