@@ -104,8 +104,9 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public Class[] getExpectedMatches() {
-        return ((DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent).getCondition().getExpectedMatches();
+    public Class[] getExpectedJustificationTypes() {
+        return ((DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent).getCondition()
+                .getExpectedJustificationTypes();
     }
 
     @Override

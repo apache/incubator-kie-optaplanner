@@ -113,11 +113,11 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     }
 
     /**
-     * As defined by {@link DroolsRuleStructure#getExpectedMatches()}.
+     * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.
      * May only be called on scoring streams.
      * @return never null, never empty
      */
-    public Class[] getExpectedMatches() {
+    public Class[] getExpectedJustificationTypes() {
         throw new UnsupportedOperationException("Non-scoring stream (" + this + ") can not have any expected matches.");
     }
 

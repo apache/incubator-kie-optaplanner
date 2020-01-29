@@ -295,7 +295,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
      *
      * @return never null
      */
-    public Class[] getExpectedMatches() {
+    public Class[] getExpectedJustificationTypes() {
         PatternDef<PatternVar> pattern = getPrimaryPatternBuilder().build();
         Class<PatternVar> type = pattern.getFirstVariable().getType();
         if (FactTuple.class.isAssignableFrom(type)) {

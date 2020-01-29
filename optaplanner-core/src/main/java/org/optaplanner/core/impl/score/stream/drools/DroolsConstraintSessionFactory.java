@@ -59,7 +59,7 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
         ScoreDefinition scoreDefinition = solutionDescriptor.getScoreDefinition();
         AbstractScoreHolder scoreHolder = (AbstractScoreHolder) scoreDefinition.buildScoreHolder(constraintMatchEnabled);
         scoreHolder.setJustificationListConverter((justificationList, rule) ->
-                matchJustificationsToOutput((List<Object>) justificationList, constraints.get(rule).getExpectedMatches()));
+                matchJustificationsToOutput((List<Object>) justificationList, constraints.get(rule).getExpectedJustificationTypes()));
         constraints.forEach((rule, constraint) -> scoreHolder.configureConstraintWeight(rule,
                 constraint.extractConstraintWeight(workingSolution)));
         KieSession kieSession = kieBase.newKieSession();
@@ -81,30 +81,30 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
      * heuristics inside this method will have to be redesigned.
      *
      * @param justificationList unordered list of justifications coming from the score director
-     * @param expectedMatches as defined by {@link DroolsRuleStructure#getExpectedMatches()}
+     * @param expectedTypes as defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}
      * @return never null
      */
-    private static List<Object> matchJustificationsToOutput(List<Object> justificationList, Class... expectedMatches) {
-        if (expectedMatches.length == 0) {
+    private static List<Object> matchJustificationsToOutput(List<Object> justificationList, Class... expectedTypes) {
+        if (expectedTypes.length == 0) {
             throw new IllegalStateException("Impossible: there are no 0-cardinality constraint streams.");
         }
-        Object[] matching = new Object[expectedMatches.length];
+        Object[] matching = new Object[expectedTypes.length];
         // First process non-Object matches, as those are the most descriptive.
-        for (int i = 0; i < expectedMatches.length; i++) {
-            Class expectedMatch = expectedMatches[i];
-            if (Objects.equals(expectedMatch, Object.class)) {
+        for (int i = 0; i < expectedTypes.length; i++) {
+            Class expectedType = expectedTypes[i];
+            if (Objects.equals(expectedType, Object.class)) {
                 continue;
             }
             Object match = justificationList.stream()
-                    .filter(j -> expectedMatch.isAssignableFrom(j.getClass()))
+                    .filter(j -> expectedType.isAssignableFrom(j.getClass()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Impossible: no justification of type ("
-                            + expectedMatch + ")."));
+                            + expectedType + ")."));
             justificationList.remove(match);
             matching[i] = match;
         }
         // Fill the remaining places with Object matches, but keep their original order coming from expectedMatches.
-        for (int i = 0; i < expectedMatches.length; i++) {
+        for (int i = 0; i < expectedTypes.length; i++) {
             if (matching[i] != null) {
                 continue;
             }
@@ -119,8 +119,8 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
             return Arrays.asList(matching);
         }
         Object item = matching[0];
-        Class expectedMatch = expectedMatches[0];
-        if (FactTuple.class.isAssignableFrom(expectedMatch)) {
+        Class expectedType = expectedTypes[0];
+        if (FactTuple.class.isAssignableFrom(expectedType)) {
             // The justifications will all come from a single tuple (eg. BiTuple<A, B>).
             return ((FactTuple) item).asList();
         } else {

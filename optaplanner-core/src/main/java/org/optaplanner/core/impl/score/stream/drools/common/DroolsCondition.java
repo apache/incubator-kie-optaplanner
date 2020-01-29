@@ -201,8 +201,8 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
 
     }
 
-    public Class[] getExpectedMatches() {
-        return ruleStructure.getExpectedMatches();
+    public Class[] getExpectedJustificationTypes() {
+        return ruleStructure.getExpectedJustificationTypes();
     }
 
 }

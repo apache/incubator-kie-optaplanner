@@ -91,11 +91,11 @@ public class DroolsConstraint<Solution_> implements Constraint {
     }
 
     /**
-     * As defined by {@link DroolsRuleStructure#getExpectedMatches()}.
+     * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.
      * @return never null, never empty
      */
-    public Class[] getExpectedMatches() {
-        return scoringStream.getExpectedMatches();
+    public Class[] getExpectedJustificationTypes() {
+        return scoringStream.getExpectedJustificationTypes();
     }
 
     @Override

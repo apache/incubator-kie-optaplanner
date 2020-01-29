@@ -105,8 +105,9 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public Class[] getExpectedMatches() {
-        return ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent).getCondition().getExpectedMatches();
+    public Class[] getExpectedJustificationTypes() {
+        return ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent).getCondition()
+                .getExpectedJustificationTypes();
     }
 
     @Override

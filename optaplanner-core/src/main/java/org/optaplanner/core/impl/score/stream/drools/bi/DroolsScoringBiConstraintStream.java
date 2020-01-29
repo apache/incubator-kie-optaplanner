@@ -104,8 +104,9 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     }
 
     @Override
-    public Class[] getExpectedMatches() {
-        return ((DroolsAbstractBiConstraintStream<Solution_, A, B>) getParent()).getCondition().getExpectedMatches();
+    public Class[] getExpectedJustificationTypes() {
+        return ((DroolsAbstractBiConstraintStream<Solution_, A, B>) getParent()).getCondition()
+                .getExpectedJustificationTypes();
     }
 
     @Override
