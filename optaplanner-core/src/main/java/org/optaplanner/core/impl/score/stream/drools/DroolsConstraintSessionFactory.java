@@ -58,12 +58,6 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         ScoreDefinition scoreDefinition = solutionDescriptor.getScoreDefinition();
         AbstractScoreHolder scoreHolder = (AbstractScoreHolder) scoreDefinition.buildScoreHolder(constraintMatchEnabled);
-        /*
-         * Used to convert justification list to the same format as the one used by Bavet constraint streams.
-         * This is necessary because CS-D uses some advanced Drools constructions leveraging various metadata objects.
-         * Had we not called this converter, these metadata objects (such as BiTuple instances) would have been present
-         * in the justification list, defeating its purpose.
-         */
         scoreHolder.setJustificationListConverter((justificationList, rule) ->
                 matchJustificationsToOutput((List<Object>) justificationList, constraints.get(rule).getExpectedMatches()));
         constraints.forEach((rule, constraint) -> scoreHolder.configureConstraintWeight(rule,
