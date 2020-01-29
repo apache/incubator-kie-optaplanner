@@ -43,6 +43,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishExtra;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
+import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countBi;
@@ -366,6 +367,36 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         scoreDirector.beforeEntityRemoved(entity1);
         solution.getEntityList().remove(entity1);
         scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector);
+    }
+
+    // ************************************************************************
+    // IfExists
+    // ************************************************************************
+
+    @Test
+    public void ifExists_0Joiner0Filter() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+        TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
+        solution.getValueGroupList().add(valueGroup);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishValueGroup.class)
+                    .ifExists(TestdataLavishEntityGroup.class)
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(valueGroup, solution.getFirstValueGroup()));
+
+        // Incremental
+        TestdataLavishEntityGroup entityGroup = solution.getFirstEntityGroup();
+        scoreDirector.beforeProblemFactRemoved(entityGroup);
+        solution.getEntityGroupList().remove(entityGroup);
+        scoreDirector.afterProblemFactRemoved(entityGroup);
         assertScore(scoreDirector);
     }
 
