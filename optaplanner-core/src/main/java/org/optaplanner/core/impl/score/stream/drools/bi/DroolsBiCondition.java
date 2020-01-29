@@ -34,6 +34,7 @@ import org.drools.model.functions.Block4;
 import org.drools.model.functions.Predicate3;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
@@ -81,6 +82,30 @@ public final class DroolsBiCondition<A, B, PatternVar>
         return new DroolsBiCondition<>(newRuleStructure);
     }
 
+    public <C, CPatternVar> DroolsTriCondition<A, B, C, CPatternVar> andJoin(
+            DroolsUniCondition<C, CPatternVar> cCondition, AbstractTriJoiner<A, B, C> triJoiner) {
+        DroolsUniRuleStructure<C, CPatternVar> cRuleStructure = cCondition.getRuleStructure();
+        Variable<C> cVariable = cRuleStructure.getA();
+        UnaryOperator<PatternDef<CPatternVar>> expander = p -> p.expr("Filter using " + triJoiner,
+                ruleStructure.getA(), ruleStructure.getB(), cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c));
+        DroolsUniRuleStructure<C, CPatternVar> newCRuleStructure = cRuleStructure.amend(expander);
+        return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure,
+                ruleStructure.getVariableIdSupplier()));
+    }
+
+    public <C> DroolsBiCondition<A, B, PatternVar> andIfExists(Class<C> otherClass, TriJoiner<A, B, C>... biJoiners) {
+        return andIfExistsOrNot(true, otherClass, biJoiners);
+    }
+
+    public <C> DroolsBiCondition<A, B, PatternVar> andIfNotExists(Class<C> otherClass, TriJoiner<A, B, C>... biJoiners) {
+        return andIfExistsOrNot(false, otherClass, biJoiners);
+    }
+
+    private <C> DroolsBiCondition<A, B, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<C> otherClass,
+            TriJoiner<A, B, C>... biJoiners) {
+        throw new UnsupportedOperationException();
+    }
+
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(BiConstraintCollector<A, B, __, NewA> collector) {
         DroolsBiAccumulateFunctionBridge<A, B, __, NewA> bridge = new DroolsBiAccumulateFunctionBridge<>(collector);
         return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
@@ -119,17 +144,6 @@ public final class DroolsBiCondition<A, B, PatternVar>
             BiConstraintCollector<A, B, ?, NewC> collectorC, BiConstraintCollector<A, B, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsBiToQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA(), getRuleStructure().getB()));
-    }
-
-    public <C, CPatternVar> DroolsTriCondition<A, B, C, CPatternVar> andJoin(
-            DroolsUniCondition<C, CPatternVar> cCondition, AbstractTriJoiner<A, B, C> triJoiner) {
-        DroolsUniRuleStructure<C, CPatternVar> cRuleStructure = cCondition.getRuleStructure();
-        Variable<C> cVariable = cRuleStructure.getA();
-        UnaryOperator<PatternDef<CPatternVar>> expander = p -> p.expr("Filter using " + triJoiner,
-                ruleStructure.getA(), ruleStructure.getB(), cVariable, (__, a, b, c) -> matches(triJoiner, a, b, c));
-        DroolsUniRuleStructure<C, CPatternVar> newCRuleStructure = cRuleStructure.amend(expander);
-        return new DroolsTriCondition<>(new DroolsTriRuleStructure<>(ruleStructure, newCRuleStructure,
-                ruleStructure.getVariableIdSupplier()));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
