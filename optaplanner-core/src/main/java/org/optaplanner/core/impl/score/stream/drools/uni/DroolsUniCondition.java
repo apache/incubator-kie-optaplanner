@@ -99,8 +99,7 @@ public final class DroolsUniCondition<A, PatternVar>
         return new DroolsUniCondition<>(newStructure);
     }
 
-    public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
-            UniConstraintCollector<A, __, NewA> collector) {
+    public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
         DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
         return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, a -> (A) a));
     }
