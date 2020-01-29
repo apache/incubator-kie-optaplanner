@@ -61,8 +61,8 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
         /*
          * Used to convert justification list to the same format as the one used by Bavet constraint streams.
          * This is necessary because CS-D uses some advanced Drools constructions leveraging various metadata objects.
-         * Had we not called this converter, these metadata objects (such as Pair instances) would have been present in
-         * the justification list, defeating its purpose.
+         * Had we not called this converter, these metadata objects (such as BiTuple instances) would have been present
+         * in the justification list, defeating its purpose.
          */
         scoreHolder.setJustificationListConverter((justificationList, rule) -> unpair((List<Object>) justificationList,
                 constraints.get(rule).getConstraintStreamCardinality()));
