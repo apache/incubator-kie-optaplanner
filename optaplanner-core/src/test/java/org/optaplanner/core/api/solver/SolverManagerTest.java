@@ -316,19 +316,15 @@ public class SolverManagerTest {
     private void waitForJobStatusChangeOrTimeout(SolverManager<TestdataSolution, Long> solverManager, Long problemId, SolverStatus expectedStatusChange) throws InterruptedException {
         long t = System.currentTimeMillis();
         long end = t + 5000;
-        // Checks every 5 milliseconds for solverJob status change for 5 seconds at maximum, otherwise time-outs and fails.
-        while (true) {
-            t = System.currentTimeMillis();
-
-            if (t < end) {
-                if (solverManager.getSolverStatus(problemId) == expectedStatusChange) {
-                    break;
-                }
-                TimeUnit.MILLISECONDS.sleep(5);
-            } else {
-                fail("Job with id " + problemId + " took too long and timed-out not changing its status from "
-                             + solverManager.getSolverStatus(problemId) + " to " + expectedStatusChange + ".");
+        // Check every 5 milliseconds for solverJob status change for 5 seconds at maximum, otherwise time-out and fail.
+        while (t < end) {
+            if (solverManager.getSolverStatus(problemId) == expectedStatusChange) {
+                return;
             }
+            TimeUnit.MILLISECONDS.sleep(5);
+            t = System.currentTimeMillis();
         }
+        fail("Job with id " + problemId + " took too long and timed-out not changing its status from "
+                     + solverManager.getSolverStatus(problemId) + " to " + expectedStatusChange + ".");
     }
 }
