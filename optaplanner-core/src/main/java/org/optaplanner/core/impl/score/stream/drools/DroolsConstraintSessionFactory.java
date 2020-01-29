@@ -77,7 +77,7 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
      * Due to the nature of the justification list coming from Drools, this method is very fragile.
      * The facts often come unordered and mixed with other facts not relevant to the problem at hand.
      * Therefore, this method is a set of heuristics that makes all the constraint stream tests pass.
-     * However, it is expected that, as new constraint stream building block combinations are tested, the set of
+     * However, it is possible that, as new constraint stream building block combinations are tested, the set of
      * heuristics inside this method will have to be redesigned.
      *
      * @param justificationList unordered list of justifications coming from the score director
