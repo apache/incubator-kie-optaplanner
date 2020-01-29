@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -24,14 +25,17 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.UnaryOperator;
 
+import org.drools.model.Declaration;
 import org.drools.model.Drools;
 import org.drools.model.Global;
+import org.drools.model.PatternDSL;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Predicate3;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
@@ -47,6 +51,8 @@ import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
+import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 import static org.drools.model.DSL.on;
 
@@ -102,8 +108,61 @@ public final class DroolsBiCondition<A, B, PatternVar>
     }
 
     private <C> DroolsBiCondition<A, B, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<C> otherClass,
-            TriJoiner<A, B, C>... biJoiners) {
-        throw new UnsupportedOperationException();
+            TriJoiner<A, B, C>... joiners) {
+        int indexOfFirstFilter = -1;
+        // Prepare the joiner and filter that will be used in the pattern
+        AbstractTriJoiner<A, B, C> finalJoiner = null;
+        TriPredicate<A, B, C> finalFilter = null;
+        for (int i = 0; i < joiners.length; i++) {
+            AbstractTriJoiner<A, B, C> joiner = (AbstractTriJoiner<A, B, C>) joiners[i];
+            boolean hasAFilter = indexOfFirstFilter >= 0;
+            if (joiner instanceof NoneTriJoiner && joiners.length > 1) {
+                throw new IllegalStateException("If present, " + NoneTriJoiner.class + " must be the only joiner, got "
+                        + Arrays.toString(joiners) + " instead.");
+            } else if (!(joiner instanceof FilteringTriJoiner)) {
+                if (hasAFilter) {
+                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
+                            + joiners[indexOfFirstFilter] + ").");
+                } else { // Merge this Joiner with the existing Joiners.
+                    finalJoiner = finalJoiner == null ?
+                            joiner :
+                            AbstractTriJoiner.merge(finalJoiner, joiner);
+                }
+            } else {
+                if (!hasAFilter) { // From now on, we only allow filtering joiners.
+                    indexOfFirstFilter = i;
+                }
+                // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
+                finalFilter = finalFilter == null ?
+                        joiner.getFilter() :
+                        finalFilter.and(joiner.getFilter());
+            }
+        }
+        return applyJoiners(otherClass, finalJoiner, finalFilter, shouldExist);
+    }
+
+    private <C> DroolsBiCondition<A, B, PatternVar> applyJoiners(Class<C> otherClass,
+            AbstractTriJoiner<A, B, C> joiner, TriPredicate<A, B, C> predicate, boolean shouldExist) {
+        Declaration<C> toExist = PatternDSL.declarationOf(otherClass);
+        PatternDef<C> existencePattern = PatternDSL.pattern(toExist);
+        if (joiner == null) {
+            return applyFilters(ruleStructure, existencePattern, predicate, shouldExist);
+        }
+        // There is no gamma index in Drools, therefore we replace joining with a filter.
+        TriPredicate<A, B, C> joinFilter = (a, b, c) -> matches(joiner, a, b, c);
+        TriPredicate<A, B, C> result = joinFilter.and(predicate);
+        // And finally we add the filter to the C pattern
+        return applyFilters(getRuleStructure(), existencePattern, result, shouldExist);
+    }
+
+    private <C> DroolsBiCondition<A, B, PatternVar> applyFilters(
+            DroolsBiRuleStructure<A, B, PatternVar> targetRuleStructure, PatternDef<C> existencePattern,
+            TriPredicate<A, B, C> predicate, boolean shouldExist) {
+        PatternDef<C> possiblyFilteredExistencePattern = predicate == null ?
+                existencePattern :
+                existencePattern.expr("Filter using " + predicate, ruleStructure.getA(), ruleStructure.getB(),
+                        (c, a, b) -> predicate.test(a, b, c));
+        return new DroolsBiCondition<>(targetRuleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(BiConstraintCollector<A, B, __, NewA> collector) {

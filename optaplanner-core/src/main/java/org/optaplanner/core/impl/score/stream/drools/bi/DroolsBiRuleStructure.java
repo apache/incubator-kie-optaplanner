@@ -21,13 +21,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.LongSupplier;
 
+import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
+import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
-public class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStructure<PatternVar> {
+public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStructure<PatternVar> {
 
     private final Variable<A> a;
     private final Variable<B> b;
@@ -93,4 +95,15 @@ public class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStructure
     public List<ViewItemBuilder<?>> getDependents() {
         return dependents;
     }
+
+    public <C> DroolsBiRuleStructure<A, B, PatternVar> existsOrNot(PatternDSL.PatternDef<C> existencePattern,
+            boolean shouldExist) {
+        ExprViewItem item = PatternDSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = PatternDSL.not(item);
+        }
+        return new DroolsBiRuleStructure<>(a, b, targetPattern, shelved, prerequisites, mergeDependents(item),
+                getVariableIdSupplier());
+    }
+
 }

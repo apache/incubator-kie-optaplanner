@@ -263,11 +263,11 @@ public final class DroolsUniCondition<A, PatternVar>
     private <B> DroolsUniCondition<A, PatternVar> applyFilters(
             DroolsUniRuleStructure<A, PatternVar> targetRuleStructure, PatternDef<B> existencePattern,
             BiPredicate<A, B> biPredicate, boolean shouldExist) {
-        PatternDef<B> possiblyFilteredexistencePattern = biPredicate == null ?
+        PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ?
                 existencePattern :
                 existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
                         (b, a) -> biPredicate.test(a, b));
-        return new DroolsUniCondition<>(targetRuleStructure.existsOrNot(possiblyFilteredexistencePattern, shouldExist));
+        return new DroolsUniCondition<>(targetRuleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
 
     public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
