@@ -9,32 +9,32 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity(difficultyComparatorClass = TestdataCodeComparator.class)
-public class TestdataEntityWithDifficultyComparator extends TestdataObject {
+public class TestdataDifficultyComparingEntity extends TestdataObject {
 
-    public static EntityDescriptor<TestdataSolutionWithDifficultyComparatorEntity> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataSolutionWithDifficultyComparatorEntity> solutionDescriptor =
-                TestdataSolutionWithDifficultyComparatorEntity.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityWithDifficultyComparator.class);
+    public static EntityDescriptor<TestdataDifficultyComparingSolution> buildEntityDescriptor() {
+        SolutionDescriptor<TestdataDifficultyComparingSolution> solutionDescriptor =
+                TestdataDifficultyComparingSolution.buildSolutionDescriptor();
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataDifficultyComparingEntity.class);
     }
 
-    public static GenuineVariableDescriptor<TestdataSolutionWithDifficultyComparatorEntity> buildVariableDescriptorForValue() {
-        SolutionDescriptor<TestdataSolutionWithDifficultyComparatorEntity> solutionDescriptor =
-                TestdataSolutionWithDifficultyComparatorEntity.buildSolutionDescriptor();
-        EntityDescriptor<TestdataSolutionWithDifficultyComparatorEntity> entityDescriptor =
-                solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityWithDifficultyComparator.class);
+    public static GenuineVariableDescriptor<TestdataDifficultyComparingSolution> buildVariableDescriptorForValue() {
+        SolutionDescriptor<TestdataDifficultyComparingSolution> solutionDescriptor =
+                TestdataDifficultyComparingSolution.buildSolutionDescriptor();
+        EntityDescriptor<TestdataDifficultyComparingSolution> entityDescriptor =
+                solutionDescriptor.findEntityDescriptorOrFail(TestdataDifficultyComparingEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
     private TestdataValue value;
 
-    public TestdataEntityWithDifficultyComparator() {
+    public TestdataDifficultyComparingEntity() {
     }
 
-    public TestdataEntityWithDifficultyComparator(String code) {
+    public TestdataDifficultyComparingEntity(String code) {
         super(code);
     }
 
-    public TestdataEntityWithDifficultyComparator(String code, TestdataValue value) {
+    public TestdataDifficultyComparingEntity(String code, TestdataValue value) {
         this(code);
         this.value = value;
     }

@@ -29,8 +29,8 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.comparable.TestdataEntityWithDifficultyComparator;
-import org.optaplanner.core.impl.testdata.domain.comparable.TestdataSolutionWithDifficultyComparatorEntity;
+import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingEntity;
+import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingSolution;
 import org.optaplanner.core.impl.testdata.phase.event.TestdataSolutionSateRecorder;
 import org.optaplanner.core.impl.testdata.score.director.TestdataComparableDifferentValuesCalculator;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
@@ -55,7 +55,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
     private final EntitySorterManner entitySorterManner;
     private final ValueSorterManner valueSorterManner;
     private final List<String> steps;
-    private TestdataSolutionWithDifficultyComparatorEntity solution;
+    private TestdataDifficultyComparingSolution solution;
     private SolverConfig solverConfig;
 
     public BlackBoxExhaustiveSearchPhaseTest(ExhaustiveSearchType exhaustiveSearchType, NodeExplorationType nodeExplorationType,
@@ -371,7 +371,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
     @Before
     public void setUp() {
         solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataSolutionWithDifficultyComparatorEntity.class, TestdataEntityWithDifficultyComparator.class);
+                TestdataDifficultyComparingSolution.class, TestdataDifficultyComparingEntity.class);
 
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
@@ -398,12 +398,12 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                                                            .withEasyScoreCalculatorClass(TestdataComparableDifferentValuesCalculator.class)
                                                            .withInitializingScoreTrend("ONLY_DOWN"));
 
-        solution = new TestdataSolutionWithDifficultyComparatorEntity("solution");
+        solution = new TestdataDifficultyComparingSolution("solution");
         // Intentionally not sorted, the string is used for sorting in cases it applies.
-        solution.setEntityList(Arrays.asList(new TestdataEntityWithDifficultyComparator("entity4"),
-                                             new TestdataEntityWithDifficultyComparator("entity2"),
-                                             new TestdataEntityWithDifficultyComparator("entity3"),
-                                             new TestdataEntityWithDifficultyComparator("entity1")));
+        solution.setEntityList(Arrays.asList(new TestdataDifficultyComparingEntity("entity4"),
+                                             new TestdataDifficultyComparingEntity("entity2"),
+                                             new TestdataDifficultyComparingEntity("entity3"),
+                                             new TestdataDifficultyComparingEntity("entity1")));
         solution.setValueList(Arrays.asList(new TestdataValue("1"),
                                             new TestdataValue("3"),
                                             new TestdataValue("2")));
@@ -411,7 +411,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
 
     @Test
     public void verifyExhaustiveSearchSteps() {
-        SolverFactory<TestdataSolutionWithDifficultyComparatorEntity> solverFactory = SolverFactory.create(solverConfig);
+        SolverFactory<TestdataDifficultyComparingSolution> solverFactory = SolverFactory.create(solverConfig);
 
         if (exhaustiveSearchType == ExhaustiveSearchType.BRUTE_FORCE && nodeExplorationType != null) {
             Assertions.assertThatIllegalArgumentException()
@@ -420,10 +420,10 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                                          + "nodeExplorationType (" + nodeExplorationType.name()
                                          + ") which is not compatible with its exhaustiveSearchType (BRUTE_FORCE).");
         } else {
-            Solver<TestdataSolutionWithDifficultyComparatorEntity> solver = solverFactory.buildSolver();
+            Solver<TestdataDifficultyComparingSolution> solver = solverFactory.buildSolver();
 
             TestdataSolutionSateRecorder listener = new TestdataSolutionSateRecorder();
-            ((DefaultSolver<TestdataSolutionWithDifficultyComparatorEntity>) solver).addPhaseLifecycleListener(listener);
+            ((DefaultSolver<TestdataDifficultyComparingSolution>) solver).addPhaseLifecycleListener(listener);
 
             solver.solve(solution);
 
