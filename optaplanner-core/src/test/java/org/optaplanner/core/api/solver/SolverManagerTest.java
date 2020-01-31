@@ -250,7 +250,7 @@ public class SolverManagerTest {
      * status change in a deterministic way while solving jobs on separate threads. The test waits for a status change in
      * a loop and time-outs when it doesn't reach it's expected status.
      */
-    @Ignore("SOLVING_SCHEDULED tasks are not terminated successfully neither by terminateEarly(), nor close(). Will be enabled after bug-fix.")
+    @Ignore("https://issues.redhat.com/browse/PLANNER-1836")
     @Test
     public void terminateEarlyAndClose() throws InterruptedException {
         final SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
