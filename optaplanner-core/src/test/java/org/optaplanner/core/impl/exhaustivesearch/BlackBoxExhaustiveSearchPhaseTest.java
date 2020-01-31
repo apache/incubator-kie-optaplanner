@@ -3,7 +3,9 @@ package org.optaplanner.core.impl.exhaustivesearch;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
@@ -27,12 +30,12 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingEntity;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingSolution;
 import org.optaplanner.core.impl.testdata.phase.event.TestdataSolutionSateRecorder;
-import org.optaplanner.core.impl.testdata.score.director.TestdataComparableDifferentValuesCalculator;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -428,6 +431,31 @@ public class BlackBoxExhaustiveSearchPhaseTest {
             solver.solve(solution);
 
             assertThat(listener.getWorkingSolutions()).containsExactlyElementsOf(steps);
+        }
+    }
+
+    /**
+     * This class calculates the score of a solution by penalizing repeated value occurrences held by entities.
+     */
+    public static class TestdataComparableDifferentValuesCalculator implements EasyScoreCalculator<TestdataDifficultyComparingSolution> {
+
+        @Override
+        public SimpleScore calculateScore(TestdataDifficultyComparingSolution solution) {
+            int score = 0;
+            Set<TestdataValue> alreadyUsedValues = new HashSet<>();
+
+            for (TestdataDifficultyComparingEntity entity : solution.getEntityList()) {
+                if (entity.getValue() == null) {
+                    continue;
+                }
+                TestdataValue value = entity.getValue();
+                if (alreadyUsedValues.contains(value)) {
+                    score -= 1;
+                } else {
+                    alreadyUsedValues.add(value);
+                }
+            }
+            return SimpleScore.of(score);
         }
     }
 }
