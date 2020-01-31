@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,12 +31,14 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingEntity;
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingSolution;
-import org.optaplanner.core.impl.testdata.phase.event.TestdataSolutionSateRecorder;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -425,7 +428,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         } else {
             Solver<TestdataDifficultyComparingSolution> solver = solverFactory.buildSolver();
 
-            TestdataSolutionSateRecorder listener = new TestdataSolutionSateRecorder();
+            TestdataSolutionStateRecorder listener = new TestdataSolutionStateRecorder();
             ((DefaultSolver<TestdataDifficultyComparingSolution>) solver).addPhaseLifecycleListener(listener);
 
             solver.solve(solution);
@@ -456,6 +459,32 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                 }
             }
             return SimpleScore.of(score);
+        }
+    }
+
+    public static class TestdataSolutionStateRecorder extends PhaseLifecycleListenerAdapter<TestdataDifficultyComparingSolution> {
+
+        private final List<String> workingSolutions = new ArrayList<>();
+
+        @Override
+        public void stepEnded(AbstractStepScope<TestdataDifficultyComparingSolution> abstractStepScope) {
+            addWorkingSolution(abstractStepScope.getWorkingSolution());
+        }
+
+        @Override
+        public void solvingEnded(DefaultSolverScope<TestdataDifficultyComparingSolution> solverScope) {
+            addWorkingSolution(solverScope.getBestSolution());
+        }
+
+        private void addWorkingSolution(TestdataDifficultyComparingSolution solution) {
+            workingSolutions.add(solution.getEntityList().stream()
+                                         .map(TestdataDifficultyComparingEntity::getValue)
+                                         .map(value -> value == null ? "-" : value.getCode())
+                                         .collect(Collectors.joining()));
+        }
+
+        public List<String> getWorkingSolutions() {
+            return workingSolutions;
         }
     }
 }
