@@ -17,15 +17,19 @@
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.model.Drools;
 import org.drools.model.Global;
+import org.drools.model.PatternDSL;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Block6;
 import org.drools.model.functions.Predicate5;
+import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
@@ -33,6 +37,7 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
@@ -41,6 +46,10 @@ import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniCondition;
+import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
+import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
+import org.optaplanner.core.impl.score.stream.penta.NonePentaJoiner;
+import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 import static org.drools.model.DSL.on;
 
@@ -80,7 +89,59 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
     @SafeVarargs
     private final <E> DroolsQuadCondition<A, B, C, D, PatternVar> andIfExistsOrNot(boolean shouldExist,
             Class<E> otherClass, PentaJoiner<A, B, C, D, E>... joiners) {
-        return null;
+        int indexOfFirstFilter = -1;
+        // Prepare the joiner and filter that will be used in the pattern
+        AbstractPentaJoiner<A, B, C, D, E> finalJoiner = null;
+        PentaPredicate<A, B, C, D, E> finalFilter = null;
+        for (int i = 0; i < joiners.length; i++) {
+            AbstractPentaJoiner<A, B, C, D, E> joiner = (AbstractPentaJoiner<A, B, C, D, E>) joiners[i];
+            boolean hasAFilter = indexOfFirstFilter >= 0;
+            if (joiner instanceof NonePentaJoiner && joiners.length > 1) {
+                throw new IllegalStateException("If present, " + NoneTriJoiner.class + " must be the only joiner, got "
+                        + Arrays.toString(joiners) + " instead.");
+            } else if (!(joiner instanceof FilteringPentaJoiner)) {
+                if (hasAFilter) {
+                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
+                            + joiners[indexOfFirstFilter] + ").");
+                } else { // Merge this Joiner with the existing Joiners.
+                    finalJoiner = finalJoiner == null ?
+                            joiner :
+                            AbstractPentaJoiner.merge(finalJoiner, joiner);
+                }
+            } else {
+                if (!hasAFilter) { // From now on, we only allow filtering joiners.
+                    indexOfFirstFilter = i;
+                }
+                // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
+                finalFilter = finalFilter == null ?
+                        joiner.getFilter() :
+                        finalFilter.and(joiner.getFilter());
+            }
+        }
+        return applyJoiners(otherClass, finalJoiner, finalFilter, shouldExist);
+    }
+
+    private <E> DroolsQuadCondition<A, B, C, D, PatternVar> applyJoiners(Class<E> otherClass,
+            AbstractPentaJoiner<A, B, C, D, E> joiner, PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
+        Variable<E> toExist = (Variable<E>) ruleStructure.createVariable(otherClass, "quadToExist");
+        PatternDef<E> existencePattern = PatternDSL.pattern(toExist);
+        if (joiner == null) {
+            return applyFilters(existencePattern, predicate, shouldExist);
+        }
+        // There is no index higher than beta in Drools, therefore we replace joining with a filter.
+        PentaPredicate<A, B, C, D, E> joinFilter = (a, b, c, d, e) -> matches(joiner, a, b, c, d, e);
+        PentaPredicate<A, B, C, D, E> result = predicate == null ? joinFilter : joinFilter.and(predicate);
+        // And finally we add the filter to the E pattern.
+        return applyFilters(existencePattern, result, shouldExist);
+    }
+
+    private <E> DroolsQuadCondition<A, B, C, D, PatternVar> applyFilters(PatternDef<E> existencePattern,
+            PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
+        PatternDef<E> possiblyFilteredExistencePattern = predicate == null ?
+                existencePattern :
+                existencePattern.expr("Filter using " + predicate, ruleStructure.getA(), ruleStructure.getB(),
+                        ruleStructure.getC(), ruleStructure.getD(), (e, a, b, c, d) -> predicate.test(a, b, c, d, e));
+        return new DroolsQuadCondition<>(ruleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
@@ -164,5 +225,19 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
                 .execute(consequenceImpl);
         return ruleStructure.finish(consequence);
     }
+
+    private static <A, B, C, D, E> boolean matches(AbstractPentaJoiner<A, B, C, D, E> joiner, A a, B b, C c, D d, E e) {
+        JoinerType[] joinerTypes = joiner.getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = joiner.getLeftMapping(i).apply(a, b, c, d);
+            Object rightMapping = joiner.getRightMapping(i).apply(e);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 }

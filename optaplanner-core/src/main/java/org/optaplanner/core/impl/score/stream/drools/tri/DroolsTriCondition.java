@@ -143,10 +143,10 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
         }
-        // There is no gamma index in Drools, therefore we replace joining with a filter.
+        // There is no index higher than beta in Drools, therefore we replace joining with a filter.
         QuadPredicate<A, B, C, D> joinFilter = (a, b, c, d) -> matches(joiner, a, b, c, d);
         QuadPredicate<A, B, C, D> result = predicate == null ? joinFilter : joinFilter.and(predicate);
-        // And finally we add the filter to the C pattern
+        // And finally we add the filter to the D pattern.
         return applyFilters(existencePattern, result, shouldExist);
     }
 
