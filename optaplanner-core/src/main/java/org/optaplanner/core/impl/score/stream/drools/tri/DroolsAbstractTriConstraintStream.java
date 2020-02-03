@@ -42,6 +42,7 @@ import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstrai
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 
 public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
@@ -70,6 +71,10 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream,
             QuadJoiner<A, B, C, D> joiner) {
+        if (joiner instanceof FilteringQuadJoiner) {
+            return join(otherStream)
+                    .filter(((FilteringQuadJoiner<A, B, C, D>) joiner).getFilter());
+        }
         DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsJoinQuadConstraintStream<>(constraintFactory, this,
                         (DroolsAbstractUniConstraintStream<Solution_, D>) otherStream, joiner);
