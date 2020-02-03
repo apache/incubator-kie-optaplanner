@@ -199,7 +199,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     }
 
     // ************************************************************************
-    // If (Not) Exists
+    // If (not) exists
     // ************************************************************************
 
     /**

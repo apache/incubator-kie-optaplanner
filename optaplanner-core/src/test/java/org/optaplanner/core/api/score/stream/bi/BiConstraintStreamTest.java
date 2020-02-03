@@ -371,7 +371,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     // ************************************************************************
-    // IfExists
+    // If (not) exists
     // ************************************************************************
 
     @Test
@@ -500,10 +500,6 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         scoreDirector.afterProblemFactRemoved(entityGroup);
         assertScore(scoreDirector);
     }
-
-    // ************************************************************************
-    // IfNotExists
-    // ************************************************************************
 
     @Test
     public void ifNotExists_0Joiner0Filter() {
