@@ -28,6 +28,7 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
@@ -61,6 +62,24 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
                 new DroolsFilterQuadConstraintStream<>(constraintFactory, this, predicate);
         addChildStream(stream);
         return stream;
+    }
+
+    // ************************************************************************
+    // If (not) exists
+    // ************************************************************************
+
+    @SafeVarargs
+    @Override
+    public final <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return null;
+    }
+
+    @SafeVarargs
+    @Override
+    public final <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return null;
     }
 
     // ************************************************************************
