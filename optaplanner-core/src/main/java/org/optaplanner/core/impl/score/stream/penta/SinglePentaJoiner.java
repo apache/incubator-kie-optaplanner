@@ -23,18 +23,18 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class SinglePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<A, B, C, D, E> {
 
-    private final QuadFunction<A, B, C, D, ?> leftMapping;
+    private final QuadFunction<A, B, C, D, Object> leftMapping;
     private final JoinerType joinerType;
-    private final Function<E, ?> rightMapping;
+    private final Function<E, Object> rightMapping;
 
     public SinglePentaJoiner(QuadFunction<A, B, C, D, ?> leftMapping, JoinerType joinerType,
             Function<E, ?> rightMapping) {
-        this.leftMapping = leftMapping;
+        this.leftMapping = (QuadFunction<A, B, C, D, Object>) leftMapping;
         this.joinerType = joinerType;
-        this.rightMapping = rightMapping;
+        this.rightMapping = (Function<E, Object>) rightMapping;
     }
 
-    public QuadFunction<A, B, C, D, ?> getLeftMapping() {
+    public QuadFunction<A, B, C, D, Object> getLeftMapping() {
         return leftMapping;
     }
 
@@ -42,7 +42,7 @@ public final class SinglePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<
         return joinerType;
     }
 
-    public Function<E, ?> getRightMapping() {
+    public Function<E, Object> getRightMapping() {
         return rightMapping;
     }
 
@@ -52,7 +52,7 @@ public final class SinglePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<
 
     @Override
     public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {
-        return (QuadFunction<A, B, C, D, Object>) leftMapping;
+        return leftMapping;
     }
 
     @Override
@@ -67,7 +67,7 @@ public final class SinglePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<
 
     @Override
     public Function<E, Object> getRightMapping(int index) {
-        return (Function<E, Object>) rightMapping;
+        return rightMapping;
     }
 
     @Override

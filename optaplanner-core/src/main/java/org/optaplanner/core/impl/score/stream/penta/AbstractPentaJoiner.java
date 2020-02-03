@@ -73,8 +73,6 @@ public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner 
         return true;
     }
 
-
-
     public abstract QuadFunction<A, B, C, D, Object> getLeftMapping(int index);
 
     public abstract QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping();

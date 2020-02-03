@@ -23,6 +23,7 @@ import java.util.function.LongSupplier;
 import java.util.stream.Stream;
 
 import org.drools.model.Argument;
+import org.drools.model.DSL;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ExprViewItem;
@@ -72,9 +73,9 @@ public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStr
 
     public <C> DroolsBiRuleStructure<A, B, PatternVar> existsOrNot(PatternDSL.PatternDef<C> existencePattern,
             boolean shouldExist) {
-        ExprViewItem item = PatternDSL.exists(existencePattern);
+        ExprViewItem item = DSL.exists(existencePattern);
         if (!shouldExist) {
-            item = PatternDSL.not(item);
+            item = DSL.not(item);
         }
         return new DroolsBiRuleStructure<>(a, b, primaryPattern, shelved, prerequisites, mergeDependents(item),
                 getVariableIdSupplier());

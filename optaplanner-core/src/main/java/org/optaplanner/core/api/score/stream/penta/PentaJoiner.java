@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.stream.penta;
 
 import org.optaplanner.core.api.score.stream.Joiners;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 
 /**
  * Created with {@link Joiners}.
