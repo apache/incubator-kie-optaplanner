@@ -37,7 +37,6 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
@@ -129,7 +128,7 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
             return applyFilters(existencePattern, predicate, shouldExist);
         }
         // There is no index higher than beta in Drools, therefore we replace joining with a filter.
-        PentaPredicate<A, B, C, D, E> joinFilter = (a, b, c, d, e) -> matches(joiner, a, b, c, d, e);
+        PentaPredicate<A, B, C, D, E> joinFilter = joiner::matches;
         PentaPredicate<A, B, C, D, E> result = predicate == null ? joinFilter : joinFilter.and(predicate);
         // And finally we add the filter to the E pattern.
         return applyFilters(existencePattern, result, shouldExist);
@@ -225,19 +224,5 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
                 .execute(consequenceImpl);
         return ruleStructure.finish(consequence);
     }
-
-    private static <A, B, C, D, E> boolean matches(AbstractPentaJoiner<A, B, C, D, E> joiner, A a, B b, C c, D d, E e) {
-        JoinerType[] joinerTypes = joiner.getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
-            Object leftMapping = joiner.getLeftMapping(i).apply(a, b, c, d);
-            Object rightMapping = joiner.getRightMapping(i).apply(e);
-            if (!joinerType.matches(leftMapping, rightMapping)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
 }

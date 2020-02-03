@@ -38,7 +38,6 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
@@ -83,7 +82,7 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
         Variable<D> dVariable = dRuleStructure.getA();
         UnaryOperator<PatternDef<DPatternVar>> expander =
                 p -> p.expr("Filter using " + quadJoiner, ruleStructure.getA(), ruleStructure.getB(),
-                        ruleStructure.getC(), dVariable, (__, a, b, c, d) -> matches(quadJoiner, a, b, c, d));
+                        ruleStructure.getC(), dVariable, (__, a, b, c, d) -> quadJoiner.matches(a, b, c, d));
         DroolsUniRuleStructure<D, DPatternVar> newDRuleStructure = dRuleStructure.amend(expander);
         return new DroolsQuadCondition<>(new DroolsQuadRuleStructure<>(ruleStructure, newDRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
@@ -144,7 +143,7 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
             return applyFilters(existencePattern, predicate, shouldExist);
         }
         // There is no index higher than beta in Drools, therefore we replace joining with a filter.
-        QuadPredicate<A, B, C, D> joinFilter = (a, b, c, d) -> matches(joiner, a, b, c, d);
+        QuadPredicate<A, B, C, D> joinFilter = joiner::matches;
         QuadPredicate<A, B, C, D> result = predicate == null ? joinFilter : joinFilter.and(predicate);
         // And finally we add the filter to the D pattern.
         return applyFilters(existencePattern, result, shouldExist);
@@ -232,19 +231,6 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
                 on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB(), ruleStructure.getC())
                         .execute(consequenceImpl);
         return ruleStructure.finish(consequence);
-    }
-
-    private static <A, B, C, D> boolean matches(AbstractQuadJoiner<A, B, C, D> joiner, A a, B b, C c, D d) {
-        JoinerType[] joinerTypes = joiner.getJoinerTypes();
-        for (int i = 0; i < joinerTypes.length; i++) {
-            JoinerType joinerType = joinerTypes[i];
-            Object leftMapping = joiner.getLeftMapping(i).apply(a, b, c);
-            Object rightMapping = joiner.getRightMapping(i).apply(d);
-            if (!joinerType.matches(leftMapping, rightMapping)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

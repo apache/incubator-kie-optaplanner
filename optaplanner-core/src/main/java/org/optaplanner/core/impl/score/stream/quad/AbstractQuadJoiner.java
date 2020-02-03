@@ -24,6 +24,7 @@ import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner implements QuadJoiner<A, B, C, D> {
 
@@ -57,6 +58,19 @@ public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner impl
             return joinerList.get(0);
         }
         return new CompositeQuadJoiner<>(joinerList);
+    }
+
+    public boolean matches(A a, B b, C c, D d) {
+        JoinerType[] joinerTypes = getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = getLeftMapping(i).apply(a, b, c);
+            Object rightMapping = getRightMapping(i).apply(d);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public abstract TriFunction<A, B, C, Object> getLeftMapping(int index);
