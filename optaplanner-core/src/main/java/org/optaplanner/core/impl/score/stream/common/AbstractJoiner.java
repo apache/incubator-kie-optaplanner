@@ -20,8 +20,4 @@ public abstract class AbstractJoiner {
 
     public abstract JoinerType[] getJoinerTypes();
 
-    public boolean supportsIndexing() {
-        return true;
-    }
-
 }
