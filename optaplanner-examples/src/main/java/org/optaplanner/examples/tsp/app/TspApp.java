@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.persistence.TspExporter;
 import org.optaplanner.examples.tsp.persistence.TspImageStipplerImporter;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
+import org.optaplanner.examples.tsp.persistence.TspXStreamSolutionFileIO;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TspApp extends CommonApp<TspSolution> {
 
@@ -55,7 +55,7 @@ public class TspApp extends CommonApp<TspSolution> {
 
     @Override
     public SolutionFileIO<TspSolution> createSolutionFileIO() {
-        return new XStreamSolutionFileIO<>(TspSolution.class);
+        return new TspXStreamSolutionFileIO();
     }
 
     @Override
