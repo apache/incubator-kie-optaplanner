@@ -33,6 +33,7 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
@@ -80,6 +81,18 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
         DroolsUniRuleStructure<D, DPatternVar> newDRuleStructure = dRuleStructure.amend(expander);
         return new DroolsQuadCondition<>(new DroolsQuadRuleStructure<>(ruleStructure, newDRuleStructure,
                 ruleStructure.getVariableIdSupplier()));
+    }
+
+    @SafeVarargs
+    public final <D> DroolsTriCondition<A, B, C, PatternVar> andIfExists(Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners) {
+        return null;
+    }
+
+    @SafeVarargs
+    public final <D> DroolsTriCondition<A, B, C, PatternVar> andIfNotExists(Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners) {
+        return null;
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(TriConstraintCollector<A, B, C, __, NewA> collector) {

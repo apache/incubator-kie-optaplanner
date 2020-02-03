@@ -98,15 +98,20 @@ public final class DroolsBiCondition<A, B, PatternVar>
                 ruleStructure.getVariableIdSupplier()));
     }
 
-    public <C> DroolsBiCondition<A, B, PatternVar> andIfExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    @SafeVarargs
+    public final <C> DroolsBiCondition<A, B, PatternVar> andIfExists(Class<C> otherClass,
+            TriJoiner<A, B, C>... joiners) {
         return andIfExistsOrNot(true, otherClass, joiners);
     }
 
-    public <C> DroolsBiCondition<A, B, PatternVar> andIfNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    @SafeVarargs
+    public final <C> DroolsBiCondition<A, B, PatternVar> andIfNotExists(Class<C> otherClass,
+            TriJoiner<A, B, C>... joiners) {
         return andIfExistsOrNot(false, otherClass, joiners);
     }
 
-    private <C> DroolsBiCondition<A, B, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<C> otherClass,
+    @SafeVarargs
+    private final <C> DroolsBiCondition<A, B, PatternVar> andIfExistsOrNot(boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern

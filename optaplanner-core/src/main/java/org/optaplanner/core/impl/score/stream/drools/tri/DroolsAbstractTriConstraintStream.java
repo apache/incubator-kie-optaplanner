@@ -84,13 +84,22 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return null;
+        return ifExistsOrNot(true, otherClass, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <D> TriConstraintStream<A, B, C> ifNotExists(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return null;
+        return ifExistsOrNot(false, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private final <D> TriConstraintStream<A, B, C> ifExistsOrNot(boolean shouldExist, Class<D> otherClass,
+            QuadJoiner<A, B, C, D>... joiners) {
+        DroolsExistsTriConstraintStream<Solution_, A, B, C> stream =
+                new DroolsExistsTriConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************
