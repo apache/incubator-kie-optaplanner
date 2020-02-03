@@ -72,14 +72,23 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public final <E> QuadConstraintStream<A, B, C, D> ifExists(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        return null;
+        return ifExistsOrNot(true, otherClass, joiners);
     }
 
     @SafeVarargs
     @Override
     public final <E> QuadConstraintStream<A, B, C, D> ifNotExists(Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        return null;
+        return ifExistsOrNot(false, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private final <E> QuadConstraintStream<A, B, C, D> ifExistsOrNot(boolean shouldExist, Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        DroolsExistsQuadConstraintStream<Solution_, A, B, C, D> stream =
+                new DroolsExistsQuadConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);
+        addChildStream(stream);
+        return stream;
     }
 
     // ************************************************************************

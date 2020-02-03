@@ -31,6 +31,7 @@ import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
@@ -62,6 +63,24 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
                 bVariable, cVariable, dVariable, newTargetPattern, ruleStructure.getShelvedRuleItems(),
                 ruleStructure.getPrerequisites(), ruleStructure.getDependents(), ruleStructure.getVariableIdSupplier());
         return new DroolsQuadCondition<>(newRuleStructure);
+    }
+
+    @SafeVarargs
+    public final <E> DroolsQuadCondition<A, B, C, D, PatternVar> andIfExists(Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return andIfExistsOrNot(true, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    public final <E> DroolsQuadCondition<A, B, C, D, PatternVar> andIfNotExists(Class<E> otherClass,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return andIfExistsOrNot(false, otherClass, joiners);
+    }
+
+    @SafeVarargs
+    private final <E> DroolsQuadCondition<A, B, C, D, PatternVar> andIfExistsOrNot(boolean shouldExist,
+            Class<E> otherClass, PentaJoiner<A, B, C, D, E>... joiners) {
+        return null;
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
