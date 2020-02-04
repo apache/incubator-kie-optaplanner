@@ -519,18 +519,20 @@ opposite effect:
     }
 ----
 
-Here, only the computers without processes running on them will be penalized.
+Here, only the computers without processes running on them are penalized.
 
 Also note the use of the `Joiner` class to limit the constraint matches.
 For a description of `Joiners`, see <<constraintStreamsJoin,joining>>.
 Conditional propagation operates much like joining, with the exception of not increasing the
 <<constraintStreamsCardinality, stream cardinality>>.
-The matches from `ifExists()` and other similar building blocks will not be available further down the stream.
+The matches from `ifExists()` and other similar building blocks are not available further down the stream.
 
 [NOTE]
 ====
 For performance reasons, using conditional propagation with the appropriate `Joiner` is preferable to joining.
-Joining should only be used in cases where the other instance is actually required for another operation further down
+While using `join()` creates a cartesian product of the facts being joined, with conditional propagation, the resulting
+stream only has at most the original number of constraint matches in it.
+Joining should only be used in cases where the other fact is actually required for another operation further down
 the stream.
 ====
 
