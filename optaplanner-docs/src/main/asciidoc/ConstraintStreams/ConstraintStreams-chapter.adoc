@@ -505,8 +505,8 @@ Note the use of the `ifExists()` building block.
 On `UniConstraintStream`, the `ifExistsOther()` building block is also available which is useful in situations where the
 `from()` constraint match type is the same as the `ifExists()` type.
 
-Conversely, the `ifNotExists()` building block is available (as well as the `ifNotExistsOther()` building block on
-`UniConstraintStream`) to achieve the opposite effect:
+Conversely, if the `ifNotExists()` building block is used (as well as the `ifNotExistsOther()` building block on
+`UniConstraintStream`) you can achieve the opposite affect:
 
 [source,java,options="nowrap"]
 ----
