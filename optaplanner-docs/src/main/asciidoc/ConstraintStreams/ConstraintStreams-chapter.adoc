@@ -529,7 +529,7 @@ Matches from these building blocks are not available further down the stream.
 
 [NOTE]
 ====
-For performance reasons, using conditional propagation with the appropriate `Joiner`instance is preferable to joining.
+For performance reasons, using conditional propagation with the appropriate `Joiner` instance is preferable to joining.
 While using `join()` creates a cartesian product of the facts being joined, with conditional propagation, the resulting
 stream only has at most the original number of constraint matches in it.
 Joining should only be used in cases where the other fact is actually required for another operation further down
