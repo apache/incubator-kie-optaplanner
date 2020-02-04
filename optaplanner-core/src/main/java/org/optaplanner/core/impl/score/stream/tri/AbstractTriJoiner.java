@@ -39,7 +39,7 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
     }
 
     @SafeVarargs
-    public final static <A, B, C> AbstractTriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
+    public static <A, B, C> AbstractTriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
         List<SingleTriJoiner<A, B, C>> joinerList = new ArrayList<>();
         for (TriJoiner<A, B, C> joiner : joiners) {
             if (joiner instanceof NoneTriJoiner) {
