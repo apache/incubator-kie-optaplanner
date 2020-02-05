@@ -37,7 +37,7 @@ public final class TspConstraintProvider implements ConstraintProvider {
     private Constraint distanceToPreviousStandstill(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Visit.class)
                 .penalizeLong("Distance to previous standstill",
-                        SimpleLongScore.of(1),
+                        SimpleLongScore.ONE,
                         Visit::getDistanceFromPreviousStandstill);
     }
 
@@ -46,7 +46,7 @@ public final class TspConstraintProvider implements ConstraintProvider {
                 .ifNotExists(Visit.class, Joiners.equal(visit -> visit, Visit::getPreviousStandstill))
                 .join(Domicile.class)
                 .penalizeLong("Distance from last visit to domicile",
-                        SimpleLongScore.of(1),
+                        SimpleLongScore.ONE,
                         Visit::getDistanceTo);
     }
 
