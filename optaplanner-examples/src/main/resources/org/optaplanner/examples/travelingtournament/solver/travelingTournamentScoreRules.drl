@@ -55,7 +55,7 @@ end
 rule "matchRepeater"
     when
         Match($homeTeam : homeTeam, $awayTeam : awayTeam, $firstDayIndex : day.getIndex())
-        Match(homeTeam == $awayTeam, awayTeam == $homeTeam, day.getIndex() == $firstDayIndex + 1)
+        exists Match(homeTeam == $awayTeam, awayTeam == $homeTeam, day.getIndex() == $firstDayIndex + 1)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
