@@ -28,7 +28,7 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
     private final QuadFunction<A, B, C, D, ?>[] leftMappings;
     private final Function<E, ?>[] rightMappings;
 
-    public CompositePentaJoiner(List<SinglePentaJoiner<A, B, C, D, E>> joinerList) {
+    CompositePentaJoiner(List<SinglePentaJoiner<A, B, C, D, E>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }

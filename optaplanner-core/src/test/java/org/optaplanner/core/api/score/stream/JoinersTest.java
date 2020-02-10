@@ -44,6 +44,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, BigDecimal.TEN)).isTrue();
             softly.assertThat(joiner.matches(ONE, BigDecimal.ZERO)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -57,6 +58,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, BigDecimal.TEN)).isTrue();
             softly.assertThat(joiner.matches(ONE, ZERO, BigDecimal.ZERO)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -71,6 +73,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, BigDecimal.TEN)).isTrue();
             softly.assertThat(joiner.matches(ONE, ZERO, ZERO, BigDecimal.ZERO)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -86,6 +89,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, ZERO, BigDecimal.TEN)).isTrue();
             softly.assertThat(joiner.matches(ONE, ZERO, ZERO, ZERO, BigDecimal.ZERO)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -100,6 +104,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, BigDecimal.ONE)).isFalse();
             softly.assertThat(joiner.matches(ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -114,6 +119,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThat(joiner.matches(ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -129,6 +135,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThat(joiner.matches(ZERO, ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -145,6 +152,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThat(joiner.matches(ZERO, ZERO, ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -159,6 +167,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, BigDecimal.ONE)).isFalse();
             softly.assertThat(joiner.matches(ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -174,6 +183,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThat(joiner.matches(ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -189,6 +199,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThat(joiner.matches(ZERO, ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -205,6 +216,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThat(joiner.matches(ZERO, ZERO, ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -219,6 +231,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, BigDecimal.ONE)).isTrue();
             softly.assertThat(joiner.matches(ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -233,6 +246,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThat(joiner.matches(ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -248,6 +262,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThat(joiner.matches(ZERO, ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -264,6 +279,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThat(joiner.matches(ZERO, ZERO, ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -278,6 +294,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, BigDecimal.ONE)).isTrue();
             softly.assertThat(joiner.matches(ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -293,6 +310,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThat(joiner.matches(ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -308,6 +326,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThat(joiner.matches(ZERO, ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -324,6 +343,7 @@ public class JoinersTest {
             softly.assertThat(joiner.matches(TEN, ZERO, ZERO, ZERO, BigDecimal.ONE)).isTrue();
             softly.assertThat(joiner.matches(ZERO, ZERO, ZERO, ZERO, BigDecimal.ONE)).isFalse();
             softly.assertThatThrownBy(() -> joiner.getLeftMapping(1)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> joiner.getRightMapping(1)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 }

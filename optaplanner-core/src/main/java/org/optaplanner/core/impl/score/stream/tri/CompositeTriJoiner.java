@@ -28,7 +28,7 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     private final BiFunction<A, B, ?>[] leftMappings;
     private final Function<C, ?>[] rightMappings;
 
-    public CompositeTriJoiner(List<SingleTriJoiner<A, B, C>> joinerList) {
+    CompositeTriJoiner(List<SingleTriJoiner<A, B, C>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }

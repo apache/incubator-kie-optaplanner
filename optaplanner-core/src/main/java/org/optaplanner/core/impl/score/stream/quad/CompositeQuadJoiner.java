@@ -28,7 +28,7 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
     private final TriFunction<A, B, C, ?>[] leftMappings;
     private final Function<D, ?>[] rightMappings;
 
-    public CompositeQuadJoiner(List<SingleQuadJoiner<A, B, C, D>> joinerList) {
+    CompositeQuadJoiner(List<SingleQuadJoiner<A, B, C, D>> joinerList) {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
