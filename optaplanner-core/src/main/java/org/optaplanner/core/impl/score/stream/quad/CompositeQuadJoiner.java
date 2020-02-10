@@ -59,7 +59,7 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
 
     @Override
     public TriFunction<A, B, C, Object[]> getLeftCombinedMapping() {
-        final TriFunction<A, B, C, Object>[] mappings = IntStream.range(0, joinerList.size())
+        TriFunction<A, B, C, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getLeftMapping)
                 .toArray(TriFunction[]::new);
         return (A a, B b, C c) -> Arrays.stream(mappings)
@@ -82,7 +82,7 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
 
     @Override
     public Function<D, Object[]> getRightCombinedMapping() {
-        final Function<D, Object>[] mappings = IntStream.range(0, joinerList.size())
+        Function<D, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getRightMapping)
                 .toArray(Function[]::new);
         return (D d) -> Arrays.stream(mappings)

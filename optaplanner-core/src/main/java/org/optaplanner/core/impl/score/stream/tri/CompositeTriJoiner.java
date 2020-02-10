@@ -59,7 +59,7 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
 
     @Override
     public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
-        final BiFunction<A, B, Object>[] mappings = IntStream.range(0, joinerList.size())
+        BiFunction<A, B, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getLeftMapping)
                 .toArray(BiFunction[]::new);
         return (A a, B b) -> Arrays.stream(mappings)
@@ -82,7 +82,7 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
 
     @Override
     public Function<C, Object[]> getRightCombinedMapping() {
-        final Function<C, Object>[] mappings = IntStream.range(0, joinerList.size())
+        Function<C, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getRightMapping)
                 .toArray(Function[]::new);
         return (C c) -> Arrays.stream(mappings)

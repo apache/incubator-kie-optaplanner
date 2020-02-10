@@ -58,7 +58,7 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<A, Object[]> getLeftCombinedMapping() {
-        final Function<A, Object>[] mappings = IntStream.range(0, joinerList.size())
+        Function<A, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getLeftMapping)
                 .toArray(Function[]::new);
         return (A a) -> Arrays.stream(mappings)
@@ -81,7 +81,7 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<B, Object[]> getRightCombinedMapping() {
-        final Function<B, Object>[] mappings = IntStream.range(0, joinerList.size())
+        Function<B, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getRightMapping)
                 .toArray(Function[]::new);
         return (B b) -> Arrays.stream(mappings)

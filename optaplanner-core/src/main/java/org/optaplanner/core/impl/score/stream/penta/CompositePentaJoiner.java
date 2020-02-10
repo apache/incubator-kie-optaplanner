@@ -59,7 +59,7 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
 
     @Override
     public QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping() {
-        final QuadFunction<A, B, C, D, Object>[] mappings = IntStream.range(0, joinerList.size())
+        QuadFunction<A, B, C, D, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getLeftMapping)
                 .toArray(QuadFunction[]::new);
         return (A a, B b, C c, D d) -> Arrays.stream(mappings)
@@ -82,7 +82,7 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
 
     @Override
     public Function<E, Object[]> getRightCombinedMapping() {
-        final Function<E, Object>[] mappings = IntStream.range(0, joinerList.size())
+        Function<E, Object>[] mappings = IntStream.range(0, joinerList.size())
                 .mapToObj(this::getRightMapping)
                 .toArray(Function[]::new);
         return (E e) -> Arrays.stream(mappings)
