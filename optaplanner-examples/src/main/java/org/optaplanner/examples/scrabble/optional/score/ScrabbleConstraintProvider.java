@@ -63,7 +63,7 @@ public class ScrabbleConstraintProvider implements ConstraintProvider {
 
     private Constraint pullToCenter(ConstraintFactory cf) {
         return cf.from(ScrabbleWordAssignment.class)
-                 .penalize("Pull to the center", HardMediumSoftScore.ONE_SOFT, (swa) -> swa.getDistanceToCenter());
+                 .penalize("Pull to the center", HardMediumSoftScore.ONE_SOFT, ScrabbleWordAssignment::getDistanceToCenter);
     }
 
 }
