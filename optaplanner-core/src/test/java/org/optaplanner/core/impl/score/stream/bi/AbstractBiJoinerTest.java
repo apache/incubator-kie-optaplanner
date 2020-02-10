@@ -53,6 +53,8 @@ public class AbstractBiJoinerTest {
         assertSoftly(softly -> {
             softly.assertThat(mergedJoiner).isInstanceOf(CompositeBiJoiner.class);
             softly.assertThat(mergedJoiner.getJoinerTypes()).containsExactly(JoinerType.EQUAL, JoinerType.LESS_THAN);
+            softly.assertThatThrownBy(() -> mergedJoiner.getLeftMapping(2)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> mergedJoiner.getRightMapping(2)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
@@ -67,6 +69,8 @@ public class AbstractBiJoinerTest {
             softly.assertThat(reMergedJoiner).isInstanceOf(CompositeBiJoiner.class);
             softly.assertThat(reMergedJoiner.getJoinerTypes())
                     .containsExactly(JoinerType.EQUAL, JoinerType.LESS_THAN, JoinerType.GREATER_THAN);
+            softly.assertThatThrownBy(() -> reMergedJoiner.getLeftMapping(3)).isInstanceOf(IllegalArgumentException.class);
+            softly.assertThatThrownBy(() -> reMergedJoiner.getRightMapping(3)).isInstanceOf(IllegalArgumentException.class);
         });
     }
 
