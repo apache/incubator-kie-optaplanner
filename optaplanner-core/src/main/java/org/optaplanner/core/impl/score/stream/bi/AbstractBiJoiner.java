@@ -17,15 +17,17 @@
 package org.optaplanner.core.impl.score.stream.bi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements BiJoiner<A, B> {
+public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner<B> implements BiJoiner<A, B> {
 
     private final BiPredicate<A, B> filter;
 
@@ -75,11 +77,14 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
 
     public abstract Function<A, Object> getLeftMapping(int index);
 
-    public abstract Function<A, Object[]> getLeftCombinedMapping();
-
-    public abstract Function<B, Object> getRightMapping(int index);
-
-    public abstract Function<B, Object[]> getRightCombinedMapping();
+    public Function<A, Object[]> getLeftCombinedMapping() {
+        Function<A, Object>[] mappings = IntStream.range(0, getJoinerTypes().length)
+                .mapToObj(this::getLeftMapping)
+                .toArray(Function[]::new);
+        return (A a) -> Arrays.stream(mappings)
+                .map(f -> f.apply(a))
+                .toArray();
+    }
 
     public BiPredicate<A, B> getFilter() {
         return filter;

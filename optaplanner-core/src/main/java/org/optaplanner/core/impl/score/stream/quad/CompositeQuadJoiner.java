@@ -16,10 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.quad;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
@@ -58,16 +56,6 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
     }
 
     @Override
-    public TriFunction<A, B, C, Object[]> getLeftCombinedMapping() {
-        final TriFunction<A, B, C, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getLeftMapping)
-                .toArray(TriFunction[]::new);
-        return (A a, B b, C c) -> Arrays.stream(mappings)
-                .map(f -> f.apply(a, b, c))
-                .toArray();
-    }
-
-    @Override
     public JoinerType[] getJoinerTypes() {
         return joinerList.stream()
                 .map(SingleQuadJoiner::getJoinerType)
@@ -78,16 +66,6 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
     public Function<D, Object> getRightMapping(int index) {
         assertMappingIndex(index);
         return (Function<D, Object>) rightMappings[index];
-    }
-
-    @Override
-    public Function<D, Object[]> getRightCombinedMapping() {
-        final Function<D, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getRightMapping)
-                .toArray(Function[]::new);
-        return (D d) -> Arrays.stream(mappings)
-                .map(f -> f.apply(d))
-                .toArray();
     }
 
 }

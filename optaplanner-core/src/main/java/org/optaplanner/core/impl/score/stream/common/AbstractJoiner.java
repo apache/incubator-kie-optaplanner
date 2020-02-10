@@ -16,7 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.common;
 
-public abstract class AbstractJoiner {
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+
+public abstract class AbstractJoiner<Right> {
 
     protected void assertMappingIndex(int index) {
         int mappingCount = getJoinerTypes().length;
@@ -26,5 +30,16 @@ public abstract class AbstractJoiner {
     }
 
     public abstract JoinerType[] getJoinerTypes();
+
+    public abstract Function<Right, Object> getRightMapping(int index);
+
+    public Function<Right, Object[]> getRightCombinedMapping() {
+        Function<Right, Object>[] mappings = IntStream.range(0, getJoinerTypes().length)
+                .mapToObj(this::getRightMapping)
+                .toArray(Function[]::new);
+        return (Right right) -> Arrays.stream(mappings)
+                .map(f -> f.apply(right))
+                .toArray();
+    }
 
 }

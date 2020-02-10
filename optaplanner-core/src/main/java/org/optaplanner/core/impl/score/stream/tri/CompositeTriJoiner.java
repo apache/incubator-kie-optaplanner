@@ -16,11 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.tri;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
@@ -58,16 +56,6 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     }
 
     @Override
-    public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
-        final BiFunction<A, B, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getLeftMapping)
-                .toArray(BiFunction[]::new);
-        return (A a, B b) -> Arrays.stream(mappings)
-                .map(f -> f.apply(a, b))
-                .toArray();
-    }
-
-    @Override
     public JoinerType[] getJoinerTypes() {
         return joinerList.stream()
                 .map(SingleTriJoiner::getJoinerType)
@@ -78,16 +66,6 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
     public Function<C, Object> getRightMapping(int index) {
         assertMappingIndex(index);
         return (Function<C, Object>) rightMappings[index];
-    }
-
-    @Override
-    public Function<C, Object[]> getRightCombinedMapping() {
-        final Function<C, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getRightMapping)
-                .toArray(Function[]::new);
-        return (C c) -> Arrays.stream(mappings)
-                .map(f -> f.apply(c))
-                .toArray();
     }
 
 }

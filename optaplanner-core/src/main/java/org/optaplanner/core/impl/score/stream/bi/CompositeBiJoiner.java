@@ -16,10 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bi;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
@@ -57,16 +55,6 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     @Override
-    public Function<A, Object[]> getLeftCombinedMapping() {
-        final Function<A, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getLeftMapping)
-                .toArray(Function[]::new);
-        return (A a) -> Arrays.stream(mappings)
-                .map(f -> f.apply(a))
-                .toArray();
-    }
-
-    @Override
     public JoinerType[] getJoinerTypes() {
         return joinerList.stream()
                 .map(SingleBiJoiner::getJoinerType)
@@ -79,13 +67,4 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
         return (Function<B, Object>) rightMappings[index];
     }
 
-    @Override
-    public Function<B, Object[]> getRightCombinedMapping() {
-        final Function<B, Object>[] mappings = IntStream.range(0, joinerList.size())
-                .mapToObj(this::getRightMapping)
-                .toArray(Function[]::new);
-        return (B b) -> Arrays.stream(mappings)
-                .map(f -> f.apply(b))
-                .toArray();
-    }
 }
