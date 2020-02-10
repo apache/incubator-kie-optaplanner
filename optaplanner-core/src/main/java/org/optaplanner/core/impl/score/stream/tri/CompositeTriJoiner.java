@@ -53,6 +53,7 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
 
     @Override
     public BiFunction<A, B, Object> getLeftMapping(int index) {
+        assertMappingIndex(index);
         return (BiFunction<A, B, Object>) leftMappings[index];
     }
 
@@ -75,6 +76,7 @@ public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C
 
     @Override
     public Function<C, Object> getRightMapping(int index) {
+        assertMappingIndex(index);
         return (Function<C, Object>) rightMappings[index];
     }
 

@@ -52,6 +52,7 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<A, Object> getLeftMapping(int index) {
+        assertMappingIndex(index);
         return (Function<A, Object>) leftMappings[index];
     }
 
@@ -74,6 +75,7 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
     @Override
     public Function<B, Object> getRightMapping(int index) {
+        assertMappingIndex(index);
         return (Function<B, Object>) rightMappings[index];
     }
 

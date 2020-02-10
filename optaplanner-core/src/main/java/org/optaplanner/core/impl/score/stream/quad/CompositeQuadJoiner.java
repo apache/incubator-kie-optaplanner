@@ -53,6 +53,7 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
 
     @Override
     public TriFunction<A, B, C, Object> getLeftMapping(int index) {
+        assertMappingIndex(index);
         return (TriFunction<A, B, C, Object>) leftMappings[index];
     }
 
@@ -75,6 +76,7 @@ public final class CompositeQuadJoiner<A, B, C, D> extends AbstractQuadJoiner<A,
 
     @Override
     public Function<D, Object> getRightMapping(int index) {
+        assertMappingIndex(index);
         return (Function<D, Object>) rightMappings[index];
     }
 
