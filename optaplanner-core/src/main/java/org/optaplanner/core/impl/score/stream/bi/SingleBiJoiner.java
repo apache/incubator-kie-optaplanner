@@ -29,7 +29,7 @@ public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     public SingleBiJoiner(Function<A, ?> leftMapping, JoinerType joinerType, Function<B, ?> rightMapping) {
         this.leftMapping = leftMapping;
         this.joinerType = joinerType;
-;        this.rightMapping = rightMapping;
+        this.rightMapping = rightMapping;
     }
 
     public Function<A, ?> getLeftMapping() {
