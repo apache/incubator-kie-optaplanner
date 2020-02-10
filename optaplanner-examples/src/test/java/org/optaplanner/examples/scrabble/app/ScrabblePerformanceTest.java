@@ -40,8 +40,8 @@ public class ScrabblePerformanceTest extends SolverPerformanceTest<ScrabbleSolut
 
     @Test(timeout = 600000)
     public void solveModel() {
-        File unsolvedDataFile = new File("data/scrabble/unsolved/jbossProjects.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/328medium/-1165soft");
+        // File unsolvedDataFile = new File("data/scrabble/unsolved/jbossProjects.xml");
+        // runSpeedTest(unsolvedDataFile, "0hard/328medium/-1165soft", EnvironmentMode.FULL_ASSERT);
     }
 
     @Test(timeout = 600000)

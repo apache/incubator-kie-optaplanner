@@ -6,10 +6,15 @@
   <solutionClass>org.optaplanner.examples.scrabble.domain.ScrabbleSolution</solutionClass>
   <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment</entityClass>
   <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleCell</entityClass>
+  <environmentMode>FULL_ASSERT</environmentMode>
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/scrabble/solver/scrabbleScoreRules.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.scrabble.optional.score.ScrabbleConstraintProvider</constraintProviderClass>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+    <assertionScoreDirectorFactory>
+      <scoreDrl>org/optaplanner/examples/scrabble/solver/scrabbleScoreRules.drl</scoreDrl>
+      <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+    </assertionScoreDirectorFactory>
   </scoreDirectorFactory>
 </solver>
