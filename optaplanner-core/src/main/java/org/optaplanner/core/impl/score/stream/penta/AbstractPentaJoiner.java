@@ -17,9 +17,8 @@
 package org.optaplanner.core.impl.score.stream.penta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.function.Function;
 
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
@@ -27,7 +26,7 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner<E> implements PentaJoiner<A, B, C, D, E> {
+public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner implements PentaJoiner<A, B, C, D, E> {
 
     private final PentaPredicate<A, B, C, D, E> filter;
 
@@ -76,14 +75,11 @@ public abstract class AbstractPentaJoiner<A, B, C, D, E> extends AbstractJoiner<
 
     public abstract QuadFunction<A, B, C, D, Object> getLeftMapping(int index);
 
-    public QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping() {
-        QuadFunction<A, B, C, D, Object>[] mappings = IntStream.range(0, getJoinerTypes().length)
-                .mapToObj(this::getLeftMapping)
-                .toArray(QuadFunction[]::new);
-        return (A a, B b, C c, D d) -> Arrays.stream(mappings)
-                .map(f -> f.apply(a, b, c, d))
-                .toArray();
-    }
+    public abstract QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping();
+
+    public abstract Function<E, Object> getRightMapping(int index);
+
+    public abstract Function<E, Object[]> getRightCombinedMapping();
 
     public PentaPredicate<A, B, C, D, E> getFilter() {
         return filter;

@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class NoneBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     private static final JoinerType[] EMPTY_JOINER_ARRAY = new JoinerType[0];
 
     // ************************************************************************
@@ -34,6 +35,11 @@ public final class NoneBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     @Override
+    public Function<A, Object[]> getLeftCombinedMapping() {
+        return a -> EMPTY_OBJECT_ARRAY;
+    }
+
+    @Override
     public JoinerType[] getJoinerTypes() {
         return EMPTY_JOINER_ARRAY;
     }
@@ -43,4 +49,8 @@ public final class NoneBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
         throw new UnsupportedOperationException("Impossible state: getRightMapping() is never called on a NoneBiJoiner.");
     }
 
+    @Override
+    public Function<B, Object[]> getRightCombinedMapping() {
+        return b -> EMPTY_OBJECT_ARRAY;
+    }
 }

@@ -17,17 +17,16 @@
 package org.optaplanner.core.impl.score.stream.tri;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.stream.IntStream;
+import java.util.function.Function;
 
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner<C> implements TriJoiner<A, B, C> {
+public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implements TriJoiner<A, B, C> {
 
     private final TriPredicate<A, B, C> filter;
 
@@ -76,14 +75,11 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner<C> imple
 
     public abstract BiFunction<A, B, Object> getLeftMapping(int index);
 
-    public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
-        BiFunction<A, B, Object>[] mappings = IntStream.range(0, getJoinerTypes().length)
-                .mapToObj(this::getLeftMapping)
-                .toArray(BiFunction[]::new);
-        return (A a, B b) -> Arrays.stream(mappings)
-                .map(f -> f.apply(a, b))
-                .toArray();
-    }
+    public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
+
+    public abstract Function<C, Object> getRightMapping(int index);
+
+    public abstract Function<C, Object[]> getRightCombinedMapping();
 
     public TriPredicate<A, B, C> getFilter() {
         return filter;

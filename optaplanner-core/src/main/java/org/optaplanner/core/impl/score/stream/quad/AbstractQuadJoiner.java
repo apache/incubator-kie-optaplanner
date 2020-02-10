@@ -17,9 +17,8 @@
 package org.optaplanner.core.impl.score.stream.quad;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.function.Function;
 
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
@@ -27,7 +26,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
-public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner<D> implements QuadJoiner<A, B, C, D> {
+public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner implements QuadJoiner<A, B, C, D> {
 
     private final QuadPredicate<A, B, C, D> filter;
 
@@ -76,14 +75,11 @@ public abstract class AbstractQuadJoiner<A, B, C, D> extends AbstractJoiner<D> i
 
     public abstract TriFunction<A, B, C, Object> getLeftMapping(int index);
 
-    public TriFunction<A, B, C, Object[]> getLeftCombinedMapping() {
-        TriFunction<A, B, C, Object>[] mappings = IntStream.range(0, getJoinerTypes().length)
-                .mapToObj(this::getLeftMapping)
-                .toArray(TriFunction[]::new);
-        return (A a, B b, C c) -> Arrays.stream(mappings)
-                .map(f -> f.apply(a, b, c))
-                .toArray();
-    }
+    public abstract TriFunction<A, B, C, Object[]> getLeftCombinedMapping();
+
+    public abstract Function<D, Object> getRightMapping(int index);
+
+    public abstract Function<D, Object[]> getRightCombinedMapping();
 
     public QuadPredicate<A, B, C, D> getFilter() {
         return filter;

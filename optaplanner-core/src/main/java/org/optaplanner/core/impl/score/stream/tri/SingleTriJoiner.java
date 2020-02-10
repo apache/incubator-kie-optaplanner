@@ -56,6 +56,11 @@ public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
     }
 
     @Override
+    public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
+        return (A a, B b) -> new Object[]{getLeftMapping().apply(a, b)};
+    }
+
+    @Override
     public JoinerType[] getJoinerTypes() {
         return new JoinerType[]{joinerType};
     }
@@ -66,4 +71,8 @@ public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
         return (Function<C, Object>) getRightMapping();
     }
 
+    @Override
+    public Function<C, Object[]> getRightCombinedMapping() {
+        return (C c) -> new Object[]{getRightMapping().apply(c)};
+    }
 }
