@@ -25,7 +25,6 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
@@ -163,14 +162,6 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
                 constraintWeight, scoreImpacter);
         buildPolicy.addScoringNode(node);
         return node;
-    }
-
-    protected static void assertPositiveImpact(Constraint constraint, Number impact) {
-        if (impact.doubleValue() < 0) {
-            String name = constraint.getConstraintPackage() + "." + constraint.getConstraintName();
-            throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
-                    "Check constraint provider implementation.");
-        }
     }
 
     @Override
