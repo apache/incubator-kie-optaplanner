@@ -25,6 +25,7 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
@@ -113,6 +114,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
             if (intMatchWeigher != null) {
                 scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) -> {
                     int matchWeight = intMatchWeigher.applyAsInt(a, b);
+                    assertPositiveImpact(constraint, matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
@@ -128,6 +130,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
             if (longMatchWeigher != null) {
                 scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) -> {
                     long matchWeight = longMatchWeigher.applyAsLong(a, b);
+                    assertPositiveImpact(constraint, matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
@@ -143,6 +146,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
             if (bigDecimalMatchWeigher != null) {
                 scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a, b);
+                    assertPositiveImpact(constraint, matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
@@ -161,6 +165,14 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
                 constraintWeight, scoreImpacter);
         buildPolicy.addScoringNode(node);
         return node;
+    }
+
+    protected static void assertPositiveImpact(Constraint constraint, Number impact) {
+        if (impact.doubleValue() < 0) {
+            String name = constraint.getConstraintPackage() + "." + constraint.getConstraintName();
+            throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
+                    "Check constraint provider implementation.");
+        }
     }
 
     @Override

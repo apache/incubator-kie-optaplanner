@@ -167,19 +167,30 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
             int impact) {
         RuleContext kcontext = (RuleContext) drools;
+        assertPositiveImpact(kcontext, impact);
         scoreHolder.impactScore(kcontext, impact);
     }
 
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
             long impact) {
         RuleContext kcontext = (RuleContext) drools;
+        assertPositiveImpact(kcontext, impact);
         scoreHolder.impactScore(kcontext, impact);
     }
 
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
             BigDecimal impact) {
         RuleContext kcontext = (RuleContext) drools;
+        assertPositiveImpact(kcontext, impact);
         scoreHolder.impactScore(kcontext, impact);
+    }
+
+    protected static void assertPositiveImpact(RuleContext kcontext, Number impact) {
+        if (impact.doubleValue() < 0) {
+            String name = kcontext.getRule().getPackageName() + "." + kcontext.getRule().getName();
+            throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
+                    "Check constraint provider implementation.");
+        }
     }
 
     protected ViewItem<?> getInnerAccumulatePattern(PatternDef<PatternVar> mainAccumulatePattern) {
