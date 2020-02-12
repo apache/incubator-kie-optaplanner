@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
 
@@ -69,12 +70,28 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
         return constraintFactory;
     }
 
-    protected static void assertPositiveImpact(Constraint constraint, Number impact) {
-        if (impact.doubleValue() < 0) {
-            String name = constraint.getConstraintPackage() + "." + constraint.getConstraintName();
-            throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
-                    "Check constraint provider implementation.");
+    protected static void assertPositiveImpact(Constraint constraint, int impact) {
+        if (impact < 0) {
+            throwOnNegativeImpact(constraint, impact);
         }
+    }
+
+    protected static void assertPositiveImpact(Constraint constraint, long impact) {
+        if (impact < 0L) {
+            throwOnNegativeImpact(constraint, impact);
+        }
+    }
+
+    protected static void assertPositiveImpact(Constraint constraint, BigDecimal impact) {
+        if (impact.signum() < 0) {
+            throwOnNegativeImpact(constraint, impact);
+        }
+    }
+
+    private static void throwOnNegativeImpact(Constraint constraint, Object impact) {
+        String name = constraint.getConstraintPackage() + "." + constraint.getConstraintName();
+        throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
+                "Check constraint provider implementation.");
     }
 
 }

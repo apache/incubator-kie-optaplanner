@@ -185,13 +185,30 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
         scoreHolder.impactScore(kcontext, impact);
     }
 
-    protected static void assertPositiveImpact(RuleContext kcontext, Number impact) {
-        if (impact.doubleValue() < 0) {
-            String name = kcontext.getRule().getPackageName() + "." + kcontext.getRule().getName();
-            throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
-                    "Check constraint provider implementation.");
+    private static void assertPositiveImpact(RuleContext kcontext, int impact) {
+        if (impact < 0) {
+            throwOnNegativeImpact(kcontext, impact);
         }
     }
+
+    private static void assertPositiveImpact(RuleContext kcontext, long impact) {
+        if (impact < 0L) {
+            throwOnNegativeImpact(kcontext, impact);
+        }
+    }
+
+    private static void assertPositiveImpact(RuleContext kcontext, BigDecimal impact) {
+        if (impact.signum() < 0) {
+            throwOnNegativeImpact(kcontext, impact);
+        }
+    }
+
+    private static void throwOnNegativeImpact(RuleContext constraint, Object impact) {
+        String name = constraint.getRule().getPackageName() + "." + constraint.getRule().getName();
+        throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
+                "Check constraint provider implementation.");
+    }
+
 
     protected ViewItem<?> getInnerAccumulatePattern(PatternDef<PatternVar> mainAccumulatePattern) {
         Stream<ViewItemBuilder<?>> primaryAndPrerequisites = Stream.concat(ruleStructure.getPrerequisites().stream(),
