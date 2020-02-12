@@ -6,7 +6,6 @@
   <solutionClass>org.optaplanner.examples.scrabble.domain.ScrabbleSolution</solutionClass>
   <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment</entityClass>
   <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleCell</entityClass>
-  <environmentMode>FULL_ASSERT</environmentMode>
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
