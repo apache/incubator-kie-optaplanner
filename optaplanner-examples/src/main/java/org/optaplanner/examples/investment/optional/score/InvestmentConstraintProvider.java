@@ -19,7 +19,6 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-        // TODO Auto-generated method stub
         return new Constraint[]{
                                 assetsDeviationGreaterThanMaximumPenalty(constraintFactory),
                                 regionQuantityGreaterThanMaximumPenalty(constraintFactory),
