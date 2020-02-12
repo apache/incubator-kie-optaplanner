@@ -32,19 +32,17 @@ public class ScrabbleConstraintProvider implements ConstraintProvider {
 
     private Constraint noParallelHorizontalNeighbours(ConstraintFactory cf) {
         return cf.from(ScrabbleCell.class).filter(sc -> sc.hasWordSet(ScrabbleWordDirection.HORIZONTAL))
-                 .join(ScrabbleCell.class,
-                       Joiners.equal(ScrabbleCell::getX), Joiners.lessThan(ScrabbleCell::getId),
-                       Joiners.filtering((first, other) -> other.hasWordSet(ScrabbleWordDirection.HORIZONTAL)))
-                 .filter((c1, c2) -> Math.abs(c1.getY() - c2.getY()) == 1)
+                 .ifExists(ScrabbleCell.class,
+                           Joiners.equal(ScrabbleCell::getX), Joiners.equal(ScrabbleCell::getY, c -> c.getY() + 1),
+                           Joiners.filtering((first, second) -> second.hasWordSet(ScrabbleWordDirection.HORIZONTAL)))
                  .penalize("No parallel horizontal neighbours", HardMediumSoftScore.ONE_HARD);
     }
 
     private Constraint noParallelVerticalNeighbours(ConstraintFactory cf) {
         return cf.from(ScrabbleCell.class).filter(sc -> sc.hasWordSet(ScrabbleWordDirection.VERTICAL))
-                 .join(ScrabbleCell.class,
-                       Joiners.equal(ScrabbleCell::getY), Joiners.lessThan(ScrabbleCell::getId),
-                       Joiners.filtering((first, other) -> other.hasWordSet(ScrabbleWordDirection.VERTICAL)))
-                 .filter((c1, c2) -> Math.abs(c1.getX() - c2.getX()) == 1)
+                 .ifExists(ScrabbleCell.class,
+                           Joiners.equal(ScrabbleCell::getY), Joiners.equal(ScrabbleCell::getX, c -> c.getX() + 1),
+                           Joiners.filtering((first, second) -> second.hasWordSet(ScrabbleWordDirection.VERTICAL)))
                  .penalize("No parallel vertical neighbours", HardMediumSoftScore.ONE_HARD);
     }
 
