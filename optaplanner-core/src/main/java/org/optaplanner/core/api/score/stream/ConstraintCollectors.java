@@ -558,44 +558,38 @@ public final class ConstraintCollectors {
                 (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
     }
 
-    private ConstraintCollectors() {
-    }
-
     // ************************************************************************
     // toCollection
     // ************************************************************************
 
-    /**
-     * Creates constraint collector that will return matched facts as a collection.
-     *
-     * @param collectionFunction never null, provides new instance of the target collection with given initial capacity
-     * @param <A> type of the matched fact, matching the type of elements in the resulting collection
-     * @param <Result> type of the target collection
-     * @return never null
-     */
     public static <A, Result extends Collection<A>> UniConstraintCollector<A, ?, Result> toCollection(
             IntFunction<Result> collectionFunction) {
         return toCollection(Function.identity(), collectionFunction);
     }
 
+    /**
+     * As defined by {@link #toList()}, with {@link Set} as the resulting collection.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
     public static <A> UniConstraintCollector<A, ?, Set<A>> toSet() {
         return toSet(Function.identity());
     }
 
+    /**
+     * Creates constraint collector that returns {@link List} of the same element type as the
+     * {@link UniConstraintStream}.
+     * Makes no guarantees on iteration order.
+     * For stable iteration order, use {@link #toCollection(IntFunction)} together with a sorted collection.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
     public static <A> UniConstraintCollector<A, ?, List<A>> toList() {
         return toList(Function.identity());
     }
 
-    /**
-     * Creates constraint collector that will return a collection of the given type.
-     *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
-     * @param collectionFunction never null, provides new instance of the target collection with given initial capacity
-     * @param <A> type of the matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @param <Result> type of the resulting collection
-     * @return never null
-     */
     public static <A, Mapped, Result extends Collection<Mapped>> UniConstraintCollector<A, ?, Result> toCollection(
             Function<A, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
         return new DefaultUniConstraintCollector<>(
@@ -605,11 +599,11 @@ public final class ConstraintCollectors {
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
-                resultContainer -> finishToCollection(collectionFunction, resultContainer));
+                resultContainer -> toCollectionFinisher(collectionFunction, resultContainer));
     }
 
     private static <Mapped, Container extends List<Mapped>, Result extends Collection<Mapped>> Result
-    finishToCollection(IntFunction<Result> collectionFunction, Container resultContainer) {
+    toCollectionFinisher(IntFunction<Result> collectionFunction, Container resultContainer) {
         int size = resultContainer.size();
         Result collection = collectionFunction.apply(size);
         if (size > 0) { // Avoid exceptions in case collectionFunction gives Collections.emptyList().
@@ -618,25 +612,32 @@ public final class ConstraintCollectors {
         return collection;
     }
 
+    /**
+     * As defined by {@link #toList(Function)}, with {@link Set} as the resulting collection.
+     *
+     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param <A> type of the matched fact
+     * @param <Mapped> type of elements in the resulting collection
+     * @return never null
+     */
     public static <A, Mapped> UniConstraintCollector<A, ?, Set<Mapped>> toSet(Function<A, Mapped> mappingFunction) {
         return toCollection(mappingFunction, LinkedHashSet::new);
     }
 
+    /**
+     * Creates constraint collector that returns {@link List} of the given element type.
+     * Makes no guarantees on iteration order.
+     * For stable iteration order, use {@link #toCollection(Function, IntFunction)} together with a sorted collection.
+     *
+     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param <A> type of the matched fact
+     * @param <Mapped> type of elements in the resulting collection
+     * @return never null
+     */
     public static <A, Mapped> UniConstraintCollector<A, ?, List<Mapped>> toList(Function<A, Mapped> mappingFunction) {
         return toCollection(mappingFunction, ArrayList::new);
     }
 
-    /**
-     * Creates constraint collector that will return a collection of the given type.
-     *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
-     * @param collectionFunction never null, provides new instance of the target collection with given initial capacity
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @param <Result> type of the resulting collection
-     * @return never null
-     */
     public static <A, B, Mapped, Result extends Collection<Mapped>> BiConstraintCollector<A, B, ?, Result> toCollection(
             BiFunction<A, B, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
         return new DefaultBiConstraintCollector<>(
@@ -646,31 +647,39 @@ public final class ConstraintCollectors {
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
-                resultContainer -> finishToCollection(collectionFunction, resultContainer));
+                resultContainer -> toCollectionFinisher(collectionFunction, resultContainer));
     }
 
+    /**
+     * As defined by {@link #toList(BiFunction)}, with {@link Set} as the resulting collection.
+     *
+     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <Mapped> type of elements in the resulting collection
+     * @return never null
+     */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Set<Mapped>> toSet(
             BiFunction<A, B, Mapped> mappingFunction) {
         return toCollection(mappingFunction, LinkedHashSet::new);
     }
 
+    /**
+     * Creates constraint collector that returns {@link List} of the given element type.
+     * Makes no guarantees on iteration order.
+     * For stable iteration order, use {@link #toCollection(BiFunction, IntFunction)} together with a sorted collection.
+     *
+     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <Mapped> type of elements in the resulting collection
+     * @return never null
+     */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, List<Mapped>> toList(
             BiFunction<A, B, Mapped> mappingFunction) {
         return toCollection(mappingFunction, ArrayList::new);
     }
 
-    /**
-     * Creates constraint collector that will return a collection of the given type.
-     *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
-     * @param collectionFunction never null, provides new instance of the target collection with given initial capacity
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @param <Result> type of the resulting collection
-     * @return never null
-     */
     public static <A, B, C, Mapped, Result extends Collection<Mapped>> TriConstraintCollector<A, B, C, ?, Result>
     toCollection(TriFunction<A, B, C, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
         return new DefaultTriConstraintCollector<>(
@@ -680,32 +689,41 @@ public final class ConstraintCollectors {
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
-                resultContainer -> finishToCollection(collectionFunction, resultContainer));
+                resultContainer -> toCollectionFinisher(collectionFunction, resultContainer));
     }
 
+    /**
+     * As defined by {@link #toList(TriFunction)}, with {@link Set} as the resulting collection.
+     *
+     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <Mapped> type of elements in the resulting collection
+     * @return never null
+     */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Set<Mapped>> toSet(
             TriFunction<A, B, C, Mapped> mappingFunction) {
         return toCollection(mappingFunction, LinkedHashSet::new);
     }
 
+    /**
+     * Creates constraint collector that returns {@link List} of the given element type.
+     * Makes no guarantees on iteration order.
+     * For stable iteration order, use {@link #toCollection(TriFunction, IntFunction)} together with a sorted collection.
+     *
+     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <Mapped> type of elements in the resulting collection
+     * @return never null
+     */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, List<Mapped>> toList(
             TriFunction<A, B, C, Mapped> mappingFunction) {
         return toCollection(mappingFunction, ArrayList::new);
     }
 
-    /**
-     * Creates constraint collector that will return a collection of the given type.
-     *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
-     * @param collectionFunction never null, provides new instance of the target collection with given initial capacity
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @param <Result> type of the resulting collection
-     * @return never null
-     */
     public static <A, B, C, D, Mapped, Result extends Collection<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Result>
     toCollection(QuadFunction<A, B, C, D, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
         return new DefaultQuadConstraintCollector<>(
@@ -715,17 +733,44 @@ public final class ConstraintCollectors {
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
-                resultContainer -> finishToCollection(collectionFunction, resultContainer));
+                resultContainer -> toCollectionFinisher(collectionFunction, resultContainer));
     }
 
+    /**
+     * As defined by {@link #toList(QuadFunction)}, with {@link Set} as the resulting collection.
+     *
+     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <D> type of the fourth matched fact
+     * @param <Mapped> type of elements in the resulting collection
+     * @return never null
+     */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Set<Mapped>> toSet(
             QuadFunction<A, B, C, D, Mapped> mappingFunction) {
         return toCollection(mappingFunction, LinkedHashSet::new);
     }
 
+    /**
+     * Creates constraint collector that returns {@link List} of the given element type.
+     * Makes no guarantees on iteration order.
+     * For stable iteration order, use {@link #toCollection(QuadFunction, IntFunction)} together with a sorted collection.
+     *
+     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <D> type of the fourth matched fact
+     * @param <Mapped> type of elements in the resulting collection
+     * @return never null
+     */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, List<Mapped>> toList(
             QuadFunction<A, B, C, D, Mapped> mappingFunction) {
         return toCollection(mappingFunction, ArrayList::new);
+    }
+
+    private ConstraintCollectors() {
     }
 
 }
