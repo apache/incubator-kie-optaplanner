@@ -15,53 +15,52 @@ public class ScrabbleConstraintProvider implements ConstraintProvider {
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[]{
-                                characterConflict(constraintFactory),
-                                noParallelHorizontalNeighbours(constraintFactory),
-                                noParallelVerticalNeighbours(constraintFactory),
-                                outOfGrid(constraintFactory),
-                                maximizeMergesPerWord(constraintFactory),
-                                pullToCenter(constraintFactory)
+                characterConflict(constraintFactory),
+                noParallelHorizontalNeighbours(constraintFactory),
+                noParallelVerticalNeighbours(constraintFactory),
+                outOfGrid(constraintFactory),
+                maximizeMergesPerWord(constraintFactory),
+                pullToCenter(constraintFactory)
         };
     }
 
     private Constraint characterConflict(ConstraintFactory cf) {
         return cf.from(ScrabbleCell.class)
-                 .filter(sc -> sc.getCharacterSet().size() >= 2)
-                 .penalize("Character confict", HardMediumSoftScore.ONE_HARD, sc -> sc.getCharacterSet().size() - 1);
+                .filter(sc -> sc.getCharacterSet().size() >= 2)
+                .penalize("Character confict", HardMediumSoftScore.ONE_HARD, sc -> sc.getCharacterSet().size() - 1);
     }
 
     private Constraint noParallelHorizontalNeighbours(ConstraintFactory cf) {
         return cf.from(ScrabbleCell.class).filter(sc -> sc.hasWordSet(ScrabbleWordDirection.HORIZONTAL))
-                 .ifExists(ScrabbleCell.class,
-                           Joiners.equal(ScrabbleCell::getX), Joiners.equal(ScrabbleCell::getY, c -> c.getY() + 1),
-                           Joiners.filtering((first, second) -> second.hasWordSet(ScrabbleWordDirection.HORIZONTAL)))
-                 .penalize("No parallel horizontal neighbours", HardMediumSoftScore.ONE_HARD);
+                .ifExists(ScrabbleCell.class,
+                          Joiners.equal(ScrabbleCell::getX), Joiners.equal(ScrabbleCell::getY, c -> c.getY() + 1),
+                          Joiners.filtering((first, second) -> second.hasWordSet(ScrabbleWordDirection.HORIZONTAL)))
+                .penalize("No parallel horizontal neighbours", HardMediumSoftScore.ONE_HARD);
     }
 
     private Constraint noParallelVerticalNeighbours(ConstraintFactory cf) {
         return cf.from(ScrabbleCell.class).filter(sc -> sc.hasWordSet(ScrabbleWordDirection.VERTICAL))
-                 .ifExists(ScrabbleCell.class,
-                           Joiners.equal(ScrabbleCell::getY), Joiners.equal(ScrabbleCell::getX, c -> c.getX() + 1),
-                           Joiners.filtering((first, second) -> second.hasWordSet(ScrabbleWordDirection.VERTICAL)))
-                 .penalize("No parallel vertical neighbours", HardMediumSoftScore.ONE_HARD);
+                .ifExists(ScrabbleCell.class,
+                          Joiners.equal(ScrabbleCell::getY), Joiners.equal(ScrabbleCell::getX, c -> c.getX() + 1),
+                          Joiners.filtering((first, second) -> second.hasWordSet(ScrabbleWordDirection.VERTICAL)))
+                .penalize("No parallel vertical neighbours", HardMediumSoftScore.ONE_HARD);
     }
 
     private Constraint outOfGrid(ConstraintFactory cf) {
         return cf.from(ScrabbleWordAssignment.class)
-                 .filter(ScrabbleWordAssignment::isOutOfGrid)
-                 .penalize("Out of grid", HardMediumSoftScore.ONE_HARD, swa -> swa.getWord().length());
+                .filter(ScrabbleWordAssignment::isOutOfGrid)
+                .penalize("Out of grid", HardMediumSoftScore.ONE_HARD, swa -> swa.getWord().length());
     }
 
     private Constraint maximizeMergesPerWord(ConstraintFactory cf) {
         return cf.from(ScrabbleWordAssignment.class)
-                 .join(ScrabbleCell.class, Joiners.filtering((swa, sc) -> sc.getWordSet().contains(swa) && sc.hasMerge()))
-                 .groupBy((swa, sc) -> swa.getId(), ConstraintCollectors.countBi())
-                 .reward("Maximize merges per word", HardMediumSoftScore.ONE_MEDIUM, (id, count) -> count * count);
+                .join(ScrabbleCell.class, Joiners.filtering((swa, sc) -> sc.getWordSet().contains(swa) && sc.hasMerge()))
+                .groupBy((swa, sc) -> swa.getId(), ConstraintCollectors.countBi())
+                .reward("Maximize merges per word", HardMediumSoftScore.ONE_MEDIUM, (id, count) -> count * count);
     }
 
     private Constraint pullToCenter(ConstraintFactory cf) {
         return cf.from(ScrabbleWordAssignment.class)
-                 .penalize("Pull to the center", HardMediumSoftScore.ONE_SOFT, ScrabbleWordAssignment::getDistanceToCenter);
+                .penalize("Pull to the center", HardMediumSoftScore.ONE_SOFT, ScrabbleWordAssignment::getDistanceToCenter);
     }
-
 }
