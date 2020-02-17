@@ -561,11 +561,12 @@ public final class ConstraintCollectors {
      *     age of all the elements.
      *
      * @param <A> type of the matched fact
-     * @param <X> type of the result
+     * @param <Mapped> type of the result
      * @param groupValueMapping never null, maps facts from the matched type to the result type
      * @return never null
      */
-    public static <A, X extends Comparable<X>> UniConstraintCollector<A, ?, X> min(Function<A, X> groupValueMapping) {
+    public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, Mapped> min(
+            Function<A, Mapped> groupValueMapping) {
         return min(groupValueMapping, Comparable::compareTo);
     }
 
@@ -604,13 +605,13 @@ public final class ConstraintCollectors {
      *     age of all the elements.
      *
      * @param <A> type of the matched fact
-     * @param <X> type of the result
+     * @param <Mapped> type of the result
      * @param groupValueMapping never null, maps facts from the matched type to the result type
      * @param comparator never null
      * @return never null
      */
-    public static <A, X> UniConstraintCollector<A, ?, X> min(Function<A, X> groupValueMapping,
-            Comparator<X> comparator) {
+    public static <A, Mapped> UniConstraintCollector<A, ?, Mapped> min(Function<A, Mapped> groupValueMapping,
+            Comparator<Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
@@ -629,12 +630,12 @@ public final class ConstraintCollectors {
      *
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
-     * @param <X> type of the result
+     * @param <Mapped> type of the result
      * @param groupValueMapping never null, maps matched facts to the result type
      * @return never null
      */
-    public static <A, B, X extends Comparable<X>> BiConstraintCollector<A, B, ?, X> min(
-            BiFunction<A, B, X> groupValueMapping) {
+    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> min(
+            BiFunction<A, B, Mapped> groupValueMapping) {
         return min(groupValueMapping, Comparable::compareTo);
     }
 
@@ -653,13 +654,13 @@ public final class ConstraintCollectors {
      *
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
-     * @param <X> type of the result
+     * @param <Mapped> type of the result
      * @param groupValueMapping never null, maps matched facts to the result type
      * @param comparator never null
      * @return never null
      */
-    public static <A, B, X> BiConstraintCollector<A, B, ?, X> min(BiFunction<A, B, X> groupValueMapping,
-            Comparator<X> comparator) {
+    public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Mapped> min(BiFunction<A, B, Mapped> groupValueMapping,
+            Comparator<Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
@@ -679,12 +680,12 @@ public final class ConstraintCollectors {
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
-     * @param <X> type of the result
+     * @param <Mapped> type of the result
      * @param groupValueMapping never null, maps matched facts to the result type
      * @return never null
      */
-    public static <A, B, C, X extends Comparable<X>> TriConstraintCollector<A, B, C, ?, X> min(
-            TriFunction<A, B, C, X> groupValueMapping) {
+    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> min(
+            TriFunction<A, B, C, Mapped> groupValueMapping) {
         return min(groupValueMapping, Comparable::compareTo);
     }
 
@@ -704,13 +705,13 @@ public final class ConstraintCollectors {
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
-     * @param <X> type of the result
+     * @param <Mapped> type of the result
      * @param groupValueMapping never null, maps matched facts to the result type
      * @param comparator never null
      * @return never null
      */
-    public static <A, B, C, X> TriConstraintCollector<A, B, C, ?, X> min(TriFunction<A, B, C, X> groupValueMapping,
-            Comparator<X> comparator) {
+    public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Mapped> min(
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
@@ -731,12 +732,12 @@ public final class ConstraintCollectors {
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
      * @param <D> type of the fourth matched fact
-     * @param <X> type of the result
+     * @param <Mapped> type of the result
      * @param groupValueMapping never null, maps matched facts to the result type
      * @return never null
      */
-    public static <A, B, C, D, X extends Comparable<X>> QuadConstraintCollector<A, B, C, D, ?, X> min(
-            QuadFunction<A, B, C, D, X> groupValueMapping) {
+    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
         return min(groupValueMapping, Comparable::compareTo);
     }
 
@@ -757,13 +758,13 @@ public final class ConstraintCollectors {
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
      * @param <D> type of the fourth matched fact
-     * @param <X> type of the result
+     * @param <Mapped> type of the result
      * @param groupValueMapping never null, maps matched facts to the result type
      * @param comparator never null
      * @return never null
      */
-    public static <A, B, C, D, X> QuadConstraintCollector<A, B, C, D, ?, X> min(
-            QuadFunction<A, B, C, D, X> groupValueMapping, Comparator<X> comparator) {
+    public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
@@ -788,116 +789,119 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #min(Function)}, only provides the maximum element instead.
      */
-    public static <A, X extends Comparable<X>> UniConstraintCollector<A, ?, X> max(Function<A, X> groupValueMapping) {
+    public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, Mapped> max(
+            Function<A, Mapped> groupValueMapping) {
         return max(groupValueMapping, Comparable::compareTo);
     }
 
     /**
      * As defined by {@link #min(Function, Comparator)}, only provides the maximum element instead.
      */
-    public static <A, X> UniConstraintCollector<A, ?, X> max(Function<A, X> groupValueMapping,
-            Comparator<X> comparator) {
+    public static <A, Mapped> UniConstraintCollector<A, ?, Mapped> max(Function<A, Mapped> groupValueMapping,
+            Comparator<Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
-    private static <A, X> UniConstraintCollector<A, SortedMap<X, Long>, X> minOrMax(Function<A, X> groupValueMapping,
-            Comparator<X> comparator, boolean min) {
-        Function<SortedMap<X, Long>, X> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+    private static <A, Mapped> UniConstraintCollector<A, SortedMap<Mapped, Long>, Mapped> minOrMax(
+            Function<A, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultUniConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
-                    X mapped = groupValueMapping.apply(a);
-                    resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
-                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
+                    Mapped mapped = groupValueMapping.apply(a);
+                    return minOrMaxAccumulator(resultContainer, mapped);
                 },
-                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
+                resultContainer -> minOrMaxFinisher(resultContainer, min));
     }
 
     /**
      * As defined by {@link #min(BiFunction)}, only provides the maximum element instead.
      */
-    public static <A, B, X extends Comparable<X>> BiConstraintCollector<A, B, ?, X> max(
-            BiFunction<A, B, X> groupValueMapping) {
+    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> max(
+            BiFunction<A, B, Mapped> groupValueMapping) {
         return max(groupValueMapping, Comparable::compareTo);
     }
 
     /**
      * As defined by {@link #min(BiFunction, Comparator)}, only provides the maximum element instead.
      */
-    public static <A, B, X> BiConstraintCollector<A, B, ?, X> max(BiFunction<A, B, X> groupValueMapping,
-            Comparator<X> comparator) {
+    public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Mapped> max(BiFunction<A, B, Mapped> groupValueMapping,
+            Comparator<Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
-    private static <A, B, X> BiConstraintCollector<A, B, SortedMap<X, Long>, X> minOrMax(
-            BiFunction<A, B, X> groupValueMapping, Comparator<X> comparator, boolean min) {
-        Function<SortedMap<X, Long>, X> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+    private static <A, B, Mapped> BiConstraintCollector<A, B, SortedMap<Mapped, Long>, Mapped> minOrMax(
+            BiFunction<A, B, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultBiConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b) -> {
-                    X mapped = groupValueMapping.apply(a, b);
-                    resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
-                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
+                    Mapped mapped = groupValueMapping.apply(a, b);
+                    return minOrMaxAccumulator(resultContainer, mapped);
                 },
-                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
+                resultContainer -> minOrMaxFinisher(resultContainer, min));
     }
 
     /**
      * As defined by {@link #min(TriFunction)}, only provides the maximum element instead.
      */
-    public static <A, B, C, X extends Comparable<X>> TriConstraintCollector<A, B, C, ?, X> max(
-            TriFunction<A, B, C, X> groupValueMapping) {
+    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> max(
+            TriFunction<A, B, C, Mapped> groupValueMapping) {
         return max(groupValueMapping, Comparable::compareTo);
     }
 
     /**
      * As defined by {@link #min(TriFunction, Comparator)}, only provides the maximum element instead.
      */
-    public static <A, B, C, X> TriConstraintCollector<A, B, C, ?, X> max(TriFunction<A, B, C, X> groupValueMapping,
-            Comparator<X> comparator) {
+    public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Mapped> max(
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
-    private static <A, B, C, X> TriConstraintCollector<A, B, C, SortedMap<X, Long>, X> minOrMax(
-            TriFunction<A, B, C, X> groupValueMapping, Comparator<X> comparator, boolean min) {
-        Function<SortedMap<X, Long>, X> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+    private static <A, B, C, Mapped> TriConstraintCollector<A, B, C, SortedMap<Mapped, Long>, Mapped> minOrMax(
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultTriConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c) -> {
-                    X mapped = groupValueMapping.apply(a, b, c);
-                    resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
-                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
+                    Mapped mapped = groupValueMapping.apply(a, b, c);
+                    return minOrMaxAccumulator(resultContainer, mapped);
                 },
-                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
+                resultContainer -> minOrMaxFinisher(resultContainer, min));
     }
 
     /**
      * As defined by {@link #min(QuadFunction)}, only provides the maximum element instead.
      */
-    public static <A, B, C, D, X extends Comparable<X>> QuadConstraintCollector<A, B, C, D, ?, X> max(
-            QuadFunction<A, B, C, D, X> groupValueMapping) {
+    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
         return max(groupValueMapping, Comparable::compareTo);
     }
 
     /**
      * As defined by {@link #min(QuadFunction, Comparator)}, only provides the maximum element instead.
      */
-    public static <A, B, C, D, X> QuadConstraintCollector<A, B, C, D, ?, X> max(
-            QuadFunction<A, B, C, D, X> groupValueMapping, Comparator<X> comparator) {
+    public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
-    private static <A, B, C, D, X> QuadConstraintCollector<A, B, C, D, SortedMap<X, Long>, X> minOrMax(
-            QuadFunction<A, B, C, D, X> groupValueMapping, Comparator<X> comparator, boolean min) {
-        Function<SortedMap<X, Long>, X> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+    private static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, SortedMap<Mapped, Long>, Mapped> minOrMax(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultQuadConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c, d) -> {
-                    X mapped = groupValueMapping.apply(a, b, c, d);
-                    resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
-                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
+                    Mapped mapped = groupValueMapping.apply(a, b, c, d);
+                    return minOrMaxAccumulator(resultContainer, mapped);
                 },
-                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
+                resultContainer -> minOrMaxFinisher(resultContainer, min));
+    }
+
+    private static <Mapped> Runnable minOrMaxAccumulator(SortedMap<Mapped, Long> resultContainer, Mapped mapped) {
+        resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+        return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+    }
+
+    private static <Mapped> Mapped minOrMaxFinisher(SortedMap<Mapped, Long> resultContainer, boolean min) {
+        Function<SortedMap<Mapped, Long>, Mapped> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+        return resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer);
     }
 
     // ************************************************************************
