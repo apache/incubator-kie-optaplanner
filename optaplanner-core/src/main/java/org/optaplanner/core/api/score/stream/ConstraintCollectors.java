@@ -535,7 +535,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that the Person type compares by age.
      *     Such collector returns either Ann or Eric as the minimum element.
      *     No guarantees are made on which of the two is returned.
@@ -556,7 +556,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
      *     age of all the elements.
      *
@@ -578,7 +578,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that the comparator provided treats Person instances as equal when their age equals.
      *     Such collector returns either Ann or Eric as the minimum element.
      *     No guarantees are made on which of the two is returned.
@@ -599,7 +599,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
      *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
      *     age of all the elements.
@@ -624,7 +624,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that Person compares by age.
      *     The resulting collector returns 20, as that is the minimum age of all the elements.
      *
@@ -647,7 +647,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
      *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
      *     age of all the elements.
@@ -673,7 +673,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that Person compares by age.
      *     The resulting collector returns 20, as that is the minimum age of all the elements.
      *
@@ -697,7 +697,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
      *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
      *     age of all the elements.
@@ -724,7 +724,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that Person compares by age.
      *     The resulting collector returns 20, as that is the minimum age of all the elements.
      *
@@ -749,7 +749,7 @@ public final class ConstraintCollectors {
      *     considered to be {@link #equals(Object)}.
      * <p>
      *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David (age = 25), Eric (age = 20).
+     *     David(age = 25), Eric(age = 20).
      *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
      *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
      *     age of all the elements.
