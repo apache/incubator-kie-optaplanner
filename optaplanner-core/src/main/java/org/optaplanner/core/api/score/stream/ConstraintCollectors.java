@@ -544,7 +544,7 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> min() {
-        return min(Comparable::compareTo);
+        return min(Function.identity(), Comparable::compareTo);
     }
 
     /**
@@ -613,7 +613,160 @@ public final class ConstraintCollectors {
             Comparator<X> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
-    
+
+    /**
+     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
+     * <p>
+     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     *     {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that Person compares by age.
+     *     The resulting collector returns 20, as that is the minimum age of all the elements.
+     *
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <X> type of the result
+     * @param groupValueMapping never null, maps matched facts to the result type
+     * @return never null
+     */
+    public static <A, B, X extends Comparable<X>> BiConstraintCollector<A, B, ?, X> min(
+            BiFunction<A, B, X> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
+     * <p>
+     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
+     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     *     age of all the elements.
+     *
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <X> type of the result
+     * @param groupValueMapping never null, maps matched facts to the result type
+     * @param comparator never null
+     * @return never null
+     */
+    public static <A, B, X> BiConstraintCollector<A, B, ?, X> min(BiFunction<A, B, X> groupValueMapping,
+            Comparator<X> comparator) {
+        return minOrMax(groupValueMapping, comparator, true);
+    }
+
+    /**
+     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
+     * <p>
+     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     *     {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that Person compares by age.
+     *     The resulting collector returns 20, as that is the minimum age of all the elements.
+     *
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <X> type of the result
+     * @param groupValueMapping never null, maps matched facts to the result type
+     * @return never null
+     */
+    public static <A, B, C, X extends Comparable<X>> TriConstraintCollector<A, B, C, ?, X> min(
+            TriFunction<A, B, C, X> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
+     * <p>
+     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
+     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     *     age of all the elements.
+     *
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <X> type of the result
+     * @param groupValueMapping never null, maps matched facts to the result type
+     * @param comparator never null
+     * @return never null
+     */
+    public static <A, B, C, X> TriConstraintCollector<A, B, C, ?, X> min(TriFunction<A, B, C, X> groupValueMapping,
+            Comparator<X> comparator) {
+        return minOrMax(groupValueMapping, comparator, true);
+    }
+
+    /**
+     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
+     * <p>
+     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     *     {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that Person compares by age.
+     *     The resulting collector returns 20, as that is the minimum age of all the elements.
+     *
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <D> type of the fourth matched fact
+     * @param <X> type of the result
+     * @param groupValueMapping never null, maps matched facts to the result type
+     * @return never null
+     */
+    public static <A, B, C, D, X extends Comparable<X>> QuadConstraintCollector<A, B, C, D, ?, X> min(
+            QuadFunction<A, B, C, D, X> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
+     * <p>
+     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
+     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     *     age of all the elements.
+     *
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <D> type of the fourth matched fact
+     * @param <X> type of the result
+     * @param groupValueMapping never null, maps matched facts to the result type
+     * @param comparator never null
+     * @return never null
+     */
+    public static <A, B, C, D, X> QuadConstraintCollector<A, B, C, D, ?, X> min(
+            QuadFunction<A, B, C, D, X> groupValueMapping, Comparator<X> comparator) {
+        return minOrMax(groupValueMapping, comparator, true);
+    }
+
     // ************************************************************************
     // max
     // ************************************************************************
@@ -654,6 +807,93 @@ public final class ConstraintCollectors {
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
                     X mapped = groupValueMapping.apply(a);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
+                },
+                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
+    }
+
+    /**
+     * As defined by {@link #min(BiFunction)}, only provides the maximum element instead.
+     */
+    public static <A, B, X extends Comparable<X>> BiConstraintCollector<A, B, ?, X> max(
+            BiFunction<A, B, X> groupValueMapping) {
+        return max(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min(BiFunction, Comparator)}, only provides the maximum element instead.
+     */
+    public static <A, B, X> BiConstraintCollector<A, B, ?, X> max(BiFunction<A, B, X> groupValueMapping,
+            Comparator<X> comparator) {
+        return minOrMax(groupValueMapping, comparator, false);
+    }
+
+    private static <A, B, X> BiConstraintCollector<A, B, SortedMap<X, Long>, X> minOrMax(
+            BiFunction<A, B, X> groupValueMapping, Comparator<X> comparator, boolean min) {
+        Function<SortedMap<X, Long>, X> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+        return new DefaultBiConstraintCollector<>(
+                () -> new TreeMap<>(comparator),
+                (resultContainer, a, b) -> {
+                    X mapped = groupValueMapping.apply(a, b);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
+                },
+                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
+    }
+
+    /**
+     * As defined by {@link #min(TriFunction)}, only provides the maximum element instead.
+     */
+    public static <A, B, C, X extends Comparable<X>> TriConstraintCollector<A, B, C, ?, X> max(
+            TriFunction<A, B, C, X> groupValueMapping) {
+        return max(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min(TriFunction, Comparator)}, only provides the maximum element instead.
+     */
+    public static <A, B, C, X> TriConstraintCollector<A, B, C, ?, X> max(TriFunction<A, B, C, X> groupValueMapping,
+            Comparator<X> comparator) {
+        return minOrMax(groupValueMapping, comparator, false);
+    }
+
+    private static <A, B, C, X> TriConstraintCollector<A, B, C, SortedMap<X, Long>, X> minOrMax(
+            TriFunction<A, B, C, X> groupValueMapping, Comparator<X> comparator, boolean min) {
+        Function<SortedMap<X, Long>, X> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+        return new DefaultTriConstraintCollector<>(
+                () -> new TreeMap<>(comparator),
+                (resultContainer, a, b, c) -> {
+                    X mapped = groupValueMapping.apply(a, b, c);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
+                },
+                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
+    }
+
+    /**
+     * As defined by {@link #min(QuadFunction)}, only provides the maximum element instead.
+     */
+    public static <A, B, C, D, X extends Comparable<X>> QuadConstraintCollector<A, B, C, D, ?, X> max(
+            QuadFunction<A, B, C, D, X> groupValueMapping) {
+        return max(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min(QuadFunction, Comparator)}, only provides the maximum element instead.
+     */
+    public static <A, B, C, D, X> QuadConstraintCollector<A, B, C, D, ?, X> max(
+            QuadFunction<A, B, C, D, X> groupValueMapping, Comparator<X> comparator) {
+        return minOrMax(groupValueMapping, comparator, false);
+    }
+
+    private static <A, B, C, D, X> QuadConstraintCollector<A, B, C, D, SortedMap<X, Long>, X> minOrMax(
+            QuadFunction<A, B, C, D, X> groupValueMapping, Comparator<X> comparator, boolean min) {
+        Function<SortedMap<X, Long>, X> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+        return new DefaultQuadConstraintCollector<>(
+                () -> new TreeMap<>(comparator),
+                (resultContainer, a, b, c, d) -> {
+                    X mapped = groupValueMapping.apply(a, b, c, d);
                     resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
                     return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
                 },
