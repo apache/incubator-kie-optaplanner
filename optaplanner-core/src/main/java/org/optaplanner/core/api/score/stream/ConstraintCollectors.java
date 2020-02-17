@@ -961,8 +961,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(Function)}, with {@link Set} as the resulting collection.
      *
-     * @param groupValueMapping
-     *never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
@@ -976,8 +975,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(Function, IntFunction)} together with a sorted collection.
      *
-     * @param groupValueMapping
-     *never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
@@ -1001,8 +999,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(BiFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param groupValueMapping
-     *never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <Mapped> type of elements in the resulting collection
@@ -1018,8 +1015,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(BiFunction, IntFunction)} together with a sorted collection.
      *
-     * @param groupValueMapping
-     *never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <Mapped> type of elements in the resulting collection
@@ -1045,8 +1041,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(TriFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param groupValueMapping
-     *never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -1063,8 +1058,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(TriFunction, IntFunction)} together with a sorted collection.
      *
-     * @param groupValueMapping
-     *never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -1091,8 +1085,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(QuadFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param groupValueMapping
-     *never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -1110,8 +1103,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(QuadFunction, IntFunction)} together with a sorted collection.
      *
-     * @param groupValueMapping
-     *never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
