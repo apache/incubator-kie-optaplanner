@@ -1815,6 +1815,7 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, null);
     }
 
+
     // ************************************************************************
     // toCollection
     // ************************************************************************
