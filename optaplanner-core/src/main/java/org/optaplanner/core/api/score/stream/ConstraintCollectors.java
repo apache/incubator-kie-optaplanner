@@ -538,7 +538,6 @@ public final class ConstraintCollectors {
      *     David(age = 25), Eric(age = 20).
      *     Further assume that the Person type compares by age.
      *     Such collector returns either Ann or Eric as the minimum element.
-     *     No guarantees are made on which of the two is returned.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -581,7 +580,6 @@ public final class ConstraintCollectors {
      *     David(age = 25), Eric(age = 20).
      *     Further assume that the comparator provided treats Person instances as equal when their age equals.
      *     Such collector returns either Ann or Eric as the minimum element.
-     *     No guarantees are made on which of the two is returned.
      *
      * @param <A> type of the matched fact
      * @param comparator never null
