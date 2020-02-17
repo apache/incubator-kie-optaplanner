@@ -591,11 +591,11 @@ public final class ConstraintCollectors {
     }
 
     public static <A, Mapped, Result extends Collection<Mapped>> UniConstraintCollector<A, ?, Result> toCollection(
-            Function<A, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
+            Function<A, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultUniConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a) -> {
-                    Mapped mapped = mappingFunction.apply(a);
+                    Mapped mapped = groupValueMapping.apply(a);
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
@@ -615,13 +615,14 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(Function)}, with {@link Set} as the resulting collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping
+     *never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
      */
-    public static <A, Mapped> UniConstraintCollector<A, ?, Set<Mapped>> toSet(Function<A, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, LinkedHashSet::new);
+    public static <A, Mapped> UniConstraintCollector<A, ?, Set<Mapped>> toSet(Function<A, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, LinkedHashSet::new);
     }
 
     /**
@@ -629,21 +630,22 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(Function, IntFunction)} together with a sorted collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping
+     *never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
      */
-    public static <A, Mapped> UniConstraintCollector<A, ?, List<Mapped>> toList(Function<A, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, ArrayList::new);
+    public static <A, Mapped> UniConstraintCollector<A, ?, List<Mapped>> toList(Function<A, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, ArrayList::new);
     }
 
     public static <A, B, Mapped, Result extends Collection<Mapped>> BiConstraintCollector<A, B, ?, Result> toCollection(
-            BiFunction<A, B, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
+            BiFunction<A, B, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultBiConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a, b) -> {
-                    Mapped mapped = mappingFunction.apply(a, b);
+                    Mapped mapped = groupValueMapping.apply(a, b);
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
@@ -653,15 +655,16 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(BiFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping
+     *never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Set<Mapped>> toSet(
-            BiFunction<A, B, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, LinkedHashSet::new);
+            BiFunction<A, B, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, LinkedHashSet::new);
     }
 
     /**
@@ -669,23 +672,24 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(BiFunction, IntFunction)} together with a sorted collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping
+     *never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, List<Mapped>> toList(
-            BiFunction<A, B, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, ArrayList::new);
+            BiFunction<A, B, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, ArrayList::new);
     }
 
     public static <A, B, C, Mapped, Result extends Collection<Mapped>> TriConstraintCollector<A, B, C, ?, Result>
-    toCollection(TriFunction<A, B, C, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
+    toCollection(TriFunction<A, B, C, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultTriConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a, b, c) -> {
-                    Mapped mapped = mappingFunction.apply(a, b, c);
+                    Mapped mapped = groupValueMapping.apply(a, b, c);
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
@@ -695,7 +699,8 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(TriFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping
+     *never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -703,8 +708,8 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Set<Mapped>> toSet(
-            TriFunction<A, B, C, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, LinkedHashSet::new);
+            TriFunction<A, B, C, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, LinkedHashSet::new);
     }
 
     /**
@@ -712,7 +717,8 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(TriFunction, IntFunction)} together with a sorted collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping
+     *never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -720,16 +726,16 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, List<Mapped>> toList(
-            TriFunction<A, B, C, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, ArrayList::new);
+            TriFunction<A, B, C, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, ArrayList::new);
     }
 
     public static <A, B, C, D, Mapped, Result extends Collection<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Result>
-    toCollection(QuadFunction<A, B, C, D, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
+    toCollection(QuadFunction<A, B, C, D, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultQuadConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a, b, c, d) -> {
-                    Mapped mapped = mappingFunction.apply(a, b, c, d);
+                    Mapped mapped = groupValueMapping.apply(a, b, c, d);
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
@@ -739,7 +745,8 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(QuadFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping
+     *never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -748,8 +755,8 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Set<Mapped>> toSet(
-            QuadFunction<A, B, C, D, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, LinkedHashSet::new);
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, LinkedHashSet::new);
     }
 
     /**
@@ -757,7 +764,8 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(QuadFunction, IntFunction)} together with a sorted collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping
+     *never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -766,8 +774,8 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, List<Mapped>> toList(
-            QuadFunction<A, B, C, D, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, ArrayList::new);
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, ArrayList::new);
     }
 
     private ConstraintCollectors() {
