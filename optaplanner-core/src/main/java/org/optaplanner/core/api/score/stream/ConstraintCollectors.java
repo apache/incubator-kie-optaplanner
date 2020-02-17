@@ -526,34 +526,136 @@ public final class ConstraintCollectors {
     // min
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ?, A> min(Comparator<A> comparator) {
-        return minOrMax(comparator, true);
-    }
-
+    /**
+     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
+     * <p>
+     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     *     {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that the Person type compares by age.
+     *     Such collector returns either Ann or Eric as the minimum element.
+     *     No guarantees are made on which of the two is returned.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> min() {
         return min(Comparable::compareTo);
     }
 
+    /**
+     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
+     * <p>
+     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     *     {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     *     age of all the elements.
+     *
+     * @param <A> type of the matched fact
+     * @param <X> type of the result
+     * @param groupValueMapping never null, maps facts from the matched type to the result type
+     * @return never null
+     */
+    public static <A, X extends Comparable<X>> UniConstraintCollector<A, ?, X> min(Function<A, X> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
+     * <p>
+     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that the comparator provided treats Person instances as equal when their age equals.
+     *     Such collector returns either Ann or Eric as the minimum element.
+     *     No guarantees are made on which of the two is returned.
+     *
+     * @param <A> type of the matched fact
+     * @param comparator never null
+     * @return never null
+     */
+    public static <A> UniConstraintCollector<A, ?, A> min(Comparator<A> comparator) {
+        return min(Function.identity(), comparator);
+    }
+
+    /**
+     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
+     * <p>
+     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     *     considered to be {@link #equals(Object)}.
+     * <p>
+     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     *     David (age = 25), Eric (age = 20).
+     *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
+     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     *     age of all the elements.
+     *
+     * @param <A> type of the matched fact
+     * @param <X> type of the result
+     * @param groupValueMapping never null, maps facts from the matched type to the result type
+     * @param comparator never null
+     * @return never null
+     */
+    public static <A, X> UniConstraintCollector<A, ?, X> min(Function<A, X> groupValueMapping,
+            Comparator<X> comparator) {
+        return minOrMax(groupValueMapping, comparator, true);
+    }
+    
     // ************************************************************************
     // max
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
-        return minOrMax(comparator, false);
-    }
-
+    /**
+     * As defined by {@link #min()}, only provides the maximum element instead.
+     */
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> max() {
-        return max(Comparable::compareTo);
+        return max(Function.identity(), Comparable::compareTo);
     }
 
-    private static <A> UniConstraintCollector<A, SortedMap<A, Long>, A> minOrMax(Comparator<A> comparator,
-            boolean min) {
-        Function<SortedMap<A, Long>, A> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+    /**
+     * As defined by {@link #min(Comparator)}, only provides the maximum element instead.
+     */
+    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
+        return max(Function.identity(), comparator);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}, only provides the maximum element instead.
+     */
+    public static <A, X extends Comparable<X>> UniConstraintCollector<A, ?, X> max(Function<A, X> groupValueMapping) {
+        return max(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min(Function, Comparator)}, only provides the maximum element instead.
+     */
+    public static <A, X> UniConstraintCollector<A, ?, X> max(Function<A, X> groupValueMapping,
+            Comparator<X> comparator) {
+        return minOrMax(groupValueMapping, comparator, false);
+    }
+
+    private static <A, X> UniConstraintCollector<A, SortedMap<X, Long>, X> minOrMax(Function<A, X> groupValueMapping,
+            Comparator<X> comparator, boolean min) {
+        Function<SortedMap<X, Long>, X> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
         return new DefaultUniConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
-                    resultContainer.compute(a, (key, value) -> value == null ? 1 : value + 1);
-                    return () -> resultContainer.compute(a, (key, value) -> value == 1 ? null : value - 1);
+                    X mapped = groupValueMapping.apply(a);
+                    resultContainer.compute(mapped, (key, value) -> value == null ? 1 : value + 1);
+                    return () -> resultContainer.compute(mapped, (key, value) -> value == 1 ? null : value - 1);
                 },
                 (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
     }
