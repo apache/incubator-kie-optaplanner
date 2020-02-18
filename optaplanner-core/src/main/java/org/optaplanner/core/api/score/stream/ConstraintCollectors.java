@@ -529,15 +529,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     *     {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     * {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that the Person type compares by age.
-     *     Such collector returns either Ann or Eric as the minimum element.
+     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that the Person type compares by age.
+     * Such collector returns either Ann or Eric as the minimum element.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -549,15 +549,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     *     {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     * {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     *     age of all the elements.
+     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum age of
+     * all the elements.
      *
      * @param <A> type of the matched fact
      * @param <Mapped> type of the result
@@ -572,14 +572,14 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that the comparator provided treats Person instances as equal when their age equals.
-     *     Such collector returns either Ann or Eric as the minimum element.
+     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that the comparator provided treats Person instances as equal when their age equals.
+     * Such collector returns either Ann or Eric as the minimum element.
      *
      * @param <A> type of the matched fact
      * @param comparator never null
@@ -592,15 +592,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
-     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     *     age of all the elements.
+     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
+     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     * age of all the elements.
      *
      * @param <A> type of the matched fact
      * @param <Mapped> type of the result
@@ -616,15 +616,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     *     {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     * {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that Person compares by age.
-     *     The resulting collector returns 20, as that is the minimum age of all the elements.
+     * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that Person compares by age.
+     * The resulting collector returns 20, as that is the minimum age of all the elements.
      *
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
@@ -640,15 +640,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
-     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     *     age of all the elements.
+     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
+     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     * age of all the elements.
      *
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
@@ -665,15 +665,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     *     {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     * {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that Person compares by age.
-     *     The resulting collector returns 20, as that is the minimum age of all the elements.
+     * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that Person compares by age.
+     * The resulting collector returns 20, as that is the minimum age of all the elements.
      *
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
@@ -690,15 +690,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
-     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     *     age of all the elements.
+     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
+     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     * age of all the elements.
      *
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
@@ -716,15 +716,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     *     It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     *     {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
+     * {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that Person compares by age.
-     *     The resulting collector returns 20, as that is the minimum age of all the elements.
+     * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that Person compares by age.
+     * The resulting collector returns 20, as that is the minimum age of all the elements.
      *
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
@@ -742,15 +742,15 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     *     It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     *     In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     *     considered to be {@link #equals(Object)}.
+     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
+     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
+     * considered to be {@link #equals(Object)}.
      * <p>
-     *     Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     *     David(age = 25), Eric(age = 20).
-     *     Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
-     *     Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     *     age of all the elements.
+     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
+     * David(age = 25), Eric(age = 20).
+     * Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
+     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
+     * age of all the elements.
      *
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
