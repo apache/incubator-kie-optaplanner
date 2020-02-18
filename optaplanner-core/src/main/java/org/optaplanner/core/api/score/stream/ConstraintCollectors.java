@@ -536,10 +536,9 @@ public final class ConstraintCollectors {
      * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
      * incremental score calculation.
      * <p>
-     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that the Person type compares by age.
-     * Such collector returns either Ann or Eric as the minimum element.
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(min())} returns either {@code Ann} or {@code Eric} arbitrarily, assuming the objects are
+     * {@link Comparable} by the {@code age} field.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -557,10 +556,8 @@ public final class ConstraintCollectors {
      * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
      * incremental score calculation.
      * <p>
-     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum age of
-     * all the elements.
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(min(Person::getAge))} returns {@code 20}.
      *
      * @param <A> type of the matched fact
      * @param <Mapped> type of the result
@@ -581,10 +578,9 @@ public final class ConstraintCollectors {
      * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
      * incremental score calculation.
      * <p>
-     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that the comparator provided treats Person instances as equal when their age equals.
-     * Such collector returns either Ann or Eric as the minimum element.
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(min(Comparator.comparing(Person::getAge)))} returns either {@code Ann} or {@code Eric}
+     * arbitrarily.
      *
      * @param <A> type of the matched fact
      * @param comparator never null
@@ -595,50 +591,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
-     * <p>
-     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
-     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that Person compares by age.
-     * The resulting collector returns 20, as that is the minimum age of all the elements.
-     *
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of the result
-     * @param groupValueMapping never null, maps matched facts to the result type
-     * @return never null
-     */
-    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> min(
-            BiFunction<A, B, Mapped> groupValueMapping) {
-        return min(groupValueMapping, Comparable::compareTo);
-    }
-
-    /**
-     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
-     * <p>
-     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
-     * has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
-     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     * age of all the elements.
-     *
-     * @param <A> type of the matched fact
-     * @param <Mapped> type of the result
-     * @param groupValueMapping never null, maps facts from the matched type to the result type
-     * @param comparator never null
-     * @return never null
+     * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, Mapped> min(Function<A, Mapped> groupValueMapping,
             Comparator<Mapped> comparator) {
@@ -646,26 +599,15 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
-     * <p>
-     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
-     * has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
-     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     * age of all the elements.
-     *
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of the result
-     * @param groupValueMapping never null, maps matched facts to the result type
-     * @param comparator never null
-     * @return never null
+     * As defined by {@link #min(Function)}.
+     */
+    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> min(
+            BiFunction<A, B, Mapped> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Mapped> min(BiFunction<A, B, Mapped> groupValueMapping,
             Comparator<Mapped> comparator) {
@@ -673,25 +615,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
-     * <p>
-     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
-     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that Person compares by age.
-     * The resulting collector returns 20, as that is the minimum age of all the elements.
-     *
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of the result
-     * @param groupValueMapping never null, maps matched facts to the result type
-     * @return never null
+     * As defined by {@link #min(Function)}.
      */
     public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> min(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
@@ -699,27 +623,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
-     * <p>
-     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
-     * has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
-     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     * age of all the elements.
-     *
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of the result
-     * @param groupValueMapping never null, maps matched facts to the result type
-     * @param comparator never null
-     * @return never null
+     * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Mapped> min(
             TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
@@ -727,26 +631,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
-     * <p>
-     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
-     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that Person compares by age.
-     * The resulting collector returns 20, as that is the minimum age of all the elements.
-     *
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of the result
-     * @param groupValueMapping never null, maps matched facts to the result type
-     * @return never null
+     * As defined by {@link #min(Function)}.
      */
     public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
@@ -754,28 +639,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
-     * <p>
-     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
-     * has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
-     * David(age = 25), Eric(age = 20).
-     * Further assume that the {@link Comparator} provided imposes the usual increasing ordering on numbers.
-     * Using Person::getAge as the groupValueMapping, the resulting collector returns 20, as that is the minimum
-     * age of all the elements.
-     *
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of the result
-     * @param groupValueMapping never null, maps matched facts to the result type
-     * @param comparator never null
-     * @return never null
+     * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
@@ -787,21 +651,41 @@ public final class ConstraintCollectors {
     // ************************************************************************
 
     /**
-     * As defined by {@link #min()}, only provides the maximum element instead.
+     * Returns a collector that finds a maximum value in a group of {@link Comparable} elements.
+     * <p>
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(max())} returns either {@code Cathy} or {@code David} arbitrarily, assuming the objects are
+     * {@link Comparable} by the {@code age} field.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
      */
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> max() {
         return max(Function.identity(), Comparable::compareTo);
     }
 
     /**
-     * As defined by {@link #min(Comparator)}, only provides the maximum element instead.
-     */
-    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
-        return max(Function.identity(), comparator);
-    }
-
-    /**
-     * As defined by {@link #min(Function)}, only provides the maximum element instead.
+     * Returns a collector that finds a maximum value in a group of {@link Comparable} elements.
+     * <p>
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(max(Person::getAge))} returns {@code 30}.
+     *
+     * @param <A> type of the matched fact
+     * @param <Mapped> type of the result
+     * @param groupValueMapping never null, maps facts from the matched type to the result type
+     * @return never null
      */
     public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, Mapped> max(
             Function<A, Mapped> groupValueMapping) {
@@ -809,7 +693,28 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #min(Function, Comparator)}, only provides the maximum element instead.
+     * Returns a collector that finds a maximum value in a group of elements, using the provided {@link Comparator}.
+     * <p>
+     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
+     * has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(max(Comparator.comparing(Person::getAge)))} returns either {@code Cathy} or {@code David}
+     * arbitrarily.
+     *
+     * @param <A> type of the matched fact
+     * @param comparator never null
+     * @return never null
+     */
+    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
+        return max(Function.identity(), comparator);
+    }
+
+    /**
+     * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, Mapped> max(Function<A, Mapped> groupValueMapping,
             Comparator<Mapped> comparator) {
@@ -828,7 +733,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #min(BiFunction)}, only provides the maximum element instead.
+     * As defined by {@link #max(Function)}.
      */
     public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> max(
             BiFunction<A, B, Mapped> groupValueMapping) {
@@ -836,7 +741,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #min(BiFunction, Comparator)}, only provides the maximum element instead.
+     * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Mapped> max(BiFunction<A, B, Mapped> groupValueMapping,
             Comparator<Mapped> comparator) {
@@ -855,7 +760,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #min(TriFunction)}, only provides the maximum element instead.
+     * As defined by {@link #max(Function)}.
      */
     public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> max(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
@@ -863,7 +768,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #min(TriFunction, Comparator)}, only provides the maximum element instead.
+     * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Mapped> max(
             TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
@@ -882,7 +787,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #min(QuadFunction)}, only provides the maximum element instead.
+     * As defined by {@link #max(Function)}.
      */
     public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
@@ -890,7 +795,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #min(QuadFunction, Comparator)}, only provides the maximum element instead.
+     * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
