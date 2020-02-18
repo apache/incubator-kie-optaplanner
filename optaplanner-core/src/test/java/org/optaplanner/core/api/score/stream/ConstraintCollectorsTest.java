@@ -1300,14 +1300,14 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparable() {
-        UniConstraintCollector<Class, ?, Class> collector = min(Comparator.comparing(Class::getCanonicalName));
+        UniConstraintCollector<Object, ?, Object> collector = min(Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue);
         assertResult(collector, container, firstValue);
         // add second value, lesser than the first, becomes the new min
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue);
         assertResult(collector, container, secondValue);
         // add third value, same as the second, result does not change
@@ -1319,60 +1319,6 @@ public class ConstraintCollectorsTest {
         // retract final instance of the second value; first value is now the min value
         thirdRetractor.run();
         assertResult(collector, container, firstValue);
-        // retract last value; there are no values now
-        firstRetractor.run();
-        assertResult(collector, container, null);
-    }
-
-    @Test
-    public void minComparableMapped() {
-        Function<Class, String> mappingFunction = Class::getCanonicalName;
-        UniConstraintCollector<Class, ?, String> collector = min(mappingFunction);
-        Object container = collector.supplier().get();
-        // add first value, which becomes the min
-        Class firstValue = ConstraintCollectorsTest.class;
-        Runnable firstRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
-        // add second value, lesser than the first, becomes the new min
-        Class secondValue = ConstraintCollectors.class;
-        Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, mappingFunction.apply(secondValue));
-        // add third value, same as the second, result does not change
-        Runnable thirdRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, mappingFunction.apply(secondValue));
-        // retract one instance of the second value; second value is still the min value, nothing should change
-        secondRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(secondValue));
-        // retract final instance of the second value; first value is now the min value
-        thirdRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(firstValue));
-        // retract last value; there are no values now
-        firstRetractor.run();
-        assertResult(collector, container, null);
-    }
-
-    @Test
-    public void minNotComparableMapped() {
-        Function<Class, Object> mappingFunction = Class::getCanonicalName;
-        UniConstraintCollector<Class, ?, Object> collector = min(mappingFunction, Comparator.comparing(o -> (String)o));
-        Object container = collector.supplier().get();
-        // add first value, which becomes the min
-        Class firstValue = ConstraintCollectorsTest.class;
-        Runnable firstRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
-        // add second value, lesser than the first, becomes the new min
-        Class secondValue = ConstraintCollectors.class;
-        Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, mappingFunction.apply(secondValue));
-        // add third value, same as the second, result does not change
-        Runnable thirdRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, mappingFunction.apply(secondValue));
-        // retract one instance of the second value; second value is still the min value, nothing should change
-        secondRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(secondValue));
-        // retract final instance of the second value; first value is now the min value
-        thirdRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(firstValue));
         // retract last value; there are no values now
         firstRetractor.run();
         assertResult(collector, container, null);
@@ -1407,15 +1353,15 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparableBi() {
-        BiConstraintCollector<Class, Class, ?, Class> collector =
-                min((a, b) -> a, Comparator.comparing(Class::getCanonicalName));
+        BiConstraintCollector<String, String, ?, String> collector =
+                min((a, b) -> a, Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue, null);
         assertResult(collector, container, firstValue);
         // add second value, lesser than the first, becomes the new min
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue, null);
         assertResult(collector, container, secondValue);
         // add third value, same as the second, result does not change
@@ -1460,15 +1406,15 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparableTri() {
-        TriConstraintCollector<Class, Class, Class, ?, Class> collector =
-                min((a, b, c) -> a, Comparator.comparing(Class::getCanonicalName));
+        TriConstraintCollector<String, String, String, ?, String> collector =
+                min((a, b, c) -> a, Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue, null, null);
         assertResult(collector, container, firstValue);
         // add second value, lesser than the first, becomes the new min
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue, null, null);
         assertResult(collector, container, secondValue);
         // add third value, same as the second, result does not change
@@ -1514,15 +1460,15 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparableQuad() {
-        QuadConstraintCollector<Class, Class, Class, Class, ?, Class> collector =
-                min((a, b, c,d ) -> a, Comparator.comparing(Class::getCanonicalName));
+        QuadConstraintCollector<String, String, String, String, ?, String> collector =
+                min((a, b, c, d) -> a, Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue, null, null, null);
         assertResult(collector, container, firstValue);
         // add second value, lesser than the first, becomes the new min
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue, null, null, null);
         assertResult(collector, container, secondValue);
         // add third value, same as the second, result does not change
@@ -1572,15 +1518,14 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparable() {
-        UniConstraintCollector<Class, ?, Class> collector =
-                max(Comparator.comparing(Class::getCanonicalName));
+        UniConstraintCollector<String, ?, String> collector = max(Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue);
         assertResult(collector, container, firstValue);
         // add second value, lesser than the first, result does not change
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue);
         assertResult(collector, container, firstValue);
         // add third value, same as the first, result does not change
@@ -1592,59 +1537,6 @@ public class ConstraintCollectorsTest {
         // retract final instance of the first value; second value is now the max value
         thirdRetractor.run();
         assertResult(collector, container, secondValue);
-        // retract last value; there are no values now
-        secondRetractor.run();
-        assertResult(collector, container, null);
-    }
-
-    @Test
-    public void maxComparableMapped() {
-        UniConstraintCollector<Class, ?, String> collector = max(Class::getCanonicalName);
-        Object container = collector.supplier().get();
-        // add first value, which becomes the max
-        Class firstValue = ConstraintCollectorsTest.class;
-        Runnable firstRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, firstValue.getCanonicalName());
-        // add second value, lesser than the first, result does not change
-        Class secondValue = ConstraintCollectors.class;
-        Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, firstValue.getCanonicalName());
-        // add third value, same as the first, result does not change
-        Runnable thirdRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, firstValue.getCanonicalName());
-        // retract one instance of the first value; first value is still the max value, nothing should change
-        firstRetractor.run();
-        assertResult(collector, container, firstValue.getCanonicalName());
-        // retract final instance of the first value; second value is now the max value
-        thirdRetractor.run();
-        assertResult(collector, container, secondValue.getCanonicalName());
-        // retract last value; there are no values now
-        secondRetractor.run();
-        assertResult(collector, container, null);
-    }
-
-    @Test
-    public void maxNotComparableMapped() {
-        UniConstraintCollector<Class, ?, Object> collector =
-                max(Class::getCanonicalName, Comparator.comparing(o -> (String)o));
-        Object container = collector.supplier().get();
-        // add first value, which becomes the max
-        Class firstValue = ConstraintCollectorsTest.class;
-        Runnable firstRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, firstValue.getCanonicalName());
-        // add second value, lesser than the first, result does not change
-        Class secondValue = ConstraintCollectors.class;
-        Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, firstValue.getCanonicalName());
-        // add third value, same as the first, result does not change
-        Runnable thirdRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, firstValue.getCanonicalName());
-        // retract one instance of the first value; first value is still the max value, nothing should change
-        firstRetractor.run();
-        assertResult(collector, container, firstValue.getCanonicalName());
-        // retract final instance of the first value; second value is now the max value
-        thirdRetractor.run();
-        assertResult(collector, container, secondValue.getCanonicalName());
         // retract last value; there are no values now
         secondRetractor.run();
         assertResult(collector, container, null);
@@ -1679,27 +1571,26 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparableBi() {
-        Function<Class, Object> mappingFunction = Class::getCanonicalName;
-        BiConstraintCollector<Class, Class, ?, Object> collector =
-                max((a, b) -> mappingFunction.apply(a), Comparator.comparing(o -> (String)o));
+        BiConstraintCollector<String, String, ?, String> collector =
+                max((a, b) -> a, Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // add second value, lesser than the first, result does not change
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // add third value, same as the first, result does not change
         Runnable thirdRetractor = accumulate(collector, container, firstValue, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // retract one instance of the first value; first value is still the max value, nothing should change
         firstRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // retract final instance of the first value; second value is now the max value
         thirdRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(secondValue));
+        assertResult(collector, container, secondValue);
         // retract last value; there are no values now
         secondRetractor.run();
         assertResult(collector, container, null);
@@ -1733,27 +1624,26 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparableTri() {
-        Function<Class, Object> mappingFunction = Class::getCanonicalName;
-        TriConstraintCollector<Class, Class, Class, ?, Object> collector =
-                max((a, b, c) -> mappingFunction.apply(a), Comparator.comparing(o -> (String)o));
+        TriConstraintCollector<String, String, String,?, String> collector =
+                max((a, b, c) -> a, Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue, null, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // add second value, lesser than the first, result does not change
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue, null, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // add third value, same as the first, result does not change
         Runnable thirdRetractor = accumulate(collector, container, firstValue, null, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // retract one instance of the first value; first value is still the max value, nothing should change
         firstRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // retract final instance of the first value; second value is now the max value
         thirdRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(secondValue));
+        assertResult(collector, container, secondValue);
         // retract last value; there are no values now
         secondRetractor.run();
         assertResult(collector, container, null);
@@ -1788,27 +1678,26 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparableQuad() {
-        Function<Class, Object> mappingFunction = Class::getCanonicalName;
-        QuadConstraintCollector<Class, Class, Class, Class, ?, Object> collector =
-                max((a, b, c, d) -> mappingFunction.apply(a), Comparator.comparing(o -> (String)o));
+        QuadConstraintCollector<String, String, String, String, ?, String> collector =
+                max((a, b, c, d) -> a, Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue, null, null, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // add second value, lesser than the first, result does not change
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue, null, null, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // add third value, same as the first, result does not change
         Runnable thirdRetractor = accumulate(collector, container, firstValue, null, null, null);
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // retract one instance of the first value; first value is still the max value, nothing should change
         firstRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(firstValue));
+        assertResult(collector, container, firstValue);
         // retract final instance of the first value; second value is now the max value
         thirdRetractor.run();
-        assertResult(collector, container, mappingFunction.apply(secondValue));
+        assertResult(collector, container, secondValue);
         // retract last value; there are no values now
         secondRetractor.run();
         assertResult(collector, container, null);
