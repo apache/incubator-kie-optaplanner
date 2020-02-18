@@ -41,6 +41,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
@@ -529,10 +530,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     * {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -549,10 +551,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     * {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -572,9 +575,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
+     * has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -592,9 +597,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
+     * has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -616,10 +623,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     * {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -640,9 +648,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
+     * has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -665,10 +675,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     * {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -690,9 +701,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
+     * has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -716,10 +729,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
      * <p>
-     * It is expected that the {@link Comparable}'s {@link Comparable#compareTo(Object)} is consistent with
-     * {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following mapped elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
@@ -742,9 +756,11 @@ public final class ConstraintCollectors {
     /**
      * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
      * <p>
-     * It is expected that the {@link Comparator} is consistent with {@link #equals(Object)}.
-     * In other words, if two elements compare to equal, any of them may be returned by the collector as they are
-     * considered to be {@link #equals(Object)}.
+     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
+     * has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
      * <p>
      * Example: Assume the following elements of type Person: Ann(age = 20), Beth(age = 25), Cathy(age = 30),
      * David(age = 25), Eric(age = 20).
