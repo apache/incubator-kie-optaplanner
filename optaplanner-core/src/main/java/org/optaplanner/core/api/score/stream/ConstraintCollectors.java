@@ -539,6 +539,8 @@ public final class ConstraintCollectors {
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(min())} returns either {@code Ann} or {@code Eric} arbitrarily, assuming the objects are
      * {@link Comparable} by the {@code age} field.
+     * To avoid this, always end your {@link Comparator} by an identity comparison, such as
+     * {@code Comparator.comparing(Person::getAge).comparing(Person::getId))}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -570,21 +572,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Returns a collector that finds a minimum value in a group of elements, using the provided {@link Comparator}.
-     * <p>
-     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
-     * has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
-     * {@code .groupBy(min(Comparator.comparing(Person::getAge)))} returns either {@code Ann} or {@code Eric}
-     * arbitrarily.
-     *
-     * @param <A> type of the matched fact
-     * @param comparator never null
-     * @return never null
+     * As defined by {@link #min()}, only with a custom {@link Comparator}.
      */
     public static <A> UniConstraintCollector<A, ?, A> min(Comparator<A> comparator) {
         return min(Function.identity(), comparator);
@@ -662,6 +650,8 @@ public final class ConstraintCollectors {
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(max())} returns either {@code Cathy} or {@code David} arbitrarily, assuming the objects are
      * {@link Comparable} by the {@code age} field.
+     * To avoid this, always end your {@link Comparator} by an identity comparison, such as
+     * {@code Comparator.comparing(Person::getAge).comparing(Person::getId))}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -693,21 +683,7 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Returns a collector that finds a maximum value in a group of elements, using the provided {@link Comparator}.
-     * <p>
-     * Important: The {@link Comparator} must be <i>consistent with equals</i>,such that <tt>e1.compareTo(e2) == 0</tt>
-     * has the same boolean value as <tt>e1.equals(e2)</tt>.
-     * In other words, if two elements compare to zero, any of them can be returned by the collector.
-     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
-     * incremental score calculation.
-     * <p>
-     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
-     * {@code .groupBy(max(Comparator.comparing(Person::getAge)))} returns either {@code Cathy} or {@code David}
-     * arbitrarily.
-     *
-     * @param <A> type of the matched fact
-     * @param comparator never null
-     * @return never null
+     * As defined by {@link #max()}, only with a custom {@link Comparator}.
      */
     public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
         return max(Function.identity(), comparator);
