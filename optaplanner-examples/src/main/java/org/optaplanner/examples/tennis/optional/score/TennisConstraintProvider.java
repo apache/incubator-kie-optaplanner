@@ -22,13 +22,17 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
+import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
+
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.loadBalanceByCount;
 
 public class TennisConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[] {
-
+                oneAssignmentPerDatePerTeam(constraintFactory),
+                unavailabilityPenalty(constraintFactory)
         };
     }
 
@@ -45,4 +49,32 @@ public class TennisConstraintProvider implements ConstraintProvider {
                         Joiners.filtering((teamAssignment, otherTeamAssignment) -> teamAssignment.getTeam() != null))
                 .penalize("oneAssignmentPerDatePerTeam", HardMediumSoftScore.ONE_HARD);
     }
+
+    private Constraint unavailabilityPenalty(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(UnavailabilityPenalty.class)
+                .ifExists(TeamAssignment.class,
+                          Joiners.equal(UnavailabilityPenalty::getTeam, TeamAssignment::getTeam),
+                          Joiners.equal(UnavailabilityPenalty::getDay, TeamAssignment::getDay))
+                .penalize("unavailabilityPenalty", HardMediumSoftScore.ONE_HARD);
+    }
+
+    // ############################################################################
+    // Medium constraints
+    // ############################################################################
+
+    // Faster, but does not combine well with other constraints in the same level
+    private Constraint fairAssignmentCountPerTeam(ConstraintFactory constraintFactory) {
+
+        //return (long) (Math.sqrt((double) squaredSum) * 1000);
+        return constraintFactory.from(TeamAssignment.class)
+                .filter(teamAssignment -> teamAssignment.getTeam() != null)
+                .groupBy(TeamAssignment::getTeam, loadBalanceByCount())
+                .penalize("fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
+                          (team, result) -> (int) (Math.sqrt(((Long[])result)[1]) * 1000.0));
+    }
+
+    // ############################################################################
+    // Soft constraints
+    // ############################################################################
+
 }
