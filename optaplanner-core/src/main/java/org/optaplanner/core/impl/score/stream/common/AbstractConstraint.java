@@ -69,11 +69,6 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
         assertCorrectImpact(impact, () -> impact.signum() < 0);
     }
 
-    private void throwOnNegativeImpact(Object impact) {
-        throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + getConstraintId() + "). " +
-                "Check constraint provider implementation.");
-    }
-
     private void assertCorrectImpact(Object impact, BooleanSupplier lessThanZero) {
         switch (scoreImpactType) {
             case MIXED: // No need to do anything.
@@ -81,7 +76,9 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
             case REWARD:
             case PENALTY:
                 if (lessThanZero.getAsBoolean()) {
-                    throwOnNegativeImpact(impact);
+                    throw new IllegalStateException("Negative match weight (" + impact + ") for constraint ("
+                            + getConstraintId() + "). " +
+                            "Check constraint provider implementation.");
                 }
                 return;
             default:
