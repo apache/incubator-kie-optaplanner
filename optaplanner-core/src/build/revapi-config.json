@@ -29,15 +29,6 @@
       "ignore": [
         {
           "code": "java.method.addedToInterface",
-          "new": "method org.optaplanner.core.api.score.stream.ScoreImpactType org.optaplanner.core.api.score.stream.Constraint::getScoreImpactType()",
-          "package": "org.optaplanner.core.api.score.stream",
-          "classSimpleName": "Constraint",
-          "methodName": "getScoreImpactType",
-          "elementKind": "method",
-          "justification": "Introduced a neutral score impact functionality."
-        },
-        {
-          "code": "java.method.addedToInterface",
           "new": "method org.optaplanner.core.api.score.stream.Constraint org.optaplanner.core.api.score.stream.ConstraintStream::impact(java.lang.String, java.lang.String, org.optaplanner.core.api.score.Score<?>)",
           "package": "org.optaplanner.core.api.score.stream",
           "classSimpleName": "ConstraintStream",

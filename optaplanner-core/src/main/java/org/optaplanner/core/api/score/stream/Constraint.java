@@ -64,10 +64,4 @@ public interface Constraint {
         return ConstraintMatchTotal.composeConstraintId(getConstraintPackage(), getConstraintName());
     }
 
-    /**
-     * Whether this constraint penalizes, rewards or mixes both.
-     * @return never null
-     */
-    ScoreImpactType getScoreImpactType();
-
 }

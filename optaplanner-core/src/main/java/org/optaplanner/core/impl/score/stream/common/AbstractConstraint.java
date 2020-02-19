@@ -101,7 +101,6 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
         return constraintName;
     }
 
-    @Override
     public ScoreImpactType getScoreImpactType() {
         return scoreImpactType;
     }
