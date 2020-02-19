@@ -69,7 +69,7 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
         return solution -> constraintWeight;
     }
 
-    protected void validateConstraintId(String constraintPackage, String constraintName) {
+    private static void validateConstraintId(String constraintPackage, String constraintName) {
         if (constraintPackage == null) {
             throw new IllegalStateException("The constraint (" + constraintName
                     + ") cannot have a null package (" + constraintPackage + ").");
@@ -109,11 +109,6 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     @Override
     public final Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
         return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.MIXED);
-    }
-
-    @Override
-    public final Constraint impactConfigurable(String constraintPackage, String constraintName) {
-        return impactScoreConfigurable(constraintPackage, constraintName, ScoreImpactType.MIXED);
     }
 
     abstract protected Constraint impactScore(String constraintPackage, String constraintName,

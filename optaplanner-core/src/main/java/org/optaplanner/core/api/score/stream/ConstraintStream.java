@@ -194,9 +194,6 @@ public interface ConstraintStream {
     /**
      * Positively or negatively impact the {@link Score} by the constraintWeight for each match.
      * <p>
-     * To avoid hard-coding the constraintWeight, to allow end-users to weak it,
-     * use {@link #impactConfigurable(String)} and a {@link ConstraintConfiguration} instead.
-     * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
      * <p>
      * Use {@code penalize(...)} or {@code reward(...)} unless you intend to mix positive and negative weights.
@@ -216,32 +213,5 @@ public interface ConstraintStream {
      * @return never null
      */
     Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight);
-
-    /**
-     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
-     * <p>
-     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
-     * so end users can change the constraint weights dynamically.
-     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
-     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
-     * <p>
-     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * <p>
-     * Use {@code penalizeConfigurable(...)} or {@code rewardConfigurable(...)} unless you intend to mix positive and
-     * negative weights.
-     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
-     * @return never null
-     */
-    default Constraint impactConfigurable(String constraintName) {
-        return impactConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName);
-    }
-
-    /**
-     * As defined by {@link #impactConfigurable(String)}.
-     * @param constraintPackage never null
-     * @param constraintName never null
-     * @return never null
-     */
-    Constraint impactConfigurable(String constraintPackage, String constraintName);
 
 }
