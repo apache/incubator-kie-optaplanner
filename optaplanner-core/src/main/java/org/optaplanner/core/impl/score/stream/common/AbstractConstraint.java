@@ -58,39 +58,30 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
     }
 
     public void assertCorrectImpact(int impact) {
-        assertCorrectImpact(impact, () -> impact < 0, () -> impact > 0);
+        assertCorrectImpact(impact, () -> impact < 0);
     }
 
     public void assertCorrectImpact(long impact) {
-        assertCorrectImpact(impact, () -> impact < 0L, () -> impact > 0L);
+        assertCorrectImpact(impact, () -> impact < 0L);
     }
 
     public void assertCorrectImpact(BigDecimal impact) {
-        assertCorrectImpact(impact, () -> impact.signum() < 0, () -> impact.compareTo(BigDecimal.ZERO) > 0);
+        assertCorrectImpact(impact, () -> impact.signum() < 0);
     }
 
     private void throwOnNegativeImpact(Object impact) {
-        throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + getConstraintId() + ") reward. " +
+        throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + getConstraintId() + "). " +
                 "Check constraint provider implementation.");
     }
 
-    private void throwOnPositiveImpact(Object impact) {
-        throw new IllegalStateException("Positive match weight (" + impact + ") for constraint (" + getConstraintId() + ") penalty. " +
-                "Check constraint provider implementation.");
-    }
-
-    private void assertCorrectImpact(Object impact, BooleanSupplier lessThanZero, BooleanSupplier moreThanZero) {
+    private void assertCorrectImpact(Object impact, BooleanSupplier lessThanZero) {
         switch (scoreImpactType) {
             case MIXED: // No need to do anything.
                 break;
             case REWARD:
+            case PENALTY:
                 if (lessThanZero.getAsBoolean()) {
                     throwOnNegativeImpact(impact);
-                }
-                return;
-            case PENALTY:
-                if (moreThanZero.getAsBoolean()) {
-                    throwOnPositiveImpact(impact);
                 }
                 return;
             default:
