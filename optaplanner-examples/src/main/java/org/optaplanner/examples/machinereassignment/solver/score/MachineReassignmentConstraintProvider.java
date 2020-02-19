@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.machinereassignment.solver.score;
 
+import java.util.function.BiFunction;
+
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
@@ -25,6 +27,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
+import org.optaplanner.examples.machinereassignment.domain.MrService;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
@@ -46,7 +49,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                 loadCost(factory),
                 balanceCost(factory),
                 processMoveCost(factory),
-                //   serviceMoveCost(factory), // TODO Implement it
+                serviceMoveCost(factory),
                 machineMoveCost(factory)
         };
     }
@@ -77,10 +80,10 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      */
     private Constraint serviceConflict(ConstraintFactory factory) {
         return factory.fromUniquePair(MrProcessAssignment.class,
-                equal(MrProcessAssignment::getMachine),
-                equal(MrProcessAssignment::getService)
+                                      equal(MrProcessAssignment::getMachine),
+                                      equal(MrProcessAssignment::getService)
         ).penalize(MrConstraints.SERVICE_CONFLICT,
-                HardSoftLongScore.ofHard(1L));
+                   HardSoftLongScore.ofHard(1L));
     }
 
     /**
@@ -89,10 +92,10 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     private Constraint serviceLocationSpread(ConstraintFactory factory) {
         return factory.from(MrProcessAssignment.class)
                 .groupBy(MrProcessAssignment::getService,
-                        ConstraintCollectors.countDistinct(MrProcessAssignment::getLocation))
+                         ConstraintCollectors.countDistinct(MrProcessAssignment::getLocation))
                 .filter((service, distinctLocationCount) -> service.getLocationSpread() > distinctLocationCount)
                 .penalize(MrConstraints.SERVICE_LOCATION_SPREAD,
-                        HardSoftLongScore.ofHard(1L));
+                          HardSoftLongScore.ofHard(1L));
     }
 
     /**
@@ -110,7 +113,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                                             !processFrom.getNeighborhood().equals(processTo.getNeighborhood()))
                 )
                 .penalize(MrConstraints.SERVICE_DEPENDENCY,
-                        HardSoftLongScore.ofHard(1L));
+                          HardSoftLongScore.ofHard(1L));
     }
 
     /**
@@ -193,15 +196,11 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Service move cost: A service has a move cost.
      */
     private Constraint serviceMoveCost(ConstraintFactory factory) {
-        throw new UnsupportedOperationException("Not yet implemented due to missing aggregation function.");
-
-        /* TODO: requires max aggregation function
         return factory.from(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
                 .groupBy(processAssignment -> processAssignment.getService(), ConstraintCollectors.count())
-                .penalizeLong(MrConstraintName.SERVICE_MOVE_COST, HardSoftLongScore.ofSoft(1L));
-
-         */
+                .groupBy(ConstraintCollectors.max((BiFunction<MrService, Integer, Integer>) (service, count) -> count))
+                .penalizeLong(MrConstraints.SERVICE_MOVE_COST, HardSoftLongScore.ofSoft(1L), count -> count);
     }
 
     /**
@@ -211,8 +210,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         return factory.from(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
                 .penalizeLong(MrConstraints.MACHINE_MOVE_COST,
-                        HardSoftLongScore.ofSoft(1L),
-                        MrProcessAssignment::getMachineMoveCost);
+                              HardSoftLongScore.ofSoft(1L),
+                              MrProcessAssignment::getMachineMoveCost);
     }
-
 }
