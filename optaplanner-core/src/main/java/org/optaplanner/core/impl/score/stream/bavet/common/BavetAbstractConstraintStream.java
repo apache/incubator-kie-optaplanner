@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
@@ -39,20 +40,22 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     // Penalize/reward
     // ************************************************************************
 
-    protected BavetConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName, Score<?> constraintWeight, boolean positive) {
+    protected BavetConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
+            Score<?> constraintWeight, ScoreImpactType impactType) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName, constraintWeight);
         List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
-        return new BavetConstraint<>(constraintFactory,
-                constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList);
+        return new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
+                impactType, fromStreamList);
     }
 
-    protected BavetConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName, boolean positive) {
+    protected BavetConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
+            ScoreImpactType impactType) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName);
         List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
-        return new BavetConstraint<>(constraintFactory,
-                constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList);
+        return new BavetConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
+                impactType, fromStreamList);
     }
 
     // ************************************************************************

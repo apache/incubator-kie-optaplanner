@@ -26,6 +26,7 @@ import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
@@ -38,29 +39,37 @@ public class DroolsConstraint<Solution_> implements Constraint {
     private final DroolsConstraintFactory<Solution_> constraintFactory;
     private final String constraintPackage;
     private final String constraintName;
-    private final boolean positive;
+    private final ScoreImpactType impactType;
     private final List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList;
     private final DroolsAbstractConstraintStream<Solution_> scoringStream;
-    private Function<Solution_, Score<?>> constraintWeightExtractor;
+    private final Function<Solution_, Score<?>> constraintWeightExtractor;
 
-    public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory,
-            String constraintPackage, String constraintName,
-            Function<Solution_, Score<?>> constraintWeightExtractor, boolean positive,
+    public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
+            String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType impactType,
             List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList,
             DroolsAbstractConstraintStream<Solution_> scoringStream) {
         this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeightExtractor = constraintWeightExtractor;
-        this.positive = positive;
+        this.impactType = impactType;
         this.fromStreamList = fromStreamList;
         this.scoringStream = scoringStream;
     }
 
     public Score<?> extractConstraintWeight(Solution_ workingSolution) {
         Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
-        constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
-        return positive ? constraintWeight : constraintWeight.negate();
+        constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName,
+                constraintWeight);
+        switch (impactType) {
+            case PENALTY:
+                return constraintWeight.negate();
+            case REWARD:
+            case MIXED:
+                return constraintWeight;
+            default:
+                throw new IllegalStateException("Unknown score impact type: (" + impactType + ")");
+        }
     }
 
     public Rule createRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {

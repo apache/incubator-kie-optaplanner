@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public final class BavetConstraint<Solution_> implements Constraint {
 
@@ -32,18 +33,18 @@ public final class BavetConstraint<Solution_> implements Constraint {
     private final String constraintPackage;
     private final String constraintName;
     private Function<Solution_, Score<?>> constraintWeightExtractor;
-    private final boolean positive;
+    private final ScoreImpactType impactType;
     private final List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList;
 
     public BavetConstraint(BavetConstraintFactory<Solution_> constraintFactory,
             String constraintPackage, String constraintName,
-            Function<Solution_, Score<?>> constraintWeightExtractor, boolean positive,
+            Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType impactType,
             List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList) {
         this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeightExtractor = constraintWeightExtractor;
-        this.positive = positive;
+        this.impactType = impactType;
         this.fromStreamList = fromStreamList;
     }
 
@@ -54,7 +55,15 @@ public final class BavetConstraint<Solution_> implements Constraint {
     public Score<?> extractConstraintWeight(Solution_ workingSolution) {
         Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
         constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
-        return positive ? constraintWeight : constraintWeight.negate();
+        switch (impactType) {
+            case PENALTY:
+                return constraintWeight.negate();
+            case REWARD:
+            case MIXED:
+                return constraintWeight;
+            default:
+                throw new IllegalStateException("Unknown score impact type: (" + impactType + ")");
+        }
     }
 
     public void createNodes(BavetNodeBuildPolicy<Solution_> buildPolicy,
