@@ -21,50 +21,26 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
-import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
+import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 
-public final class BavetConstraint<Solution_> implements Constraint {
+public final class BavetConstraint<Solution_> extends AbstractConstraint<Solution_, BavetConstraintFactory<Solution_>> {
 
-    private final BavetConstraintFactory<Solution_> constraintFactory;
-    private final String constraintPackage;
-    private final String constraintName;
-    private Function<Solution_, Score<?>> constraintWeightExtractor;
-    private final ScoreImpactType impactType;
     private final List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList;
 
-    public BavetConstraint(BavetConstraintFactory<Solution_> constraintFactory,
-            String constraintPackage, String constraintName,
-            Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType impactType,
-            List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList) {
-        this.constraintFactory = constraintFactory;
-        this.constraintPackage = constraintPackage;
-        this.constraintName = constraintName;
-        this.constraintWeightExtractor = constraintWeightExtractor;
-        this.impactType = impactType;
+    public BavetConstraint(BavetConstraintFactory<Solution_> constraintFactory, String constraintPackage,
+            String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
+            ScoreImpactType scoreImpactType, List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList) {
+        super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType);
         this.fromStreamList = fromStreamList;
     }
 
     // ************************************************************************
     // Node creation
     // ************************************************************************
-
-    public Score<?> extractConstraintWeight(Solution_ workingSolution) {
-        Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
-        constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
-        switch (impactType) {
-            case PENALTY:
-                return constraintWeight.negate();
-            case REWARD:
-            case MIXED:
-                return constraintWeight;
-            default:
-                throw new IllegalStateException("Unknown score impact type: (" + impactType + ")");
-        }
-    }
 
     public void createNodes(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap,
@@ -80,23 +56,9 @@ public final class BavetConstraint<Solution_> implements Constraint {
         }
     }
 
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
-
     @Override
-    public BavetConstraintFactory<Solution_> getConstraintFactory() {
-        return constraintFactory;
-    }
-
-    @Override
-    public String getConstraintPackage() {
-        return constraintPackage;
-    }
-
-    @Override
-    public String getConstraintName() {
-        return constraintName;
+    public String toString() {
+        return "BavetConstraint(" + getConstraintId() + ") in " + fromStreamList.size() + " from() stream(s)";
     }
 
 }

@@ -26,8 +26,8 @@ import org.drools.model.Global;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.api.score.stream.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
@@ -87,10 +87,12 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
      * Assemble elements of the rule that will process this stream and turn it into a constraint match. Will be ignored
      * unless on a scoring stream such as {@link DroolsScoringUniConstraintStream}.
      *
+     * @param constraint constraint which is being scored
      * @param scoreHolderGlobal contains the score to be affected
      * @return rule representing this constraint stream
      */
-    public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+    public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         throw new UnsupportedOperationException("Non-scoring stream (" + this + ") can not create a rule.");
     }
 

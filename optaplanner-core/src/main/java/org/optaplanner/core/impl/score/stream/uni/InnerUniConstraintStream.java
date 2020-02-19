@@ -22,8 +22,8 @@ import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ScoreImpactType;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
 
