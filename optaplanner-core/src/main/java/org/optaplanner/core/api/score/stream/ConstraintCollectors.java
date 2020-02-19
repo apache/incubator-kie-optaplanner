@@ -69,6 +69,21 @@ import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
  */
 public final class ConstraintCollectors {
 
+    public static <A> DefaultUniConstraintCollector<A, ?, Object> loadBalanceByCount() {
+        return new DefaultUniConstraintCollector<>(
+                () -> new long[2],
+                (resultContainer, a) -> {
+                    resultContainer[0]++;
+                    long count = resultContainer[0];
+                    resultContainer[1] += (2 * count - 1);
+                    return () -> {
+                        resultContainer[1] -= (2 * resultContainer[0] - 1);
+                        resultContainer[0]--;
+                    };
+                },
+                resultContainer -> resultContainer);
+    }
+
     // ************************************************************************
     // count
     // ************************************************************************
