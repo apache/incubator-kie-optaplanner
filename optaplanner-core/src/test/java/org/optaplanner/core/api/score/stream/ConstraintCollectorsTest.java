@@ -24,6 +24,8 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,6 +40,7 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
+import static java.util.Collections.emptySortedSet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
@@ -1735,6 +1738,32 @@ public class ConstraintCollectorsTest {
     }
 
     @Test
+    public void toSortedSet() {
+        UniConstraintCollector<Integer, ?, SortedSet<Integer>> collector = ConstraintCollectors.toSortedSet();
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, asSortedSet(firstValue));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asSortedSet(firstValue, secondValue));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asSortedSet(firstValue, secondValue));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container,asSortedSet(firstValue, secondValue));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedSet(firstValue));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedSet());
+    }
+
+    @Test
     public void toList() {
         UniConstraintCollector<Integer, ?, List<Integer>> collector = ConstraintCollectors.toList();
         Object container = collector.supplier().get();
@@ -1786,6 +1815,35 @@ public class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, emptySet());
+    }
+
+    @Test
+    public void toSortedSetBi() {
+        BiConstraintCollector<Integer, Integer, ?, SortedSet<Integer>> collector =
+                ConstraintCollectors.toSortedSet(Integer::sum);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 1;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB);
+        assertResult(collector, container, asSortedSet(3));
+        // Add second value, we have two now.
+        int secondValueA = 3;
+        int secondValueB = 4;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, asSortedSet(3, 7));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, asSortedSet(3, 7));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedSet(3, 7));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedSet(3));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedSet());
     }
 
     @Test
@@ -1845,6 +1903,37 @@ public class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, emptySet());
+    }
+
+    @Test
+    public void toSortedSetTri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, SortedSet<Integer>> collector =
+                ConstraintCollectors.toSortedSet((a, b, c) -> a + b + c);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 1;
+        int firstValueC = 3;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB, firstValueC);
+        assertResult(collector, container, asSortedSet(6));
+        // Add second value, we have two now.
+        int secondValueA = 3;
+        int secondValueB = 4;
+        int secondValueC = 2;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
+        assertResult(collector, container, asSortedSet(6, 9));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
+        assertResult(collector, container, asSortedSet(6, 9));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedSet(6, 9));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedSet(6));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedSet());
     }
 
     @Test
@@ -1909,6 +1998,39 @@ public class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, emptySet());
+    }
+
+    @Test
+    public void toSortedSetQuad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedSet<Integer>> collector =
+                ConstraintCollectors.toSortedSet((a, b, c, d) -> a + b + c + d);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 1;
+        int firstValueC = 3;
+        int firstValueD = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB, firstValueC, firstValueD);
+        assertResult(collector, container, asSortedSet(10));
+        // Add second value, we have two now.
+        int secondValueA = 3;
+        int secondValueB = 4;
+        int secondValueC = 2;
+        int secondValueD = 5;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC, secondValueD);
+        assertResult(collector, container, asSortedSet(10, 14));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC, secondValueD);
+        assertResult(collector, container, asSortedSet(10, 14));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedSet(10, 14));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedSet(10));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedSet());
     }
 
     @Test
@@ -1989,6 +2111,10 @@ public class ConstraintCollectorsTest {
 
     private static <X> Set<X> asSet(X... items) {
         return stream(items).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private static <X> SortedSet<X> asSortedSet(X... items) {
+        return stream(items).collect(Collectors.toCollection(TreeSet::new));
     }
 
 }
