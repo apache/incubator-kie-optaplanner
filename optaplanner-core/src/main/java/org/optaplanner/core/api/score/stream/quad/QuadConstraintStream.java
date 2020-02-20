@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.function.QuadFunction;
@@ -710,8 +711,14 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
     /**
-     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} multiplied by the match weight.
-     * Otherwise as defined by {@link #impactConfigurable(String)}.
+     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      * <p>
      * For non-int {@link Score} types use {@link #impactConfigurableLong(String, ToLongQuadFunction)} or
      * {@link #impactConfigurableBigDecimal(String, QuadFunction)} instead.
@@ -737,8 +744,15 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
             ToIntQuadFunction<A, B, C, D> matchWeigher);
 
     /**
-     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} multiplied by the match weight.
-     * Otherwise as defined by {@link #impactConfigurable(String)}.
+     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * <p>
      * Use {@code penalizeConfigurableLong(...)} or {@code rewardConfigurableLong(...)} unless you intend to mix
      * positive and negative weights.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
@@ -761,8 +775,15 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
             ToLongQuadFunction<A, B, C, D> matchWeigher);
 
     /**
-     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} multiplied by the match weight.
-     * Otherwise as defined by {@link #impactConfigurable(String)}.
+     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * <p>
      * Use {@code penalizeConfigurableBigDecimal(...)} or {@code rewardConfigurableBigDecimal(...)} unless you intend to
      * mix positive and negative weights.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification

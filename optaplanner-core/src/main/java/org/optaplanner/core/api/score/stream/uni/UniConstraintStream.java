@@ -27,6 +27,7 @@ import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -1032,7 +1033,13 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} multiplied by the match weight.
-     * Otherwise as defined by {@link #impactConfigurable(String)}.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      * <p>
      * For non-int {@link Score} types use {@link #impactConfigurableLong(String, ToLongFunction)} or
      * {@link #impactConfigurableBigDecimal(String, Function)} instead.
@@ -1058,7 +1065,13 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} multiplied by the match weight.
-     * Otherwise as defined by {@link #impactConfigurable(String)}.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      * <p>
      * Use {@code penalizeConfigurableLong(...)} or {@code rewardConfigurableLong(...)} unless you intend to mix
      * positive and negative weights.
@@ -1083,7 +1096,13 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} multiplied by the match weight.
-     * Otherwise as defined by {@link #impactConfigurable(String)}.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      * <p>
      * Use {@code penalizeConfigurableBigDecimal(...)} or {@code rewardConfigurableBigDecimal(...)} unless you intend to
      * mix positive and negative weights.
