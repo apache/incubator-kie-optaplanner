@@ -194,9 +194,10 @@ public interface ConstraintStream {
     /**
      * Positively or negatively impact the {@link Score} by the constraintWeight for each match.
      * <p>
-     * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
      * <p>
-     * Use {@code penalize(...)} or {@code reward(...)} unless you intend to mix positive and negative weights.
+     * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null

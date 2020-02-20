@@ -759,10 +759,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #impact(String, Score)}.
      * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     * <p>
      * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongTriFunction)} or
      * {@link #impactBigDecimal(String, Score, TriFunction)} instead.
-     * <p>
-     * Use {@code penalize(...)} or {@code reward(...)} unless you intend to mix positive and negative weights.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -789,7 +790,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #impact(String, Score)}.
      * <p>
-     * Use {@code penalizeLong(...)} or {@code rewardLong(...)} unless you intend to mix positive and negative weights.
+     * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
+     * and negative weights.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -843,18 +845,18 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
      * <p>
+     * Use {@code penalizeConfigurable(...)} or {@code rewardConfigurable(...)} instead, unless this constraint can both
+     * have positive and negative weights.
+     * <p>
+     * For non-int {@link Score} types use {@link #impactConfigurableLong(String, ToLongTriFunction)} or
+     * {@link #impactConfigurableBigDecimal(String, TriFunction)} instead.
+     * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
      * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
      * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * <p>
-     * For non-int {@link Score} types use {@link #impactConfigurableLong(String, ToLongTriFunction)} or
-     * {@link #impactConfigurableBigDecimal(String, TriFunction)} instead.
-     * <p>
-     * Use {@code penalizeConfigurable(...)} or {@code rewardConfigurable(...)} unless you intend to mix positive and
-     * negative weights.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -876,15 +878,15 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
      * <p>
+     * Use {@code penalizeConfigurableLong(...)} or {@code rewardConfigurableLong(...)} instead, unless this constraint
+     * can both have positive and negative weights.
+     * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
      * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
      * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * <p>
-     * Use {@code penalizeConfigurableLong(...)} or {@code rewardConfigurableLong(...)} unless you intend to mix
-     * positive and negative weights.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -907,15 +909,15 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
      * <p>
+     * Use {@code penalizeConfigurableBigDecimal(...)} or {@code rewardConfigurableLong(...)} instead, unless this
+     * constraint can both have positive and negative weights.
+     * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
      * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
      * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * <p>
-     * Use {@code penalizeConfigurableBigDecimal(...)} or {@code rewardConfigurableLong(...)} unless you intend to mix
-     * positive and negative weights.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
