@@ -1242,7 +1242,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction))));
     }
 
@@ -1299,7 +1299,7 @@ public final class ConstraintCollectors {
                     (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                     (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
                     resultContainer -> resultContainer.entries()
-                            .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                            .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                             .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction),
                                     ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
@@ -1329,7 +1329,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
@@ -1369,7 +1369,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction))));
     }
 
@@ -1400,7 +1400,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction))));
     }
 
@@ -1440,7 +1440,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
@@ -1463,7 +1463,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
@@ -1507,7 +1507,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction))));
     }
 
@@ -1540,7 +1540,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction))));
     }
 
@@ -1584,7 +1584,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
@@ -1610,7 +1610,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
@@ -1656,7 +1656,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction))));
     }
 
@@ -1690,7 +1690,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction))));
     }
 
@@ -1736,7 +1736,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValueSet(e.value, valueSetFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
@@ -1763,7 +1763,7 @@ public final class ConstraintCollectors {
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 resultContainer -> resultContainer.entries()
-                        .filter(e -> e.value.isEmpty()) // Filter out keys without values.
+                        .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
