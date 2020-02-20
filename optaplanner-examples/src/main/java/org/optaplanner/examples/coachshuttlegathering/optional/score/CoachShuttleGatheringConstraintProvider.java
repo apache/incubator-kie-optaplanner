@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.coachshuttlegathering.optional.score;
 
+import org.apache.commons.lang3.tuple.Triple;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -29,6 +30,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class CoachShuttleGatheringConstraintProvider implements ConstraintProvider {
 
@@ -37,7 +39,7 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
         return new Constraint[] {
                 coachStopLimit(constraintFactory),
                 shuttleCapacity(constraintFactory),
-//                coachCapacity(constraintFactory),
+                coachCapacity(constraintFactory),
                 transportTime(constraintFactory),
                 shuttleDestinationIsCoachOrHub(constraintFactory),
                 shuttleSetupCost(constraintFactory),
@@ -70,11 +72,22 @@ public class CoachShuttleGatheringConstraintProvider implements ConstraintProvid
     }
 
     // TODO: Implement this CS
-//    private Constraint coachCapacity(ConstraintFactory constraintFactory) {
-//        BiConstraintStream<Coach, Integer> coachPassengerQuantity = constraintFactory.from(BusStop.class)
-//                .filter(busStop -> busStop.getBus() instanceof Coach)
-//                .groupBy(busStop -> (Coach) busStop.getBus(), sum(BusStop::getPassengerQuantity));
-//    }
+    private Constraint coachCapacity(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(Coach.class)
+                .join(BusStop.class)
+                .groupBy((coach, busStop) -> coach, sum((coach, busStop) -> busStop.getPassengerQuantity()))
+                .join(Shuttle.class)
+                .join(BusStop.class, filtering((coach, coachTotal, shuttle, busStop) ->
+                        busStop.equals(shuttle.getDestination()) && busStop.getBus().equals(coach)))
+                .groupBy((coach, coachPassengerQuantityTotal, shuttle, busStop) ->
+                        Triple.of(coach, coachPassengerQuantityTotal, shuttle),
+                        (coach, coachPassengerQuantityTotal, shuttle, busStop) -> busStop.getPassengerQuantity())
+                .filter((triple, shuttlePassengerQuantityTotal) ->
+                        triple.getMiddle() + shuttlePassengerQuantityTotal > triple.getLeft().getCapacity())
+                .penalizeLong("coachCapacity", HardSoftLongScore.ofHard(1000),
+                              (triple, shuttlePassengerQuantityTotal) ->
+                                    triple.getMiddle() - shuttlePassengerQuantityTotal + triple.getLeft().getCapacity());
+    }
 
     private Constraint transportTime(ConstraintFactory constraintFactory) {
         return constraintFactory.from(BusStop.class)
