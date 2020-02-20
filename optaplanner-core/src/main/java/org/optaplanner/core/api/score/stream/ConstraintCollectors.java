@@ -1649,7 +1649,7 @@ public final class ConstraintCollectors {
                         .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction))));
     }
 
-    public static <A, B, C, D, Key, Value> Runnable toMapAccumulator(
+    private static <A, B, C, D, Key, Value> Runnable toMapAccumulator(
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
             ToMapResultContainer<Key, Value> resultContainer, A a, B b, C c, D d) {
