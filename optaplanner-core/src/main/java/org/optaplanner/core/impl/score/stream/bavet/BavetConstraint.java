@@ -21,11 +21,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public final class BavetConstraint<Solution_> extends AbstractConstraint<Solution_, BavetConstraintFactory<Solution_>> {
 

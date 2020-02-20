@@ -22,12 +22,12 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ScoreImpactType;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
-import static org.optaplanner.core.api.score.stream.ScoreImpactType.MIXED;
-import static org.optaplanner.core.api.score.stream.ScoreImpactType.PENALTY;
-import static org.optaplanner.core.api.score.stream.ScoreImpactType.REWARD;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.MIXED;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.PENALTY;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.REWARD;
 
 public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> {
 
