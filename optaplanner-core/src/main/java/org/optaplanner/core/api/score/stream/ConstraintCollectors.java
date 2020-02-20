@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -808,7 +810,9 @@ public final class ConstraintCollectors {
     // ************************************************************************
 
     /**
-     * As defined by {@link #toList()}, with {@link Set} as the resulting collection.
+     * Creates constraint collector that returns {@link Set} of the same element type as the {@link ConstraintStream}.
+     * Makes no guarantees on iteration order.
+     * For stable iteration order, use {@link #toSortedSet()}.
      * @param <A> type of the matched fact
      * @return never null
      */
@@ -817,10 +821,19 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * Creates constraint collector that returns {@link List} of the same element type as the
-     * {@link UniConstraintStream}.
+     * Creates constraint collector that returns {@link SortedSet} of the same element type as the
+     * {@link ConstraintStream}.
+     * @param <A> type of the matched fact
+     * @return never null
+     */
+    public static <A extends Comparable<A>> UniConstraintCollector<A, ?, SortedSet<A>> toSortedSet() {
+        return toCollection(Function.identity(), i -> new TreeSet<>());
+    }
+
+    /**
+     * Creates constraint collector that returns {@link List} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
-     * For stable iteration order, use {@link #toCollection(IntFunction)} together with a sorted collection.
+     * For stable iteration order, use {@link #toSortedSet()}.
      * @param <A> type of the matched fact
      * @return never null
      */
@@ -851,10 +864,12 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #toList(Function)}, with {@link Set} as the resulting collection.
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
+     * Creates constraint collector that returns {@link Set} of the same element type as the {@link ConstraintStream}.
+     * Makes no guarantees on iteration order.
+     * For stable iteration order, use {@link #toSortedSet()}.
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the matched fact
-     * @param <Mapped> type of elements in the resulting collection
+     * @param <Mapped> type of elements in the resulting set
      * @return never null
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, Set<Mapped>> toSet(Function<A, Mapped> groupValueMapping) {
@@ -862,9 +877,22 @@ public final class ConstraintCollectors {
     }
 
     /**
+     * Creates constraint collector that returns {@link SortedSet} of the same element type as the
+     * {@link ConstraintStream}.
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
+     * @param <A> type of the matched fact
+     * @param <Mapped> type of elements in the resulting set
+     * @return never null
+     */
+    public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, SortedSet<Mapped>> toSortedSet(
+            Function<A, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, i -> new TreeSet<>());
+    }
+
+    /**
      * Creates constraint collector that returns {@link List} of the given element type.
      * Makes no guarantees on iteration order.
-     * For stable iteration order, use {@link #toCollection(Function, IntFunction)} together with a sorted collection.
+     * For stable iteration order, use {@link #toSortedSet(Function)}.
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
      * @param <Mapped> type of elements in the resulting collection
@@ -887,11 +915,11 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #toList(BiFunction)}, with {@link Set} as the resulting collection.
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
+     * As defined by {@link #toSet(Function)}.
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
-     * @param <Mapped> type of elements in the resulting collection
+     * @param <Mapped> type of elements in the resulting set
      * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Set<Mapped>> toSet(
@@ -900,9 +928,22 @@ public final class ConstraintCollectors {
     }
 
     /**
+     * As defined by {@link #toSortedSet(Function)}.
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <Mapped> type of elements in the resulting set
+     * @return never null
+     */
+    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, SortedSet<Mapped>>
+    toSortedSet(BiFunction<A, B, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, i -> new TreeSet<>());
+    }
+
+    /**
      * Creates constraint collector that returns {@link List} of the given element type.
      * Makes no guarantees on iteration order.
-     * For stable iteration order, use {@link #toCollection(BiFunction, IntFunction)} together with a sorted collection.
+     * For stable iteration order, use {@link #toSortedSet(BiFunction)}.
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
@@ -927,12 +968,12 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #toList(TriFunction)}, with {@link Set} as the resulting collection.
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
+     * As defined by {@link #toSet(Function)}.
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
-     * @param <Mapped> type of elements in the resulting collection
+     * @param <Mapped> type of elements in the resulting set
      * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Set<Mapped>> toSet(
@@ -941,9 +982,23 @@ public final class ConstraintCollectors {
     }
 
     /**
+     * As defined by {@link #toSortedSet(Function)}.
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <Mapped> type of elements in the resulting set
+     * @return never null
+     */
+    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>>
+    toSortedSet(TriFunction<A, B, C, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, i -> new TreeSet<>());
+    }
+
+    /**
      * Creates constraint collector that returns {@link List} of the given element type.
      * Makes no guarantees on iteration order.
-     * For stable iteration order, use {@link #toCollection(TriFunction, IntFunction)} together with a sorted collection.
+     * For stable iteration order, use {@link #toSortedSet(TriFunction)}.
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
@@ -969,13 +1024,13 @@ public final class ConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #toList(QuadFunction)}, with {@link Set} as the resulting collection.
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
+     * As defined by {@link #toSet(Function)}.
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
      * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of elements in the resulting collection
+     * @param <Mapped> type of elements in the resulting set
      * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Set<Mapped>> toSet(
@@ -984,9 +1039,25 @@ public final class ConstraintCollectors {
     }
 
     /**
+     * As defined by {@link #toSortedSet(Function)}.
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
+     * @param <A> type of the first matched fact
+     * @param <B> type of the second matched fact
+     * @param <C> type of the third matched fact
+     * @param <D> type of the fourth matched fact
+     * @param <Mapped> type of elements in the resulting set
+     * @return never null
+     */
+    public static <A, B, C, D, Mapped extends Comparable<Mapped>>
+    QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>> toSortedSet(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, i -> new TreeSet<>());
+    }
+
+    /**
      * Creates constraint collector that returns {@link List} of the given element type.
      * Makes no guarantees on iteration order.
-     * For stable iteration order, use {@link #toCollection(QuadFunction, IntFunction)} together with a sorted collection.
+     * For stable iteration order, use {@link #toSortedSet(QuadFunction)}.
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
