@@ -1198,7 +1198,6 @@ public final class ConstraintCollectors {
 
     }
 
-
     private static <A, Key, Value> Runnable toMapAccumulator(Function<? super A, ? extends Key> keyMapper,
             Function<? super A, ? extends Value> valueMapper, ToMapResultContainer<Key, Value> resultContainer, A a) {
         Key key = keyMapper.apply(a);
@@ -1261,7 +1260,7 @@ public final class ConstraintCollectors {
      * with {@code .groupBy(toMap(Person::getAge, Person::getName))} returns
      * {@code {20: [Ann, Eric], 25: [Beth], 30: [Cathy, David]}}.
      * <p>
-     * Makes no guarantees on iteration order for the value sets use
+     * Makes no guarantees on iteration order for the value sets, use
      * {@link #toSortedMap(Function, Function, IntFunction)} for that.
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
