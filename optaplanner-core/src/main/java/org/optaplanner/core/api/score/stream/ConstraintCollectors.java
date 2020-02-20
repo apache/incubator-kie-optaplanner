@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -1121,31 +1122,87 @@ public final class ConstraintCollectors {
     toMap(Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper,
             IntFunction<ValueSet> valueSetFunction) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToSet(e.getValue(), valueSetFunction))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction))));
     }
 
+    private static final class ToMapPerKeyCounter<Value> {
+
+        private final Map<Value, Long> counts = new LinkedHashMap<>(0);
+
+        public long add(Value value) {
+            return counts.compute(value, (k, currentCount) -> {
+                if (currentCount == null) {
+                    return 1L;
+                } else {
+                    return currentCount + 1;
+                }
+            });
+        }
+
+        public long remove(Value value) {
+            Long newCount = counts.compute(value, (k, currentCount) -> {
+                if (currentCount > 1L) {
+                    return currentCount - 1;
+                } else {
+                    return null;
+                }
+            });
+            return newCount == null ? 0L : newCount;
+        }
+
+        public Set<Value> getValues() {
+            return counts.keySet();
+        }
+
+    }
+
+    private static final class ToMapResultContainer<Key, Value> {
+
+        private final Map<Key, ToMapPerKeyCounter<Value>> valueCounts = new HashMap<>(0);
+
+        public void add(Key key, Value value) {
+            ToMapPerKeyCounter<Value> counter = valueCounts.computeIfAbsent(key, k -> new ToMapPerKeyCounter<>());
+            counter.add(value);
+        }
+
+        public void remove(Key key, Value value) {
+            ToMapPerKeyCounter<Value> counter = valueCounts.get(key);
+            long remainingCount = counter.remove(value);
+            if (remainingCount < 1) {
+                valueCounts.remove(key);
+            }
+        }
+
+        public Set<Map.Entry<Key, Set<Value>>> entrySet() {
+            return valueCounts.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getValues()))
+                    .entrySet();
+        }
+
+    }
+
+
     private static <A, Key, Value> Runnable toMapAccumulator(Function<? super A, ? extends Key> keyMapper,
-            Function<? super A, ? extends Value> valueMapper, Map<Key, List<Value>> resultContainer, A a) {
+            Function<? super A, ? extends Value> valueMapper, ToMapResultContainer<Key, Value> resultContainer, A a) {
         Key key = keyMapper.apply(a);
         Value value = valueMapper.apply(a);
         return toMapInnerAccumulator(key, value, resultContainer);
     }
 
     private static <Key, Value> Runnable toMapInnerAccumulator(Key key, Value value,
-            Map<Key, List<Value>> resultContainer) {
-        // For every key, we collect a list of values, even if they are the same value. Important for undo.
-        List<Value> values = resultContainer.computeIfAbsent(key, currentKey -> new ArrayList<>(1));
-        values.add(value);
-        return () -> values.remove(value);
+            ToMapResultContainer<Key, Value> resultContainer) {
+        resultContainer.add(key, value);
+        return () -> resultContainer.remove(key, value);
     }
 
-    private static <Value, ValueSet extends Set<Value>> ValueSet listToSet(List<Value> in,
+    private static <Value, ValueSet extends Set<Value>> ValueSet toValueSet(Set<Value> in,
             IntFunction<ValueSet> valueSetFunction) {
-        ValueSet result = valueSetFunction.apply(0);
+        ValueSet result = valueSetFunction.apply(in.size());
         result.addAll(in);
         return result;
     }
@@ -1171,16 +1228,15 @@ public final class ConstraintCollectors {
             Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToValue(e.getValue(), mergeFunction))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValue(e.getValue(), mergeFunction))));
     }
 
-    private static <Value> Value listToValue(List<Value> in, BinaryOperator<Value> mergeFunction) {
+    private static <Value> Value toValue(Set<Value> in, BinaryOperator<Value> mergeFunction) {
         return in.stream()
-                .distinct()
                 .reduce(mergeFunction)
                 .orElseThrow(() -> new IllegalStateException("Programming error: Should have had at least one value."));
     }
@@ -1229,11 +1285,11 @@ public final class ConstraintCollectors {
     UniConstraintCollector<A, ?, SortedMap<Key, ValueSet>> toSortedMap(Function<? super A, ? extends Key> keyMapper,
             Function<? super A, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
             return new DefaultUniConstraintCollector<>(
-                    (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                    (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                     (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
                     resultContainer -> resultContainer.entrySet().stream()
                             .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                            .collect(Collectors.toMap(Map.Entry::getKey, e -> listToSet(e.getValue(), valueSetFunction),
+                            .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction),
                                     ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
 
@@ -1259,11 +1315,11 @@ public final class ConstraintCollectors {
     toSortedMap(Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultUniConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToValue(e.getValue(), mergeFunction),
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValue(e.getValue(), mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
 
@@ -1299,17 +1355,17 @@ public final class ConstraintCollectors {
     toMap(BiFunction<? super A, ? super B, ? extends Key> keyMapper,
             BiFunction<? super A, ? super B, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToSet(e.getValue(), valueSetFunction))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction))));
     }
 
     private static <A, B, Key, Value> Runnable toMapAccumulator(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
-            BiFunction<? super A, ? super B, ? extends Value> valueMapper, Map<Key, List<Value>> resultContainer, A a,
-            B b) {
+            BiFunction<? super A, ? super B, ? extends Value> valueMapper,
+            ToMapResultContainer<Key, Value> resultContainer, A a, B b) {
         Key key = keyMapper.apply(a, b);
         Value value = valueMapper.apply(a, b);
         return toMapInnerAccumulator(key, value, resultContainer);
@@ -1330,11 +1386,11 @@ public final class ConstraintCollectors {
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
             BiFunction<? super A, ? super B, ? extends Value> valueMapper, BinaryOperator<Value> mergeFunction) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToValue(e.getValue(), mergeFunction))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValue(e.getValue(), mergeFunction))));
     }
 
     /**
@@ -1370,11 +1426,11 @@ public final class ConstraintCollectors {
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
             BiFunction<? super A, ? super B, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToSet(e.getValue(), valueSetFunction),
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
 
@@ -1393,11 +1449,11 @@ public final class ConstraintCollectors {
     toSortedMap(BiFunction<? super A, ? super B, ? extends Key> keyMapper,
             BiFunction<? super A, ? super B, ? extends Value> valueMapper, BinaryOperator<Value> mergeFunction) {
         return new DefaultBiConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToValue(e.getValue(), mergeFunction),
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValue(e.getValue(), mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
 
@@ -1437,17 +1493,17 @@ public final class ConstraintCollectors {
             TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
             IntFunction<ValueSet> valueSetFunction) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToSet(e.getValue(), valueSetFunction))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction))));
     }
 
     private static <A, B, C, Key, Value> Runnable toMapAccumulator(
             TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
-            TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper, Map<Key, List<Value>> resultContainer, A a,
-            B b, C c) {
+            TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
+            ToMapResultContainer<Key, Value> resultContainer, A a, B b, C c) {
         Key key = keyMapper.apply(a, b, c);
         Value value = valueMapper.apply(a, b, c);
         return toMapInnerAccumulator(key, value, resultContainer);
@@ -1470,11 +1526,11 @@ public final class ConstraintCollectors {
             TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToValue(e.getValue(), mergeFunction))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValue(e.getValue(), mergeFunction))));
     }
 
     /**
@@ -1514,11 +1570,11 @@ public final class ConstraintCollectors {
             TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
             IntFunction<ValueSet> valueSetFunction) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToSet(e.getValue(), valueSetFunction),
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
 
@@ -1540,11 +1596,11 @@ public final class ConstraintCollectors {
             TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultTriConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToValue(e.getValue(), mergeFunction),
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValue(e.getValue(), mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
 
@@ -1586,17 +1642,17 @@ public final class ConstraintCollectors {
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
             IntFunction<ValueSet> valueSetFunction) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToSet(e.getValue(), valueSetFunction))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction))));
     }
 
     public static <A, B, C, D, Key, Value> Runnable toMapAccumulator(
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
-            Map<Key, List<Value>> resultContainer, A a, B b, C c, D d) {
+            ToMapResultContainer<Key, Value> resultContainer, A a, B b, C c, D d) {
         Key key = keyMapper.apply(a, b, c, d);
         Value value = valueMapper.apply(a, b, c, d);
         return toMapInnerAccumulator(key, value, resultContainer);
@@ -1620,11 +1676,11 @@ public final class ConstraintCollectors {
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToValue(e.getValue(), mergeFunction))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValue(e.getValue(), mergeFunction))));
     }
 
     /**
@@ -1666,11 +1722,11 @@ public final class ConstraintCollectors {
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
             IntFunction<ValueSet> valueSetFunction) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToSet(e.getValue(), valueSetFunction),
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValueSet(e.getValue(), valueSetFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
 
@@ -1693,11 +1749,11 @@ public final class ConstraintCollectors {
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
             BinaryOperator<Value> mergeFunction) {
         return new DefaultQuadConstraintCollector<>(
-                (Supplier<HashMap<Key, List<Value>>>) HashMap::new,
+                (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 resultContainer -> resultContainer.entrySet().stream()
                         .filter(e -> !e.getValue().isEmpty()) // Filter out keys without values.
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> listToValue(e.getValue(), mergeFunction),
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> toValue(e.getValue(), mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
     }
 
