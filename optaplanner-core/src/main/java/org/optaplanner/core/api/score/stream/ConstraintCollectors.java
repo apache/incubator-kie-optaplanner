@@ -73,9 +73,6 @@ public final class ConstraintCollectors {
     // count
     // ************************************************************************
 
-    private ConstraintCollectors() {
-    }
-
     public static <A> UniConstraintCollector<A, ?, Integer> count() {
         return new DefaultUniConstraintCollector<>(
                 () -> new int[1],
@@ -146,10 +143,6 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    // ************************************************************************
-    // countDistinct
-    // ************************************************************************
-
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> countLongQuad() {
         return new DefaultQuadConstraintCollector<>(
                 () -> new long[1],
@@ -159,6 +152,10 @@ public final class ConstraintCollectors {
                 },
                 resultContainer -> resultContainer[0]);
     }
+
+    // ************************************************************************
+    // countDistinct
+    // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
@@ -296,6 +293,10 @@ public final class ConstraintCollectors {
         Map<Object, long[]> objectCountMap = new HashMap<>();
     }
 
+    // ************************************************************************
+    // sum
+    // ************************************************************************
+
     public static <A> UniConstraintCollector<A, ?, Integer> sum(ToIntFunction<? super A> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
                 () -> new int[1],
@@ -306,10 +307,6 @@ public final class ConstraintCollectors {
                 },
                 resultContainer -> resultContainer[0]);
     }
-
-    // ************************************************************************
-    // sum
-    // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Long> sumLong(ToLongFunction<? super A> groupValueMapping) {
         return new DefaultUniConstraintCollector<>(
@@ -1766,6 +1763,9 @@ public final class ConstraintCollectors {
                         .filter(e -> !e.value.isEmpty()) // Filter out keys without values.
                         .collect(Collectors.toMap(e -> e.key, e -> toValue(e.value, mergeFunction),
                                 ConstraintCollectors::throwOnKeyConflict, TreeMap::new)));
+    }
+
+    private ConstraintCollectors() {
     }
 
 }
