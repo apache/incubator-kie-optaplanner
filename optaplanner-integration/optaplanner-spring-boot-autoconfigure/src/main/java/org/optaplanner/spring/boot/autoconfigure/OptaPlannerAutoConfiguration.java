@@ -240,7 +240,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
     }
 
     // @Bean wrapped by static class to avoid classloading issues if dependencies are absent
-    @Configuration(proxyBeanMethods = false)
+    @Configuration()
     @ConditionalOnClass({ Jackson2ObjectMapperBuilder.class, Score.class })
     static class OptaPlannerJacksonConfiguration {
 
