@@ -50,6 +50,23 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         super(constraintMatchEnabled, constraintStreamImplType);
     }
 
+    private static <X> Set<X> asSet(X... x) {
+        return Arrays.stream(x)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private static <X, Y> Map<X, Y> asMap(X x1, Y y1) {
+        Map<X, Y> result = new LinkedHashMap<>(0);
+        result.put(x1, y1);
+        return result;
+    }
+
+    private static <X, Y> Map<X, Y> asMap(X x1, Y y1, X x2, Y y2) {
+        Map<X, Y> result = asMap(x1, y1);
+        result.put(x2, y2);
+        return result;
+    }
+
     @Test
     public void collectedAndFiltered() {
         assumeDrools();
@@ -241,7 +258,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
             return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                     .groupBy((a, b) -> a.getEntityGroup())
                     .groupBy(Function.identity(), count())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group,count) -> count);
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, count) -> count);
         });
 
         TestdataLavishEntity entity = solution.getFirstEntity();
@@ -273,7 +290,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
                     // Stream of all unique entity tri tuples that share a group
                     .groupBy((a, b, c) -> a.getEntityGroup())
                     .groupBy(Function.identity(), count())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group,count) -> count);
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, count) -> count);
         });
 
         TestdataLavishEntity entity = solution.getFirstEntity();
@@ -308,7 +325,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
                     // Stream of all unique entity quad tuples that share a group
                     .groupBy((a, b, c, d) -> a.getEntityGroup())
                     .groupBy(Function.identity(), count())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group,count) -> count);
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, count) -> count);
         });
 
         TestdataLavishEntity entity = solution.getFirstEntity();
@@ -325,6 +342,104 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         solution.getEntityList().remove(entity);
         scoreDirector.afterEntityRemoved(entity);
         assertScore(scoreDirector, assertMatchWithScore(-1, entity2.getEntityGroup(), 1));
+    }
+
+    @Test
+    public void biGroupByRegroupedDouble() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 4);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                    .groupBy((a, b) -> a.getEntityGroup())
+                    .groupBy(Function.identity(), count())
+                    .groupBy((group, count) -> group.toString(), countBi())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupName, count) -> count);
+        });
+
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, new Object[] {entity.getEntityGroup().toString(), 1}),
+                assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+    }
+
+    @Test
+    public void triGroupByRegroupedDouble() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 6);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                    .join(TestdataLavishEntity.class,
+                            equal((a, b) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
+                            filtering((a, b, c) -> !Objects.equals(a, c) && !Objects.equals(b, c)))
+                    // Stream of all unique entity tri tuples that share a group
+                    .groupBy((a, b, c) -> a.getEntityGroup())
+                    .groupBy(Function.identity(), count())
+                    .groupBy((group, count) -> group.toString(), countBi())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupName, count) -> count);
+        });
+
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, new Object[] {entity.getEntityGroup().toString(), 1}),
+                assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+    }
+
+    @Test
+    public void quadGroupByRegroupedDouble() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 8);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                    .join(TestdataLavishEntity.class,
+                            equal((a, b) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
+                            filtering((a, b, c) -> !Objects.equals(a, c) && !Objects.equals(b, c)))
+                    .join(TestdataLavishEntity.class,
+                            equal((a, b, c) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
+                            filtering((a, b, c, d) -> !Objects.equals(a, d) && !Objects.equals(b, d) && !Objects.equals(c, d)))
+                    // Stream of all unique entity quad tuples that share a group
+                    .groupBy((a, b, c, d) -> a.getEntityGroup())
+                    .groupBy(Function.identity(), count())
+                    .groupBy((group, count) -> group.toString(), countBi())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupName, count) -> count);
+        });
+
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, new Object[] {entity.getEntityGroup().toString(), 1}),
+                assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
     }
 
     @Test
@@ -396,22 +511,4 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector,
                 assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2));
     }
-
-    private static <X> Set<X> asSet(X... x) {
-        return Arrays.stream(x)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    private static <X, Y> Map<X, Y> asMap(X x1, Y y1) {
-        Map<X, Y> result = new LinkedHashMap<>(0);
-        result.put(x1, y1);
-        return result;
-    }
-
-    private static <X, Y> Map<X, Y> asMap(X x1, Y y1, X x2, Y y2) {
-        Map<X, Y> result = asMap(x1, y1);
-        result.put(x2, y2);
-        return result;
-    }
-
 }
