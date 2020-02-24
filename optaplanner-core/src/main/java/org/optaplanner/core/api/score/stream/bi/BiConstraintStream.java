@@ -37,6 +37,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bi.BiConstraintStreamHelper;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 /**

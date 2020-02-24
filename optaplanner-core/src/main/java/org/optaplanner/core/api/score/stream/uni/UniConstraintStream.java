@@ -39,6 +39,7 @@ import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
+import org.optaplanner.core.impl.score.stream.uni.UniConstraintStreamHelper;
 
 /**
  * A {@link ConstraintStream} that matches one fact.

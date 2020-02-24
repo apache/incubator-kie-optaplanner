@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.stream.tri;
+package org.optaplanner.core.impl.score.stream.tri;
 
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStreamHelper;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 
-final class TriConstraintStreamHelper<A, B, C, D>
+public final class TriConstraintStreamHelper<A, B, C, D>
         extends AbstractConstraintStreamHelper<D, QuadConstraintStream<A, B, C, D>, QuadJoiner<A, B, C, D>,
                 QuadPredicate<A, B, C, D>> {
 

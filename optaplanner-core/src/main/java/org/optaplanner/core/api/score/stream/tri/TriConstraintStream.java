@@ -38,6 +38,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.TriConstraintStreamHelper;
 
 /**
  * A {@link ConstraintStream} that matches three facts.
