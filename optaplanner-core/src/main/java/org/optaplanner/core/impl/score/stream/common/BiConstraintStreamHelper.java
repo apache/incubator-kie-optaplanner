@@ -24,12 +24,12 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 
-final class BiConstraintStreamDescriptor<A, B>
+final class BiConstraintStreamHelper<A, B>
         implements ConstraintStreamHelper<B, BiConstraintStream<A, B>, BiJoiner<A, B>, BiPredicate<A, B>> {
 
     private final UniConstraintStream<A> stream;
 
-    public BiConstraintStreamDescriptor(UniConstraintStream<A> stream) {
+    public BiConstraintStreamHelper(UniConstraintStream<A> stream) {
         this.stream = stream;
     }
 

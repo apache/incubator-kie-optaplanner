@@ -31,17 +31,17 @@ public final class JoinerUtils {
 
     public static <A, B> BiConstraintStream<A, B> join(UniConstraintStream<A> stream, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
-        return join(new BiConstraintStreamDescriptor<>(stream), otherClass, joiners);
+        return join(new BiConstraintStreamHelper<>(stream), otherClass, joiners);
     }
 
     public static <A, B, C> TriConstraintStream<A, B, C> join(BiConstraintStream<A, B> stream, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
-        return join(new TriConstraintStreamDescriptor<>(stream), otherClass, joiners);
+        return join(new TriConstraintStreamHelper<>(stream), otherClass, joiners);
     }
 
     public static <A, B, C, D> QuadConstraintStream<A, B, C, D> join(TriConstraintStream<A, B, C> stream,
             Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return join(new QuadConstraintStreamDescriptor<>(stream), otherClass, joiners);
+        return join(new QuadConstraintStreamHelper<>(stream), otherClass, joiners);
     }
 
     private static <Right, JoinedStream extends ConstraintStream, Joiner, Predicate> JoinedStream join(

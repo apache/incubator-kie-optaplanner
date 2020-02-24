@@ -23,13 +23,13 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 
-final class QuadConstraintStreamDescriptor<A, B, C, D>
+final class QuadConstraintStreamHelper<A, B, C, D>
         implements ConstraintStreamHelper<D, QuadConstraintStream<A, B, C, D>, QuadJoiner<A, B, C, D>,
                 QuadPredicate<A, B, C, D>> {
 
     private final TriConstraintStream<A, B, C> stream;
 
-    public QuadConstraintStreamDescriptor(TriConstraintStream<A, B, C> stream) {
+    public QuadConstraintStreamHelper(TriConstraintStream<A, B, C> stream) {
         this.stream = stream;
     }
 

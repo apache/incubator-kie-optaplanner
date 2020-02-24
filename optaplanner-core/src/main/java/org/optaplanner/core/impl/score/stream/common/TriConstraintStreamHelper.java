@@ -23,13 +23,13 @@ import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 
-final class TriConstraintStreamDescriptor<A, B, C>
+final class TriConstraintStreamHelper<A, B, C>
         implements ConstraintStreamHelper<C, TriConstraintStream<A, B, C>, TriJoiner<A, B, C>,
                 TriPredicate<A, B, C>> {
 
     private final BiConstraintStream<A, B> stream;
 
-    public TriConstraintStreamDescriptor(BiConstraintStream<A, B> stream) {
+    public TriConstraintStreamHelper(BiConstraintStream<A, B> stream) {
         this.stream = stream;
     }
 
