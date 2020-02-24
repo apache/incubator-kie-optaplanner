@@ -14,63 +14,63 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.common;
+package org.optaplanner.core.api.score.stream.tri;
 
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStreamHelper;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 
-final class QuadConstraintStreamHelper<A, B, C, D>
-        implements ConstraintStreamHelper<D, QuadConstraintStream<A, B, C, D>, QuadJoiner<A, B, C, D>,
+final class TriConstraintStreamHelper<A, B, C, D>
+        extends AbstractConstraintStreamHelper<D, QuadConstraintStream<A, B, C, D>, QuadJoiner<A, B, C, D>,
                 QuadPredicate<A, B, C, D>> {
 
     private final TriConstraintStream<A, B, C> stream;
 
-    public QuadConstraintStreamHelper(TriConstraintStream<A, B, C> stream) {
+    public TriConstraintStreamHelper(TriConstraintStream<A, B, C> stream) {
         this.stream = stream;
     }
 
     @Override
-    public QuadConstraintStream<A, B, C, D> join(Class<D> otherClass) {
+    protected QuadConstraintStream<A, B, C, D> doJoin(Class<D> otherClass) {
         return stream.join(otherClass);
     }
 
     @Override
-    public QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner) {
+    protected QuadConstraintStream<A, B, C, D> doJoin(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner) {
         return stream.join(otherClass, joiner);
     }
 
     @Override
-    public QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
+    protected QuadConstraintStream<A, B, C, D> doJoin(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
         return stream.join(otherClass, joiners);
     }
 
     @Override
-    public QuadConstraintStream<A, B, C, D> filter(QuadConstraintStream<A, B, C, D> stream,
+    protected QuadConstraintStream<A, B, C, D> filter(QuadConstraintStream<A, B, C, D> stream,
             QuadPredicate<A, B, C, D> predicate) {
         return stream.filter(predicate);
     }
 
     @Override
-    public QuadJoiner<A, B, C, D> mergeJoiners(QuadJoiner<A, B, C, D>... joiners) {
+    protected QuadJoiner<A, B, C, D> mergeJoiners(QuadJoiner<A, B, C, D>... joiners) {
         return AbstractQuadJoiner.merge(joiners);
     }
 
     @Override
-    public boolean isFilteringJoiner(QuadJoiner<A, B, C, D> joiner) {
+    protected boolean isFilteringJoiner(QuadJoiner<A, B, C, D> joiner) {
         return joiner instanceof FilteringQuadJoiner;
     }
 
     @Override
-    public QuadPredicate<A, B, C, D> extractPredicate(QuadJoiner<A, B, C, D> joiner) {
+    protected QuadPredicate<A, B, C, D> extractPredicate(QuadJoiner<A, B, C, D> joiner) {
         return ((FilteringQuadJoiner<A, B, C, D>)joiner).getFilter();
     }
 
     @Override
-    public QuadPredicate<A, B, C, D> mergePredicates(QuadPredicate<A, B, C, D> predicate1,
+    protected QuadPredicate<A, B, C, D> mergePredicates(QuadPredicate<A, B, C, D> predicate1,
             QuadPredicate<A, B, C, D> predicate2) {
         return predicate1.and(predicate2);
     }

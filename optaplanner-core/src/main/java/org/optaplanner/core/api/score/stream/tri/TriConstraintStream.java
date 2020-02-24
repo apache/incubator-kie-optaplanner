@@ -37,7 +37,6 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.common.JoinerUtils;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 
 /**
@@ -197,7 +196,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * {@link QuadJoiner joiners} are true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return JoinerUtils.join(this, otherClass, joiners);
+        TriConstraintStreamHelper<A, B, C, D> helper = new TriConstraintStreamHelper<>(this);
+        return helper.join(otherClass, joiners);
     }
 
     // ************************************************************************

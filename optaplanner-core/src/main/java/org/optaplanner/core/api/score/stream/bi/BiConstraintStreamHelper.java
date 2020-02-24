@@ -14,62 +14,64 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.common;
+package org.optaplanner.core.api.score.stream.bi;
 
 import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStreamHelper;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 
-final class TriConstraintStreamHelper<A, B, C>
-        implements ConstraintStreamHelper<C, TriConstraintStream<A, B, C>, TriJoiner<A, B, C>,
+final class BiConstraintStreamHelper<A, B, C>
+        extends AbstractConstraintStreamHelper<C, TriConstraintStream<A, B, C>, TriJoiner<A, B, C>,
                 TriPredicate<A, B, C>> {
 
     private final BiConstraintStream<A, B> stream;
 
-    public TriConstraintStreamHelper(BiConstraintStream<A, B> stream) {
+    public BiConstraintStreamHelper(BiConstraintStream<A, B> stream) {
         this.stream = stream;
     }
 
     @Override
-    public TriConstraintStream<A, B, C> join(Class<C> otherClass) {
+    protected TriConstraintStream<A, B, C> doJoin(Class<C> otherClass) {
         return stream.join(otherClass);
     }
 
     @Override
-    public TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
+    protected TriConstraintStream<A, B, C> doJoin(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
         return stream.join(otherClass, joiner);
     }
 
     @Override
-    public TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+    protected TriConstraintStream<A, B, C> doJoin(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         return stream.join(otherClass, joiners);
     }
 
     @Override
-    public TriConstraintStream<A, B, C> filter(TriConstraintStream<A, B, C> stream, TriPredicate<A, B, C> predicate) {
+    protected TriConstraintStream<A, B, C> filter(TriConstraintStream<A, B, C> stream,
+            TriPredicate<A, B, C> predicate) {
         return stream.filter(predicate);
     }
 
     @Override
-    public TriJoiner<A, B, C> mergeJoiners(TriJoiner<A, B, C>... joiners) {
+    protected TriJoiner<A, B, C> mergeJoiners(TriJoiner<A, B, C>... joiners) {
         return AbstractTriJoiner.merge(joiners);
     }
 
     @Override
-    public boolean isFilteringJoiner(TriJoiner<A, B, C> joiner) {
+    protected boolean isFilteringJoiner(TriJoiner<A, B, C> joiner) {
         return joiner instanceof FilteringTriJoiner;
     }
 
     @Override
-    public TriPredicate<A, B, C> extractPredicate(TriJoiner<A, B, C> joiner) {
+    protected TriPredicate<A, B, C> extractPredicate(TriJoiner<A, B, C> joiner) {
         return ((FilteringTriJoiner<A, B, C>)joiner).getFilter();
     }
 
     @Override
-    public TriPredicate<A, B, C> mergePredicates(TriPredicate<A, B, C> predicate1, TriPredicate<A, B, C> predicate2) {
+    protected TriPredicate<A, B, C> mergePredicates(TriPredicate<A, B, C> predicate1,
+            TriPredicate<A, B, C> predicate2) {
         return predicate1.and(predicate2);
     }
 }
