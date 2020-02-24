@@ -16,11 +16,16 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.google.common.base.Functions;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -98,42 +103,33 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
     }
 
     @Test
-    public void bigroupBiregrouped() {
+    public void bigroupCollected() {
         assumeDrools();
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
-        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
-        solution.getEntityGroupList().add(entityGroup1);
-        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
-        solution.getEntityList().add(entity1);
-        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
-        solution.getEntityList().add(entity2);
-        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
-        solution.getEntityList().add(entity3);
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 5);
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
-                    .groupBy((entityA, entityB) -> entityA.getEntityGroup())
-                    .groupBy(Function.identity(), count())
+                    .groupBy((entityA, entityB) -> entityA.getEntityGroup(), ConstraintCollectors.countBi())
+                    .groupBy(ConstraintCollectors.toMap((g, c) -> g, (g, c) -> c, Integer::sum))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-1, entityGroup1, 1),
-                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1));
+                assertMatchWithScore(-1, asMap(solution.getFirstEntityGroup(), 3, solution.getEntityGroupList().get(1), 1)));
 
         // Incremental
-        Stream.of(entity1, entity2).forEach(entity -> {
-            scoreDirector.beforeEntityRemoved(entity);
-            solution.getEntityList().remove(entity);
-            scoreDirector.afterEntityRemoved(entity);
-        });
-        assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1));
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, asMap(solution.getFirstEntityGroup(), 1, solution.getEntityGroupList().get(1), 1)));
     }
 
     @Test
+    @Ignore
     public void bigroupBiregroupedRegrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -238,6 +234,30 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         scoreDirector.afterProblemFactRemoved(entityGroup1);
         assertScore(scoreDirector,
                 assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2));
+    }
+
+    private static <X, Y> Map<X, Y> asMap(X x1, Y y1) {
+        Map<X, Y> result = new LinkedHashMap<>(0);
+        result.put(x1, y1);
+        return result;
+    }
+
+    private static <X, Y> Map<X, Y> asMap(X x1, Y y1, X x2, Y y2) {
+        Map<X, Y> result = asMap(x1, y1);
+        result.put(x2, y2);
+        return result;
+    }
+
+    private static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1) {
+        SortedMap<X, Y> result = new TreeMap<>();
+        result.put(x1, y1);
+        return result;
+    }
+
+    private static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1, X x2, Y y2) {
+        SortedMap<X, Y> result = asSortedMap(x1, y1);
+        result.put(x2, y2);
+        return result;
     }
 
 }

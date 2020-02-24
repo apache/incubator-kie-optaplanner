@@ -42,6 +42,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
+import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
@@ -157,8 +158,14 @@ public final class DroolsBiCondition<A, B, PatternVar>
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(BiConstraintCollector<A, B, __, NewA> collector) {
         DroolsBiAccumulateFunctionBridge<A, B, __, NewA> bridge = new DroolsBiAccumulateFunctionBridge<>(collector);
-        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
-                (b, a) -> new BiTuple<>(a, (B) b)));
+        Variable<PatternVar> baseVariable = ruleStructure.getPrimaryPatternBuilder().getBaseVariable();
+        boolean isRegrouping = FactTuple.class.isAssignableFrom(baseVariable.getType());
+        if (isRegrouping) {
+            return collect(bridge);
+        } else {
+            return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
+                    (b, a) -> new BiTuple<>(a, (B) b)));
+        }
     }
 
     public <NewA> DroolsUniCondition<NewA, NewA> andGroup(BiFunction<A, B, NewA> groupKeyMapping) {

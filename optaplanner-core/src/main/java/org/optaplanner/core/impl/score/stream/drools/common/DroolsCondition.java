@@ -66,6 +66,19 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
     }
 
     protected <NewA, InTuple, OutTuple, __> DroolsUniCondition<NewA, NewA> collect(
+            DroolsAbstractAccumulateFunctionBridge<__, InTuple, OutTuple> accumulateFunctionBridge) {
+        PatternDef<PatternVar> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder().build();
+        Variable<InTuple> tupleVariable = (Variable<InTuple>) mainAccumulatePattern.getFirstVariable();
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
+        Variable<NewA> outputVariable = ruleStructure.createVariable("collected");
+        ViewItem<?> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
+                accFunction(() -> accumulateFunctionBridge, tupleVariable).as(outputVariable));
+        DroolsUniRuleStructure<NewA, NewA> newRuleStructure = ruleStructure.recollect(outputVariable,
+                outerAccumulatePattern);
+        return new DroolsUniCondition<>(newRuleStructure);
+    }
+
+    protected <NewA, InTuple, OutTuple, __> DroolsUniCondition<NewA, NewA> collect(
             DroolsAbstractAccumulateFunctionBridge<__, InTuple, OutTuple> accumulateFunctionBridge,
             BiFunction<PatternDef<PatternVar>, Variable<InTuple>, PatternDef<PatternVar>> bindFunction) {
         Variable<InTuple> tupleVariable = ruleStructure.createVariable("tuple");
