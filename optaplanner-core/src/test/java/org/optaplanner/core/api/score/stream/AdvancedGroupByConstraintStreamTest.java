@@ -16,14 +16,9 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.common.base.Functions;
@@ -43,28 +38,13 @@ import static org.optaplanner.core.api.score.stream.ConstraintCollectors.toMap;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.toSet;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asMap;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSet;
 
 public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
 
     public AdvancedGroupByConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);
-    }
-
-    private static <X> Set<X> asSet(X... x) {
-        return Arrays.stream(x)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    private static <X, Y> Map<X, Y> asMap(X x1, Y y1) {
-        Map<X, Y> result = new LinkedHashMap<>(0);
-        result.put(x1, y1);
-        return result;
-    }
-
-    private static <X, Y> Map<X, Y> asMap(X x1, Y y1, X x2, Y y2) {
-        Map<X, Y> result = asMap(x1, y1);
-        result.put(x2, y2);
-        return result;
     }
 
     @Test
