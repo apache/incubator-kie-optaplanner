@@ -20,7 +20,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.google.common.base.Functions;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -71,7 +70,6 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
     }
 
     @Test
-    @Ignore("Regrouping not yet supported.")
     public void collectedFilteredRecollected() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -107,7 +105,6 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
     }
 
     @Test
-    @Ignore("Regrouping not yet supported.")
     public void bigroupBiregrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -144,7 +141,6 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
     }
 
     @Test
-    @Ignore("Regrouping not yet supported.")
     public void bigroupBiregroupedRegrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
