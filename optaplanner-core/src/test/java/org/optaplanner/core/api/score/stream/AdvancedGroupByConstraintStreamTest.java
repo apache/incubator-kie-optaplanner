@@ -16,12 +16,13 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.common.base.Functions;
@@ -103,7 +104,35 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
     }
 
     @Test
-    public void bigroupCollected() {
+    public void uniGroupByRecollected() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 2);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup)
+                    .groupBy(toSet())
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, Set::size);
+        });
+
+        TestdataLavishEntity entity1 = solution.getFirstEntity();
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, asSet(entity1.getEntityGroup(), entity2.getEntityGroup())));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity1);
+        solution.getEntityList().remove(entity1);
+        scoreDirector.afterEntityRemoved(entity1);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, asSet(entity2.getEntityGroup())));
+    }
+
+    @Test
+    public void biGroupByRecollected() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 5);
 
@@ -236,6 +265,11 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
                 assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2));
     }
 
+    private static <X> Set<X> asSet(X... x) {
+        return Arrays.stream(x)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     private static <X, Y> Map<X, Y> asMap(X x1, Y y1) {
         Map<X, Y> result = new LinkedHashMap<>(0);
         result.put(x1, y1);
@@ -244,18 +278,6 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
 
     private static <X, Y> Map<X, Y> asMap(X x1, Y y1, X x2, Y y2) {
         Map<X, Y> result = asMap(x1, y1);
-        result.put(x2, y2);
-        return result;
-    }
-
-    private static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1) {
-        SortedMap<X, Y> result = new TreeMap<>();
-        result.put(x1, y1);
-        return result;
-    }
-
-    private static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1, X x2, Y y2) {
-        SortedMap<X, Y> result = asSortedMap(x1, y1);
         result.put(x2, y2);
         return result;
     }
