@@ -43,7 +43,7 @@ public abstract class AbstractConstraintStreamHelper<Right, JoinedStream, Joiner
         for (int i = 0; i < joinerCount; i++) {
             Joiner joiner = joiners[i];
             if (indexOfFirstFilter >= 0) {
-                if (!(isFilteringJoiner(joiner))) {
+                if (!isFilteringJoiner(joiner)) {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow " +
                             "a filtering joiner (" + joiners[indexOfFirstFilter] + ").\n" +
                             "Maybe reorder the joiners such that filtering() joiners are later in the parameter list.");
