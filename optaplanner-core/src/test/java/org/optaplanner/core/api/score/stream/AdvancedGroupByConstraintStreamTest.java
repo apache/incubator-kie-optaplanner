@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -27,6 +28,9 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.toSet;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
@@ -51,7 +55,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .groupBy(ConstraintCollectors.count())
+                    .groupBy(count())
                     .filter(count -> count == 10)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, i -> i);
         });
@@ -72,36 +76,25 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
     @Test
     public void collectedFilteredRecollected() {
         assumeDrools();
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
-        TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
-        solution.getEntityGroupList().add(entityGroup1);
-        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup1, solution.getFirstValue());
-        solution.getEntityList().add(entity1);
-        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup1, solution.getFirstValue());
-        solution.getEntityList().add(entity2);
-        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
-        solution.getEntityList().add(entity3);
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 2);
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .groupBy(ConstraintCollectors.count())
-                    .filter(count -> count == 10)
-                    .groupBy(ConstraintCollectors.count())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+                    .groupBy(toSet())
+                    .groupBy(sum(Set::size))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, count -> count);
         });
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
-        assertScore(scoreDirector, assertMatchWithScore(-1, 1));
+        assertScore(scoreDirector, assertMatchWithScore(-2, 2));
 
         // Incremental
-        Stream.of(entity1, entity2).forEach(entity -> {
-            scoreDirector.beforeEntityRemoved(entity);
-            solution.getEntityList().remove(entity);
-            scoreDirector.afterEntityRemoved(entity);
-        });
-        assertScore(scoreDirector); // There is less than 10 entities, and therefore there are no penalties.
+        TestdataLavishEntity entity = solution.getFirstEntity();
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector, assertMatchWithScore(-1, 1));
     }
 
     @Test
@@ -121,7 +114,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                     .groupBy((entityA, entityB) -> entityA.getEntityGroup())
-                    .groupBy(Function.identity(), ConstraintCollectors.count())
+                    .groupBy(Function.identity(), count())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
@@ -157,7 +150,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                     .groupBy((entityA, entityB) -> entityA.getEntityGroup())
-                    .groupBy(Function.identity(), ConstraintCollectors.count())
+                    .groupBy(Function.identity(), count())
                     .groupBy((entityGroup, count) -> count)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, w -> w * 2);
         });
@@ -193,7 +186,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .groupBy(TestdataLavishEntity::getEntityGroup, ConstraintCollectors.count())
+                    .groupBy(TestdataLavishEntity::getEntityGroup, count())
                     .ifExists(TestdataLavishEntityGroup.class, equal((groupA, count) -> groupA, Functions.identity()))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupA, count) -> count);
         });
@@ -229,7 +222,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
                     .ifExists(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Functions.identity()))
-                    .groupBy(TestdataLavishEntity::getEntityGroup, ConstraintCollectors.count())
+                    .groupBy(TestdataLavishEntity::getEntityGroup, count())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupA, count) -> count);
         });
 
