@@ -17,7 +17,6 @@
 package org.optaplanner.core.api.score.stream.tri;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -38,8 +37,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerUtils;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 
 /**
@@ -199,42 +197,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * {@link QuadJoiner joiners} are true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        int joinerCount = joiners.length;
-        int indexOfFirstFilter = -1;
-        // Make sure all indexing joiners, if any, come before filtering joiners. This is necessary for performance.
-        for (int i = 0; i < joinerCount; i++) {
-            QuadJoiner<A, B, C, D> joiner = joiners[i];
-            if (indexOfFirstFilter >= 0) {
-                if (!(joiner instanceof FilteringQuadJoiner)) {
-                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow " +
-                            "a filtering joiner (" + joiners[indexOfFirstFilter] + ").\n" +
-                            "Maybe reorder the joiners such that filtering() joiners are later in the parameter list.");
-                }
-            } else {
-                if (joiner instanceof FilteringQuadJoiner) { // From now on, we only allow filtering joiners.
-                    indexOfFirstFilter = i;
-                }
-            }
-        }
-        if (indexOfFirstFilter < 0) { // Only found indexing joiners.
-            return join(otherClass, AbstractQuadJoiner.merge(joiners));
-        }
-        // Assemble the join stream that may be followed by filter stream.
-        QuadConstraintStream<A, B, C, D> joined = indexOfFirstFilter == 0 ?
-                join(otherClass) :
-                join(otherClass, Arrays.copyOf(joiners, indexOfFirstFilter));
-        int filterCount = joinerCount - indexOfFirstFilter;
-        if (filterCount == 0) { // No filters, return the original join stream.
-            return joined;
-        }
-        // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
-        FilteringQuadJoiner<A, B, C, D> filteringJoiner = (FilteringQuadJoiner<A, B, C, D>) joiners[indexOfFirstFilter];
-        QuadPredicate<A, B, C, D> resultingFilter = filteringJoiner.getFilter();
-        for (int i = indexOfFirstFilter + 1; i < joinerCount; i++) {
-            FilteringQuadJoiner<A, B, C, D> anoterFilteringJoiner = (FilteringQuadJoiner<A, B, C, D>) joiners[i];
-            resultingFilter = resultingFilter.and(anoterFilteringJoiner.getFilter());
-        }
-        return joined.filter(resultingFilter);
+        return JoinerUtils.join(this, otherClass, joiners);
     }
 
     // ************************************************************************

@@ -17,7 +17,6 @@
 package org.optaplanner.core.api.score.stream.bi;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -38,8 +37,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
-import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerUtils;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 /**
@@ -198,42 +196,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        int joinerCount = joiners.length;
-        int indexOfFirstFilter = -1;
-        // Make sure all indexing joiners, if any, come before filtering joiners. This is necessary for performance.
-        for (int i = 0; i < joinerCount; i++) {
-            TriJoiner<A, B, C> joiner = joiners[i];
-            if (indexOfFirstFilter >= 0) {
-                if (!(joiner instanceof FilteringTriJoiner)) {
-                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow " +
-                            "a filtering joiner (" + joiners[indexOfFirstFilter] + ").\n" +
-                            "Maybe reorder the joiners such that filtering() joiners are later in the parameter list.");
-                }
-            } else {
-                if (joiner instanceof FilteringTriJoiner) { // From now on, we only allow filtering joiners.
-                    indexOfFirstFilter = i;
-                }
-            }
-        }
-        if (indexOfFirstFilter < 0) { // Only found indexing joiners.
-            return join(otherClass, AbstractTriJoiner.merge(joiners));
-        }
-        // Assemble the join stream that may be followed by filter stream.
-        TriConstraintStream<A, B, C> joined = indexOfFirstFilter == 0 ?
-                join(otherClass) :
-                join(otherClass, Arrays.copyOf(joiners, indexOfFirstFilter));
-        int filterCount = joinerCount - indexOfFirstFilter;
-        if (filterCount == 0) { // No filters, return the original join stream.
-            return joined;
-        }
-        // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
-        FilteringTriJoiner<A, B, C> filteringJoiner = (FilteringTriJoiner<A, B, C>) joiners[indexOfFirstFilter];
-        TriPredicate<A, B, C> resultingFilter = filteringJoiner.getFilter();
-        for (int i = indexOfFirstFilter + 1; i < joinerCount; i++) {
-            FilteringTriJoiner<A, B, C> anoterFilteringJoiner = (FilteringTriJoiner<A, B, C>) joiners[i];
-            resultingFilter = resultingFilter.and(anoterFilteringJoiner.getFilter());
-        }
-        return joined.filter(resultingFilter);
+        return JoinerUtils.join(this, otherClass, joiners);
     }
 
     // ************************************************************************
