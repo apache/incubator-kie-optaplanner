@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Remembers the {@link PlanningSolution best solution} that a {@link Solver} encounters.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapter<Solution_> {
@@ -124,16 +125,18 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     }
 
     protected void updateBestSolution(DefaultSolverScope<Solution_> solverScope, Score bestScore,
-            Solution_ bestSolution) {
+                                      Solution_ bestSolution) {
         if (bestScore.isSolutionInitialized()) {
             if (!solverScope.isBestSolutionInitialized()) {
                 solverScope.setStartingInitializedScore(bestScore);
             }
+            // Only update the best solution time if the solution is initalized
+            // (prevents solver from continuing a UnimprovedTimeMillisSpentTermination
+            // if a ConstructionHeuristic fails to finish)
+            solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
         }
         solverScope.setBestSolution(bestSolution);
         solverScope.setBestScore(bestScore);
-        solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
         solverEventSupport.fireBestSolutionChanged(solverScope, bestSolution);
     }
-
 }
