@@ -130,9 +130,9 @@ public class LocationDataGenerator {
     ));
 
     public static class LocationData {
-        private String name;
-        protected double latitude;
-        protected double longitude;
+        private final String name;
+        protected final double latitude;
+        protected final double longitude;
 
         public LocationData(String name, double latitude, double longitude) {
             this.name = name;
