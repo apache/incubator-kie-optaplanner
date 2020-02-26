@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,12 +112,14 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     @Override
     public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
+        // Clear non-started operations to improve shutdown performance. We're shutting down anyway, so it's fine.
+        operationQueue.clear();
         // Tell the move thread runners to stop
         DestroyOperation<Solution_> destroyOperation = new DestroyOperation<>();
         for (int i = 0; i < moveThreadCount; i++) {
             operationQueue.add(destroyOperation);
         }
-        // TODO This should probably be in a finally that spawns at least the entire phase, maybe even the entire solve
+        // TODO This should probably be in a finally that spans at least the entire phase, maybe even the entire solve
         ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Multithreaded Local Search");
         long childThreadsScoreCalculationCount = 0;
         for (MoveThreadRunner<Solution_> moveThreadRunner : moveThreadRunnerList) {
