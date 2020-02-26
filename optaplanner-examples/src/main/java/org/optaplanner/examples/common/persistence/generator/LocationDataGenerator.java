@@ -76,6 +76,7 @@ public class LocationDataGenerator {
             new LocationData("VCE", 45.505278, 12.351944)
     ));
 
+    // Unused, but we're keeping it around if we ever need to recreate the europe40 data set.
     public static final List<LocationData> EUROPE_CAPITALS = unmodifiableList(asList(
             new LocationData("Brussels", 50.797140, 4.361572),
             new LocationData("Dublin", 53.309435, -6.284180),
