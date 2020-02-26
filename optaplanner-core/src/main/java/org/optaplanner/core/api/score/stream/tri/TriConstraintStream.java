@@ -370,7 +370,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * Convert the {@link TriConstraintStream} to a {@link UniConstraintStream}, containing only a single tuple, the
      * result of applying {@link TriConstraintCollector}.
      * @param collector never null, the collector to perform the grouping operation with
-     * (See {@link ConstraintCollectors} for a selection of ready-made collectors.)
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
      * @return never null
@@ -396,7 +396,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * the same first fact.
      * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
      * @param collector never null, the collector to perform the grouping operation with
-     * (See {@link ConstraintCollectors} for a selection of ready-made collectors.)
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
@@ -429,7 +429,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collector never null, the collector to perform the grouping operation with
-     * (See {@link ConstraintCollectors} for a selection of ready-made collectors.)
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
      * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
@@ -450,9 +450,9 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collectorC never null, the collector to perform the first grouping operation with
-     * (See {@link ConstraintCollectors} for a selection of ready-made collectors.)
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param collectorD never null, the collector to perform the second grouping operation with
-     * (See {@link ConstraintCollectors} for a selection of ready-made collectors.)
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)

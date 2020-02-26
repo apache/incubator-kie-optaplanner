@@ -340,9 +340,9 @@ For a full list of all supported `Joiner` implementations and their various over
 
 [NOTE]
 ====
-In case you only need to act when a particular fact exists, and you don't need to access the fact itself, use
-<<constraintStreamsConditionalPropagation,conditional propagation>> instead.
-Conditional propagation does not create cartesian products and therefore generally performs better.
+If the other stream might match multiple times, but it must only impact the score once (for each element of the original
+stream), use <<constraintStreamsConditionalPropagation,ifExists>> instead.
+It does not create cartesian products and therefore generally performs better.
 ====
 
 
