@@ -91,6 +91,7 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
                 enabledConstraintIdSet.add(constraint.getConstraintId());
             }
         });
+        // Determine the KieBase to use.
         boolean allAreEnabled = enabledConstraintIdSet.size() == compiledRuleToConstraintMap.size();
         if (allAreEnabled) { // Shortcut; don't change the original KieBase.
             activeKieBase = originalKieBase;
@@ -102,6 +103,7 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
             activeKieBase = KieBaseBuilder.createKieBaseFromModel(model);
             activeConstraintIdSet = enabledConstraintIdSet;
         }
+        // Create the session itself.
         KieSession kieSession = activeKieBase.newKieSession();
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
         kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
