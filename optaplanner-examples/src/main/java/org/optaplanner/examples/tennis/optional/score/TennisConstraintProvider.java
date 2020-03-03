@@ -40,14 +40,12 @@ public class TennisConstraintProvider implements ConstraintProvider {
     // Hard constraints
     // ############################################################################
 
-    // TODO: Fix penalization so that it penalizes for EACH assignment pair. Do the same for the DRL file.
     private Constraint oneAssignmentPerDatePerTeam(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TeamAssignment.class)
-                .ifExists(TeamAssignment.class,
+                .join(TeamAssignment.class,
                         Joiners.equal(TeamAssignment::getTeam),
                         Joiners.equal(TeamAssignment::getDay),
-                        Joiners.lessThan(TeamAssignment::getId),
-                        Joiners.filtering((teamAssignment, otherTeamAssignment) -> teamAssignment.getTeam() != null))
+                        Joiners.lessThan(TeamAssignment::getId))
                 .penalize("oneAssignmentPerDatePerTeam", HardMediumSoftScore.ONE_HARD);
     }
 
