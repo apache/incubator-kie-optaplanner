@@ -51,8 +51,8 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final Model originalModel;
     private KieBase originalKieBase;
-    private KieBase activeKieBase;
-    private Set<String> activeConstraintIdSet = null;
+    private KieBase currentKieBase;
+    private Set<String> currentlyDisabledConstraintIdSet = null;
     private final Map<Rule, DroolsConstraint<Solution_>> compiledRuleToConstraintMap;
     private final Map<String, org.drools.model.Rule> constraintToModelRuleMap;
 
@@ -61,9 +61,9 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
         this.solutionDescriptor = solutionDescriptor;
         this.originalModel = model;
         this.originalKieBase = KieBaseBuilder.createKieBaseFromModel(model);
-        this.activeKieBase = originalKieBase;
+        this.currentKieBase = originalKieBase;
         this.compiledRuleToConstraintMap = constraintList.stream()
-                .collect(toMap(constraint -> activeKieBase.getRule(constraint.getConstraintPackage(),
+                .collect(toMap(constraint -> currentKieBase.getRule(constraint.getConstraintPackage(),
                         constraint.getConstraintName()), Function.identity()));
         this.constraintToModelRuleMap = constraintList.stream()
                 .collect(toMap(Constraint::getConstraintId, constraint -> model.getRules().stream()
@@ -83,28 +83,32 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
                         compiledRuleToConstraintMap.get(rule).getExpectedJustificationTypes()));
         // Determine which rules to enable based on the fact that their constraints carry weight.
         Score<?> zero = scoreDefinition.getZeroScore();
-        Set<String> enabledConstraintIdSet = new LinkedHashSet<>(compiledRuleToConstraintMap.size());
+        Set<String> disabledConstraintIdSet = new LinkedHashSet<>(0);
         compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
             Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
             scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
-            if (!constraintWeight.equals(zero)) {
-                enabledConstraintIdSet.add(constraint.getConstraintId());
+            if (constraintWeight.equals(zero)) {
+                disabledConstraintIdSet.add(constraint.getConstraintId());
             }
         });
         // Determine the KieBase to use.
-        boolean allAreEnabled = enabledConstraintIdSet.size() == compiledRuleToConstraintMap.size();
-        if (allAreEnabled) { // Shortcut; don't change the original KieBase.
-            activeKieBase = originalKieBase;
-            activeConstraintIdSet = null;
-        } else if (!enabledConstraintIdSet.equals(activeConstraintIdSet)) {
-            // Only rebuild the active KieBase when the set of enabled constraints changed.
+        if (disabledConstraintIdSet.isEmpty()) { // Shortcut; don't change the original KieBase.
+            currentKieBase = originalKieBase;
+            currentlyDisabledConstraintIdSet = null;
+        } else if (!disabledConstraintIdSet.equals(currentlyDisabledConstraintIdSet)) {
+            // Only rebuild the active KieBase when the set of disabled constraints changed.
             ModelImpl model = new ModelImpl().withGlobals(originalModel.getGlobals());
-            enabledConstraintIdSet.forEach(constraintId -> model.addRule(constraintToModelRuleMap.get(constraintId)));
-            activeKieBase = KieBaseBuilder.createKieBaseFromModel(model);
-            activeConstraintIdSet = enabledConstraintIdSet;
+            constraintToModelRuleMap.forEach((constraintId, modelRule) -> {
+                if (disabledConstraintIdSet.contains(constraintId)) {
+                    return;
+                }
+                model.addRule(modelRule);
+            });
+            currentKieBase = KieBaseBuilder.createKieBaseFromModel(model);
+            currentlyDisabledConstraintIdSet = disabledConstraintIdSet;
         }
         // Create the session itself.
-        KieSession kieSession = activeKieBase.newKieSession();
+        KieSession kieSession = currentKieBase.newKieSession();
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
         kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
         return new DroolsConstraintSession<>(kieSession, scoreHolder);
