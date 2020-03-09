@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import org.kie.api.KieBase;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -45,6 +44,7 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 import static org.drools.model.DSL.globalOf;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 
@@ -77,7 +77,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
                     + " so the pairs can not be made unique ([A,B] vs [B,A]).");
         }
         Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        return from(fromClass).join(fromClass, joiner, Joiners.lessThan(planningIdGetter));
+        return from(fromClass).join(fromClass, lessThan(planningIdGetter), joiner);
     }
 
     // ************************************************************************

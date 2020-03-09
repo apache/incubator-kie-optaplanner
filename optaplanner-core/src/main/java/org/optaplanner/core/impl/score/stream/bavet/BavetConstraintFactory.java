@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -35,6 +34,8 @@ import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
+
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public final class BavetConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 
@@ -75,7 +76,7 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
         }
         // TODO Breaks node sharing + involves unneeded indirection
         Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        return from(fromClass).join(fromClass, joiner, Joiners.lessThan(planningIdGetter));
+        return from(fromClass).join(fromClass, lessThan(planningIdGetter), joiner);
     }
 
     // ************************************************************************
