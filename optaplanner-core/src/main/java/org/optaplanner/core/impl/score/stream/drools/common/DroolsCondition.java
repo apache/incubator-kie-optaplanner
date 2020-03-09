@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -212,6 +213,29 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
             TriFunction<Variable<Set<InTuple>>, PatternDef<Set<InTuple>>, ViewItem<?>, C> {
 
     }
+
+    public final class ImmediatelyPreviousFilter<PredicateType> {
+
+        public final T ruleStructure;
+        public final PredicateType mergedPredicate;
+
+        /**
+         * When two filters follow one another immediately, we merge them into a new {@link Predicate}. This is done for
+         * performance reasons, as filters are not indexed and therefore we only want to pay the penalty once.
+         *
+         * This class is a data carrier facilitating that feature.
+         *
+         * @param ruleStructure the original structure to apply the merged predicate on
+         * @param mergedPredicate the merged predicate from the last filter operation
+         */
+        public ImmediatelyPreviousFilter(T ruleStructure, PredicateType mergedPredicate) {
+            this.ruleStructure = ruleStructure;
+            this.mergedPredicate = mergedPredicate;
+        }
+
+    }
+
+
 
     public Class[] getExpectedJustificationTypes() {
         return ruleStructure.getExpectedJustificationTypes();
