@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -29,6 +30,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
@@ -59,7 +61,16 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
         }
         // TODO In Bavet breaks node sharing + involves unneeded indirection
         Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        return from(fromClass).join(fromClass, lessThan(planningIdGetter), joiner);
+        // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
+        if (joiner instanceof FilteringBiJoiner) {
+            BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>)joiner).getFilter();
+            return from(fromClass)
+                    .join(fromClass, lessThan(planningIdGetter))
+                    .filter(filter);
+        } else {
+            return from(fromClass)
+                    .join(fromClass, joiner, lessThan(planningIdGetter));
+        }
     }
 
     // ************************************************************************
