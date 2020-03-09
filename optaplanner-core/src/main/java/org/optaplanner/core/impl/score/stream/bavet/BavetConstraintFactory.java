@@ -20,22 +20,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
-import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
-import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
-
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public final class BavetConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 
@@ -60,23 +52,6 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
     @Override
     public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
         return new BavetFromUniConstraintStream<>(this, fromClass);
-    }
-
-    // ************************************************************************
-    // fromUniquePair
-    // ************************************************************************
-
-    @Override
-    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
-        MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
-        if (planningIdMemberAccessor == null) {
-            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
-                    + PlanningId.class.getSimpleName() + " annotation,"
-                    + " so the pairs can not be made unique ([A,B] vs [B,A]).");
-        }
-        // TODO Breaks node sharing + involves unneeded indirection
-        Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        return from(fromClass).join(fromClass, lessThan(planningIdGetter), joiner);
     }
 
     // ************************************************************************
