@@ -71,7 +71,7 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
     public DroolsQuadCondition<A, B, C, D, PatternVar> andFilter(QuadPredicate<A, B, C, D> predicate) {
         boolean shouldMergeFilters = (previousFilter != null);
         QuadPredicate<A, B, C, D> actualPredicate = shouldMergeFilters ?
-                previousFilter.mergedPredicate.and(predicate) :
+                previousFilter.predicate.and(predicate) :
                 predicate;
         Predicate5<PatternVar, A, B, C, D> filter = (__, a, b, c, d) -> actualPredicate.test(a, b, c, d);
         // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.

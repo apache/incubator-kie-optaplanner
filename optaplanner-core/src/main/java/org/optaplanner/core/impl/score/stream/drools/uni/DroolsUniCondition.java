@@ -101,7 +101,7 @@ public final class DroolsUniCondition<A, PatternVar>
     public DroolsUniCondition<A, PatternVar> andFilter(Predicate<A> predicate) {
         boolean shouldMergeFilters = (previousFilter != null);
         Predicate<A> actualPredicate = shouldMergeFilters ?
-                previousFilter.mergedPredicate.and(predicate) :
+                previousFilter.predicate.and(predicate) :
                 predicate;
         Predicate1<PatternVar> filter = a -> actualPredicate.test((A) a);
         AlphaIndex<PatternVar, Boolean> index = alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1,

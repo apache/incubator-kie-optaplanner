@@ -207,6 +207,10 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
         return ruleStructure;
     }
 
+    public Class[] getExpectedJustificationTypes() {
+        return ruleStructure.getExpectedJustificationTypes();
+    }
+
     @FunctionalInterface
     private interface Mutator<InTuple, OutPatternVar, R extends DroolsRuleStructure<OutPatternVar>,
             C extends DroolsCondition<OutPatternVar, R>> extends
@@ -214,31 +218,24 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
 
     }
 
+    /**
+     * When two filters follow one another immediately, we merge them into a new {@link Predicate}. This is done for
+     * performance reasons, as filters are not indexed and therefore we only want to pay the penalty once.
+     *
+     * This class is a data carrier facilitating that feature.
+     *
+     * @param <PredicateType> type of the predicate (uni, bi, ...) matching the stream
+     */
     public final class ImmediatelyPreviousFilter<PredicateType> {
 
         public final T ruleStructure;
-        public final PredicateType mergedPredicate;
+        public final PredicateType predicate;
 
-        /**
-         * When two filters follow one another immediately, we merge them into a new {@link Predicate}. This is done for
-         * performance reasons, as filters are not indexed and therefore we only want to pay the penalty once.
-         *
-         * This class is a data carrier facilitating that feature.
-         *
-         * @param ruleStructure the original structure to apply the merged predicate on
-         * @param mergedPredicate the merged predicate from the last filter operation
-         */
-        public ImmediatelyPreviousFilter(T ruleStructure, PredicateType mergedPredicate) {
+        public ImmediatelyPreviousFilter(T ruleStructure, PredicateType predicate) {
             this.ruleStructure = ruleStructure;
-            this.mergedPredicate = mergedPredicate;
+            this.predicate = predicate;
         }
 
-    }
-
-
-
-    public Class[] getExpectedJustificationTypes() {
-        return ruleStructure.getExpectedJustificationTypes();
     }
 
 }

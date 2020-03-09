@@ -73,7 +73,7 @@ public final class DroolsBiCondition<A, B, PatternVar>
     public DroolsBiCondition<A, B, PatternVar> andFilter(BiPredicate<A, B> predicate) {
         boolean shouldMergeFilters = (previousFilter != null);
         BiPredicate<A, B> actualPredicate = shouldMergeFilters ?
-                previousFilter.mergedPredicate.and(predicate) :
+                previousFilter.predicate.and(predicate) :
                 predicate;
         Predicate3<PatternVar, A, B> filter = (__, a, b) -> actualPredicate.test(a, b);
         // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.

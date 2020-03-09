@@ -74,7 +74,7 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
     public DroolsTriCondition<A, B, C, PatternVar> andFilter(TriPredicate<A, B, C> predicate) {
         boolean shouldMergeFilters = (previousFilter != null);
         TriPredicate<A, B, C> actualPredicate = shouldMergeFilters ?
-                previousFilter.mergedPredicate.and(predicate) :
+                previousFilter.predicate.and(predicate) :
                 predicate;
         Predicate4<PatternVar, A, B, C> filter = (__, a, b, c) -> actualPredicate.test(a, b, c);
         // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
