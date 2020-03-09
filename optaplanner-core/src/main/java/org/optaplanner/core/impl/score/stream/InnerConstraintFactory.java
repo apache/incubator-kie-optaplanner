@@ -60,7 +60,7 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
                     + " so the pairs can not be made unique ([A,B] vs [B,A]).");
         }
         // TODO In Bavet breaks node sharing + involves unneeded indirection
-        Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
         // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
         if (joiner instanceof FilteringBiJoiner) {
             BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>)joiner).getFilter();
