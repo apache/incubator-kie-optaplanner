@@ -111,9 +111,6 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             if (intMatchWeigher != null) {
                 scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     int matchWeight = intMatchWeigher.applyAsInt(a);
-                    if (matchWeight == 0) { // No need to include and no need to undo later.
-                        return () -> { /* NOOP */ };
-                    }
                     constraint.assertCorrectImpact(matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
@@ -130,9 +127,6 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             if (longMatchWeigher != null) {
                 scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     long matchWeight = longMatchWeigher.applyAsLong(a);
-                    if (matchWeight == 0L) { // No need to include and no need to undo later.
-                        return () -> { /* NOOP */ };
-                    }
                     constraint.assertCorrectImpact(matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
@@ -145,14 +139,10 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
                         + ") must return a long.");
             }
         } else if (weightedScoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter =
-                    (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
+            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter = (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
             if (bigDecimalMatchWeigher != null) {
                 scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
-                    if (matchWeight.signum() == 0) { // No need to include and no need to undo later.
-                        return () -> { /* NOOP */ };
-                    }
                     constraint.assertCorrectImpact(matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };

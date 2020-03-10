@@ -176,9 +176,6 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
 
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(DroolsConstraint<?> constraint,
             Drools drools, H scoreHolder, int impact) {
-        if (impact == 0) { // No need to include and no need to undo later.
-            return;
-        }
         RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
@@ -186,9 +183,6 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
 
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(DroolsConstraint<?> constraint,
             Drools drools, H scoreHolder, long impact) {
-        if (impact == 0L) { // No need to include and no need to undo later.
-            return;
-        }
         RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
@@ -196,9 +190,6 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
 
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(DroolsConstraint<?> constraint,
             Drools drools, H scoreHolder, BigDecimal impact) {
-        if (impact.signum() == 0) { // No need to include and no need to undo later.
-            return;
-        }
         RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
