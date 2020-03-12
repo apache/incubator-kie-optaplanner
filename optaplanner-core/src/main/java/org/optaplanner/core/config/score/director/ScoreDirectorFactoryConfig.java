@@ -30,6 +30,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.BooleanUtils;
+import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -82,7 +83,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("scoreDirectorFactory")
 public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
@@ -679,7 +680,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             kieFileSystem.writeKModuleXML(kmodel.toXML());
 
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
-            kieBuilder.buildAll();
+            kieBuilder.buildAll(DrlProject.class);
             Results results = kieBuilder.getResults();
             if (results.hasMessages(Message.Level.ERROR)) {
                 throw new IllegalStateException("There are errors in a score DRL:\n"
@@ -719,7 +720,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     }
 
     @Override
-    public void inherit(ScoreDirectorFactoryConfig inheritedConfig) {
+    public ScoreDirectorFactoryConfig inherit(ScoreDirectorFactoryConfig inheritedConfig) {
         if (scoreDefinitionClass == null && scoreDefinitionType == null
                 && bendableHardLevelsSize == null && bendableSoftLevelsSize == null) {
             scoreDefinitionClass = inheritedConfig.getScoreDefinitionClass();
@@ -758,6 +759,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 assertionScoreDirectorFactory, inheritedConfig.getAssertionScoreDirectorFactory());
         generateDroolsTestOnError = ConfigUtils.inheritOverwritableProperty(
                 generateDroolsTestOnError, inheritedConfig.isGenerateDroolsTestOnError());
+        return this;
+    }
+
+    @Override
+    public ScoreDirectorFactoryConfig copyConfig() {
+        return new ScoreDirectorFactoryConfig().inherit(this);
     }
 
 }

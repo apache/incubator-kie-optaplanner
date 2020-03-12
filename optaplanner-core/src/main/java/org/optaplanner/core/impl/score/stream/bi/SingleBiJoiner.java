@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,13 +49,14 @@ public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     // ************************************************************************
 
     @Override
-    public Function<A, Object> getLeftMapping(int joinerIndex) {
-        return (Function<A, Object>) leftMapping;
+    public Function<A, Object> getLeftMapping(int index) {
+        assertMappingIndex(index);
+        return (Function<A, Object>) getLeftMapping();
     }
 
     @Override
     public Function<A, Object[]> getLeftCombinedMapping() {
-        return (A a) -> new Object[] { leftMapping.apply(a) };
+        return (A a) -> new Object[]{getLeftMapping(0).apply(a)};
     }
 
     @Override
@@ -64,12 +65,13 @@ public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     @Override
-    public Function<B, Object> getRightMapping(int joinerIndex) {
-        return (Function<B, Object>) rightMapping;
+    public Function<B, Object> getRightMapping(int index) {
+        assertMappingIndex(index);
+        return (Function<B, Object>) getRightMapping();
     }
 
     @Override
     public Function<B, Object[]> getRightCombinedMapping() {
-        return (B b) -> new Object[] { rightMapping.apply(b) };
+        return (B b) -> new Object[]{getRightMapping(0).apply(b)};
     }
 }

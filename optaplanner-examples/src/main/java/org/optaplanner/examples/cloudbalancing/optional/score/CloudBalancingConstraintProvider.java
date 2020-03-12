@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,17 @@
 
 package org.optaplanner.examples.cloudbalancing.optional.score;
 
+import java.util.function.Function;
+
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public class CloudBalancingConstraintProvider implements ConstraintProvider {
 
@@ -72,14 +76,11 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     private Constraint computerCost(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(CloudProcess.class)
-                // TODO Simplify by using:
-                // .groupBy(CloudProcess::getComputer)
-                // .penalize(CloudComputer::getCost);
-                .groupBy(CloudProcess::getComputer, count())
+        return constraintFactory.from(CloudComputer.class)
+                .ifExists(CloudProcess.class, equal(Function.identity(), CloudProcess::getComputer))
                 .penalize("computerCost",
                         HardSoftScore.ONE_SOFT,
-                        (computer, count) -> computer.getCost());
+                        CloudComputer::getCost);
     }
 
 }

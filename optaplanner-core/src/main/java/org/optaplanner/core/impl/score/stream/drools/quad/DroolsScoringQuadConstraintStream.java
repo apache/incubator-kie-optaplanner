@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
@@ -83,14 +84,16 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsQuadCondition<A, B, C, D> condition = parent.getCondition();
+    public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+        DroolsQuadCondition<A, B, C, D, ?> condition =
+                ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent).getCondition();
         if (intMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, longMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
             return condition.completeWithScoring(scoreHolderGlobal);
         } else {
@@ -99,8 +102,14 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public DroolsQuadCondition<A, B, C, D> getCondition() {
+    public DroolsQuadCondition<A, B, C, D, ?> getCondition() {
         throw new UnsupportedOperationException("Scoring stream does not have its own QuadCondition.");
+    }
+
+    @Override
+    public Class[] getExpectedJustificationTypes() {
+        return ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent).getCondition()
+                .getExpectedJustificationTypes();
     }
 
     @Override

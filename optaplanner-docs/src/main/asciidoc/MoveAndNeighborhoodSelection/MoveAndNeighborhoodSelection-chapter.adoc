@@ -50,7 +50,7 @@ Therefore, all the optimization algorithms are confronted with `Move` selection:
 
 
 [[whatIsAMoveSelector]]
-=== What is a `MoveSelector?
+=== What is a `MoveSelector`?
 
 A ``MoveSelector``'s main function is to create `Iterator<Move>` when needed.
 An optimization algorithm will iterate through a subset of those moves.
@@ -109,7 +109,7 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 [[genericMoveSelectorsOverview]]
 === Generic `MoveSelectors` overview
 
-[cols="1,2a,2a"]
+[cols="1,2a,2a",options="header"]
 |===
 |Name |Description |`toString()` example
 
@@ -182,7 +182,7 @@ A `ChangeMove` is the finest grained move.
 [IMPORTANT]
 ====
 Almost every `moveSelector` configuration injected into a metaheuristic algorithm should include a `changeMoveSelector`.
-This guarantees that every possible `Solution` can be reached in theory through applying a number of moves in sequence.
+This guarantees that every possible solution can be reached in theory through applying a number of moves in sequence.
 Of course, normally it is unioned with other, more coarse grained move selectors.
 ====
 
@@ -536,7 +536,7 @@ and step caching scales badly memory wise.
 
 
 [[combiningMultipleMoveSelectors]]
-== Combining multiple `MoveSelector`s
+== Combining multiple ``MoveSelector``s
 
 
 [[unionMoveSelector]]
@@ -1111,7 +1111,7 @@ You'll also need to configure it (unless it's annotated on the domain model and 
 [[sortedSelectionBySelectionSorterWeightFactory]]
 ==== Sorted selection by `SelectionSorterWeightFactory`
 
-If you need the entire `Solution` to sort a ``Selector``, use a `SelectionSorterWeightFactory` instead:
+If you need the entire solution to sort a ``Selector``, use a `SelectionSorterWeightFactory` instead:
 
 [source,java,options="nowrap"]
 ----
@@ -1510,7 +1510,7 @@ In the cloud balancing example, a move which assigns a process to the computer i
 
 We don't need to check if `toCloudComputer` is in the value range,
 because we only generate moves for which that is the case.
-A move that is currently not doable can become doable when the working `Solution` changes in a later step,
+A move that is currently not doable can become doable when the working solution changes in a later step,
 otherwise we probably shouldn't have created it in the first place.
 
 Each move has an __undo move__: a move (normally of the same type) which does the exact opposite.
@@ -1729,7 +1729,7 @@ add the `moveListFactoryCustomProperties` element and use <<customPropertiesConf
 
 [WARNING]
 ====
-A custom `MoveListFactory`implementation must ensure
+A custom `MoveListFactory` implementation must ensure
 that it does not move <<immovablePlanningEntities, immovable entities>>.
 ====
 

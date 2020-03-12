@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,31 +19,56 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.LongSupplier;
+import java.util.function.UnaryOperator;
 
-import org.drools.model.RuleItemBuilder;
+import org.drools.model.PatternDSL;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 
-public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
+public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStructure<PatternVar> {
 
     private final Variable<A> a;
-    private final DroolsPatternBuilder<?> aPattern;
-    private final List<RuleItemBuilder<?>> supportingRuleItems;
+    private final DroolsPatternBuilder<PatternVar> aPattern;
+    private final List<ViewItemBuilder<?>> shelved;
+    private final List<ViewItemBuilder<?>> prerequisites;
+    private final List<ViewItemBuilder<?>> dependents;
 
-    public DroolsUniRuleStructure(Variable<A> aVariable, DroolsPatternBuilder<?> aPattern,
-            List<RuleItemBuilder<?>> supportingRuleItems, LongSupplier variableIdSupplier) {
+    public DroolsUniRuleStructure(Variable<A> aVariable, DroolsPatternBuilder<PatternVar> aPattern,
+            List<ViewItemBuilder<?>> shelved, List<ViewItemBuilder<?>> prerequisites,
+            List<ViewItemBuilder<?>> dependents, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.aPattern = aPattern;
-        this.supportingRuleItems = Collections.unmodifiableList(supportingRuleItems);
+        this.shelved = Collections.unmodifiableList(shelved);
+        this.prerequisites = Collections.unmodifiableList(prerequisites);
+        this.dependents = Collections.unmodifiableList(dependents);
     }
 
     public DroolsUniRuleStructure(Class<A> aClass, LongSupplier varialeIdSupplier) {
         super(varialeIdSupplier);
-        this.a = createVariable(aClass,"base");
-        this.aPattern = new DroolsPatternBuilder<>(a);
-        this.supportingRuleItems = Collections.emptyList();
+        this.a = (Variable<A>) createVariable(aClass,"base");
+        this.aPattern = new DroolsPatternBuilder<>((Variable<PatternVar>) a);
+        this.shelved = Collections.emptyList();
+        this.prerequisites = Collections.emptyList();
+        this.dependents = Collections.emptyList();
+    }
+
+    public <B> DroolsUniRuleStructure<A, PatternVar> existsOrNot(PatternDef<B> existencePattern, boolean shouldExist) {
+        ExprViewItem item = PatternDSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = PatternDSL.not(item);
+        }
+        return new DroolsUniRuleStructure<>(a, aPattern, shelved, prerequisites, mergeDependents(item),
+                getVariableIdSupplier());
+    }
+
+    public DroolsUniRuleStructure<A, PatternVar> amend(UnaryOperator<PatternDef<PatternVar>> expander) {
+        return new DroolsUniRuleStructure<>(a, getPrimaryPatternBuilder().expand(expander), prerequisites, shelved,
+                dependents, getVariableIdSupplier());
     }
 
     public Variable<A> getA() {
@@ -51,13 +76,28 @@ public class DroolsUniRuleStructure<A> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPattern() {
-        return (DroolsPatternBuilder<Object>) aPattern;
+    public List<ViewItemBuilder<?>> getShelvedRuleItems() {
+        return shelved;
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getSupportingRuleItems() {
-        return supportingRuleItems;
+    public List<ViewItemBuilder<?>> getPrerequisites() {
+        return prerequisites;
+    }
+
+    @Override
+    public DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder() {
+        return aPattern;
+    }
+
+    @Override
+    public List<ViewItemBuilder<?>> getDependents() {
+        return dependents;
+    }
+
+    @Override
+    protected Class[] getVariableTypes() {
+        return new Class[] { a.getType() };
     }
 
 }

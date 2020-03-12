@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,25 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implements TriJoiner<A, B, C> {
 
+    private final TriPredicate<A, B, C> filter;
+
+    protected AbstractTriJoiner() {
+        this.filter = null;
+    }
+
+    protected AbstractTriJoiner(TriPredicate<A, B, C> filter) {
+        this.filter = filter;
+    }
+
     @SafeVarargs
-    public final static <A, B, C> TriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
+    public static <A, B, C> AbstractTriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
         List<SingleTriJoiner<A, B, C>> joinerList = new ArrayList<>();
         for (TriJoiner<A, B, C> joiner : joiners) {
             if (joiner instanceof NoneTriJoiner) {
@@ -48,12 +60,29 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
         return new CompositeTriJoiner<>(joinerList);
     }
 
-    public abstract BiFunction<A, B, Object> getLeftMapping(int joinerId);
+    public boolean matches(A a, B b, C c) {
+        JoinerType[] joinerTypes = getJoinerTypes();
+        for (int i = 0; i < joinerTypes.length; i++) {
+            JoinerType joinerType = joinerTypes[i];
+            Object leftMapping = getLeftMapping(i).apply(a, b);
+            Object rightMapping = getRightMapping(i).apply(c);
+            if (!joinerType.matches(leftMapping, rightMapping)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public abstract BiFunction<A, B, Object> getLeftMapping(int index);
 
     public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
 
-    public abstract Function<C, Object> getRightMapping(int joinerId);
+    public abstract Function<C, Object> getRightMapping(int index);
 
     public abstract Function<C, Object[]> getRightCombinedMapping();
+
+    public TriPredicate<A, B, C> getFilter() {
+        return filter;
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,57 +16,69 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.LongSupplier;
+import java.util.stream.Stream;
 
-import org.drools.model.RuleItemBuilder;
+import org.drools.model.Argument;
+import org.drools.model.DSL;
+import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
-public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
+public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStructure<PatternVar> {
 
     private final Variable<A> a;
     private final Variable<B> b;
-    private final DroolsPatternBuilder<?> targetPattern;
-    private final List<RuleItemBuilder<?>> supportingRuleItems;
+    private final DroolsPatternBuilder<PatternVar> primaryPattern;
+    private final List<ViewItemBuilder<?>> shelved;
+    private final List<ViewItemBuilder<?>> prerequisites;
+    private final List<ViewItemBuilder<?>> dependents;
 
-    /**
-     * Builds a final version of the A pattern as it will no longer be mutated, and turns the B pattern into the new
-     * primary pattern.
-     * @param aRuleStructure
-     * @param bRuleStructure
-     * @param variableIdSupplier
-     */
-    public DroolsBiRuleStructure(DroolsUniRuleStructure<A> aRuleStructure, DroolsUniRuleStructure<B> bRuleStructure,
-            LongSupplier variableIdSupplier) {
+    public <APatternVar> DroolsBiRuleStructure(DroolsUniRuleStructure<A, APatternVar> aRuleStructure,
+            DroolsUniRuleStructure<B, PatternVar> bRuleStructure, LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aRuleStructure.getA();
         this.b = bRuleStructure.getA();
-        this.targetPattern = bRuleStructure.getPrimaryPattern();
-        /*
-         * Assemble the new rule structure in the following order:
-         * - First, the supporting rule items from aRuleStructure.
-         * - Second, the primary pattern from aRuleStructure.
-         * - And finally, the supporting rule items from bRuleStructure.
-         *
-         * This makes sure that left-hand side of the rule represented by this object is properly ordered.
-         */
-        List<RuleItemBuilder<?>> ruleItems =
-                aRuleStructure.rebuildSupportingRuleItems(aRuleStructure.getPrimaryPattern().build());
-        ruleItems.addAll(bRuleStructure.getSupportingRuleItems());
-        this.supportingRuleItems = Collections.unmodifiableList(ruleItems);
+        this.primaryPattern = bRuleStructure.getPrimaryPatternBuilder();
+        List<ViewItemBuilder<?>> newShelved = new ArrayList<>(aRuleStructure.getShelvedRuleItems());
+        newShelved.addAll(bRuleStructure.getShelvedRuleItems());
+        this.shelved = Collections.unmodifiableList(newShelved);
+        List<ViewItemBuilder<?>> newPrerequisites = new ArrayList<>(aRuleStructure.getPrerequisites());
+        newPrerequisites.add(aRuleStructure.getPrimaryPatternBuilder().build());
+        newPrerequisites.addAll(aRuleStructure.getDependents());
+        newPrerequisites.addAll(bRuleStructure.getPrerequisites());
+        this.prerequisites = Collections.unmodifiableList(newPrerequisites);
+        this.dependents = Collections.unmodifiableList(bRuleStructure.getDependents());
     }
 
-    public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable, DroolsPatternBuilder<?> targetPattern,
-            List<RuleItemBuilder<?>> supportingRuleItems, LongSupplier variableIdSupplier) {
+    public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable,
+            DroolsPatternBuilder<PatternVar> primaryPattern, List<ViewItemBuilder<?>> shelved,
+            List<ViewItemBuilder<?>> prerequisites, List<ViewItemBuilder<?>> dependents,
+            LongSupplier variableIdSupplier) {
         super(variableIdSupplier);
         this.a = aVariable;
         this.b = bVariable;
-        this.targetPattern = targetPattern;
-        this.supportingRuleItems = supportingRuleItems;
+        this.primaryPattern = primaryPattern;
+        this.shelved = Collections.unmodifiableList(shelved);
+        this.prerequisites = Collections.unmodifiableList(prerequisites);
+        this.dependents = Collections.unmodifiableList(dependents);
+    }
+
+    public <C> DroolsBiRuleStructure<A, B, PatternVar> existsOrNot(PatternDSL.PatternDef<C> existencePattern,
+            boolean shouldExist) {
+        ExprViewItem item = DSL.exists(existencePattern);
+        if (!shouldExist) {
+            item = DSL.not(item);
+        }
+        return new DroolsBiRuleStructure<>(a, b, primaryPattern, shelved, prerequisites, mergeDependents(item),
+                getVariableIdSupplier());
     }
 
     public Variable<A> getA() {
@@ -78,12 +90,28 @@ public class DroolsBiRuleStructure<A, B> extends DroolsRuleStructure {
     }
 
     @Override
-    public DroolsPatternBuilder<Object> getPrimaryPattern() {
-        return (DroolsPatternBuilder<Object>) targetPattern;
+    public List<ViewItemBuilder<?>> getShelvedRuleItems() {
+        return shelved;
     }
 
     @Override
-    public List<RuleItemBuilder<?>> getSupportingRuleItems() {
-        return supportingRuleItems;
+    public List<ViewItemBuilder<?>> getPrerequisites() {
+        return prerequisites;
     }
+
+    @Override
+    public DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder() {
+        return primaryPattern;
+    }
+
+    @Override
+    public List<ViewItemBuilder<?>> getDependents() {
+        return dependents;
+    }
+
+    @Override
+    protected Class[] getVariableTypes() {
+        return Stream.of(a, b).map(Argument::getType).toArray(Class[]::new);
+    }
+
 }

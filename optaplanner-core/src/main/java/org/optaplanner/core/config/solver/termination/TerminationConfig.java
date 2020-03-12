@@ -491,6 +491,15 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         }
     }
 
+    public void overwriteSpentLimit(Duration spentLimit) {
+        setSpentLimit(spentLimit);
+        setMillisecondsSpentLimit(null);
+        setSecondsSpentLimit(null);
+        setMinutesSpentLimit(null);
+        setHoursSpentLimit(null);
+        setDaysSpentLimit(null);
+    }
+
     public Long calculateTimeMillisSpentLimit() {
         if (millisecondsSpentLimit == null && secondsSpentLimit == null
                 && minutesSpentLimit == null && hoursSpentLimit == null && daysSpentLimit == null) {
@@ -562,6 +571,15 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         }
     }
 
+    public void overwriteUnimprovedSpentLimit(Duration unimprovedSpentLimit) {
+        setUnimprovedSpentLimit(unimprovedSpentLimit);
+        setUnimprovedMillisecondsSpentLimit(null);
+        setUnimprovedSecondsSpentLimit(null);
+        setUnimprovedMinutesSpentLimit(null);
+        setUnimprovedHoursSpentLimit(null);
+        setUnimprovedDaysSpentLimit(null);
+    }
+
     public Long calculateUnimprovedTimeMillisSpentLimit() {
         if (unimprovedMillisecondsSpentLimit == null && unimprovedSecondsSpentLimit == null
                 && unimprovedMinutesSpentLimit == null && unimprovedHoursSpentLimit == null) {
@@ -621,7 +639,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     }
 
     @Override
-    public void inherit(TerminationConfig inheritedConfig) {
+    public TerminationConfig inherit(TerminationConfig inheritedConfig) {
         terminationClass = ConfigUtils.inheritOverwritableProperty(terminationClass,
                 inheritedConfig.getTerminationClass());
         terminationCompositionStyle = ConfigUtils.inheritOverwritableProperty(terminationCompositionStyle,
@@ -666,6 +684,12 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 inheritedConfig.getScoreCalculationCountLimit());
         terminationConfigList = ConfigUtils.inheritMergeableListConfig(
                 terminationConfigList, inheritedConfig.getTerminationConfigList());
+        return this;
+    }
+
+    @Override
+    public TerminationConfig copyConfig() {
+        return new TerminationConfig().inherit(this);
     }
 
 }

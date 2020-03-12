@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,34 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.LongSupplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.model.DSL;
 import org.drools.model.DeclarationSource;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
+import org.drools.model.consequences.ConsequenceBuilder;
+import org.drools.model.view.ViewItem;
+import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
+
+import static org.drools.model.DSL.from;
 
 /**
  * Represents the left-hand side of a Drools rule.
+ * @param <PatternVar> type of the variable of the primary pattern (see {@link #getPrimaryPatternBuilder()})
  */
-public abstract class DroolsRuleStructure {
+public abstract class DroolsRuleStructure<PatternVar> {
 
     private final LongSupplier variableIdSupplier;
 
@@ -52,7 +67,7 @@ public abstract class DroolsRuleStructure {
      * @param <X> Generic type of the variable.
      * @return new variable declaration, not yet bound to anything
      */
-    public final <X> Variable<X> createVariable(Class<X> clz, String name) {
+    public final <X> Variable<? extends X> createVariable(Class<X> clz, String name) {
         return DSL.declarationOf(clz, decorateVariableName(name));
     }
 
@@ -72,7 +87,7 @@ public abstract class DroolsRuleStructure {
      * @param <X> Generic type of the variable.
      * @return new variable declaration, not yet bound to anything
      */
-    public final <X> Variable<X> createVariable(Class<X> clz, String name, DeclarationSource source) {
+    public final <X> Variable<? extends X> createVariable(Class<X> clz, String name, DeclarationSource source) {
         return DSL.declarationOf(clz, decorateVariableName(name), source);
     }
 
@@ -89,26 +104,23 @@ public abstract class DroolsRuleStructure {
     }
 
     /**
-     * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String)} for
-     * details.
+     * Declares a new {@link Object}-typed variable, see {@link #createVariable(Class, String)} for details.
      */
     public final <X> Variable<X> createVariable(String name, DeclarationSource source) {
         return (Variable<X>) createVariable(Object.class, name, source);
     }
 
-    /**
-     * Takes {@link #getSupportingRuleItems()}, puts them into a new {@link List}, and adds additional
-     * {@link RuleItemBuilder}s after it.
-     *
-     * @param toAdd the additional items to add
-     * @return new list containing both the existing supporting rule items and the new ones
-     */
-    public final List<RuleItemBuilder<?>> rebuildSupportingRuleItems(RuleItemBuilder<?>... toAdd) {
-        List<RuleItemBuilder<?>> supporting = new ArrayList<>(getSupportingRuleItems());
-        for (RuleItemBuilder<?> ruleItem : toAdd) {
-            supporting.add(ruleItem);
-        }
-        return supporting;
+    public final List<RuleItemBuilder<?>> finish(ConsequenceBuilder.AbstractValidBuilder<?> consequence) {
+        List<ViewItemBuilder<?>> shelved = getShelvedRuleItems();
+        List<ViewItemBuilder<?>> prerequisites = getPrerequisites();
+        List<ViewItemBuilder<?>> dependents = getDependents();
+        List<RuleItemBuilder<?>> result = new ArrayList<>(shelved.size() + prerequisites.size() + dependents.size() + 2);
+        result.addAll(shelved);
+        result.addAll(prerequisites);
+        result.add(getPrimaryPatternBuilder().build());
+        result.addAll(dependents);
+        result.add(consequence);
+        return result;
     }
 
     public LongSupplier getVariableIdSupplier() {
@@ -116,28 +128,182 @@ public abstract class DroolsRuleStructure {
     }
 
     /**
-     * Returns the pattern that the subsequent streams may further expand. Consider the following left-hand side of a
-     * Drools rule:
+     * Primary pattern is the Drools pattern to which operations such as filter and join will be applied.
+     * Consider the following example left hand side DRL:
      *
      * <pre>
-     *     $a1: A()
-     *     $a2: A(this != $a1)
+     *     $person: Person()
+     *     $lesson: Lesson($person in people)
      * </pre>
      *
-     * The primary pattern would be the latter one ($a2), as that is the pattern you would use to further expand your
-     * output in both $a1 and $a2.
+     * Here, Lesson is the primary pattern of this rule.
+     * We can use filters to restrict matched Lesson instances, and we can use $person variable in those filters.
+     * But the Person() instances themselves are now fixed and the Person pattern can be found in
+     * {@link #getPrerequisites()} and no longer modified.
      *
-     * @return the primary pattern as defined
+     * <p>
+     * The primary pattern is provided as a builder.
+     * This is necessary since the patterns are shared and modified between different classes and it would therefore be
+     * possible for one class to modify the other's pattern.
+     * This way, the pattern is only constructed when necessary, at which point it will no longer be shared.
+     *
+     * @return never null, builder that will be used to obtain the final version of the primary pattern
      */
-    public abstract DroolsPatternBuilder<Object> getPrimaryPattern();
+    public abstract DroolsPatternBuilder<PatternVar> getPrimaryPatternBuilder();
 
     /**
-     * Every other pattern necessary for the {@link #getPrimaryPattern()} to function properly within the Drools rule's
-     * left-hand side. In the example rule (see {@link #getPrimaryPattern()}, this method would return one and only
-     * supporting {@link RuleItemBuilder}, the one representing $a1.
+     * Patterns that are no longer of any use to the primary pattern, yet are required for the Drools rule to function.
+     * Consider the following example left hand side DRL:
      *
-     * @return all supporting rule items as defined, in the correct order
+     * <pre>
+     *     $tuples: Set() from accumulate(...) // This is the shelved pattern.
+     *     $person: Person() from $tuples // This is the prerequisite pattern, referencing the shelved pattern.
+     *     $lesson: Lesson($person in people) // This is the primary pattern, referencing the prerequisite pattern.
+     * </pre>
+     *
+     * In this example, any further Person filters or joiners will still be applied on the primary pattern.
+     * Yet the rule overall would not function properly without also including the shelved pattern.
+     *
+     * <p>
+     * The difference between these and {@link #getPrerequisites()} is that the latter would be folded inside a
+     * subsequent accumulate pattern, while shelved patterns (typically representing previous accumulate patterns)
+     * wouldn't.
+     * Consider the following example left hand side DRL:
+     *
+     * <pre>
+     *     $tuples: Set() from accumulate(...) // This is the original shelved pattern from above.
+     *     $otherTuples: Set() from accumulate(
+     *          and(
+     *              $person: Person() from $tuples, // This is the original prerequisite pattern from above.
+     *              $lesson: Lesson($person in people) // This is the original primary pattern from above.
+     *          ),
+     *          collectCount()
+     *     )
+     *     $otherPerson: Person() from $otherTuples // This is the new primary pattern.
+     * </pre>
+     *
+     * @return never null, a list of preceding items that are required by the primary pattern.
      */
-    public abstract List<RuleItemBuilder<?>> getSupportingRuleItems();
+    public abstract List<ViewItemBuilder<?>> getShelvedRuleItems();
+
+    /**
+     * See {@link #getPrimaryPatternBuilder()} for a definition.
+     *
+     * @return never null, a list of preceding items that are required by the primary pattern
+     */
+    public abstract List<ViewItemBuilder<?>> getPrerequisites();
+
+    /**
+     * Patterns that follow up on the primary pattern, yet are not used for filtering or joining.
+     * Consider the following example left hand side DRL:
+     *
+     * <pre>
+     *     $person: Person() // This is the primary pattern.
+     *     exists Person(this != $person) // This is the dependent, immutable pattern.
+     * </pre>
+     *
+     * In this example, any further Person filters or joiners will still be applied on the primary pattern.
+     * Yet the rule overall would not function properly without also including the dependent pattern.
+     *
+     * @return never null, a list of subsequent items that are required by the primary pattern
+     */
+    public abstract List<ViewItemBuilder<?>> getDependents();
+
+    protected List<ViewItemBuilder<?>> mergeShelved(ViewItemBuilder<?>... newShelvedItems) {
+        return Stream.concat(getShelvedRuleItems().stream(), Stream.of(newShelvedItems))
+                .collect(Collectors.toList());
+    }
+
+    protected List<ViewItemBuilder<?>> mergeDependents(ViewItemBuilder<?>... newDependents) {
+        return Stream.concat(getDependents().stream(), Stream.of(newDependents))
+                .collect(Collectors.toList());
+    }
+
+    public <NewA> DroolsUniRuleStructure<NewA, NewA> recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
+        DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeShelved(accumulatePattern),
+                Collections.emptyList(), getDependents(), getVariableIdSupplier());
+    }
+
+    public <NewA> DroolsUniRuleStructure<NewA, NewA> regroup(Variable<Set<NewA>> newASource,
+            PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<NewA> newA = createVariable("groupKey", from(newASource));
+        DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeShelved(accumulatePattern),
+                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+    }
+
+    public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB, BiTuple<NewA, NewB>> regroupBi(
+            Variable<Set<BiTuple<NewA, NewB>>> newSource, PatternDef<Set<BiTuple<NewA, NewB>>> collectPattern,
+            ViewItem<?> accumulatePattern) {
+        Variable<BiTuple<NewA, NewB>> newTuple =
+                (Variable<BiTuple<NewA, NewB>>) createVariable(BiTuple.class,"groupKey", from(newSource));
+        Variable<NewA> newA = createVariable("newA");
+        Variable<NewB> newB = createVariable("newB");
+        DroolsPatternBuilder<BiTuple<NewA, NewB>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
+                .expand(p -> p.bind(newA, tuple -> tuple.a))
+                .expand(p -> p.bind(newB, tuple -> tuple.b));
+        return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, mergeShelved(accumulatePattern),
+                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+    }
+
+    public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>> regroupBiToTri(
+            Variable<Set<TriTuple<NewA, NewB, NewC>>> newSource,
+            PatternDef<Set<TriTuple<NewA, NewB, NewC>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<TriTuple<NewA, NewB, NewC>> newTuple =
+                (Variable<TriTuple<NewA, NewB, NewC>>) createVariable(TriTuple.class, "groupKey", from(newSource));
+        Variable<NewA> newA = createVariable("newA");
+        Variable<NewB> newB = createVariable("newB");
+        Variable<NewC> newC = createVariable("newC");
+        DroolsPatternBuilder<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
+                .expand(p -> p.bind(newA, tuple -> tuple.a))
+                .expand(p -> p.bind(newB, tuple -> tuple.b))
+                .expand(p -> p.bind(newC, tuple -> tuple.c));
+        return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, mergeShelved(accumulatePattern),
+                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+    }
+
+    public <NewA, NewB, NewC, NewD> DroolsQuadRuleStructure<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
+    regroupBiToQuad(Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource,
+            PatternDef<Set<QuadTuple<NewA, NewB, NewC, NewD>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<QuadTuple<NewA, NewB, NewC, NewD>> newTuple =
+                (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) createVariable(QuadTuple.class, "groupKey", from(newSource));
+        Variable<NewA> newA = createVariable("newA");
+        Variable<NewB> newB = createVariable("newB");
+        Variable<NewC> newC = createVariable("newC");
+        Variable<NewD> newD = createVariable("newD");
+        DroolsPatternBuilder<QuadTuple<NewA, NewB, NewC, NewD>> newPrimaryPattern = new DroolsPatternBuilder<>(newTuple)
+                .expand(p -> p.bind(newA, tuple -> tuple.a))
+                .expand(p -> p.bind(newB, tuple -> tuple.b))
+                .expand(p -> p.bind(newC, tuple -> tuple.c))
+                .expand(p -> p.bind(newD, tuple -> tuple.d));
+        return new DroolsQuadRuleStructure<>(newA, newB, newC, newD, newPrimaryPattern, mergeShelved(accumulatePattern),
+                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+    }
+
+    /**
+     * Determines the types we expect to see as the result of this rule.
+     *
+     * <p>Example 1:
+     * For {@link DroolsBiRuleStructure} before regrouping, we expect this to return an array of A and B's fact type.
+     *
+     * <p>Example 2:
+     * For {@link DroolsBiRuleStructure} after regrouping, we expect this to return an array consisting of only
+     * {@link BiTuple} class.
+     *
+     * @return never null
+     */
+    public Class[] getExpectedJustificationTypes() {
+        PatternDef<PatternVar> pattern = getPrimaryPatternBuilder().build();
+        Class<PatternVar> type = pattern.getFirstVariable().getType();
+        if (FactTuple.class.isAssignableFrom(type)) {
+            // There is one expected constraint justification, and that is of the tuple type.
+            return new Class[] {type};
+        }
+        // There are plenty expected constraint justifications, one for each variable.
+        return getVariableTypes();
+    }
+
+    abstract protected Class[] getVariableTypes();
 
 }

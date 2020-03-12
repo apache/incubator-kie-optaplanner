@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,28 @@
 package org.optaplanner.core.api.score.stream;
 
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.PentaPredicate;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
+import org.optaplanner.core.impl.score.stream.penta.SinglePentaJoiner;
+import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.SingleQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
 /**
@@ -40,6 +52,10 @@ public final class Joiners {
     // ************************************************************************
     // BiJoiner
     // ************************************************************************
+
+    public static <A> BiJoiner<A, A> equal() {
+        return equal(Function.identity());
+    }
 
     public static <A, Property_> BiJoiner<A, A> equal(Function<A, Property_> mapping) {
         return equal(mapping, mapping);
@@ -87,6 +103,18 @@ public final class Joiners {
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> greaterThanOrEqual(
             Function<A, Property_> leftMapping, Function<B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+    }
+
+    /**
+     * Applies a filter to the joined tuple, with the semantics of {@link BiConstraintStream#filter(BiPredicate)}.
+     *
+     * @param filter never null, filter to apply
+     * @param <A> type of the first fact in the tuple
+     * @param <B> type of the second fact in the tuple
+     * @return never null
+     */
+    public static <A, B> BiJoiner<A, B> filtering(BiPredicate<A, B> filter) {
+        return new FilteringBiJoiner<>(filter);
     }
 
     /*
@@ -153,6 +181,10 @@ public final class Joiners {
         return new SingleTriJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
+    public static <A, B, C> TriJoiner<A, B, C> filtering(TriPredicate<A, B, C> filter) {
+        return new FilteringTriJoiner<>(filter);
+    }
+
     // ************************************************************************
     // QuadJoiner
     // ************************************************************************
@@ -180,6 +212,43 @@ public final class Joiners {
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> greaterThanOrEqual(
             TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
         return new SingleQuadJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+    }
+
+    public static <A, B, C, D> QuadJoiner<A, B, C, D> filtering(QuadPredicate<A, B, C, D> filter) {
+        return new FilteringQuadJoiner<>(filter);
+    }
+
+    // ************************************************************************
+    // PentaJoiner
+    // ************************************************************************
+
+    public static <A, B, C, D, E, Property_> PentaJoiner<A, B, C, D, E> equal(
+            QuadFunction<A, B, C, D, Property_> leftMapping, Function <E, Property_> rightMapping) {
+        return new SinglePentaJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
+    }
+
+    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThan(
+            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
+        return new SinglePentaJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
+    }
+
+    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> lessThanOrEqual(
+            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
+        return new SinglePentaJoiner<>(leftMapping, JoinerType.LESS_THAN_OR_EQUAL, rightMapping);
+    }
+
+    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> greaterThan(
+            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
+        return new SinglePentaJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
+    }
+
+    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E>
+    greaterThanOrEqual(QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
+        return new SinglePentaJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
+    }
+
+    public static <A, B, C, D, E> PentaJoiner<A, B, C, D, E> filtering(PentaPredicate<A, B, C, D, E> filter) {
+        return new FilteringPentaJoiner<>(filter);
     }
 
     private Joiners() {}

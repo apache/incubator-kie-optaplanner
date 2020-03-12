@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExt
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataScoreGetterOverrideExtendedAbstractSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
+import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
@@ -158,6 +159,12 @@ public class SolutionDescriptorTest {
     public void generic() {
         SolutionDescriptor<TestdataGenericSolution> solutionDescriptor
                 = TestdataGenericSolution.buildSolutionDescriptor();
+
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(), "valueList", "complexGenericValueList", "subTypeValueList");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),"entityList");
+
+        assertMapContainsKeysExactly(solutionDescriptor.findEntityDescriptor( TestdataGenericEntity.class ).getVariableDescriptorMap(), "value", "subTypeValue", "complexGenericValue"  );
+
     }
 
     // ************************************************************************
@@ -181,7 +188,7 @@ public class SolutionDescriptorTest {
         solution.setExtraObject(new TestdataValue("extra"));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "v1", "v2", "extra");
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "extra", "v1", "v2");
     }
 
     @Test
@@ -201,7 +208,7 @@ public class SolutionDescriptorTest {
         solution.setExtraObject(new TestdataValue("extra"));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "v1", "v2", "extra");
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "extra", "v1", "v2");
     }
 
     // ************************************************************************

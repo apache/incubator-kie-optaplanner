@@ -12,8 +12,9 @@
 
   <fileSets>
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+      <directory>..</directory>
       <includes>
-        <include>../LICENSE-ASL-2.0.txt</include>
+        <include>LICENSE-Apache-2.0.txt</include>
       </includes>
       <outputDirectory/>
     </fileSet>
@@ -112,12 +113,9 @@
       <includes>
         <include>org.optaplanner:optaplanner-docs:zip</include>
       </includes>
-      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>reference_manual</outputDirectory>
-      <!-- Workaround for https://jira.codehaus.org/browse/MASSEMBLY-557 -->
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
       <unpack>true</unpack>
+      <useProjectArtifact>false</useProjectArtifact>
       <useStrictFiltering>true</useStrictFiltering>
       <useTransitiveFiltering>false</useTransitiveFiltering><!-- Only include zip -->
     </dependencySet>

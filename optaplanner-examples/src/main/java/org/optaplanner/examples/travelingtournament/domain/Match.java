@@ -17,8 +17,6 @@
 package org.optaplanner.examples.travelingtournament.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -55,45 +53,6 @@ public class Match extends AbstractPersistable {
 
     public void setDay(Day day) {
         this.day = day;
-    }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used
-     * because the rule engine already requires them (for performance in their original state).
-     * @see #solutionHashCode()
-     */
-    public boolean solutionEquals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof Match) {
-            Match other = (Match) o;
-            return new EqualsBuilder()
-                    .append(id, other.id)
-                    .append(homeTeam, other.homeTeam)
-                    .append(awayTeam, other.awayTeam)
-                    .append(day, other.day)
-                    .isEquals();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used
-     * because the rule engine already requires them (for performance in their original state).
-     * @see #solutionEquals(Object)
-     */
-    public int solutionHashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(homeTeam)
-                .append(awayTeam)
-                .append(day)
-                .toHashCode();
     }
 
     @Override

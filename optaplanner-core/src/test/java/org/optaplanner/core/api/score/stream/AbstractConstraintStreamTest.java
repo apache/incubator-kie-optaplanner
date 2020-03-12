@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,11 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.junit.Assume;
@@ -28,6 +29,7 @@ import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
@@ -74,17 +76,18 @@ public abstract class AbstractConstraintStreamTest {
     // ************************************************************************
 
     protected InnerScoreDirector<TestdataLavishSolution> buildScoreDirector(Function<ConstraintFactory, Constraint> function) {
-        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+        return buildScoreDirector(TestdataLavishSolution::buildSolutionDescriptor, function);
+    }
+
+    protected <Solution_> InnerScoreDirector<Solution_> buildScoreDirector(
+            Supplier<SolutionDescriptor<Solution_>> solutionDescriptorSupplier,
+            Function<ConstraintFactory, Constraint> function) {
+        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataLavishSolution.buildSolutionDescriptor(),
+                solutionDescriptorSupplier.get(),
                 (constraintFactory) -> new Constraint[] {function.apply(constraintFactory)},
                 constraintStreamImplType);
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
-    }
-
-    private List<ConstraintMatch> removeIndirections(ConstraintMatchTotal constraintMatchTotal) {
-        return new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
-
     }
 
     protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
@@ -97,8 +100,13 @@ public abstract class AbstractConstraintStreamTest {
         if (constraintMatchEnabled) {
             String constraintPackage = scoreDirector.getSolutionDescriptor().getSolutionClass().getPackage().getName();
             for (AssertableMatch assertableMatch : assertableMatches) {
-                ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
-                        .get(composeConstraintId(constraintPackage, assertableMatch.constraintName));
+                Map<String, ConstraintMatchTotal> constraintMatchTotals = scoreDirector.getConstraintMatchTotalMap();
+                String constraintId = composeConstraintId(constraintPackage, assertableMatch.constraintName);
+                ConstraintMatchTotal constraintMatchTotal = constraintMatchTotals.get(constraintId);
+                if (constraintMatchTotal == null) {
+                    throw new IllegalStateException("Requested constraint matches for unknown constraint (" +
+                            constraintId + ").");
+                }
                 if (constraintMatchTotal.getConstraintMatchSet().stream().noneMatch(assertableMatch::isEqualTo)) {
                     fail("The assertableMatch (" + assertableMatch + ") is lacking,"
                             + " it's not in the constraintMatchSet ("

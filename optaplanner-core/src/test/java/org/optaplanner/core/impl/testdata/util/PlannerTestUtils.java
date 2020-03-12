@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.security.AnyTypePermission;
@@ -42,8 +52,14 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.mockito.Mockito.*;
+import static java.util.Arrays.stream;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @see PlannerAssert
@@ -92,6 +108,25 @@ public class PlannerTestUtils {
     public static <Solution_> Solution_ solve(SolverConfig solverConfig, Solution_ problem) {
         SolverFactory<Solution_> solverFactory = SolverFactory.create(solverConfig);
         return solverFactory.buildSolver().solve(problem);
+    }
+
+    // ************************************************************************
+    // Testdata methods
+    // ************************************************************************
+
+    public static TestdataSolution generateTestdataSolution(String code) {
+        return generateTestdataSolution(code, 2);
+    }
+
+    public static TestdataSolution generateTestdataSolution(String code, int entityAndValueCount) {
+        TestdataSolution solution = new TestdataSolution(code);
+        solution.setValueList(IntStream.range(1, entityAndValueCount + 1)
+                .mapToObj(i -> new TestdataValue("v" + i))
+                .collect(Collectors.toList()));
+        solution.setEntityList(IntStream.range(1, entityAndValueCount + 1)
+                .mapToObj(i -> new TestdataEntity("e" + i))
+                .collect(Collectors.toList()));
+        return solution;
     }
 
     // ************************************************************************
@@ -149,6 +184,44 @@ public class PlannerTestUtils {
         xStream.addPermission(new AnyTypePermission());
         String xmlString = xStream.toXML(input);
         return (T) xStream.fromXML(xmlString);
+    }
+
+    // ************************************************************************
+    // Collection helpers
+    // ************************************************************************
+
+    @SafeVarargs
+    public static <X> Set<X> asSet(X... items) {
+        return stream(items).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    @SafeVarargs
+    public static <X> SortedSet<X> asSortedSet(X... items) {
+        return stream(items).collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    public static <X, Y> Map<X, Y> asMap(X x1, Y y1) {
+        Map<X, Y> result = new LinkedHashMap<>(0);
+        result.put(x1, y1);
+        return result;
+    }
+
+    public static <X, Y> Map<X, Y> asMap(X x1, Y y1, X x2, Y y2) {
+        Map<X, Y> result = asMap(x1, y1);
+        result.put(x2, y2);
+        return result;
+    }
+
+    public static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1) {
+        SortedMap<X, Y> result = new TreeMap<>();
+        result.put(x1, y1);
+        return result;
+    }
+
+    public static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1, X x2, Y y2) {
+        SortedMap<X, Y> result = asSortedMap(x1, y1);
+        result.put(x2, y2);
+        return result;
     }
 
     // ************************************************************************

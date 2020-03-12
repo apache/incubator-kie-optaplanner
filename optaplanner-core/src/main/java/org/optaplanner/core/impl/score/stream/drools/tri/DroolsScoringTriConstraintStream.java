@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
@@ -81,14 +82,16 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsTriCondition<A, B, C> condition = parent.getCondition();
+    public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint, Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+        DroolsAbstractTriConstraintStream<Solution_, A, B, C> actualParent =
+                (DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent;
+        DroolsTriCondition<A, B, C, ?> condition = actualParent.getCondition();
         if (intMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, longMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
             return condition.completeWithScoring(scoreHolderGlobal);
         } else {
@@ -97,8 +100,14 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public DroolsTriCondition<A, B, C> getCondition() {
+    public DroolsTriCondition<A, B, C, ?> getCondition() {
         throw new UnsupportedOperationException("Scoring stream does not have its own TriCondition.");
+    }
+
+    @Override
+    public Class[] getExpectedJustificationTypes() {
+        return ((DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent).getCondition()
+                .getExpectedJustificationTypes();
     }
 
     @Override

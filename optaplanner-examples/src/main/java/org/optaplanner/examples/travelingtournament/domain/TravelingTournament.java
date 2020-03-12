@@ -16,12 +16,10 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -86,40 +84,6 @@ public class TravelingTournament extends AbstractPersistable {
 
     public int getN() {
         return teamList.size();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (id == null || !(o instanceof TravelingTournament)) {
-            return false;
-        } else {
-            TravelingTournament other = (TravelingTournament) o;
-            if (matchList.size() != other.matchList.size()) {
-                return false;
-            }
-            for (Iterator<Match> it = matchList.iterator(), otherIt = other.matchList.iterator(); it.hasNext();) {
-                Match match = it.next();
-                Match otherMatch = otherIt.next();
-                // Notice: we don't use equals()
-                if (!match.solutionEquals(otherMatch)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Match match : matchList) {
-            // Notice: we don't use hashCode()
-            hashCodeBuilder.append(match.solutionHashCode());
-        }
-        return hashCodeBuilder.toHashCode();
     }
 
 }

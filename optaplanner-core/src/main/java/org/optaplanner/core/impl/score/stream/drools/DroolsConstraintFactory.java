@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,22 +21,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
 import java.util.function.LongSupplier;
 
 import org.drools.model.Global;
 import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.kie.api.KieBase;
-import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
-import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
@@ -66,18 +57,6 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
     @Override
     public <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass) {
         return new DroolsFromUniConstraintStream<>(this, fromClass);
-    }
-
-    @Override
-    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
-        MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
-        if (planningIdMemberAccessor == null) {
-            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
-                    + PlanningId.class.getSimpleName() + " annotation,"
-                    + " so the pairs can not be made unique ([A,B] vs [B,A]).");
-        }
-        Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
-        return from(fromClass).join(fromClass, joiner, Joiners.lessThan(planningIdGetter));
     }
 
     // ************************************************************************
@@ -114,9 +93,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
             droolsConstraintList.add(droolsConstraint);
             model.addRule(droolsConstraint.createRule(scoreHolderGlobal));
         }
-        // TODO when trace is active, show the Rule (DRL or exectable model) in logging
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, kieBase, droolsConstraintList);
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, droolsConstraintList);
     }
 
     // ************************************************************************
