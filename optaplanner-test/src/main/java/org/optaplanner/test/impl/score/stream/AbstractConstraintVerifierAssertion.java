@@ -37,6 +37,14 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
         return parentConstraintVerifier;
     }
 
+    public A expectReward(Score<?> score) {
+        return (A) this;
+    }
+
+    public A expectPenalty(Score<?> score) {
+        return (A) this;
+    }
+
     public A expectImpact(Score<?> score) {
         return (A) this;
     }
