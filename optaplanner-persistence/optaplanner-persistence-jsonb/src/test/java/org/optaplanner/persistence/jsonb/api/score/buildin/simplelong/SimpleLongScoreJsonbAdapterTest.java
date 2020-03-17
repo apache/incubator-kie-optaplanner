@@ -27,10 +27,8 @@ public class SimpleLongScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTe
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleLongScoreWrapper(null));
-
         SimpleLongScore score = SimpleLongScore.of(1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
-
         score = SimpleLongScore.ofUninitialized(-7, 1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
     }
@@ -40,6 +38,7 @@ public class SimpleLongScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTe
         @JsonbTypeAdapter(SimpleLongScoreJsonbAdapter.class)
         private SimpleLongScore score;
 
+        // Empty constructor required by JSON-B
         @SuppressWarnings("unused")
         public TestSimpleLongScoreWrapper() {
         }

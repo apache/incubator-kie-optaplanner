@@ -15,6 +15,6 @@
  */
 
 /**
- * JSON-B binders for {@link org.optaplanner.core.api.score.Score}.
+ * JSON-B bindings for {@link org.optaplanner.core.api.score.Score}.
  */
 package org.optaplanner.persistence.jsonb.api.score;

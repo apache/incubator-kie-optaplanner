@@ -27,10 +27,8 @@ public class SimpleScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest {
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleScoreWrapper(null));
-
         SimpleScore score = SimpleScore.of(1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));
-
         score = SimpleScore.ofUninitialized(-7, 1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));
     }
@@ -40,6 +38,7 @@ public class SimpleScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest {
         @JsonbTypeAdapter(SimpleScoreJsonbAdapter.class)
         private SimpleScore score;
 
+        // Empty constructor required by JSON-B
         @SuppressWarnings("unused")
         public TestSimpleScoreWrapper() {
         }

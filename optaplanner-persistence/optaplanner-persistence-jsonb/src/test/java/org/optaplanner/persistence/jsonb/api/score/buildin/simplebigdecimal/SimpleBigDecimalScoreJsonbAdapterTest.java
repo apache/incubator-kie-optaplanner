@@ -29,10 +29,8 @@ public class SimpleBigDecimalScoreJsonbAdapterTest extends AbstractScoreJsonbAda
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleBigDecimalScoreWrapper(null));
-
         SimpleBigDecimalScore score = SimpleBigDecimalScore.of(new BigDecimal("1234.4321"));
         assertSerializeAndDeserialize(score, new TestSimpleBigDecimalScoreWrapper(score));
-
         score = SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("1234.4321"));
         assertSerializeAndDeserialize(score, new TestSimpleBigDecimalScoreWrapper(score));
     }
@@ -42,6 +40,7 @@ public class SimpleBigDecimalScoreJsonbAdapterTest extends AbstractScoreJsonbAda
         @JsonbTypeAdapter(SimpleBigDecimalScoreJsonbAdapter.class)
         private SimpleBigDecimalScore score;
 
+        // Empty constructor required by JSON-B
         @SuppressWarnings("unused")
         public TestSimpleBigDecimalScoreWrapper() {
         }

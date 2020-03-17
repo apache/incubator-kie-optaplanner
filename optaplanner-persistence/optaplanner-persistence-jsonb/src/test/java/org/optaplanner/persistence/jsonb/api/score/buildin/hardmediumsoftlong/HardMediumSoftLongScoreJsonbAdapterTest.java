@@ -27,10 +27,8 @@ public class HardMediumSoftLongScoreJsonbAdapterTest extends AbstractScoreJsonbA
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftLongScoreWrapper(null));
-
         HardMediumSoftLongScore score = HardMediumSoftLongScore.of(1200L, 30L, 4L);
         assertSerializeAndDeserialize(score, new TestHardMediumSoftLongScoreWrapper(score));
-
         score = HardMediumSoftLongScore.ofUninitialized(-7, 1200L, 30L, 4L);
         assertSerializeAndDeserialize(score, new TestHardMediumSoftLongScoreWrapper(score));
     }
@@ -40,6 +38,7 @@ public class HardMediumSoftLongScoreJsonbAdapterTest extends AbstractScoreJsonbA
         @JsonbTypeAdapter(HardMediumSoftLongScoreJsonbAdapter.class)
         private HardMediumSoftLongScore score;
 
+        // Empty constructor required by JSON-B
         @SuppressWarnings("unused")
         public TestHardMediumSoftLongScoreWrapper() {
         }

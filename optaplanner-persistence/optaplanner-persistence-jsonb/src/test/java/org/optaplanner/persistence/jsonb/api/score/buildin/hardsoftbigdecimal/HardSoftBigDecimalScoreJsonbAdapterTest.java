@@ -29,10 +29,8 @@ public class HardSoftBigDecimalScoreJsonbAdapterTest extends AbstractScoreJsonbA
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftBigDecimalScoreWrapper(null));
-
         HardSoftBigDecimalScore score = HardSoftBigDecimalScore.of(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardSoftBigDecimalScoreWrapper(score));
-
         score = HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardSoftBigDecimalScoreWrapper(score));
     }
@@ -42,6 +40,7 @@ public class HardSoftBigDecimalScoreJsonbAdapterTest extends AbstractScoreJsonbA
         @JsonbTypeAdapter(HardSoftBigDecimalScoreJsonbAdapter.class)
         private HardSoftBigDecimalScore score;
 
+        // Empty constructor required by JSON-B
         @SuppressWarnings("unused")
         public TestHardSoftBigDecimalScoreWrapper() {
         }

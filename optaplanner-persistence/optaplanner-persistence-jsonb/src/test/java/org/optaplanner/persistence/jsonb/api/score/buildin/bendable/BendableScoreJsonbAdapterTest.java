@@ -38,6 +38,7 @@ public class BendableScoreJsonbAdapterTest extends AbstractScoreJsonbAdapterTest
         @JsonbTypeAdapter(BendableScoreJsonbAdapter.class)
         private BendableScore score;
 
+        // Empty constructor required by JSON-B
         @SuppressWarnings("unused")
         public TestBendableScoreWrapper() {
         }
