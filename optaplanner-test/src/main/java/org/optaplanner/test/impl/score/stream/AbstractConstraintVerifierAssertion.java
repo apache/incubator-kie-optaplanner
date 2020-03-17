@@ -25,20 +25,11 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
         V extends AbstractConstraintVerifier<A, V>> {
 
     private final V parentConstraintVerifier;
-    private final Object planningSolution;
     private final Object[] facts;
-
-    protected AbstractConstraintVerifierAssertion(V constraintVerifier, Object planningSolution) {
-        Objects.requireNonNull(planningSolution);
-        this.parentConstraintVerifier = constraintVerifier;
-        this.planningSolution = planningSolution;
-        this.facts = null;
-    }
 
     protected AbstractConstraintVerifierAssertion(V constraintVerifier, Object[] facts) {
         Objects.requireNonNull(facts);
         this.parentConstraintVerifier = constraintVerifier;
-        this.planningSolution = null;
         this.facts = Arrays.copyOf(facts, facts.length);
     }
 

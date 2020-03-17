@@ -20,13 +20,8 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
 
 public final class ConstraintVerifier {
-
-    public static ConstraintProviderVerifier forConstraintProvider(ConstraintProvider constraintProvider) {
-        return new ConstraintProviderVerifier(constraintProvider);
-    }
 
     public static SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction) {
         return new SingleConstraintVerifier(constraintFunction);

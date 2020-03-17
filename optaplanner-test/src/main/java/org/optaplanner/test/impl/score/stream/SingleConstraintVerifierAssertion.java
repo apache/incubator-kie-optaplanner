@@ -25,17 +25,8 @@ public final class SingleConstraintVerifierAssertion
         extends AbstractConstraintVerifierAssertion<SingleConstraintVerifierAssertion, SingleConstraintVerifier> {
 
     SingleConstraintVerifierAssertion(Function<ConstraintFactory, Constraint> constraintFunction,
-            SingleConstraintVerifier constraintVerifier, Object planningSolution) {
-        super(constraintVerifier, planningSolution);
-    }
-
-    SingleConstraintVerifierAssertion(Function<ConstraintFactory, Constraint> constraintFunction,
             SingleConstraintVerifier constraintVerifier, Object[] facts) {
         super(constraintVerifier, facts);
-    }
-
-    public SingleConstraintVerifierAssertion expectConstraintMatches(Object... constraintMatches) {
-        return this;
     }
 
 }

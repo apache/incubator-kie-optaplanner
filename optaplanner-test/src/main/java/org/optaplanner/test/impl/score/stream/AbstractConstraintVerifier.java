@@ -19,8 +19,6 @@ package org.optaplanner.test.impl.score.stream;
 public abstract class AbstractConstraintVerifier<A extends AbstractConstraintVerifierAssertion<A, V>,
         V extends AbstractConstraintVerifier<A, V>> {
 
-    public abstract A givenPlanningSolution(Object planningSolution);
-
     public abstract A givenFacts(Object... facts);
 
 }

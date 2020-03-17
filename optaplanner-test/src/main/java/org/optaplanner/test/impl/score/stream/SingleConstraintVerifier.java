@@ -31,11 +31,6 @@ public final class SingleConstraintVerifier
     }
 
     @Override
-    public SingleConstraintVerifierAssertion givenPlanningSolution(Object planningSolution) {
-        return new SingleConstraintVerifierAssertion(constraintFunction, this, planningSolution);
-    }
-
-    @Override
     public SingleConstraintVerifierAssertion givenFacts(Object... facts) {
         return new SingleConstraintVerifierAssertion(constraintFunction, this, facts);
     }
