@@ -22,7 +22,7 @@ import java.util.Objects;
 import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractConstraintVerifierAssertion<A extends AbstractConstraintVerifierAssertion<A, V>,
-        V extends AbstractConstraintVerifier<A>> {
+        V extends AbstractConstraintVerifier<A, V>> {
 
     private final V parentConstraintVerifier;
     private final Object planningSolution;

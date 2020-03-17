@@ -18,7 +18,8 @@ package org.optaplanner.test.impl.score.stream;
 
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 
-public final class ConstraintProviderVerifier extends AbstractConstraintVerifier<ConstraintProviderVerifierAssertion> {
+public final class ConstraintProviderVerifier
+        extends AbstractConstraintVerifier<ConstraintProviderVerifierAssertion, ConstraintProviderVerifier> {
 
     private final ConstraintProvider constraintProvider;
 
