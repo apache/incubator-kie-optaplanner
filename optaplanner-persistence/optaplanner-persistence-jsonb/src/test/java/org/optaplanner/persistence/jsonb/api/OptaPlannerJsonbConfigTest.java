@@ -22,6 +22,7 @@ import javax.json.bind.JsonbConfig;
 
 import org.junit.Test;
 
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 import static org.junit.Assert.assertEquals;
@@ -34,18 +35,29 @@ public class OptaPlannerJsonbConfigTest extends AbstractJsonbJsonAdapterTest {
         Jsonb jsonb = JsonbBuilder.create(config);
 
         TestOptaPlannerJsonbConfigWrapper input = new TestOptaPlannerJsonbConfigWrapper();
+        input.setBendableScore(BendableScore.of(new int[]{1000, 200}, new int[]{34}));
         input.setHardSoftScore(HardSoftScore.of(-1, -20));
         TestOptaPlannerJsonbConfigWrapper output = serializeAndDeserialize(jsonb, input);
+        assertEquals(BendableScore.of(new int[]{1000, 200}, new int[]{34}), output.getBendableScore());
         assertEquals(HardSoftScore.of(-1, -20), output.getHardSoftScore());
     }
 
     public static class TestOptaPlannerJsonbConfigWrapper {
 
+        private BendableScore bendableScore;
         private HardSoftScore hardSoftScore;
 
         // Empty constructor required by JSON-B
         @SuppressWarnings("unused")
         public TestOptaPlannerJsonbConfigWrapper() {
+        }
+
+        public BendableScore getBendableScore() {
+            return bendableScore;
+        }
+
+        public void setBendableScore(BendableScore bendableScore) {
+            this.bendableScore = bendableScore;
         }
 
         public HardSoftScore getHardSoftScore() {
