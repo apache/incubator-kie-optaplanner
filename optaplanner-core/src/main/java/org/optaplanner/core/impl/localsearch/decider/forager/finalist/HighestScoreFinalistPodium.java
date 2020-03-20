@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 public class HighestScoreFinalistPodium extends AbstractFinalistPodium {
 
     protected Score finalistScore;
+    private final int finalistMaxSize = 1024000;
 
     @Override
     public void stepStarted(LocalSearchStepScope stepScope) {
@@ -47,7 +48,7 @@ public class HighestScoreFinalistPodium extends AbstractFinalistPodium {
         }
         Score moveScore = moveScope.getScore();
         int scoreComparison = doComparison(moveScore);
-        if (scoreComparison > 0) {
+        if (scoreComparison > 0 || finalistList.size() > finalistMaxSize) {
             finalistScore = moveScore;
             finalistList.clear();
             finalistList.add(moveScope);
