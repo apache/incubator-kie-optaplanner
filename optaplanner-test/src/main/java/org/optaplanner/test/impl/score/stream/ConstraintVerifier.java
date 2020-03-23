@@ -20,11 +20,17 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 
 public final class ConstraintVerifier {
 
     public static SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction) {
-        return new SingleConstraintVerifier(constraintFunction);
+        return forConstraint(constraintFunction, ConstraintStreamImplType.DROOLS);
+    }
+
+    public static SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction,
+            ConstraintStreamImplType constraintStreamImplType) {
+        return new SingleConstraintVerifier(constraintFunction, constraintStreamImplType);
     }
 
     private ConstraintVerifier() {

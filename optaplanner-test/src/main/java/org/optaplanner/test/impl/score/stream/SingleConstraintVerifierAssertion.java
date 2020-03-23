@@ -20,12 +20,14 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 
 public final class SingleConstraintVerifierAssertion
         extends AbstractConstraintVerifierAssertion<SingleConstraintVerifierAssertion, SingleConstraintVerifier> {
 
     SingleConstraintVerifierAssertion(Function<ConstraintFactory, Constraint> constraintFunction,
-            SingleConstraintVerifier constraintVerifier, Object[] facts) {
+            ConstraintStreamImplType constraintStreamImplType, SingleConstraintVerifier constraintVerifier,
+            Object[] facts) {
         super(constraintVerifier, facts);
     }
 
