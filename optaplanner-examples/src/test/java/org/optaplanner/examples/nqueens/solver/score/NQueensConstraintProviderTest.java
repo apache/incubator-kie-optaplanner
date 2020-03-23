@@ -18,10 +18,10 @@ package org.optaplanner.examples.nqueens.solver.score;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
-
-import static org.optaplanner.test.impl.score.stream.ConstraintVerifier.forConstraint;
+import org.optaplanner.test.impl.score.stream.ConstraintVerifier;
 
 public class NQueensConstraintProviderTest {
 
@@ -32,7 +32,8 @@ public class NQueensConstraintProviderTest {
     @Test
     public void testSingleConstraint() {
         NQueensConstraintProvider constraintProvider = new NQueensConstraintProvider();
-        forConstraint(constraintProvider::ascendingDiagonalConflict)
+        ConstraintVerifier.createFor(NQueens.class, Queen.class)
+                .forConstraint(constraintProvider::ascendingDiagonalConflict)
                 .givenFacts(queen1, queen2, row1, row2)
                 .expectImpact(SimpleScore.ONE);  // No type check here. Wrong score type fails at runtime.
     }

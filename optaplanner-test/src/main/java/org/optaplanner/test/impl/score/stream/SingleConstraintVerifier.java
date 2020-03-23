@@ -20,22 +20,41 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
-public final class SingleConstraintVerifier
-        extends AbstractConstraintVerifier<SingleConstraintVerifierAssertion, SingleConstraintVerifier> {
+public final class SingleConstraintVerifier<Solution_>
+        extends AbstractConstraintVerifier<SingleConstraintVerifierAssertion<Solution_>,
+        SingleConstraintVerifier<Solution_>> {
 
-    private final Function<ConstraintFactory, Constraint> constraintFunction;
-    private final ConstraintStreamImplType constraintStreamImplType;
+    private final ConstraintVerifier<Solution_> parent;
+    private final ConstraintStreamScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory;
 
-    SingleConstraintVerifier(Function<ConstraintFactory, Constraint> constraintFunction,
+    SingleConstraintVerifier(ConstraintVerifier<Solution_> constraintVerifier,
+            Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
-        this.constraintFunction = constraintFunction;
-        this.constraintStreamImplType = constraintStreamImplType;
+        this.parent = constraintVerifier;
+        ConstraintProvider constraintProvider = constraintFactory -> new Constraint[] {
+                constraintFunction.apply(constraintFactory)
+        };
+        this.constraintStreamScoreDirectorFactory =
+                new ConstraintStreamScoreDirectorFactory<>(parent.getSolutionDescriptor(), constraintProvider,
+                        constraintStreamImplType);
+    }
+
+    ConstraintVerifier<Solution_> getParent() {
+        return parent;
+    }
+
+    ConstraintStreamScoreDirectorFactory<Solution_> getConstraintStreamScoreDirectorFactory() {
+        return constraintStreamScoreDirectorFactory;
     }
 
     @Override
     public SingleConstraintVerifierAssertion givenFacts(Object... facts) {
-        return new SingleConstraintVerifierAssertion(constraintFunction, constraintStreamImplType,  this, facts);
+        ConstraintSession<Solution_> constraintSession = constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null);
+        return null;
     }
 }

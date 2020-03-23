@@ -16,19 +16,14 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import java.util.function.Function;
+import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+public final class SingleConstraintVerifierAssertion<Solution_>
+        extends AbstractConstraintVerifierAssertion<SingleConstraintVerifierAssertion<Solution_>,
+        SingleConstraintVerifier<Solution_>> {
 
-public final class SingleConstraintVerifierAssertion
-        extends AbstractConstraintVerifierAssertion<SingleConstraintVerifierAssertion, SingleConstraintVerifier> {
-
-    SingleConstraintVerifierAssertion(Function<ConstraintFactory, Constraint> constraintFunction,
-            ConstraintStreamImplType constraintStreamImplType, SingleConstraintVerifier constraintVerifier,
-            Object[] facts) {
-        super(constraintVerifier, facts);
+    SingleConstraintVerifierAssertion(ConstraintSession<Solution_> constraintSession, Object[] facts) {
+        super(null, facts);
     }
 
 }

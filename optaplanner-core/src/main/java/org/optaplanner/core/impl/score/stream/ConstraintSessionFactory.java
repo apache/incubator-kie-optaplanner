@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ public interface ConstraintSessionFactory<Solution_>  {
     /**
      * This method is thread-safe.
      * @param constraintMatchEnabled  true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
-     * @param workingSolution never null
+     * @param workingSolution if null, uniform synthetic constraint weights may be applied
      * @return never null
      */
     ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);

@@ -17,24 +17,41 @@
 package org.optaplanner.test.impl.score.stream;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-public final class ConstraintVerifier {
+public final class ConstraintVerifier<Solution_> {
 
-    public static SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction) {
+    public static <Solution_> ConstraintVerifier<Solution_> createFor(Class<Solution_> planningSolutionClass,
+            Class<?> firstPlanningEntityClass, Class<?>... otherPlanningEntityClasses) {
+        Class[] entityClasses = Stream.concat(Stream.of(firstPlanningEntityClass), Stream.of(otherPlanningEntityClasses))
+                .toArray(Class[]::new);
+        SolutionDescriptor<Solution_> solutionDescriptor =
+                SolutionDescriptor.buildSolutionDescriptor(planningSolutionClass, entityClasses);
+        return new ConstraintVerifier<>(solutionDescriptor);
+    }
+
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
+
+    private ConstraintVerifier(SolutionDescriptor<Solution_> solutionDescriptor) {
+        this.solutionDescriptor = solutionDescriptor;
+    }
+
+    SolutionDescriptor<Solution_> getSolutionDescriptor() {
+        return solutionDescriptor;
+    }
+
+    public SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction) {
         return forConstraint(constraintFunction, ConstraintStreamImplType.DROOLS);
     }
 
-    public static SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction,
+    public SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
-        return new SingleConstraintVerifier(constraintFunction, constraintStreamImplType);
-    }
-
-    private ConstraintVerifier() {
-        // No external instances
+        return new SingleConstraintVerifier(this, constraintFunction, constraintStreamImplType);
     }
 
 }
