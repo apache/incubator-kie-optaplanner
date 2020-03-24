@@ -115,7 +115,7 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
         KieSession kieSession = currentKieBase.newKieSession();
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener()); // Enables undo in rules.
         kieSession.setGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
-        return new DroolsConstraintSession<>(kieSession, scoreHolder);
+        return new DroolsConstraintSession<>(this, kieSession, scoreHolder);
     }
 
     /**

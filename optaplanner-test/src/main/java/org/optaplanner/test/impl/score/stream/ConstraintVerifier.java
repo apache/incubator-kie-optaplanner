@@ -45,11 +45,11 @@ public final class ConstraintVerifier<Solution_> {
         return solutionDescriptor;
     }
 
-    public SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction) {
+    public SingleConstraintVerifier<Solution_> forConstraint(Function<ConstraintFactory, Constraint> constraintFunction) {
         return forConstraint(constraintFunction, ConstraintStreamImplType.DROOLS);
     }
 
-    public SingleConstraintVerifier forConstraint(Function<ConstraintFactory, Constraint> constraintFunction,
+    public SingleConstraintVerifier<Solution_> forConstraint(Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
         return new SingleConstraintVerifier(this, constraintFunction, constraintStreamImplType);
     }

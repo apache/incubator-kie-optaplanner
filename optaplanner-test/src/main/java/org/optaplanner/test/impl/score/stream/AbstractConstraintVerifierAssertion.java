@@ -16,36 +16,70 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import java.util.Arrays;
-import java.util.Objects;
-
-import org.optaplanner.core.api.score.Score;
+import java.math.BigDecimal;
 
 public abstract class AbstractConstraintVerifierAssertion<A extends AbstractConstraintVerifierAssertion<A, V>,
         V extends AbstractConstraintVerifier<A, V>> {
 
     private final V parentConstraintVerifier;
-    private final Object[] facts;
 
-    protected AbstractConstraintVerifierAssertion(V constraintVerifier, Object[] facts) {
-        Objects.requireNonNull(facts);
+    protected AbstractConstraintVerifierAssertion(V constraintVerifier) {
         this.parentConstraintVerifier = constraintVerifier;
-        this.facts = Arrays.copyOf(facts, facts.length);
     }
 
     protected final V getParentConstraintVerifier() {
         return parentConstraintVerifier;
     }
 
-    public A expectReward(Score<?> score) {
+    abstract protected Number getImpact();
+
+    private void assertImpact(Number weight) {
+        Number impact = getImpact();
+        if (!weight.equals(impact)) {
+            throw new IllegalStateException(weight + " != " + impact);
+        }
+    }
+
+    public A expectReward(int matchWeight) {
+        assertImpact(matchWeight);
         return (A) this;
     }
 
-    public A expectPenalty(Score<?> score) {
+    public A expectReward(long matchWeight) {
+        assertImpact(matchWeight);
         return (A) this;
     }
 
-    public A expectImpact(Score<?> score) {
+    public A expectReward(BigDecimal matchWeight) {
+        assertImpact(matchWeight);
+        return (A) this;
+    }
+
+    public A expectPenalty(int matchWeight) {
+        assertImpact(matchWeight);
+        return (A) this;
+    }
+
+    public A expectPenalty(long matchWeight) {
+        assertImpact(matchWeight);
+        return (A) this;
+    }
+
+    public A expectPenalty(BigDecimal matchWeight) {
+        assertImpact(matchWeight);
+        return (A) this;
+    }
+
+    public A expectImpact(int matchWeight) {
+        assertImpact(matchWeight);
+        return (A) this;
+    }
+
+    public A expectImpact(long matchWeight) {
+        return (A) this;
+    }
+
+    public A expectImpact(BigDecimal matchWeight) {
         return (A) this;
     }
 

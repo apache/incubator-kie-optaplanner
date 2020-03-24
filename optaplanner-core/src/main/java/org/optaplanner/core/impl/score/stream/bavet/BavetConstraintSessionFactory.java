@@ -55,7 +55,7 @@ public final class BavetConstraintSessionFactory<Solution_> extends AbstractCons
                 }
             }
         }
-        return new BavetConstraintSession<>(constraintMatchEnabled, getScoreDefinition(), constraintToWeightMap);
+        return new BavetConstraintSession<>(this, constraintMatchEnabled, getScoreDefinition(), constraintToWeightMap);
     }
 
 }

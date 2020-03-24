@@ -17,25 +17,44 @@
 package org.optaplanner.examples.nqueens.solver.score;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.examples.nqueens.domain.Column;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.test.impl.score.stream.ConstraintVerifier;
+import org.optaplanner.test.impl.score.stream.SingleConstraintVerifier;
 
 public class NQueensConstraintProviderTest {
 
-    // Dummy data, the tests don't actually do anything.
-    private Queen queen1, queen2;
-    private Row row1, row2;
+    private final NQueensConstraintProvider constraintProvider = new NQueensConstraintProvider();
+    private final ConstraintVerifier<NQueens> constraintVerifier =
+            ConstraintVerifier.createFor(NQueens.class, Queen.class);
 
     @Test
     public void testSingleConstraint() {
-        NQueensConstraintProvider constraintProvider = new NQueensConstraintProvider();
-        ConstraintVerifier.createFor(NQueens.class, Queen.class)
-                .forConstraint(constraintProvider::ascendingDiagonalConflict)
-                .givenFacts(queen1, queen2, row1, row2)
-                .expectImpact(SimpleScore.ONE);  // No type check here. Wrong score type fails at runtime.
+        Column column1 = new Column();
+        column1.setId(0L);
+        column1.setIndex(0);
+        Column column2 = new Column();
+        column2.setId(1L);
+        column2.setIndex(1);
+        Row row = new Row();
+        row.setId(0L);
+        row.setIndex(0);
+        Queen queen1 = new Queen();
+        queen1.setId(0L);
+        queen1.setRow(row);
+        queen1.setColumn(column1);
+        Queen queen2 = new Queen();
+        queen2.setId(1L);
+        queen2.setRow(row);
+        queen2.setColumn(column2);
+        SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
+                constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
+        horizontalConflictConstraintVerifier.givenFacts(queen1, row, column1, column2)
+                .expectImpact(0);
+        horizontalConflictConstraintVerifier.givenFacts(queen1, queen2, row, column1, column2)
+                .expectImpact(1);
     }
 
 }

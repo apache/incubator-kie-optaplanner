@@ -52,8 +52,7 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     }
 
     Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
-        return factory
-                .fromUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
+        return factory.fromUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
                 .penalize("Ascending diagonal conflict", SimpleScore.ONE);
     }
 

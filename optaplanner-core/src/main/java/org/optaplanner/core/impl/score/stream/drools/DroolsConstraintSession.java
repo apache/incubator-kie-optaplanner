@@ -25,13 +25,17 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
+import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
 public class DroolsConstraintSession<Solution_> implements ConstraintSession<Solution_> {
 
+    private final ConstraintSessionFactory<Solution_> sessionFactory;
     private final KieSession kieSession;
     private final ScoreHolder scoreHolder;
 
-    public DroolsConstraintSession(KieSession kieSession, ScoreHolder scoreHolder) {
+    public DroolsConstraintSession(ConstraintSessionFactory<Solution_> sessionFactory, KieSession kieSession,
+            ScoreHolder scoreHolder) {
+        this.sessionFactory = sessionFactory;
         this.kieSession = kieSession;
         this.scoreHolder = scoreHolder;
     }
@@ -69,6 +73,11 @@ public class DroolsConstraintSession<Solution_> implements ConstraintSession<Sol
     public Map<Object, Indictment> getIndictmentMap() {
         kieSession.fireAllRules();
         return scoreHolder.getIndictmentMap();
+    }
+
+    @Override
+    public ConstraintSessionFactory<Solution_> getSessionFactory() {
+        return sessionFactory;
     }
 
     @Override
