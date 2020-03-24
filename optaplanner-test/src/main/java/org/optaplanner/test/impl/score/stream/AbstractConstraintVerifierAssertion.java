@@ -36,38 +36,8 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
     private void assertImpact(Number weight) {
         Number impact = getImpact();
         if (!weight.equals(impact)) {
-            throw new IllegalStateException(weight + " != " + impact);
+            throw new IllegalStateException("Expected " + weight + " (" + weight.getClass() + ") is not actual " + impact + " (" + impact.getClass() + ")");
         }
-    }
-
-    public A expectReward(int matchWeight) {
-        assertImpact(matchWeight);
-        return (A) this;
-    }
-
-    public A expectReward(long matchWeight) {
-        assertImpact(matchWeight);
-        return (A) this;
-    }
-
-    public A expectReward(BigDecimal matchWeight) {
-        assertImpact(matchWeight);
-        return (A) this;
-    }
-
-    public A expectPenalty(int matchWeight) {
-        assertImpact(matchWeight);
-        return (A) this;
-    }
-
-    public A expectPenalty(long matchWeight) {
-        assertImpact(matchWeight);
-        return (A) this;
-    }
-
-    public A expectPenalty(BigDecimal matchWeight) {
-        assertImpact(matchWeight);
-        return (A) this;
     }
 
     public A expectImpact(int matchWeight) {
@@ -76,10 +46,12 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
     }
 
     public A expectImpact(long matchWeight) {
+        assertImpact(matchWeight);
         return (A) this;
     }
 
     public A expectImpact(BigDecimal matchWeight) {
+        assertImpact(matchWeight);
         return (A) this;
     }
 
