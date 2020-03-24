@@ -35,9 +35,6 @@ public class NQueensConstraintProviderTest {
         Column column1 = new Column();
         column1.setId(0L);
         column1.setIndex(0);
-        Column column2 = new Column();
-        column2.setId(1L);
-        column2.setIndex(1);
         Row row = new Row();
         row.setId(0L);
         row.setIndex(0);
@@ -45,16 +42,31 @@ public class NQueensConstraintProviderTest {
         queen1.setId(0L);
         queen1.setRow(row);
         queen1.setColumn(column1);
+        // One queen
+        SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
+                constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
+        horizontalConflictConstraintVerifier.givenFacts(queen1, row, column1)
+                .expectImpact("No horizontal conflicts with just one queen.", 0);
+        // Two queens
+        Column column2 = new Column();
+        column2.setId(1L);
+        column2.setIndex(1);
         Queen queen2 = new Queen();
         queen2.setId(1L);
         queen2.setRow(row);
         queen2.setColumn(column2);
-        SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
-                constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
-        horizontalConflictConstraintVerifier.givenFacts(queen1, row, column1, column2)
-                .expectImpact(0);
         horizontalConflictConstraintVerifier.givenFacts(queen1, queen2, row, column1, column2)
-                .expectImpact(1);
+                .expectImpact("One pair of queens on the same row.", 1);
+        // Three queens
+        Column column3 = new Column();
+        column2.setId(2L);
+        column2.setIndex(2);
+        Queen queen3 = new Queen();
+        queen3.setId(2L);
+        queen3.setRow(row);
+        queen3.setColumn(column3);
+        horizontalConflictConstraintVerifier.givenFacts(queen1, queen2, queen3, row, column1, column2, column3)
+                .expectImpact("Three pairs of queens on the same row.", 3);
     }
 
 }

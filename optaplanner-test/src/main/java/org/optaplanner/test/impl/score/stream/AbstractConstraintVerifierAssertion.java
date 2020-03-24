@@ -33,26 +33,47 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
 
     abstract protected Number getImpact();
 
-    private void assertImpact(Number weight) {
+    private void assertImpact(Number weight, String message) {
         Number impact = getImpact();
         if (!weight.equals(impact)) {
-            throw new IllegalStateException("Expected " + weight + " (" + weight.getClass() + ") is not actual " + impact + " (" + impact.getClass() + ")");
+            if (message == null) {
+                throw new IllegalStateException("Broken expectation." + System.lineSeparator() +
+                        "    Expected: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
+                        "      Actual: " + impact + " (" + impact.getClass() + ")");
+            } else {
+                throw new IllegalStateException("Broken expectation. " + System.lineSeparator() +
+                        "     Message: " + message + System.lineSeparator() +
+                        "    Expected: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
+                        "      Actual: " + impact + " (" + impact.getClass() + ")");
+            }
         }
     }
 
-    public A expectImpact(int matchWeight) {
-        assertImpact(matchWeight);
+    public A expectImpact(String message, int matchWeight) {
+        assertImpact(matchWeight, message);
         return (A) this;
+    }
+
+    public A expectImpact(String message, long matchWeight) {
+        assertImpact(matchWeight, message);
+        return (A) this;
+    }
+
+    public A expectImpact(String message, BigDecimal matchWeight) {
+        assertImpact(matchWeight, message);
+        return (A) this;
+    }
+
+    public A expectImpact(int matchWeight) {
+        return expectImpact(null, matchWeight);
     }
 
     public A expectImpact(long matchWeight) {
-        assertImpact(matchWeight);
-        return (A) this;
+        return expectImpact(null, matchWeight);
     }
 
     public A expectImpact(BigDecimal matchWeight) {
-        assertImpact(matchWeight);
-        return (A) this;
+        return expectImpact(null, matchWeight);
     }
 
 }
