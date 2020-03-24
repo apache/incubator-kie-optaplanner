@@ -36,20 +36,20 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
     private void assertImpact(Number weight, String message) {
         Number impact = getImpact();
         String constraintId = getParentConstraintVerifier().getConstraint().getConstraintId();
-        if (!weight.equals(impact)) {
-            if (message == null) {
-                throw new IllegalStateException("Broken expectation." + System.lineSeparator() +
-                        "  Constraint: " + constraintId + System.lineSeparator() +
-                        "    Expected: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
-                        "      Actual: " + impact + " (" + impact.getClass() + ")");
-            } else {
-                throw new IllegalStateException("Broken expectation. " + System.lineSeparator() +
-                        "     Message: " + message + System.lineSeparator() +
-                        "  Constraint: " + constraintId + System.lineSeparator() +
-                        "    Expected: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
-                        "      Actual: " + impact + " (" + impact.getClass() + ")");
-            }
+        if (weight.equals(impact)) {
+            return;
         }
+        if (message == null) {
+            throw new IllegalStateException("Broken expectation." + System.lineSeparator() +
+                    "  Constraint: " + constraintId + System.lineSeparator() +
+                    "    Expected: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
+                    "      Actual: " + impact + " (" + impact.getClass() + ")");
+        }
+        throw new IllegalStateException("Broken expectation. " + System.lineSeparator() +
+                "     Message: " + message + System.lineSeparator() +
+                "  Constraint: " + constraintId + System.lineSeparator() +
+                "    Expected: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
+                "      Actual: " + impact + " (" + impact.getClass() + ")");
     }
 
     public A expectImpact(String message, int matchWeight) {
