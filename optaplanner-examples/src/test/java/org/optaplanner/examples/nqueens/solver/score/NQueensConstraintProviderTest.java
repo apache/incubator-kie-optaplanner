@@ -67,6 +67,9 @@ public class NQueensConstraintProviderTest {
         queen3.setColumn(column3);
         horizontalConflictConstraintVerifier.givenFacts(queen1, queen2, queen3, row, column1, column2, column3)
                 .expectImpact("Three pairs of queens on the same row.", 3);
+        // Intentionally broken to see the broken expectation message.
+        horizontalConflictConstraintVerifier.givenFacts(queen1, queen2, queen3, row, column1, column2, column3)
+                .expectImpact("Three pairs of queens on the same row.", -1);
     }
 
 }

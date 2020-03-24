@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
+import java.util.Arrays;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -38,6 +40,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
 
     private final ConstraintSessionFactory<Solution_> constraintSessionFactory;
+    private final Constraint[] constraints;
 
     public ConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
@@ -53,7 +56,7 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
             default:
                 throw new IllegalStateException("The constraintStreamImplType (" + constraintStreamImplType + ") is not implemented.");
         }
-        Constraint[] constraints = constraintProvider.defineConstraints(constraintFactory);
+        this.constraints = constraintProvider.defineConstraints(constraintFactory);
         constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
     }
 
@@ -69,6 +72,14 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
 
     public ConstraintSession<Solution_> newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
+
+    public Constraint[] getConstraints() {
+        return Arrays.copyOf(constraints, constraints.length);
     }
 
 }

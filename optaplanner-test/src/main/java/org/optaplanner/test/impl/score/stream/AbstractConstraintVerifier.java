@@ -16,8 +16,12 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import org.optaplanner.core.api.score.stream.Constraint;
+
 public abstract class AbstractConstraintVerifier<A extends AbstractConstraintVerifierAssertion<A, V>,
         V extends AbstractConstraintVerifier<A, V>> {
+
+    abstract Constraint getConstraint();
 
     public abstract A givenFacts(Object... facts);
 
