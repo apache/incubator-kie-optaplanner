@@ -51,14 +51,14 @@ public class NQueensConstraintProviderTest {
         SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
                 constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
         horizontalConflictConstraintVerifier.given(queen1, queen2, row, column1, column2)
-                .expectReward("One pair of queens on the same row.", 1);
+                .expectReward(1, "One pair of queens on the same row.");
         // Three queens
         Queen queen3 = new Queen(2, row, column3);
         horizontalConflictConstraintVerifier.given(queen1, queen2, queen3, row, column1, column2, column3)
-                .expectReward("Three pairs of queens on the same row.", 3);
+                .expectReward(3, "Three pairs of queens on the same row.");
         // Intentionally broken to see the broken expectation message.
         horizontalConflictConstraintVerifier.given(queen1, queen2, queen3, row, column1, column2, column3)
-                .expectReward("Three pairs of queens on the same row.", 1);
+                .expectReward(1, "Three pairs of queens on the same row.");
     }
 
     @Test

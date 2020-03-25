@@ -27,15 +27,9 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
         this.parentConstraintVerifier = constraintVerifier;
     }
 
-    private static void assertPositive(Number matchWeightTotal) {
+    private static void assertCorrectMatchWeight(Number matchWeightTotal) {
         if (matchWeightTotal.doubleValue() <= 0) {
-            throw new IllegalArgumentException("expectReward() requires a positive match weight, given (" + matchWeightTotal + ")");
-        }
-    }
-
-    private static void assertNegative(Number matchWeightTotal) {
-        if (matchWeightTotal.doubleValue() >= 0) {
-            throw new IllegalArgumentException("expectPenalty() requires a negative match weight, given (" + matchWeightTotal + ")");
+            throw new IllegalArgumentException("Expected a positive match weight, given (" + matchWeightTotal + ").");
         }
     }
 
@@ -64,64 +58,117 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
                 "      Actual: " + impact + " (" + impact.getClass() + ")");
     }
 
-    public void expectPenalty(String message, int matchWeightTotal) {
-        assertNegative(matchWeightTotal);
-        assertImpact(matchWeightTotal, message);
+    /**
+     * Asserts that the constraint under test, given a set of facts, results in a specific penalty.
+     *
+     * @param matchWeightTotal sum of weights of constraint matches from applying the given facts to the constraint
+     * @param message optional description of the scenario being asserted
+     * @throws AssertionError when the expected penalty is not observed
+     */
+    public void expectPenalty(int matchWeightTotal, String message) {
+        assertCorrectMatchWeight(matchWeightTotal);
+        assertImpact(-matchWeightTotal, message);
     }
 
-    public void expectPenalty(String message, long matchWeightTotal) {
-        assertNegative(matchWeightTotal);
-        assertImpact(matchWeightTotal, message);
+    /**
+     * As defined by {@link #expectPenalty(int, String)}.
+     */
+    public void expectPenalty(long matchWeightTotal, String message) {
+        assertCorrectMatchWeight(matchWeightTotal);
+        assertImpact(-matchWeightTotal, message);
     }
 
-    public void expectPenalty(String message, BigDecimal matchWeightTotal) {
-        assertNegative(matchWeightTotal);
-        assertImpact(matchWeightTotal, message);
+    /**
+     * As defined by {@link #expectPenalty(int, String)}.
+     */
+    public void expectPenalty(BigDecimal matchWeightTotal, String message) {
+        assertCorrectMatchWeight(matchWeightTotal);
+        assertImpact(matchWeightTotal.negate(), message);
     }
 
+    /**
+     * As defined by {@link #expectPenalty(int, String)} with a null message.
+     */
     public void expectPenalty(int matchWeightTotal) {
-        expectPenalty(null, matchWeightTotal);
+        expectPenalty(matchWeightTotal, null);
     }
 
+    /**
+     * As defined by {@link #expectPenalty(int, String)} with a null message.
+     */
     public void expectPenalty(long matchWeightTotal) {
-        expectPenalty(null, matchWeightTotal);
+        expectPenalty(matchWeightTotal, null);
     }
 
+    /**
+     * As defined by {@link #expectPenalty(int, String)} with a null message.
+     */
     public void expectPenalty(BigDecimal matchWeightTotal) {
-        expectPenalty(null, matchWeightTotal);
+        expectPenalty(matchWeightTotal, null);
     }
 
-    public void expectReward(String message, int matchWeightTotal) {
-        assertPositive(matchWeightTotal);
+    /**
+     * Asserts that the constraint under test, given a set of facts, results in a specific reward.
+     *
+     * @param matchWeightTotal sum of weights of constraint matches from applying the given facts to the constraint
+     * @param message optional description of the scenario being asserted
+     * @throws AssertionError when the expected reward is not observed
+     */
+    public void expectReward(int matchWeightTotal, String message) {
+        assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
     }
 
-    public void expectReward(String message, long matchWeightTotal) {
-        assertPositive(matchWeightTotal);
+    /**
+     * As defined by {@link #expectReward(int, String)}.
+     */
+    public void expectReward(long matchWeightTotal, String message) {
+        assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
     }
 
-    public void expectReward(String message, BigDecimal matchWeightTotal) {
-        assertPositive(matchWeightTotal);
+    /**
+     * As defined by {@link #expectReward(int, String)}.
+     */
+    public void expectReward(BigDecimal matchWeightTotal, String message) {
+        assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
     }
 
+    /**
+     * As defined by {@link #expectReward(int, String)} with a null message.
+     */
     public void expectReward(int matchWeightTotal) {
-        expectReward(null, matchWeightTotal);
+        expectReward(matchWeightTotal, null);
     }
 
+    /**
+     * As defined by {@link #expectReward(int, String)} with a null message.
+     */
     public void expectReward(long matchWeightTotal) {
-        expectReward(null, matchWeightTotal);
+        expectReward(matchWeightTotal, null);
     }
 
+    /**
+     * As defined by {@link #expectReward(int, String)} with a null message.
+     */
     public void expectReward(BigDecimal matchWeightTotal) {
-        expectReward(null, matchWeightTotal);
+        expectReward(matchWeightTotal, null);
     }
 
+    /**
+     * Asserts that the constraint under test, given a set of facts, results in neither penalty nor reward.
+     *
+     * @param message optional description of the scenario being asserted
+     * @throws AssertionError when either a penalty or a reward is observed
+     */
     public void expectNoImpact(String message) {
         assertImpact(0, message);
     }
 
+    /**
+     * As defined by {@link #expectNoImpact(String)} with a null message.
+     */
     public void expectNoImpact() {
         expectNoImpact(null);
     }
