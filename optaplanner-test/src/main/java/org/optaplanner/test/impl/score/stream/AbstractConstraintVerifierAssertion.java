@@ -64,72 +64,65 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
                 "      Actual: " + impact + " (" + impact.getClass() + ")");
     }
 
-    public A expectPenalty(String message, int matchWeightTotal) {
+    public void expectPenalty(String message, int matchWeightTotal) {
         assertNegative(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
-        return (A) this;
     }
 
-    public A expectPenalty(String message, long matchWeightTotal) {
+    public void expectPenalty(String message, long matchWeightTotal) {
         assertNegative(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
-        return (A) this;
     }
 
-    public A expectPenalty(String message, BigDecimal matchWeightTotal) {
+    public void expectPenalty(String message, BigDecimal matchWeightTotal) {
         assertNegative(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
-        return (A) this;
     }
 
-    public A expectPenalty(int matchWeightTotal) {
-        return expectPenalty(null, matchWeightTotal);
+    public void expectPenalty(int matchWeightTotal) {
+        expectPenalty(null, matchWeightTotal);
     }
 
-    public A expectPenalty(long matchWeightTotal) {
-        return expectPenalty(null, matchWeightTotal);
+    public void expectPenalty(long matchWeightTotal) {
+        expectPenalty(null, matchWeightTotal);
     }
 
-    public A expectPenalty(BigDecimal matchWeightTotal) {
-        return expectPenalty(null, matchWeightTotal);
+    public void expectPenalty(BigDecimal matchWeightTotal) {
+        expectPenalty(null, matchWeightTotal);
     }
 
-    public A expectReward(String message, int matchWeightTotal) {
+    public void expectReward(String message, int matchWeightTotal) {
         assertPositive(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
-        return (A) this;
     }
 
-    public A expectReward(String message, long matchWeightTotal) {
+    public void expectReward(String message, long matchWeightTotal) {
         assertPositive(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
-        return (A) this;
     }
 
-    public A expectReward(String message, BigDecimal matchWeightTotal) {
+    public void expectReward(String message, BigDecimal matchWeightTotal) {
         assertPositive(matchWeightTotal);
         assertImpact(matchWeightTotal, message);
-        return (A) this;
     }
 
-    public A expectReward(int matchWeightTotal) {
-        return expectReward(null, matchWeightTotal);
+    public void expectReward(int matchWeightTotal) {
+        expectReward(null, matchWeightTotal);
     }
 
-    public A expectReward(long matchWeightTotal) {
-        return expectReward(null, matchWeightTotal);
+    public void expectReward(long matchWeightTotal) {
+        expectReward(null, matchWeightTotal);
     }
 
-    public A expectReward(BigDecimal matchWeightTotal) {
-        return expectReward(null, matchWeightTotal);
+    public void expectReward(BigDecimal matchWeightTotal) {
+        expectReward(null, matchWeightTotal);
     }
 
-    public A expectNoImpact(String message) {
+    public void expectNoImpact(String message) {
         assertImpact(0, message);
-        return (A) this;
     }
 
-    public A expectNoImpact() {
-        return expectNoImpact(null);
+    public void expectNoImpact() {
+        expectNoImpact(null);
     }
 }

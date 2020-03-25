@@ -30,46 +30,46 @@ public class NQueensConstraintProviderTest {
     private final ConstraintVerifier<NQueens> constraintVerifier =
             ConstraintVerifier.createFor(NQueens.class, Queen.class);
 
+    private final Row row = new Row(0);
+    private final Column column1 = new Column(0);
+    private final Column column2 = new Column(1);
+    private final Column column3 = new Column(2);
+
     @Test
-    public void testSingleConstraint() {
-        Column column1 = new Column();
-        column1.setId(0L);
-        column1.setIndex(0);
-        Row row = new Row();
-        row.setId(0L);
-        row.setIndex(0);
-        Queen queen1 = new Queen();
-        queen1.setId(0L);
-        queen1.setRow(row);
-        queen1.setColumn(column1);
-        // One queen
+    public void noHorizontalConflictWithOneQueen() {
+        Queen queen1 = new Queen(0, row, column1);
         SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
                 constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
         horizontalConflictConstraintVerifier.given(queen1, row, column1)
-                .expectNoImpact("No horizontal conflicts with just one queen.");
-        // Two queens
-        Column column2 = new Column();
-        column2.setId(1L);
-        column2.setIndex(1);
-        Queen queen2 = new Queen();
-        queen2.setId(1L);
-        queen2.setRow(row);
-        queen2.setColumn(column2);
+                .expectNoImpact();
+    }
+
+    @Test
+    public void horizontalConflictWithTwoQueens() {
+        Queen queen1 = new Queen(0, row, column1);
+        Queen queen2 = new Queen(1, row, column2);
+        SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
+                constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
         horizontalConflictConstraintVerifier.given(queen1, queen2, row, column1, column2)
                 .expectReward("One pair of queens on the same row.", 1);
         // Three queens
-        Column column3 = new Column();
-        column2.setId(2L);
-        column2.setIndex(2);
-        Queen queen3 = new Queen();
-        queen3.setId(2L);
-        queen3.setRow(row);
-        queen3.setColumn(column3);
+        Queen queen3 = new Queen(2, row, column3);
         horizontalConflictConstraintVerifier.given(queen1, queen2, queen3, row, column1, column2, column3)
                 .expectReward("Three pairs of queens on the same row.", 3);
         // Intentionally broken to see the broken expectation message.
         horizontalConflictConstraintVerifier.given(queen1, queen2, queen3, row, column1, column2, column3)
                 .expectReward("Three pairs of queens on the same row.", 1);
+    }
+
+    @Test
+    public void horizontalConflictWithThreeQueens() {
+        Queen queen1 = new Queen(0, row, column1);
+        Queen queen2 = new Queen(1, row, column2);
+        Queen queen3 = new Queen(2, row, column3);
+        SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
+                constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
+        horizontalConflictConstraintVerifier.given(queen1, queen2, queen3, row, column1, column2, column3)
+                .expectReward(3);
     }
 
 }
