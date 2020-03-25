@@ -22,7 +22,6 @@ import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.test.impl.score.stream.ConstraintVerifier;
-import org.optaplanner.test.impl.score.stream.SingleConstraintVerifier;
 
 public class NQueensConstraintProviderTest {
 
@@ -38,9 +37,8 @@ public class NQueensConstraintProviderTest {
     @Test
     public void noHorizontalConflictWithOneQueen() {
         Queen queen1 = new Queen(0, row, column1);
-        SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
-                constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
-        horizontalConflictConstraintVerifier.given(queen1, row, column1)
+        constraintVerifier.forConstraint(constraintProvider::horizontalConflict)
+                .given(queen1, row, column1)
                 .expectNoImpact();
     }
 
@@ -48,9 +46,8 @@ public class NQueensConstraintProviderTest {
     public void horizontalConflictWithTwoQueens() {
         Queen queen1 = new Queen(0, row, column1);
         Queen queen2 = new Queen(1, row, column2);
-        SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
-                constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
-        horizontalConflictConstraintVerifier.given(queen1, queen2, row, column1, column2)
+        constraintVerifier.forConstraint(constraintProvider::horizontalConflict)
+                .given(queen1, queen2, row, column1, column2)
                 .expectReward(1, "One pair of queens on the same row.");
     }
 
@@ -59,10 +56,8 @@ public class NQueensConstraintProviderTest {
         Queen queen1 = new Queen(0, row, column1);
         Queen queen2 = new Queen(1, row, column2);
         Queen queen3 = new Queen(2, row, column3);
-        SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
-                constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
-        horizontalConflictConstraintVerifier.given(queen1, queen2, queen3, row, column1, column2, column3)
+        constraintVerifier.forConstraint(constraintProvider::horizontalConflict)
+                .given(queen1, queen2, queen3, row, column1, column2, column3)
                 .expectReward(3);
     }
-
 }
