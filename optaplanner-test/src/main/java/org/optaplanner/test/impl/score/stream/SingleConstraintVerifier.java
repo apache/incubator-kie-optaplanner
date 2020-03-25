@@ -16,8 +16,11 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -29,27 +32,16 @@ public final class SingleConstraintVerifier<Solution_>
         extends AbstractConstraintVerifier<SingleConstraintVerifierAssertion<Solution_>,
         SingleConstraintVerifier<Solution_>> {
 
-    private final ConstraintVerifier<Solution_> parent;
     private final ConstraintStreamScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory;
 
     SingleConstraintVerifier(ConstraintVerifier<Solution_> constraintVerifier,
             Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
-        this.parent = constraintVerifier;
         ConstraintProvider constraintProvider = constraintFactory -> new Constraint[] {
                 constraintFunction.apply(constraintFactory)
         };
-        this.constraintStreamScoreDirectorFactory =
-                new ConstraintStreamScoreDirectorFactory<>(parent.getSolutionDescriptor(), constraintProvider,
-                        constraintStreamImplType);
-    }
-
-    ConstraintVerifier<Solution_> getParent() {
-        return parent;
-    }
-
-    ConstraintStreamScoreDirectorFactory<Solution_> getConstraintStreamScoreDirectorFactory() {
-        return constraintStreamScoreDirectorFactory;
+        this.constraintStreamScoreDirectorFactory = new ConstraintStreamScoreDirectorFactory<>(
+                constraintVerifier.getSolutionDescriptor(), constraintProvider, constraintStreamImplType);
     }
 
     @Override
@@ -58,12 +50,12 @@ public final class SingleConstraintVerifier<Solution_>
     }
 
     @Override
-    public SingleConstraintVerifierAssertion given(Object... facts) {
-        ConstraintSession<Solution_> constraintSession =
-                constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null);
-        for (Object fact: facts) {
-            constraintSession.insert(fact);
+    public SingleConstraintVerifierAssertion<Solution_> given(Object... facts) {
+        try (ConstraintSession<Solution_> constraintSession =
+                constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null)) {
+            Arrays.stream(facts).distinct().forEach(constraintSession::insert);
+            Map<String, ConstraintMatchTotal> constraintMatches = constraintSession.getConstraintMatchTotalMap();
+            return new SingleConstraintVerifierAssertion<>(this, constraintMatches);
         }
-        return new SingleConstraintVerifierAssertion(this, constraintSession);
     }
 }

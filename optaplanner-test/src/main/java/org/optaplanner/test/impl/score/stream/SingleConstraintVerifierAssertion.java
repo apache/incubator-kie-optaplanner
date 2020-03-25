@@ -16,24 +16,26 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
 public final class SingleConstraintVerifierAssertion<Solution_>
         extends AbstractConstraintVerifierAssertion<SingleConstraintVerifierAssertion<Solution_>,
         SingleConstraintVerifier<Solution_>> {
 
-    private final ConstraintSession<Solution_> constraintSession;
+    private final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
 
     SingleConstraintVerifierAssertion(SingleConstraintVerifier<Solution_> singleConstraintVerifier,
-            ConstraintSession<Solution_> constraintSession) {
+            Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
         super(singleConstraintVerifier);
-        this.constraintSession = constraintSession;
+        this.constraintMatchTotalMap = Collections.unmodifiableMap(constraintMatchTotalMap);
     }
 
     @Override
     protected Number getImpact() {
-        return constraintSession.getConstraintMatchTotalMap().values().stream()
+        return constraintMatchTotalMap.values().stream()
                 .mapToInt(ConstraintMatchTotal::getConstraintMatchCount)
                 .sum();
     }
