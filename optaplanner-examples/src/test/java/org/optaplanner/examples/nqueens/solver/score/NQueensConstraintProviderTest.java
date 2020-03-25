@@ -45,8 +45,8 @@ public class NQueensConstraintProviderTest {
         // One queen
         SingleConstraintVerifier<NQueens> horizontalConflictConstraintVerifier =
                 constraintVerifier.forConstraint(constraintProvider::horizontalConflict);
-        horizontalConflictConstraintVerifier.givenFacts(queen1, row, column1)
-                .expectImpact("No horizontal conflicts with just one queen.", 0);
+        horizontalConflictConstraintVerifier.given(queen1, row, column1)
+                .expectNoImpact("No horizontal conflicts with just one queen.");
         // Two queens
         Column column2 = new Column();
         column2.setId(1L);
@@ -55,8 +55,8 @@ public class NQueensConstraintProviderTest {
         queen2.setId(1L);
         queen2.setRow(row);
         queen2.setColumn(column2);
-        horizontalConflictConstraintVerifier.givenFacts(queen1, queen2, row, column1, column2)
-                .expectImpact("One pair of queens on the same row.", 1);
+        horizontalConflictConstraintVerifier.given(queen1, queen2, row, column1, column2)
+                .expectReward("One pair of queens on the same row.", 1);
         // Three queens
         Column column3 = new Column();
         column2.setId(2L);
@@ -65,11 +65,11 @@ public class NQueensConstraintProviderTest {
         queen3.setId(2L);
         queen3.setRow(row);
         queen3.setColumn(column3);
-        horizontalConflictConstraintVerifier.givenFacts(queen1, queen2, queen3, row, column1, column2, column3)
-                .expectImpact("Three pairs of queens on the same row.", 3);
+        horizontalConflictConstraintVerifier.given(queen1, queen2, queen3, row, column1, column2, column3)
+                .expectReward("Three pairs of queens on the same row.", 3);
         // Intentionally broken to see the broken expectation message.
-        horizontalConflictConstraintVerifier.givenFacts(queen1, queen2, queen3, row, column1, column2, column3)
-                .expectImpact("Three pairs of queens on the same row.", -1);
+        horizontalConflictConstraintVerifier.given(queen1, queen2, queen3, row, column1, column2, column3)
+                .expectReward("Three pairs of queens on the same row.", 1);
     }
 
 }

@@ -23,6 +23,6 @@ public abstract class AbstractConstraintVerifier<A extends AbstractConstraintVer
 
     abstract Constraint getConstraint();
 
-    public abstract A givenFacts(Object... facts);
+    public abstract A given(Object... facts);
 
 }

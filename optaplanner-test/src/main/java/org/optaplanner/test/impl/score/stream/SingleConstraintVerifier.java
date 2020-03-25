@@ -58,7 +58,7 @@ public final class SingleConstraintVerifier<Solution_>
     }
 
     @Override
-    public SingleConstraintVerifierAssertion givenFacts(Object... facts) {
+    public SingleConstraintVerifierAssertion given(Object... facts) {
         ConstraintSession<Solution_> constraintSession =
                 constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null);
         for (Object fact: facts) {
