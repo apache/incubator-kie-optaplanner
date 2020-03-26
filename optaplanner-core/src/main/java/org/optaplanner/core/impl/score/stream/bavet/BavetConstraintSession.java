@@ -32,7 +32,6 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
@@ -42,7 +41,6 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
 public final class BavetConstraintSession<Solution_> implements ConstraintSession<Solution_> {
 
-    private final ConstraintSessionFactory<Solution_> sessionFactory;
     private final boolean constraintMatchEnabled;
     private final Score<?> zeroScore;
     private final ScoreInliner<?> scoreInliner;
@@ -56,9 +54,8 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     private final List<Queue<BavetAbstractTuple>> nodeOrderedQueueList;
     private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
-    public BavetConstraintSession(ConstraintSessionFactory<Solution_> sessionFactory, boolean constraintMatchEnabled,
-            ScoreDefinition scoreDefinition, Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap) {
-        this.sessionFactory = sessionFactory;
+    public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition scoreDefinition,
+            Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         this.zeroScore = scoreDefinition.getZeroScore();
         this.scoreInliner = scoreDefinition.buildScoreInliner(constraintMatchEnabled);
@@ -187,11 +184,6 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
             }
         }
         return indictmentMap;
-    }
-
-    @Override
-    public ConstraintSessionFactory<Solution_> getSessionFactory() {
-        return sessionFactory;
     }
 
     @Override

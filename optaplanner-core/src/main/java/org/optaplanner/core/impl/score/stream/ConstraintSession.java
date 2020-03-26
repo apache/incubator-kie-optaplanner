@@ -50,8 +50,6 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
      */
     Map<Object, Indictment> getIndictmentMap();
 
-    ConstraintSessionFactory<Solution_> getSessionFactory();
-
     @Override
     void close();
 
