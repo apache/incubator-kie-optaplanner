@@ -51,7 +51,7 @@ public final class ConstraintVerifier<Solution_> {
 
     public SingleConstraintVerifier<Solution_> forConstraint(Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
-        return new SingleConstraintVerifier(this, constraintFunction, constraintStreamImplType);
+        return new SingleConstraintVerifier<>(this, constraintFunction, constraintStreamImplType);
     }
 
 }
