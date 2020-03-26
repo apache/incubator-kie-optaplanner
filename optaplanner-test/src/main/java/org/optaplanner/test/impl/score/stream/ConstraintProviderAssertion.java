@@ -45,14 +45,14 @@ public final class ConstraintProviderAssertion<Solution_> extends AbstractAssert
         if (message == null) {
             throw new AssertionError("Broken expectation." + System.lineSeparator() +
                     "    Constraint provider: " + constraintProviderClass + System.lineSeparator() +
-                    "         Expected score: " + score +
-                    "           Actual score: " + actualScore);
+                    "         Expected score: " + score + " (" + score.getClass() + ")" + System.lineSeparator() +
+                    "           Actual score: " + actualScore + " (" + actualScore.getClass() + ")");
         }
         throw new AssertionError("Broken expectation. " + System.lineSeparator() +
                 "                Message: " + message + System.lineSeparator() +
                 "    Constraint provider: " + constraintProviderClass + System.lineSeparator() +
-                "         Expected score: " + score +
-                "           Actual score: " + actualScore);
+                "         Expected score: " + score + " (" + score.getClass() + ")" + System.lineSeparator() +
+                "           Actual score: " + actualScore + " (" + actualScore.getClass() + ")");
     }
 
     /**
