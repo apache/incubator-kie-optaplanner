@@ -59,7 +59,7 @@ public class NQueensConstraintProviderTest {
         Queen queen2 = new Queen(1, row1, column2);
         constraintVerifier.forConstraint(constraintProvider::horizontalConflict)
                 .given(queen1, queen2)
-                .expectReward(1);
+                .expectPenalty(1);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class NQueensConstraintProviderTest {
         Queen queen3 = new Queen(2, row1, column3);
         constraintVerifier.forConstraint(constraintProvider::horizontalConflict)
                 .given(queen1, queen2, queen3)
-                .expectReward(3);
+                .expectPenalty(3);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class NQueensConstraintProviderTest {
         Queen queen2 = new Queen(1, row2, column1);
         constraintVerifier.forConstraint(constraintProvider::ascendingDiagonalConflict)
                 .given(queen1, queen2)
-                .expectReward(1);
+                .expectPenalty(1);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class NQueensConstraintProviderTest {
         Queen queen3 = new Queen(2, row3, column1);
         constraintVerifier.forConstraint(constraintProvider::ascendingDiagonalConflict)
                 .given(queen1, queen2, queen3)
-                .expectReward(3);
+                .expectPenalty(3);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class NQueensConstraintProviderTest {
         Queen queen2 = new Queen(1, row2, column2);
         constraintVerifier.forConstraint(constraintProvider::descendingDiagonalConflict)
                 .given(queen1, queen2)
-                .expectReward(1);
+                .expectPenalty(1);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class NQueensConstraintProviderTest {
         Queen queen3 = new Queen(2, row3, column3);
         constraintVerifier.forConstraint(constraintProvider::descendingDiagonalConflict)
                 .given(queen1, queen2, queen3)
-                .expectReward(3);
+                .expectPenalty(3);
     }
 
     private NQueens readSolution(String resource) throws IOException {

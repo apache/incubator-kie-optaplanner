@@ -16,12 +16,16 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
 public final class SingleConstraintAssertion<Solution_> extends AbstractAssertion<Solution_,
         SingleConstraintAssertion<Solution_>, SingleConstraintVerifier<Solution_>> {
@@ -46,23 +50,59 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
         }
     }
 
-    private void assertImpact(Number weight, String message) {
+    private void assertImpact(ScoreImpactType scoreImpactType, Number weight, String message) {
         Number impact = getImpact();
-        String constraintId = getParentConstraintVerifier().getConstraint().getConstraintId();
-        if (weight.equals(impact)) {
+        AbstractConstraint<?, ?> constraint = (AbstractConstraint<?, ?>) getParentConstraintVerifier().getConstraint();
+        // Null means we're just looking for any kind of penalty or an impact.
+        boolean isCorrectImpactType = scoreImpactType == null || scoreImpactType == constraint.getScoreImpactType();
+        if (isCorrectImpactType && weight.equals(impact)) {
             return;
         }
-        if (message == null) {
-            throw new AssertionError("Broken expectation." + System.lineSeparator() +
-                    "         Constraint: " + constraintId + System.lineSeparator() +
-                    "    Expected impact: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
-                    "      Actual impact: " + impact + " (" + impact.getClass() + ")");
+        String constraintId = constraint.getConstraintId();
+        String assertionMessage = getAssertionErrorMessage(scoreImpactType, weight, constraint.getScoreImpactType(),
+                impact, constraintId, message);
+        throw new AssertionError(assertionMessage);
+    }
+
+    private static String getAssertionErrorMessage(ScoreImpactType expectedImpactType, Number expectedImpact,
+            ScoreImpactType actualImpactType, Number actualImpact, String constraintId, String message) {
+        boolean hasMessage = message != null;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PrintStream printStream = new PrintStream(baos)) {
+            String preformattedMessage = "Broken expectation.%n" +
+                    "%18s: %s%n" +
+                    (hasMessage ? "%18s: %s%n" : "") +
+                    "%18s: %s (%s)%n" +
+                    "%18s: %s (%s)";
+            String expectedImpactLabel = "Expected " + getImpactTypeLabel(expectedImpactType);
+            String actualImpactLabel = "Actual " + getImpactTypeLabel(actualImpactType);
+            if (hasMessage) {
+                printStream.printf(preformattedMessage,
+                        "Message", message,
+                        "Constraint", constraintId,
+                        expectedImpactLabel, expectedImpact, expectedImpact.getClass(),
+                        actualImpactLabel, actualImpact, actualImpact.getClass());
+
+            } else {
+                printStream.printf(preformattedMessage,
+                        "Constraint", constraintId,
+                        expectedImpactLabel, expectedImpact, expectedImpact.getClass(),
+                        actualImpactLabel, actualImpact, actualImpact.getClass());
+            }
+            return baos.toString();
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed assembling asserting message.", e);
         }
-        throw new AssertionError("Broken expectation. " + System.lineSeparator() +
-                "            Message: " + message + System.lineSeparator() +
-                "         Constraint: " + constraintId + System.lineSeparator() +
-                "    Expected impact: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
-                "      Actual impact: " + impact + " (" + impact.getClass() + ")");
+    }
+
+    private static String getImpactTypeLabel(ScoreImpactType scoreImpactType) {
+        switch (scoreImpactType) {
+            case PENALTY:
+                return "penalty";
+            case REWARD:
+                return "reward";
+            default:
+                return "impact";
+        }
     }
 
     /**
@@ -74,7 +114,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      */
     public void expectPenalty(int matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
-        assertImpact(-matchWeightTotal, message);
+        assertImpact(ScoreImpactType.PENALTY, matchWeightTotal, message);
     }
 
     /**
@@ -82,7 +122,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      */
     public void expectPenalty(long matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
-        assertImpact(-matchWeightTotal, message);
+        assertImpact(ScoreImpactType.PENALTY, matchWeightTotal, message);
     }
 
     /**
@@ -90,7 +130,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      */
     public void expectPenalty(BigDecimal matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
-        assertImpact(matchWeightTotal.negate(), message);
+        assertImpact(ScoreImpactType.PENALTY, matchWeightTotal, message);
     }
 
     /**
@@ -123,7 +163,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      */
     public void expectReward(int matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
-        assertImpact(matchWeightTotal, message);
+        assertImpact(ScoreImpactType.REWARD, matchWeightTotal, message);
     }
 
     /**
@@ -131,7 +171,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      */
     public void expectReward(long matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
-        assertImpact(matchWeightTotal, message);
+        assertImpact(ScoreImpactType.REWARD, matchWeightTotal, message);
     }
 
     /**
@@ -139,7 +179,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      */
     public void expectReward(BigDecimal matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
-        assertImpact(matchWeightTotal, message);
+        assertImpact(ScoreImpactType.REWARD, matchWeightTotal, message);
     }
 
     /**
@@ -170,7 +210,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      * @throws AssertionError when either a penalty or a reward is observed
      */
     public void expectNoImpact(String message) {
-        assertImpact(0, message);
+        assertImpact(null, 0, message);
     }
 
     /**
