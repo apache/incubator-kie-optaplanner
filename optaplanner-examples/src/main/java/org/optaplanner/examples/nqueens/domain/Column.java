@@ -25,7 +25,7 @@ public class Column extends AbstractPersistable {
     private int index;
 
     public Column() {
-        // For XStream.
+        // For XStream
     }
 
     public Column(int index) {
