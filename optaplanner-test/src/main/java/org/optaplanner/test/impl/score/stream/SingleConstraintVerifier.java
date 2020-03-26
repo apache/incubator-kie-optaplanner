@@ -32,10 +32,10 @@ public final class SingleConstraintVerifier<Solution_> extends AbstractConstrain
     SingleConstraintVerifier(ConstraintVerifier<Solution_> constraintVerifier,
             Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
-        super(new ConstraintStreamScoreDirectorFactory<>(
-                constraintVerifier.getSolutionDescriptor(), constraintFactory -> new Constraint[] {
-                constraintFunction.apply(constraintFactory)
-        }, constraintStreamImplType));
+        super(new ConstraintStreamScoreDirectorFactory<>(constraintVerifier.getSolutionDescriptor(),
+                constraintFactory -> new Constraint[] {
+                        constraintFunction.apply(constraintFactory)
+                }, constraintStreamImplType));
     }
 
     @Override
