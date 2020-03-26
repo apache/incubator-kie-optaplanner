@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,16 @@ public abstract class AbstractBendableScoreDefinition<S extends FeasibilityScore
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    protected abstract Number getOne();
+
+    @Override
+    public final S getOneSoftestScore() {
+        S score = getZeroScore();
+        Number[] levels = score.toLevelNumbers();
+        levels[levels.length - 1] = getOne();
+        return fromLevelNumbers(0, levels);
+    }
 
     @Override
     public int getLevelsSize() {

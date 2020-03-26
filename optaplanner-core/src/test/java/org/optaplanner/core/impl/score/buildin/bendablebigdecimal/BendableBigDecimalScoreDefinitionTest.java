@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,23 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class BendableBigDecimalScoreDefinitionTest {
+
+    @Test
+    public void getZeroScore() {
+        BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getZeroScore();
+        assertThat(score.toLevelNumbers()).containsOnly(BigDecimal.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getOneSoftestScore();
+        assertThat(score.toLevelNumbers()).containsExactly(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE);
+    }
 
     @Test
     public void getLevelsSize() {

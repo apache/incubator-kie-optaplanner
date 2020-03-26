@@ -81,17 +81,17 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
                 matchJustificationsToOutput((List<Object>) justificationList,
                         compiledRuleToConstraintMap.get(rule).getExpectedJustificationTypes()));
         // Determine which rules to enable based on the fact that their constraints carry weight.
-        Score zero = getScoreZero();
-        Score oneSoftest = getScoreOneSoftest();
+        Score<?> zeroScore = getScoreDefinition().getZeroScore();
+        Score<?> oneSoftestScore = getScoreDefinition().getOneSoftestScore();
         Set<String> disabledConstraintIdSet = new LinkedHashSet<>(0);
         compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
             // In constraint verifier API, we disregard constraint weights.
             // Yet we need to have them, otherwise the constraint would be ignored, so we add a synthetic weight.
             Score<?> constraintWeight = workingSolution == null ?
-                    oneSoftest :
+                    oneSoftestScore :
                     constraint.extractConstraintWeight(workingSolution);
             scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
-            if (constraintWeight.equals(zero)) {
+            if (constraintWeight.equals(zeroScore)) {
                 disabledConstraintIdSet.add(constraint.getConstraintId());
             }
         });

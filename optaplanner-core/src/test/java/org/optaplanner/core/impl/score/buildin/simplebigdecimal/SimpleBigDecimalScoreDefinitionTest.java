@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,28 @@
 
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
-import org.junit.Test;
+import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class SimpleBigDecimalScoreDefinitionTest {
+
+    @Test
+    public void getZeroScore() {
+        SimpleBigDecimalScore score = new SimpleBigDecimalScoreDefinition().getZeroScore();
+        assertThat(score.toLevelNumbers()).containsOnly(BigDecimal.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        SimpleBigDecimalScore score = new SimpleBigDecimalScoreDefinition().getOneSoftestScore();
+        assertThat(score.toLevelNumbers()).containsOnly(BigDecimal.ONE);
+    }
 
     @Test
     public void getLevelsSize() {

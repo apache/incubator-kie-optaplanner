@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.common;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
@@ -34,28 +30,6 @@ public abstract class AbstractConstraintSessionFactory<Solution_> implements Con
 
     protected ScoreDefinition<?> getScoreDefinition() {
         return scoreDefinition;
-    }
-
-    protected Score<?> getScoreZero() {
-        return scoreDefinition.getZeroScore();
-    }
-
-    protected <S extends Score<S>> S getScoreOneSoftest() {
-        Number[] result = Arrays.copyOf(getScoreZero().toLevelNumbers(), scoreDefinition.getLevelsSize());
-        Number lastNumber = result[result.length - 1];
-        if (lastNumber instanceof Integer) {
-            lastNumber = 1;
-        } else if (lastNumber instanceof Long) {
-            lastNumber = 1L;
-        } else if (lastNumber instanceof Double) {
-            lastNumber = 1.0d;
-        } else if (lastNumber instanceof BigDecimal) {
-            lastNumber = BigDecimal.ONE;
-        } else {
-            throw new IllegalStateException("Unexpected score number format: " + lastNumber.getClass());
-        }
-        result[result.length - 1] = lastNumber;
-        return (S) scoreDefinition.fromLevelNumbers(0, result);
     }
 
 }
