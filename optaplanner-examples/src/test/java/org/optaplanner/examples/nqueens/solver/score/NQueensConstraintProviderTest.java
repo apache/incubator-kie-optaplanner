@@ -26,8 +26,7 @@ import org.optaplanner.test.impl.score.stream.ConstraintVerifier;
 public class NQueensConstraintProviderTest {
 
     private final NQueensConstraintProvider constraintProvider = new NQueensConstraintProvider();
-    private final ConstraintVerifier<NQueens> constraintVerifier =
-            ConstraintVerifier.createFor(NQueens.class, Queen.class);
+    private final ConstraintVerifier<NQueens> constraintVerifier = ConstraintVerifier.using(NQueens.class, Queen.class);
 
     private final Row row1 = new Row(0);
     private final Row row2 = new Row(1);

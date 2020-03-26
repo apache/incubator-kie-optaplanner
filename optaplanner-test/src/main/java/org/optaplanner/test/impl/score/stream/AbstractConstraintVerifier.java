@@ -16,13 +16,49 @@
 
 package org.optaplanner.test.impl.score.stream;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
-public abstract class AbstractConstraintVerifier<A extends AbstractConstraintVerifierAssertion<A, V>,
-        V extends AbstractConstraintVerifier<A, V>> {
+public abstract class AbstractConstraintVerifier<Solution_, A extends AbstractAssertion<Solution_, A, V>,
+        V extends AbstractConstraintVerifier<Solution_, A, V>> {
 
-    abstract Constraint getConstraint();
+    private final ConstraintStreamScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory;
 
-    public abstract A given(Object... facts);
+    protected AbstractConstraintVerifier(
+            ConstraintStreamScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory) {
+        this.constraintStreamScoreDirectorFactory = constraintStreamScoreDirectorFactory;
+    }
+
+    protected Constraint getConstraint() {
+        return constraintStreamScoreDirectorFactory.getConstraints()[0];
+    }
+
+    protected abstract A createAssertion(Score<?> score, Map<String, ConstraintMatchTotal> constraintMatchTotalMap);
+
+    public final A given(Object... facts) {
+        try (ConstraintSession<Solution_> constraintSession =
+                constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null)) {
+            Arrays.stream(facts).distinct().forEach(constraintSession::insert);
+            Map<String, ConstraintMatchTotal> constraintMatches = constraintSession.getConstraintMatchTotalMap();
+            return createAssertion(constraintSession.calculateScore(0), constraintMatches);
+        }
+    }
+
+    public final A given(Solution_ solution) {
+        try (ScoreDirector<Solution_> scoreDirector =
+                constraintStreamScoreDirectorFactory.buildScoreDirector(true, true)) {
+            scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
+            Map<String, ConstraintMatchTotal> constraintMatches = scoreDirector.getConstraintMatchTotalMap();
+            return createAssertion(scoreDirector.calculateScore(), constraintMatches);
+        }
+    }
 
 }

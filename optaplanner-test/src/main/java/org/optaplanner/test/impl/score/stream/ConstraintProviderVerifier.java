@@ -17,30 +17,27 @@
 package org.optaplanner.test.impl.score.stream;
 
 import java.util.Map;
-import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 
-public final class SingleConstraintVerifier<Solution_> extends AbstractConstraintVerifier<Solution_,
-        SingleConstraintAssertion<Solution_>, SingleConstraintVerifier<Solution_>> {
+public final class ConstraintProviderVerifier<Solution_>
+        extends AbstractConstraintVerifier<Solution_, ConstraintProviderAssertion<Solution_>,
+        ConstraintProviderVerifier<Solution_>> {
 
-    SingleConstraintVerifier(ConstraintVerifier<Solution_> constraintVerifier,
-            Function<ConstraintFactory, Constraint> constraintFunction,
-            ConstraintStreamImplType constraintStreamImplType) {
-        super(new ConstraintStreamScoreDirectorFactory<>(
-                constraintVerifier.getSolutionDescriptor(), constraintFactory -> new Constraint[] {
-                constraintFunction.apply(constraintFactory)
-        }, constraintStreamImplType));
+    ConstraintProviderVerifier(ConstraintVerifier<Solution_> constraintVerifier,
+            ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
+        super(new ConstraintStreamScoreDirectorFactory<>(constraintVerifier.getSolutionDescriptor(), constraintProvider,
+                constraintStreamImplType));
     }
 
     @Override
-    protected SingleConstraintAssertion<Solution_> createAssertion(Score<?> score,
+    protected ConstraintProviderAssertion<Solution_> createAssertion(Score<?> score,
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        return new SingleConstraintAssertion<>(this, score, constraintMatchTotalMap);
+        return new ConstraintProviderAssertion<>(this, score, constraintMatchTotalMap);
     }
+    
 }

@@ -17,14 +17,27 @@
 package org.optaplanner.test.impl.score.stream;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Map;
 
-public abstract class AbstractConstraintVerifierAssertion<A extends AbstractConstraintVerifierAssertion<A, V>,
-        V extends AbstractConstraintVerifier<A, V>> {
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-    private final V parentConstraintVerifier;
+public final class SingleConstraintAssertion<Solution_> extends AbstractAssertion<Solution_,
+        SingleConstraintAssertion<Solution_>, SingleConstraintVerifier<Solution_>> {
 
-    protected AbstractConstraintVerifierAssertion(V constraintVerifier) {
-        this.parentConstraintVerifier = constraintVerifier;
+    private final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
+
+    SingleConstraintAssertion(SingleConstraintVerifier<Solution_> singleConstraintVerifier, Score<?> actualScore,
+            Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
+        super(singleConstraintVerifier, actualScore);
+        this.constraintMatchTotalMap = Collections.unmodifiableMap(constraintMatchTotalMap);
+    }
+
+    private Number getImpact() {
+        return constraintMatchTotalMap.values().stream()
+                .mapToInt(ConstraintMatchTotal::getConstraintMatchCount)
+                .sum();
     }
 
     private static void assertCorrectMatchWeight(Number matchWeightTotal) {
@@ -32,12 +45,6 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
             throw new IllegalArgumentException("Expected a positive match weight, given (" + matchWeightTotal + ").");
         }
     }
-
-    protected final V getParentConstraintVerifier() {
-        return parentConstraintVerifier;
-    }
-
-    abstract protected Number getImpact();
 
     private void assertImpact(Number weight, String message) {
         Number impact = getImpact();
@@ -172,4 +179,5 @@ public abstract class AbstractConstraintVerifierAssertion<A extends AbstractCons
     public void expectNoImpact() {
         expectNoImpact(null);
     }
+
 }

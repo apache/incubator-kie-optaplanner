@@ -21,12 +21,13 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public final class ConstraintVerifier<Solution_> {
 
-    public static <Solution_> ConstraintVerifier<Solution_> createFor(Class<Solution_> planningSolutionClass,
+    public static <Solution_> ConstraintVerifier<Solution_> using(Class<Solution_> planningSolutionClass,
             Class<?> firstPlanningEntityClass, Class<?>... otherPlanningEntityClasses) {
         Class[] entityClasses = Stream.concat(Stream.of(firstPlanningEntityClass), Stream.of(otherPlanningEntityClasses))
                 .toArray(Class[]::new);
@@ -52,6 +53,15 @@ public final class ConstraintVerifier<Solution_> {
     public SingleConstraintVerifier<Solution_> forConstraint(Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
         return new SingleConstraintVerifier<>(this, constraintFunction, constraintStreamImplType);
+    }
+
+    public ConstraintProviderVerifier<Solution_> forConstraintProvider(ConstraintProvider constraintProvider) {
+        return forConstraintProvider(constraintProvider, ConstraintStreamImplType.DROOLS);
+    }
+
+    public ConstraintProviderVerifier<Solution_> forConstraintProvider(ConstraintProvider constraintProvider,
+            ConstraintStreamImplType constraintStreamImplType) {
+        return new ConstraintProviderVerifier<>(this, constraintProvider, constraintStreamImplType);
     }
 
 }
