@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
-import java.util.Arrays;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -79,7 +77,7 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
     // ************************************************************************
 
     public Constraint[] getConstraints() {
-        return Arrays.copyOf(constraints, constraints.length);
+        return constraints;
     }
 
 }

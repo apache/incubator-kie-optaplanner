@@ -23,7 +23,7 @@ public interface ConstraintSessionFactory<Solution_>  {
     /**
      * This method is thread-safe.
      * @param constraintMatchEnabled  true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
-     * @param workingSolution if null, uniform synthetic constraint weights may be applied
+     * @param workingSolution if null, uniform synthetic constraint weights will be applied
      * @return never null
      */
     ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);

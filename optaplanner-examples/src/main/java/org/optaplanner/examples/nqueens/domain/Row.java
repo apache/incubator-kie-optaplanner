@@ -26,7 +26,6 @@ public class Row extends AbstractPersistable implements Labeled {
     private int index;
 
     public Row() {
-        // For XStream
     }
 
     public Row(int index) {

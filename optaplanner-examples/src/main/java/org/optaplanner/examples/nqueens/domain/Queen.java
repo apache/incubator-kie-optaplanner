@@ -33,7 +33,6 @@ public class Queen extends AbstractPersistable {
     private Row row;
 
     public Queen() {
-        // For XStream
     }
 
     public Queen(long id, Row row, Column column) {
