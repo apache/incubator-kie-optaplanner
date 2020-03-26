@@ -16,24 +16,17 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import org.optaplanner.core.api.score.Score;
-
 public abstract class AbstractAssertion<Solution_, A extends AbstractAssertion<Solution_, A, V>, V
         extends AbstractConstraintVerifier<Solution_, A, V>> {
 
     private final V parentConstraintVerifier;
-    private final Score<?> score;
 
-    protected AbstractAssertion(V constraintVerifier, Score<?> actualScore) {
+    protected AbstractAssertion(V constraintVerifier) {
         this.parentConstraintVerifier = constraintVerifier;
-        this.score = actualScore;
     }
 
     protected final V getParentConstraintVerifier() {
         return parentConstraintVerifier;
-    }
-
-    public void expectScore(Score<?> score) {
     }
 
 }

@@ -28,16 +28,23 @@ public final class ConstraintProviderVerifier<Solution_>
         extends AbstractConstraintVerifier<Solution_, ConstraintProviderAssertion<Solution_>,
         ConstraintProviderVerifier<Solution_>> {
 
+    private final ConstraintProvider constraintProvider;
+
     ConstraintProviderVerifier(ConstraintVerifier<Solution_> constraintVerifier,
             ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
         super(new ConstraintStreamScoreDirectorFactory<>(constraintVerifier.getSolutionDescriptor(), constraintProvider,
                 constraintStreamImplType));
+        this.constraintProvider = constraintProvider;
+    }
+
+    ConstraintProvider getConstraintProvider() {
+        return constraintProvider;
     }
 
     @Override
     protected ConstraintProviderAssertion<Solution_> createAssertion(Score<?> score,
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        return new ConstraintProviderAssertion<>(this, score, constraintMatchTotalMap);
+        return new ConstraintProviderAssertion<>(this, score);
     }
     
 }

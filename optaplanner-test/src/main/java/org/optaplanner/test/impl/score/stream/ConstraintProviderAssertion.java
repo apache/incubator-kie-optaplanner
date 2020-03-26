@@ -16,21 +16,50 @@
 
 package org.optaplanner.test.impl.score.stream;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 
 public final class ConstraintProviderAssertion<Solution_> extends AbstractAssertion<Solution_,
         ConstraintProviderAssertion<Solution_>, ConstraintProviderVerifier<Solution_>> {
 
-    private final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
+    private final Score<?> actualScore;
 
     ConstraintProviderAssertion(ConstraintProviderVerifier<Solution_> constraintProviderVerifier,
-            Score<?> actualScore, Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        super(constraintProviderVerifier, actualScore);
-        this.constraintMatchTotalMap = Collections.unmodifiableMap(constraintMatchTotalMap);
+            Score<?> actualScore) {
+        super(constraintProviderVerifier);
+        this.actualScore = actualScore;
+    }
+
+    /**
+     * Asserts that the {@link ConstraintProvider} under test, given a set of facts, results in a specific {@link Score}.
+     *
+     * @param score total score calculated for the given set of facts
+     * @param message optional description of the scenario being asserted
+     * @throws AssertionError when the expected score does not match the calculated score
+     */
+    public final void expectScore(Score<?> score, String message) {
+        if (actualScore.equals(score)) {
+            return;
+        }
+        Class<?> constraintProviderClass = getParentConstraintVerifier().getConstraintProvider().getClass();
+        if (message == null) {
+            throw new AssertionError("Broken expectation." + System.lineSeparator() +
+                    "    Constraint provider: " + constraintProviderClass + System.lineSeparator() +
+                    "         Expected score: " + score +
+                    "           Actual score: " + actualScore);
+        }
+        throw new AssertionError("Broken expectation. " + System.lineSeparator() +
+                "                Message: " + message + System.lineSeparator() +
+                "    Constraint provider: " + constraintProviderClass + System.lineSeparator() +
+                "         Expected score: " + score +
+                "           Actual score: " + actualScore);
+    }
+
+    /**
+     * As defined by {@link #expectScore(Score, String)} with a null message.
+     */
+    public final void expectScore(Score<?> score) {
+        expectScore(score, null);
     }
 
 }

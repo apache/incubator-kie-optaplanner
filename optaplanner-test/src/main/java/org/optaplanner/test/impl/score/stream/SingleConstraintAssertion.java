@@ -20,17 +20,17 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.Constraint;
 
 public final class SingleConstraintAssertion<Solution_> extends AbstractAssertion<Solution_,
         SingleConstraintAssertion<Solution_>, SingleConstraintVerifier<Solution_>> {
 
     private final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
 
-    SingleConstraintAssertion(SingleConstraintVerifier<Solution_> singleConstraintVerifier, Score<?> actualScore,
+    SingleConstraintAssertion(SingleConstraintVerifier<Solution_> singleConstraintVerifier,
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        super(singleConstraintVerifier, actualScore);
+        super(singleConstraintVerifier);
         this.constraintMatchTotalMap = Collections.unmodifiableMap(constraintMatchTotalMap);
     }
 
@@ -54,19 +54,19 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
         }
         if (message == null) {
             throw new AssertionError("Broken expectation." + System.lineSeparator() +
-                    "  Constraint: " + constraintId + System.lineSeparator() +
-                    "    Expected: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
-                    "      Actual: " + impact + " (" + impact.getClass() + ")");
+                    "         Constraint: " + constraintId + System.lineSeparator() +
+                    "    Expected impact: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
+                    "      Actual impact: " + impact + " (" + impact.getClass() + ")");
         }
         throw new AssertionError("Broken expectation. " + System.lineSeparator() +
-                "     Message: " + message + System.lineSeparator() +
-                "  Constraint: " + constraintId + System.lineSeparator() +
-                "    Expected: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
-                "      Actual: " + impact + " (" + impact.getClass() + ")");
+                "            Message: " + message + System.lineSeparator() +
+                "         Constraint: " + constraintId + System.lineSeparator() +
+                "    Expected impact: " + weight + " (" + weight.getClass() + ")" + System.lineSeparator() +
+                "      Actual impact: " + impact + " (" + impact.getClass() + ")");
     }
 
     /**
-     * Asserts that the constraint under test, given a set of facts, results in a specific penalty.
+     * Asserts that the {@link Constraint} under test, given a set of facts, results in a specific penalty.
      *
      * @param matchWeightTotal sum of weights of constraint matches from applying the given facts to the constraint
      * @param message optional description of the scenario being asserted
@@ -115,7 +115,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
     }
 
     /**
-     * Asserts that the constraint under test, given a set of facts, results in a specific reward.
+     * Asserts that the {@link Constraint} under test, given a set of facts, results in a specific reward.
      *
      * @param matchWeightTotal sum of weights of constraint matches from applying the given facts to the constraint
      * @param message optional description of the scenario being asserted
@@ -164,7 +164,7 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
     }
 
     /**
-     * Asserts that the constraint under test, given a set of facts, results in neither penalty nor reward.
+     * Asserts that the {@link Constraint} under test, given a set of facts, results in neither penalty nor reward.
      *
      * @param message optional description of the scenario being asserted
      * @throws AssertionError when either a penalty or a reward is observed

@@ -41,6 +41,6 @@ public final class SingleConstraintVerifier<Solution_> extends AbstractConstrain
     @Override
     protected SingleConstraintAssertion<Solution_> createAssertion(Score<?> score,
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        return new SingleConstraintAssertion<>(this, score, constraintMatchTotalMap);
+        return new SingleConstraintAssertion<>(this, constraintMatchTotalMap);
     }
 }
