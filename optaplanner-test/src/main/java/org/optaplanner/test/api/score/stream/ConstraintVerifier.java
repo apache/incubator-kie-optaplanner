@@ -40,7 +40,6 @@ public final class ConstraintVerifier<Solution_> {
 
     /**
      * Entry point to the API.
-     *
      * @param planningSolutionClass never null, {@link PlanningSolution}-annotated class associated with the constraints
      * @param firstPlanningEntityClass never null, {@link PlanningEntity} used by the {@link PlanningSolution}
      * @param otherPlanningEntityClasses optional, extra entity classes if {@link PlanningSolution} uses more than one
@@ -63,11 +62,13 @@ public final class ConstraintVerifier<Solution_> {
 
     /**
      * All subsequent calls to {@link #verifyThat(Function)} and {@link #verifyThat(ConstraintProvider)}
-     * will use {@link ConstraintStreamImplType#BAVET} instead of the default {@link ConstraintStreamImplType#DROOLS}.
+     * will use the given {@link ConstraintStreamImplType}.
+     * @param constraintStreamImplType never null
      * @return this
      */
-    public ConstraintVerifier<Solution_> useBavet() {
-        this.constraintStreamImplType = ConstraintStreamImplType.BAVET;
+    public ConstraintVerifier<Solution_> withConstraintStreamImplType(
+            ConstraintStreamImplType constraintStreamImplType) {
+        this.constraintStreamImplType = constraintStreamImplType;
         return this;
     }
 

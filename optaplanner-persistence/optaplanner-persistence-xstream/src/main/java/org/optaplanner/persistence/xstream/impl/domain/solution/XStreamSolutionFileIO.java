@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import com.thoughtworks.xstream.XStream;
@@ -62,16 +63,16 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
 
     @Override
     public Solution_ read(File inputSolutionFile) {
-        try(InputStream inputSolutionStream = Files.newInputStream(inputSolutionFile.toPath())) {
+        try (InputStream inputSolutionStream = Files.newInputStream(inputSolutionFile.toPath())) {
             return read(inputSolutionStream);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException("Failed reading inputSolutionFile (" + inputSolutionFile + ").", e);
         }
     }
 
     public Solution_ read(InputStream inputSolutionStream) {
         // xStream.fromXml(InputStream) does not use UTF-8
-        try (Reader reader = new InputStreamReader(inputSolutionStream, "UTF-8")) {
+        try (Reader reader = new InputStreamReader(inputSolutionStream, StandardCharsets.UTF_8)) {
             return (Solution_) xStream.fromXML(reader);
         } catch (XStreamException | IOException e) {
             throw new IllegalArgumentException("Failed reading inputSolutionStream.", e);
@@ -80,7 +81,7 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
 
     @Override
     public void write(Solution_ solution, File outputSolutionFile) {
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputSolutionFile), "UTF-8")) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputSolutionFile), StandardCharsets.UTF_8)) {
             xStream.toXML(solution, writer);
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed writing outputSolutionFile (" + outputSolutionFile + ").", e);

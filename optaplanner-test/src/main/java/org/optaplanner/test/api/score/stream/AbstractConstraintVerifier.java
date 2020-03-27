@@ -27,8 +27,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
-public abstract class AbstractConstraintVerifier<Solution_, A extends AbstractAssertion<Solution_, A, V>,
-        V extends AbstractConstraintVerifier<Solution_, A, V>> {
+public abstract class AbstractConstraintVerifier<Solution_,
+        Assertion extends AbstractAssertion<Solution_, Assertion, Verifier>,
+        Verifier extends AbstractConstraintVerifier<Solution_, Assertion, Verifier>> {
 
     private final ConstraintStreamScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory;
 
@@ -41,9 +42,9 @@ public abstract class AbstractConstraintVerifier<Solution_, A extends AbstractAs
         return constraintStreamScoreDirectorFactory.getConstraints()[0];
     }
 
-    protected abstract A createAssertion(Score<?> score, Map<String, ConstraintMatchTotal> constraintMatchTotalMap);
+    protected abstract Assertion createAssertion(Score<?> score, Map<String, ConstraintMatchTotal> constraintMatchTotalMap);
 
-    public final A given(Object... facts) {
+    public final Assertion given(Object... facts) {
         try (ConstraintSession<Solution_> constraintSession =
                 constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).distinct().forEach(constraintSession::insert);
@@ -52,7 +53,7 @@ public abstract class AbstractConstraintVerifier<Solution_, A extends AbstractAs
         }
     }
 
-    public final A given(Solution_ solution) {
+    public final Assertion given(Solution_ solution) {
         try (ScoreDirector<Solution_> scoreDirector =
                 constraintStreamScoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
