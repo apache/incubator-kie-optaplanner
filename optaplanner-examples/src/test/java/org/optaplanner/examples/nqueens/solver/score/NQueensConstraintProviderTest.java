@@ -17,19 +17,14 @@
 package org.optaplanner.examples.nqueens.solver.score;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
+import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.examples.nqueens.domain.Column;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
-import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
@@ -59,7 +54,7 @@ public class NQueensConstraintProviderTest {
         Queen queen2 = new Queen(1, row1, column2);
         constraintVerifier.verifyThat(constraintProvider::horizontalConflict)
                 .given(queen1, queen2)
-                .hasNoImpact();
+                .penalizesBy(1);
     }
 
     @Test
@@ -126,16 +121,10 @@ public class NQueensConstraintProviderTest {
                 .penalizesBy(3);
     }
 
-    private NQueens readSolution(String resource) throws IOException {
-        Path tempFile = Files.createTempFile("optaplanner-test", "xml");
-        try (InputStreamReader inputStreamReader =
-                new InputStreamReader(NQueensConstraintProviderTest.class.getResourceAsStream(resource))) {
-            List<String> lines = IOUtils.readLines(inputStreamReader);
-            Files.write(tempFile,lines);
-            final SolutionFileIO<NQueens> solutionFileIO = new XStreamSolutionFileIO<>(NQueens.class);
-            return solutionFileIO.read(tempFile.toFile());
-        } finally {
-            Files.deleteIfExists(tempFile);
+    private static NQueens readSolution(String resource) throws IOException {
+        try (InputStream inputStream = NQueensConstraintProviderTest.class.getResourceAsStream(resource)) {
+            final XStreamSolutionFileIO<NQueens> solutionFileIO = new XStreamSolutionFileIO<>(NQueens.class);
+            return solutionFileIO.read(inputStream);
         }
     }
 
