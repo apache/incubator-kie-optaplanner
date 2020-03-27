@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.test.impl.score.stream;
+package org.optaplanner.test.api.score.stream;
 
 import java.util.function.Function;
 import java.util.stream.Stream;

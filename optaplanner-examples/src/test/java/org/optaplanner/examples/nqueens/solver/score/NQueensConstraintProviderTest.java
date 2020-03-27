@@ -31,7 +31,7 @@ import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
-import org.optaplanner.test.impl.score.stream.ConstraintVerifier;
+import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class NQueensConstraintProviderTest {
 

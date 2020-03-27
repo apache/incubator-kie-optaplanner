@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.test.impl.score.stream;
+package org.optaplanner.test.api.score.stream;
 
 public abstract class AbstractAssertion<Solution_, A extends AbstractAssertion<Solution_, A, V>, V
         extends AbstractConstraintVerifier<Solution_, A, V>> {
