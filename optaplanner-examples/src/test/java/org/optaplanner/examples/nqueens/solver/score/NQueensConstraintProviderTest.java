@@ -131,7 +131,7 @@ public class NQueensConstraintProviderTest {
     @Test
     public void constraintProviderIntegrationTest() throws IOException {
         constraintVerifier.verifyThat(constraintProvider)
-                .given(readSolution("256queens_-30.xml"))
+                .given(readSolution("256queensScore-30.xml"))
                 .scores(SimpleScore.of(-30));
     }
 }
