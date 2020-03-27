@@ -59,7 +59,7 @@ public class NQueensConstraintProviderTest {
         Queen queen2 = new Queen(1, row1, column2);
         constraintVerifier.verifyThat(constraintProvider::horizontalConflict)
                 .given(queen1, queen2)
-                .penalizesBy(1);
+                .hasNoImpact();
     }
 
     @Test

@@ -68,26 +68,18 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
             ScoreImpactType actualImpactType, Number actualImpact, String constraintId, String message) {
         boolean hasMessage = message != null;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PrintStream printStream = new PrintStream(baos)) {
-            String preformattedMessage = "Broken expectation.%n" +
+            String expectation = hasMessage ? message : "Broken expectation.";
+            String preformattedMessage = "%s%n" +
                     "%18s: %s%n" +
-                    (hasMessage ? "%18s: %s%n" : "") +
                     "%18s: %s (%s)%n" +
                     "%18s: %s (%s)";
             String expectedImpactLabel = "Expected " + getImpactTypeLabel(expectedImpactType);
             String actualImpactLabel = "Actual " + getImpactTypeLabel(actualImpactType);
-            if (hasMessage) {
-                printStream.printf(preformattedMessage,
-                        "Message", message,
-                        "Constraint", constraintId,
-                        expectedImpactLabel, expectedImpact, expectedImpact.getClass(),
-                        actualImpactLabel, actualImpact, actualImpact.getClass());
-
-            } else {
-                printStream.printf(preformattedMessage,
-                        "Constraint", constraintId,
-                        expectedImpactLabel, expectedImpact, expectedImpact.getClass(),
-                        actualImpactLabel, actualImpact, actualImpact.getClass());
-            }
+            printStream.printf(preformattedMessage,
+                    expectation,
+                    "Constraint", constraintId,
+                    expectedImpactLabel, expectedImpact, expectedImpact.getClass(),
+                    actualImpactLabel, actualImpact, actualImpact.getClass());
             return baos.toString();
         } catch (Exception e) {
             throw new IllegalStateException("Failed assembling asserting message.", e);
@@ -95,13 +87,12 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
     }
 
     private static String getImpactTypeLabel(ScoreImpactType scoreImpactType) {
-        switch (scoreImpactType) {
-            case PENALTY:
-                return "penalty";
-            case REWARD:
-                return "reward";
-            default:
-                return "impact";
+        if (scoreImpactType == ScoreImpactType.PENALTY) {
+            return "penalty";
+        } else if (scoreImpactType == ScoreImpactType.REWARD) {
+            return "reward";
+        } else { // Needs to work with null.
+            return "impact";
         }
     }
 
