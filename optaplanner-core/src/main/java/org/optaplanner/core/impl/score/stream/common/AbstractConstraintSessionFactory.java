@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 
 public abstract class AbstractConstraintSessionFactory<Solution_> implements ConstraintSessionFactory<Solution_> {
 
-    private final ScoreDefinition scoreDefinition;
+    private final ScoreDefinition<?> scoreDefinition;
 
     protected AbstractConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.scoreDefinition = solutionDescriptor.getScoreDefinition();
