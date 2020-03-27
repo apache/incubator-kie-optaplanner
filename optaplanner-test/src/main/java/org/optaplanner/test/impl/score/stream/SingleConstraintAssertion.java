@@ -112,46 +112,46 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      * @param message optional description of the scenario being asserted
      * @throws AssertionError when the expected penalty is not observed
      */
-    public void expectPenalty(int matchWeightTotal, String message) {
+    public void penalizesBy(int matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(ScoreImpactType.PENALTY, matchWeightTotal, message);
     }
 
     /**
-     * As defined by {@link #expectPenalty(int, String)}.
+     * As defined by {@link #penalizesBy(int, String)}.
      */
-    public void expectPenalty(long matchWeightTotal, String message) {
+    public void penalizesBy(long matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(ScoreImpactType.PENALTY, matchWeightTotal, message);
     }
 
     /**
-     * As defined by {@link #expectPenalty(int, String)}.
+     * As defined by {@link #penalizesBy(int, String)}.
      */
-    public void expectPenalty(BigDecimal matchWeightTotal, String message) {
+    public void penalizesBy(BigDecimal matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(ScoreImpactType.PENALTY, matchWeightTotal, message);
     }
 
     /**
-     * As defined by {@link #expectPenalty(int, String)} with a null message.
+     * As defined by {@link #penalizesBy(int, String)} with a null message.
      */
-    public void expectPenalty(int matchWeightTotal) {
-        expectPenalty(matchWeightTotal, null);
+    public void penalizesBy(int matchWeightTotal) {
+        penalizesBy(matchWeightTotal, null);
     }
 
     /**
-     * As defined by {@link #expectPenalty(int, String)} with a null message.
+     * As defined by {@link #penalizesBy(int, String)} with a null message.
      */
-    public void expectPenalty(long matchWeightTotal) {
-        expectPenalty(matchWeightTotal, null);
+    public void penalizesBy(long matchWeightTotal) {
+        penalizesBy(matchWeightTotal, null);
     }
 
     /**
-     * As defined by {@link #expectPenalty(int, String)} with a null message.
+     * As defined by {@link #penalizesBy(int, String)} with a null message.
      */
-    public void expectPenalty(BigDecimal matchWeightTotal) {
-        expectPenalty(matchWeightTotal, null);
+    public void penalizesBy(BigDecimal matchWeightTotal) {
+        penalizesBy(matchWeightTotal, null);
     }
 
     /**
@@ -161,46 +161,46 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      * @param message optional description of the scenario being asserted
      * @throws AssertionError when the expected reward is not observed
      */
-    public void expectReward(int matchWeightTotal, String message) {
+    public void rewardsWith(int matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(ScoreImpactType.REWARD, matchWeightTotal, message);
     }
 
     /**
-     * As defined by {@link #expectReward(int, String)}.
+     * As defined by {@link #rewardsWith(int, String)}.
      */
-    public void expectReward(long matchWeightTotal, String message) {
+    public void rewardsWith(long matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(ScoreImpactType.REWARD, matchWeightTotal, message);
     }
 
     /**
-     * As defined by {@link #expectReward(int, String)}.
+     * As defined by {@link #rewardsWith(int, String)}.
      */
-    public void expectReward(BigDecimal matchWeightTotal, String message) {
+    public void rewardsWith(BigDecimal matchWeightTotal, String message) {
         assertCorrectMatchWeight(matchWeightTotal);
         assertImpact(ScoreImpactType.REWARD, matchWeightTotal, message);
     }
 
     /**
-     * As defined by {@link #expectReward(int, String)} with a null message.
+     * As defined by {@link #rewardsWith(int, String)} with a null message.
      */
-    public void expectReward(int matchWeightTotal) {
-        expectReward(matchWeightTotal, null);
+    public void rewardsWith(int matchWeightTotal) {
+        rewardsWith(matchWeightTotal, null);
     }
 
     /**
-     * As defined by {@link #expectReward(int, String)} with a null message.
+     * As defined by {@link #rewardsWith(int, String)} with a null message.
      */
-    public void expectReward(long matchWeightTotal) {
-        expectReward(matchWeightTotal, null);
+    public void rewardsWith(long matchWeightTotal) {
+        rewardsWith(matchWeightTotal, null);
     }
 
     /**
-     * As defined by {@link #expectReward(int, String)} with a null message.
+     * As defined by {@link #rewardsWith(int, String)} with a null message.
      */
-    public void expectReward(BigDecimal matchWeightTotal) {
-        expectReward(matchWeightTotal, null);
+    public void rewardsWith(BigDecimal matchWeightTotal) {
+        rewardsWith(matchWeightTotal, null);
     }
 
     /**
@@ -209,15 +209,15 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
      * @param message optional description of the scenario being asserted
      * @throws AssertionError when either a penalty or a reward is observed
      */
-    public void expectNoImpact(String message) {
+    public void hasNoImpact(String message) {
         assertImpact(null, 0, message);
     }
 
     /**
-     * As defined by {@link #expectNoImpact(String)} with a null message.
+     * As defined by {@link #hasNoImpact(String)} with a null message.
      */
-    public void expectNoImpact() {
-        expectNoImpact(null);
+    public void hasNoImpact() {
+        hasNoImpact(null);
     }
 
 }

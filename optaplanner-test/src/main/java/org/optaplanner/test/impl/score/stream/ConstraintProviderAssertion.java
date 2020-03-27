@@ -37,7 +37,7 @@ public final class ConstraintProviderAssertion<Solution_> extends AbstractAssert
      * @param message optional description of the scenario being asserted
      * @throws AssertionError when the expected score does not match the calculated score
      */
-    public final void expectScore(Score<?> score, String message) {
+    public final void scores(Score<?> score, String message) {
         if (actualScore.equals(score)) {
             return;
         }
@@ -56,10 +56,10 @@ public final class ConstraintProviderAssertion<Solution_> extends AbstractAssert
     }
 
     /**
-     * As defined by {@link #expectScore(Score, String)} with a null message.
+     * As defined by {@link #scores(Score, String)} with a null message.
      */
-    public final void expectScore(Score<?> score) {
-        expectScore(score, null);
+    public final void scores(Score<?> score) {
+        scores(score, null);
     }
 
 }

@@ -47,7 +47,7 @@ public final class ConstraintVerifier<Solution_> {
      * @param <Solution_> type of the {@link PlanningSolution}-annotated class
      * @return never null
      */
-    public static <Solution_> ConstraintVerifier<Solution_> using(Class<Solution_> planningSolutionClass,
+    public static <Solution_> ConstraintVerifier<Solution_> build(Class<Solution_> planningSolutionClass,
             Class<?> firstPlanningEntityClass, Class<?>... otherPlanningEntityClasses) {
         Class[] entityClasses = Stream.concat(Stream.of(requireNonNull(firstPlanningEntityClass)),
                 Stream.of(otherPlanningEntityClasses))
@@ -62,7 +62,7 @@ public final class ConstraintVerifier<Solution_> {
     }
 
     /**
-     * All subsequent calls to {@link #forConstraint(Function)} and {@link #forConstraintProvider(ConstraintProvider)}
+     * All subsequent calls to {@link #verifyThat(Function)} and {@link #verifyThat(ConstraintProvider)}
      * will use {@link ConstraintStreamImplType#BAVET} instead of the default {@link ConstraintStreamImplType#DROOLS}.
      * @return this
      */
@@ -76,7 +76,7 @@ public final class ConstraintVerifier<Solution_> {
      * @param constraintFunction never null
      * @return never null
      */
-    public SingleConstraintVerifier<Solution_> forConstraint(Function<ConstraintFactory, Constraint> constraintFunction) {
+    public SingleConstraintVerifier<Solution_> verifyThat(Function<ConstraintFactory, Constraint> constraintFunction) {
         return new SingleConstraintVerifier<>(this, requireNonNull(constraintFunction), constraintStreamImplType);
     }
 
@@ -85,7 +85,7 @@ public final class ConstraintVerifier<Solution_> {
      * @param constraintProvider never null
      * @return never null
      */
-    public ConstraintProviderVerifier<Solution_> forConstraintProvider(ConstraintProvider constraintProvider) {
+    public ConstraintProviderVerifier<Solution_> verifyThat(ConstraintProvider constraintProvider) {
         return new ConstraintProviderVerifier<>(this, requireNonNull(constraintProvider), constraintStreamImplType);
     }
 }
