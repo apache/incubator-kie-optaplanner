@@ -30,13 +30,13 @@ public class BendableLongScoreDefinitionTest {
     @Test
     public void getZeroScore() {
         BendableLongScore score = new BendableLongScoreDefinition(1, 2).getZeroScore();
-        assertThat(score.toLevelNumbers()).containsOnly(0L);
+        assertThat(score).isEqualTo(BendableLongScore.zero(1, 2));
     }
 
     @Test
     public void getSoftestOneScore() {
         BendableLongScore score = new BendableLongScoreDefinition(1, 2).getOneSoftestScore();
-        assertThat(score.toLevelNumbers()).containsExactly(0L, 0L, 1L);
+        assertThat(score).isEqualTo(BendableLongScore.of(new long[1], new long[] {0L, 1L}));
     }
 
     @Test

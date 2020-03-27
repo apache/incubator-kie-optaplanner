@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 
@@ -30,13 +28,13 @@ public class SimpleBigDecimalScoreDefinitionTest {
     @Test
     public void getZeroScore() {
         SimpleBigDecimalScore score = new SimpleBigDecimalScoreDefinition().getZeroScore();
-        assertThat(score.toLevelNumbers()).containsOnly(BigDecimal.ZERO);
+        assertThat(score).isEqualTo(SimpleBigDecimalScore.ZERO);
     }
 
     @Test
     public void getSoftestOneScore() {
         SimpleBigDecimalScore score = new SimpleBigDecimalScoreDefinition().getOneSoftestScore();
-        assertThat(score.toLevelNumbers()).containsOnly(BigDecimal.ONE);
+        assertThat(score).isEqualTo(SimpleBigDecimalScore.ONE);
     }
 
     @Test

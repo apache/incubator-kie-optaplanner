@@ -30,13 +30,13 @@ public class SimpleScoreDefinitionTest {
     @Test
     public void getZeroScore() {
         SimpleScore score = new SimpleScoreDefinition().getZeroScore();
-        assertThat(score.toLevelNumbers()).containsOnly(0);
+        assertThat(score).isEqualTo(SimpleScore.ZERO);
     }
 
     @Test
     public void getSoftestOneScore() {
         SimpleScore score = new SimpleScoreDefinition().getOneSoftestScore();
-        assertThat(score.toLevelNumbers()).containsOnly(1);
+        assertThat(score).isEqualTo(SimpleScore.ONE);
     }
 
     @Test

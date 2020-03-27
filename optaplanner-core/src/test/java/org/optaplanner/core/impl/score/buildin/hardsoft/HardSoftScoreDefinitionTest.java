@@ -31,13 +31,13 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
     @Test
     public void getZeroScore() {
         HardSoftScore score = new HardSoftScoreDefinition().getZeroScore();
-        assertThat(score.toLevelNumbers()).containsOnly(0);
+        assertThat(score).isEqualTo(HardSoftScore.ZERO);
     }
 
     @Test
     public void getSoftestOneScore() {
         HardSoftScore score = new HardSoftScoreDefinition().getOneSoftestScore();
-        assertThat(score.toLevelNumbers()).containsExactly(0, 1);
+        assertThat(score).isEqualTo(HardSoftScore.ONE_SOFT);
     }
 
     @Test

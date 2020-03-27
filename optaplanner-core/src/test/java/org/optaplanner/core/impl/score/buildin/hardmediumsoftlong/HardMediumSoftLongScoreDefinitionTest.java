@@ -30,13 +30,13 @@ public class HardMediumSoftLongScoreDefinitionTest {
     @Test
     public void getZeroScore() {
         HardMediumSoftLongScore score = new HardMediumSoftLongScoreDefinition().getZeroScore();
-        assertThat(score.toLevelNumbers()).containsOnly(0L);
+        assertThat(score).isEqualTo(HardMediumSoftLongScore.ZERO);
     }
 
     @Test
     public void getSoftestOneScore() {
         HardMediumSoftLongScore score = new HardMediumSoftLongScoreDefinition().getOneSoftestScore();
-        assertThat(score.toLevelNumbers()).containsExactly(0L, 0L, 1L);
+        assertThat(score).isEqualTo(HardMediumSoftLongScore.ONE_SOFT);
     }
 
     @Test

@@ -59,16 +59,6 @@ public abstract class AbstractBendableScoreDefinition<S extends FeasibilityScore
     // Worker methods
     // ************************************************************************
 
-    protected abstract Number getOne();
-
-    @Override
-    public final S getOneSoftestScore() {
-        S score = getZeroScore();
-        Number[] levels = score.toLevelNumbers();
-        levels[levels.length - 1] = getOne();
-        return fromLevelNumbers(0, levels);
-    }
-
     @Override
     public int getLevelsSize() {
         return hardLevelsSize + softLevelsSize;

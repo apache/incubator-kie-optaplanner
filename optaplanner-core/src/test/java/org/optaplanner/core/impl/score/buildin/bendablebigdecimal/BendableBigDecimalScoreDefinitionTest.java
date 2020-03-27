@@ -30,13 +30,14 @@ public class BendableBigDecimalScoreDefinitionTest {
     @Test
     public void getZeroScore() {
         BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getZeroScore();
-        assertThat(score.toLevelNumbers()).containsOnly(BigDecimal.ZERO);
+        assertThat(score).isEqualTo(BendableBigDecimalScore.zero(1, 2));
     }
 
     @Test
     public void getSoftestOneScore() {
         BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getOneSoftestScore();
-        assertThat(score.toLevelNumbers()).containsExactly(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE);
+        assertThat(score).isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] {BigDecimal.ZERO},
+                new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ONE}));
     }
 
     @Test

@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 
@@ -30,13 +28,13 @@ public class HardSoftBigDecimalScoreDefinitionTest {
     @Test
     public void getZeroScore() {
         HardSoftBigDecimalScore score = new HardSoftBigDecimalScoreDefinition().getZeroScore();
-        assertThat(score.toLevelNumbers()).containsOnly(BigDecimal.ZERO);
+        assertThat(score).isEqualTo(HardSoftBigDecimalScore.ZERO);
     }
 
     @Test
     public void getSoftestOneScore() {
         HardSoftBigDecimalScore score = new HardSoftBigDecimalScoreDefinition().getOneSoftestScore();
-        assertThat(score.toLevelNumbers()).containsExactly(BigDecimal.ZERO, BigDecimal.ONE);
+        assertThat(score).isEqualTo(HardSoftBigDecimalScore.ONE_SOFT);
     }
 
     @Test

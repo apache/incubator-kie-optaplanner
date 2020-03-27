@@ -45,8 +45,8 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
     }
 
     @Override
-    protected Number getOne() {
-        return 1;
+    public final BendableScore getOneSoftestScore() {
+        return BendableScore.ofSoft(hardLevelsSize, softLevelsSize, softLevelsSize - 1, 1);
     }
 
     @Override

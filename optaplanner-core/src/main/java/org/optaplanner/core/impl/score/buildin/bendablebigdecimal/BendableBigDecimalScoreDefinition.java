@@ -45,8 +45,8 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     }
 
     @Override
-    protected Number getOne() {
-        return BigDecimal.ONE;
+    public final BendableBigDecimalScore getOneSoftestScore() {
+        return BendableBigDecimalScore.ofSoft(hardLevelsSize, softLevelsSize, softLevelsSize - 1, BigDecimal.ONE);
     }
 
     @Override
