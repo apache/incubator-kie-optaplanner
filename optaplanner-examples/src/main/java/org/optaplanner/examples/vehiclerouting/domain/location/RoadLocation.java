@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.location;
 
-import java.util.Map;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
@@ -29,7 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class RoadLocation extends Location {
 
     // Prefer Map over array or List because customers might be added and removed in real-time planning.
-    protected Map<RoadLocation, Double> travelDistanceMap;
+    protected DistanceMap travelDistanceMap;
 
     public RoadLocation() {
     }
@@ -38,11 +36,11 @@ public class RoadLocation extends Location {
         super(id, latitude, longitude);
     }
 
-    public Map<RoadLocation, Double> getTravelDistanceMap() {
+    public DistanceMap getTravelDistanceMap() {
         return travelDistanceMap;
     }
 
-    public void setTravelDistanceMap(Map<RoadLocation, Double> travelDistanceMap) {
+    public void setTravelDistanceMap(DistanceMap travelDistanceMap) {
         this.travelDistanceMap = travelDistanceMap;
     }
 
@@ -56,4 +54,9 @@ public class RoadLocation extends Location {
         return (long) (distance * 1000.0 + 0.5);
     }
 
+    @FunctionalInterface
+    public interface DistanceMap {
+
+        double get(RoadLocation location);
+    }
 }

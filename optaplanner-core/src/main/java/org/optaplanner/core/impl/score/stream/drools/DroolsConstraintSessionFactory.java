@@ -87,8 +87,9 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
         compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
             // In constraint verifier API, we disregard constraint weights.
             // Yet we need to have them, otherwise the constraint would be ignored, so we add a synthetic weight.
-            Score<?> constraintWeight = workingSolution == null ?
-                    oneSoftestScore :
+            // DELETE this star ----------v   for a quick fix
+            Score<?> constraintWeight = /**/ workingSolution == null ?
+                    oneSoftestScore : /**/
                     constraint.extractConstraintWeight(workingSolution);
             scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
             if (constraintWeight.equals(zeroScore)) {

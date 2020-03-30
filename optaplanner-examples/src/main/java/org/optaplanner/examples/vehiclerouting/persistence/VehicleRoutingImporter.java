@@ -240,7 +240,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                             travelDistanceMap.put(otherLocation, travelDistance);
                         }
                     }
-                    location.setTravelDistanceMap(travelDistanceMap);
+                    location.setTravelDistanceMap(travelDistanceMap::get);
                 }
             }
             if (distanceType == DistanceType.SEGMENTED_ROAD_DISTANCE) {
