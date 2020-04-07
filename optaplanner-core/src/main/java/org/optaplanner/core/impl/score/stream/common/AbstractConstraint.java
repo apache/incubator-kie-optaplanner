@@ -49,7 +49,7 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
         if (isConstraintWeightConfigurable && workingSolution == null) {
             /*
              * In constraint verifier API, we allow for testing constraint providers without having a planning solution.
-             * However, constraint weights may be configurable and in that case the solution is be required to read the
+             * However, constraint weights may be configurable and in that case the solution is required to read the
              * weights from.
              * For these cases, we set the constraint weight to the softest possible value, just to make sure that the
              * constraint is not ignored.
