@@ -84,7 +84,7 @@ public class ConstraintWeightDescriptor<Solution_> {
             Object constraintConfiguration =
                     Objects.requireNonNull(constraintConfigurationMemberAccessor.executeGetter(solution),
                             "Constraint configuration provider (" + constraintConfigurationMemberAccessor +
-                                    ") is null.");
+                                    ") returns null.");
             return (Score<?>) memberAccessor.executeGetter(constraintConfiguration);
         };
     }
