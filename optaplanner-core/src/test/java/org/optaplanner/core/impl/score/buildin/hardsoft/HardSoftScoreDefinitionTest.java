@@ -89,6 +89,17 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
     }
 
     @Test
+    public void buildPessimisticBoundOnlyDown() {
+        HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
+        HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
+                HardSoftScore.of(-1, -2));
+        assertEquals(0, pessimisticBound.getInitScore());
+        assertEquals(Integer.MIN_VALUE, pessimisticBound.getHardScore());
+        assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore());
+    }
+
+    @Test
     public void divideBySanitizedDivisor() {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {0, 10});
