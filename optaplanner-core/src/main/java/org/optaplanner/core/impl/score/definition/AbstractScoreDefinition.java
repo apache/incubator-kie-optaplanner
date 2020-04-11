@@ -32,76 +32,36 @@ public abstract class AbstractScoreDefinition<S extends Score<S>> implements Sco
 
     private final String[] levelLabels;
 
-    protected static int divideScoreLevel(int score, int scoreDivisor) {
-        return divideScoreLevel(score, scoreDivisor, null);
+    protected static int sanitize(int number) {
+        return number == 0 ? 1 : number;
     }
 
-    protected static int divideScoreLevel(int score, int scoreDivisor, String maybeLabel) {
-        String label = maybeLabel == null ? "" : maybeLabel;
-        if (scoreDivisor == 0) {
-            if (score == 0) {
-                return 0;
-            } else {
-                throw new ArithmeticException("Can not divide " + score + label + " by " + scoreDivisor + label + ".");
-            }
-        } else {
-            return (int) Math.floor(score / (double) scoreDivisor);
-        }
+    protected static long sanitize(long number) {
+        return number == 0L ? 1L : number;
     }
 
-    protected static long divideScoreLevel(long score, long scoreDivisor) {
-        return divideScoreLevel(score, scoreDivisor, null);
+    protected static double sanitize(double number) {
+        return number == 0d ? 1d : number;
     }
 
-    protected static long divideScoreLevel(long score, long scoreDivisor, String maybeLabel) {
-        String label = maybeLabel == null ? "" : maybeLabel;
-        if (scoreDivisor == 0L) {
-            if (score == 0L) {
-                return 0L;
-            } else {
-                throw new ArithmeticException("Can not divide " + score + label + " by " + scoreDivisor + label + ".");
-            }
-        } else {
-            return (long) Math.floor(score / (double) scoreDivisor);
-        }
+    protected static BigDecimal sanitize(BigDecimal number) {
+        return number.signum() == 0 ? BigDecimal.ONE : number;
     }
 
-    protected static double divideScoreLevel(double score, double scoreDivisor) {
-        return divideScoreLevel(score, scoreDivisor, null);
+    protected static int divide(int dividend, int divisor) {
+        return (int) Math.floor(divide(dividend, (double) divisor));
     }
 
-    protected static double divideScoreLevel(double score, double scoreDivisor, String maybeLabel) {
-        String label = maybeLabel == null ? "" : maybeLabel;
-        if (scoreDivisor == 0d) {
-            if (score == 0d) {
-                return 0d;
-            } else {
-                throw new ArithmeticException("Can not divide " + score + label + " by " + scoreDivisor + label + ".");
-            }
-        } else {
-            return Math.floor(score / scoreDivisor);
-        }
+    protected static long divide(long dividend, long divisor) {
+        return (long) Math.floor(divide(dividend, (double) divisor));
     }
 
-    protected static BigDecimal divideScoreLevel(BigDecimal score, BigDecimal scoreDivisor) {
-        return divideScoreLevel(score, scoreDivisor, null);
+    protected static double divide(double dividend, double divisor) {
+        return dividend / divisor;
     }
 
-    protected static BigDecimal divideScoreLevel(BigDecimal score, BigDecimal scoreDivisor, String maybeLabel) {
-        String label = maybeLabel == null ? "" : maybeLabel;
-        if (scoreDivisor.signum() == 0) {
-            if (score.signum() == 0) {
-                return BigDecimal.ZERO;
-            } else {
-                throw new ArithmeticException("Can not divide " + score + label + " by " + scoreDivisor + label + ".");
-            }
-        } else {
-            return score.divide(scoreDivisor, score.scale(), RoundingMode.FLOOR);
-        }
-    }
-
-    protected static int divideInitScore(int initScore, double divisor) {
-        return (int) divideScoreLevel(initScore, divisor, "init");
+    protected static BigDecimal divide(BigDecimal dividend, BigDecimal divisor) {
+        return dividend.divide(divisor, dividend.scale(), RoundingMode.FLOOR);
     }
 
     /**
