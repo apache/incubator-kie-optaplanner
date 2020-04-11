@@ -61,7 +61,7 @@ public abstract class AbstractScoreDefinition<S extends Score<S>> implements Sco
     }
 
     protected static BigDecimal divide(BigDecimal dividend, BigDecimal divisor) {
-        return dividend.divide(divisor, dividend.scale(), RoundingMode.FLOOR);
+        return dividend.divide(divisor, dividend.scale() - divisor.scale(), RoundingMode.FLOOR);
     }
 
     /**
