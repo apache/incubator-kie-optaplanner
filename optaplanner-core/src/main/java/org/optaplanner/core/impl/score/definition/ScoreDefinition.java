@@ -152,4 +152,17 @@ public interface ScoreDefinition<S extends Score<S>> {
      */
     S buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, S score);
 
+    /**
+     * Return a Score whose every level is the result of dividing the matching levels in this and the divisor.
+     * When rounding is needed, it is floored (as defined by {@link Math#floor(double)}).
+     * <p>
+     * If any of the levels in the divisor are equal to zero, the method behaves as if they were equal to one instead.
+     * <p>
+     * If the implementation has a scale/precision, then the unspecified scale/precision of the double divisor
+     * should have no impact on the returned scale/precision.
+     * @param divisor value by which this Score is to be divided
+     * @return this / divisor
+     */
+    S divideBySanitizedDivisor(S dividend, S divisor);
+
 }
