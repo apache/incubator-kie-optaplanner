@@ -22,29 +22,30 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 
-public final class ConstraintProviderVerifier<Solution_>
-        extends AbstractConstraintVerifier<Solution_, ConstraintProviderAssertion<Solution_>,
-        ConstraintProviderVerifier<Solution_>> {
+public final class MultiConstraintVerification<Solution_>
+        extends AbstractVerification<Solution_,
+        MultiConstraintVerification<Solution_>, MultiConstraintAssertion<Solution_>> {
 
     private final ConstraintProvider constraintProvider;
 
-    protected ConstraintProviderVerifier(ConstraintVerifier<?, Solution_> constraintVerifier,
+    protected MultiConstraintVerification(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
-        super(new ConstraintStreamScoreDirectorFactory<>(constraintVerifier.getSolutionDescriptor(), constraintProvider,
+        super(new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
                 constraintStreamImplType));
         this.constraintProvider = constraintProvider;
     }
 
-    ConstraintProvider getConstraintProvider() {
+    protected ConstraintProvider getConstraintProvider() {
         return constraintProvider;
     }
 
     @Override
-    protected ConstraintProviderAssertion<Solution_> createAssertion(Score<?> score,
+    protected MultiConstraintAssertion<Solution_> createAssertion(Score<?> score,
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        return new ConstraintProviderAssertion<>(this, score);
+        return new MultiConstraintAssertion<>(this, score);
     }
     
 }

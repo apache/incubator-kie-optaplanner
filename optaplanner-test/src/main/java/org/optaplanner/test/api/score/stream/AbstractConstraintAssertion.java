@@ -16,18 +16,18 @@
 
 package org.optaplanner.test.api.score.stream;
 
-public abstract class AbstractAssertion<Solution_,
-        Assertion_ extends AbstractAssertion<Solution_, Assertion_, Verifier_>,
-        Verifier_ extends AbstractConstraintVerifier<Solution_, Assertion_, Verifier_>> {
+public abstract class AbstractConstraintAssertion<Solution_,
+        Verification_ extends AbstractVerification<Solution_, Verification_, Assertion_>,
+        Assertion_ extends AbstractConstraintAssertion<Solution_, Verification_, Assertion_>> {
 
-    private final Verifier_ parentConstraintVerifier;
+    private final Verification_ parentConstraintVerification;
 
-    protected AbstractAssertion(Verifier_ constraintVerifier) {
-        this.parentConstraintVerifier = constraintVerifier;
+    protected AbstractConstraintAssertion(Verification_ constraintVerification) {
+        this.parentConstraintVerification = constraintVerification;
     }
 
-    protected final Verifier_ getParentConstraintVerifier() {
-        return parentConstraintVerifier;
+    protected final Verification_ getParentConstraintVerification() {
+        return parentConstraintVerification;
     }
 
 }

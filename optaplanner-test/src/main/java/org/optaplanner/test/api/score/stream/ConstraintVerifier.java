@@ -30,15 +30,6 @@ import static java.util.Objects.requireNonNull;
 
 public final class ConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_> {
 
-    private final ConstraintProvider_ constraintProvider;
-    private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private ConstraintStreamImplType constraintStreamImplType = ConstraintStreamImplType.DROOLS;
-
-    private ConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
-        this.constraintProvider = constraintProvider;
-        this.solutionDescriptor = solutionDescriptor;
-    }
-
     /**
      * Entry point to the API.
      * @param constraintProvider never null, {@link PlanningEntity} used by the {@link PlanningSolution}
@@ -57,6 +48,15 @@ public final class ConstraintVerifier<ConstraintProvider_ extends ConstraintProv
         return new ConstraintVerifier<>(constraintProvider, solutionDescriptor);
     }
 
+    private final ConstraintProvider_ constraintProvider;
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
+    private ConstraintStreamImplType constraintStreamImplType = ConstraintStreamImplType.DROOLS;
+
+    private ConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
+        this.constraintProvider = constraintProvider;
+        this.solutionDescriptor = solutionDescriptor;
+    }
+
     protected SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
     }
@@ -73,15 +73,19 @@ public final class ConstraintVerifier<ConstraintProvider_ extends ConstraintProv
         return this;
     }
 
+    // ************************************************************************
+    // Verify methods
+    // ************************************************************************
+
     /**
      * Creates a constraint verifier for a given {@link Constraint} of the {@link ConstraintProvider}.
      * @param constraintFunction never null
      * @return never null
      */
-    public SingleConstraintVerifier<Solution_> verifyThat(
+    public SingleConstraintVerification<Solution_> verifyThat(
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
         requireNonNull(constraintFunction);
-        return new SingleConstraintVerifier<>(this,
+        return new SingleConstraintVerification<>(solutionDescriptor,
                 (constraintFactory) -> constraintFunction.apply(constraintProvider, constraintFactory),
                 constraintStreamImplType);
     }
@@ -90,8 +94,8 @@ public final class ConstraintVerifier<ConstraintProvider_ extends ConstraintProv
      * Creates a constraint verifier for all constraints of the {@link ConstraintProvider}.
      * @return never null
      */
-    public ConstraintProviderVerifier<Solution_> verifyThat() {
-        return new ConstraintProviderVerifier<>(this, constraintProvider, constraintStreamImplType);
+    public MultiConstraintVerification<Solution_> verifyThat() {
+        return new MultiConstraintVerification<>(solutionDescriptor, constraintProvider, constraintStreamImplType);
     }
 
 }

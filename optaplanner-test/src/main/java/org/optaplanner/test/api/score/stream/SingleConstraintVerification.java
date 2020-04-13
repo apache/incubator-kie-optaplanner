@@ -24,15 +24,17 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 
-public final class SingleConstraintVerifier<Solution_> extends AbstractConstraintVerifier<Solution_,
-        SingleConstraintAssertion<Solution_>, SingleConstraintVerifier<Solution_>> {
+public final class SingleConstraintVerification<Solution_>
+        extends AbstractVerification<Solution_,
+        SingleConstraintVerification<Solution_>, SingleConstraintAssertion<Solution_>> {
 
-    protected SingleConstraintVerifier(ConstraintVerifier<?, Solution_> constraintVerifier,
+    protected SingleConstraintVerification(SolutionDescriptor<Solution_> solutionDescriptor,
             Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
-        super(new ConstraintStreamScoreDirectorFactory<>(constraintVerifier.getSolutionDescriptor(),
+        super(new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
                 constraintFactory -> new Constraint[] {
                         constraintFunction.apply(constraintFactory)
                 }, constraintStreamImplType));
@@ -43,4 +45,5 @@ public final class SingleConstraintVerifier<Solution_> extends AbstractConstrain
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
         return new SingleConstraintAssertion<>(this, constraintMatchTotalMap);
     }
+
 }
