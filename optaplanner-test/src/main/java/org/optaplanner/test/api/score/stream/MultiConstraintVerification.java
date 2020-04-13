@@ -16,35 +16,20 @@
 
 package org.optaplanner.test.api.score.stream;
 
-import java.util.Map;
+public interface MultiConstraintVerification<Solution_> {
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+    /**
+     * As defined by {@link SingleConstraintVerification#given(Object...)}.
+     * @param facts never null, at least one
+     * @return never null
+     */
+    MultiConstraintAssertion given(Object... facts);
 
-public final class MultiConstraintVerification<Solution_>
-        extends AbstractVerification<Solution_, MultiConstraintAssertion<Solution_>> {
+    /**
+     * As defined by {@link SingleConstraintVerification#given(Object)}.
+     * @param solution never null
+     * @return never null
+     */
+    MultiConstraintAssertion given(Solution_ solution);
 
-    private final ConstraintProvider constraintProvider;
-
-    protected MultiConstraintVerification(SolutionDescriptor<Solution_> solutionDescriptor,
-            ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
-        super(new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                constraintStreamImplType));
-        this.constraintProvider = constraintProvider;
-    }
-
-    protected ConstraintProvider getConstraintProvider() {
-        return constraintProvider;
-    }
-
-    @Override
-    protected MultiConstraintAssertion<Solution_> createAssertion(Score<?> score,
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        return new MultiConstraintAssertion<>(this, score);
-    }
-    
 }

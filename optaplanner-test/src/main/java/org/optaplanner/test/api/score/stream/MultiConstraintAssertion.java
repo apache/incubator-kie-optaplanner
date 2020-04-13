@@ -19,41 +19,22 @@ package org.optaplanner.test.api.score.stream;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 
-public final class MultiConstraintAssertion<Solution_> extends AbstractConstraintAssertion<Solution_> {
+public interface MultiConstraintAssertion {
 
-    private final MultiConstraintVerification<Solution_> verification;
-    private final Score<?> actualScore;
-
-    protected MultiConstraintAssertion(MultiConstraintVerification<Solution_> verification,
-            Score<?> actualScore) {
-        this.verification = verification;
-        this.actualScore = actualScore;
+    /**
+     * As defined by {@link #scores(Score, String)} with a null message.
+     */
+    default void scores(Score<?> score) {
+        scores(score, null);
     }
 
     /**
      * Asserts that the {@link ConstraintProvider} under test, given a set of facts, results in a specific {@link Score}.
      *
      * @param score total score calculated for the given set of facts
-     * @param message optional description of the scenario being asserted
+     * @param message sometimes null, description of the scenario being asserted
      * @throws AssertionError when the expected score does not match the calculated score
      */
-    public final void scores(Score<?> score, String message) {
-        if (actualScore.equals(score)) {
-            return;
-        }
-        Class<?> constraintProviderClass = verification.getConstraintProvider().getClass();
-        String expectation = message == null ? "Broken expectation." : message;
-        throw new AssertionError(expectation + System.lineSeparator() +
-                "    Constraint provider: " + constraintProviderClass + System.lineSeparator() +
-                "         Expected score: " + score + " (" + score.getClass() + ")" + System.lineSeparator() +
-                "           Actual score: " + actualScore + " (" + actualScore.getClass() + ")");
-    }
-
-    /**
-     * As defined by {@link #scores(Score, String)} with a null message.
-     */
-    public final void scores(Score<?> score) {
-        scores(score, null);
-    }
+    void scores(Score<?> score, String message);
 
 }

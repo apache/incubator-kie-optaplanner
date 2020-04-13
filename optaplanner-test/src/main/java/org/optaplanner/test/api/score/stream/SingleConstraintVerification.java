@@ -16,33 +16,18 @@
 
 package org.optaplanner.test.api.score.stream;
 
-import java.util.Map;
-import java.util.function.Function;
+public interface SingleConstraintVerification<Solution_> {
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+    /**
+     * @param facts never null, at least one
+     * @return never null
+     */
+    SingleConstraintAssertion given(Object... facts);
 
-public final class SingleConstraintVerification<Solution_>
-        extends AbstractVerification<Solution_, SingleConstraintAssertion<Solution_>> {
-
-    protected SingleConstraintVerification(SolutionDescriptor<Solution_> solutionDescriptor,
-            Function<ConstraintFactory, Constraint> constraintFunction,
-            ConstraintStreamImplType constraintStreamImplType) {
-        super(new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
-                constraintFactory -> new Constraint[] {
-                        constraintFunction.apply(constraintFactory)
-                }, constraintStreamImplType));
-    }
-
-    @Override
-    protected SingleConstraintAssertion<Solution_> createAssertion(Score<?> score,
-            Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        return new SingleConstraintAssertion<>(this, constraintMatchTotalMap);
-    }
+    /**
+     * @param solution never null
+     * @return never null
+     */
+    SingleConstraintAssertion given(Solution_ solution);
 
 }
