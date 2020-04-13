@@ -31,15 +31,14 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
-public final class SingleConstraintAssertion<Solution_>
-        extends AbstractConstraintAssertion<Solution_,
-        SingleConstraintVerification<Solution_>, SingleConstraintAssertion<Solution_>> {
+public final class SingleConstraintAssertion<Solution_> extends AbstractConstraintAssertion<Solution_> {
 
+    private final SingleConstraintVerification<Solution_> verification;
     private final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
 
-    protected SingleConstraintAssertion(SingleConstraintVerification<Solution_> singleConstraintVerifier,
+    protected SingleConstraintAssertion(SingleConstraintVerification<Solution_> verification,
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
-        super(singleConstraintVerifier);
+        this.verification = verification;
         this.constraintMatchTotalMap = Collections.unmodifiableMap(constraintMatchTotalMap);
     }
 
@@ -169,7 +168,7 @@ public final class SingleConstraintAssertion<Solution_>
 
     private void assertImpact(ScoreImpactType scoreImpactType, Number matchWeightTotal, String message) {
         Number impact = deduceImpact();
-        AbstractConstraint<Solution_, ?> constraint = (AbstractConstraint<Solution_, ?>) getParentConstraintVerification()
+        AbstractConstraint<Solution_, ?> constraint = (AbstractConstraint<Solution_, ?>) verification
                 .getConstraintStreamScoreDirectorFactory()
                 .getConstraints()[0];
         // Null means we're just looking for any kind of penalty or an impact.
@@ -184,7 +183,7 @@ public final class SingleConstraintAssertion<Solution_>
     }
 
     private Number deduceImpact() {
-        ScoreDefinition scoreDefinition = getParentConstraintVerification().getConstraintStreamScoreDirectorFactory()
+        ScoreDefinition scoreDefinition = verification.getConstraintStreamScoreDirectorFactory()
                 .getScoreDefinition();
         Score zeroScore = scoreDefinition.getZeroScore();
         Number zero = zeroScore.toLevelNumbers()[0]; // Zero in the exact numeric type expected by the caller.

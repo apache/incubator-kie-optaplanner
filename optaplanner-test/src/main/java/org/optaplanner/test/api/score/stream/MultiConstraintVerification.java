@@ -26,8 +26,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 
 public final class MultiConstraintVerification<Solution_>
-        extends AbstractVerification<Solution_,
-        MultiConstraintVerification<Solution_>, MultiConstraintAssertion<Solution_>> {
+        extends AbstractVerification<Solution_, MultiConstraintAssertion<Solution_>> {
 
     private final ConstraintProvider constraintProvider;
 

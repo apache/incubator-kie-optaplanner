@@ -27,8 +27,7 @@ import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDire
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
 public abstract class AbstractVerification<Solution_,
-        Verification_ extends AbstractVerification<Solution_, Verification_, Assertion_>,
-        Assertion_ extends AbstractConstraintAssertion<Solution_, Verification_, Assertion_>> {
+        Assertion_ extends AbstractConstraintAssertion<Solution_>> {
 
     private final ConstraintStreamScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory;
 

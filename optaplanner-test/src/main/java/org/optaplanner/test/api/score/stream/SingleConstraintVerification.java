@@ -28,8 +28,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 
 public final class SingleConstraintVerification<Solution_>
-        extends AbstractVerification<Solution_,
-        SingleConstraintVerification<Solution_>, SingleConstraintAssertion<Solution_>> {
+        extends AbstractVerification<Solution_, SingleConstraintAssertion<Solution_>> {
 
     protected SingleConstraintVerification(SolutionDescriptor<Solution_> solutionDescriptor,
             Function<ConstraintFactory, Constraint> constraintFunction,

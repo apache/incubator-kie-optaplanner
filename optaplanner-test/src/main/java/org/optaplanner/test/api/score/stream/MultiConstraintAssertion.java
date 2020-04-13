@@ -19,15 +19,14 @@ package org.optaplanner.test.api.score.stream;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 
-public final class MultiConstraintAssertion<Solution_>
-        extends AbstractConstraintAssertion<Solution_,
-        MultiConstraintVerification<Solution_>, MultiConstraintAssertion<Solution_>> {
+public final class MultiConstraintAssertion<Solution_> extends AbstractConstraintAssertion<Solution_> {
 
+    private final MultiConstraintVerification<Solution_> verification;
     private final Score<?> actualScore;
 
-    protected MultiConstraintAssertion(MultiConstraintVerification<Solution_> constraintProviderVerifier,
+    protected MultiConstraintAssertion(MultiConstraintVerification<Solution_> verification,
             Score<?> actualScore) {
-        super(constraintProviderVerifier);
+        this.verification = verification;
         this.actualScore = actualScore;
     }
 
@@ -42,7 +41,7 @@ public final class MultiConstraintAssertion<Solution_>
         if (actualScore.equals(score)) {
             return;
         }
-        Class<?> constraintProviderClass = getParentConstraintVerification().getConstraintProvider().getClass();
+        Class<?> constraintProviderClass = verification.getConstraintProvider().getClass();
         String expectation = message == null ? "Broken expectation." : message;
         throw new AssertionError(expectation + System.lineSeparator() +
                 "    Constraint provider: " + constraintProviderClass + System.lineSeparator() +
