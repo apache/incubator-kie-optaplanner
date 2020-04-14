@@ -624,8 +624,8 @@ that is being tested, as well as the planning solution (`NQueens`) and the plann
 The `@Test` annotation indicates that the method is a unit test in a testing framework of your choice.
 Constraint Verifier works with every unit testing framework.
 
-First part of the test does nothing but prepare the test data.
-In this case, we create two instances of the `Queen` planning entity and their dependencies (`Row`, `Column`):
+First part of the test prepares the test data.
+In this case, two instances of the `Queen` planning entity and their dependencies (`Row`, `Column`):
 
 [source,java,options="nowrap"]
 ----
@@ -636,7 +636,7 @@ In this case, we create two instances of the `Queen` planning entity and their d
         Queen queen2 = new Queen(1, row1, column2);
 ----
 
-Having done that, we can move on to testing the constraint:
+Further down, the following code test the constraint itself:
 
 [source,java,options="nowrap"]
 ----
@@ -645,13 +645,12 @@ Having done that, we can move on to testing the constraint:
             .penalizesBy(1);
 ----
 
-On the first line, we use the `verifyThat(...)` call to specify a method on the `NQueensConstraintProvider` class which
-we want to test.
+The `verifyThat(...)` call is used to specify a method on the `NQueensConstraintProvider` class which is under test.
 This method must be visible to the test class, which the Java compiler will enforce.
 
-With the `given(...)` call, we enumerate all the facts that the constraint stream will operate on.
-In this case, we only list the `queen1` and `queen2` instances previously created.
-Alternatively, you can call a `givenSolution(...)` here and provide a planning solution instead.
+The `given(...)` call is used to enumerate all the facts that the constraint stream will operate on.
+In this case, the `queen1` and `queen2` instances previously created.
+Alternatively, you can use a `givenSolution(...)` call here and provide a planning solution instead.
 
 Finally, the `penalizesBy(...)` call completes the test, making sure that the "Horizontal conflict" constraint, given
 one `Queen`, results in a penalty of `1`.
@@ -682,7 +681,7 @@ Consider the following test:
 
 There are only two notable differences to the previous example.
 First, the `verifyThat()` call takes no argument here, signifying that the entire `ConstraintProvider` is being tested.
-Second, instead of either a `penalizesBy()` or `rewardsWith()` call, we use the `scores(...)` method.
+Second, instead of either a `penalizesBy()` or `rewardsWith()` call, the `scores(...)` method is used.
 This runs the `ConstraintProvider` on the given facts and returns a sum of `Score`s of all constraint matches resulting
 from the given facts.
 
