@@ -577,7 +577,7 @@ the stream.
 [[constraintStreamsTesting]]
 == Testing a constraint stream
 
-Constraint streams come with a unit testing harness, called "Constraint Verifier".
+Constraint streams include the Constraint Verifier unit testing harness.
 Consider the following constraint stream:
 
 [source,java,options="nowrap"]
@@ -589,7 +589,7 @@ Consider the following constraint stream:
     }
 ----
 
-This is how a simple unit test for this constraint looks, using the Constraint Verifier API:
+The following example uses the Constraint Verifier API to create a simple unit test for the preceding constraint stream:
 
 [source,java,options="nowrap"]
 ----
@@ -609,11 +609,11 @@ This is how a simple unit test for this constraint looks, using the Constraint V
     }
 ----
 
-This test ensures that the "Horizontal conflict" constraint gives a penalty of `1` when there are two queens on the
-same row.
-Let's take a look at the test in detail.
-The following line creates a shared `ConstraintVerifier` instance, initializing it with the `NQueensConstraintProvider`
-that is being tested, as well as the planning solution (`NQueens`) and the planning entity (`Queen`).
+This test ensures that the horizontal conflict constraint assigns a penalty of `1` when there are two queens on the same
+row.
+The following line creates a shared `ConstraintVerifier` instance and initializes the instance with the
+`NQueensConstraintProvider`:
+
 
 [source,java,options="nowrap"]
 ----
@@ -622,10 +622,11 @@ that is being tested, as well as the planning solution (`NQueens`) and the plann
 ----
 
 The `@Test` annotation indicates that the method is a unit test in a testing framework of your choice.
-Constraint Verifier works with every unit testing framework.
+Constraint Verifier works with many testing frameworks including JUnit and AssertJ.
 
-First part of the test prepares the test data.
-In this case, two instances of the `Queen` planning entity and their dependencies (`Row`, `Column`):
+The first part of the test prepares the test data.
+In this case, the test data includes two instances of the `Queen` planning entity and their dependencies
+(`Row`, `Column`):
 
 [source,java,options="nowrap"]
 ----
@@ -636,7 +637,7 @@ In this case, two instances of the `Queen` planning entity and their dependencie
         Queen queen2 = new Queen(1, row1, column2);
 ----
 
-Further down, the following code test the constraint itself:
+Further down, the following code test the constraint:
 
 [source,java,options="nowrap"]
 ----
@@ -649,10 +650,10 @@ The `verifyThat(...)` call is used to specify a method on the `NQueensConstraint
 This method must be visible to the test class, which the Java compiler will enforce.
 
 The `given(...)` call is used to enumerate all the facts that the constraint stream will operate on.
-In this case, the `queen1` and `queen2` instances previously created.
-Alternatively, you can use a `givenSolution(...)` call here and provide a planning solution instead.
+In this case, the `given(...)` call takes the `queen1` and `queen2` instances previously created.
+Alternatively, you can use a `givenSolution(...)` method here and provide a planning solution instead.
 
-Finally, the `penalizesBy(...)` call completes the test, making sure that the "Horizontal conflict" constraint, given
+Finally, the `penalizesBy(...)` call completes the test, making sure that the horizontal conflict constraint, given
 one `Queen`, results in a penalty of `1`.
 This number is a product of multiplying the match weight, as defined in the constraint stream, by the number of matches.
 
@@ -663,7 +664,7 @@ The method to use here depends on whether the constraint stream in question is t
 [[constraintStreamsIntegrationTesting]]
 === Integration testing
 
-In addition to testing individual constraint, you can also test the entire `ConstraintProvider`.
+In addition to testing individual constraints, you can test the entire `ConstraintProvider` instance.
 Consider the following test:
 
 [source,java,options="nowrap"]
@@ -680,13 +681,14 @@ Consider the following test:
 ----
 
 There are only two notable differences to the previous example.
-First, the `verifyThat()` call takes no argument here, signifying that the entire `ConstraintProvider` is being tested.
+First, the `verifyThat()` call takes no argument here, signifying that the entire `ConstraintProvider` instance is
+being tested.
 Second, instead of either a `penalizesBy()` or `rewardsWith()` call, the `scores(...)` method is used.
 This runs the `ConstraintProvider` on the given facts and returns a sum of `Score`s of all constraint matches resulting
 from the given facts.
 
-Using this method, you can make sure that the constraint provider does not miss any constraints and that the scoring
-function remains consistent as you evolve your code base.
+Using this method, you ensure that the constraint provider does not miss any constraints and that the scoring function
+remains consistent as your code base evolves.
 
 [[constraintStreamsImplementations]]
 == Variant implementation types
