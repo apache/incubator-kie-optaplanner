@@ -309,7 +309,7 @@ The parameter `($capacity - $studentSize)` always results in a negative number b
 Drools-based constraints come with a unit testing harness.
 To use it, first add a test scoped dependency to the `optaplanner-test` jar to take advantage of the JUnit integration
 and use the `ScoreVerifier` classes to test score rules in DRL (or a constraint match aware incremental score calculator).
-For example, suppose we want to test these score rules:
+For example, suppose you want to test these score rules:
 
 [source,options="nowrap"]
 ----
@@ -332,7 +332,7 @@ rule "computerCost"
 end
 ----
 
-For each score rule, we have a separate `@Test` that only tests the effect of that score rule on the score:
+For each score rule, create a separate `@Test` that only tests the effect of that score rule on the score:
 
 [source,java,options="nowrap"]
 ----
