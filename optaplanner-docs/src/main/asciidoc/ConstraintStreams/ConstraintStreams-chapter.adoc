@@ -579,7 +579,8 @@ the stream.
 
 Constraint streams include the Constraint Verifier unit testing harness.
 To use it, first add a test scoped dependency to the `optaplanner-test` JAR.
-Suppose we want to test the following constraint stream:
+
+Consider the following constraint stream:
 
 [source,java,options="nowrap"]
 ----
