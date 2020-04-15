@@ -1328,6 +1328,7 @@ but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requi
 [[testingScoreConstraints]]
 == Testing score constraints
 
+It's recommended to write a unit test for each score constraint individually to check that it behaves correctly.
 Different score calculation types come with different tools for testing.
 For more, see <<constraintStreamsTesting,testing constraint streams>> or
 <<testingDroolsConstraints,testing Drools constraints>>.
