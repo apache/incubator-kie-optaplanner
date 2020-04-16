@@ -18,17 +18,15 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, InTuple, KeyTuple, OutTuple>
-        implements GroupByAccumulator<InTuple, OutTuple> {
+        extends DroolsAbstractGroupByAccumulator<InTuple, KeyTuple, OutTuple> {
 
-    // Containers may be identical in type and contents, yet they should still not count as the same container.
-    private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
-    // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
     private final Map<KeyTuple, ResultContainer> containersMap = new HashMap<>(0);
+    // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
     private final Map<KeyTuple, OutTuple> resultMap = new LinkedHashMap<>(0);
 
     @Override
@@ -36,31 +34,25 @@ public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContai
         KeyTuple key = toKey(input);
         ResultContainer container = containersMap.computeIfAbsent(key, __ -> newContainer());
         Runnable undo = process(input, container);
-        resultMap.put(key, toResult(key, container));
-        containersInUseMap.compute(container, (__, count) -> increment(count)); // Increment use counter.
+        addTuple(key);
         return () -> {
             undo.run();
-            // Decrement use counter. If 0, container is ignored during finishing. Removes empty groups from results.
-            Long currentCount = containersInUseMap.compute(container, (__, count) -> decrement(count));
-            if (currentCount == null) {
+            long currentCount = removeTuple(key);
+            if (currentCount == 0L) {
                 containersMap.remove(key);
                 resultMap.remove(key);
-            } else {
-                resultMap.put(key, toResult(key, container));
             }
         };
     }
 
-    private static Long increment(Long count) {
-        return count == null ? 1L : count + 1L;
-    }
-
-    private static Long decrement(Long count) {
-        return count == 1L ? null : count - 1L;
-    }
-
     @Override
     public Collection<OutTuple> finish() {
+        Set<KeyTuple> dirtyTupleSet = clearDirtyTupleSet();
+        if (!dirtyTupleSet.isEmpty()) {
+            for (KeyTuple tuple : dirtyTupleSet) {
+                resultMap.put(tuple, toResult(tuple, containersMap.get(tuple)));
+            }
+        }
         return resultMap.values();
     }
 
