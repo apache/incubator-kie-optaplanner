@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, InTuple, KeyTuple, OutTuple>
         implements GroupByAccumulator<InTuple, OutTuple> {
@@ -28,16 +28,15 @@ public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContai
     // Containers may be identical in type and contents, yet they should still not count as the same container.
     private final Map<ResultContainer, Long> containersInUseMap = new IdentityHashMap<>(0);
     // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
-    private final Map<KeyTuple, ResultContainer> containersMap = new LinkedHashMap<>(0);
-    // Transient as Spotbugs complains otherwise ("non-transient non-serializable instance field").
-    // It doesn't make sense to serialize this anyway, as it is recreated every time.
-    private final transient Set<OutTuple> resultSet = new LinkedHashSet<>(0);
+    private final Map<KeyTuple, ResultContainer> containersMap = new HashMap<>(0);
+    private final Map<KeyTuple, OutTuple> resultMap = new LinkedHashMap<>(0);
 
     @Override
     public Runnable accumulate(InTuple input) {
         KeyTuple key = toKey(input);
         ResultContainer container = containersMap.computeIfAbsent(key, __ -> newContainer());
         Runnable undo = process(input, container);
+        resultMap.put(key, toResult(key, container));
         containersInUseMap.compute(container, (__, count) -> increment(count)); // Increment use counter.
         return () -> {
             undo.run();
@@ -45,6 +44,9 @@ public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContai
             Long currentCount = containersInUseMap.compute(container, (__, count) -> decrement(count));
             if (currentCount == null) {
                 containersMap.remove(key);
+                resultMap.remove(key);
+            } else {
+                resultMap.put(key, toResult(key, container));
             }
         };
     }
@@ -58,12 +60,8 @@ public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContai
     }
 
     @Override
-    public Set<OutTuple> finish() {
-        resultSet.clear();
-        for (Map.Entry<KeyTuple, ResultContainer> entry : containersMap.entrySet()) {
-            resultSet.add(toResult(entry.getKey(), entry.getValue()));
-        }
-        return resultSet;
+    public Collection<OutTuple> finish() {
+        return resultMap.values();
     }
 
     protected abstract KeyTuple toKey(InTuple tuple);

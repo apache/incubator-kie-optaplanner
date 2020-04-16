@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -75,7 +76,7 @@ public abstract class DroolsAbstractBiCollectingGroupByAccumulator<ResultContain
     }
 
     @Override
-    public Set<OutTuple> finish() {
+    public Collection<OutTuple> finish() {
         resultSet.clear();
         for (Map.Entry<KeyTuple, ResultContainer1> entry : containersMap1.entrySet()) {
             KeyTuple key = entry.getKey();
