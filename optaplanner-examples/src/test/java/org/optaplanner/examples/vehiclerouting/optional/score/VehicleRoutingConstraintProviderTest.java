@@ -19,7 +19,6 @@ package org.optaplanner.examples.vehiclerouting.optional.score;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
-import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
@@ -27,16 +26,21 @@ import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
+import org.optaplanner.test.junit.ConstraintProviderTest;
 
+@ConstraintProviderTest(solverConfig = "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml")
 public class VehicleRoutingConstraintProviderTest {
-
-    private final ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier =
-            ConstraintVerifier.build(new VehicleRoutingConstraintProvider(), VehicleRoutingSolution.class, Standstill.class,
-                    Customer.class, TimeWindowedCustomer.class);
 
     private final Location location1 = new AirLocation(1L, 0.0, 0.0);
     private final Location location2 = new AirLocation(2L, 0.0, 4.0);
     private final Location location3 = new AirLocation(3L, 3.0, 0.0);
+
+    private final ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier;
+
+    public VehicleRoutingConstraintProviderTest(
+            ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier) {
+        this.constraintVerifier = constraintVerifier;
+    }
 
     @Test
     public void vehicleCapacityUnpenalized() {

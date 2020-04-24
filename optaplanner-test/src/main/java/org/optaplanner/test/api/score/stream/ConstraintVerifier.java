@@ -26,6 +26,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 
@@ -47,6 +48,18 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
         requireNonNull(constraintProvider);
         SolutionDescriptor<Solution_> solutionDescriptor = SolutionDescriptor
                 .buildSolutionDescriptor(requireNonNull(planningSolutionClass), entityClasses);
+        return new DefaultConstraintVerifier<>(constraintProvider, solutionDescriptor);
+    }
+
+    static <ConstraintProvider_ extends ConstraintProvider, Solution_> ConstraintVerifier<ConstraintProvider_, Solution_> build(
+            ConstraintProvider_ constraintProvider,
+            SolverConfig solverConfig) {
+        requireNonNull(constraintProvider);
+        requireNonNull(solverConfig);
+        // TODO check solution type
+        Class<Solution_> solutionClass = (Class<Solution_>) solverConfig.getSolutionClass();
+        SolutionDescriptor<Solution_> solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(
+                solutionClass, solverConfig.getEntityClassList(), null);
         return new DefaultConstraintVerifier<>(constraintProvider, solutionDescriptor);
     }
 
