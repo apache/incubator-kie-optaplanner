@@ -116,14 +116,14 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
                 .expand(p -> bindFunction.apply(p, mappedVariable))
                 .build();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
-        Variable<Collection<InTuple>> tupleSet =
+        Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) ruleStructure.createVariable(Collection.class,"tupleCollection");
-        PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleSet)
-                .expr("Non-empty", set -> !set.isEmpty(),
+        PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleCollection)
+                .expr("Non-empty", collection -> !collection.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));
         ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(tupleSet));
-        return mutator.apply(tupleSet, pattern, accumulate);
+                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(tupleCollection));
+        return mutator.apply(tupleCollection, pattern, accumulate);
     }
 
     protected <NewA, NewB, InTuple, OutPatternVar> DroolsBiCondition<NewA, NewB, OutPatternVar> groupWithCollect(
@@ -158,15 +158,15 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
             C extends DroolsCondition<OutPatternVar, R>> C universalGroupWithCollect(
                     Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier,
             Mutator<InTuple, OutPatternVar, R, C> mutator) {
-        Variable<Collection<InTuple>> tupleSet =
+        Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) ruleStructure.createVariable(Collection.class, "tupleCollection");
-        PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleSet)
-                .expr("Non-empty", set -> !set.isEmpty(),
+        PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleCollection)
+                .expr("Non-empty", collection -> !collection.isEmpty(),
                         alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));
         PatternDSL.PatternDef<PatternVar> innerCollectingPattern = ruleStructure.getPrimaryPatternBuilder().build();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(innerCollectingPattern);
-        ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern, accFunction(invokerSupplier).as(tupleSet));
-        return mutator.apply(tupleSet, pattern, accumulate);
+        ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern, accFunction(invokerSupplier).as(tupleCollection));
+        return mutator.apply(tupleCollection, pattern, accumulate);
     }
 
     protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder) {
