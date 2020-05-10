@@ -52,7 +52,7 @@ final class DroolsTriAccumulateFunction<A, B, C, ResultContainer_, NewA>
     }
 
     @Override
-    protected NewA getResult(ResultContainer_ container_) {
-        return finisher.apply(container_);
+    protected NewA getResult(ResultContainer_ container) {
+        return finisher.apply(container);
     }
 }
