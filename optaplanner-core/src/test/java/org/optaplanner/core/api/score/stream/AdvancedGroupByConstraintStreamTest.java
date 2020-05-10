@@ -73,7 +73,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         scoreDirector.beforeEntityRemoved(entity);
         solution.getEntityList().remove(entity);
         scoreDirector.afterEntityRemoved(entity);
-        assertScore(scoreDirector); // There is less than 10 entities, and therefore there are no penalties.
+        assertScore(scoreDirector);
     }
 
     @TestTemplate
