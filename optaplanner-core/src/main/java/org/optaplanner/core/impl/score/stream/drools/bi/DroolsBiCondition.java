@@ -173,7 +173,7 @@ public final class DroolsBiCondition<A, B, PatternVar>
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(BiConstraintCollector<A, B, __, NewA> collector) {
-        DroolsBiAccumulateFunctionBridge<A, B, __, NewA> bridge = new DroolsBiAccumulateFunctionBridge<>(collector);
+        DroolsBiAccumulateFunction<A, B, __, NewA> bridge = new DroolsBiAccumulateFunction<>(collector);
         return collect(bridge);
     }
 

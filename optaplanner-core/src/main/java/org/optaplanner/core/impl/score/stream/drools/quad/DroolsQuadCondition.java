@@ -169,7 +169,7 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
             QuadConstraintCollector<A, B, C, D, __, NewA> collector) {
-        DroolsQuadAccumulateFunctionBridge<A, B, C, D, __, NewA> bridge = new DroolsQuadAccumulateFunctionBridge<>(collector);
+        DroolsQuadAccumulateFunction<A, B, C, D, __, NewA> bridge = new DroolsQuadAccumulateFunction<>(collector);
         return collect(bridge);
     }
 

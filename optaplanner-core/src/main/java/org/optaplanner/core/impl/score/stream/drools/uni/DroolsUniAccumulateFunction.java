@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.bi;
+package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunctionBridge;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
 
-final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunctionBridge<ResultContainer_, BiTuple<A, B>, NewA> {
+final class DroolsUniAccumulateFunction<A, ResultContainer_, NewA>
+        extends DroolsAbstractAccumulateFunction<ResultContainer_, A, NewA> {
 
     private final Supplier<ResultContainer_> supplier;
-    private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
+    private final BiFunction<ResultContainer_, A, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsBiAccumulateFunctionBridge(BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
+    public DroolsUniAccumulateFunction(UniConstraintCollector<A, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
-    public DroolsBiAccumulateFunctionBridge() {
+    public DroolsUniAccumulateFunction() {
         throw new UnsupportedOperationException("Serialization is not supported.");
     }
 
@@ -47,8 +46,8 @@ final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
     }
 
     @Override
-    protected Runnable accumulate(ResultContainer_ container, BiTuple<A, B> tuple) {
-        return accumulator.apply(container, tuple.a, tuple.b);
+    protected Runnable accumulate(ResultContainer_ container, A tuple) {
+        return accumulator.apply(container, tuple);
     }
 
     @Override

@@ -67,7 +67,7 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
             Variable<InTuple> tupleVariable);
 
     protected <NewA, InTuple, OutTuple, __> DroolsUniCondition<NewA, NewA> collect(
-            DroolsAbstractAccumulateFunctionBridge<__, InTuple, OutTuple> accumulateFunctionBridge) {
+            DroolsAbstractAccumulateFunction<__, InTuple, OutTuple> accumulateFunctionBridge) {
         PatternDef<PatternVar> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder().build();
         Variable<PatternVar> baseVariable = ruleStructure.getPrimaryPatternBuilder().getBaseVariable();
         boolean isRegrouping = FactTuple.class.isAssignableFrom(baseVariable.getType());

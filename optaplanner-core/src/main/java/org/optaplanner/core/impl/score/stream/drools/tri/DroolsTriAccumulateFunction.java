@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.quad;
+package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.optaplanner.core.api.function.PentaFunction;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunctionBridge;
-import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
+import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsQuadAccumulateFunctionBridge<A, B, C, D, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunctionBridge<ResultContainer_, QuadTuple<A, B, C, D>, NewA> {
+final class DroolsTriAccumulateFunction<A, B, C, ResultContainer_, NewA>
+        extends DroolsAbstractAccumulateFunction<ResultContainer_, TriTuple<A, B, C>, NewA> {
 
     private final Supplier<ResultContainer_> supplier;
-    private final PentaFunction<ResultContainer_, A, B, C, D, Runnable> accumulator;
+    private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsQuadAccumulateFunctionBridge(QuadConstraintCollector<A, B, C, D, ResultContainer_, NewA> collector) {
+    public DroolsTriAccumulateFunction(TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
-    public DroolsQuadAccumulateFunctionBridge() {
+    public DroolsTriAccumulateFunction() {
         throw new UnsupportedOperationException("Serialization is not supported.");
     }
 
@@ -47,8 +47,8 @@ final class DroolsQuadAccumulateFunctionBridge<A, B, C, D, ResultContainer_, New
     }
 
     @Override
-    protected Runnable accumulate(ResultContainer_ container, QuadTuple<A, B, C, D> tuple) {
-        return accumulator.apply(container, tuple.a, tuple.b, tuple.c, tuple.d);
+    protected Runnable accumulate(ResultContainer_ container, TriTuple<A, B, C> tuple) {
+        return accumulator.apply(container, tuple.a, tuple.b, tuple.c);
     }
 
     @Override

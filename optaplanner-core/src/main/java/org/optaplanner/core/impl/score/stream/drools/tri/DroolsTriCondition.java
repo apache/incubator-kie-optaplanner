@@ -179,7 +179,7 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(TriConstraintCollector<A, B, C, __, NewA> collector) {
-        DroolsTriAccumulateFunctionBridge<A, B, C, __, NewA> bridge = new DroolsTriAccumulateFunctionBridge<>(collector);
+        DroolsTriAccumulateFunction<A, B, C, __, NewA> bridge = new DroolsTriAccumulateFunction<>(collector);
         return collect(bridge);
     }
 

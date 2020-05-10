@@ -129,7 +129,7 @@ public final class DroolsUniCondition<A, PatternVar>
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
-        DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
+        DroolsUniAccumulateFunction<A, __, NewA> bridge = new DroolsUniAccumulateFunction<>(collector);
         return collect(bridge);
     }
 
