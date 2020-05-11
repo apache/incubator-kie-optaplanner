@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefini
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
+@Deprecated(/* forRemoval = true */)
 public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftDoubleScore> {
 
     public HardSoftDoubleScoreDefinition() {

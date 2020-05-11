@@ -23,6 +23,7 @@ import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapter;
 /**
  * {@inheritDoc}
  */
+@Deprecated(/* forRemoval = true */)
 public class HardSoftDoubleScoreJsonbAdapter extends AbstractScoreJsonbAdapter<HardSoftDoubleScore> {
 
     @Override

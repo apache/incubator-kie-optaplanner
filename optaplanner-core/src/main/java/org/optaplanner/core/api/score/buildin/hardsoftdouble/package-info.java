@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,5 +16,10 @@
 
 /**
  * Support for a {@link org.optaplanner.core.api.score.Score} with 2 score levels and {@code double} score weights.
+ * <p>
+ * Double-based scores are deprecated as floating point numbers can not represent a decimal number correctly.
+ * Use {@link org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore} or a scaled
+ * {@link org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore} instead.
  */
+@Deprecated
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;

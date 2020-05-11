@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
  *
  * @see Score
  */
+@Deprecated(/* forRemoval = true */)
 public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     public static final SimpleDoubleScore ZERO = new SimpleDoubleScore(0, 0.0);
