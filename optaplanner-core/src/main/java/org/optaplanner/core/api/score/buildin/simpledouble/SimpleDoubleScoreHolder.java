@@ -25,6 +25,7 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -32,6 +33,8 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
  * Use {@link SimpleBigDecimalScoreHolder} instead.
  *
  * @see SimpleDoubleScore
+ * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
+ *             Use {@link SimpleBigDecimalScoreHolder} or a scaled {@link SimpleLongScoreHolder} instead.
  */
 @Deprecated(/* forRemoval = true */)
 public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleScore> {

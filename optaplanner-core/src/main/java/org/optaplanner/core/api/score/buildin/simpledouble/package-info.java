@@ -16,10 +16,6 @@
 
 /**
  * Support for a {@link org.optaplanner.core.api.score.Score} with 1 score level and {@code double} score weights.
- * <p>
- * Double-based scores are deprecated as floating point numbers can not represent a decimal number correctly.
- * Use {@link org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore} or a scaled
- * {@link org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore} instead.
  */
 @Deprecated(/* forRemoval = true */)
 package org.optaplanner.core.api.score.buildin.simpledouble;

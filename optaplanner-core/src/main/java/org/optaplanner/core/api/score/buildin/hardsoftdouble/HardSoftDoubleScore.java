@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 
 /**
  * This {@link Score} is based on 2 levels of double constraints: hard and soft.
@@ -35,6 +36,8 @@ import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDeci
  * This class is immutable.
  *
  * @see Score
+ * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
+ *             Use {@link HardSoftBigDecimalScore} or a scaled {@link HardSoftLongScore} instead.
  */
 @Deprecated(/* forRemoval = true */)
 public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore>

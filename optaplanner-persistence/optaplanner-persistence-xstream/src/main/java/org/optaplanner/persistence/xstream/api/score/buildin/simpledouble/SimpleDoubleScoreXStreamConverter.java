@@ -24,6 +24,9 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+/**
+ * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
+ */
 @Deprecated(/* forRemoval = true */)
 public class SimpleDoubleScoreXStreamConverter extends AbstractScoreXStreamConverter {
 

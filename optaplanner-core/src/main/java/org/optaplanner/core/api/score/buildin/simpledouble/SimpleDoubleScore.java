@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
 /**
  * This {@link Score} is based on 1 level of double constraints.
@@ -32,6 +33,8 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
  * This class is immutable.
  *
  * @see Score
+ * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
+ *             Use {@link SimpleBigDecimalScore} or a scaled {@link SimpleLongScore} instead.
  */
 @Deprecated(/* forRemoval = true */)
 public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
