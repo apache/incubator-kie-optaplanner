@@ -22,8 +22,6 @@ import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
- * {@inheritDoc}
- * 
  * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
  */
 @Deprecated(/* forRemoval = true */)
