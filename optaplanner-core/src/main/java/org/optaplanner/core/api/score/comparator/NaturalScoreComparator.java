@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,10 @@ import org.optaplanner.core.api.score.Score;
 
 /**
  * Compares by the natural order of {@link Score}s.
+ * 
+ * @deprecated If you need this, it is trivial to implement.
  */
+@Deprecated(/* forRemoval = true */)
 public class NaturalScoreComparator implements Comparator<Score>, Serializable {
 
     @Override

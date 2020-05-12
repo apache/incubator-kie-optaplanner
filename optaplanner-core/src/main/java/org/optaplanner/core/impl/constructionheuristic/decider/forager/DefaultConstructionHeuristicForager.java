@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.constructionheuristic.decider.forager;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
@@ -28,7 +27,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
 
     protected final ConstructionHeuristicPickEarlyType pickEarlyType;
 
-    protected Comparator<Score> scoreComparator;
+    protected final Comparator<Score> scoreComparator = Comparable::compareTo;
 
     protected long selectedMoveCount;
     protected ConstructionHeuristicMoveScope earlyPickedMoveScope;
@@ -36,7 +35,6 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
 
     public DefaultConstructionHeuristicForager(ConstructionHeuristicPickEarlyType pickEarlyType) {
         this.pickEarlyType = pickEarlyType;
-        scoreComparator = new NaturalScoreComparator();
     }
 
     // ************************************************************************
