@@ -24,6 +24,7 @@ import java.util.Comparator;
  *
  * @deprecated If you need this, it is trivial to implement.
  */
+@Deprecated
 public class IndictmentScoreTotalComparator implements Comparator<Indictment>, Serializable {
 
     @Override
