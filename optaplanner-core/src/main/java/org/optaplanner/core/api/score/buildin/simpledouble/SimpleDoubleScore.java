@@ -162,6 +162,11 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
     }
 
     @Override
+    public boolean isFeasible() {
+        return true;
+    }
+
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[] { score };
     }

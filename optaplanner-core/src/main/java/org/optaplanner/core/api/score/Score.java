@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package org.optaplanner.core.api.score;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
@@ -154,6 +157,22 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      *         and {@link #compareTo(Object)}.
      */
     boolean isCompatibleArithmeticArgument(Score otherScore);
+
+    /**
+     * A {@link PlanningSolution} is feasible if it has no broken hard constraints
+     * and {@link #isSolutionInitialized()} is true.
+     *
+     * Simple scores ({@link SimpleScore}, {@link SimpleLongScore}, {@link SimpleBigDecimalScore}) are always feasible.
+     *
+     * @return true if the hard score is 0 or higher and the {@link #getInitScore()} is 0.
+     */
+    default boolean isFeasible() {
+        /*
+         * This exception will only be thrown for custom scores that did not implement FeasibilityScore.
+         * TODO Safe to remove this default implementation once FeasibilityScore has been removed in 8.0.
+         */
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Like {@link Object#toString()}, but trims score levels which have a zero weight.

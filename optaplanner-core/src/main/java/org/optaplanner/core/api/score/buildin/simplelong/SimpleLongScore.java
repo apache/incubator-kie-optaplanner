@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,6 +150,11 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
     @Override
     public SimpleLongScore negate() {
         return new SimpleLongScore(-initScore, -score);
+    }
+
+    @Override
+    public boolean isFeasible() {
+        return true;
     }
 
     @Override

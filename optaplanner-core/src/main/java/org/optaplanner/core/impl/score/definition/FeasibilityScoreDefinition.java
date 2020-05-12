@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ public interface FeasibilityScoreDefinition<S extends FeasibilityScore<S>> exten
 
     /**
      * Returns the number of levels of {@link Score#toLevelNumbers()}.
-     * that are used to determine {@link FeasibilityScore#isFeasible()}.
+     * that are used to determine {@link Score#isFeasible()}.
      *
      * @return at least 0, at most {@link #getLevelsSize()}
      */

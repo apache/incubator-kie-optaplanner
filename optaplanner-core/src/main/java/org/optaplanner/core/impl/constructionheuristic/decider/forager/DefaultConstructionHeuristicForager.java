@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.constructionheuristic.decider.forager;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
@@ -81,7 +80,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
                 }
                 break;
             case FIRST_FEASIBLE_SCORE:
-                if (((FeasibilityScore) moveScope.getScore().toInitializedScore()).isFeasible()) {
+                if (moveScope.getScore().toInitializedScore().isFeasible()) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
@@ -90,7 +89,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
                         .getLastCompletedStepScope().getScore();
                 Score lastStepScoreDifference = moveScope.getScore().toInitializedScore()
                         .subtract(lastStepScore2.toInitializedScore());
-                if (((FeasibilityScore) lastStepScoreDifference).isFeasible()) {
+                if (lastStepScoreDifference.isFeasible()) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
