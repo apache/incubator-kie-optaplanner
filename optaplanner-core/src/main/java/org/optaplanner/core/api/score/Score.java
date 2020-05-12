@@ -63,15 +63,22 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * For example {@code -7init/0hard/-8soft} returns {@code 0hard/-8soft}.
      *
      * @return equal score except that {@link #getInitScore()} is {@code 0}.
+     * @deprecated Use {@link #withInitScore(int)} with 0 as the argument.
      */
-    Score_ toInitializedScore();
+    @Deprecated
+    default Score_ toInitializedScore() {
+        if (isSolutionInitialized()) {
+            return (Score_) this;
+        } else {
+            return withInitScore(0);
+        }
+    }
 
     /**
      * For example {@code 0hard/-8soft} with {@code -7} returns {@code -7init/0hard/-8soft}.
      *
      * @param newInitScore always negative (except in statistical calculations), 0 if all planning variables are initialized
      * @return equals score except that {@link #getInitScore()} is set to {@code newInitScore}
-     * @throws IllegalStateException if the original {@link #getInitScore()} is not 0
      */
     Score_ withInitScore(int newInitScore);
 

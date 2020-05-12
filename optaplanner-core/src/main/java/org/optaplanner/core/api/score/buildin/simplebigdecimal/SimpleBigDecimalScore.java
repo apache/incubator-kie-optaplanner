@@ -104,13 +104,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     // ************************************************************************
 
     @Override
-    public SimpleBigDecimalScore toInitializedScore() {
-        return initScore == 0 ? this : new SimpleBigDecimalScore(0, score);
-    }
-
-    @Override
     public SimpleBigDecimalScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new SimpleBigDecimalScore(newInitScore, score);
     }
 

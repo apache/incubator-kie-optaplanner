@@ -102,13 +102,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     // ************************************************************************
 
     @Override
-    public SimpleScore toInitializedScore() {
-        return initScore == 0 ? this : new SimpleScore(0, score);
-    }
-
-    @Override
     public SimpleScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new SimpleScore(newInitScore, score);
     }
 
