@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.api.score.buildin;
 
-import org.optaplanner.core.api.score.Score;
-
 import static org.junit.Assert.assertEquals;
+
+import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractScoreTest {
 

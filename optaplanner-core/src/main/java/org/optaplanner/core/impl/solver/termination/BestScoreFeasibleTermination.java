@@ -20,7 +20,7 @@ import java.util.Arrays;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
-import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
@@ -29,8 +29,7 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     private final int feasibleLevelsSize;
     private final double[] timeGradientWeightFeasibleNumbers;
 
-    public BestScoreFeasibleTermination(FeasibilityScoreDefinition scoreDefinition,
-            double[] timeGradientWeightFeasibleNumbers) {
+    public BestScoreFeasibleTermination(ScoreDefinition scoreDefinition, double[] timeGradientWeightFeasibleNumbers) {
         feasibleLevelsSize = scoreDefinition.getFeasibleLevelsSize();
         this.timeGradientWeightFeasibleNumbers = timeGradientWeightFeasibleNumbers;
         if (timeGradientWeightFeasibleNumbers.length != feasibleLevelsSize - 1) {

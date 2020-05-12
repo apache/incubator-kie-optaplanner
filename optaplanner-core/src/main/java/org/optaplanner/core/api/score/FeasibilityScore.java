@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 /**
  * A {@link Score} that supports {@link #isFeasible()}.
  * Most {@link Score} implementations implement this interface (including {@link HardSoftScore}),
- * except for {@link SimpleScore} variants.
+ * except for {@link SimpleScore} variants, which are always feasible.
  *
  * @see Score
  * @deprecated Moved {@link #isFeasible()} up to {@link Score}.
