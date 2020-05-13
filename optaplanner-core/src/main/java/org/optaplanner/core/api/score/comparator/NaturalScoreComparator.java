@@ -18,13 +18,14 @@ package org.optaplanner.core.api.score.comparator;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
 
 /**
  * Compares by the natural order of {@link Score}s.
  * 
- * @deprecated If you need this, it is trivial to implement.
+ * @deprecated If you need this, it is trivial to implement via {@link Comparator#comparing(Function)}.
  */
 @Deprecated(/* forRemoval = true */)
 public class NaturalScoreComparator implements Comparator<Score>, Serializable {

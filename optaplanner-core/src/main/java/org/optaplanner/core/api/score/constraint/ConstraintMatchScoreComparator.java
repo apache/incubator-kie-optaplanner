@@ -18,11 +18,12 @@ package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.function.Function;
 
 /**
  * Compares by {@link ConstraintMatch}s based on {@link ConstraintMatch#getScore()}.
- * 
- * @deprecated If you need this, it is trivial to implement.
+ *
+ * @deprecated If you need this, it is trivial to implement via {@link Comparator#comparing(Function)}.
  */
 @Deprecated
 public class ConstraintMatchScoreComparator implements Comparator<ConstraintMatch>, Serializable {
