@@ -169,7 +169,8 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints
      * and {@link #isSolutionInitialized()} is true.
      *
-     * Simple scores ({@link SimpleScore}, {@link SimpleLongScore}, {@link SimpleBigDecimalScore}) are always feasible.
+     * Simple scores ({@link SimpleScore}, {@link SimpleLongScore}, {@link SimpleBigDecimalScore}) are always feasible,
+     * if their {@link #getInitScore()} is 0.
      *
      * @return true if the hard score is 0 or higher and the {@link #getInitScore()} is 0.
      */

@@ -157,7 +157,7 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     @Override
     public boolean isFeasible() {
-        return true;
+        return initScore >= 0;
     }
 
     @Override

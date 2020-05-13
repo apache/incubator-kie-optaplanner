@@ -148,7 +148,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     @Override
     public boolean isFeasible() {
-        return true;
+        return initScore >= 0;
     }
 
     @Override

@@ -164,7 +164,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
 
     @Override
     public boolean isFeasible() {
-        return true;
+        return initScore >= 0;
     }
 
     @Override
