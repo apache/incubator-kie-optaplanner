@@ -22,11 +22,9 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftScore>
-        implements ScoreDefinition<HardSoftScore> {
+public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftScore> {
 
     public HardSoftScoreDefinition() {
         super(new String[] { "hard score", "soft score" });

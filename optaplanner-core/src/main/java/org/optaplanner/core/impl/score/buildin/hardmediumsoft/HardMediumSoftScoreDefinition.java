@@ -22,12 +22,10 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardMediumSoftScore>
-        implements ScoreDefinition<HardMediumSoftScore> {
+public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardMediumSoftScore> {
 
     public HardMediumSoftScoreDefinition() {
         super(new String[] { "hard score", "medium score", "soft score" });
