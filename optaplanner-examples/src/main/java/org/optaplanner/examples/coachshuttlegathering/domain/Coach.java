@@ -30,7 +30,6 @@ public class Coach extends Bus {
 
     protected int stopLimit;
     protected BusHub destination;
-    protected Integer passengerQuantityTotal = 0;
 
     public int getStopLimit() {
         return stopLimit;
@@ -40,17 +39,6 @@ public class Coach extends Bus {
         this.stopLimit = stopLimit;
     }
 
-    @CustomShadowVariable(variableListenerClass = CoachPassengerQuantityTotalUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(entityClass = BusStop.class, variableName = "bus")}
-    )
-    public Integer getPassengerQuantityTotal() {
-        return passengerQuantityTotal == null ? 0 : passengerQuantityTotal;
-    }
-
-    public void setPassengerQuantityTotal(final Integer passengerQuantityTotal) {
-        this.passengerQuantityTotal = passengerQuantityTotal;
-    }
-
     public void setDestination(BusHub destination) {
         this.destination = destination;
     }
@@ -58,6 +46,13 @@ public class Coach extends Bus {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    @CustomShadowVariable(variableListenerClass = CoachPassengerQuantityTotalUpdatingVariableListener.class,
+            sources = { @PlanningVariableReference(entityClass = BusStop.class, variableName = "bus") })
+    @Override
+    public Integer getPassengerQuantityTotal() {
+        return super.getPassengerQuantityTotal();
+    }
 
     @Override
     public int getSetupCost() {

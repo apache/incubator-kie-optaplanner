@@ -62,16 +62,16 @@ end
 
 rule "coachCapacity"
     when
-        $coach : Coach($capacity : capacity, $coachPassengerQuantityTotal : passengerQuantityTotal)
+        $coach : Coach($coachCapacity : capacity, $coachPassengerQuantityTotal : passengerQuantityTotal)
         accumulate(
-            $shuttle : Shuttle($destination : destination)
-            and BusStop(this == $destination, bus == $coach)
-            and BusStop(bus == $shuttle, $shuttlePassengerQuantity : passengerQuantity);
-            $shuttlePassengerQuantityTotal : sum($shuttlePassengerQuantity);
-            $coachPassengerQuantityTotal + $shuttlePassengerQuantityTotal > $capacity
+            Shuttle($destination: destination, $shuttlePassengerQuantityTotal: passengerQuantityTotal)
+            and exists BusStop(this == $destination, bus == $coach);
+            $sumShuttlePassengerQuantityTotal : sum($shuttlePassengerQuantityTotal);
+            $coachPassengerQuantityTotal + $sumShuttlePassengerQuantityTotal > $coachCapacity
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, ($capacity - $coachPassengerQuantityTotal - $shuttlePassengerQuantityTotal) * 1000L);
+        scoreHolder.addHardConstraintMatch(kcontext,
+            ($coachCapacity - $coachPassengerQuantityTotal - $sumShuttlePassengerQuantityTotal) * 1000L);
 end
 
 rule "transportTime"

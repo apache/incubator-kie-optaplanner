@@ -17,14 +17,14 @@
 package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
-import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
+import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 
-public final class CoachPassengerQuantityTotalUpdatingVariableListener
+public final class ShuttlePassengerQuantityTotalUpdatingVariableListener
         extends AbstractPassengerQuantityTotalUpdatingVariableListener {
 
     @Override
     protected boolean isBusApplicable(Bus bus) {
-        return bus instanceof Coach;
+        return bus instanceof Shuttle;
     }
 
 }
