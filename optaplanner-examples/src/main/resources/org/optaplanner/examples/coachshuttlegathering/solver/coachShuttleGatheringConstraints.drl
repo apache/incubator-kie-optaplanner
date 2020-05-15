@@ -62,11 +62,7 @@ end
 
 rule "coachCapacity"
     when
-        $coach : Coach($capacity : capacity)
-        accumulate(
-            BusStop(bus == $coach, $coachPassengerQuantity : passengerQuantity);
-            $coachPassengerQuantityTotal : sum($coachPassengerQuantity)
-        )
+        $coach : Coach($capacity : capacity, $coachPassengerQuantityTotal : passengerQuantityTotal)
         accumulate(
             $shuttle : Shuttle($destination : destination)
             and BusStop(this == $destination, bus == $coach)
