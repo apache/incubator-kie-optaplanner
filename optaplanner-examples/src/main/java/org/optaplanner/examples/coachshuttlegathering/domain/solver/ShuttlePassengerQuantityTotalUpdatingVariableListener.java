@@ -16,15 +16,83 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
+import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
+import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 
 public final class ShuttlePassengerQuantityTotalUpdatingVariableListener
-        extends AbstractPassengerQuantityTotalUpdatingVariableListener {
+        implements VariableListener<BusStop> {
+
+    private void increasePassengerQuantityTotal(ScoreDirector scoreDirector, BusStop busStop) {
+        if (!(busStop.getBus() instanceof Shuttle) || busStop.getPassengerQuantity() == 0) {
+            return;
+        }
+        Bus bus = busStop.getBus();
+        scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
+        bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + busStop.getPassengerQuantity());
+        scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
+        StopOrHub destination = bus.getDestination();
+        if (destination instanceof BusStop) {
+            Bus destinationBus = ((BusStop) destination).getBus();
+            if (destinationBus instanceof Coach) {
+                scoreDirector.beforeVariableChanged(destinationBus, "passengerQuantityTotal");
+                destinationBus
+                        .setPassengerQuantityTotal(destinationBus.getPassengerQuantityTotal() + busStop.getPassengerQuantity());
+                scoreDirector.afterVariableChanged(destinationBus, "passengerQuantityTotal");
+            }
+        }
+    }
+
+    private void decreasePassengerQuantityTotal(ScoreDirector scoreDirector, BusStop busStop) {
+        if (!(busStop.getBus() instanceof Shuttle) || busStop.getPassengerQuantity() == 0) {
+            return;
+        }
+        Bus bus = busStop.getBus();
+        scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
+        bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() - busStop.getPassengerQuantity());
+        scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
+        StopOrHub destination = bus.getDestination();
+        if (destination instanceof BusStop) {
+            Bus destinationBus = ((BusStop) destination).getBus();
+            if (destinationBus instanceof Coach) {
+                scoreDirector.beforeVariableChanged(destinationBus, "passengerQuantityTotal");
+                destinationBus
+                        .setPassengerQuantityTotal(destinationBus.getPassengerQuantityTotal() - busStop.getPassengerQuantity());
+                scoreDirector.afterVariableChanged(destinationBus, "passengerQuantityTotal");
+            }
+        }
+    }
 
     @Override
-    protected boolean isBusApplicable(Bus bus) {
-        return bus instanceof Shuttle;
+    public void beforeEntityAdded(ScoreDirector scoreDirector, BusStop busStop) {
+    }
+
+    @Override
+    public void afterEntityAdded(ScoreDirector scoreDirector, BusStop busStop) {
+        increasePassengerQuantityTotal(scoreDirector, busStop);
+    }
+
+    @Override
+    public void beforeVariableChanged(ScoreDirector scoreDirector, BusStop busStop) {
+        decreasePassengerQuantityTotal(scoreDirector, busStop);
+    }
+
+    @Override
+    public void afterVariableChanged(ScoreDirector scoreDirector, BusStop busStop) {
+        increasePassengerQuantityTotal(scoreDirector, busStop);
+    }
+
+    @Override
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, BusStop busStop) {
+    }
+
+    @Override
+    public void afterEntityRemoved(ScoreDirector scoreDirector, BusStop busStop) {
+        decreasePassengerQuantityTotal(scoreDirector, busStop);
     }
 
 }

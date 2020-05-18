@@ -16,15 +16,59 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 
-public final class CoachPassengerQuantityTotalUpdatingVariableListener
-        extends AbstractPassengerQuantityTotalUpdatingVariableListener {
+public final class CoachPassengerQuantityTotalUpdatingVariableListener implements VariableListener<BusStop> {
 
-    @Override
-    protected boolean isBusApplicable(Bus bus) {
-        return bus instanceof Coach;
+    private void increasePassengerQuantityTotal(ScoreDirector scoreDirector, BusStop busStop) {
+        if (!(busStop.getBus() instanceof Coach) || busStop.getPassengerQuantity() == 0) {
+            return;
+        }
+        Bus bus = busStop.getBus();
+        scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
+        bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + busStop.getPassengerQuantity());
+        scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
     }
 
+    private void decreasePassengerQuantityTotal(ScoreDirector scoreDirector, BusStop busStop) {
+        if (!(busStop.getBus() instanceof Coach) || busStop.getPassengerQuantity() == 0) {
+            return;
+        }
+        Bus bus = busStop.getBus();
+        scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
+        bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() - busStop.getPassengerQuantity());
+        scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
+    }
+
+    @Override
+    public void beforeEntityAdded(ScoreDirector scoreDirector, BusStop busStop) {
+    }
+
+    @Override
+    public void afterEntityAdded(ScoreDirector scoreDirector, BusStop busStop) {
+        increasePassengerQuantityTotal(scoreDirector, busStop);
+    }
+
+    @Override
+    public void beforeVariableChanged(ScoreDirector scoreDirector, BusStop busStop) {
+        decreasePassengerQuantityTotal(scoreDirector, busStop);
+    }
+
+    @Override
+    public void afterVariableChanged(ScoreDirector scoreDirector, BusStop busStop) {
+        increasePassengerQuantityTotal(scoreDirector, busStop);
+    }
+
+    @Override
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, BusStop busStop) {
+    }
+
+    @Override
+    public void afterEntityRemoved(ScoreDirector scoreDirector, BusStop busStop) {
+        decreasePassengerQuantityTotal(scoreDirector, busStop);
+    }
 }
