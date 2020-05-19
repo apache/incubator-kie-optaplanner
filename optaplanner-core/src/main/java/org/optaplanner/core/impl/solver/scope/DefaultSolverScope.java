@@ -172,8 +172,8 @@ public class DefaultSolverScope<Solution_> {
         return Duration.ofNanos(bestSolutionTimeNanos).toMillis();
     }
 
-    public void setBestSolutionTimeNanos(Long bestSolutionTimeNanos) {
-        this.bestSolutionTimeNanos = bestSolutionTimeNanos;
+    public void setBestSolutionTimeMillis(Long bestSolutionTimeMillis) {
+        this.bestSolutionTimeNanos = Duration.ofMillis(bestSolutionTimeMillis).toNanos();
     }
 
     // ************************************************************************
