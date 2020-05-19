@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         InnerScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
         Score score = scoreDirector.calculateScore();
         solverScope.setBestScore(score);
-        solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
+        solverScope.setBestSolutionTimeNanos(System.currentTimeMillis());
         // The original bestSolution might be the final bestSolution and should have an accurate Score
         solverScope.getSolutionDescriptor().setScore(solverScope.getBestSolution(), score);
         if (score.isSolutionInitialized()) {
@@ -133,7 +133,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         }
         solverScope.setBestSolution(bestSolution);
         solverScope.setBestScore(bestScore);
-        solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
+        solverScope.setBestSolutionTimeNanos(System.currentTimeMillis());
         solverEventSupport.fireBestSolutionChanged(solverScope, bestSolution);
     }
 

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -125,17 +126,17 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public long getTimeMillisSpent() {
-        Long startingSystemTimeMillis = solverScope.getStartingSystemTimeMillis();
-        if (startingSystemTimeMillis == null) {
+        Long startingSystemTimeNanos = solverScope.getStartingSystemTimeNanos();
+        if (startingSystemTimeNanos == null) {
             // The solver hasn't started yet
             return 0L;
         }
-        Long endingSystemTimeMillis = solverScope.getEndingSystemTimeMillis();
-        if (endingSystemTimeMillis == null) {
+        Long endingSystemTimeNanos = solverScope.getEndingSystemTimeNanos();
+        if (endingSystemTimeNanos == null) {
             // The solver hasn't ended yet
-            endingSystemTimeMillis = System.currentTimeMillis();
+            endingSystemTimeNanos = System.nanoTime();
         }
-        return endingSystemTimeMillis - startingSystemTimeMillis;
+        return Duration.ofNanos(endingSystemTimeNanos - startingSystemTimeNanos).toMillis();
     }
 
     @Override
