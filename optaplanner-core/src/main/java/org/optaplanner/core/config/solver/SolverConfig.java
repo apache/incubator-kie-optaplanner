@@ -235,7 +235,11 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     protected Integer moveThreadBufferSize = null;
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
 
+    /**
+     * @deprecated This functionality will be removed in the next major version of OptaPlanner.
+     */
     @XStreamAlias("scanAnnotatedClasses")
+    @Deprecated(/* forRemoval = true */)
     protected ScanAnnotatedClassesConfig scanAnnotatedClassesConfig = null;
     protected Class<?> solutionClass = null;
     @XStreamImplicit(itemFieldName = "entityClass")
