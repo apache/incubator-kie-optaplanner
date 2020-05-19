@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,6 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
@@ -112,6 +111,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> incrementalScoreCalculatorCustomProperties = null;
 
+    @Deprecated(/* forRemoval = true */)
     protected String ksessionName = null;
     @XStreamOmitField
     @Deprecated // TODO remove in 8.0
@@ -262,32 +262,36 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
     }
 
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated(/* forRemoval = true */)
     public String getKsessionName() {
         return ksessionName;
     }
 
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated(/* forRemoval = true */)
     public void setKsessionName(String ksessionName) {
         this.ksessionName = ksessionName;
     }
 
     /**
      * @return sometimes null
-     * @deprecated Use {@link #setKsessionName(String)} and
-     *             {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in
-     *             8.0.
+     * @deprecated for removal.
      */
-    @Deprecated
+    @Deprecated(/* forRemoval = true */)
     public KieBase getKieBase() {
         return kieBase;
     }
 
     /**
      * @param kieBase sometimes null
-     * @deprecated Use {@link #setKsessionName(String)} and
-     *             {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in
-     *             8.0.
+     * @deprecated for removal.
      */
-    @Deprecated
+    @Deprecated(/* forRemoval = true */)
     public void setKieBase(KieBase kieBase) {
         this.kieBase = kieBase;
     }
@@ -773,10 +777,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
         incrementalScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(
                 incrementalScoreCalculatorCustomProperties, inheritedConfig.getIncrementalScoreCalculatorCustomProperties());
-        ksessionName = ConfigUtils.inheritOverwritableProperty(
-                ksessionName, inheritedConfig.getKsessionName());
-        kieBase = ConfigUtils.inheritOverwritableProperty(
-                kieBase, inheritedConfig.getKieBase());
+        ksessionName = ConfigUtils.inheritOverwritableProperty(ksessionName, inheritedConfig.getKsessionName());
+        kieBase = ConfigUtils.inheritOverwritableProperty(kieBase, inheritedConfig.getKieBase());
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(

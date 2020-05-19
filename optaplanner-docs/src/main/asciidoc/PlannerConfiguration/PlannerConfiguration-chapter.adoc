@@ -55,22 +55,6 @@ In those cases, provide the `ClassLoader` of your classes as a parameter:
 ----
 ====
 
-[NOTE]
-====
-When using Workbench or Execution Server or to take advantage of Drools's `KieContainer` features, provide the `KieContainer` as a parameter:
-
-[source,java,options="nowrap"]
-----
-       KieServices kieServices = KieServices.Factory.get();
-       KieContainer kieContainer = kieServices.newKieContainer(
-               kieServices.newReleaseId("org.nqueens", "nqueens", "1.0.0"));
-       SolverFactory<NQueens> solverFactory = SolverFactory.createFromKieContainerXmlResource(
-               kieContainer, ".../nqueensSolverConfig.xml");
-----
-
-Also use <<droolsScoreCalculationKsessionName,a ksessionName in the solver configuration>>.
-====
-
 Both a `Solver` and a `SolverFactory` have a generic type called ``Solution_``, which is the class representing a <<planningProblemAndPlanningSolution,planning problem and solution>>.
 
 A solver configuration XML file looks like this:
