@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -105,7 +106,9 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      *
      * @return null if the {@link PlanningSolution} is still uninitialized
+     * @deprecated in favor of {@link ScoreManager#explainScore(Object)}
      */
+    @Deprecated(/* forRemoval = true */)
     Score getBestScore();
 
     /**
@@ -123,7 +126,9 @@ public interface Solver<Solution_> {
      *
      * @return null if {@link #getBestScore()} returns null
      * @see ScoreDirector#explainScore()
+     * @deprecated in favor of {@link ScoreManager#explainScore(Object)}
      */
+    @Deprecated(/* forRemoval = true */)
     String explainBestScore();
 
     /**

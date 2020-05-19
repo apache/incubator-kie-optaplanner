@@ -1189,7 +1189,7 @@ but only use that method for diagnostic purposes:
 
 [source,java,options="nowrap"]
 ----
-System.out.println(solver.explainBestScore());
+System.out.println(scoreManager.explainBestScore());
 ----
 
 For example in conference scheduling, this prints that talk `S51` is responsible
