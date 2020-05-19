@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,11 @@ import org.reflections.util.FilterBuilder;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
+/**
+ * @deprecated This functionality will be removed in the next major version of OptaPlanner.
+ */
 @XStreamAlias("scanAnnotatedClasses")
+@Deprecated(/* forRemoval = true */)
 public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClassesConfig> {
 
     @XStreamImplicit(itemFieldName = "packageInclude")
