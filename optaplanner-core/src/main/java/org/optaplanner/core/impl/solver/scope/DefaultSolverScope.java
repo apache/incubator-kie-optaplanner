@@ -48,8 +48,8 @@ public class DefaultSolverScope<Solution_> {
      */
     protected Semaphore runnableThreadSemaphore = null;
 
-    protected volatile Long startingSystemTimeNanos;
-    protected volatile Long endingSystemTimeNanos;
+    private volatile Long startingSystemTimeNanos;
+    private volatile Long endingSystemTimeNanos;
     protected long childThreadsScoreCalculationCount = 0;
 
     protected Score startingInitializedScore;
