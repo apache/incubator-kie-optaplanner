@@ -111,6 +111,9 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> incrementalScoreCalculatorCustomProperties = null;
 
+    /**
+     * @deprecated for removal
+     */
     @Deprecated(/* forRemoval = true */)
     protected String ksessionName = null;
     @XStreamOmitField
