@@ -94,7 +94,9 @@ public interface Solver<Solution_> {
      *
      * @return never null (unless {@link #solve(Object)} hasn't been called yet),
      *         but it can return the uninitialized {@link PlanningSolution} with a {@link Score} null.
+     * @deprecated in favor of {@link SolverJob#getFinalBestSolution()}.
      */
+    @Deprecated
     Solution_ getBestSolution();
 
     /**
