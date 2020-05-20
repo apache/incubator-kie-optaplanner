@@ -111,10 +111,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> incrementalScoreCalculatorCustomProperties = null;
 
-    /**
-     * @deprecated for removal
-     */
-    @Deprecated(/* forRemoval = true */)
+    // TODO remove in 8.0
     protected String ksessionName = null;
     @XStreamOmitField
     @Deprecated // TODO remove in 8.0
@@ -265,36 +262,32 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
     }
 
-    /**
-     * @deprecated for removal.
-     */
-    @Deprecated(/* forRemoval = true */)
     public String getKsessionName() {
         return ksessionName;
     }
 
-    /**
-     * @deprecated for removal.
-     */
-    @Deprecated(/* forRemoval = true */)
     public void setKsessionName(String ksessionName) {
         this.ksessionName = ksessionName;
     }
 
     /**
      * @return sometimes null
-     * @deprecated for removal.
+     * @deprecated Use {@link #setKsessionName(String)} and
+     *             {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in
+     *             8.0.
      */
-    @Deprecated(/* forRemoval = true */)
+    @Deprecated
     public KieBase getKieBase() {
         return kieBase;
     }
 
     /**
      * @param kieBase sometimes null
-     * @deprecated for removal.
+     * @deprecated Use {@link #setKsessionName(String)} and
+     *             {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in
+     *             8.0.
      */
-    @Deprecated(/* forRemoval = true */)
+    @Deprecated
     public void setKieBase(KieBase kieBase) {
         this.kieBase = kieBase;
     }
@@ -780,8 +773,10 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
         incrementalScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(
                 incrementalScoreCalculatorCustomProperties, inheritedConfig.getIncrementalScoreCalculatorCustomProperties());
-        ksessionName = ConfigUtils.inheritOverwritableProperty(ksessionName, inheritedConfig.getKsessionName());
-        kieBase = ConfigUtils.inheritOverwritableProperty(kieBase, inheritedConfig.getKieBase());
+        ksessionName = ConfigUtils.inheritOverwritableProperty(
+                ksessionName, inheritedConfig.getKsessionName());
+        kieBase = ConfigUtils.inheritOverwritableProperty(
+                kieBase, inheritedConfig.getKieBase());
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
