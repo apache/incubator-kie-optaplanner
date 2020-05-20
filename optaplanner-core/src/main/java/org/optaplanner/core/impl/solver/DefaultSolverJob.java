@@ -163,7 +163,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     }
 
     @Override
-    public Duration getTimeSpent() {
+    public Duration getSolvingDuration() {
         DefaultSolverScope<Solution_> solverScope = solver.getSolverScope();
         Long startingSystemTimeMillis = solverScope.getStartingSystemTimeMillis();
         if (startingSystemTimeMillis == null) {

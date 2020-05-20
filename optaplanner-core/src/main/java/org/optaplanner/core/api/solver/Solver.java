@@ -145,7 +145,7 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      *
      * @return the amount of milliseconds spent solving since the last (re)start, at least 0
-     * @deprecated in favor of {@link SolverJob#getTimeSpent()}.
+     * @deprecated in favor of {@link SolverJob#getSolvingDuration()}.
      */
     @Deprecated(/* forRemoval = true */)
     long getTimeMillisSpent();

@@ -81,6 +81,6 @@ public interface SolverJob<Solution_, ProblemId_> {
      *
      * @return the {@link Duration} spent solving since the last (re)start, at least 0
      */
-    Duration getTimeSpent();
+    Duration getSolvingDuration();
 
 }
