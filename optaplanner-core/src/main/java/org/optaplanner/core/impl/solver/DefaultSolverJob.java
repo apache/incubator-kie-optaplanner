@@ -64,8 +64,8 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         this.solverManager = solverManager;
         this.problemId = problemId;
         if (!(solver instanceof DefaultSolver)) {
-            throw new IllegalStateException(
-                    "Impossile state: solver is not instance of " + DefaultSolver.class.getSimpleName() + ".");
+            throw new IllegalStateException("Impossible state: solver is not instance of " +
+                    DefaultSolver.class.getSimpleName() + ".");
         }
         this.solver = (DefaultSolver<Solution_>) solver;
         this.problemFinder = problemFinder;

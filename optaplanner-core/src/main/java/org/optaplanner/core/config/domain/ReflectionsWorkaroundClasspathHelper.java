@@ -39,7 +39,7 @@ import com.google.common.collect.Sets;
  * Workaround for bug in {@link ClasspathHelper}.
  * This workaround expires once https://github.com/ronmamo/reflections/pull/118 is fixed.
  * 
- * @deprecated for removal.
+ * @deprecated in favor of Quarkus extension or Spring Boot starter.
  */
 @Deprecated(/* forRemoval = true */)
 public abstract class ReflectionsWorkaroundClasspathHelper {

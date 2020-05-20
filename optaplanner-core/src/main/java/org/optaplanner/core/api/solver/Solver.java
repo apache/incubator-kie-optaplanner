@@ -109,7 +109,7 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      *
      * @return null if the {@link PlanningSolution} is still uninitialized
-     * @deprecated in favor of {@link ScoreManager#explainScore(Object)}
+     * @deprecated in favor of {@link ScoreManager#getScore(Object)}
      */
     @Deprecated(/* forRemoval = true */)
     Score getBestScore();

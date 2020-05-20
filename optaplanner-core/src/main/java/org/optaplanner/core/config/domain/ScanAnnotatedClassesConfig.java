@@ -38,7 +38,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
- * @deprecated This functionality will be removed in the next major version of OptaPlanner.
+ * @deprecated in favor of the Quarkus extension or Spring Boot starter which handle annotation scanning more
+ *             efficiently.
  */
 @XStreamAlias("scanAnnotatedClasses")
 @Deprecated(/* forRemoval = true */)
