@@ -70,6 +70,7 @@
     <module>optaplanner-benchmark</module>
     <module>optaplanner-test</module>
     <module>optaplanner-examples</module>
+    <module>optaplanner-quickstarts</module>
   </modules>
 
   <dependencyManagement>
