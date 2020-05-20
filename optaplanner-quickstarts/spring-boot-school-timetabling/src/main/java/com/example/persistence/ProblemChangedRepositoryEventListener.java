@@ -13,6 +13,9 @@ import com.example.domain.Room;
 import com.example.domain.Timeslot;
 import com.example.solver.TimeTableController;
 
+/**
+ * This class ensures that during solving, no CRUD operations are allowed.
+ */
 @Component
 @RepositoryEventHandler
 public class ProblemChangedRepositoryEventListener {

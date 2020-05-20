@@ -1,21 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.optaplanner.quickstarts</groupId>
     <artifactId>optaplanner-spring-boot-school-timetabling-quickstart</artifactId>
-    <version>7.38.0-SNAPSHOT</version>
-    <name>OptaPlanner Spring Boot school timetabling quick start</name>
+    <version>0.1.0-SNAPSHOT</version>
 
     <properties>
-        <version.org.optaplanner>7.38.0-SNAPSHOT</version.org.optaplanner>
-        <version.org.springframework.boot>2.2.6.RELEASE</version.org.springframework.boot>
+        <optaplanner.version>7.38.0-SNAPSHOT</optaplanner.version>
+        <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
 
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.optaplanner</groupId>
+                <artifactId>optaplanner-bom</artifactId>
+                <version>${optaplanner.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- UI -->
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>webjars-locator</artifactId>
+                <version>0.37</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>bootstrap</artifactId>
+                <version>4.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>font-awesome</artifactId>
+                <version>5.11.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>momentjs</artifactId>
+                <version>2.24.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -75,53 +115,12 @@
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${version.org.springframework.boot}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.optaplanner</groupId>
-                <artifactId>optaplanner-bom</artifactId>
-                <version>${version.org.optaplanner}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- UI -->
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>webjars-locator</artifactId>
-                <version>0.37</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>bootstrap</artifactId>
-                <version>4.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>font-awesome</artifactId>
-                <version>5.11.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>momentjs</artifactId>
-                <version>2.24.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${version.org.springframework.boot}</version>
+                <version>${spring-boot.version}</version>
             </plugin>
         </plugins>
     </build>

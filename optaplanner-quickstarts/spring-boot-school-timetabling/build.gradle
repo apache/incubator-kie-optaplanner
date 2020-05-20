@@ -4,14 +4,15 @@ plugins {
     id "java"
 }
 
-group = "org.optaplanner.quickstarts"
-version = "7.38.0-SNAPSHOT"
-sourceCompatibility = "1.8"
+def optaplannerVersion = "7.38.0-SNAPSHOT"
 
-optaplannerVersion = "7.38.0-SNAPSHOT"
+group = "org.optaplanner.quickstarts"
+version = "0.1.0-SNAPSHOT"
+sourceCompatibility = "1.8"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
