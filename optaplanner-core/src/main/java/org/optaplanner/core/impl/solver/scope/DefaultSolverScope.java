@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.solver.scope;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
@@ -48,15 +47,15 @@ public class DefaultSolverScope<Solution_> {
      */
     protected Semaphore runnableThreadSemaphore = null;
 
-    private volatile Long startingSystemTimeNanos;
-    private volatile Long endingSystemTimeNanos;
+    protected volatile Long startingSystemTimeMillis;
+    protected volatile Long endingSystemTimeMillis;
     protected long childThreadsScoreCalculationCount = 0;
 
     protected Score startingInitializedScore;
 
     protected volatile Solution_ bestSolution;
     protected volatile Score bestScore;
-    private Long bestSolutionTimeNanos;
+    protected Long bestSolutionTimeMillis;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -90,12 +89,12 @@ public class DefaultSolverScope<Solution_> {
         this.runnableThreadSemaphore = runnableThreadSemaphore;
     }
 
-    public Long getStartingSystemTimeNanos() {
-        return startingSystemTimeNanos;
+    public Long getStartingSystemTimeMillis() {
+        return startingSystemTimeMillis;
     }
 
-    public Long getEndingSystemTimeNanos() {
-        return endingSystemTimeNanos;
+    public Long getEndingSystemTimeMillis() {
+        return endingSystemTimeMillis;
     }
 
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
@@ -169,11 +168,11 @@ public class DefaultSolverScope<Solution_> {
     }
 
     public Long getBestSolutionTimeMillis() {
-        return Duration.ofNanos(bestSolutionTimeNanos).toMillis();
+        return bestSolutionTimeMillis;
     }
 
     public void setBestSolutionTimeMillis(Long bestSolutionTimeMillis) {
-        this.bestSolutionTimeNanos = Duration.ofMillis(bestSolutionTimeMillis).toNanos();
+        this.bestSolutionTimeMillis = bestSolutionTimeMillis;
     }
 
     // ************************************************************************
@@ -181,16 +180,16 @@ public class DefaultSolverScope<Solution_> {
     // ************************************************************************
 
     public void startingNow() {
-        startingSystemTimeNanos = System.nanoTime();
-        endingSystemTimeNanos = null;
+        startingSystemTimeMillis = System.currentTimeMillis();
+        endingSystemTimeMillis = null;
     }
 
     public Long getBestSolutionTimeMillisSpent() {
-        return Duration.ofNanos(bestSolutionTimeNanos - startingSystemTimeNanos).toMillis();
+        return bestSolutionTimeMillis - startingSystemTimeMillis;
     }
 
     public void endingNow() {
-        endingSystemTimeNanos = System.nanoTime();
+        endingSystemTimeMillis = System.currentTimeMillis();
     }
 
     public boolean isBestSolutionInitialized() {
@@ -198,12 +197,12 @@ public class DefaultSolverScope<Solution_> {
     }
 
     public long calculateTimeMillisSpentUpToNow() {
-        long now = System.nanoTime();
-        return Duration.ofNanos(now - startingSystemTimeNanos).toMillis();
+        long now = System.currentTimeMillis();
+        return now - startingSystemTimeMillis;
     }
 
     public long getTimeMillisSpent() {
-        return Duration.ofNanos(endingSystemTimeNanos - startingSystemTimeNanos).toMillis();
+        return endingSystemTimeMillis - startingSystemTimeMillis;
     }
 
     /**
@@ -227,12 +226,12 @@ public class DefaultSolverScope<Solution_> {
         // Experiments show that this trick to attain reproducibility doesn't break uniform distribution
         childThreadSolverScope.workingRandom = new Random(workingRandom.nextLong());
         childThreadSolverScope.scoreDirector = scoreDirector.createChildThreadScoreDirector(childThreadType);
-        childThreadSolverScope.startingSystemTimeNanos = startingSystemTimeNanos;
-        childThreadSolverScope.endingSystemTimeNanos = null;
+        childThreadSolverScope.startingSystemTimeMillis = startingSystemTimeMillis;
+        childThreadSolverScope.endingSystemTimeMillis = null;
         childThreadSolverScope.startingInitializedScore = null;
         childThreadSolverScope.bestSolution = null;
         childThreadSolverScope.bestScore = null;
-        childThreadSolverScope.bestSolutionTimeNanos = null;
+        childThreadSolverScope.bestSolutionTimeMillis = null;
         return childThreadSolverScope;
     }
 

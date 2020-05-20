@@ -165,16 +165,16 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     @Override
     public Duration getTimeSpent() {
         DefaultSolverScope<Solution_> solverScope = solver.getSolverScope();
-        Long startingSystemTimeNanos = solverScope.getStartingSystemTimeNanos();
-        if (startingSystemTimeNanos == null) {
+        Long startingSystemTimeMillis = solverScope.getStartingSystemTimeMillis();
+        if (startingSystemTimeMillis == null) {
             // The solver hasn't started yet
             return Duration.ZERO;
         }
-        Long endingSystemTimeNanos = solverScope.getEndingSystemTimeNanos();
-        if (endingSystemTimeNanos == null) {
+        Long endingSystemTimeMillis = solverScope.getEndingSystemTimeMillis();
+        if (endingSystemTimeMillis == null) {
             // The solver hasn't ended yet
-            endingSystemTimeNanos = System.nanoTime();
+            endingSystemTimeMillis = System.currentTimeMillis();
         }
-        return Duration.ofNanos(endingSystemTimeNanos - startingSystemTimeNanos);
+        return Duration.ofMillis(endingSystemTimeMillis - startingSystemTimeMillis);
     }
 }
