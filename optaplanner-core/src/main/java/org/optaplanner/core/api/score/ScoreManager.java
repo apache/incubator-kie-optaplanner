@@ -61,19 +61,7 @@ public interface ScoreManager<Solution_> {
      *
      * @param solution never null
      */
-    void updateScore(Solution_ solution);
-
-    /**
-     * Returns the {@link Score} of the solution.
-     * <p>
-     * This is useful for generic code, which doesn't know the type of the {@link PlanningSolution} to retrieve the
-     * {@link Score} from the solution easily.
-     * <p>
-     * This method is thread-safe.
-     *
-     * @return null if the {@link PlanningSolution} is still uninitialized
-     */
-    Score getScore(Solution_ solution);
+    Score updateScore(Solution_ solution);
 
     /**
      * Returns a diagnostic text that explains the solution through the {@link ConstraintMatch} API to identify which
@@ -87,7 +75,7 @@ public interface ScoreManager<Solution_> {
      * <p>
      * This method is thread-safe.
      *
-     * @return null if {@link #getScore(Object)} returns null with the same solution
+     * @return null if {@link #updateScore(Object)} returns null with the same solution
      * @see ScoreDirector#explainScore()
      */
     String explainScore(Solution_ solution);

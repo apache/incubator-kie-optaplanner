@@ -38,12 +38,7 @@ public class DefaultScoreManager<Solution_> implements ScoreManager<Solution_> {
     }
 
     @Override
-    public void updateScore(Solution_ solution) {
-        getScore(solution);
-    }
-
-    @Override
-    public Score getScore(Solution_ solution) {
+    public Score updateScore(Solution_ solution) {
         try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
             return scoreDirector.calculateScore();
