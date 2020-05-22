@@ -121,11 +121,12 @@
       <id>notReleasedProfile</id>
       <activation>
         <property>
+          <!-- Build the quickstarts by default during development to see failures early -->
+          <!-- But don't release the quickstart artifacts in a Maven repo such as Maven Central -->
           <name>!release</name>
         </property>
       </activation>
       <modules>
-        <!-- The quickstart artifacts must not end up on a Maven repo such as Maven Central -->
         <module>optaplanner-quickstarts</module>
       </modules>
     </profile>
