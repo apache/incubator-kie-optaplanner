@@ -6,7 +6,7 @@ plugins {
 
 def optaplannerVersion = "7.38.0-SNAPSHOT"
 
-group = "org.optaplanner.quickstarts"
+group = "com.example"
 version = "0.1.0-SNAPSHOT"
 sourceCompatibility = "1.8"
 

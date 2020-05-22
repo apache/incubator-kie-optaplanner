@@ -5,7 +5,7 @@ plugins {
 
 def optaplannerVersion = "7.38.0-SNAPSHOT"
 
-group = "org.optaplanner.quickstarts"
+group = "org.acme"
 version = "0.1.0-SNAPSHOT"
 
 repositories {
