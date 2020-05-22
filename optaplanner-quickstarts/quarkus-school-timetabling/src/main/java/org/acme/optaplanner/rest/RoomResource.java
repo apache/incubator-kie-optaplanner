@@ -28,7 +28,6 @@ public class RoomResource {
         return Room.listAll(Sort.by("name").and("id"));
     }
 
-    // To try:  curl -d '{"name":"Room Z"}' -H "Content-Type: application/json" -X POST http://localhost:8080/rooms
     @POST
     public Response add(Room room) {
         Room.persist(room);
