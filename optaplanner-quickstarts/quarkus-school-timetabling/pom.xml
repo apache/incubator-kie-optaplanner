@@ -11,12 +11,12 @@
     <optaplanner.version>7.38.0-SNAPSHOT</optaplanner.version>
     <quarkus.version>1.4.2.Final</quarkus.version>
 
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
-    <surefire-plugin.version>2.22.1</surefire-plugin.version>
-    <docker-plugin.version>0.28.0</docker-plugin.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <surefire-plugin.version>2.22.2</surefire-plugin.version>
+    <docker-plugin.version>0.28.0</docker-plugin.version>
   </properties>
 
   <dependencyManagement>
