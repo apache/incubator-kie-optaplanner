@@ -34,7 +34,7 @@ newVersion=$1
 for file in `ls */pom.xml`; do
   echo Updating $file to $newVersion...
   sed -i "s/<optaplanner\.version>.*<\/optaplanner\.version>/<optaplanner.version>$newVersion<\/optaplanner.version>/g" $file
-  if [ `grep $newVersion $file | wc -l` != 1 ]; then
+  if [ `grep "<optaplanner.version>$newVersion</optaplanner.version>" $file | wc -l` != 1 ]; then
     echo "ERROR updating $file"
     exit 1
   fi
@@ -42,7 +42,7 @@ done
 for file in `ls */build.gradle`; do
   echo Updating $file to $newVersion...
   sed -i "s/def optaplannerVersion = \".*\"/def optaplannerVersion = \"$newVersion\"/g" $file
-  if [ `grep $newVersion $file | wc -l` != 1 ]; then
+  if [ `grep "def optaplannerVersion = \"$newVersion\"" $file | wc -l` != 1 ]; then
     echo "ERROR updating $file"
     exit 1
   fi
