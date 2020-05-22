@@ -24,7 +24,6 @@ if [ $# != 1 ] && [ $# != 2 ]; then
     echo "  $0 newVersion releaseType"
     echo "For example:"
     echo "  $0 7.5.0.Final community"
-    echo "  $0 7.5.0.20171120-prod productized"
     echo
     exit 1
 fi
