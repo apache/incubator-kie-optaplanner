@@ -42,6 +42,7 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
@@ -88,6 +89,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
 
     private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryConfig.class);
+    private static final String GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME = "optaplanner.drools.generateTestOnError";
 
     @Deprecated
     protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
@@ -122,6 +124,10 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected List<File> scoreDrlFileList = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated(/* forRemoval = true */)
     protected Boolean generateDroolsTestOnError = null;
 
     protected String initializingScoreTrend = null;
@@ -332,11 +338,24 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
     }
 
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated(/* forRemoval = true */)
     public Boolean isGenerateDroolsTestOnError() {
         return generateDroolsTestOnError;
     }
 
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated(/* forRemoval = true */)
     public void setGenerateDroolsTestOnError(Boolean generateDroolsTestOnError) {
+        if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
+            System.setProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "true");
+        } else {
+            System.clearProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME);
+        }
         this.generateDroolsTestOnError = generateDroolsTestOnError;
     }
 
@@ -624,6 +643,9 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     protected <Solution_> DroolsScoreDirectorFactory<Solution_> buildDroolsScoreDirectorFactory(
             SolverConfigContext configContext, ClassLoader classLoader, SolutionDescriptor<Solution_> solutionDescriptor) {
+        // TODO Remove the field in 8.0, keep the property.
+        boolean generateDroolsTestOnError = BooleanUtils.isTrue(this.generateDroolsTestOnError)
+                || Boolean.parseBoolean(System.getProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "false"));
         KieContainer kieContainer = configContext.getKieContainer();
         if (kieContainer != null || ksessionName != null) {
             if (kieContainer == null) {
@@ -647,7 +669,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                         + ") is not null, then the kieBaseConfigurationProperties ("
                         + kieBaseConfigurationProperties + ") must be null.");
             }
-            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
+            if (generateDroolsTestOnError) {
                 return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieContainer, ksessionName);
             } else {
                 return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieContainer, ksessionName);
@@ -661,7 +683,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 throw new IllegalArgumentException("If kieBase is not null, then the kieBaseConfigurationProperties ("
                         + kieBaseConfigurationProperties + ") must be null.");
             }
-            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
+            if (generateDroolsTestOnError) {
                 return new TestGenLegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, null, null);
             } else {
                 return new LegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
@@ -713,8 +735,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             kieBuilder.buildAll();
             Results results = kieBuilder.getResults();
             if (results.hasMessages(Message.Level.ERROR)) {
-                throw new IllegalStateException("There are errors in a score DRL:\n"
-                        + results.toString());
+                throw new IllegalStateException("There are errors in a score DRL:\n" + results);
             } else if (results.hasMessages(Message.Level.WARNING)) {
                 logger.warn("There are warning in a score DRL:\n{}", results);
             }
@@ -727,7 +748,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 }
             }
             KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
-            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
+            if (generateDroolsTestOnError) {
                 return new TestGenLegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, scoreDrlList,
                         scoreDrlFileList);
             } else {
@@ -740,7 +761,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                                 + ") is not null, the scoreDrlList (" + scoreDrlList
                                 + ") or the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
             }
-            if (generateDroolsTestOnError != null) {
+            if (this.generateDroolsTestOnError != null) {
                 throw new IllegalArgumentException(
                         "If generateDroolsTestOnError (" + generateDroolsTestOnError
                                 + ") is not null, the scoreDrlList (" + scoreDrlList
