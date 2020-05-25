@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -647,6 +647,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         return valueSelector;
     }
 
+    @SuppressWarnings("deprecation")
     private ValueSelector applyReinitializeVariableFiltering(HeuristicConfigPolicy configPolicy,
             ValueSelector valueSelector) {
         if (configPolicy.isReinitializeVariableFilterEnabled()) {
