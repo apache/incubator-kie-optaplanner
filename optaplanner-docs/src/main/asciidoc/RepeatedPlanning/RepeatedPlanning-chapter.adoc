@@ -256,11 +256,12 @@ public class ShiftAssignment {
 }
 ----
 
-
 [[nonvolatileReplanning]]
 === Nonvolatile replanning to minimize disruption (semi-movable planning entities)
 
-Replanning an existing plan can be very disruptive.If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable.In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.This is usually implemented by taxing all planning entities that change.
+Replanning an existing plan can be very disruptive.
+If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable.
+In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.This is usually implemented by taxing all planning entities that change.
 
 image::RepeatedPlanning/nonDisruptiveReplanning.png[align="center"]
 
