@@ -17,19 +17,16 @@
 package org.optaplanner.examples.nurserostering.domain.solver;
 
 import org.optaplanner.core.api.domain.entity.PinningFilter;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
+import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 
-public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
-
-    private final PinningFilter<NurseRoster, ShiftAssignment> pinningFilter =
-            new ShiftAssignmentPinningFilter();
+public class ShiftAssignmentPinningFilter implements PinningFilter<NurseRoster, ShiftAssignment> {
 
     @Override
-    public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment selection) {
-        return pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
+    public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {
+        ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
+        return nurseRoster.getNurseRosterParametrization().isInPlanningWindow(shiftDate);
     }
 
 }

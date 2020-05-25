@@ -24,12 +24,12 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
-import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
+import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentPinningFilter;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@PlanningEntity(pinningFilter = MovableShiftAssignmentSelectionFilter.class,
+@PlanningEntity(pinningFilter = ShiftAssignmentPinningFilter.class,
         difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
 @XStreamAlias("ShiftAssignment")
 public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
