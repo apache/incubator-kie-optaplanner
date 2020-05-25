@@ -996,10 +996,9 @@ Configure the `filterClass` on every targeted `entitySelector` (potentially both
     </changeMoveSelector>
 ----
 
-If that filter should apply on all entities, configure it as a <<immovablePlanningEntities,global movableEntitySelectionFilter>> instead.
+If that filter should apply on all entities, configure it as a <<immovablePlanningEntities,global pinningFilter>> instead.
 
 You can configure multiple `filterClass` elements on a single entity selector.
-
 
 [[filteredValueSelection]]
 ==== Filtered value selection

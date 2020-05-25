@@ -133,7 +133,7 @@ The planning window can be split up in several stages:
 
 * _History_
 +
-Immutable past time periods. It contains only immovable entities.
+Immutable past time periods.It contains only immovable entities.
 +
 ** Recent historic entities can also affect score constraints that apply to movable entities.
 For example, in nurse rostering, a nurse that has worked the last three historic weekends in a row
@@ -221,27 +221,24 @@ public class Lecture {
 }
 ----
 
-In the example above, if `pinned` is `true`, the lecture will not be assigned to another period or room
-(even if the current period and rooms fields are `null`).
+In the example above, if `pinned` is `true`, the lecture will not be assigned to another period or room (even if the current period and rooms fields are `null`).
 
-[[configureAMovableEntitySelectionFilter]]
-==== Configure a movable `EntitySelectionFilter`
+[[configureAPinningFilter]]
+==== Configure a `PinningFilter`
 
-Alternatively, to make some planning entities immovable, add an entity `SelectionFilter`
-that returns `true` if an entity is movable, and `false` if it is immovable.
+Alternatively, to make some planning entities immovable, add a `PinningFilter` that returns `true` if an entity is movable, and `false` if it is immovable.
 This is more flexible and more verbose than the `@PlanningPin` approach.
 
 For example on the nurse rostering example:
 
-. Add the `SelectionFilter`:
+. Add the `PinningFilter`:
 +
 [source,java,options="nowrap"]
 ----
-public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
+public class ShiftAssignmentPinningFilter implements PinningFilter<NurseRoster, ShiftAssignment> {
 
     @Override
-    public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment) {
-        NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
+    public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {
         ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
         return nurseRoster.getNurseRosterInfo().isInPlanningWindow(shiftDate);
     }
@@ -249,11 +246,11 @@ public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<Nu
 }
 ----
 
-. Configure the `SelectionFilter`:
+. Configure the `PinningFilter`:
 +
 [source,java,options="nowrap"]
 ----
-@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)
+@PlanningEntity(pinningFilter = ShiftAssignmentPinningFilter.class)
 public class ShiftAssignment {
     ...
 }
@@ -263,7 +260,7 @@ public class ShiftAssignment {
 [[nonvolatileReplanning]]
 === Nonvolatile replanning to minimize disruption (semi-movable planning entities)
 
-Replanning an existing plan can be very disruptive. If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes. This is usually implemented by taxing all planning entities that change.
+Replanning an existing plan can be very disruptive.If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable.In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.This is usually implemented by taxing all planning entities that change.
 
 image::RepeatedPlanning/nonDisruptiveReplanning.png[align="center"]
 
