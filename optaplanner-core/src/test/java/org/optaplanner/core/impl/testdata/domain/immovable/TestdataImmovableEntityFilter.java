@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,13 @@ package org.optaplanner.core.impl.testdata.domain.immovable;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class TestdataImmovableEntityFilter implements SelectionFilter<TestdataImmovableSolution, TestdataImmovableEntity> {
+@Deprecated
+public class TestdataImmovableEntityFilter
+        implements SelectionFilter<TestdataLegacyImmovableSolution, TestdataLegacyImmovableEntity> {
 
     @Override
-    public boolean accept(ScoreDirector<TestdataImmovableSolution> scoreDirector, TestdataImmovableEntity entity) {
+    public boolean accept(ScoreDirector<TestdataLegacyImmovableSolution> scoreDirector,
+            TestdataLegacyImmovableEntity entity) {
         return !entity.isLocked();
     }
 

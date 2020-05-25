@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,25 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
+import org.optaplanner.core.impl.testdata.domain.immovable.TestdataLegacyImmovableEntity;
 import org.optaplanner.core.impl.testdata.domain.immovable.extended.TestdataExtendedImmovableEntity;
 import org.optaplanner.core.impl.testdata.domain.immovable.extended.TestdataExtendedImmovableSolution;
 
 public class EntityDescriptorTest {
+
+    @Test
+    public void legacyMovableEntitySelectionFilter() {
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        EntityDescriptor entityDescriptor = TestdataLegacyImmovableEntity.buildEntityDescriptor();
+        assertEquals(true, entityDescriptor.hasEffectiveMovableEntitySelectionFilter());
+        SelectionFilter movableEntitySelectionFilter = entityDescriptor.getEffectiveMovableEntitySelectionFilter();
+        assertNotNull(movableEntitySelectionFilter);
+
+        assertEquals(true, movableEntitySelectionFilter.accept(scoreDirector,
+                new TestdataLegacyImmovableEntity("e1", null, false, false)));
+        assertEquals(false, movableEntitySelectionFilter.accept(scoreDirector,
+                new TestdataLegacyImmovableEntity("e2", null, true, false)));
+    }
 
     @Test
     public void movableEntitySelectionFilter() {

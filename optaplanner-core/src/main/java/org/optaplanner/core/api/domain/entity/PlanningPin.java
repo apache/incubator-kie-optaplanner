@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * It applies to all the planning variables of that planning entity.
  * To make individual variables immovable, see https://issues.redhat.com/browse/PLANNER-124
  * <p>
- * This is syntactic sugar for {@link PlanningEntity#movableEntitySelectionFilter()},
+ * This is syntactic sugar for {@link PlanningEntity#pinningFilter()},
  * which is a more flexible and verbose way to make a planning entity immovable.
  */
 @Target({ METHOD, FIELD })
