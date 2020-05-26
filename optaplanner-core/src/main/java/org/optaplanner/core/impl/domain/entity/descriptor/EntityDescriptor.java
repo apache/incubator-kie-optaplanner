@@ -166,8 +166,8 @@ public class EntityDescriptor<Solution_> {
         if (hasPinningFilter && hasSelectionFilter) {
             throw new IllegalStateException("The entityClass (" + entityClass
                     + ") uses both movableEntitySelectionFilter (" + movableEntitySelectionFilterClass +
-                    ") and pinningFilter (" + pinningFilterClass + "). " +
-                    "Use pinningFilter exclusively.");
+                    ") and pinningFilter (" + pinningFilterClass + ").\n" +
+                    "Maybe use only pinningFilterClass on your @" + PlanningEntity.class.getSimpleName() + " annotation.");
         }
         if (hasPinningFilter) {
             declaredMovableEntitySelectionFilter = new SelectionFilter() {
