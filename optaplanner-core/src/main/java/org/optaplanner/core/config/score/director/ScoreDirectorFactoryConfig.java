@@ -351,11 +351,6 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      */
     @Deprecated(/* forRemoval = true */)
     public void setGenerateDroolsTestOnError(Boolean generateDroolsTestOnError) {
-        if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
-            System.setProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME, "true");
-        } else {
-            System.clearProperty(GENERATE_DROOLS_TEST_ON_ERROR_PROPERTY_NAME);
-        }
         this.generateDroolsTestOnError = generateDroolsTestOnError;
     }
 
