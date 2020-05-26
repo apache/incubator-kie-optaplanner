@@ -87,7 +87,6 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     // Builder methods
     // ************************************************************************
 
-    @SuppressWarnings("deprecation")
     @Override
     public QueuedValuePlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
         EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), entityClass);

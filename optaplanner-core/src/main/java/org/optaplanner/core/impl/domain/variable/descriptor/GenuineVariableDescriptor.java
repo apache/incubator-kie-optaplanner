@@ -85,7 +85,6 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         processStrength(descriptorPolicy, planningVariableAnnotation);
     }
 
-    @SuppressWarnings("deprecation")
     private void processNullable(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         nullable = planningVariableAnnotation.nullable();
         if (nullable && variableMemberAccessor.getType().isPrimitive()) {

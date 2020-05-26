@@ -160,7 +160,6 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     // Builder methods
     // ************************************************************************
 
-    @SuppressWarnings("deprecation")
     @Override
     public ConstructionHeuristicPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {

@@ -647,7 +647,6 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         return valueSelector;
     }
 
-    @SuppressWarnings("deprecation")
     private ValueSelector applyReinitializeVariableFiltering(HeuristicConfigPolicy configPolicy,
             ValueSelector valueSelector) {
         if (configPolicy.isReinitializeVariableFilterEnabled()) {
