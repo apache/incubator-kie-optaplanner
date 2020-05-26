@@ -325,7 +325,8 @@ For example, an airplane is delayed and needs the runway at a later time.
 Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it.
 ====
 
-Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible.For example:
+Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible.
+For example:
 
 [source,java,options="nowrap"]
 ----
@@ -351,21 +352,20 @@ public interface ProblemFactChange<Solution_> {
 }
 ----
 
-
 [WARNING]
 ====
 The `ScoreDirector` must be updated with any change on the problem facts of planning entities in a `ProblemFactChange`.
 ====
 
-
 To write a `ProblemFactChange` correctly, it is important to understand the behavior of <<cloningASolution,a planning clone>>.
 
 A planning clone of a solution must fulfill these requirements:
 
-* The clone must represent the same planning problem.Usually it reuses the same instances of the problem facts and problem fact collections as the original.
+* The clone must represent the same planning problem.
+Usually it reuses the same instances of the problem facts and problem fact collections as the original.
 
-* The clone must use different, cloned instances of the entities and entity collections.Changes to an original Solution entity’s variables must not affect its clone.
-
+* The clone must use different, cloned instances of the entities and entity collections.
+Changes to an original Solution entity’s variables must not affect its clone.
 
 [[problemFactChangeExample]]
 ==== Cloud balancing `ProblemFactChange` example

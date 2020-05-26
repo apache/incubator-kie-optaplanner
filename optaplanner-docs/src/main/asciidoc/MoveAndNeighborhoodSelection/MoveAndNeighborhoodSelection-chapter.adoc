@@ -1654,12 +1654,11 @@ Notice that it checks if the other move is an instance of the same move type.
 This `instanceof` check is important because a move are compared to a move of another move type.
 For example a `ChangeMove` and `SwapMove` are compared.
 
-
 [[generatingCustomMoves]]
 === Generating custom moves
 
-Now, let's generate instances of this custom ``Move`` class.There are 2 ways:
-
+Now, let's generate instances of this custom ``Move`` class.
+There are 2 ways:
 
 [[moveListFactory]]
 ==== `MoveListFactory`: the easy way to generate custom moves
