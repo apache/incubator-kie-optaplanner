@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.immovable;
+package org.optaplanner.core.impl.testdata.domain.pinned.extended;
 
-import org.optaplanner.core.api.domain.entity.PinningFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class TestdataPinningFilter implements PinningFilter<TestdataImmovableSolution, TestdataImmovableEntity> {
+@Deprecated(/* forRemoval = true */)
+public class TestdataLegacyExtendedImmovableEntityFilter
+        implements SelectionFilter<TestdataLegacyExtendedPinnedSolution, TestdataLegacyExtendedPinnedEntity> {
 
     @Override
-    public boolean accept(TestdataImmovableSolution solution, TestdataImmovableEntity entity) {
-        return !entity.isLocked();
+    public boolean accept(ScoreDirector<TestdataLegacyExtendedPinnedSolution> scoreDirector,
+            TestdataLegacyExtendedPinnedEntity entity) {
+        return !entity.isClosed();
     }
 
 }

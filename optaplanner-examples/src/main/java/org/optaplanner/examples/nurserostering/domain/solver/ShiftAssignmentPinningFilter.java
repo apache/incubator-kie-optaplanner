@@ -26,7 +26,7 @@ public class ShiftAssignmentPinningFilter implements PinningFilter<NurseRoster, 
     @Override
     public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {
         ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
-        return nurseRoster.getNurseRosterParametrization().isInPlanningWindow(shiftDate);
+        return !nurseRoster.getNurseRosterParametrization().isInPlanningWindow(shiftDate);
     }
 
 }

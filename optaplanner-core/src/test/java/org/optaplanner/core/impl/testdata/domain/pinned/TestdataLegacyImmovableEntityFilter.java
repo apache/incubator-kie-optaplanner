@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.immovable;
+package org.optaplanner.core.impl.testdata.domain.pinned;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 @Deprecated
-public class TestdataImmovableEntityFilter
-        implements SelectionFilter<TestdataLegacyImmovableSolution, TestdataLegacyImmovableEntity> {
+public class TestdataLegacyImmovableEntityFilter
+        implements SelectionFilter<TestdataLegacyPinnedSolution, TestdataLegacyPinnedEntity> {
 
     @Override
-    public boolean accept(ScoreDirector<TestdataLegacyImmovableSolution> scoreDirector,
-            TestdataLegacyImmovableEntity entity) {
+    public boolean accept(ScoreDirector<TestdataLegacyPinnedSolution> scoreDirector,
+            TestdataLegacyPinnedEntity entity) {
         return !entity.isLocked();
     }
 

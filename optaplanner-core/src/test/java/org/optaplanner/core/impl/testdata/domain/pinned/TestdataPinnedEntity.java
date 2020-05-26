@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.immovable;
+package org.optaplanner.core.impl.testdata.domain.pinned;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
@@ -25,36 +25,36 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity(pinningFilter = TestdataPinningFilter.class)
-public class TestdataImmovableEntity extends TestdataObject {
+public class TestdataPinnedEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataImmovableSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataImmovableEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataPinnedSolution.buildSolutionDescriptor();
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataPinnedEntity.class);
     }
 
     private TestdataValue value;
     private boolean locked;
     private boolean pinned;
 
-    public TestdataImmovableEntity() {
+    public TestdataPinnedEntity() {
     }
 
-    public TestdataImmovableEntity(String code) {
+    public TestdataPinnedEntity(String code) {
         super(code);
     }
 
-    public TestdataImmovableEntity(String code, boolean locked, boolean pinned) {
+    public TestdataPinnedEntity(String code, boolean locked, boolean pinned) {
         this(code);
         this.locked = locked;
         this.pinned = pinned;
     }
 
-    public TestdataImmovableEntity(String code, TestdataValue value) {
+    public TestdataPinnedEntity(String code, TestdataValue value) {
         this(code);
         this.value = value;
     }
 
-    public TestdataImmovableEntity(String code, TestdataValue value, boolean locked, boolean pinned) {
+    public TestdataPinnedEntity(String code, TestdataValue value, boolean locked, boolean pinned) {
         this(code, value);
         this.locked = locked;
         this.pinned = pinned;

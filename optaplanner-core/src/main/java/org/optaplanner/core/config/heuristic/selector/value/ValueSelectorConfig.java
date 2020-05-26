@@ -418,7 +418,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                     filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
                 }
             }
-            // Filter out immovable entities
+            // Filter out pinned entities
             if (variableDescriptor.hasMovableChainedTrailingValueFilter()) {
                 filterList.add(variableDescriptor.getMovableChainedTrailingValueFilter());
             }

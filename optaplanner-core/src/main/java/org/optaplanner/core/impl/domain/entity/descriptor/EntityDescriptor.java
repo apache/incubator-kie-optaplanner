@@ -177,7 +177,7 @@ public class EntityDescriptor<Solution_> {
 
                 @Override
                 public boolean accept(ScoreDirector scoreDirector, Object selection) {
-                    return pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
+                    return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
                 }
             };
         } else if (hasSelectionFilter) {
@@ -593,9 +593,9 @@ public class EntityDescriptor<Solution_> {
     /**
      * @param scoreDirector never null
      * @param entity never null
-     * @return true if the entity is initialized or immovable
+     * @return true if the entity is initialized or pinned
      */
-    public boolean isEntityInitializedOrImmovable(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    public boolean isEntityInitializedOrPinned(ScoreDirector<Solution_> scoreDirector, Object entity) {
         return isInitialized(entity) || !isMovable(scoreDirector, entity);
     }
 

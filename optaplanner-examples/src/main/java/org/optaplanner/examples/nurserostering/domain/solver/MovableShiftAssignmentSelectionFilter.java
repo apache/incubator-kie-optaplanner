@@ -29,7 +29,7 @@ public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<Nu
 
     @Override
     public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment selection) {
-        return pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
+        return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
     }
 
 }

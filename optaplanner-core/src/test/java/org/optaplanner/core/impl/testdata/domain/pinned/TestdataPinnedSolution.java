@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.immovable;
+package org.optaplanner.core.impl.testdata.domain.pinned;
 
 import java.util.List;
 
@@ -28,24 +28,22 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-@Deprecated
 @PlanningSolution
-public class TestdataLegacyImmovableSolution extends TestdataObject {
+public class TestdataPinnedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataLegacyImmovableSolution.class,
-                TestdataLegacyImmovableEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataPinnedSolution.class, TestdataPinnedEntity.class);
     }
 
     private List<TestdataValue> valueList;
-    private List<TestdataLegacyImmovableEntity> entityList;
+    private List<TestdataPinnedEntity> entityList;
 
     private SimpleScore score;
 
-    public TestdataLegacyImmovableSolution() {
+    public TestdataPinnedSolution() {
     }
 
-    public TestdataLegacyImmovableSolution(String code) {
+    public TestdataPinnedSolution(String code) {
         super(code);
     }
 
@@ -60,11 +58,11 @@ public class TestdataLegacyImmovableSolution extends TestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataLegacyImmovableEntity> getEntityList() {
+    public List<TestdataPinnedEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataLegacyImmovableEntity> entityList) {
+    public void setEntityList(List<TestdataPinnedEntity> entityList) {
         this.entityList = entityList;
     }
 

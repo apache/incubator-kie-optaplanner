@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * Decides on accepting or discarding a {@link PlanningEntity}.
- * An immovable {@link PlanningEntity} is rejected and therefore never used in a {@link Move}.
+ * A pinned {@link PlanningEntity} is never used in a {@link Move}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the entity type
@@ -29,9 +29,9 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 public interface PinningFilter<Solution_, T> {
 
     /**
-     * @param solution working solution to which the selection belongs or applies to
+     * @param solution working solution to which the entity belongs
      * @param entity never null, a {@link PlanningEntity}
-     * @return true if the entity it is movable, false if the entity is immovable
+     * @return true if the entity it is pinned, false if the entity is movable.
      */
     boolean accept(Solution_ solution, T entity);
 
