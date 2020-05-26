@@ -68,9 +68,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.drools.LegacyDroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.drools.testgen.TestGenLegacyDroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
@@ -679,9 +677,9 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                         + kieBaseConfigurationProperties + ") must be null.");
             }
             if (generateDroolsTestOnError) {
-                return new TestGenLegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, null, null);
+                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, null, null);
             } else {
-                return new LegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
+                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
             }
         } else if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
             KieServices kieServices = KieServices.Factory.get();
@@ -744,10 +742,9 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             }
             KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
             if (generateDroolsTestOnError) {
-                return new TestGenLegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, scoreDrlList,
-                        scoreDrlFileList);
+                return new TestGenDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, scoreDrlList, scoreDrlFileList);
             } else {
-                return new LegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
+                return new DroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
             }
         } else {
             if (kieBaseConfigurationProperties != null) {
