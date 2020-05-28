@@ -19,8 +19,6 @@ package org.optaplanner.examples.coachshuttlegathering.solver;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
@@ -87,12 +85,6 @@ public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalcul
                 softScore -= stop.getDistanceToDestinationCost(bus.getDestination());
             }
         }
-        System.out.println(new TreeMap<>(busToPassengerTotalMap.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().toString(), Map.Entry::getValue))));
-        int sum = busToPassengerTotalMap.values().stream()
-                .mapToInt(s -> s)
-                .sum();
-        System.out.println(sum);
         for (Bus bus : busList) {
             // Constraint shuttleCapacity and coachCapacity
             Integer passengerTotal = busToPassengerTotalMap.get(bus);

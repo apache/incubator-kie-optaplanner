@@ -16,11 +16,6 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
@@ -28,7 +23,6 @@ import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
-import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 
 public class ShuttlePassengerCountTotalUpdatingVariableListener implements VariableListener<Object> {
 
@@ -39,6 +33,9 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
         scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
         bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + difference);
         scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
+        if (bus.getPassengerQuantityTotal() < 0) {
+            throw new IllegalStateException("Capacity of " + bus + " got under zero here.");
+        }
     }
 
     private static void adjustBusStop(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop,
@@ -47,16 +44,12 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
         if (!(bus instanceof Shuttle)) {
             return;
         }
-        System.out.println("ADJB");
         adjustBus(scoreDirector, bus, increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity());
         Shuttle shuttle = (Shuttle) bus;
-        StopOrHub destination = shuttle.getDestination();
-        if (destination instanceof BusStop) {
-            Bus destinationBus = ((BusStop) destination).getBus();
-            if (destinationBus instanceof Coach) {
-                int difference = increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity();
-                adjustBus(scoreDirector, destinationBus, difference);
-            }
+        Bus destinationBus = shuttle.getDestinationBus();
+        if (destinationBus instanceof Coach) {
+            int difference = increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity();
+            adjustBus(scoreDirector, destinationBus, difference);
         }
     }
 
@@ -85,61 +78,35 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
         adjustShuttle(scoreDirector, shuttle, false);
     }
 
-    private void printSolution(String prefix, ScoreDirector<CoachShuttleGatheringSolution> scoreDirector) {
-        CoachShuttleGatheringSolution solution = scoreDirector.getWorkingSolution();
-        SortedMap<String, Integer> values = new TreeMap<>(solution.getBusList().stream()
-                .collect(Collectors.toMap(Bus::toString, Bus::getPassengerQuantityTotal)));
-        System.out.println(prefix + " " + values);
-        int sum = values.values().stream()
-                .mapToInt(s -> s)
-                .sum();
-        System.out.println(sum);
-    }
-
     @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
     }
 
     @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
-        printSolution("* PRE " + entity, scoreDirector);
         if (entity instanceof BusStop) {
             increase(scoreDirector, (BusStop) entity);
         } else if (entity instanceof Shuttle) {
             increase(scoreDirector, (Shuttle) entity);
         }
-        printSolution("*POST ", scoreDirector);
     }
 
     @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
-        printSolution("- PRE " + entity, scoreDirector);
-        if (Objects.equals(entity.toString(), "S2")) {
-            Shuttle shuttle = (Shuttle) entity;
-            System.out.println(
-                    shuttle + " no longer goes to " + shuttle.getDestination() + " (" + shuttle.getDestinationBus() + ")");
-        }
         if (entity instanceof BusStop) {
             decrease(scoreDirector, (BusStop) entity);
         } else if (entity instanceof Shuttle) {
             decrease(scoreDirector, (Shuttle) entity);
         }
-        printSolution("-POST " + entity, scoreDirector);
     }
 
     @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
-        printSolution("+ PRE " + entity, scoreDirector);
-        if (Objects.equals(entity.toString(), "S2")) {
-            Shuttle shuttle = (Shuttle) entity;
-            System.out.println(shuttle + " goes to " + shuttle.getDestination() + " (" + shuttle.getDestinationBus() + ")");
-        }
         if (entity instanceof BusStop) {
             increase(scoreDirector, (BusStop) entity);
         } else if (entity instanceof Shuttle) {
             increase(scoreDirector, (Shuttle) entity);
         }
-        printSolution("+POST " + entity, scoreDirector);
     }
 
     @Override
@@ -148,12 +115,10 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
 
     @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
-        printSolution("X PRE " + entity, scoreDirector);
         if (entity instanceof BusStop) {
             decrease(scoreDirector, (BusStop) entity);
         } else if (entity instanceof Shuttle) {
             decrease(scoreDirector, (Shuttle) entity);
         }
-        printSolution("XPOST " + entity, scoreDirector);
     }
 }
