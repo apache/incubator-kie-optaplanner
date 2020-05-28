@@ -26,10 +26,11 @@ import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheri
 public class CoachPassengerCountTotalUpdatingVariableListener implements VariableListener<BusStop> {
 
     private static void adjustBus(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Bus bus, int difference) {
+        if (difference == 0) {
+            return;
+        }
         scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
-        System.out.println(bus + " " + bus.getPassengerQuantityTotal());
         bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + difference);
-        System.out.println("To: " + bus.getPassengerQuantityTotal());
         scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
     }
 

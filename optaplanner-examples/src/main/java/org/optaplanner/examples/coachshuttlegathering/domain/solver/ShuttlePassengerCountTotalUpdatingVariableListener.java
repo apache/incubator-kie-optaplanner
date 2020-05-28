@@ -16,6 +16,11 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
+import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
@@ -25,22 +30,24 @@ import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheri
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 
-public class ShuttlePassengerCountTotalUpdatingVariableListener implements VariableListener<BusStop> {
+public class ShuttlePassengerCountTotalUpdatingVariableListener implements VariableListener<Object> {
 
     private static void adjustBus(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Bus bus, int difference) {
+        if (difference == 0) {
+            return;
+        }
         scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
-        System.out.println(bus + " " + bus.getPassengerQuantityTotal());
         bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + difference);
-        System.out.println("To: " + bus.getPassengerQuantityTotal());
         scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
     }
 
-    private static void adjust(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop,
+    private static void adjustBusStop(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop,
             boolean increase) {
         Bus bus = busStop.getBus();
         if (!(bus instanceof Shuttle)) {
             return;
         }
+        System.out.println("ADJB");
         adjustBus(scoreDirector, bus, increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity());
         Shuttle shuttle = (Shuttle) bus;
         StopOrHub destination = shuttle.getDestination();
@@ -53,39 +60,100 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
         }
     }
 
+    private static void adjustShuttle(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Shuttle shuttle,
+            boolean increase) {
+        Bus destinationBus = shuttle.getDestinationBus();
+        if (destinationBus instanceof Coach) {
+            adjustBus(scoreDirector, destinationBus,
+                    increase ? shuttle.getPassengerQuantityTotal() : -shuttle.getPassengerQuantityTotal());
+        }
+    }
+
     private static void increase(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop) {
-        adjust(scoreDirector, busStop, true);
+        adjustBusStop(scoreDirector, busStop, true);
     }
 
     private static void decrease(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop) {
-        adjust(scoreDirector, busStop, false);
+        adjustBusStop(scoreDirector, busStop, false);
+    }
+
+    private static void increase(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Shuttle shuttle) {
+        adjustShuttle(scoreDirector, shuttle, true);
+    }
+
+    private static void decrease(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Shuttle shuttle) {
+        adjustShuttle(scoreDirector, shuttle, false);
+    }
+
+    private void printSolution(String prefix, ScoreDirector<CoachShuttleGatheringSolution> scoreDirector) {
+        CoachShuttleGatheringSolution solution = scoreDirector.getWorkingSolution();
+        SortedMap<String, Integer> values = new TreeMap<>(solution.getBusList().stream()
+                .collect(Collectors.toMap(Bus::toString, Bus::getPassengerQuantityTotal)));
+        System.out.println(prefix + " " + values);
+        int sum = values.values().stream()
+                .mapToInt(s -> s)
+                .sum();
+        System.out.println(sum);
     }
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, BusStop busStop) {
+    public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, BusStop busStop) {
-        increase(scoreDirector, busStop);
+    public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
+        printSolution("* PRE " + entity, scoreDirector);
+        if (entity instanceof BusStop) {
+            increase(scoreDirector, (BusStop) entity);
+        } else if (entity instanceof Shuttle) {
+            increase(scoreDirector, (Shuttle) entity);
+        }
+        printSolution("*POST ", scoreDirector);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, BusStop busStop) {
-        decrease(scoreDirector, busStop);
+    public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
+        printSolution("- PRE " + entity, scoreDirector);
+        if (Objects.equals(entity.toString(), "S2")) {
+            Shuttle shuttle = (Shuttle) entity;
+            System.out.println(
+                    shuttle + " no longer goes to " + shuttle.getDestination() + " (" + shuttle.getDestinationBus() + ")");
+        }
+        if (entity instanceof BusStop) {
+            decrease(scoreDirector, (BusStop) entity);
+        } else if (entity instanceof Shuttle) {
+            decrease(scoreDirector, (Shuttle) entity);
+        }
+        printSolution("-POST " + entity, scoreDirector);
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, BusStop busStop) {
-        increase(scoreDirector, busStop);
+    public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
+        printSolution("+ PRE " + entity, scoreDirector);
+        if (Objects.equals(entity.toString(), "S2")) {
+            Shuttle shuttle = (Shuttle) entity;
+            System.out.println(shuttle + " goes to " + shuttle.getDestination() + " (" + shuttle.getDestinationBus() + ")");
+        }
+        if (entity instanceof BusStop) {
+            increase(scoreDirector, (BusStop) entity);
+        } else if (entity instanceof Shuttle) {
+            increase(scoreDirector, (Shuttle) entity);
+        }
+        printSolution("+POST " + entity, scoreDirector);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, BusStop busStop) {
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, BusStop busStop) {
-        decrease(scoreDirector, busStop);
+    public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+        printSolution("X PRE " + entity, scoreDirector);
+        if (entity instanceof BusStop) {
+            decrease(scoreDirector, (BusStop) entity);
+        } else if (entity instanceof Shuttle) {
+            decrease(scoreDirector, (Shuttle) entity);
+        }
+        printSolution("XPOST " + entity, scoreDirector);
     }
 }
