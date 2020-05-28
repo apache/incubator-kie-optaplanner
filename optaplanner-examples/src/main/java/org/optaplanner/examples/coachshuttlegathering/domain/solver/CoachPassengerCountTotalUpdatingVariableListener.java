@@ -32,6 +32,9 @@ public class CoachPassengerCountTotalUpdatingVariableListener implements Variabl
         scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
         bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + difference);
         scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
+        if (bus.getPassengerQuantityTotal() < 0) {
+            throw new IllegalStateException("Capacity of " + bus + " got under zero here.");
+        }
     }
 
     private static void adjust(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop,
