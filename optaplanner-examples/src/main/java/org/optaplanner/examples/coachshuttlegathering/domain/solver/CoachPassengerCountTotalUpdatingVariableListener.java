@@ -22,10 +22,8 @@ import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
-import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
-import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 
-public class ShuttlePassengerCountTotalUpdatingVariableListener implements VariableListener<BusStop> {
+public class CoachPassengerCountTotalUpdatingVariableListener implements VariableListener<BusStop> {
 
     private static void adjustBus(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, Bus bus, int difference) {
         scoreDirector.beforeVariableChanged(bus, "passengerQuantityTotal");
@@ -38,19 +36,10 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
     private static void adjust(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop,
             boolean increase) {
         Bus bus = busStop.getBus();
-        if (!(bus instanceof Shuttle)) {
+        if (!(bus instanceof Coach)) {
             return;
         }
         adjustBus(scoreDirector, bus, increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity());
-        Shuttle shuttle = (Shuttle) bus;
-        StopOrHub destination = shuttle.getDestination();
-        if (destination instanceof BusStop) {
-            Bus destinationBus = ((BusStop) destination).getBus();
-            if (destinationBus instanceof Coach) {
-                int difference = increase ? busStop.getPassengerQuantity() : -busStop.getPassengerQuantity();
-                adjustBus(scoreDirector, destinationBus, difference);
-            }
-        }
     }
 
     private static void increase(ScoreDirector<CoachShuttleGatheringSolution> scoreDirector, BusStop busStop) {
