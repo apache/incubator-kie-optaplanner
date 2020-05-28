@@ -34,7 +34,7 @@ public class ShuttlePassengerCountTotalUpdatingVariableListener implements Varia
         bus.setPassengerQuantityTotal(bus.getPassengerQuantityTotal() + difference);
         scoreDirector.afterVariableChanged(bus, "passengerQuantityTotal");
         if (bus.getPassengerQuantityTotal() < 0) {
-            throw new IllegalStateException("Capacity of " + bus + " got under zero here.");
+            throw new IllegalStateException("Passenger quantity in " + bus + " got under zero here.");
         }
     }
 
