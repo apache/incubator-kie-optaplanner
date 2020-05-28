@@ -9,6 +9,7 @@
   <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub</entityClass>
   <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.BusStop</entityClass>
   <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.Shuttle</entityClass>
+  <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.Coach</entityClass>
 
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
