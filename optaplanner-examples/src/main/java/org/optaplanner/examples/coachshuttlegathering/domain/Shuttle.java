@@ -56,7 +56,8 @@ public class Shuttle extends Bus {
 
     @Override
     @CustomShadowVariable(variableListenerClass = ShuttlePassengerCountTotalUpdatingVariableListener.class,
-            sources = { @PlanningVariableReference(entityClass = BusStop.class, variableName = "bus") })
+            sources = { @PlanningVariableReference(entityClass = BusStop.class, variableName = "bus"),
+                    @PlanningVariableReference(entityClass = Shuttle.class, variableName = "destination") })
     public Integer getPassengerQuantityTotal() {
         return super.getPassengerQuantityTotal();
     }
