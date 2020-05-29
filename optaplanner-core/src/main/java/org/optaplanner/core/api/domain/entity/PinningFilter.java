@@ -24,15 +24,15 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  * A pinned {@link PlanningEntity} is never used in a {@link Move}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @param <T> the entity type
+ * @param <Entity_> the entity type, the class with the {@link PlanningEntity} annotation
  */
-public interface PinningFilter<Solution_, T> {
+public interface PinningFilter<Solution_, Entity_> {
 
     /**
      * @param solution working solution to which the entity belongs
      * @param entity never null, a {@link PlanningEntity}
      * @return true if the entity it is pinned, false if the entity is movable.
      */
-    boolean accept(Solution_ solution, T entity);
+    boolean accept(Solution_ solution, Entity_ entity);
 
 }

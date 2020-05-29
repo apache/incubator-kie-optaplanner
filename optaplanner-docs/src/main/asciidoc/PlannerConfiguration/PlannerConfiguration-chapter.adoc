@@ -533,13 +533,13 @@ One way to deal with this is to filter the entity selector of the placer in the 
   ...
   <constructionHeuristics>
     <queuedEntityPlacer>
-      <entitySelector id="foo">
+      <entitySelector id="entitySelector1">
         <filterClass>...</filterClass>
       </entitySelector>
     </queuedEntityPlacer>
     ...
     <changeMoveselector>
-      <entitySelector mimicRef="foo" />
+      <entitySelector mimicRef="entitySelector1" />
     </changeMoveselector>
     ...
   </constructionHeuristics>

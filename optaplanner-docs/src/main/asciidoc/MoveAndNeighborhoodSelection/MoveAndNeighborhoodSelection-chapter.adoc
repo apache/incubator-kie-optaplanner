@@ -927,7 +927,9 @@ public interface SelectionFilter<Solution_, T> {
 }
 ----
 
-Implement the `accept` method to return `false` on a discarded `selection` (see below).Filtered selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
+Implement the `accept` method to return `false` on a discarded `selection` (see below).
+Filtered selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector`
+or ``ValueSelector``.
 It works with any `cacheType` and ``selectionOrder``.
 
 [NOTE]
@@ -935,7 +937,6 @@ It works with any `cacheType` and ``selectionOrder``.
 Apply the filter on the lowest level possible.
 In most cases, you'll need to know both the entity and the value involved so you'll have to apply it on the move selector.
 ====
-
 
 [[filteredMoveSelection]]
 ==== Filtered move selection
