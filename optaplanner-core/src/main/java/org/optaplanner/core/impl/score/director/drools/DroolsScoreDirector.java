@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -82,6 +82,9 @@ public class DroolsScoreDirector<Solution_>
         }
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     private void resetScoreHolder() {
         scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
         scoreDirectorFactory.getRuleToConstraintWeightExtractorMap().forEach(
@@ -97,6 +100,9 @@ public class DroolsScoreDirector<Solution_>
         return getSolutionDescriptor().getAllFacts(workingSolution);
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
@@ -106,11 +112,17 @@ public class DroolsScoreDirector<Solution_>
         return score;
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public boolean isConstraintMatchEnabled() {
         return scoreHolder.isConstraintMatchEnabled();
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         if (workingSolution == null) {
@@ -122,6 +134,9 @@ public class DroolsScoreDirector<Solution_>
         return scoreHolder.getConstraintMatchTotals();
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
         if (workingSolution == null) {
@@ -133,6 +148,9 @@ public class DroolsScoreDirector<Solution_>
         return scoreHolder.getConstraintMatchTotalMap();
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public Map<Object, Indictment> getIndictmentMap() {
         if (workingSolution == null) {

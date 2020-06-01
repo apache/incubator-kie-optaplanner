@@ -53,18 +53,27 @@ public class DroolsConstraintSession<Solution_> implements ConstraintSession<Sol
         kieSession.delete(factHandle);
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public Score<?> calculateScore(int initScore) {
         kieSession.fireAllRules();
         return scoreHolder.extractScore(initScore);
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
         kieSession.fireAllRules();
         return scoreHolder.getConstraintMatchTotalMap();
     }
 
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public Map<Object, Indictment> getIndictmentMap() {
         kieSession.fireAllRules();
