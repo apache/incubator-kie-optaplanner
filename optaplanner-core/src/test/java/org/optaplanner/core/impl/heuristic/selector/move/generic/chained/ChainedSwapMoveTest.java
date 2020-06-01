@@ -42,9 +42,9 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class ChainedSwapMoveTest {
 
-    GenuineVariableDescriptor<TestdataChainedSolution> chainedVariableDescriptor = TestdataChainedEntity
+    private final GenuineVariableDescriptor<TestdataChainedSolution> chainedVariableDescriptor = TestdataChainedEntity
             .buildVariableDescriptorForChainedObject();
-    GenuineVariableDescriptor<TestdataChainedSolution> unchainedVariableDescriptor = TestdataChainedEntity
+    private final GenuineVariableDescriptor<TestdataChainedSolution> unchainedVariableDescriptor = TestdataChainedEntity
             .buildVariableDescriptorForUnchainedObject();
 
     @Test
