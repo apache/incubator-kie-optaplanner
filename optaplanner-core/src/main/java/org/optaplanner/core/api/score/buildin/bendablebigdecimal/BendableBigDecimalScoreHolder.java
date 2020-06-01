@@ -31,9 +31,7 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see BendableBigDecimalScore
- * @deprecated to be replaced by an interface of the same name, removing many methods
  */
-@Deprecated
 public class BendableBigDecimalScoreHolder extends AbstractScoreHolder<BendableBigDecimalScore> {
 
     protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorByNumberMap = new LinkedHashMap<>();

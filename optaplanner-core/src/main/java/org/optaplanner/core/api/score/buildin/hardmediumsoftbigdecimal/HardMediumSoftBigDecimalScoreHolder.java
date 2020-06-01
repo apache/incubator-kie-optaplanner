@@ -28,9 +28,7 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see HardMediumSoftBigDecimalScore
- * @deprecated to be replaced by an interface of the same name, removing many methods
  */
-@Deprecated
 public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardMediumSoftBigDecimalScore> {
 
     protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorByNumberMap = new LinkedHashMap<>();

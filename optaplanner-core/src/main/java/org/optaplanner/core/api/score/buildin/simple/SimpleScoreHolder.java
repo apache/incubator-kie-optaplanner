@@ -28,9 +28,7 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see SimpleScore
- * @deprecated to be replaced by an interface of the same name, removing many methods
  */
-@Deprecated
 public class SimpleScoreHolder extends AbstractScoreHolder<SimpleScore> {
 
     protected final Map<Rule, BiConsumer<RuleContext, Integer>> matchExecutorByNumberMap = new LinkedHashMap<>();

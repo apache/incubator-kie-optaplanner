@@ -47,6 +47,7 @@ public class TestGenCorruptedVariableListenerReproducer implements
         this.scoreDirector = scoreDirector;
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")

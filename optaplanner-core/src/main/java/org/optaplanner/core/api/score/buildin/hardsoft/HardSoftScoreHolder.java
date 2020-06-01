@@ -28,9 +28,7 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see HardSoftScore
- * @deprecated to be replaced by an interface of the same name, removing many methods
  */
-@Deprecated
 public class HardSoftScoreHolder extends AbstractScoreHolder<HardSoftScore> {
 
     protected final Map<Rule, BiConsumer<RuleContext, Integer>> matchExecutorByNumberMap = new LinkedHashMap<>();

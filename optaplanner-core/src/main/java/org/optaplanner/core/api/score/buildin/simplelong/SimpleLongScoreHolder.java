@@ -28,9 +28,7 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * @see SimpleLongScore
- * @deprecated to be replaced by an interface of the same name, removing many methods
  */
-@Deprecated
 public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> {
 
     protected final Map<Rule, BiConsumer<RuleContext, Long>> matchExecutorByNumberMap = new LinkedHashMap<>();

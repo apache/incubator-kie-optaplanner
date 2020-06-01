@@ -82,6 +82,7 @@ public class DroolsScoreDirector<Solution_>
         }
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")
@@ -100,6 +101,7 @@ public class DroolsScoreDirector<Solution_>
         return getSolutionDescriptor().getAllFacts(workingSolution);
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")
@@ -112,6 +114,7 @@ public class DroolsScoreDirector<Solution_>
         return score;
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")
@@ -120,6 +123,7 @@ public class DroolsScoreDirector<Solution_>
         return scoreHolder.isConstraintMatchEnabled();
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")
@@ -134,6 +138,7 @@ public class DroolsScoreDirector<Solution_>
         return scoreHolder.getConstraintMatchTotals();
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")
@@ -148,6 +153,7 @@ public class DroolsScoreDirector<Solution_>
         return scoreHolder.getConstraintMatchTotalMap();
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")

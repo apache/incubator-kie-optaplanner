@@ -53,6 +53,7 @@ public class DroolsConstraintSession<Solution_> implements ConstraintSession<Sol
         kieSession.delete(factHandle);
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")
@@ -62,6 +63,7 @@ public class DroolsConstraintSession<Solution_> implements ConstraintSession<Sol
         return scoreHolder.extractScore(initScore);
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")
@@ -71,6 +73,7 @@ public class DroolsConstraintSession<Solution_> implements ConstraintSession<Sol
         return scoreHolder.getConstraintMatchTotalMap();
     }
 
+    // TODO remove in 8.0
     // The scoreHolder method is not actually deprecated for removal.
     // It will only be moved to a different type at a time when we can make that change in public API.
     @SuppressWarnings("deprecation")
