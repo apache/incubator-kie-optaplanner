@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -32,6 +34,7 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
@@ -39,123 +42,210 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class ChainedSwapMoveTest {
 
+    GenuineVariableDescriptor<TestdataChainedSolution> chainedVariableDescriptor = TestdataChainedEntity
+            .buildVariableDescriptorForChainedObject();
+    GenuineVariableDescriptor<TestdataChainedSolution> unchainedVariableDescriptor = TestdataChainedEntity
+            .buildVariableDescriptorForUnchainedObject();
+
     @Test
     public void noTrailing() {
-        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
-                .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
-                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+                chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        a1.setUnchainedObject(new TestdataObject(a1.getCode()));
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        a2.setUnchainedObject(new TestdataObject(a2.getCode()));
         TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        a3.setUnchainedObject(new TestdataObject(a3.getCode()));
 
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
         TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
+        b1.setUnchainedObject(new TestdataObject(b1.getCode()));
+
+        TestdataObject originalA1UnchainedObject = a1.getUnchainedObject();
+        TestdataObject originalA2UnchainedObject = a2.getUnchainedObject();
+        TestdataObject originalA3UnchainedObject = a3.getUnchainedObject();
+        TestdataObject originalB1UnchainedObject = b1.getUnchainedObject();
 
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, b1 });
 
         ChainedSwapMove<TestdataChainedSolution> move = new ChainedSwapMove<>(
-                Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
+                asList(chainedVariableDescriptor, unchainedVariableDescriptor),
+                asList(inverseVariableSupply, null),
                 a3, b1);
         ChainedSwapMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
+        assertSoftly(softly -> {
+            softly.assertThat(a1.getUnchainedObject()).isEqualTo(originalA1UnchainedObject);
+            softly.assertThat(a2.getUnchainedObject()).isEqualTo(originalA2UnchainedObject);
+            softly.assertThat(a3.getUnchainedObject()).isEqualTo(originalB1UnchainedObject);
+            softly.assertThat(b1.getUnchainedObject()).isEqualTo(originalA3UnchainedObject);
+        });
         SelectorTestUtils.assertChain(a0, a1, a2, b1);
         SelectorTestUtils.assertChain(b0, a3);
 
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, b0);
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, b1, a2);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, a3, b0);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, b1, a2);
 
         undoMove.doMove(scoreDirector);
+
+        assertSoftly(softly -> {
+            softly.assertThat(a1.getUnchainedObject()).isEqualTo(originalA1UnchainedObject);
+            softly.assertThat(a2.getUnchainedObject()).isEqualTo(originalA2UnchainedObject);
+            softly.assertThat(a3.getUnchainedObject()).isEqualTo(originalA3UnchainedObject);
+            softly.assertThat(b1.getUnchainedObject()).isEqualTo(originalB1UnchainedObject);
+        });
         SelectorTestUtils.assertChain(a0, a1, a2, a3);
         SelectorTestUtils.assertChain(b0, b1);
+
     }
 
     @Test
     public void oldAndNewTrailing() {
-        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
-                .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
-                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+                chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        a1.setUnchainedObject(new TestdataObject(a1.getCode()));
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        a2.setUnchainedObject(new TestdataObject(a2.getCode()));
         TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        a3.setUnchainedObject(new TestdataObject(a3.getCode()));
 
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
         TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
+        b1.setUnchainedObject(new TestdataObject(b1.getCode()));
         TestdataChainedEntity b2 = new TestdataChainedEntity("b2", b1);
+        b2.setUnchainedObject(new TestdataObject(b2.getCode()));
+
+        TestdataObject originalA1UnchainedObject = a1.getUnchainedObject();
+        TestdataObject originalA2UnchainedObject = a2.getUnchainedObject();
+        TestdataObject originalA3UnchainedObject = a3.getUnchainedObject();
+        TestdataObject originalB1UnchainedObject = b1.getUnchainedObject();
+        TestdataObject originalB2UnchainedObject = b2.getUnchainedObject();
 
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, b1, b2 });
 
         ChainedSwapMove<TestdataChainedSolution> move = new ChainedSwapMove<>(
-                Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
+                asList(chainedVariableDescriptor, unchainedVariableDescriptor),
+                asList(inverseVariableSupply, null),
                 a2, b1);
         ChainedSwapMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
+        assertSoftly(softly -> {
+            softly.assertThat(a1.getUnchainedObject()).isEqualTo(originalA1UnchainedObject);
+            softly.assertThat(a2.getUnchainedObject()).isEqualTo(originalB1UnchainedObject);
+            softly.assertThat(a3.getUnchainedObject()).isEqualTo(originalA3UnchainedObject);
+            softly.assertThat(b1.getUnchainedObject()).isEqualTo(originalA2UnchainedObject);
+            softly.assertThat(b2.getUnchainedObject()).isEqualTo(originalB2UnchainedObject);
+        });
 
         SelectorTestUtils.assertChain(a0, a1, b1, a3);
         SelectorTestUtils.assertChain(b0, a2, b2);
 
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, a2, b0);
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, b1);
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, b1, a1);
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, b2, a2);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, a2, b0);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, a3, b1);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, b1, a1);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, b2, a2);
 
         undoMove.doMove(scoreDirector);
+
+        assertSoftly(softly -> {
+            softly.assertThat(a1.getUnchainedObject()).isEqualTo(originalA1UnchainedObject);
+            softly.assertThat(a2.getUnchainedObject()).isEqualTo(originalA2UnchainedObject);
+            softly.assertThat(a3.getUnchainedObject()).isEqualTo(originalA3UnchainedObject);
+            softly.assertThat(b1.getUnchainedObject()).isEqualTo(originalB1UnchainedObject);
+            softly.assertThat(b2.getUnchainedObject()).isEqualTo(originalB2UnchainedObject);
+        });
         SelectorTestUtils.assertChain(a0, a1, a2, a3);
         SelectorTestUtils.assertChain(b0, b1, b2);
     }
 
     @Test
     public void sameChain() {
-        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
-                .buildVariableDescriptorForChainedObject();
         InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
-                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+                chainedVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        a1.setUnchainedObject(new TestdataObject(a1.getCode()));
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        a2.setUnchainedObject(new TestdataObject(a2.getCode()));
         TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        a3.setUnchainedObject(new TestdataObject(a3.getCode()));
         TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        a4.setUnchainedObject(new TestdataObject(a4.getCode()));
+
+        TestdataObject originalA1UnchainedObject = a1.getUnchainedObject();
+        TestdataObject originalA2UnchainedObject = a2.getUnchainedObject();
+        TestdataObject originalA3UnchainedObject = a3.getUnchainedObject();
+        TestdataObject originalA4UnchainedObject = a4.getUnchainedObject();
 
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, a4 });
 
         ChainedSwapMove<TestdataChainedSolution> move = new ChainedSwapMove<>(
-                Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
+                asList(chainedVariableDescriptor, unchainedVariableDescriptor),
+                asList(inverseVariableSupply, null),
                 a2, a3);
         ChainedSwapMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
+        assertSoftly(softly -> {
+            softly.assertThat(a1.getUnchainedObject()).isEqualTo(originalA1UnchainedObject);
+            softly.assertThat(a2.getUnchainedObject()).isEqualTo(originalA3UnchainedObject);
+            softly.assertThat(a3.getUnchainedObject()).isEqualTo(originalA2UnchainedObject);
+            softly.assertThat(a4.getUnchainedObject()).isEqualTo(originalA4UnchainedObject);
+        });
         SelectorTestUtils.assertChain(a0, a1, a3, a2, a4);
 
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, a2, a3);
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, a1);
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, a4, a2);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, a2, a3);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, a3, a1);
+        verify(scoreDirector).changeVariableFacade(chainedVariableDescriptor, a4, a2);
 
         undoMove.doMove(scoreDirector);
+
+        assertSoftly(softly -> {
+            softly.assertThat(a1.getUnchainedObject()).isEqualTo(originalA1UnchainedObject);
+            softly.assertThat(a2.getUnchainedObject()).isEqualTo(originalA2UnchainedObject);
+            softly.assertThat(a3.getUnchainedObject()).isEqualTo(originalA3UnchainedObject);
+            softly.assertThat(a4.getUnchainedObject()).isEqualTo(originalA4UnchainedObject);
+        });
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);
 
         move = new ChainedSwapMove<>(
-                Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
+                asList(chainedVariableDescriptor, unchainedVariableDescriptor),
+                asList(inverseVariableSupply, null),
                 a3, a2);
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
+        assertSoftly(softly -> {
+            softly.assertThat(a1.getUnchainedObject()).isEqualTo(originalA1UnchainedObject);
+            softly.assertThat(a2.getUnchainedObject()).isEqualTo(originalA3UnchainedObject);
+            softly.assertThat(a3.getUnchainedObject()).isEqualTo(originalA2UnchainedObject);
+            softly.assertThat(a4.getUnchainedObject()).isEqualTo(originalA4UnchainedObject);
+        });
         SelectorTestUtils.assertChain(a0, a1, a3, a2, a4);
 
-        verify(scoreDirector, times(2)).changeVariableFacade(variableDescriptor, a2, a3);
-        verify(scoreDirector, times(2)).changeVariableFacade(variableDescriptor, a3, a1);
-        verify(scoreDirector, times(2)).changeVariableFacade(variableDescriptor, a4, a2);
+        verify(scoreDirector, times(2)).changeVariableFacade(chainedVariableDescriptor, a2, a3);
+        verify(scoreDirector, times(2)).changeVariableFacade(chainedVariableDescriptor, a3, a1);
+        verify(scoreDirector, times(2)).changeVariableFacade(chainedVariableDescriptor, a4, a2);
 
         undoMove.doMove(scoreDirector);
+
+        assertSoftly(softly -> {
+            softly.assertThat(a1.getUnchainedObject()).isEqualTo(originalA1UnchainedObject);
+            softly.assertThat(a2.getUnchainedObject()).isEqualTo(originalA2UnchainedObject);
+            softly.assertThat(a3.getUnchainedObject()).isEqualTo(originalA3UnchainedObject);
+            softly.assertThat(a4.getUnchainedObject()).isEqualTo(originalA4UnchainedObject);
+        });
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);
     }
 

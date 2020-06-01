@@ -36,6 +36,7 @@ public class TestdataChainedSolution extends TestdataObject {
 
     private List<TestdataChainedAnchor> chainedAnchorList;
     private List<TestdataChainedEntity> chainedEntityList;
+    private List<TestdataObject> unchainedObjectList;
 
     private SimpleScore score;
 
@@ -64,6 +65,15 @@ public class TestdataChainedSolution extends TestdataObject {
 
     public void setChainedEntityList(List<TestdataChainedEntity> chainedEntityList) {
         this.chainedEntityList = chainedEntityList;
+    }
+
+    @ValueRangeProvider(id = "unchainedRange")
+    public List<TestdataObject> getUnchainedObjectList() {
+        return unchainedObjectList;
+    }
+
+    public void setUnchainedObjectList(List<TestdataObject> unchainedObjectList) {
+        this.unchainedObjectList = unchainedObjectList;
     }
 
     @PlanningScore

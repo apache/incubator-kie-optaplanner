@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,15 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
         return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
     }
 
+    public static GenuineVariableDescriptor<TestdataChainedSolution> buildVariableDescriptorForUnchainedObject() {
+        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
+        EntityDescriptor<TestdataChainedSolution> entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataChainedEntity.class);
+        return entityDescriptor.getGenuineVariableDescriptor("unchainedObject");
+    }
+
     private TestdataChainedObject chainedObject;
+    private TestdataObject unchainedObject;
 
     public TestdataChainedEntity() {
     }
@@ -60,6 +68,19 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
     }
 
     public void setChainedObject(TestdataChainedObject chainedObject) {
+        this.chainedObject = chainedObject;
+    }
+
+    @PlanningVariable(valueRangeProviderRefs = { "unchainedRange" })
+    public TestdataObject getUnchainedObject() {
+        return unchainedObject;
+    }
+
+    public void setUnchainedObject(TestdataObject unchainedObject) {
+        this.unchainedObject = unchainedObject;
+    }
+
+    public void getUnchainedObject(TestdataChainedObject chainedObject) {
         this.chainedObject = chainedObject;
     }
 
