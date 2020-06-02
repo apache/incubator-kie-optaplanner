@@ -630,8 +630,7 @@ However, this class is also the output of the solution:
 The `timeslotList` field is a value range provider.
 It holds the `Timeslot` instances which OptaPlanner can pick from to assign to the `timeslot` field of `Lesson` instances.
 The `timeslotList` property has an `@ValueRangeProvider` annotation to connect the @PlanningVariable with the @ValueRangeProvider,
-by matching the value of `id` property with the `valueRangeProviderRefs` property of the `@PlanningVariable` annotation in the `Lesson` class.
-//can you clarify 'those two', above?
+by matching the value of the `id` property with the value of the `valueRangeProviderRefs` property of the `@PlanningVariable` annotation in the `Lesson` class.
 
 Following the same logic, the `roomList` field also has an `@ValueRangeProvider` annotation.
 
