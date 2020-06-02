@@ -20,11 +20,9 @@ Your service will assign `Lesson` instances to `Timeslot` and `Room` instances a
 by using AI to adhere to hard and soft scheduling _constraints_, such as the following examples:
 
 * A room can have at most one lesson at the same time.
-//consider `one lesson at a time`
 * A teacher can teach at most one lesson at the same time.
 * A student can attend at most one lesson at the same time.
-* A teacher prefers to teach in a single room.
-//Consider: ..to teach all lessons in the same room.
+* A teacher prefers to teach every lesson in a single room.
 * A teacher prefers to teach sequential lessons and dislikes gaps between lessons.
 
 Mathematically speaking, school timetabling is an _NP-hard_ problem. This means it is difficult to scale. Simply using brute force to iterate through all possible combinations would take millions of years for a non-trivial data set, even on a supercomputer.
@@ -631,8 +629,8 @@ However, this class is also the output of the solution:
 
 The `timeslotList` field is a value range provider.
 It holds the `Timeslot` instances which OptaPlanner can pick from to assign to the `timeslot` field of `Lesson` instances.
-The `timeslotList` field has an `@ValueRangeProvider` annotation to connect those two,
-by matching the value of `id` field with the `valueRangeProviderRefs` property of the `@PlanningVariable` annotation in the `Lesson` class.
+The `timeslotList` property has an `@ValueRangeProvider` annotation to connect the @PlanningVariable with the @ValueRangeProvider,
+by matching the value of `id` property with the `valueRangeProviderRefs` property of the `@PlanningVariable` annotation in the `Lesson` class.
 //can you clarify 'those two', above?
 
 Following the same logic, the `roomList` field also has an `@ValueRangeProvider` annotation.
