@@ -31,7 +31,6 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 /**
  * @see BendableScore
  */
-@Deprecated
 public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
 
     protected final Map<Rule, BiConsumer<RuleContext, Integer>> matchExecutorByNumberMap = new LinkedHashMap<>();
