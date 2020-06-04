@@ -44,6 +44,13 @@
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>io.netty</groupId>
+              <artifactId>netty-codec-http</artifactId>
+              <version>${version.io.netty}</version>
+            </dependency>
+          </dependencies>
           <configuration>
             <imagesDir>.</imagesDir>
             <attributes>
