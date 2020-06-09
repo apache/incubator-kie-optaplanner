@@ -1,16 +1,26 @@
 [[springBootJavaQuickStart]]
+
+
 = Spring Boot Java quick start
+
+include::./attributes_opta.adoc[]
 :doctype: book
+
 :imagesdir: ../..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
+:COMM:
+//Variable for the community version conditional statements.
+:ENT:
+//Variable for the enterprise version conditional statements.
+
 
 This guide walks you through the process of creating a Spring Boot
-application with OptaPlanner's constraint solving Artificial Intelligence (AI).
+application with {PLANNER}'s constraint solving Artificial Intelligence (AI).
 
-== What you will build
+//== What you will build
 
 You will build a REST application that optimizes a school timetable for students and teachers:
 
@@ -29,10 +39,10 @@ Mathematically speaking, school timetabling is an _NP-hard_ problem.
 That means it is difficult to scale.
 Simply brute force iterating through all possible combinations takes millions of years
 for a non-trivial dataset, even on a supercomputer.
-Luckily, AI constraint solvers such as OptaPlanner have advanced algorithms
+Luckily, AI constraint solvers such as {PLANNER} have advanced algorithms
 that deliver a near-optimal solution in a reasonable amount of time.
 
-== What you'll need
+.Prerequisites
 
 * https://www.oracle.com/java/technologies/javase-downloads.html[JDK 8 or later]
 * https://maven.apache.org/download.cgi[Maven 3.2+] or https://gradle.org/install/[Gradle4+]
@@ -44,7 +54,8 @@ Use https://start.spring.io/[Spring Initializr] to generate an application
 with the following dependencies:
 
 * Spring Web (`spring-boot-starter-web`)
-* OptaPlanner (`optaplanner-spring-boot-starter`)
+* {PLANNER} (`optaplanner-spring-boot-starter`)
+
 ** Currently `optaplanner-spring-boot-starter` isn't included in Spring Initializr yet.
 Add it manually in your build file.
 
@@ -66,8 +77,8 @@ If you choose Maven, your `pom.xml` file has the following content:
     <groupId>com.example</groupId>
     <artifactId>constraint-solving-ai-optaplanner</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <name>Constraint Solving AI with OptaPlanner</name>
-    <description>A Spring Boot OptaPlanner example to generate a school timetable.</description>
+    <name>Constraint Solving AI with {PLANNER}</name>
+    <description>A Spring Boot {PLANNER} example to generate a school timetable.</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -221,10 +232,10 @@ public class Timeslot {
 ====
 
 Because no `Timeslot` instances change during solving, a `Timeslot` is called a _problem fact_.
-Such classes do not require any OptaPlanner specific annotations.
+Such classes do not require any {PLANNER} specific annotations.
 
 Notice the `toString()` method keeps the output short,
-so it is easier to read OptaPlanner's `DEBUG` or `TRACE` log, as shown later.
+so it is easier to read {PLANNER}'s `DEBUG` or `TRACE` log, as shown later.
 
 === Room
 
@@ -279,18 +290,18 @@ If a subject is taught multiple times per week by the same teacher to the same s
 there are multiple `Lesson` instances that are only distinguishable by `id`.
 For example, the 9th grade has six math lessons a week.
 
-During solving, OptaPlanner changes the `timeslot` and `room` fields of the `Lesson` class,
+During solving, {PLANNER} changes the `timeslot` and `room` fields of the `Lesson` class,
 to assign each lesson to a time slot and a room.
-Because OptaPlanner changes these fields, `Lesson` is a _planning entity_:
+Because {PLANNER} changes these fields, `Lesson` is a _planning entity_:
 
 image::QuickStart/SpringBoot/timeTableClassDiagramAnnotated.png[]
 
 Most of the fields in the previous diagram contain input data, except for the orange fields:
 A lesson's `timeslot` and `room` fields are unassigned (`null`) in the input data
 and assigned (not `null`) in the output data.
-OptaPlanner changes these fields during solving.
+{PLANNER} changes these fields during solving.
 Such fields are called planning variables.
-In order for OptaPlanner to recognize them,
+In order for {PLANNER} to recognize them,
 both the `timeslot` and `room` fields require an `@PlanningVariable` annotation.
 Their containing class, `Lesson`, requires an `@PlanningEntity` annotation.
 
@@ -375,13 +386,13 @@ public class Lesson {
 ====
 
 The `Lesson` class has an `@PlanningEntity` annotation,
-so OptaPlanner knows that this class changes during solving
+so {PLANNER} knows that this class changes during solving
 because it contains one or more planning variables.
 
 The `timeslot` field has an `@PlanningVariable` annotation,
-so OptaPlanner knows that it can change its value.
+so {PLANNER} knows that it can change its value.
 In order to find potential `Timeslot` instances to assign to this field,
-OptaPlanner uses the `valueRangeProviderRefs` property to connect to a value range provider
+{PLANNER} uses the `valueRangeProviderRefs` property to connect to a value range provider
 (explained later) that provides a `List<Timeslot>` to pick from.
 
 The `room` field also has an `@PlanningVariable` annotation, for the same reasons.
@@ -398,7 +409,7 @@ to avoid common pitfalls.
 
 A _score_ represents the quality of a given solution.
 The higher the better.
-OptaPlanner looks for the best solution, which is the solution with the highest score found in the available time.
+{PLANNER} looks for the best solution, which is the solution with the highest score found in the available time.
 It could be the _optimal_ solution.
 
 Because this use case has hard and soft constraints,
@@ -456,7 +467,7 @@ all lessons are re-evaluated to calculate the new score.
 
 Instead, create a `src/main/java/com/example/solver/TimeTableConstraintProvider.java` class
 to perform incremental score calculation.
-It uses OptaPlanner's ConstraintStream API which is inspired by Java 8 Streams and SQL:
+It uses {PLANNER}'s ConstraintStream API which is inspired by Java 8 Streams and SQL:
 
 ====
 [source,java]
@@ -607,7 +618,7 @@ public class TimeTable {
 ====
 
 The `TimeTable` class has an `@PlanningSolution` annotation,
-so OptaPlanner knows that this class contains all of the input and output data.
+so {PLANNER} knows that this class contains all of the input and output data.
 
 Specifically, this class is the input of the problem:
 
@@ -631,7 +642,7 @@ However, this class is also the output of the solution:
 === The value range providers
 
 That `timeslotList` field is a value range provider.
-It holds the `Timeslot` instances which OptaPlanner can pick from to assign to the `timeslot` field of `Lesson` instances.
+It holds the `Timeslot` instances which {PLANNER} can pick from to assign to the `timeslot` field of `Lesson` instances.
 The `timeslotList` field has an `@ValueRangeProvider` annotation to connect those two,
 by matching the `id` with the `valueRangeProviderRefs` of the `@PlanningVariable` in the `Lesson`.
 
@@ -639,7 +650,7 @@ Following the same logic, the `roomList` field also has an `@ValueRangeProvider`
 
 === The problem fact and planning entity properties
 
-Furthermore, OptaPlanner needs to know which `Lesson` instances it can change
+Furthermore, {PLANNER} needs to know which `Lesson` instances it can change
 as well as how to retrieve the `Timeslot` and `Room` instances used for score calculation
 by your `TimeTableConstraintProvider`.
 
@@ -647,7 +658,7 @@ The `timeslotList` and `roomList` fields have an `@ProblemFactCollectionProperty
 so your `TimeTableConstraintProvider` can select _from_ those instances.
 
 The `lessonList` has an `@PlanningEntityCollectionProperty` annotation,
-so OptaPlanner can change them during solving
+so {PLANNER} can change them during solving
 and your `TimeTableConstraintProvider` can select _from_ those too.
 
 == Create the solver service
@@ -778,7 +789,7 @@ Notice that your application assigned all four lessons to one of the two time sl
 Also notice that it conforms to all hard constraints.
 For example, M. Curie's two lessons are in different time slots.
 
-On the server side, the `info` log show what OptaPlanner did in those five seconds:
+On the server side, the `info` log show what {PLANNER} did in those five seconds:
 
 [options="nowrap"]
 ----
@@ -891,7 +902,7 @@ after solving for the same amount of time, to assess the performance impact:
 ... Solving ended: ..., score calculation speed (29455/sec), ...
 ----
 
-To understand how OptaPlanner is solving your problem internally,
+To understand how {PLANNER} is solving your problem internally,
 change the logging in the `application.properties` file or with a `-D` system property:
 
 ====
@@ -916,7 +927,8 @@ Use `trace` logging to show every _step_ and every _move_ per step.
 == Summary
 
 Congratulations!
-You have just developed a https://spring.io/[Spring] application with https://www.optaplanner.org/[OptaPlanner]!
+You have just developed a https://spring.io/[Spring] application with https://www.optaplanner.org/[{PLANNER}]!
+//Need enterpise path
 
 == Further improvements: Database and UI integration
 
