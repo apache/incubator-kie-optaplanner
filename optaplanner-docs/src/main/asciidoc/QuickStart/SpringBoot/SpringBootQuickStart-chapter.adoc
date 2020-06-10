@@ -18,7 +18,7 @@ include::./attributes_opta.adoc[]
 
 
 This guide walks you through the process of creating a Spring Boot
-application with {PLANNER}'s constraint solving Artificial Intelligence (AI).
+application with {PLANNER}'s constraint solving artificial intelligence (AI).
 
 //== What you will build
 
