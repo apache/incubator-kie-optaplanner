@@ -20,7 +20,7 @@ include::./attributes_opta.adoc[]
 This guide walks you through the process of creating a Spring Boot
 application with {PLANNER}'s constraint solving artificial intelligence (AI).
 
-//== What you will build
+//== What you will build - I suggest we remove this.
 
 You will build a REST application that optimizes a school timetable for students and teachers:
 
@@ -48,20 +48,41 @@ that deliver a near-optimal solution in a reasonable amount of time.
 * https://maven.apache.org/download.cgi[Maven 3.2+] or https://gradle.org/install/[Gradle4+]
 * An IDE, such as https://www.jetbrains.com/idea[IntelliJ IDEA], VSCode, Eclipse or NetBeans
 
-== The build file and the dependencies
+== Generate the {PLANNER} Spring Boot project
 
-Use https://start.spring.io/[Spring Initializr] to generate an application
-with the following dependencies:
+Spring Initialz is a web-based application that creates a Spring Boot structure based on a few user inputs. You can use Spring Initializr to easily generate a Maven or Gradle Spring Boot project that you can customize for {PLANNER}.
 
-* Spring Web (`spring-boot-starter-web`)
-* {PLANNER} (`optaplanner-spring-boot-starter`)
 
-** Currently `optaplanner-spring-boot-starter` isn't included in Spring Initializr yet.
-Add it manually in your build file.
-
-If you choose Maven, your `pom.xml` file has the following content:
-
-====
+.Procedure
+. Open Spring Initializr in a web browser:
++
+[source]
+----
+https://start.spring.io/
+----
+. Select a project, language, Spring Boot version and enter project metadata.
+. Click *Add Dependencies* and select *Spring Web* to add the `spring-boot-starter-web` dependency.
+. Click *GENERATE*. Your project ZIP file downloads.
+. Extract the ZIP file and change directory to your Spring Boot project directory.
+. Add the {PLANNER} dependency (`optaplanner-spring-boot-starter`). Currently `optaplanner-spring-boot-starter` is not included in Spring Initializr so you must manually add it to your build file.
++
+* If you generated a Maven project, add the `optaplanner-spring-boot-starter` to your your `pom.xml` file:
++
+[source,xml,subs=attributes+]
+----
+<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.optaplanner</groupId>
+                <artifactId>optaplanner-spring-boot-starter</artifactId>
+                <version>7.38.0.Final</version>
+            </dependency>
+        </dependencies>
+</dependencyManagement>
+----
++
+The following example shows the `optaplanner-spring-boot-starter` dependency added to the Spring Boot `pom.xml` file:
++
 [source,xml,subs=attributes+]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
@@ -128,11 +149,16 @@ If you choose Maven, your `pom.xml` file has the following content:
 
 </project>
 ----
-====
 
-On the other hand, in Gradle, your `build.gradle` file has this content:
-
-====
+* If you generated a Gradle project, add the `optaplanner-spring-boot-starter` to your `build.gradle` file:
++
+[source]
+----
+implementation "org.optaplanner:optaplanner-spring-boot-starter:{project-version}"
+----
++
+The following example shows the `optaplanner-spring-boot-starter` dependency added to the Spring Boot `build.gradle` file in a Gradle Java project:
++
 [source,groovy,subs=attributes+]
 ----
 plugins {
@@ -161,29 +187,68 @@ test {
     useJUnitPlatform()
 }
 ----
-====
+
 
 [[initial]]
 == Model the domain objects
 
-Your goal is to assign each lesson to a time slot and a room.
-You will create these classes:
+The goal of the {PLANNER} timetable project is to assign each lesson to a time slot and a room. To do this, you will add three class, `Timeslot`, `Lesson`, and `Room`, as shown in the following diagram:
 
 image::QuickStart/SpringBoot/timeTableClassDiagramPure.png[]
 
-=== Timeslot
+.Timeslot
 
 The `Timeslot` class represents a time interval when lessons are taught,
 for example, `Monday 10:30 - 11:30` or `Tuesday 13:30 - 14:30`.
-For simplicity's sake, all time slots have the same duration
+In this example, all time slots have the same duration
 and there are no time slots during lunch or other breaks.
 
 A time slot has no date, because a high school schedule just repeats every week.
-So there is no need for https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#continuousPlanning[continuous planning].
+There is no need for https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#continuousPlanning[continuous planning].
+Because no `Timeslot` instances change during solving, a `Timeslot` is called a _problem fact_.
+Such classes do not require any {PLANNER} specific annotations.
 
-Create the `src/main/java/com/example/domain/Timeslot.java` class:
+.Room
 
-====
+The `Room` class represents a location where lessons are taught,
+for example, `Room A` or `Room B`.
+In this example, all rooms are without capacity limits
+and they can accommodate all lessons.
+
+`Room` instances do not change during solving, so `Room` is also a _problem fact_.
+
+.Lesson
+
+During a lesson, represented by the `Lesson` class,
+a teacher teaches a subject to a group of students,
+for example, `Math by A.Turing for 9th grade` or `Chemistry by M.Curie for 10th grade`.
+If a subject is taught multiple times per week by the same teacher to the same student group,
+there are multiple `Lesson` instances that are only distinguishable by `id`.
+For example, the 9th grade has six math lessons a week.
+
+During solving, {PLANNER} changes the `timeslot` and `room` fields of the `Lesson` class,
+to assign each lesson to a time slot and a room.
+Because {PLANNER} changes these fields, `Lesson` is a _planning entity_:
+
+image::QuickStart/SpringBoot/timeTableClassDiagramAnnotated.png[]
+
+Most of the fields in the previous diagram contain input data, except for the orange fields:
+A lesson's `timeslot` and `room` fields are unassigned (`null`) in the input data
+and assigned (not `null`) in the output data.
+{PLANNER} changes these fields during solving.
+Such fields are called planning variables.
+In order for {PLANNER} to recognize them,
+both the `timeslot` and `room` fields require an `@PlanningVariable` annotation.
+Their containing class, `Lesson`, requires an `@PlanningEntity` annotation.
+
+
+.Prerequistite
+* A Spring Boot project exists
+
+.Procedure
+
+. Create the `src/main/java/com/example/domain/Timeslot.java` class:
++
 [source,java]
 ----
 package com.example.domain;
@@ -229,24 +294,14 @@ public class Timeslot {
 
 }
 ----
-====
 
-Because no `Timeslot` instances change during solving, a `Timeslot` is called a _problem fact_.
-Such classes do not require any {PLANNER} specific annotations.
-
++
 Notice the `toString()` method keeps the output short,
 so it is easier to read {PLANNER}'s `DEBUG` or `TRACE` log, as shown later.
 
-=== Room
 
-The `Room` class represents a location where lessons are taught,
-for example, `Room A` or `Room B`.
-For simplicity's sake, all rooms are without capacity limits
-and they can accommodate all lessons.
-
-Create the `src/main/java/com/example/domain/Room.java` class:
-
-====
+. Create the `src/main/java/com/example/domain/Room.java` class:
++
 [source,java]
 ----
 package com.example.domain;
@@ -277,37 +332,9 @@ public class Room {
 
 }
 ----
-====
 
-`Room` instances do not change during solving, so `Room` is also a _problem fact_.
-
-=== Lesson
-
-During a lesson, represented by the `Lesson` class,
-a teacher teaches a subject to a group of students,
-for example, `Math by A.Turing for 9th grade` or `Chemistry by M.Curie for 10th grade`.
-If a subject is taught multiple times per week by the same teacher to the same student group,
-there are multiple `Lesson` instances that are only distinguishable by `id`.
-For example, the 9th grade has six math lessons a week.
-
-During solving, {PLANNER} changes the `timeslot` and `room` fields of the `Lesson` class,
-to assign each lesson to a time slot and a room.
-Because {PLANNER} changes these fields, `Lesson` is a _planning entity_:
-
-image::QuickStart/SpringBoot/timeTableClassDiagramAnnotated.png[]
-
-Most of the fields in the previous diagram contain input data, except for the orange fields:
-A lesson's `timeslot` and `room` fields are unassigned (`null`) in the input data
-and assigned (not `null`) in the output data.
-{PLANNER} changes these fields during solving.
-Such fields are called planning variables.
-In order for {PLANNER} to recognize them,
-both the `timeslot` and `room` fields require an `@PlanningVariable` annotation.
-Their containing class, `Lesson`, requires an `@PlanningEntity` annotation.
-
-Create the `src/main/java/com/example/domain/Lesson.java` class:
-
-====
+. Create the `src/main/java/com/example/domain/Lesson.java` class:
++
 [source,java]
 ----
 package com.example.domain;
@@ -383,18 +410,17 @@ public class Lesson {
 
 }
 ----
-====
-
++
 The `Lesson` class has an `@PlanningEntity` annotation,
 so {PLANNER} knows that this class changes during solving
 because it contains one or more planning variables.
-
++
 The `timeslot` field has an `@PlanningVariable` annotation,
 so {PLANNER} knows that it can change its value.
 In order to find potential `Timeslot` instances to assign to this field,
 {PLANNER} uses the `valueRangeProviderRefs` property to connect to a value range provider
 (explained later) that provides a `List<Timeslot>` to pick from.
-
++
 The `room` field also has an `@PlanningVariable` annotation, for the same reasons.
 
 [NOTE]
@@ -407,12 +433,12 @@ to avoid common pitfalls.
 
 == Define the constraints and calculate the score
 
-A _score_ represents the quality of a given solution.
-The higher the better.
+When solving a problem, a _score_ represents the quality of a given solution.
+The higher the score the better.
 {PLANNER} looks for the best solution, which is the solution with the highest score found in the available time.
-It could be the _optimal_ solution.
+The highest score might be the _optimal_ solution.
 
-Because this use case has hard and soft constraints,
+Because the timetable example use case has hard and soft constraints,
 use the `HardSoftScore` class to represent the score:
 
 * Hard constraints must not be broken. For example: _A room can have at most one lesson at the same time._
@@ -420,11 +446,10 @@ use the `HardSoftScore` class to represent the score:
 
 Hard constraints are weighted against other hard constraints.
 Soft constraints are weighted too, against other soft constraints.
-*Hard constraints always outweigh soft constraints*, regardless of their respective weights.
+Hard constraints always outweigh soft constraints, regardless of their respective weights.
 
 To calculate the score, you could implement an `EasyScoreCalculator` class:
 
-====
 [source,java]
 ----
 public class TimeTableEasyScoreCalculator implements EasyScoreCalculator<TimeTable> {
@@ -459,17 +484,22 @@ public class TimeTableEasyScoreCalculator implements EasyScoreCalculator<TimeTab
 
 }
 ----
-====
 
-Unfortunately **that does not scale well**, because it is non-incremental:
+Unfortunately this solution does not scale well because it is non-incremental:
 every time a lesson is assigned to a different time slot or room,
 all lessons are re-evaluated to calculate the new score.
 
-Instead, create a `src/main/java/com/example/solver/TimeTableConstraintProvider.java` class
-to perform incremental score calculation.
-It uses {PLANNER}'s ConstraintStream API which is inspired by Java 8 Streams and SQL:
+A better solution is to create a `src/main/java/com/example/solver/TimeTableConstraintProvider.java` class
+to perform incremental score calculation. This class uses {PLANNER}'s ConstraintStream API which is inspired by Java 8 Streams and SQL.
+The `ConstraintProvider` scales an order of magnitude better than the `EasyScoreCalculator`: __O__(n) instead of __O__(n²).
 
-====
+
+.Prerequisites
+* A Timetable {PLANNER} Spring Boot project exists and contains the `Room`, `Lesson`, and `Timeslot` classes.
+
+.Procedure
+Create the following `src/main/java/com/example/solver/TimeTableConstraintProvider.java` class:
+
 [source,java]
 ----
 package com.example.solver;
@@ -533,13 +563,10 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
 
 }
 ----
-====
-
-The `ConstraintProvider` scales an order of magnitude better than the `EasyScoreCalculator`: __O__(n) instead of __O__(n²).
 
 == Gather the domain objects in a planning solution
 
-A `TimeTable` wraps all `Timeslot`, `Room`, and `Lesson` instances of a single dataset.
+A `TimeTable` instance wraps all `Timeslot`, `Room`, and `Lesson` instances of a single dataset.
 Furthermore, because it contains all lessons, each with a specific planning variable state,
 it is a _planning solution_ and it has a score:
 
@@ -550,9 +577,31 @@ for example, a solution with the score `-2hard/-3soft`.
 * If it adheres to all hard constraints, then it is a _feasible_ solution,
 for example, a solution with the score `0hard/-7soft`.
 
+The `TimeTable` class has an `@PlanningSolution` annotation,
+so {PLANNER} knows that this class contains all of the input and output data.
+
+Specifically, this class is the input of the problem:
+
+* A `timeslotList` field with all time slots
+** This is a list of problem facts, because they do not change during solving.
+* A `roomList` field with all rooms
+** This is a list of problem facts, because they do not change during solving.
+* A `lessonList` field with all lessons
+** This is a list of planning entities, because they change during solving.
+** Of each `Lesson`:
+*** The values of the `timeslot` and `room` fields are typically still `null`, so unassigned.
+They are planning variables.
+***  The other fields, such as `subject`, `teacher` and `studentGroup`, are filled in.
+These fields are problem properties.
+
+However, this class is also the output of the solution:
+
+* A `lessonList` field for which each `Lesson` instance has non-null `timeslot` and `room` fields after solving
+* A `score` field that represents the quality of the output solution, for example, `0hard/-5soft`
+
+.Procedure
 Create the `src/main/java/com/example/domain/TimeTable.java` class:
 
-====
 [source,java]
 ----
 package com.example.domain;
@@ -615,40 +664,19 @@ public class TimeTable {
 
 }
 ----
-====
 
-The `TimeTable` class has an `@PlanningSolution` annotation,
-so {PLANNER} knows that this class contains all of the input and output data.
 
-Specifically, this class is the input of the problem:
 
-* A `timeslotList` field with all time slots
-** This is a list of problem facts, because they do not change during solving.
-* A `roomList` field with all rooms
-** This is a list of problem facts, because they do not change during solving.
-* A `lessonList` field with all lessons
-** This is a list of planning entities, because they change during solving.
-** Of each `Lesson`:
-*** The values of the `timeslot` and `room` fields are typically still `null`, so unassigned.
-They are planning variables.
-***  The other fields, such as `subject`, `teacher` and `studentGroup`, are filled in.
-These fields are problem properties.
+.The value range providers
 
-However, this class is also the output of the solution:
-
-* A `lessonList` field for which each `Lesson` instance has non-null `timeslot` and `room` fields after solving
-* A `score` field that represents the quality of the output solution, for example, `0hard/-5soft`
-
-=== The value range providers
-
-That `timeslotList` field is a value range provider.
+The `timeslotList` field is a value range provider.
 It holds the `Timeslot` instances which {PLANNER} can pick from to assign to the `timeslot` field of `Lesson` instances.
 The `timeslotList` field has an `@ValueRangeProvider` annotation to connect those two,
 by matching the `id` with the `valueRangeProviderRefs` of the `@PlanningVariable` in the `Lesson`.
 
 Following the same logic, the `roomList` field also has an `@ValueRangeProvider` annotation.
 
-=== The problem fact and planning entity properties
+.The problem fact and planning entity properties
 
 Furthermore, {PLANNER} needs to know which `Lesson` instances it can change
 as well as how to retrieve the `Timeslot` and `Room` instances used for score calculation
@@ -661,7 +689,7 @@ The `lessonList` has an `@PlanningEntityCollectionProperty` annotation,
 so {PLANNER} can change them during solving
 and your `TimeTableConstraintProvider` can select _from_ those too.
 
-== Create the solver service
+== Create the Timetable service
 
 Now you are ready to put everything together and create a REST service.
 But solving planning problems on REST threads causes HTTP timeout issues.
@@ -669,9 +697,12 @@ Therefore, the Spring Boot starter injects a `SolverManager`,
 which runs solvers in a separate thread pool
 and can solve multiple datasets in parallel.
 
+.Prerequistites
+* A Timetable {PLANNER} Spring Boot project exists and contains the `Room`, `Lesson`, and `Timeslot` classes and a solver service.
+
+.Procedure
 Create the `src/main/java/com/example/solver/TimeTableController.java` class:
 
-====
 [source,java]
 ----
 package com.example.solver;
@@ -712,38 +743,36 @@ public class TimeTableController {
 
 }
 ----
-====
 
-For simplicity's sake, this initial implementation waits for the solver to finish,
+
+In this example, this initial implementation waits for the solver to finish,
 which can still cause an HTTP timeout.
 The _complete_ implementation avoids HTTP timeouts much more elegantly.
 
-== Set the termination time
+== Set the solver termination time
 
-Without a termination setting or a termination event, the solver runs forever.
-To avoid that, limit the solving time to five seconds.
-That is short enough to avoid the HTTP timeout.
+If your planning application does not have a termination setting or a termination event, it theoretically runs forever and in reality eventually causes an HTTP timeout error. To prevent this from occurring, use the `optaplanner.solver.termination.spent-limit` parameter to specify the length of time after which the application terminates. In most applications, you should set the time to at least five minutes (5m). However, in the Timetable example, limit the solving time to five seconds. That is short enough to avoid the HTTP timeout.
 
-Create the `src/main/resources/application.properties` file:
+.Prerequistites
 
-====
+.Procedure
+Create the `src/main/resources/application.properties` file with the following content:
+
 [source,properties]
 ----
-# The solver runs only for 5 seconds to avoid a HTTP timeout in this simple implementation.
-# It's recommended to run for at least 5 minutes ("5m") otherwise.
 optaplanner.solver.termination.spent-limit=5s
 ----
-====
-
 
 == Make the application executable
 
-Package everything into a single, executable JAR file driven by a standard Java `main()` method:
+After you have completed your {PLANNER} Spring Boot project, package everything into a single executable JAR file driven by a standard Java `main()` method.
 
-Replace the `DemoApplication.java` class created by Spring Initializr
-with the `src/main/java/com/example/TimeTableSpringBootApp.java` class:
+.Prerequisites
 
-====
+.Prodedure
+
+. Create the `TimeTableSpringBootApp.java` class with the following content:
++
 [source,java]
 ----
 package com.example;
@@ -760,23 +789,32 @@ public class TimeTableSpringBootApp {
 
 }
 ----
-====
 
-Run that class as the main class of a normal Java application.
+
+. Replace the `src/main/java/com/example/DemoApplication.java` class created by Spring Initializr
+with the `TimeTableSpringBootApp.java` class.
+. Run the `TimeTableSpringBootApp.java` class  as the main class of a regular Java application.
 
 === Try the application
 
-Now that the application is running, you can test the REST service.
-You can use any REST client you wish.
-The following example uses the Linux command `curl` to send a POST request:
+After you start the Timetable {PLANNER} Spring Boot application, you can test the REST service with any REST client that you want.
+This example uses the Linux command `curl` to send a POST request.
 
+.Prerequisites
+* The Timetable {PLANNER} Spring Boot application is running.
+
+.Procedure
+Enter the following command:
+
+[source]
 ----
 $ curl -i -X POST http://localhost:8080/timeTable/solve -H "Content-Type:application/json" -d '{"timeslotList":[{"dayOfWeek":"MONDAY","startTime":"08:30:00","endTime":"09:30:00"},{"dayOfWeek":"MONDAY","startTime":"09:30:00","endTime":"10:30:00"}],"roomList":[{"name":"Room A"},{"name":"Room B"}],"lessonList":[{"id":1,"subject":"Math","teacher":"A. Turing","studentGroup":"9th grade"},{"id":2,"subject":"Chemistry","teacher":"M. Curie","studentGroup":"9th grade"},{"id":3,"subject":"French","teacher":"M. Curie","studentGroup":"10th grade"},{"id":4,"subject":"History","teacher":"I. Jones","studentGroup":"10th grade"}]}'
 ----
 
-After about five seconds, according to the termination spent time defined in your `application.properties`,
+After about five seconds, the termination spent time defined in  `application.properties`,
 the service returns an output similar to the following example:
 
+[source]
 ----
 HTTP/1.1 200
 Content-Type: application/json
@@ -785,7 +823,7 @@ Content-Type: application/json
 {"timeslotList":...,"roomList":...,"lessonList":[{"id":1,"subject":"Math","teacher":"A. Turing","studentGroup":"9th grade","timeslot":{"dayOfWeek":"MONDAY","startTime":"08:30:00","endTime":"09:30:00"},"room":{"name":"Room A"}},{"id":2,"subject":"Chemistry","teacher":"M. Curie","studentGroup":"9th grade","timeslot":{"dayOfWeek":"MONDAY","startTime":"09:30:00","endTime":"10:30:00"},"room":{"name":"Room A"}},{"id":3,"subject":"French","teacher":"M. Curie","studentGroup":"10th grade","timeslot":{"dayOfWeek":"MONDAY","startTime":"08:30:00","endTime":"09:30:00"},"room":{"name":"Room B"}},{"id":4,"subject":"History","teacher":"I. Jones","studentGroup":"10th grade","timeslot":{"dayOfWeek":"MONDAY","startTime":"09:30:00","endTime":"10:30:00"},"room":{"name":"Room B"}}],"score":"0hard/0soft"}
 ----
 
-Notice that your application assigned all four lessons to one of the two time slots and one of the two rooms.
+Notice that the application assigned all four lessons to one of the two time slots and one of the two rooms.
 Also notice that it conforms to all hard constraints.
 For example, M. Curie's two lessons are in different time slots.
 
@@ -801,12 +839,15 @@ On the server side, the `info` log show what {PLANNER} did in those five seconds
 
 === Test the application
 
-A good application includes test coverage.
-In a JUnit test, generate a test dataset and send it to the `TimeTableController` to solve.
+A good application includes test coverage. This example tests the Timetable {PLANNER} Spring Boot application. It uses a JUnit test to generate a test dataset and send it to the `TimeTableController` to solve.
 
-Create the `src/test/java/com/example/solver/TimeTableControllerTest.java` class:
+.Prerequisites
+ * The Timetable {PLANNER} Spring Boot application exists.
 
-====
+.Procedure
+
+. Create the `src/test/java/com/example/solver/TimeTableControllerTest.java` class with the following content:
++
 [source,java]
 ----
 package com.example.solver;
@@ -880,7 +921,7 @@ public class TimeTableControllerTest {
 
 }
 ----
-====
+
 
 This test verifies that after solving, all lessons are assigned to a time slot and a room.
 It also verifies that it found a feasible solution (no hard constraints broken).
@@ -890,12 +931,19 @@ Notice how the `@SpringBootTest` annotation's `properties` overwrites the solver
 to terminate as soon as a feasible solution (`0hard/*soft`) is found.
 This avoids hard coding a solver time, because the unit test might run on arbitrary hardware.
 This approach ensures that the test runs long enough to find a feasible solution, even on slow machines.
-But it does not run a millisecond longer than it strictly must, even on fast machines.
+However, it does not run a millisecond longer than it strictly must, even on fast machines.
 
 === Logging
 
-When adding constraints in your `ConstraintProvider`,
-keep an eye on the _score calculation speed_ in the `info` log,
+After you have completed your {PLANNER} Spring Boot application, you can use logging for information to help you fine tune the constraints in the `ConstraintProvider`. Review the _score calculation speed_ in the `info` log with more than one set of contraintst.
+
+.Prerequisites
+* {PLANNER} Spring Boot application exists
+
+.Procedure
+. Run the planning application for a fixed amount of time, for example five minutes.
+.
+
 after solving for the same amount of time, to assess the performance impact:
 
 ----
@@ -1004,11 +1052,11 @@ public class TimeTableController {
 For simplicity's sake, this code handles only one `TimeTable`,
 but it is straightforward to enable multi-tenancy and handle multiple `TimeTable` instances of different high schools in parallel.
 +
-The `getTimeTable()` method returns the latest time table from the database.
+The `getTimeTable()` method returns the latest timetable from the database.
 It uses the `ScoreManager` (which is automatically injected)
-to calculate the score of that time table, so the UI can show the score.
+to calculate the score of that timetable, so the UI can show the score.
 +
-The `solve()` method starts a job to solve the current time table and store the time slot and room assignments in the database.
+The `solve()` method starts a job to solve the current timetable and store the time slot and room assignments in the database.
 It uses the `SolverManager.solveAndListen()` method to listen to intermediate best solutions
 and update the database accordingly.
 This enables the UI to show progress while the backend is still solving.
