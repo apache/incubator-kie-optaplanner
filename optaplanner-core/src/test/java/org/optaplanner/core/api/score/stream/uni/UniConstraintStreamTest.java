@@ -19,13 +19,13 @@ package org.optaplanner.core.api.score.stream.uni;
 import static java.util.Comparator.comparing;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.min;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

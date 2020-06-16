@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.domain.entity.descriptor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertNotNull;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

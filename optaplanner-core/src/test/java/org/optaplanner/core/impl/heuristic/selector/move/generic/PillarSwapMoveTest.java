@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCollectionContainsExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -286,14 +287,14 @@ public class PillarSwapMoveTest {
         PillarSwapMove<TestdataMultiVarSolution> move = new PillarSwapMove<>(Arrays.asList(primaryDescriptor),
                 Arrays.asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
                 Arrays.asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")));
-        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue");
+        assertThat((Collection<String>) move.getVariableNameList()).containsExactly("primaryValue");
         assertAllCodesOfCollection(move.getLeftPillar(), "a", "b");
         assertAllCodesOfCollection(move.getRightPillar(), "c", "d");
 
         move = new PillarSwapMove<>(Arrays.asList(primaryDescriptor, secondaryDescriptor),
                 Arrays.asList(new TestdataMultiVarEntity("e"), new TestdataMultiVarEntity("f")),
                 Arrays.asList(new TestdataMultiVarEntity("g"), new TestdataMultiVarEntity("h")));
-        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue", "secondaryValue");
+        assertThat((Collection<String>) move.getVariableNameList()).containsExactly("primaryValue", "secondaryValue");
         assertAllCodesOfCollection(move.getLeftPillar(), "e", "f");
         assertAllCodesOfCollection(move.getRightPillar(), "g", "h");
     }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
- * Licensed under the Apache License, Version 2 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,24 +16,23 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.biginteger;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.math.BigInteger;
 import java.util.Random;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 public class BigIntegerValueRangeTest {
 
     @Test
     public void getSize() {
-        Assert.assertEquals(10L, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).getSize());
+        assertEquals(10L, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).getSize());
         assertEquals(20L, new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).getSize());
         assertEquals(40L, new BigIntegerValueRange(new BigInteger("-15"), new BigInteger("25")).getSize());
         assertEquals(0L, new BigIntegerValueRange(new BigInteger("7"), new BigInteger("7")).getSize());

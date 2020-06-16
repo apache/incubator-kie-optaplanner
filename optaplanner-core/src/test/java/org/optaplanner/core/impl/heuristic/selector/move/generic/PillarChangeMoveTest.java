@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import java.util.Arrays;
 import java.util.List;
@@ -167,7 +167,7 @@ public class PillarChangeMoveTest {
     }
 
     public void assertSameProperties(List<Object> pillar, Object toPlanningVariable, PillarChangeMove<?> move) {
-        assertListElementsSameExactly(pillar, (List<Object>) move.getPillar());
+        assertListElementsSameExactly(pillar, move.getPillar());
         assertSame(toPlanningVariable, move.getToPlanningValue());
     }
 

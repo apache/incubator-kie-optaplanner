@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 package org.optaplanner.core.impl.score.director.easy;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.util.Util.assertFalse;
 
 import java.util.Arrays;
 
@@ -77,12 +77,8 @@ public class EasyScoreDirectorTest {
         e2.setValue(v1);
         scoreDirector.afterVariableChanged(e2, "value");
         scoreDirector.triggerVariableListeners();
-        // TODO After upgrade to JUnit 5, clean this up
-        try {
-            scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(0, 0), "FirstChange");
-            fail("IllegalStateException wasn't thrown.");
-        } catch (IllegalStateException e) {
-            // ok
-        }
+        assertThatThrownBy(
+                () -> scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(0, 0), "FirstChange"))
+                        .isInstanceOf(IllegalStateException.class);
     }
 }

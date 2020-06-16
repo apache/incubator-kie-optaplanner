@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,19 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfArray;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertFalse;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertTrue;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertFalse;
+import static org.optaplanner.core.impl.util.Util.assertSame;
+import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,18 +139,22 @@ public class CompositeMoveTest {
 
     @Test
     public void buildEmptyMove() {
-        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove(new ArrayList<>()));
-        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove());
+        assertThat(CompositeMove.buildMove(new ArrayList<>()))
+                .isInstanceOf(NoChangeMove.class);
+        assertThat(CompositeMove.buildMove())
+                .isInstanceOf(NoChangeMove.class);
     }
 
     @Test
     public void buildOneElemMove() {
         DummyMove tmpMove = new DummyMove();
         Move<TestdataSolution> move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
-        assertInstanceOf(DummyMove.class, move);
+        assertThat((Object) move)
+                .isInstanceOf(DummyMove.class);
 
         move = CompositeMove.buildMove(tmpMove);
-        assertInstanceOf(DummyMove.class, move);
+        assertThat((Object) move)
+                .isInstanceOf(DummyMove.class);
     }
 
     @Test
@@ -158,14 +162,20 @@ public class CompositeMoveTest {
         DummyMove first = new DummyMove();
         NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
         Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
-        assertInstanceOf(CompositeMove.class, move);
-        assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
-        assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
+        assertThat((Object) move)
+                .isInstanceOf(CompositeMove.class);
+        assertThat(((CompositeMove) move).getMoves()[0])
+                .isInstanceOf(DummyMove.class);
+        assertThat(((CompositeMove) move).getMoves()[1])
+                .isInstanceOf(NoChangeMove.class);
 
         move = CompositeMove.buildMove(first, second);
-        assertInstanceOf(CompositeMove.class, move);
-        assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
-        assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
+        assertThat((Object) move)
+                .isInstanceOf(CompositeMove.class);
+        assertThat(((CompositeMove) move).getMoves()[0])
+                .isInstanceOf(DummyMove.class);
+        assertThat(((CompositeMove) move).getMoves()[1])
+                .isInstanceOf(NoChangeMove.class);
     }
 
     @Test

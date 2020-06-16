@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.config.solver.termination;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertNotNull;
+import static org.optaplanner.core.impl.util.Util.assertNull;
 
 import java.time.Duration;
 
@@ -41,7 +41,8 @@ public class TerminationConfigTest {
                 .plusHours(2L)
                 .plusDays(1L));
         Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(TimeMillisSpentTermination.class, termination);
+        assertThat((Object) termination)
+                .isInstanceOf(TimeMillisSpentTermination.class);
         assertEquals(93784005L, ((TimeMillisSpentTermination) termination).getTimeMillisSpentLimit());
     }
 
@@ -54,7 +55,8 @@ public class TerminationConfigTest {
         terminationConfig.setHoursSpentLimit(2L);
         terminationConfig.setDaysSpentLimit(1L);
         Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(TimeMillisSpentTermination.class, termination);
+        assertThat((Object) termination)
+                .isInstanceOf(TimeMillisSpentTermination.class);
         assertEquals(93784005L, ((TimeMillisSpentTermination) termination).getTimeMillisSpentLimit());
     }
 
@@ -76,7 +78,8 @@ public class TerminationConfigTest {
                 .plusHours(2L)
                 .plusDays(1L));
         Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(UnimprovedTimeMillisSpentTermination.class, termination);
+        assertThat((Object) termination)
+                .isInstanceOf(UnimprovedTimeMillisSpentTermination.class);
         assertEquals(93784005L, ((UnimprovedTimeMillisSpentTermination) termination).getUnimprovedTimeMillisSpentLimit());
     }
 
@@ -89,7 +92,8 @@ public class TerminationConfigTest {
         terminationConfig.setUnimprovedHoursSpentLimit(2L);
         terminationConfig.setUnimprovedDaysSpentLimit(1L);
         Termination termination = terminationConfig.buildTermination(mock(HeuristicConfigPolicy.class));
-        assertInstanceOf(UnimprovedTimeMillisSpentTermination.class, termination);
+        assertThat((Object) termination)
+                .isInstanceOf(UnimprovedTimeMillisSpentTermination.class);
         assertEquals(93784005L, ((UnimprovedTimeMillisSpentTermination) termination).getUnimprovedTimeMillisSpentLimit());
     }
 

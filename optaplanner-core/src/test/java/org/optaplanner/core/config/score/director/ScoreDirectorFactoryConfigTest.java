@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.config.score.director;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertFalse;
+import static org.optaplanner.core.impl.util.Util.assertNull;
+import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.HashMap;
 
@@ -45,7 +45,8 @@ public class ScoreDirectorFactoryConfigTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         config.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         ScoreDefinition scoreDefinition = config.buildDeprecatedScoreDefinition();
-        assertInstanceOf(SimpleScoreDefinition.class, scoreDefinition);
+        assertThat(scoreDefinition)
+                .isInstanceOf(SimpleScoreDefinition.class);
     }
 
     @Test

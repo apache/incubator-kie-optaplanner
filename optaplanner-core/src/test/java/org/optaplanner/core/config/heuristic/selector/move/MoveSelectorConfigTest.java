@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 
 package org.optaplanner.core.config.heuristic.selector.move;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNotInstanceOf;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.AbstractConfig;
@@ -74,8 +73,10 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingMoveSelector.class, moveSelector);
-        assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertThat((Object) moveSelector)
+                .isInstanceOf(CachingMoveSelector.class);
+        assertThat((Object) moveSelector)
+                .isNotInstanceOf(ShufflingMoveSelector.class);
         assertEquals(SelectionCacheType.PHASE, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
@@ -90,8 +91,10 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingMoveSelector.class, moveSelector);
-        assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertThat((Object) moveSelector)
+                .isInstanceOf(CachingMoveSelector.class);
+        assertThat((Object) moveSelector)
+                .isNotInstanceOf(ShufflingMoveSelector.class);
         assertEquals(SelectionCacheType.STEP, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
@@ -120,8 +123,10 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingMoveSelector.class, moveSelector);
-        assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertThat((Object) moveSelector)
+                .isInstanceOf(CachingMoveSelector.class);
+        assertThat((Object) moveSelector)
+                .isNotInstanceOf(ShufflingMoveSelector.class);
         assertEquals(SelectionCacheType.PHASE, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
@@ -136,8 +141,10 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CachingMoveSelector.class, moveSelector);
-        assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertThat((Object) moveSelector)
+                .isInstanceOf(CachingMoveSelector.class);
+        assertThat((Object) moveSelector)
+                .isNotInstanceOf(ShufflingMoveSelector.class);
         assertEquals(SelectionCacheType.STEP, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((CachingMoveSelector) moveSelector).getChildMoveSelector());
     }
@@ -166,7 +173,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertThat((Object) moveSelector)
+                .isInstanceOf(ShufflingMoveSelector.class);
         assertEquals(SelectionCacheType.PHASE, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((ShufflingMoveSelector) moveSelector).getChildMoveSelector());
     }
@@ -181,7 +189,8 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(ShufflingMoveSelector.class, moveSelector);
+        assertThat((Object) moveSelector)
+                .isInstanceOf(ShufflingMoveSelector.class);
         assertEquals(SelectionCacheType.STEP, moveSelector.getCacheType());
         assertSame(baseMoveSelector, ((ShufflingMoveSelector) moveSelector).getChildMoveSelector());
     }

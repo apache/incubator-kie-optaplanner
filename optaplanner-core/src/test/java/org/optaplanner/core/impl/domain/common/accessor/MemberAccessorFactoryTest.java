@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.domain.common.accessor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
@@ -34,7 +34,8 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningVariable.class);
-        assertInstanceOf(ReflectionFieldMemberAccessor.class, memberAccessor);
+        assertThat((Object) memberAccessor)
+                .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertEquals("value", memberAccessor.getName());
         assertEquals(TestdataValue.class, memberAccessor.getType());
 
@@ -51,7 +52,8 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("privateField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
-        assertInstanceOf(ReflectionFieldMemberAccessor.class, memberAccessor);
+        assertThat((Object) memberAccessor)
+                .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertEquals("privateField", memberAccessor.getName());
         assertEquals(String.class, memberAccessor.getType());
 
@@ -68,7 +70,8 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("publicField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
-        assertInstanceOf(ReflectionFieldMemberAccessor.class, memberAccessor);
+        assertThat((Object) memberAccessor)
+                .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertEquals("publicField", memberAccessor.getName());
         assertEquals(String.class, memberAccessor.getType());
 
@@ -85,7 +88,8 @@ public class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class);
-        assertInstanceOf(LambdaBeanPropertyMemberAccessor.class, memberAccessor);
+        assertThat((Object) memberAccessor)
+                .isInstanceOf(LambdaBeanPropertyMemberAccessor.class);
         assertEquals("publicProperty", memberAccessor.getName());
         assertEquals(String.class, memberAccessor.getType());
 

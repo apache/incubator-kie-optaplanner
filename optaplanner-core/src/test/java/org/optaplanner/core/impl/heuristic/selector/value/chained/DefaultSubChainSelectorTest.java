@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,17 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNotNull;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertTrue;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertFalse;
+import static org.optaplanner.core.impl.util.Util.assertNotNull;
+import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +35,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
@@ -55,7 +57,7 @@ public class DefaultSubChainSelectorTest {
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         when(variableDescriptor.isChained()).thenReturn(false);
 
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 1, 1))
                 .withMessageContaining("chained");
     }
@@ -68,7 +70,7 @@ public class DefaultSubChainSelectorTest {
         when(variableDescriptor.isChained()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(true);
 
-        Assertions.assertThatIllegalStateException()
+        assertThatIllegalStateException()
                 .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 1, 1))
                 .withMessageContaining("neverEnding");
     }
@@ -80,7 +82,7 @@ public class DefaultSubChainSelectorTest {
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         when(variableDescriptor.isChained()).thenReturn(true);
 
-        Assertions.assertThatIllegalStateException()
+        assertThatIllegalStateException()
                 .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 0, 1))
                 .withMessageContaining("at least 1");
     }
@@ -92,7 +94,7 @@ public class DefaultSubChainSelectorTest {
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         when(variableDescriptor.isChained()).thenReturn(true);
 
-        Assertions.assertThatIllegalStateException()
+        assertThatIllegalStateException()
                 .isThrownBy(() -> new DefaultSubChainSelector(valueSelector, true, 2, 1))
                 .withMessageContaining("at least maximumSubChainSize");
     }
@@ -575,7 +577,9 @@ public class DefaultSubChainSelectorTest {
         }
         for (SubChain subChain : subChains) {
             Integer count = subChainCountMap.remove(subChain);
-            assertNotNull("The subChain (" + subChain + ") was not collected.", count);
+            assertThat(count)
+                    .as("The subChain (" + subChain + ") was not collected.")
+                    .isNotNull();
         }
         assertTrue(subChainCountMap.isEmpty());
         assertTrue(iterator.hasNext());

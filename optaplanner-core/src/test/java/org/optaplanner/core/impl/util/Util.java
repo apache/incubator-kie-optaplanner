@@ -16,24 +16,73 @@
 
 package org.optaplanner.core.impl.util;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 
 public final class Util {
 
     public static void assertEquals(boolean x, boolean y) {
         if (x) {
-            Assertions.assertThat(y).isTrue();
+            assertThat(y).isTrue();
         } else {
-            Assertions.assertThat(y).isFalse();
+            assertThat(y).isFalse();
         }
     }
 
-    public static void assertEquals(String s, String toString) {
-        Assertions.assertThat(toString).isEqualTo(s);
+    public static void assertArrayEquals(String[] array, String[] array2) {
+        assertThat(array2).isEqualTo(array);
+    }
+
+    public static void assertTrue(boolean b) {
+        assertThat(b).isTrue();
+    }
+
+    public static void assertFalse(boolean b) {
+        assertThat(b).isFalse();
+    }
+
+    public static <T extends Object> void assertSame(T s, T toString) {
+        assertThat(toString).isSameAs(s);
+    }
+
+    public static <T extends Object> void assertNotSame(T s, T toString) {
+        assertThat(toString).isNotSameAs(s);
+    }
+
+    public static <T extends Object> void assertEquals(T s, T toString) {
+        assertThat(toString).isEqualTo(s);
+    }
+
+    public static void assertEquals(long s, long toString) {
+        assertThat(toString).isEqualTo(s);
+    }
+
+    public static void assertEquals(int s, int toString) {
+        assertThat(toString).isEqualTo(s);
+    }
+
+    public static void assertEquals(double expected, double actual, double delta) {
+        assertThat(actual).isEqualTo(expected, offset(delta));
+    }
+
+    public static <T extends Object> void assertNotEquals(T s, T toString) {
+        assertThat(toString).isNotEqualTo(s);
+    }
+
+    public static void assertNotEquals(int s, int toString) {
+        assertThat(toString).isNotEqualTo(s);
+    }
+
+    public static <T extends Object> void assertNull(T s) {
+        assertThat(s).isNull();
+    }
+
+    public static <T extends Object> void assertNotNull(T s) {
+        assertThat(s).isNotNull();
     }
 
     public static void assertEquals(int i, long size) {
-        Assertions.assertThat(size).isEqualTo(i);
+        assertThat(size).isEqualTo(i);
     }
 
 }

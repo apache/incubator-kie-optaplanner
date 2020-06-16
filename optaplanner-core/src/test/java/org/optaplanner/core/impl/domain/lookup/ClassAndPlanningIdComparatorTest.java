@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.lookup;
 
-import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Comparator;
 

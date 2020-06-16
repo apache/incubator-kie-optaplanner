@@ -18,10 +18,10 @@ package org.optaplanner.core.api.score.stream.quad;
 
 import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

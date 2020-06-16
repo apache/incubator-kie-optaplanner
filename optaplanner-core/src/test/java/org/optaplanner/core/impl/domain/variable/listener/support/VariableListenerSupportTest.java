@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import java.util.Collections;
 
@@ -80,7 +80,8 @@ public class VariableListenerSupportTest {
 
         SingletonInverseVariableSupply supply1 = variableListenerSupport
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertInstanceOf(ExternalizedSingletonInverseVariableSupply.class, supply1);
+        assertThat((Object) supply1)
+                .isInstanceOf(ExternalizedSingletonInverseVariableSupply.class);
         SingletonInverseVariableSupply supply2 = variableListenerSupport
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
         assertSame(supply1, supply2);
@@ -106,7 +107,8 @@ public class VariableListenerSupportTest {
 
         SingletonInverseVariableSupply supply1 = variableListenerSupport
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertInstanceOf(SingletonInverseVariableListener.class, supply1);
+        assertThat((Object) supply1)
+                .isInstanceOf(SingletonInverseVariableListener.class);
         SingletonInverseVariableSupply supply2 = variableListenerSupport
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
         assertSame(supply1, supply2);

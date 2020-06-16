@@ -17,8 +17,8 @@
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertArrayEquals;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.math.BigDecimal;
 

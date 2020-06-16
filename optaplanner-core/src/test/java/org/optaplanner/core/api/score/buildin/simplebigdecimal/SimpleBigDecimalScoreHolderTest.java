@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
-import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.math.BigDecimal;
 

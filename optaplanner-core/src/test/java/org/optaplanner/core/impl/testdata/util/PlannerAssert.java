@@ -1,6 +1,6 @@
 
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,26 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertFalse;
+import static org.optaplanner.core.impl.util.Util.assertNotEquals;
+import static org.optaplanner.core.impl.util.Util.assertNotNull;
+import static org.optaplanner.core.impl.util.Util.assertNull;
+import static org.optaplanner.core.impl.util.Util.assertSame;
+import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.junit.Assert;
-import org.junit.ComparisonFailure;
 import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicPhaseLifecycleListener;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
@@ -57,37 +64,13 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 /**
  * @see PlannerTestUtils
  */
-public class PlannerAssert extends Assert {
+public final class PlannerAssert {
 
     public static final long DO_NOT_ASSERT_SIZE = Long.MIN_VALUE;
 
     // ************************************************************************
     // Missing JUnit methods
     // ************************************************************************
-
-    public static void assertInstanceOf(Class<?> expectedClass, Object actualInstance) {
-        assertInstanceOf(null, expectedClass, actualInstance);
-    }
-
-    public static void assertInstanceOf(String message, Class<?> expectedClass, Object actualInstance) {
-        if (!expectedClass.isInstance(actualInstance)) {
-            String cleanMessage = message == null ? "" : message;
-            throw new ComparisonFailure(cleanMessage, expectedClass.getName(),
-                    actualInstance == null ? "null" : actualInstance.getClass().getName());
-        }
-    }
-
-    public static void assertNotInstanceOf(Class<?> expectedClass, Object actualInstance) {
-        assertNotInstanceOf(null, expectedClass, actualInstance);
-    }
-
-    public static void assertNotInstanceOf(String message, Class<?> expectedClass, Object actualInstance) {
-        if (expectedClass.isInstance(actualInstance)) {
-            String cleanMessage = message == null ? "" : message;
-            throw new ComparisonFailure(cleanMessage, "not " + expectedClass.getName(),
-                    actualInstance == null ? "null" : actualInstance.getClass().getName());
-        }
-    }
 
     @SafeVarargs
     public static <C extends Comparable<C>> void assertObjectsAreEqual(C... objects) {
@@ -121,8 +104,14 @@ public class PlannerAssert extends Assert {
             for (int j = i + 1; j < objects.length; j++) {
                 T a = objects[i];
                 T b = objects[j];
-                assertTrue("Object (" + a + ") must be lesser than object (" + b + ").", comparator.compare(a, b) < 0);
-                assertTrue("Object (" + b + ") must be greater than object (" + a + ").", comparator.compare(b, a) > 0);
+                assertSoftly(softly -> {
+                    softly.assertThat(comparator.compare(a, b))
+                            .as("Object (" + a + ") must be lesser than object (" + b + ").")
+                            .isLessThan(0);
+                    softly.assertThat(comparator.compare(b, a))
+                            .as("Object (" + b + ") must be greater than object (" + a + ").")
+                            .isGreaterThan(0);
+                });
             }
         }
     }
@@ -138,24 +127,14 @@ public class PlannerAssert extends Assert {
             for (int j = i + 1; j < objects.length; j++) {
                 T a = objects[i];
                 T b = objects[j];
-                assertTrue("Object (" + a + ") must compare equal to object (" + b + ").", comparator.compare(a, b) == 0);
-                assertTrue("Object (" + b + ") must compare equal to object (" + a + ").", comparator.compare(b, a) == 0);
-            }
-        }
-    }
-
-    @SafeVarargs
-    public static <E> void assertCollectionContainsExactly(Collection<E> collection, E... elements) {
-        assertCollectionContains(collection, elements);
-        assertEquals(elements.length, collection.size());
-    }
-
-    @SafeVarargs
-    public static <E> void assertCollectionContains(Collection<E> collection, E... elements) {
-        for (int i = 0; i < elements.length; i++) {
-            if (!collection.contains(elements[i])) {
-                fail("The asserted collection (" + collection
-                        + ") does not contain expected element (" + elements[i] + ")");
+                assertSoftly(softly -> {
+                    softly.assertThat(comparator.compare(a, b))
+                            .as("Object (" + a + ") must compare equal to object (" + b + ").")
+                            .isEqualTo(0);
+                    softly.assertThat(comparator.compare(b, a))
+                            .as("Object (" + b + ") must compare equal to object (" + a + ").")
+                            .isEqualTo(0);
+                });
             }
         }
     }
@@ -171,22 +150,6 @@ public class PlannerAssert extends Assert {
         assertEquals(expectedArray.length, actualArray.length);
         for (int i = 0; i < expectedArray.length; i++) {
             assertSame(expectedArray[i], actualArray[i]);
-        }
-    }
-
-    @SafeVarargs
-    public static <K, V> void assertMapContainsKeysExactly(Map<K, V> map, K... keys) {
-        assertMapContainsKeys(map, keys);
-        assertEquals(keys.length, map.size());
-    }
-
-    @SafeVarargs
-    public static <K, V> void assertMapContainsKeys(Map<K, V> map, K... keys) {
-        for (int i = 0; i < keys.length; i++) {
-            if (!map.containsKey(keys[i])) {
-                fail("The asserted map (" + map
-                        + ") does not contain expected key (" + keys[i] + ")");
-            }
         }
     }
 
@@ -314,7 +277,9 @@ public class PlannerAssert extends Assert {
     }
 
     public static void assertCode(String message, String expectedCode, CodeAssertable codeAssertable) {
-        assertEquals(message, expectedCode, codeAssertable.getCode());
+        assertThat(codeAssertable.getCode())
+                .as(message)
+                .isEqualTo(expectedCode);
     }
 
     public static <O> void assertAllCodesOfArray(O[] array, String... codes) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 package org.optaplanner.core.impl.partitionedsearch;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertNotNull;
+import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -195,8 +195,9 @@ public class DefaultPartitionedSearchPhaseTest {
         executor.shutdownNow();
 
         // This verifies that PartitionQueue doesn't clear interrupted flag when the main solver thread is interrupted.
-        assertTrue("Executor must terminate successfully when it's shut down abruptly",
-                executor.awaitTermination(100, TimeUnit.MILLISECONDS));
+        assertThat(executor.awaitTermination(100, TimeUnit.MILLISECONDS))
+                .as("Executor must terminate successfully when it's shut down abruptly")
+                .isTrue();
 
         // This verifies that interruption is propagated to caller (wrapped as an IllegalStateException)
         try {

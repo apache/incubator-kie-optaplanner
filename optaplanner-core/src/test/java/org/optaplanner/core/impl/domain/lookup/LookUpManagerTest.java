@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 package org.optaplanner.core.impl.domain.lookup;
 
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.junit.Assert.assertNull;
+import static org.optaplanner.core.impl.util.Util.assertNull;
+import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
@@ -48,8 +48,8 @@ public class LookUpManagerTest {
         // The objects should be added during the reset
         lookUpManager.resetWorkingObjects(Arrays.asList(o, p));
         // So it's possible to look up and remove them
-        Assert.assertSame(o, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(0)));
-        Assert.assertSame(p, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1)));
+        assertSame(o, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(0)));
+        assertSame(p, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1)));
         lookUpManager.removeWorkingObject(o);
         lookUpManager.removeWorkingObject(p);
     }

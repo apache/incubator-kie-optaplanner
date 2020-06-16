@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.primlong;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Random;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCollectionContainsExactly;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import java.util.Arrays;
 import java.util.List;
@@ -239,13 +239,13 @@ public class SwapMoveTest {
                 .buildVariableDescriptorForSecondaryValue();
         SwapMove move = new SwapMove<>(Arrays.asList(primaryDescriptor),
                 new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));
-        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue");
+        assertThat(move.getVariableNameList()).containsExactly("primaryValue");
         assertCode("a", move.getLeftEntity());
         assertCode("b", move.getRightEntity());
 
         move = new SwapMove<>(Arrays.asList(primaryDescriptor, secondaryDescriptor),
                 new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d"));
-        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue", "secondaryValue");
+        assertThat(move.getVariableNameList()).containsExactly("primaryValue", "secondaryValue");
         assertCode("c", move.getLeftEntity());
         assertCode("d", move.getRightEntity());
     }

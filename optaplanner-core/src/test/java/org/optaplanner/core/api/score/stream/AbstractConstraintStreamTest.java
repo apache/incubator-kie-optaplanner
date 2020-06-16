@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
+import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
