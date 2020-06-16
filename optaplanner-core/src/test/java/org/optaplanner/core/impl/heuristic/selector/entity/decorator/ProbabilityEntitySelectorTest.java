@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
@@ -24,8 +25,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -81,21 +80,21 @@ public class ProbabilityEntitySelectorTest {
         when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.stepStarted(stepScopeA1);
 
-        assertEquals(true, entitySelector.isCountable());
-        assertEquals(true, entitySelector.isNeverEnding());
-        assertEquals(4L, entitySelector.getSize());
+        assertThat(entitySelector.isCountable()).isTrue();
+        assertThat(entitySelector.isNeverEnding()).isTrue();
+        assertThat(entitySelector.getSize()).isEqualTo(4L);
         Iterator<Object> iterator = entitySelector.iterator();
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e3", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e4", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         assertCode("e2", iterator.next());
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
 
         entitySelector.stepEnded(stepScopeA1);
         entitySelector.phaseEnded(phaseScopeA);
@@ -109,14 +108,14 @@ public class ProbabilityEntitySelectorTest {
     public void isCountable() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, null);
-        assertTrue(entitySelector.isCountable());
+        assertThat(entitySelector.isCountable()).isTrue();
     }
 
     @Test
     public void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, null);
-        assertTrue(entitySelector.isNeverEnding());
+        assertThat(entitySelector.isNeverEnding()).isTrue();
     }
 
     @Test
@@ -141,7 +140,7 @@ public class ProbabilityEntitySelectorTest {
         ProbabilityEntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP,
                 probabilityWeightFactory);
         entitySelector.constructCache(mock(DefaultSolverScope.class));
-        assertEquals(4, entitySelector.getSize());
+        assertThat(entitySelector.getSize()).isEqualTo(4);
     }
 
     @Test

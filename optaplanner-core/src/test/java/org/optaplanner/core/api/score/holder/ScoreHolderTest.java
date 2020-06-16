@@ -15,8 +15,8 @@
  */
 package org.optaplanner.core.api.score.holder;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.optaplanner.core.impl.util.Util.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -33,7 +33,7 @@ public class ScoreHolderTest {
 
     @Test
     public void constraintMatchTotalsNeverNull() {
-        assertNotNull(buildScoreHolder(true).getConstraintMatchTotals());
+        assertThat(buildScoreHolder(true).getConstraintMatchTotals()).isNotNull();
     }
 
     private ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

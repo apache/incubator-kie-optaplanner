@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,69 +61,69 @@ public class PillarSwapMoveTest {
                 Arrays.asList(a), Arrays.asList(b));
         a.setValue(v1);
         b.setValue(v2);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v2);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v3);
-        assertEquals(true, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isTrue();
         a.setValue(v3);
         b.setValue(v2);
-        assertEquals(true, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isTrue();
         a.setValue(v3);
         b.setValue(v3);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v4);
-        assertEquals(false, abMove.isMoveDoable(scoreDirector));
+        assertThat(abMove.isMoveDoable(scoreDirector)).isFalse();
 
         PillarSwapMove<TestdataEntityProvidingSolution> acMove = new PillarSwapMove<>(variableDescriptorList,
                 Arrays.asList(a), Arrays.asList(c));
         a.setValue(v1);
         c.setValue(v4);
-        assertEquals(false, acMove.isMoveDoable(scoreDirector));
+        assertThat(acMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         c.setValue(v5);
-        assertEquals(false, acMove.isMoveDoable(scoreDirector));
+        assertThat(acMove.isMoveDoable(scoreDirector)).isFalse();
 
         PillarSwapMove<TestdataEntityProvidingSolution> bcMove = new PillarSwapMove<>(variableDescriptorList,
                 Arrays.asList(b), Arrays.asList(c));
         b.setValue(v2);
         c.setValue(v4);
-        assertEquals(false, bcMove.isMoveDoable(scoreDirector));
+        assertThat(bcMove.isMoveDoable(scoreDirector)).isFalse();
         b.setValue(v4);
         c.setValue(v5);
-        assertEquals(true, bcMove.isMoveDoable(scoreDirector));
+        assertThat(bcMove.isMoveDoable(scoreDirector)).isTrue();
         b.setValue(v5);
         c.setValue(v4);
-        assertEquals(true, bcMove.isMoveDoable(scoreDirector));
+        assertThat(bcMove.isMoveDoable(scoreDirector)).isTrue();
         b.setValue(v5);
         c.setValue(v5);
-        assertEquals(false, bcMove.isMoveDoable(scoreDirector));
+        assertThat(bcMove.isMoveDoable(scoreDirector)).isFalse();
 
         PillarSwapMove<TestdataEntityProvidingSolution> abzMove = new PillarSwapMove<>(variableDescriptorList,
                 Arrays.asList(a, b), Arrays.asList(z));
         a.setValue(v2);
         b.setValue(v2);
         z.setValue(v4);
-        assertEquals(false, abzMove.isMoveDoable(scoreDirector));
+        assertThat(abzMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v2);
         z.setValue(v1);
-        assertEquals(false, abzMove.isMoveDoable(scoreDirector));
+        assertThat(abzMove.isMoveDoable(scoreDirector)).isFalse();
         a.setValue(v2);
         b.setValue(v2);
         z.setValue(v3);
-        assertEquals(true, abzMove.isMoveDoable(scoreDirector));
+        assertThat(abzMove.isMoveDoable(scoreDirector)).isTrue();
         a.setValue(v3);
         b.setValue(v3);
         z.setValue(v2);
-        assertEquals(true, abzMove.isMoveDoable(scoreDirector));
+        assertThat(abzMove.isMoveDoable(scoreDirector)).isTrue();
         a.setValue(v2);
         b.setValue(v2);
         z.setValue(v2);
-        assertEquals(false, abzMove.isMoveDoable(scoreDirector));
+        assertThat(abzMove.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test
@@ -150,23 +149,23 @@ public class PillarSwapMoveTest {
         a.setValue(v1);
         b.setValue(v1);
         abMove.doMove(scoreDirector);
-        assertEquals(v1, a.getValue());
-        assertEquals(v1, b.getValue());
+        assertThat(a.getValue()).isEqualTo(v1);
+        assertThat(b.getValue()).isEqualTo(v1);
 
         a.setValue(v2);
         b.setValue(v1);
         abMove.doMove(scoreDirector);
-        assertEquals(v1, a.getValue());
-        assertEquals(v2, b.getValue());
+        assertThat(a.getValue()).isEqualTo(v1);
+        assertThat(b.getValue()).isEqualTo(v2);
 
         a.setValue(v3);
         b.setValue(v2);
         abMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v3, b.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v3);
         abMove.doMove(scoreDirector);
-        assertEquals(v3, a.getValue());
-        assertEquals(v2, b.getValue());
+        assertThat(a.getValue()).isEqualTo(v3);
+        assertThat(b.getValue()).isEqualTo(v2);
 
         PillarSwapMove<TestdataEntityProvidingSolution> abzMove = new PillarSwapMove<>(variableDescriptorList,
                 Arrays.asList(a, b), Arrays.asList(z));
@@ -175,25 +174,25 @@ public class PillarSwapMoveTest {
         b.setValue(v3);
         z.setValue(v2);
         abzMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v2, b.getValue());
-        assertEquals(v3, z.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v2);
+        assertThat(z.getValue()).isEqualTo(v3);
         abzMove.doMove(scoreDirector);
-        assertEquals(v3, a.getValue());
-        assertEquals(v3, b.getValue());
-        assertEquals(v2, z.getValue());
+        assertThat(a.getValue()).isEqualTo(v3);
+        assertThat(b.getValue()).isEqualTo(v3);
+        assertThat(z.getValue()).isEqualTo(v2);
 
         a.setValue(v3);
         b.setValue(v3);
         z.setValue(v4);
         abzMove.doMove(scoreDirector);
-        assertEquals(v4, a.getValue());
-        assertEquals(v4, b.getValue());
-        assertEquals(v3, z.getValue());
+        assertThat(a.getValue()).isEqualTo(v4);
+        assertThat(b.getValue()).isEqualTo(v4);
+        assertThat(z.getValue()).isEqualTo(v3);
         abzMove.doMove(scoreDirector);
-        assertEquals(v3, a.getValue());
-        assertEquals(v3, b.getValue());
-        assertEquals(v4, z.getValue());
+        assertThat(a.getValue()).isEqualTo(v3);
+        assertThat(b.getValue()).isEqualTo(v3);
+        assertThat(z.getValue()).isEqualTo(v4);
 
         PillarSwapMove<TestdataEntityProvidingSolution> abczMove = new PillarSwapMove<>(variableDescriptorList,
                 Arrays.asList(a), Arrays.asList(b, c, z));
@@ -203,15 +202,15 @@ public class PillarSwapMoveTest {
         c.setValue(v3);
         z.setValue(v3);
         abczMove.doMove(scoreDirector);
-        assertEquals(v3, a.getValue());
-        assertEquals(v2, b.getValue());
-        assertEquals(v2, c.getValue());
-        assertEquals(v2, z.getValue());
+        assertThat(a.getValue()).isEqualTo(v3);
+        assertThat(b.getValue()).isEqualTo(v2);
+        assertThat(c.getValue()).isEqualTo(v2);
+        assertThat(z.getValue()).isEqualTo(v2);
         abczMove.doMove(scoreDirector);
-        assertEquals(v2, a.getValue());
-        assertEquals(v3, b.getValue());
-        assertEquals(v3, c.getValue());
-        assertEquals(v3, z.getValue());
+        assertThat(a.getValue()).isEqualTo(v2);
+        assertThat(b.getValue()).isEqualTo(v3);
+        assertThat(c.getValue()).isEqualTo(v3);
+        assertThat(z.getValue()).isEqualTo(v3);
 
         PillarSwapMove<TestdataEntityProvidingSolution> abczMove2 = new PillarSwapMove<>(variableDescriptorList,
                 Arrays.asList(a, b), Arrays.asList(c, z));
@@ -221,15 +220,15 @@ public class PillarSwapMoveTest {
         c.setValue(v3);
         z.setValue(v3);
         abczMove2.doMove(scoreDirector);
-        assertEquals(v3, a.getValue());
-        assertEquals(v3, b.getValue());
-        assertEquals(v4, c.getValue());
-        assertEquals(v4, z.getValue());
+        assertThat(a.getValue()).isEqualTo(v3);
+        assertThat(b.getValue()).isEqualTo(v3);
+        assertThat(c.getValue()).isEqualTo(v4);
+        assertThat(z.getValue()).isEqualTo(v4);
         abczMove2.doMove(scoreDirector);
-        assertEquals(v4, a.getValue());
-        assertEquals(v4, b.getValue());
-        assertEquals(v3, c.getValue());
-        assertEquals(v3, z.getValue());
+        assertThat(a.getValue()).isEqualTo(v4);
+        assertThat(b.getValue()).isEqualTo(v4);
+        assertThat(c.getValue()).isEqualTo(v3);
+        assertThat(z.getValue()).isEqualTo(v3);
     }
 
     @Test
@@ -313,12 +312,12 @@ public class PillarSwapMoveTest {
         List<GenuineVariableDescriptor<TestdataSolution>> variableDescriptorList = TestdataEntity.buildEntityDescriptor()
                 .getGenuineVariableDescriptorList();
 
-        assertEquals("[a, b] {null} <-> [c, d, e] {v1}", new PillarSwapMove<>(variableDescriptorList,
-                Arrays.asList(a, b), Arrays.asList(c, d, e)).toString());
-        assertEquals("[b] {null} <-> [c] {v1}", new PillarSwapMove<>(variableDescriptorList,
-                Arrays.asList(b), Arrays.asList(c)).toString());
-        assertEquals("[f, g] {v2} <-> [c, d, e] {v1}", new PillarSwapMove<>(variableDescriptorList,
-                Arrays.asList(f, g), Arrays.asList(c, d, e)).toString());
+        assertThat(new PillarSwapMove<>(variableDescriptorList,
+                Arrays.asList(a, b), Arrays.asList(c, d, e)).toString()).isEqualTo("[a, b] {null} <-> [c, d, e] {v1}");
+        assertThat(new PillarSwapMove<>(variableDescriptorList,
+                Arrays.asList(b), Arrays.asList(c)).toString()).isEqualTo("[b] {null} <-> [c] {v1}");
+        assertThat(new PillarSwapMove<>(variableDescriptorList,
+                Arrays.asList(f, g), Arrays.asList(c, d, e)).toString()).isEqualTo("[f, g] {v2} <-> [c, d, e] {v1}");
     }
 
 }

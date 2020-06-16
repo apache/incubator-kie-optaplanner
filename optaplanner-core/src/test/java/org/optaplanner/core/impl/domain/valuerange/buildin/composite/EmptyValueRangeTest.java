@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Random;
 
@@ -30,7 +30,7 @@ public class EmptyValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(0L, new EmptyValueRange<Integer>().getSize());
+        assertThat(new EmptyValueRange<Integer>().getSize()).isEqualTo(0L);
     }
 
     @Test
@@ -41,8 +41,8 @@ public class EmptyValueRangeTest {
 
     @Test
     public void contains() {
-        assertEquals(false, new EmptyValueRange<Integer>().contains(5));
-        assertEquals(false, new EmptyValueRange<Integer>().contains(null));
+        assertThat(new EmptyValueRange<Integer>().contains(5)).isFalse();
+        assertThat(new EmptyValueRange<Integer>().contains(null)).isFalse();
     }
 
     @Test

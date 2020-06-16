@@ -18,7 +18,6 @@ package org.optaplanner.core.config.heuristic.selector.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -48,7 +47,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
         assertThat((Object) valueSelector)
                 .isNotInstanceOf(ShufflingValueSelector.class);
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -67,7 +66,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         assertThat((Object) valueSelector)
                 .isNotInstanceOf(ShufflingValueSelector.class);
         // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
         assertThat((Object) valueSelector)
                 .isNotInstanceOf(ShufflingValueSelector.class);
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -121,7 +120,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         assertThat((Object) valueSelector)
                 .isNotInstanceOf(ShufflingValueSelector.class);
         // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -156,7 +155,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(ShufflingValueSelector.class);
         assertThat((Object) ((ShufflingValueSelector) valueSelector).getChildValueSelector())
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
-        assertEquals(SelectionCacheType.PHASE, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -174,7 +173,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(ShufflingValueSelector.class);
         assertThat((Object) ((ShufflingValueSelector) valueSelector).getChildValueSelector())
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
-        assertEquals(SelectionCacheType.STEP, valueSelector.getCacheType());
+        assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }
 
     @Test

@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Collections;
 
@@ -44,7 +44,8 @@ public class EasyScoreDirectorFactoryTest {
         solution.setValueList(Collections.emptyList());
         solution.setEntityList(Collections.emptyList());
         director.setWorkingSolution(solution);
-        assertEquals(SimpleScore.ofUninitialized(0, -10), director.calculateScore());
+        assertThat(director.calculateScore())
+                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.ofUninitialized(0, -10));
     }
 
 }

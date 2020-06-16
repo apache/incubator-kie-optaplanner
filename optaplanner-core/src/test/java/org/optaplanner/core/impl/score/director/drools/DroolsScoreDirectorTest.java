@@ -15,11 +15,11 @@
  */
 package org.optaplanner.core.impl.score.director.drools;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
-import static org.optaplanner.core.impl.util.Util.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
@@ -42,15 +42,15 @@ public class DroolsScoreDirectorTest {
     public void constraintMatchTotalsNeverNull() {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
-        assertNotNull(director.getConstraintMatchTotals());
-        assertNotNull(director.getConstraintMatchTotalMap());
+        assertThat(director.getConstraintMatchTotals()).isNotNull();
+        assertThat(director.getConstraintMatchTotalMap()).isNotNull();
     }
 
     @Test
     public void indictmentMapNeverNull() {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
-        assertNotNull(director.getIndictmentMap());
+        assertThat(director.getIndictmentMap()).isNotNull();
     }
 
     @SuppressWarnings("unchecked")

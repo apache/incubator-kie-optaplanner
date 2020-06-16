@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.config.solver;
 
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -37,11 +36,11 @@ public class SolverConfigTest {
         String originalXml = IOUtils.toString(
                 getClass().getClassLoader().getResourceAsStream(solverConfigResource), StandardCharsets.UTF_8);
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
-        assertNotNull(SolverFactory.create(solverConfig).buildSolver());
+        assertThat(SolverFactory.create(solverConfig).buildSolver()).isNotNull();
         XStream xStream = XStreamConfigReader.buildXStream(getClass().getClassLoader());
         xStream.setMode(XStream.NO_REFERENCES);
         String savedXml = xStream.toXML(solverConfig);
-        assertEquals(originalXml.trim(), savedXml.trim());
+        assertThat(savedXml.trim()).isEqualTo(originalXml.trim());
     }
 
 }

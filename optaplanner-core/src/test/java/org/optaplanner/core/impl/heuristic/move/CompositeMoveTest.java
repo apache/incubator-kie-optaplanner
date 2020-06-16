@@ -25,10 +25,6 @@ import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfArray;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertFalse;
-import static org.optaplanner.core.impl.util.Util.assertSame;
-import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,13 +124,13 @@ public class CompositeMoveTest {
         ChangeMove<TestdataSolution> b = new ChangeMove<>(e2, variableDescriptor, v1);
         CompositeMove<TestdataSolution> rebaseMove = new CompositeMove<>(a, b).rebase(destinationScoreDirector);
         Move<TestdataSolution>[] rebasedChildMoves = rebaseMove.getMoves();
-        assertEquals(2, rebasedChildMoves.length);
+        assertThat(rebasedChildMoves.length).isEqualTo(2);
         ChangeMove<TestdataSolution> rebasedA = (ChangeMove<TestdataSolution>) rebasedChildMoves[0];
-        assertSame(destinationE1, rebasedA.getEntity());
-        assertSame(destinationV2, rebasedA.getToPlanningValue());
+        assertThat(rebasedA.getEntity()).isSameAs(destinationE1);
+        assertThat(rebasedA.getToPlanningValue()).isSameAs(destinationV2);
         ChangeMove<TestdataSolution> rebasedB = (ChangeMove<TestdataSolution>) rebasedChildMoves[1];
-        assertSame(destinationE2, rebasedB.getEntity());
-        assertSame(destinationV1, rebasedB.getToPlanningValue());
+        assertThat(rebasedB.getEntity()).isSameAs(destinationE2);
+        assertThat(rebasedB.getToPlanningValue()).isSameAs(destinationV1);
     }
 
     @Test
@@ -186,22 +182,22 @@ public class CompositeMoveTest {
         DummyMove first = new DummyMove();
         DummyMove second = new DummyMove();
         Move<TestdataSolution> move = CompositeMove.buildMove(first, second);
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
 
         first = new DummyMove();
         second = new NotDoableDummyMove();
         move = CompositeMove.buildMove(first, second);
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
 
         first = new NotDoableDummyMove();
         second = new DummyMove();
         move = CompositeMove.buildMove(first, second);
-        assertEquals(true, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isTrue();
 
         first = new NotDoableDummyMove();
         second = new NotDoableDummyMove();
         move = CompositeMove.buildMove(first, second);
-        assertEquals(false, move.isMoveDoable(scoreDirector));
+        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
     }
 
     @Test
@@ -210,13 +206,13 @@ public class CompositeMoveTest {
         NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
         Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
         Move<TestdataSolution> other = CompositeMove.buildMove(first, second);
-        assertTrue(move.equals(other));
+        assertThat(move.equals(other)).isTrue();
 
         move = CompositeMove.buildMove(first, second);
         other = CompositeMove.buildMove(second, first);
-        assertFalse(move.equals(other));
-        assertFalse(move.equals(new DummyMove()));
-        assertTrue(move.equals(move));
+        assertThat(move.equals(other)).isFalse();
+        assertThat(move.equals(new DummyMove())).isFalse();
+        assertThat(move.equals(move)).isTrue();
     }
 
     @Test
@@ -235,20 +231,20 @@ public class CompositeMoveTest {
         ChangeMove<TestdataSolution> second = new ChangeMove<>(e1, variableDescriptor, v3);
         Move<TestdataSolution> move = CompositeMove.buildMove(first, second);
 
-        assertSame(v1, e1.getValue());
-        assertSame(v2, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v1);
+        assertThat(e2.getValue()).isSameAs(v2);
 
         ScoreDirector<TestdataSolution> scoreDirector = mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
         Move<TestdataSolution> undoMove = move.doMove(scoreDirector);
 
-        assertSame(v3, e1.getValue());
-        assertSame(v1, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v3);
+        assertThat(e2.getValue()).isSameAs(v1);
 
         undoMove.doMove(scoreDirector);
 
-        assertSame(v1, e1.getValue());
-        assertSame(v2, e2.getValue());
+        assertThat(e1.getValue()).isSameAs(v1);
+        assertThat(e2.getValue()).isSameAs(v2);
     }
 
 }

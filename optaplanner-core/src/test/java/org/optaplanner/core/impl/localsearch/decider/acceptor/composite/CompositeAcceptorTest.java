@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.composite;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,11 +67,11 @@ public class CompositeAcceptorTest {
 
     @Test
     public void isAccepted() {
-        assertEquals(true, isCompositeAccepted(true, true, true));
-        assertEquals(false, isCompositeAccepted(false, true, true));
-        assertEquals(false, isCompositeAccepted(true, false, true));
-        assertEquals(false, isCompositeAccepted(true, true, false));
-        assertEquals(false, isCompositeAccepted(false, false, false));
+        assertThat(isCompositeAccepted(true, true, true)).isTrue();
+        assertThat(isCompositeAccepted(false, true, true)).isFalse();
+        assertThat(isCompositeAccepted(true, false, true)).isFalse();
+        assertThat(isCompositeAccepted(true, true, false)).isFalse();
+        assertThat(isCompositeAccepted(false, false, false)).isFalse();
     }
 
     private boolean isCompositeAccepted(boolean... childAccepts) {

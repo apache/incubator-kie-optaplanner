@@ -17,10 +17,6 @@
 package org.optaplanner.core.config.score.director;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertFalse;
-import static org.optaplanner.core.impl.util.Util.assertNull;
-import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.HashMap;
 
@@ -56,8 +52,8 @@ public class ScoreDirectorFactoryConfigTest {
         config.setBendableHardLevelsSize(2);
         config.setBendableSoftLevelsSize(3);
         BendableScoreDefinition scoreDefinition = (BendableScoreDefinition) config.buildDeprecatedScoreDefinition();
-        assertEquals(2, scoreDefinition.getHardLevelsSize());
-        assertEquals(3, scoreDefinition.getSoftLevelsSize());
+        assertThat(scoreDefinition.getHardLevelsSize()).isEqualTo(2);
+        assertThat(scoreDefinition.getSoftLevelsSize()).isEqualTo(3);
     }
 
     @Test
@@ -74,8 +70,8 @@ public class ScoreDirectorFactoryConfigTest {
                 .buildScoreDirector();
         TestCustomPropertiesEasyScoreCalculator scoreCalculator = (TestCustomPropertiesEasyScoreCalculator) scoreDirector
                 .getEasyScoreCalculator();
-        assertEquals("string 1", scoreCalculator.getStringProperty());
-        assertEquals(7, scoreCalculator.getIntProperty());
+        assertThat(scoreCalculator.getStringProperty()).isEqualTo("string 1");
+        assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
     }
 
     public static class TestCustomPropertiesEasyScoreCalculator implements EasyScoreCalculator<TestdataSolution> {
@@ -122,8 +118,8 @@ public class ScoreDirectorFactoryConfigTest {
                 .buildScoreDirector();
         TestCustomPropertiesIncrementalScoreCalculator scoreCalculator =
                 (TestCustomPropertiesIncrementalScoreCalculator) scoreDirector.getIncrementalScoreCalculator();
-        assertEquals("string 1", scoreCalculator.getStringProperty());
-        assertEquals(7, scoreCalculator.getIntProperty());
+        assertThat(scoreCalculator.getStringProperty()).isEqualTo("string 1");
+        assertThat(scoreCalculator.getIntProperty()).isEqualTo(7);
     }
 
     public static class TestCustomPropertiesIncrementalScoreCalculator implements IncrementalScoreCalculator<TestdataSolution> {
@@ -185,13 +181,13 @@ public class ScoreDirectorFactoryConfigTest {
     @Test
     public void testGenerateDroolsTestOption() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
-        assertNull(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isNull();
         config.setGenerateDroolsTestOnError(true);
-        assertTrue(config.isGenerateDroolsTestOnError());
+        assertThat((boolean) config.isGenerateDroolsTestOnError()).isTrue();
         config.setGenerateDroolsTestOnError(Boolean.FALSE);
-        assertFalse(config.isGenerateDroolsTestOnError());
+        assertThat((boolean) config.isGenerateDroolsTestOnError()).isFalse();
         config.setGenerateDroolsTestOnError(null);
-        assertNull(config.isGenerateDroolsTestOnError());
+        assertThat(config.isGenerateDroolsTestOnError()).isNull();
     }
 
 }

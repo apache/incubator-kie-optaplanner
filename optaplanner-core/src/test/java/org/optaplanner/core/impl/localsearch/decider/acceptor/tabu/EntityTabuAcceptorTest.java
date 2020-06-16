@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,60 +55,65 @@ public class EntityTabuAcceptorTest {
 
         LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope0, e1);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0)));
-        assertEquals(true, acceptor.isAccepted(moveScope1));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2))); // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e0))).isTrue();
+        assertThat(acceptor.isAccepted(moveScope1)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e2))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e4))).isTrue();
+        // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e2))).isTrue();
         stepScope0.setStep(moveScope1.getMove());
         acceptor.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
 
         LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
         LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope1, e2);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e1)));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e2))); // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e0))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e1))).isFalse();
+        assertThat(acceptor.isAccepted(moveScope2)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e4))).isTrue();
+        // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e2))).isTrue();
         stepScope1.setStep(moveScope2.getMove());
         acceptor.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
 
         LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         LocalSearchMoveScope<TestdataSolution> moveScope4 = buildMoveScope(stepScope2, e4);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e0)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e3)));
-        assertEquals(true, acceptor.isAccepted(moveScope4));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2))); // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e0))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e1))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e2))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e3))).isTrue();
+        assertThat(acceptor.isAccepted(moveScope4)).isTrue();
+        // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e2))).isFalse();
         stepScope2.setStep(moveScope4.getMove());
         acceptor.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
 
         LocalSearchStepScope<TestdataSolution> stepScope3 = new LocalSearchStepScope<>(phaseScope);
         LocalSearchMoveScope<TestdataSolution> moveScope3 = buildMoveScope(stepScope3, e3);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e1)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2)));
-        assertEquals(true, acceptor.isAccepted(moveScope3));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2))); // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e0))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e1))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e2))).isFalse();
+        assertThat(acceptor.isAccepted(moveScope3)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e4))).isFalse();
+        // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e2))).isFalse();
         stepScope3.setStep(moveScope3.getMove());
         acceptor.stepEnded(stepScope3);
         phaseScope.setLastCompletedStepScope(stepScope3);
 
         LocalSearchStepScope<TestdataSolution> stepScope4 = new LocalSearchStepScope<>(phaseScope);
         LocalSearchMoveScope<TestdataSolution> moveScope1Again = buildMoveScope(stepScope4, e1);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e0)));
-        assertEquals(true, acceptor.isAccepted(moveScope1Again));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e2)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope4, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e2))); // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope4, e0))).isTrue();
+        assertThat(acceptor.isAccepted(moveScope1Again)).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope4, e2))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope4, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope4, e4))).isFalse();
+        // repeated call
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope4, e2))).isTrue();
         stepScope4.setStep(moveScope1Again.getMove());
         acceptor.stepEnded(stepScope4);
         phaseScope.setLastCompletedStepScope(stepScope4);
@@ -134,81 +139,81 @@ public class EntityTabuAcceptorTest {
         acceptor.phaseStarted(phaseScope);
 
         LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0, e1)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0, e2)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1, e2)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e3, e4)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e0))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e1))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e2))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e4))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e0, e1))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e0, e2))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e0, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e0, e4))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e1, e2))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e1, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e1, e4))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e2, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e2, e4))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, e3, e4))).isTrue();
         stepScope0.setStep(buildMoveScope(stepScope0, e0, e2).getMove());
         acceptor.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
 
         LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e1)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e2)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0, e1)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0, e2)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e1, e2)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e1, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e1, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e2, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e2, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e3, e4)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e0))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e1))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e2))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e4))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e0, e1))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e0, e2))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e0, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e0, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e1, e2))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e1, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e1, e4))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e2, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e2, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, e3, e4))).isTrue();
         stepScope1.setStep(buildMoveScope(stepScope1, e1).getMove());
         acceptor.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
 
         LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e3)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0, e1)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0, e2)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1, e2)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2, e4)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e3, e4)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e0))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e1))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e2))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e3))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e4))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e0, e1))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e0, e2))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e0, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e0, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e1, e2))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e1, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e1, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e2, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e2, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, e3, e4))).isTrue();
         stepScope2.setStep(buildMoveScope(stepScope2, e3, e4).getMove());
         acceptor.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
 
         LocalSearchStepScope<TestdataSolution> stepScope3 = new LocalSearchStepScope<>(phaseScope);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e2)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e0, e1)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0, e2)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e0, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e0, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1, e2)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2, e3)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2, e4)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e3, e4)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e0))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e1))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e2))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e0, e1))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e0, e2))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e0, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e0, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e1, e2))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e1, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e1, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e2, e3))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e2, e4))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope3, e3, e4))).isFalse();
         stepScope3.setStep(buildMoveScope(stepScope3, e0).getMove());
         acceptor.stepEnded(stepScope3);
         phaseScope.setLastCompletedStepScope(stepScope3);
@@ -236,12 +241,12 @@ public class EntityTabuAcceptorTest {
         phaseScope.setLastCompletedStepScope(stepScope0);
 
         LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -120, e0)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -20, e0)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -120, e1)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -20, e1)));
-        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -120, e0, e1)));
-        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -20, e0, e1)));
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -120, e0))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -20, e0))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -120, e1))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -20, e1))).isTrue();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -120, e0, e1))).isFalse();
+        assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -20, e0, e1))).isTrue();
         stepScope1.setStep(buildMoveScope(stepScope1, -20, e1).getMove());
         acceptor.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);

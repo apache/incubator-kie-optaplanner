@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -28,13 +28,13 @@ public class ShufflingEntitySelectorTest {
     @Test
     public void isNeverEnding() {
         ShufflingEntitySelector selector = new ShufflingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE);
-        assertEquals(false, selector.isNeverEnding());
+        assertThat(selector.isNeverEnding()).isFalse();
     }
 
     @Test
     public void isCountable() {
         ShufflingEntitySelector selector = new ShufflingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE);
-        assertEquals(true, selector.isCountable());
+        assertThat(selector.isCountable()).isTrue();
     }
 
 }

@@ -18,7 +18,6 @@ package org.optaplanner.core.config.heuristic.selector.move.generic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Arrays;
 
@@ -101,7 +100,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat((Object) moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);
-        assertEquals(2, ((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size());
+        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
     }
 
     @Test
@@ -138,7 +137,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat((Object) moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);
-        assertEquals(2, ((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size());
+        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
     }
 
 }

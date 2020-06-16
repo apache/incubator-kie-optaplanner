@@ -17,11 +17,11 @@
 package org.optaplanner.core.api.score.stream.tri;
 
 import static java.util.function.Function.identity;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countTri;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -804,7 +804,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleScore.of(-42), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-42));
     }
 
     @TestTemplate
@@ -832,7 +832,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleLongScore.of(-42L), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleLongScore.of(-42L));
     }
 
     @TestTemplate
@@ -861,7 +861,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-2.4")), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore())
+                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleBigDecimalScore.of(new BigDecimal("-2.4")));
     }
 
     @TestTemplate
@@ -910,7 +911,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleScore.of(42), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(42));
     }
 
     @TestTemplate
@@ -938,7 +939,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleLongScore.of(42L), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleLongScore.of(42L));
     }
 
     @TestTemplate
@@ -967,7 +968,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("2.4")), scoreDirector.calculateScore());
+        assertThat(scoreDirector.calculateScore())
+                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleBigDecimalScore.of(new BigDecimal("2.4")));
     }
 
     @TestTemplate

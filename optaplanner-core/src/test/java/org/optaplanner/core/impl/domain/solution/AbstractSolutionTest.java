@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.domain.solution;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,11 +37,11 @@ public class AbstractSolutionTest {
     public void getScore() {
         TestdataAbstractSolutionBasedSolution solution = new TestdataAbstractSolutionBasedSolution();
         solution.setScore(null);
-        assertEquals(null, solution.getScore());
+        assertThat(solution.getScore()).isEqualTo((SimpleScore) null);
         solution.setScore(SimpleScore.of(-10));
-        assertEquals(SimpleScore.of(-10), solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(SimpleScore.of(-10));
         solution.setScore(SimpleScore.of(-2));
-        assertEquals(SimpleScore.of(-2), solution.getScore());
+        assertThat(solution.getScore()).isEqualTo(SimpleScore.of(-2));
     }
 
     @Test

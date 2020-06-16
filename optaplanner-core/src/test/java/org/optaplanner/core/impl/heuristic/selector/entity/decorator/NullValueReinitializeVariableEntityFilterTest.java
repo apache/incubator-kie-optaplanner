@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
-import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -31,8 +31,8 @@ public class NullValueReinitializeVariableEntityFilterTest {
     public void accept() {
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         NullValueReinitializeVariableEntityFilter filter = new NullValueReinitializeVariableEntityFilter(variableDescriptor);
-        assertEquals(false, filter.accept(null, new TestdataEntity("a", new TestdataValue())));
-        assertEquals(true, filter.accept(null, new TestdataEntity("b", null)));
+        assertThat(filter.accept(null, new TestdataEntity("a", new TestdataValue()))).isFalse();
+        assertThat(filter.accept(null, new TestdataEntity("b", null))).isTrue();
     }
 
     @Test
@@ -40,8 +40,8 @@ public class NullValueReinitializeVariableEntityFilterTest {
         EntityDescriptor entityDescriptor = TestdataNullableEntity.buildEntityDescriptor();
         GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("value");
         NullValueReinitializeVariableEntityFilter filter = new NullValueReinitializeVariableEntityFilter(variableDescriptor);
-        assertEquals(false, filter.accept(null, new TestdataNullableEntity("a", new TestdataValue())));
-        assertEquals(true, filter.accept(null, new TestdataNullableEntity("b", null)));
+        assertThat(filter.accept(null, new TestdataNullableEntity("a", new TestdataValue()))).isFalse();
+        assertThat(filter.accept(null, new TestdataNullableEntity("b", null))).isTrue();
     }
 
 }

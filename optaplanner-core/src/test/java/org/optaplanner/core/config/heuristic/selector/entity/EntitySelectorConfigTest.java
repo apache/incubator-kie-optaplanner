@@ -18,7 +18,6 @@ package org.optaplanner.core.config.heuristic.selector.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
@@ -42,7 +41,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat((Object) entitySelector)
                 .isNotInstanceOf(ShufflingEntitySelector.class);
-        assertEquals(SelectionCacheType.PHASE, entitySelector.getCacheType());
+        assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -57,7 +56,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat((Object) entitySelector)
                 .isNotInstanceOf(ShufflingEntitySelector.class);
-        assertEquals(SelectionCacheType.STEP, entitySelector.getCacheType());
+        assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }
 
     @Test
@@ -86,7 +85,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat((Object) entitySelector)
                 .isNotInstanceOf(ShufflingEntitySelector.class);
-        assertEquals(SelectionCacheType.PHASE, entitySelector.getCacheType());
+        assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -101,7 +100,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat((Object) entitySelector)
                 .isNotInstanceOf(ShufflingEntitySelector.class);
-        assertEquals(SelectionCacheType.STEP, entitySelector.getCacheType());
+        assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }
 
     @Test
@@ -130,7 +129,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(ShufflingEntitySelector.class);
         assertThat((Object) ((ShufflingEntitySelector) entitySelector).getChildEntitySelector())
                 .isInstanceOf(FromSolutionEntitySelector.class);
-        assertEquals(SelectionCacheType.PHASE, entitySelector.getCacheType());
+        assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
 
     @Test
@@ -145,7 +144,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
                 .isInstanceOf(ShufflingEntitySelector.class);
         assertThat((Object) ((ShufflingEntitySelector) entitySelector).getChildEntitySelector())
                 .isInstanceOf(FromSolutionEntitySelector.class);
-        assertEquals(SelectionCacheType.STEP, entitySelector.getCacheType());
+        assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }
 
     @Test

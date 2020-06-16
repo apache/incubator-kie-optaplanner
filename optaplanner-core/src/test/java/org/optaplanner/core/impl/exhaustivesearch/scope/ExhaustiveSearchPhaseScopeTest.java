@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.exhaustivesearch.scope;
 
-import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.TreeSet;
 
@@ -37,7 +37,7 @@ public class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
         phase.addExpandableNode(buildNode(0, "2", 0, 0));
         phase.setBestPessimisticBound(SimpleScore.of(Integer.MIN_VALUE));
         phase.registerPessimisticBound(SimpleScore.of(1));
-        assertEquals(1, phase.getExpandableNodeQueue().size());
+        assertThat(phase.getExpandableNodeQueue().size()).isEqualTo(1);
     }
 
 }

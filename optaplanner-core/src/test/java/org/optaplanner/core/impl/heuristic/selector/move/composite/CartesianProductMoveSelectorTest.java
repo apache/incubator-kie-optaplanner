@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.DO_NOT_ASSERT_SIZE;
@@ -23,7 +24,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCod
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
-import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +117,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void emptyOriginSelection(boolean ignoreEmptyChildIterators, boolean emptyFirst, boolean emptySecond) {
-        assertTrue(emptyFirst || emptySecond);
+        assertThat(emptyFirst || emptySecond).isTrue();
         MoveSelector nonEmptyChildMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")); // One side is not empty
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();

@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.trend;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -35,16 +34,16 @@ public class InitializingScoreTrendTest {
 
     @Test
     public void isOnlyUp() {
-        assertEquals(true, InitializingScoreTrend.parseTrend("ONLY_UP/ONLY_UP/ONLY_UP", 3).isOnlyUp());
-        assertEquals(false, InitializingScoreTrend.parseTrend("ONLY_UP/ANY/ONLY_UP", 3).isOnlyUp());
-        assertEquals(false, InitializingScoreTrend.parseTrend("ONLY_UP/ONLY_UP/ONLY_DOWN", 3).isOnlyUp());
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_UP/ONLY_UP/ONLY_UP", 3).isOnlyUp()).isTrue();
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_UP/ANY/ONLY_UP", 3).isOnlyUp()).isFalse();
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_UP/ONLY_UP/ONLY_DOWN", 3).isOnlyUp()).isFalse();
     }
 
     @Test
     public void isOnlyDown() {
-        assertEquals(true, InitializingScoreTrend.parseTrend("ONLY_DOWN/ONLY_DOWN/ONLY_DOWN", 3).isOnlyDown());
-        assertEquals(false, InitializingScoreTrend.parseTrend("ONLY_DOWN/ANY/ONLY_DOWN", 3).isOnlyDown());
-        assertEquals(false, InitializingScoreTrend.parseTrend("ONLY_DOWN/ONLY_DOWN/ONLY_UP", 3).isOnlyDown());
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_DOWN/ONLY_DOWN/ONLY_DOWN", 3).isOnlyDown()).isTrue();
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_DOWN/ANY/ONLY_DOWN", 3).isOnlyDown()).isFalse();
+        assertThat(InitializingScoreTrend.parseTrend("ONLY_DOWN/ONLY_DOWN/ONLY_UP", 3).isOnlyDown()).isFalse();
     }
 
 }

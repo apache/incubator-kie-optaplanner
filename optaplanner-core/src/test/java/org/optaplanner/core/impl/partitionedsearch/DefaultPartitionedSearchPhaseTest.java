@@ -17,9 +17,6 @@ package org.optaplanner.core.impl.partitionedsearch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertNotNull;
-import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,7 +73,7 @@ public class DefaultPartitionedSearchPhaseTest {
         phase.addPhaseLifecycleListener(new PhaseLifecycleListenerAdapter<TestdataSolution>() {
             @Override
             public void phaseStarted(AbstractPhaseScope<TestdataSolution> phaseScope) {
-                assertEquals(Integer.valueOf(partCount), ((PartitionedSearchPhaseScope) phaseScope).getPartCount());
+                assertThat(((PartitionedSearchPhaseScope) phaseScope).getPartCount()).isEqualTo(Integer.valueOf(partCount));
             }
         });
         solver.solve(createSolution(partCount * partSize, 2));
@@ -121,7 +118,7 @@ public class DefaultPartitionedSearchPhaseTest {
 
         TestdataSolution solution = createSolution(partCount * partSize - 1, 100);
         solution.getEntityList().add(new TestdataFaultyEntity("XYZ"));
-        assertEquals(partSize * partCount, solution.getEntityList().size());
+        assertThat(solution.getEntityList().size()).isEqualTo(partSize * partCount);
 
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, SolverConfig.MOVE_THREAD_COUNT_NONE,
                 partSize);
@@ -162,12 +159,12 @@ public class DefaultPartitionedSearchPhaseTest {
 
         // make sure solver has started solving before terminating early
         solvingStarted.await();
-        assertTrue(solver.terminateEarly());
-        assertTrue(solver.isTerminateEarly());
+        assertThat(solver.terminateEarly()).isTrue();
+        assertThat(solver.isTerminateEarly()).isTrue();
 
         executor.shutdown();
-        assertTrue(executor.awaitTermination(100, TimeUnit.MILLISECONDS));
-        assertNotNull(solutionFuture.get());
+        assertThat(executor.awaitTermination(100, TimeUnit.MILLISECONDS)).isTrue();
+        assertThat(solutionFuture.get()).isNotNull();
     }
 
     @Test

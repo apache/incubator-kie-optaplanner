@@ -15,10 +15,9 @@
  */
 package org.optaplanner.core.impl.domain.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.optaplanner.core.impl.util.Util.assertNull;
-import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import java.util.Collections;
 
@@ -48,7 +47,7 @@ public class LookUpStrategyIdOrFailTest {
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
         // The removed object cannot be looked up
-        assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
+        assertThat(lookUpManager.lookUpWorkingObjectOrReturnNull(object)).isNull();
     }
 
     @Test
@@ -57,7 +56,7 @@ public class LookUpStrategyIdOrFailTest {
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
         // The removed object cannot be looked up
-        assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
+        assertThat(lookUpManager.lookUpWorkingObjectOrReturnNull(object)).isNull();
     }
 
     @Test
@@ -113,7 +112,7 @@ public class LookUpStrategyIdOrFailTest {
     public void lookUpWithId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(1);
         lookUpManager.addWorkingObject(object);
-        assertSame(object, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1)));
+        assertThat(lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1))).isSameAs(object);
     }
 
     @Test
@@ -127,7 +126,7 @@ public class LookUpStrategyIdOrFailTest {
     @Test
     public void lookUpWithoutAdding() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
-        assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
+        assertThat(lookUpManager.lookUpWorkingObjectOrReturnNull(object)).isNull();
     }
 
     @Test

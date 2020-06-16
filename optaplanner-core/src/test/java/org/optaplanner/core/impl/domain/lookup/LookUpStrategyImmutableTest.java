@@ -15,8 +15,8 @@
  */
 package org.optaplanner.core.impl.domain.lookup;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -103,7 +103,7 @@ public class LookUpStrategyImmutableTest {
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("data")
     public void lookUpImmutable(Object internalObject, Object externalObject) {
-        assertEquals(internalObject, lookUpManager.lookUpWorkingObject(externalObject));
+        assertThat(lookUpManager.lookUpWorkingObject(externalObject)).isEqualTo(internalObject);
     }
 
 }

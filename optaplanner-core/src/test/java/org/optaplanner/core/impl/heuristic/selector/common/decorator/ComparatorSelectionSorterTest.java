@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
-import static org.optaplanner.core.impl.util.Util.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,13 +37,13 @@ public class ComparatorSelectionSorterTest {
         ComparatorSelectionSorter<TestdataSolution, Integer> selectionSorter = new ComparatorSelectionSorter<>(
                 new TestComparator(), SelectionSorterOrder.ASCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertTrue(ascendingSort(arrayToSort));
+        assertThat(ascendingSort(arrayToSort)).isTrue();
 
         arrayToSort = new ArrayList<>();
         Collections.addAll(arrayToSort, baseArray);
         selectionSorter = new ComparatorSelectionSorter<>(new TestComparator(), SelectionSorterOrder.DESCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertTrue(descendingSort(arrayToSort));
+        assertThat(descendingSort(arrayToSort)).isTrue();
     }
 
     private boolean ascendingSort(List<Integer> list) {

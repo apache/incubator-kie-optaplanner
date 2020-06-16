@@ -16,12 +16,11 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import java.util.Arrays;
 import java.util.List;
@@ -260,7 +259,7 @@ public class SubChainReversingChangeMoveTest {
 
     public void assertSameProperties(List<Object> entityList, Object toPlanningVariable, SubChainReversingChangeMove move) {
         assertListElementsSameExactly(entityList, move.getSubChain().getEntityList());
-        assertSame(toPlanningVariable, move.getToPlanningValue());
+        assertThat(move.getToPlanningValue()).isSameAs(toPlanningVariable);
     }
 
     @Test
@@ -282,15 +281,18 @@ public class SubChainReversingChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[] { a1, a2, a3, a4, a5, b1, b2, b3 });
 
-        assertEquals("[a2..a4] {a1 -reversing-> b0}", new SubChainReversingChangeMove<>(
-                new SubChain(Arrays.asList(a2, a3, a4)), variableDescriptor, inverseVariableSupply, b0).toString());
-        assertEquals("[a1..a5] {a0 -reversing-> b3}", new SubChainReversingChangeMove<>(
+        assertThat(new SubChainReversingChangeMove<>(
+                new SubChain(Arrays.asList(a2, a3, a4)), variableDescriptor, inverseVariableSupply, b0).toString())
+                        .isEqualTo("[a2..a4] {a1 -reversing-> b0}");
+        assertThat(new SubChainReversingChangeMove<>(
                 new SubChain(Arrays.asList(a1, a2, a3, a4, a5)), variableDescriptor, inverseVariableSupply, b3)
-                        .toString());
-        assertEquals("[a1..a3] {a0 -reversing-> a5}", new SubChainReversingChangeMove<>(
-                new SubChain(Arrays.asList(a1, a2, a3)), variableDescriptor, inverseVariableSupply, a5).toString());
-        assertEquals("[a3..a3] {a2 -reversing-> b2}", new SubChainReversingChangeMove<>(
-                new SubChain(Arrays.asList(a3)), variableDescriptor, inverseVariableSupply, b2).toString());
+                        .toString()).isEqualTo("[a1..a5] {a0 -reversing-> b3}");
+        assertThat(new SubChainReversingChangeMove<>(
+                new SubChain(Arrays.asList(a1, a2, a3)), variableDescriptor, inverseVariableSupply, a5).toString())
+                        .isEqualTo("[a1..a3] {a0 -reversing-> a5}");
+        assertThat(new SubChainReversingChangeMove<>(
+                new SubChain(Arrays.asList(a3)), variableDescriptor, inverseVariableSupply, b2).toString())
+                        .isEqualTo("[a3..a3] {a2 -reversing-> b2}");
     }
 
 }

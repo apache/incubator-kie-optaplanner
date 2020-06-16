@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
@@ -32,14 +32,14 @@ public class ValueRatioTabuSizeStrategyTest {
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(mock(DefaultSolverScope.class));
         when(phaseScope.getWorkingValueCount()).thenReturn(100);
         LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
-        assertEquals(10, new ValueRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope));
-        assertEquals(50, new ValueRatioTabuSizeStrategy(0.5).determineTabuSize(stepScope));
+        assertThat(new ValueRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope)).isEqualTo(10);
+        assertThat(new ValueRatioTabuSizeStrategy(0.5).determineTabuSize(stepScope)).isEqualTo(50);
         // Rounding
-        assertEquals(11, new ValueRatioTabuSizeStrategy(0.1051).determineTabuSize(stepScope));
-        assertEquals(10, new ValueRatioTabuSizeStrategy(0.1049).determineTabuSize(stepScope));
+        assertThat(new ValueRatioTabuSizeStrategy(0.1051).determineTabuSize(stepScope)).isEqualTo(11);
+        assertThat(new ValueRatioTabuSizeStrategy(0.1049).determineTabuSize(stepScope)).isEqualTo(10);
         // Corner cases
-        assertEquals(1, new ValueRatioTabuSizeStrategy(0.0000001).determineTabuSize(stepScope));
-        assertEquals(99, new ValueRatioTabuSizeStrategy(0.9999999).determineTabuSize(stepScope));
+        assertThat(new ValueRatioTabuSizeStrategy(0.0000001).determineTabuSize(stepScope)).isEqualTo(1);
+        assertThat(new ValueRatioTabuSizeStrategy(0.9999999).determineTabuSize(stepScope)).isEqualTo(99);
     }
 
 }

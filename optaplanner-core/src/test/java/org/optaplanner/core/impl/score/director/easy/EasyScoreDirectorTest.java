@@ -15,11 +15,11 @@
  */
 package org.optaplanner.core.impl.score.director.easy;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.util.Util.assertFalse;
 
 import java.util.Arrays;
 
@@ -37,7 +37,7 @@ public class EasyScoreDirectorTest {
     @Test
     public void constraintMatchTotalsUnsupported() {
         EasyScoreDirector<Object> director = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
-        assertFalse(director.isConstraintMatchEnabled());
+        assertThat(director.isConstraintMatchEnabled()).isFalse();
         assertThatIllegalStateException()
                 .isThrownBy(director::getConstraintMatchTotals)
                 .withMessageContaining("not supported");

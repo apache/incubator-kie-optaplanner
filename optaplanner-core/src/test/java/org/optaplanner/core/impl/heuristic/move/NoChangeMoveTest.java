@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.heuristic.move;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -28,7 +27,7 @@ public class NoChangeMoveTest {
 
     @Test
     public void isMoveDoable() {
-        assertEquals(true, new NoChangeMove<>().isMoveDoable(null));
+        assertThat(new NoChangeMove<>().isMoveDoable(null)).isTrue();
     }
 
     @Test
@@ -39,12 +38,12 @@ public class NoChangeMoveTest {
 
     @Test
     public void getPlanningEntities() {
-        assertEquals(true, new NoChangeMove<>().getPlanningEntities().isEmpty());
+        assertThat(new NoChangeMove<>().getPlanningEntities().isEmpty()).isTrue();
     }
 
     @Test
     public void getPlanningValues() {
-        assertEquals(true, new NoChangeMove<>().getPlanningValues().isEmpty());
+        assertThat(new NoChangeMove<>().getPlanningValues().isEmpty()).isTrue();
     }
 
     @Test

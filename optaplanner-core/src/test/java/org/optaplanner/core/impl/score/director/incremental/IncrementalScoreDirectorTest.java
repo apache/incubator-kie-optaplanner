@@ -16,15 +16,13 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertFalse;
-import static org.optaplanner.core.impl.util.Util.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,13 +77,13 @@ public class IncrementalScoreDirectorTest {
         scoreDirector.setWorkingSolution(solution);
         reset(incrementalScoreCalculator);
 
-        assertEquals(null, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(null);
 
         scoreDirector.beforeVariableChanged(a3, "chainedObject");
         a3.setChainedObject(b1);
         scoreDirector.afterVariableChanged(a3, "chainedObject");
         scoreDirector.triggerVariableListeners();
-        assertEquals(a3, b1.getNextEntity());
+        assertThat(b1.getNextEntity()).isEqualTo(a3);
 
         InOrder inOrder = inOrder(incrementalScoreCalculator);
         inOrder.verify(incrementalScoreCalculator, times(1)).beforeVariableChanged(a3, "chainedObject");
@@ -112,8 +110,8 @@ public class IncrementalScoreDirectorTest {
                 true,
                 mockIncrementalScoreCalculator(true));
         director.setWorkingSolution(new Object());
-        assertNotNull(director.getConstraintMatchTotals());
-        assertNotNull(director.getConstraintMatchTotalMap());
+        assertThat(director.getConstraintMatchTotals()).isNotNull();
+        assertThat(director.getConstraintMatchTotalMap()).isNotNull();
     }
 
     @Test
@@ -121,7 +119,7 @@ public class IncrementalScoreDirectorTest {
         IncrementalScoreDirector<Object> director = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), false,
                 true,
                 mockIncrementalScoreCalculator(false));
-        assertFalse(director.isConstraintMatchEnabled());
+        assertThat(director.isConstraintMatchEnabled()).isFalse();
     }
 
     @SuppressWarnings("unchecked")

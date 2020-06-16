@@ -23,10 +23,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertFalse;
-import static org.optaplanner.core.impl.util.Util.assertNotNull;
-import static org.optaplanner.core.impl.util.Util.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -138,8 +134,8 @@ public class DefaultSubChainSelectorTest {
                 a0, a1, a2, a3, a4, b0, b1, b2);
         DefaultSubChainSelector selector = new DefaultSubChainSelector(
                 valueSelector, false, minimumSubChainSize, maximumSubChainSize);
-        assertEquals(expected, selector.calculateSubChainSelectionSize(
-                new SubChain(Arrays.asList(a1, a2, a3, a4))));
+        assertThat(selector.calculateSubChainSelectionSize(
+                new SubChain(Arrays.asList(a1, a2, a3, a4)))).isEqualTo(expected);
     }
 
     @Test
@@ -294,9 +290,9 @@ public class DefaultSubChainSelectorTest {
 
     private void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, String... codes) {
         assertAllCodesOfIterator(subChainSelector.iterator(), codes);
-        assertTrue(subChainSelector.isCountable());
-        assertFalse(subChainSelector.isNeverEnding());
-        assertEquals(codes.length, subChainSelector.getSize());
+        assertThat(subChainSelector.isCountable()).isTrue();
+        assertThat(subChainSelector.isNeverEnding()).isFalse();
+        assertThat(subChainSelector.getSize()).isEqualTo(codes.length);
     }
 
     @Test
@@ -569,7 +565,7 @@ public class DefaultSubChainSelectorTest {
     private void assertContainsCodesOfNeverEndingSubChainSelector(
             DefaultSubChainSelector subChainSelector, SubChain... subChains) {
         Iterator<SubChain> iterator = subChainSelector.iterator();
-        assertNotNull(iterator);
+        assertThat(iterator).isNotNull();
         int selectionSize = subChains.length;
         Map<SubChain, Integer> subChainCountMap = new HashMap<>(selectionSize);
         for (int i = 0; i < selectionSize * 10; i++) {
@@ -581,15 +577,15 @@ public class DefaultSubChainSelectorTest {
                     .as("The subChain (" + subChain + ") was not collected.")
                     .isNotNull();
         }
-        assertTrue(subChainCountMap.isEmpty());
-        assertTrue(iterator.hasNext());
-        assertTrue(subChainSelector.isCountable());
-        assertTrue(subChainSelector.isNeverEnding());
-        assertEquals((long) selectionSize, subChainSelector.getSize());
+        assertThat(subChainCountMap.isEmpty()).isTrue();
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(subChainSelector.isCountable()).isTrue();
+        assertThat(subChainSelector.isNeverEnding()).isTrue();
+        assertThat(subChainSelector.getSize()).isEqualTo((long) selectionSize);
     }
 
     private void collectNextSubChain(Iterator<SubChain> iterator, Map<SubChain, Integer> subChainCountMap) {
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         SubChain subChain = iterator.next();
         Integer count = subChainCountMap.get(subChain);
         if (count == null) {

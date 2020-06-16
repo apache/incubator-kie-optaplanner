@@ -16,14 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.mimic;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertNotNull;
 
 import java.util.Iterator;
 
@@ -101,34 +100,37 @@ public class MimicReplayingValueSelectorTest {
     private void runOriginalAsserts(MimicRecordingValueSelector recordingValueSelector,
             MimicReplayingValueSelector replayingValueSelector) {
         Iterator<Object> recordingIterator = recordingValueSelector.iterator();
-        assertNotNull(recordingIterator);
+        assertThat(recordingIterator).isNotNull();
         Iterator<Object> replayingIterator = replayingValueSelector.iterator();
-        assertNotNull(replayingIterator);
+        assertThat(replayingIterator).isNotNull();
 
-        assertEquals(true, recordingIterator.hasNext());
-        assertEquals(true, replayingIterator.hasNext());
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("v1", recordingIterator.next());
         assertCode("v1", replayingIterator.next());
-        assertEquals(true, recordingIterator.hasNext());
-        assertEquals(true, replayingIterator.hasNext());
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("v2", recordingIterator.next());
         assertCode("v2", replayingIterator.next());
-        assertEquals(false, replayingIterator.hasNext()); // Extra call
-        assertEquals(true, recordingIterator.hasNext());
-        assertEquals(true, replayingIterator.hasNext());
-        assertEquals(true, replayingIterator.hasNext()); // Duplicated call
+        // Extra call
+        assertThat(replayingIterator.hasNext()).isFalse();
+        assertThat(recordingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator.hasNext()).isTrue();
+        // Duplicated call
+        assertThat(replayingIterator.hasNext()).isTrue();
         assertCode("v3", recordingIterator.next());
         assertCode("v3", replayingIterator.next());
-        assertEquals(false, recordingIterator.hasNext());
-        assertEquals(false, replayingIterator.hasNext());
-        assertEquals(false, replayingIterator.hasNext()); // Duplicated call
+        assertThat(recordingIterator.hasNext()).isFalse();
+        assertThat(replayingIterator.hasNext()).isFalse();
+        // Duplicated call
+        assertThat(replayingIterator.hasNext()).isFalse();
 
-        assertEquals(true, recordingValueSelector.isCountable());
-        assertEquals(true, replayingValueSelector.isCountable());
-        assertEquals(false, recordingValueSelector.isNeverEnding());
-        assertEquals(false, replayingValueSelector.isNeverEnding());
-        assertEquals(3L, recordingValueSelector.getSize());
-        assertEquals(3L, replayingValueSelector.getSize());
+        assertThat(recordingValueSelector.isCountable()).isTrue();
+        assertThat(replayingValueSelector.isCountable()).isTrue();
+        assertThat(recordingValueSelector.isNeverEnding()).isFalse();
+        assertThat(replayingValueSelector.isNeverEnding()).isFalse();
+        assertThat(recordingValueSelector.getSize()).isEqualTo(3L);
+        assertThat(replayingValueSelector.getSize()).isEqualTo(3L);
     }
 
 }

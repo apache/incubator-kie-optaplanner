@@ -16,8 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
-import static org.optaplanner.core.impl.util.Util.assertEquals;
-import static org.optaplanner.core.impl.util.Util.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
@@ -67,18 +66,18 @@ public class MovableChainedTrailingValueFilterTest {
 
         MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
 
-        assertEquals(false, filter.accept(scoreDirector, a0));
-        assertEquals(true, filter.accept(scoreDirector, a1));
-        assertEquals(true, filter.accept(scoreDirector, a2));
-        assertEquals(true, filter.accept(scoreDirector, a3));
+        assertThat(filter.accept(scoreDirector, a0)).isFalse();
+        assertThat(filter.accept(scoreDirector, a1)).isTrue();
+        assertThat(filter.accept(scoreDirector, a2)).isTrue();
+        assertThat(filter.accept(scoreDirector, a3)).isTrue();
 
-        assertEquals(true, filter.accept(scoreDirector, b0));
-        assertEquals(true, filter.accept(scoreDirector, b1));
-        assertEquals(true, filter.accept(scoreDirector, b2));
+        assertThat(filter.accept(scoreDirector, b0)).isTrue();
+        assertThat(filter.accept(scoreDirector, b1)).isTrue();
+        assertThat(filter.accept(scoreDirector, b2)).isTrue();
 
-        assertEquals(false, filter.accept(scoreDirector, c0));
-        assertEquals(false, filter.accept(scoreDirector, c1));
-        assertEquals(true, filter.accept(scoreDirector, c2));
+        assertThat(filter.accept(scoreDirector, c0)).isFalse();
+        assertThat(filter.accept(scoreDirector, c1)).isFalse();
+        assertThat(filter.accept(scoreDirector, c2)).isTrue();
     }
 
     @Test
@@ -110,25 +109,25 @@ public class MovableChainedTrailingValueFilterTest {
 
         MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
 
-        assertEquals(false, filter.accept(scoreDirector, a0));
-        assertEquals(true, filter.accept(scoreDirector, a1));
-        assertEquals(true, filter.accept(scoreDirector, a2));
-        assertEquals(true, filter.accept(scoreDirector, a3));
+        assertThat(filter.accept(scoreDirector, a0)).isFalse();
+        assertThat(filter.accept(scoreDirector, a1)).isTrue();
+        assertThat(filter.accept(scoreDirector, a2)).isTrue();
+        assertThat(filter.accept(scoreDirector, a3)).isTrue();
 
-        assertEquals(true, filter.accept(scoreDirector, b0));
-        assertEquals(true, filter.accept(scoreDirector, b1));
-        assertEquals(true, filter.accept(scoreDirector, b2));
+        assertThat(filter.accept(scoreDirector, b0)).isTrue();
+        assertThat(filter.accept(scoreDirector, b1)).isTrue();
+        assertThat(filter.accept(scoreDirector, b2)).isTrue();
 
-        assertEquals(false, filter.accept(scoreDirector, c0));
-        assertEquals(false, filter.accept(scoreDirector, c1));
-        assertEquals(true, filter.accept(scoreDirector, c2));
+        assertThat(filter.accept(scoreDirector, c0)).isFalse();
+        assertThat(filter.accept(scoreDirector, c1)).isFalse();
+        assertThat(filter.accept(scoreDirector, c2)).isTrue();
     }
 
     @Test
     public void getMovableChainedTrailingValueFilter() {
         VariableDescriptor variableDescriptor = TestdataPinnedChainedEntity.buildEntityDescriptor()
                 .getVariableDescriptor("chainedObject");
-        assertNotNull(((GenuineVariableDescriptor) variableDescriptor).getMovableChainedTrailingValueFilter());
+        assertThat(((GenuineVariableDescriptor) variableDescriptor).getMovableChainedTrailingValueFilter()).isNotNull();
     }
 
 }

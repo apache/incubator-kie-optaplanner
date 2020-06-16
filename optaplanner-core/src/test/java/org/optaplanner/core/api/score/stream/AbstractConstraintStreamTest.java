@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -114,7 +114,7 @@ public abstract class AbstractConstraintStreamTest {
                 }
             }
         }
-        assertEquals(scoreTotal, score.getScore());
+        assertThat(score.getScore()).isEqualTo(scoreTotal);
     }
 
     protected static AssertableMatch assertMatch(Object... justifications) {

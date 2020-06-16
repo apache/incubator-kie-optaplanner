@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -239,7 +238,8 @@ public class SolutionDescriptorTest {
     public void autoDiscoverFields() {
         SolutionDescriptor<TestdataAutoDiscoverFieldSolution> solutionDescriptor = TestdataAutoDiscoverFieldSolution
                 .buildSolutionDescriptor();
-        assertEquals("constraintConfiguration", solutionDescriptor.getConstraintConfigurationMemberAccessor().getName());
+        assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().getName())
+                .isEqualTo("constraintConfiguration");
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("constraintConfiguration",
                 "singleProblemFact");
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("problemFactList");
@@ -260,7 +260,8 @@ public class SolutionDescriptorTest {
     public void autoDiscoverGetters() {
         SolutionDescriptor<TestdataAutoDiscoverGetterSolution> solutionDescriptor = TestdataAutoDiscoverGetterSolution
                 .buildSolutionDescriptor();
-        assertEquals("constraintConfiguration", solutionDescriptor.getConstraintConfigurationMemberAccessor().getName());
+        assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().getName())
+                .isEqualTo("constraintConfiguration");
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("constraintConfiguration",
                 "singleProblemFact");
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("problemFactList");
@@ -346,7 +347,8 @@ public class SolutionDescriptorTest {
     public void autoDiscoverGettersOverriddenInSubclass() {
         SolutionDescriptor<TestdataExtendedAutoDiscoverGetterSolution> solutionDescriptor =
                 TestdataExtendedAutoDiscoverGetterSolution.buildSubclassSolutionDescriptor();
-        assertEquals("constraintConfiguration", solutionDescriptor.getConstraintConfigurationMemberAccessor().getName());
+        assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().getName())
+                .isEqualTo("constraintConfiguration");
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("constraintConfiguration",
                 "singleProblemFact", "problemFactList");
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys();

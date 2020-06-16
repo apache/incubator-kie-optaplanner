@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.config.util;
 
-import static org.optaplanner.core.impl.util.Util.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
@@ -41,8 +41,8 @@ public class KeyAsElementMapConverterTest {
         xStream.processAnnotations(KeyAsElementMapConverterTestBean.class);
         xStream.allowTypes(new Class[] { KeyAsElementMapConverterTestBean.class });
         KeyAsElementMapConverterTestBean bean = (KeyAsElementMapConverterTestBean) xStream.fromXML(xml);
-        assertEquals("value1", bean.customProperties.get("alpha"));
-        assertEquals("7", bean.customProperties.get("beta"));
+        assertThat(bean.customProperties.get("alpha")).isEqualTo("value1");
+        assertThat(bean.customProperties.get("beta")).isEqualTo("7");
     }
 
     @XStreamAlias("keyAsElementMapConverterTestBean")

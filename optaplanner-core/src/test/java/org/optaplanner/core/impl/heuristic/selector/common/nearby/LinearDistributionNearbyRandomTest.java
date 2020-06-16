@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.util.Util.assertEquals;
 
 import java.util.Random;
 
@@ -38,18 +38,18 @@ public class LinearDistributionNearbyRandomTest {
         NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(100);
 
         when(random.nextDouble()).thenReturn(0.0);
-        assertEquals(0, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
         when(random.nextDouble()).thenReturn(2.0 / 100.0);
-        assertEquals(1, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(1);
         when(random.nextDouble()).thenReturn(2.0 / 100.0 + 2.0 / 100.0 + 2.0 / 10000.0);
-        assertEquals(2, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(2);
         when(random.nextDouble()).thenReturn(2.0 / 100.0 + 2.0 / 100.0 + 2.0 / 10000.0 + 2.0 / 100.0 + 4.0 / 10000.0);
-        assertEquals(3, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(3);
 
         when(random.nextDouble()).thenReturn(0.0);
-        assertEquals(0, nearbyRandom.nextInt(random, 10));
+        assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(0);
         when(random.nextDouble()).thenReturn(2.0 / 10.0);
-        assertEquals(1, nearbyRandom.nextInt(random, 10));
+        assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(1);
     }
 
     @Test
@@ -58,10 +58,10 @@ public class LinearDistributionNearbyRandomTest {
         NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(100);
 
         when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
-        assertEquals(9, nearbyRandom.nextInt(random, 10));
+        assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(9);
 
         when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
-        assertEquals(99, nearbyRandom.nextInt(random, 500));
+        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(99);
     }
 
 }

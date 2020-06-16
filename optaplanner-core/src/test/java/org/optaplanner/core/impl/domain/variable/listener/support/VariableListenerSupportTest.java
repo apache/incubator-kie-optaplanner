@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.util.Util.assertSame;
 
 import java.util.Collections;
 
@@ -60,7 +59,7 @@ public class VariableListenerSupportTest {
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
         SingletonInverseVariableSupply supply2 = variableListenerSupport
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertSame(supply1, supply2);
+        assertThat(supply2).isSameAs(supply1);
     }
 
     @Test
@@ -84,7 +83,7 @@ public class VariableListenerSupportTest {
                 .isInstanceOf(ExternalizedSingletonInverseVariableSupply.class);
         SingletonInverseVariableSupply supply2 = variableListenerSupport
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertSame(supply1, supply2);
+        assertThat(supply2).isSameAs(supply1);
     }
 
     @Test
@@ -111,7 +110,7 @@ public class VariableListenerSupportTest {
                 .isInstanceOf(SingletonInverseVariableListener.class);
         SingletonInverseVariableSupply supply2 = variableListenerSupport
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
-        assertSame(supply1, supply2);
+        assertThat(supply2).isSameAs(supply1);
     }
 
 }
