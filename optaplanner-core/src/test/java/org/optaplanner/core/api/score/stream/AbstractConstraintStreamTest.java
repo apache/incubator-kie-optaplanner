@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.junit.Assume;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -46,13 +46,13 @@ public abstract class AbstractConstraintStreamTest {
     protected final ConstraintStreamImplType constraintStreamImplType;
 
     protected void assumeBavet() {
-        Assume.assumeTrue("This functionality is not yet supported in Drools-based constraint streams.",
-                constraintStreamImplType == ConstraintStreamImplType.BAVET);
+        Assumptions.assumeTrue(constraintStreamImplType == ConstraintStreamImplType.BAVET,
+                "This functionality is not yet supported in Drools-based constraint streams.");
     }
 
     protected void assumeDrools() {
-        Assume.assumeTrue("This functionality is not yet supported in Bavet constraint streams.",
-                constraintStreamImplType == ConstraintStreamImplType.DROOLS);
+        Assumptions.assumeTrue(constraintStreamImplType == ConstraintStreamImplType.DROOLS,
+                "This functionality is not yet supported in Bavet constraint streams.");
     }
 
     public AbstractConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
