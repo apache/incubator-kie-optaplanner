@@ -56,7 +56,7 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.03")));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) SimpleBigDecimalScore.of(new BigDecimal("-10.00")));
+                    .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-10.00")));
         }
     }
 

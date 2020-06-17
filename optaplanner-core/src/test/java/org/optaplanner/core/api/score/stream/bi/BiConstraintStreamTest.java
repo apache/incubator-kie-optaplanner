@@ -875,7 +875,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-42));
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-42));
     }
 
     @TestTemplate
@@ -901,7 +901,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleLongScore.of(-42L));
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-42L));
     }
 
     @TestTemplate
@@ -929,7 +929,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
         scoreDirector.setWorkingSolution(solution);
         assertThat(scoreDirector.calculateScore())
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleBigDecimalScore.of(new BigDecimal("-2.4")));
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-2.4")));
     }
 
     @TestTemplate
@@ -975,7 +975,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(42));
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(42));
     }
 
     @TestTemplate
@@ -1001,7 +1001,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleLongScore.of(42L));
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(42L));
     }
 
     @TestTemplate
@@ -1029,7 +1029,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
 
         scoreDirector.setWorkingSolution(solution);
         assertThat(scoreDirector.calculateScore())
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleBigDecimalScore.of(new BigDecimal("2.4")));
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("2.4")));
     }
 
     @TestTemplate

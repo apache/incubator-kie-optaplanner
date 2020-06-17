@@ -54,7 +54,7 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(SimpleLongScore.ofUninitialized(-7, -1003L));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) SimpleLongScore.of(-1000L));
+                    .isEqualTo(SimpleLongScore.of(-1000L));
         }
     }
 

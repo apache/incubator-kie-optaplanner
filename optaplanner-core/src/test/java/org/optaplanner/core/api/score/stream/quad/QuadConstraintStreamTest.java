@@ -661,7 +661,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-21));
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-21));
     }
 
     @TestTemplate
@@ -692,7 +692,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 false, constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleLongScore.of(-21L));
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-21L));
     }
 
     @TestTemplate
@@ -723,7 +723,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
         scoreDirector.setWorkingSolution(solution);
         assertThat(scoreDirector.calculateScore())
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleBigDecimalScore.of(new BigDecimal("-1.2")));
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-1.2")));
     }
 
     @TestTemplate
@@ -774,7 +774,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(21));
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(21));
     }
 
     @TestTemplate
@@ -804,7 +804,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 constraintMatchEnabled);
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleLongScore.of(21L));
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(21L));
     }
 
     @TestTemplate
@@ -835,7 +835,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
 
         scoreDirector.setWorkingSolution(solution);
         assertThat(scoreDirector.calculateScore())
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleBigDecimalScore.of(new BigDecimal("1.2")));
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("1.2")));
     }
 
     @TestTemplate

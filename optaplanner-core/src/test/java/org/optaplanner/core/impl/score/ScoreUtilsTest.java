@@ -40,32 +40,32 @@ public class ScoreUtilsTest {
     @Test
     public void parseScore() {
         assertThat(ScoreUtils.parseScore(SimpleScore.class, "-1000"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-1000));
+                .isEqualTo(SimpleScore.of(-1000));
         assertThat(ScoreUtils.parseScore(SimpleLongScore.class, "-1000"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleLongScore.of(-1000L));
+                .isEqualTo(SimpleLongScore.of(-1000L));
         assertThat(ScoreUtils.parseScore(SimpleDoubleScore.class, "-1000.0"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleDoubleScore.of(-1000.0));
+                .isEqualTo(SimpleDoubleScore.of(-1000.0));
         assertThat(ScoreUtils.parseScore(SimpleBigDecimalScore.class, "-1000"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleBigDecimalScore.of(new BigDecimal("-1000")));
+                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-1000")));
         assertThat(ScoreUtils.parseScore(HardSoftScore.class, "-1000hard/-200soft"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) HardSoftScore.of(-1000, -200));
+                .isEqualTo(HardSoftScore.of(-1000, -200));
         assertThat(ScoreUtils.parseScore(HardSoftLongScore.class, "-1000hard/-200soft"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) HardSoftLongScore.of(-1000L, -200L));
+                .isEqualTo(HardSoftLongScore.of(-1000L, -200L));
         assertThat(ScoreUtils.parseScore(HardSoftDoubleScore.class, "-1000hard/-200soft"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) HardSoftDoubleScore.of(-1000.0, -200.0));
+                .isEqualTo(HardSoftDoubleScore.of(-1000.0, -200.0));
         assertThat(ScoreUtils.parseScore(HardSoftBigDecimalScore.class, "-1000hard/-200soft"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) HardSoftBigDecimalScore.of(new BigDecimal("-1000"),
+                .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("-1000"),
                         new BigDecimal("-200")));
         assertThat(ScoreUtils.parseScore(HardMediumSoftScore.class, "-1000hard/-200medium/-30soft"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) HardMediumSoftScore.of(-1000, -200, -30));
+                .isEqualTo(HardMediumSoftScore.of(-1000, -200, -30));
         assertThat(ScoreUtils.parseScore(HardMediumSoftLongScore.class, "-1000hard/-200medium/-30soft"))
-                .isEqualTo((org.optaplanner.core.api.score.Score) HardMediumSoftLongScore.of(-1000L, -200L, -30L));
+                .isEqualTo(HardMediumSoftLongScore.of(-1000L, -200L, -30L));
         assertThat(ScoreUtils.parseScore(BendableScore.class, "[-1000]hard/[-200/-30]soft")).isEqualTo(
-                (org.optaplanner.core.api.score.Score) BendableScore.of(new int[] { -1000 }, new int[] { -200, -30 }));
+                BendableScore.of(new int[] { -1000 }, new int[] { -200, -30 }));
         assertThat(ScoreUtils.parseScore(BendableLongScore.class, "[-1000]hard/[-200/-30]soft")).isEqualTo(
-                (org.optaplanner.core.api.score.Score) BendableLongScore.of(new long[] { -1000L }, new long[] { -200L, -30L }));
+                BendableLongScore.of(new long[] { -1000L }, new long[] { -200L, -30L }));
         assertThat(ScoreUtils.parseScore(BendableBigDecimalScore.class, "[-1000]hard/[-200/-30]soft")).isEqualTo(
-                (org.optaplanner.core.api.score.Score) BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-1000") },
+                BendableBigDecimalScore.of(new BigDecimal[] { new BigDecimal("-1000") },
                         new BigDecimal[] { new BigDecimal("-200"), new BigDecimal("-30") }));
     }
 

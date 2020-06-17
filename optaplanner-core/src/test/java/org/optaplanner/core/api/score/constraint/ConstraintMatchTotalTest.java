@@ -32,22 +32,22 @@ public class ConstraintMatchTotalTest {
         TestdataEntity e2 = new TestdataEntity("e2");
         TestdataEntity e3 = new TestdataEntity("e3");
         ConstraintMatchTotal constraintMatchTotal = new ConstraintMatchTotal("package1", "constraint1", SimpleScore.ZERO);
-        assertThat(constraintMatchTotal.getScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.ZERO);
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ZERO);
 
         ConstraintMatch match1 = constraintMatchTotal.addConstraintMatch(asList(e1, e2), SimpleScore.of(-1));
-        assertThat(constraintMatchTotal.getScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-1));
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-1));
         ConstraintMatch match2 = constraintMatchTotal.addConstraintMatch(asList(e1, e3), SimpleScore.of(-20));
-        assertThat(constraintMatchTotal.getScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-21));
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-21));
         // Almost duplicate, but e2 and e1 are in reverse order, so different justification
         ConstraintMatch match3 = constraintMatchTotal.addConstraintMatch(asList(e2, e1), SimpleScore.of(-300));
-        assertThat(constraintMatchTotal.getScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-321));
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-321));
 
         constraintMatchTotal.removeConstraintMatch(match2);
-        assertThat(constraintMatchTotal.getScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-301));
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-301));
         constraintMatchTotal.removeConstraintMatch(match1);
-        assertThat(constraintMatchTotal.getScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(-300));
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.of(-300));
         constraintMatchTotal.removeConstraintMatch(match3);
-        assertThat(constraintMatchTotal.getScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.ZERO);
+        assertThat(constraintMatchTotal.getScore()).isEqualTo(SimpleScore.ZERO);
     }
 
     @Test

@@ -129,7 +129,7 @@ public class OptaPlannerAutoConfigurationTest {
                 .withPropertyValues("optaplanner.solver.environment-mode=FULL_ASSERT")
                 .run(context -> {
                     SolverConfig solverConfig = context.getBean(SolverConfig.class);
-                    assertEquals(EnvironmentMode.FULL_ASSERT, solverConfig.getEnvironmentMode());
+                    assertThat(solverConfig.getEnvironmentMode()).isEqualTo(EnvironmentMode.FULL_ASSERT);
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
         contextRunner
@@ -146,9 +146,6 @@ public class OptaPlannerAutoConfigurationTest {
                     assertThat(solverConfig.getMoveThreadCount()).isEqualTo("2");
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
-    }
-
-    private void assertEquals(EnvironmentMode fullAssert, EnvironmentMode environmentMode) {
     }
 
     @Test

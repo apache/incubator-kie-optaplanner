@@ -75,9 +75,9 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(HardSoftDoubleScore.ofUninitialized(-7, -503.01, -40.20));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) HardSoftDoubleScore.of(-0.01, 0));
+                    .isEqualTo(HardSoftDoubleScore.of(-0.01, 0));
             assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) HardSoftDoubleScore.of(0.0, -0.20));
+                    .isEqualTo(HardSoftDoubleScore.of(0.0, -0.20));
             assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }

@@ -175,18 +175,13 @@ public class OrderByMoveIndexBlockingQueueTest {
 
     private void assertResult(String moveCode, int score, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
         assertCode(moveCode, result.getMove());
-        assertThat(result.getScore()).isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.of(score));
+        assertThat(result.getScore()).isEqualTo(SimpleScore.of(score));
     }
 
     private void assertResult(String moveCode, boolean doable,
             OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
         assertCode(moveCode, result.getMove());
-        boolean y = result.isMoveDoable();
-        if (doable) {
-            assertThat(y).isTrue();
-        } else {
-            assertThat(y).isFalse();
-        }
+        assertThat(result.isMoveDoable()).isEqualTo(doable);
     }
 
 }

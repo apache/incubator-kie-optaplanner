@@ -125,9 +125,9 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         Score bestScore = scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Score bestScoreLimit = scoreDefinition.parseScore(bestScoreLimitString);
-        assertThat(bestScore)
-                .isGreaterThanOrEqualTo(bestScoreLimit)
-                .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").");
+        assertThat(bestScore.compareTo(bestScoreLimit))
+                .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
+                .isGreaterThanOrEqualTo(0);
 
         try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(bestSolution);

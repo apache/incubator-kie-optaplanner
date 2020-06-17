@@ -51,11 +51,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                 HeuristicConfigPolicy configPolicy,
                 SelectionCacheType minimumCacheType, boolean randomSelection) {
             assertThat(minimumCacheType).isEqualTo(expectedMinimumCacheType);
-            if (expectedRandomSelection) {
-                assertThat(randomSelection).isTrue();
-            } else {
-                assertThat(randomSelection).isFalse();
-            }
+            assertThat(randomSelection).isEqualTo(expectedRandomSelection);
             return baseMoveSelector;
         }
 

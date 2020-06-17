@@ -95,10 +95,10 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
                         new BigDecimal("-6003.00")));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) HardMediumSoftBigDecimalScore.of(new BigDecimal("-0.01"),
+                    .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("-0.01"),
                             new BigDecimal("0.00"), new BigDecimal("0.00")));
             assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) HardMediumSoftBigDecimalScore.of(new BigDecimal("0.00"),
+                    .isEqualTo(HardMediumSoftBigDecimalScore.of(new BigDecimal("0.00"),
                             new BigDecimal("0.00"), new BigDecimal("-3.00")));
             assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }

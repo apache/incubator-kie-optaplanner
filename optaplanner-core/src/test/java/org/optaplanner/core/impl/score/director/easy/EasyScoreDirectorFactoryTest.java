@@ -45,7 +45,7 @@ public class EasyScoreDirectorFactoryTest {
         solution.setEntityList(Collections.emptyList());
         director.setWorkingSolution(solution);
         assertThat(director.calculateScore())
-                .isEqualTo((org.optaplanner.core.api.score.Score) SimpleScore.ofUninitialized(0, -10));
+                .isEqualTo(SimpleScore.ofUninitialized(0, -10));
     }
 
 }

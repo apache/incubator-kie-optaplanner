@@ -84,9 +84,9 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         assertThat(scoreHolder.extractScore(-7)).isEqualTo(HardMediumSoftScore.ofUninitialized(-7, -7004001, -50020, -600300));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) HardMediumSoftScore.of(-1, 0, 0));
+                    .isEqualTo(HardMediumSoftScore.of(-1, 0, 0));
             assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) HardMediumSoftScore.of(0, 0, -300));
+                    .isEqualTo(HardMediumSoftScore.of(0, 0, -300));
             assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }

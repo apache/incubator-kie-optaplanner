@@ -87,9 +87,9 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
                 .isEqualTo(BendableLongScore.ofUninitialized(-7, new long[] { -7004001L }, new long[] { -50020L, -600300L }));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore()).isEqualTo(
-                    (org.optaplanner.core.api.score.Score) BendableLongScore.of(new long[] { -1L }, new long[] { 0L, 0L }));
+                    BendableLongScore.of(new long[] { -1L }, new long[] { 0L, 0L }));
             assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore()).isEqualTo(
-                    (org.optaplanner.core.api.score.Score) BendableLongScore.of(new long[] { 0L }, new long[] { 0L, -300L }));
+                    BendableLongScore.of(new long[] { 0L }, new long[] { 0L, -300L }));
             assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }
     }

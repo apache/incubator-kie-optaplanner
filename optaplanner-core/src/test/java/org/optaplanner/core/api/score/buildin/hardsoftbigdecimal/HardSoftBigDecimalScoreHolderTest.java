@@ -82,10 +82,10 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
                 .isEqualTo(HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-503.01"), new BigDecimal("-40.20")));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) HardSoftBigDecimalScore.of(new BigDecimal("-0.01"),
+                    .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("-0.01"),
                             BigDecimal.ZERO));
             assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) HardSoftBigDecimalScore.of(BigDecimal.ZERO,
+                    .isEqualTo(HardSoftBigDecimalScore.of(BigDecimal.ZERO,
                             new BigDecimal("-0.20")));
             assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
         }

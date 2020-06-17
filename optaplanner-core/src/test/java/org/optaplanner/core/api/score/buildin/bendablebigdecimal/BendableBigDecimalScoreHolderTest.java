@@ -100,11 +100,11 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
                         new BigDecimal[] { new BigDecimal("-500.20"), new BigDecimal("-6003.00") }));
         if (constraintMatchEnabled) {
             assertThat(findConstraintMatchTotal(scoreHolder, "hard1").getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) BendableBigDecimalScore.of(
+                    .isEqualTo(BendableBigDecimalScore.of(
                             new BigDecimal[] { new BigDecimal("-0.01") },
                             new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("0.00") }));
             assertThat(scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore())
-                    .isEqualTo((org.optaplanner.core.api.score.Score) BendableBigDecimalScore.of(
+                    .isEqualTo(BendableBigDecimalScore.of(
                             new BigDecimal[] { new BigDecimal("0.00") },
                             new BigDecimal[] { new BigDecimal("0.00"), new BigDecimal("-3.00") }));
             assertThat(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION)).isNull();
