@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -262,7 +261,7 @@ public class ValueTabuAcceptorTest {
     private <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
             LocalSearchStepScope<Solution_> stepScope, int score, TestdataValue... values) {
         Move move = mock(Move.class);
-        when(move.getPlanningValues()).thenReturn((Collection) Arrays.asList(values));
+        when(move.getPlanningValues()).thenReturn(Arrays.asList(values));
         LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
         moveScope.setScore(SimpleScore.of(score));
         return moveScope;

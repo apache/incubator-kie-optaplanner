@@ -54,7 +54,7 @@ public class EasyScoreDirectorTest {
     public void shadowVariableCorruption() {
         EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory = new EasyScoreDirectorFactory<>(
                 TestdataCorruptedShadowedSolution.buildSolutionDescriptor(),
-                (EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.of(0));
+                (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
         EasyScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false,

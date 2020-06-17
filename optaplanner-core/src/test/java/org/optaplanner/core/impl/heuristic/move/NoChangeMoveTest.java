@@ -32,7 +32,7 @@ public class NoChangeMoveTest {
 
     @Test
     public void createUndoMove() {
-        assertThat((Object) new NoChangeMove<>().createUndoMove(null))
+        assertThat(new NoChangeMove<>().createUndoMove(null))
                 .isInstanceOf(NoChangeMove.class);
     }
 

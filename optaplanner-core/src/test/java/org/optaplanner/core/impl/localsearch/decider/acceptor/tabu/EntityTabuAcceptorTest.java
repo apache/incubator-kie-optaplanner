@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -262,7 +261,7 @@ public class EntityTabuAcceptorTest {
     private <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
             LocalSearchStepScope<Solution_> stepScope, int score, TestdataEntity... entities) {
         Move move = mock(Move.class);
-        when(move.getPlanningEntities()).thenReturn((Collection) Arrays.asList(entities));
+        when(move.getPlanningEntities()).thenReturn(Arrays.asList(entities));
         LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope, 0, move);
         moveScope.setScore(SimpleScore.of(score));
         return moveScope;

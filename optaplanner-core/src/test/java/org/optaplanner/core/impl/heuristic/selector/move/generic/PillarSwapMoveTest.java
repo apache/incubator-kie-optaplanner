@@ -273,8 +273,8 @@ public class PillarSwapMoveTest {
     }
 
     public void assertSameProperties(List<Object> leftPillar, List<Object> rightPillar, PillarSwapMove<?> move) {
-        assertListElementsSameExactly(leftPillar, (List<Object>) move.getLeftPillar());
-        assertListElementsSameExactly(rightPillar, (List<Object>) move.getRightPillar());
+        assertListElementsSameExactly(leftPillar, move.getLeftPillar());
+        assertListElementsSameExactly(rightPillar, move.getRightPillar());
     }
 
     @Test

@@ -303,7 +303,7 @@ public final class PlannerAssert {
     }
 
     public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, String... codes) {
-        assertAllCodesOfMoveSelector(moveSelector, (long) codes.length, codes);
+        assertAllCodesOfMoveSelector(moveSelector, codes.length, codes);
     }
 
     public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, long size, String... codes) {
@@ -345,7 +345,7 @@ public final class PlannerAssert {
     }
 
     public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, String... codes) {
-        assertAllCodesOfEntitySelector(entitySelector, (long) codes.length, codes);
+        assertAllCodesOfEntitySelector(entitySelector, codes.length, codes);
     }
 
     public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, long size, String... codes) {
@@ -373,7 +373,7 @@ public final class PlannerAssert {
     }
 
     public static void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
-        assertAllCodesOfPillarSelector(pillarSelector, (long) codes.length, codes);
+        assertAllCodesOfPillarSelector(pillarSelector, codes.length, codes);
     }
 
     public static void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, long size, String... codes) {
@@ -387,7 +387,7 @@ public final class PlannerAssert {
 
     public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector,
             String... codes) {
-        assertAllCodesOfValueSelector(valueSelector, (long) codes.length, codes);
+        assertAllCodesOfValueSelector(valueSelector, codes.length, codes);
     }
 
     public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector, long size,
@@ -402,7 +402,7 @@ public final class PlannerAssert {
 
     public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
             String... codes) {
-        assertAllCodesOfValueSelectorForEntity(valueSelector, entity, (long) codes.length, codes);
+        assertAllCodesOfValueSelectorForEntity(valueSelector, entity, codes.length, codes);
     }
 
     public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
@@ -417,7 +417,7 @@ public final class PlannerAssert {
 
     public static void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector,
             String... codes) {
-        assertAllCodesOfSubChainSelector(subChainSelector, (long) codes.length, codes);
+        assertAllCodesOfSubChainSelector(subChainSelector, codes.length, codes);
     }
 
     public static void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, long size,

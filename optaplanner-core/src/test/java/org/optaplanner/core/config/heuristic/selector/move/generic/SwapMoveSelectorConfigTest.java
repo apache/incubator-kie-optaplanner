@@ -45,7 +45,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setVariableNameIncludeList(Arrays.asList("secondaryValue"));
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) moveSelector)
+        assertThat(moveSelector)
                 .isInstanceOf(SwapMoveSelector.class);
     }
 
@@ -66,7 +66,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) moveSelector)
+        assertThat(moveSelector)
                 .isInstanceOf(SwapMoveSelector.class);
     }
 
@@ -77,7 +77,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) moveSelector)
+        assertThat(moveSelector)
                 .isInstanceOf(SwapMoveSelector.class);
     }
 
@@ -98,7 +98,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) moveSelector)
+        assertThat(moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);
         assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
     }
@@ -111,7 +111,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setSecondaryEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) moveSelector)
+        assertThat(moveSelector)
                 .isInstanceOf(SwapMoveSelector.class);
     }
 
@@ -135,7 +135,7 @@ public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         moveSelectorConfig.setSecondaryEntitySelectorConfig(new EntitySelectorConfig());
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) moveSelector)
+        assertThat(moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);
         assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
     }

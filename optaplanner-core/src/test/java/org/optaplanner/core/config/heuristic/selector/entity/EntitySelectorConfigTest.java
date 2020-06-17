@@ -37,9 +37,9 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isNotInstanceOf(ShufflingEntitySelector.class);
         assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
@@ -52,9 +52,9 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isNotInstanceOf(ShufflingEntitySelector.class);
         assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }
@@ -67,7 +67,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
         // cacheType gets upgraded to STEP
         // assertEquals(SelectionCacheType.JUST_IN_TIME, entitySelector.getCacheType());
@@ -81,9 +81,9 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isNotInstanceOf(ShufflingEntitySelector.class);
         assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
@@ -96,9 +96,9 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isNotInstanceOf(ShufflingEntitySelector.class);
         assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }
@@ -111,7 +111,7 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
         // cacheType gets upgraded to STEP
         // assertEquals(SelectionCacheType.JUST_IN_TIME, entitySelector.getCacheType());
@@ -125,9 +125,9 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isInstanceOf(ShufflingEntitySelector.class);
-        assertThat((Object) ((ShufflingEntitySelector) entitySelector).getChildEntitySelector())
+        assertThat(((ShufflingEntitySelector) entitySelector).getChildEntitySelector())
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
     }
@@ -140,9 +140,9 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertThat((Object) entitySelector)
+        assertThat(entitySelector)
                 .isInstanceOf(ShufflingEntitySelector.class);
-        assertThat((Object) ((ShufflingEntitySelector) entitySelector).getChildEntitySelector())
+        assertThat(((ShufflingEntitySelector) entitySelector).getChildEntitySelector())
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat(entitySelector.getCacheType()).isEqualTo(SelectionCacheType.STEP);
     }

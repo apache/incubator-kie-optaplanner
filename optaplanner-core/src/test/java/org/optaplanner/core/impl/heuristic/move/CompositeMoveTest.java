@@ -145,11 +145,11 @@ public class CompositeMoveTest {
     public void buildOneElemMove() {
         DummyMove tmpMove = new DummyMove();
         Move<TestdataSolution> move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
-        assertThat((Object) move)
+        assertThat(move)
                 .isInstanceOf(DummyMove.class);
 
         move = CompositeMove.buildMove(tmpMove);
-        assertThat((Object) move)
+        assertThat(move)
                 .isInstanceOf(DummyMove.class);
     }
 
@@ -158,7 +158,7 @@ public class CompositeMoveTest {
         DummyMove first = new DummyMove();
         NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
         Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
-        assertThat((Object) move)
+        assertThat(move)
                 .isInstanceOf(CompositeMove.class);
         assertThat(((CompositeMove) move).getMoves()[0])
                 .isInstanceOf(DummyMove.class);
@@ -166,7 +166,7 @@ public class CompositeMoveTest {
                 .isInstanceOf(NoChangeMove.class);
 
         move = CompositeMove.buildMove(first, second);
-        assertThat((Object) move)
+        assertThat(move)
                 .isInstanceOf(CompositeMove.class);
         assertThat(((CompositeMove) move).getMoves()[0])
                 .isInstanceOf(DummyMove.class);

@@ -225,7 +225,7 @@ public abstract class AbstractSolutionClonerTest {
         List<TestdataEntity> originalEntityList = Arrays.asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
-        TestdataUnannotatedExtendedSolution clone = (TestdataUnannotatedExtendedSolution) cloner.cloneSolution(original);
+        TestdataUnannotatedExtendedSolution clone = cloner.cloneSolution(original);
 
         assertThat(clone).isNotSameAs(original);
         assertCode("solution", clone);
@@ -277,7 +277,7 @@ public abstract class AbstractSolutionClonerTest {
         List<TestdataThirdPartyEntityPojo> originalEntityList = Arrays.asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
-        TestdataExtendedThirdPartySolution clone = (TestdataExtendedThirdPartySolution) cloner.cloneSolution(original);
+        TestdataExtendedThirdPartySolution clone = cloner.cloneSolution(original);
 
         assertThat(clone).isNotSameAs(original);
         assertCode("solution", clone);
