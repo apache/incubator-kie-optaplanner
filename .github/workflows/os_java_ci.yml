@@ -11,6 +11,7 @@ on:
       - master
 
 env:
+  # To prevent build failures due to "Connection reset" during artifact download.
   MVN_CONNECTION_PROPS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=60 -Dmaven.wagon.http.retryHandler.count=5
 
 defaults:
