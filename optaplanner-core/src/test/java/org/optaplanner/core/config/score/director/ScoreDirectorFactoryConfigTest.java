@@ -183,9 +183,9 @@ public class ScoreDirectorFactoryConfigTest {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         assertThat(config.isGenerateDroolsTestOnError()).isNull();
         config.setGenerateDroolsTestOnError(true);
-        assertThat((boolean) config.isGenerateDroolsTestOnError()).isTrue();
+        assertThat(config.isGenerateDroolsTestOnError()).isTrue();
         config.setGenerateDroolsTestOnError(Boolean.FALSE);
-        assertThat((boolean) config.isGenerateDroolsTestOnError()).isFalse();
+        assertThat(config.isGenerateDroolsTestOnError()).isFalse();
         config.setGenerateDroolsTestOnError(null);
         assertThat(config.isGenerateDroolsTestOnError()).isNull();
     }

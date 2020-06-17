@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.domain.solution;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -61,7 +60,7 @@ public class AbstractSolutionTest {
         solution.setSingleEntity(singleEntity);
         SimpleScore score = SimpleScore.of(-10);
         solution.setScore(score);
-        assertThat((Collection<Object>) solution.getProblemFactList()).containsExactly(singleValue, v1, v2, v3);
+        assertThat(solution.getProblemFactList()).containsExactly(singleValue, v1, v2, v3);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class AbstractSolutionTest {
         solution.setEntityList(null);
         solution.setSingleEntity(null);
         solution.setScore(null);
-        assertThat((Collection<Object>) solution.getProblemFactList()).containsExactly(v1, v2, v3);
+        assertThat(solution.getProblemFactList()).containsExactly(v1, v2, v3);
     }
 
     public static class TestdataAbstractSolutionBasedSolution extends AbstractSolution<SimpleScore> {

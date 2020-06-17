@@ -95,7 +95,7 @@ public class PartitionQueueTest {
         assertThat(it.next()).isSameAs(moveC2);
 
         executorService.submit(() -> partitionQueue.addFinish(2, 123)).get();
-        assertThat((Boolean) it.hasNext()).isSameAs((Boolean) false);
+        assertThat(it.hasNext()).isSameAs(false);
     }
 
     @Test
@@ -112,11 +112,11 @@ public class PartitionQueueTest {
         executorService.submit(() -> partitionQueue.addMove(2, moveC2)).get();
         executorService.submit(() -> partitionQueue.addFinish(2, 123)).get();
         executorService.submit(() -> partitionQueue.addFinish(1, 123)).get();
-        assertThat((Boolean) it.hasNext()).isSameAs((Boolean) true);
+        assertThat(it.hasNext()).isTrue();
         assertThat(it.next()).isSameAs(moveA1);
-        assertThat((Boolean) it.hasNext()).isSameAs((Boolean) true);
+        assertThat(it.hasNext()).isTrue();
         assertThat(it.next()).isSameAs(moveC2);
-        assertThat((Boolean) it.hasNext()).isSameAs((Boolean) false);
+        assertThat(it.hasNext()).isFalse();
     }
 
     @Test()
@@ -136,9 +136,9 @@ public class PartitionQueueTest {
         PartitionChangeMove<TestdataSolution> moveB1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(1, moveB1)).get();
         executorService.submit(() -> partitionQueue.addFinish(1, 123)).get();
-        assertThat((Boolean) it.hasNext()).isSameAs((Boolean) true);
+        assertThat(it.hasNext()).isTrue();
         assertThat(it.next()).isSameAs(moveA1);
-        assertThat((Boolean) it.hasNext()).isSameAs((Boolean) true);
+        assertThat(it.hasNext()).isTrue();
         assertThat(it.next()).isSameAs(moveC2);
         try {
             it.hasNext();

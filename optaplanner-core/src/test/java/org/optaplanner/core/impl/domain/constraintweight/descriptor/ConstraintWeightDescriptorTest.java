@@ -55,10 +55,8 @@ public class ConstraintWeightDescriptorTest {
 
         assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().executeGetter(solution))
                 .isSameAs(constraintConfiguration);
-        assertThat(firstWeightDescriptor.createExtractor().apply(solution)).isEqualTo(
-                (org.optaplanner.core.api.score.Score<? extends org.optaplanner.core.api.score.Score>) SimpleScore.ZERO);
-        assertThat(secondWeightDescriptor.createExtractor().apply(solution)).isEqualTo(
-                (org.optaplanner.core.api.score.Score<? extends org.optaplanner.core.api.score.Score>) SimpleScore.of(7));
+        assertThat(firstWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.ZERO);
+        assertThat(secondWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.of(7));
     }
 
     @Test
@@ -96,12 +94,9 @@ public class ConstraintWeightDescriptorTest {
 
         assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().executeGetter(solution))
                 .isSameAs(constraintConfiguration);
-        assertThat(firstWeightDescriptor.createExtractor().apply(solution)).isEqualTo(
-                (org.optaplanner.core.api.score.Score<? extends org.optaplanner.core.api.score.Score>) SimpleScore.ZERO);
-        assertThat(secondWeightDescriptor.createExtractor().apply(solution)).isEqualTo(
-                (org.optaplanner.core.api.score.Score<? extends org.optaplanner.core.api.score.Score>) SimpleScore.of(7));
-        assertThat(thirdWeightDescriptor.createExtractor().apply(solution)).isEqualTo(
-                (org.optaplanner.core.api.score.Score<? extends org.optaplanner.core.api.score.Score>) SimpleScore.of(9));
+        assertThat(firstWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.ZERO);
+        assertThat(secondWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.of(7));
+        assertThat(thirdWeightDescriptor.createExtractor().apply(solution)).isEqualTo(SimpleScore.of(9));
     }
 
 }
