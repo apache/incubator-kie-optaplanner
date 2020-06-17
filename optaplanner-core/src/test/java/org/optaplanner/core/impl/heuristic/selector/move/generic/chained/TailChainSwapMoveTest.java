@@ -38,8 +38,6 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import junit.framework.Assert;
-
 public class TailChainSwapMoveTest {
 
     @Test
@@ -327,12 +325,12 @@ public class TailChainSwapMoveTest {
 
         TailChainSwapMove move = new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1,
                 b0);
-        Assert.assertFalse(move.getPlanningEntities().contains(null));
+        assertThat(move.getPlanningEntities()).doesNotContain((TestdataChainedEntity) null);
 
         move.doMoveOnGenuineVariables(scoreDirector);
-        Assert.assertFalse(move.getPlanningEntities().contains(null));
+        assertThat(move.getPlanningEntities()).doesNotContain((TestdataChainedEntity) null);
 
         Move undoMove = move.createUndoMove(scoreDirector);
-        Assert.assertFalse(undoMove.getPlanningEntities().contains(null));
+        assertThat(undoMove.getPlanningEntities()).doesNotContain((TestdataChainedEntity) null);
     }
 }
