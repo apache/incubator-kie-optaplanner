@@ -16,7 +16,10 @@
 
 package org.acme.facilitylocation.solver;
 
+import org.acme.facilitylocation.domain.DemandPoint;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 
@@ -24,6 +27,18 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-        return new Constraint[0];
+        return new Constraint[] {
+                facilityCapacity(constraintFactory)
+        };
+    }
+
+    Constraint facilityCapacity(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(DemandPoint.class)
+                .groupBy(DemandPoint::getFacility, ConstraintCollectors.sumLong(DemandPoint::getDemand))
+                .filter((facility, demand) -> demand > facility.capacity)
+                .penalizeLong(
+                        "facility capacity",
+                        HardSoftLongScore.ONE_HARD,
+                        (facility, demand) -> demand - facility.capacity);
     }
 }

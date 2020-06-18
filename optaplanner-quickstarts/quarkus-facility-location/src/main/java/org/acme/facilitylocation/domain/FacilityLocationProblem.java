@@ -23,7 +23,7 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 
 @PlanningSolution
 public class FacilityLocationProblem {
@@ -35,7 +35,7 @@ public class FacilityLocationProblem {
     private List<DemandPoint> demandPoints;
 
     @PlanningScore
-    private HardSoftScore score;
+    private HardSoftLongScore score;
 
     public FacilityLocationProblem() {
     }
@@ -61,11 +61,11 @@ public class FacilityLocationProblem {
         this.demandPoints = demandPoints;
     }
 
-    public HardSoftScore getScore() {
+    public HardSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftScore score) {
+    public void setScore(HardSoftLongScore score) {
         this.score = score;
     }
 

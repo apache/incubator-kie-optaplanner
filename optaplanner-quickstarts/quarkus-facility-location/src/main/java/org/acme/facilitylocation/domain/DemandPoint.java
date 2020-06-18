@@ -33,6 +33,10 @@ public class DemandPoint {
         this.demand = demand;
     }
 
+    public long getDemand() {
+        return demand;
+    }
+
     public Facility getFacility() {
         return facility;
     }
