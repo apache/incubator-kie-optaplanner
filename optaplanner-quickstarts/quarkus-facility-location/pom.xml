@@ -42,6 +42,10 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
