@@ -18,8 +18,8 @@ package org.acme.facilitylocation.domain;
 
 public class Location {
 
-    final double latitude;
-    final double longitude;
+    public final double latitude;
+    public final double longitude;
 
     public Location(double latitude, double longitude) {
         this.latitude = latitude;
@@ -28,6 +28,6 @@ public class Location {
 
     @Override
     public String toString() {
-        return "[" + latitude + "N," + longitude + "E]";
+        return String.format("[%.4fN, %.4fE]", latitude, longitude);
     }
 }

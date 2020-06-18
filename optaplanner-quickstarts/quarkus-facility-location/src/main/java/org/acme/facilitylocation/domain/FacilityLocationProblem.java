@@ -40,10 +40,9 @@ public class FacilityLocationProblem {
     public FacilityLocationProblem() {
     }
 
-    public FacilityLocationProblem(List<Facility> facilities, List<DemandPoint> demandPoints, HardSoftScore score) {
+    public FacilityLocationProblem(List<Facility> facilities, List<DemandPoint> demandPoints) {
         this.facilities = facilities;
         this.demandPoints = demandPoints;
-        this.score = score;
     }
 
     public List<Facility> getFacilities() {

@@ -22,8 +22,8 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 @PlanningEntity
 public class DemandPoint {
 
-    final Location location;
-    final long demand;
+    public final Location location;
+    public final long demand;
 
     @PlanningVariable(valueRangeProviderRefs = "facilityRange")
     private Facility facility;

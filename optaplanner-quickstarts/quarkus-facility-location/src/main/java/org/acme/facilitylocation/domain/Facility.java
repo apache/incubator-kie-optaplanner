@@ -18,13 +18,20 @@ package org.acme.facilitylocation.domain;
 
 public class Facility {
 
-    final Location location;
-    final long setupCost;
-    final long capacity;
+    public final Location location;
+    public final long setupCost;
+    public final long capacity;
 
     public Facility(Location location, long setupCost, long capacity) {
         this.location = location;
         this.setupCost = setupCost;
         this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return "Facility at " + location +
+                " capacity: " + capacity +
+                " cost: $" + setupCost;
     }
 }
