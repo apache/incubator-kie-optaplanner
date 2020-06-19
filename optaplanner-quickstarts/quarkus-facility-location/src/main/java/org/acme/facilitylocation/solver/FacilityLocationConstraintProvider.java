@@ -28,7 +28,8 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[] {
-                facilityCapacity(constraintFactory)
+                facilityCapacity(constraintFactory),
+                setupCost(constraintFactory)
         };
     }
 
@@ -40,5 +41,14 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
                         "facility capacity",
                         HardSoftLongScore.ONE_HARD,
                         (facility, demand) -> demand - facility.capacity);
+    }
+
+    Constraint setupCost(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(DemandPoint.class)
+                .groupBy(DemandPoint::getFacility)
+                .penalizeLong(
+                        "facility setup cost",
+                        HardSoftLongScore.ONE_SOFT,
+                        facility -> facility.setupCost);
     }
 }

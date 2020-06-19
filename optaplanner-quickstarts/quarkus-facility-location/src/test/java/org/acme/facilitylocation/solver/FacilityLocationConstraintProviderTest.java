@@ -69,4 +69,17 @@ class FacilityLocationConstraintProviderTest {
                 .given(demandPoint, facility)
                 .penalizesBy(0);
     }
+
+    @Test
+    void should_penalize_setup_cost() {
+        long setupCost = 123;
+        Location location = new Location(1, 1);
+        Facility facility = new Facility(location, setupCost, 100);
+        DemandPoint demandPoint = new DemandPoint(location, 1);
+        demandPoint.setFacility(facility);
+
+        constraintVerifier.verifyThat(FacilityLocationConstraintProvider::setupCost)
+                .given(facility, demandPoint)
+                .penalizesBy(setupCost);
+    }
 }
