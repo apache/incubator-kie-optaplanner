@@ -46,7 +46,7 @@ class DemoDataBuilderTest {
         assertEquals(150, problem.getDemandPoints().size());
         // Show toString().
         problem.getDemandPoints().stream().limit(10).forEach(System.out::println);
-        problem.getDemandPoints().forEach(demandPoint -> assertEquals(6, demandPoint.demand));
+        problem.getDemandPoints().forEach(demandPoint -> assertEquals(6, demandPoint.getDemand()));
     }
 
     @Test
