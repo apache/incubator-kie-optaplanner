@@ -1,5 +1,7 @@
 const get = () => {
-  fetch('http://localhost:8080/flp/get');
+  fetch('http://localhost:8080/flp/get')
+    .then(response => response.json())
+    .then(data => map.fitBounds(data.bounds));
 };
 
 const map = L.map('map').setView([51.505, -0.09], 13);

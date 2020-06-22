@@ -18,6 +18,7 @@ package org.acme.facilitylocation.domain;
 
 import static java.util.Collections.emptyList;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -39,18 +40,29 @@ public class FacilityLocationProblem {
     @PlanningScore
     private HardSoftLongScore score;
 
+    private Location southWestCorner;
+    private Location northEastCorner;
+
     public FacilityLocationProblem() {
     }
 
-    public FacilityLocationProblem(List<Facility> facilities, List<DemandPoint> demandPoints) {
+    public FacilityLocationProblem(
+            List<Facility> facilities,
+            List<DemandPoint> demandPoints,
+            Location southWestCorner,
+            Location northEastCorner) {
         this.facilities = facilities;
         this.demandPoints = demandPoints;
+        this.southWestCorner = southWestCorner;
+        this.northEastCorner = northEastCorner;
     }
 
     public static FacilityLocationProblem empty() {
-        FacilityLocationProblem problem = new FacilityLocationProblem();
-        problem.setDemandPoints(emptyList());
-        problem.setFacilities(emptyList());
+        FacilityLocationProblem problem = new FacilityLocationProblem(
+                emptyList(),
+                emptyList(),
+                new Location(-90, -180),
+                new Location(90, 180));
         problem.setScore(HardSoftLongScore.ZERO);
         return problem;
     }
@@ -77,6 +89,10 @@ public class FacilityLocationProblem {
 
     public void setScore(HardSoftLongScore score) {
         this.score = score;
+    }
+
+    public List<Location> getBounds() {
+        return Arrays.asList(southWestCorner, northEastCorner);
     }
 
     @Override

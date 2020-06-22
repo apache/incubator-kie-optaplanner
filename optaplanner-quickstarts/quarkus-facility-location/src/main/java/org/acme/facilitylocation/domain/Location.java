@@ -16,6 +16,9 @@
 
 package org.acme.facilitylocation.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 public class Location {
 
     public final double latitude;

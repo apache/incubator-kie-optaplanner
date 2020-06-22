@@ -125,6 +125,6 @@ public class DemoDataBuilder {
                 .limit(demandPointCount)
                 .collect(Collectors.toList());
 
-        return new FacilityLocationProblem(facilities, demandPoints);
+        return new FacilityLocationProblem(facilities, demandPoints, southWestCorner, northEastCorner);
     }
 }
