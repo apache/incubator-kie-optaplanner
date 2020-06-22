@@ -16,11 +16,18 @@
 
 package org.acme.facilitylocation.domain;
 
+import static java.lang.Math.ceil;
+import static java.lang.Math.sqrt;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @PlanningEntity
 public class DemandPoint {
+
+    // Approximate Metric Equivalents for Degrees. At the equator for longitude and for latitude anywhere,
+    // the following approximations are valid: 1° = 111 km (or 60 nautical miles) 0.1° = 11.1 km.
+    protected static final double METERS_PER_DEGREE = 111_000;
 
     private long id;
     private Location location;
@@ -36,6 +43,24 @@ public class DemandPoint {
         this.id = id;
         this.location = location;
         this.demand = demand;
+    }
+
+    public boolean isAssigned() {
+        return facility != null;
+    }
+
+    /**
+     * Get distance to the facility.
+     *
+     * @return distance in meters
+     */
+    public long distanceToFacility() {
+        if (facility == null) {
+            throw new IllegalStateException("No facility is assigned.");
+        }
+        double latDiff = facility.location.latitude - this.location.latitude;
+        double lngDiff = facility.location.longitude - this.location.longitude;
+        return (long) ceil(sqrt(latDiff * latDiff + lngDiff * lngDiff) * METERS_PER_DEGREE);
     }
 
     public long getId() {

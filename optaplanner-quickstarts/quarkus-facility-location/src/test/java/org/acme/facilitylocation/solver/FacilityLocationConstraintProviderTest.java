@@ -82,4 +82,22 @@ class FacilityLocationConstraintProviderTest {
                 .given(facility, demandPoint)
                 .penalizesBy(setupCost);
     }
+
+    @Test
+    void should_penalize_distance_to_facility() {
+        Location facilityLocation = new Location(0, 0);
+        Location dp1Location = new Location(10, 0);
+        Location dp2Location = new Location(0, 20);
+
+        Facility facility = new Facility(0, facilityLocation, 0, 100);
+        DemandPoint dp1 = new DemandPoint(0, dp1Location, 1);
+        DemandPoint dp2 = new DemandPoint(0, dp2Location, 1);
+
+        dp1.setFacility(facility);
+        dp2.setFacility(facility);
+
+        constraintVerifier.verifyThat(FacilityLocationConstraintProvider::distanceToFacility)
+                .given(facility, dp1, dp2)
+                .penalizesBy(30 * 111_000);
+    }
 }

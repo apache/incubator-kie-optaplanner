@@ -29,7 +29,9 @@ public class SolverResource {
     public FacilityLocationProblem get() throws ExecutionException, InterruptedException {
         Optional<FacilityLocationProblem> maybeSolution = repository.solution();
         if (maybeSolution.isPresent()) {
-            return solverManager.solve(0L, maybeSolution.get()).getFinalBestSolution();
+            FacilityLocationProblem solution = solverManager.solve(0L, maybeSolution.get()).getFinalBestSolution();
+            repository.update(solution);
+            return solution;
         }
         return FacilityLocationProblem.empty();
     }
