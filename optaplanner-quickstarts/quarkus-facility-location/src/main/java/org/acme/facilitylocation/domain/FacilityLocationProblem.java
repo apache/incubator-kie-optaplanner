@@ -16,6 +16,8 @@
 
 package org.acme.facilitylocation.domain;
 
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -43,6 +45,14 @@ public class FacilityLocationProblem {
     public FacilityLocationProblem(List<Facility> facilities, List<DemandPoint> demandPoints) {
         this.facilities = facilities;
         this.demandPoints = demandPoints;
+    }
+
+    public static FacilityLocationProblem empty() {
+        FacilityLocationProblem problem = new FacilityLocationProblem();
+        problem.setDemandPoints(emptyList());
+        problem.setFacilities(emptyList());
+        problem.setScore(HardSoftLongScore.ZERO);
+        return problem;
     }
 
     public List<Facility> getFacilities() {
