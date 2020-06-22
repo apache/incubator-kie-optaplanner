@@ -1,5 +1,8 @@
 package org.acme.facilitylocation.rest;
 
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -9,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.acme.facilitylocation.domain.FacilityLocationProblem;
 import org.acme.facilitylocation.persistence.FacilityLocationProblemRepository;
+import org.optaplanner.core.api.solver.SolverManager;
 
 @Path("/flp")
 @Produces(MediaType.APPLICATION_JSON)
@@ -17,10 +21,16 @@ public class SolverResource {
 
     @Inject
     FacilityLocationProblemRepository repository;
+    @Inject
+    SolverManager<FacilityLocationProblem, Long> solverManager;
 
     @GET
     @Path("get")
-    public FacilityLocationProblem get() {
-        return repository.solution().orElse(FacilityLocationProblem.empty());
+    public FacilityLocationProblem get() throws ExecutionException, InterruptedException {
+        Optional<FacilityLocationProblem> maybeSolution = repository.solution();
+        if (maybeSolution.isPresent()) {
+            return solverManager.solve(0L, maybeSolution.get()).getFinalBestSolution();
+        }
+        return FacilityLocationProblem.empty();
     }
 }

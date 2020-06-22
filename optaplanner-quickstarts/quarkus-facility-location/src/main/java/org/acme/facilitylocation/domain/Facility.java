@@ -18,11 +18,13 @@ package org.acme.facilitylocation.domain;
 
 public class Facility {
 
+    public final long id;
     public final Location location;
     public final long setupCost;
     public final long capacity;
 
-    public Facility(Location location, long setupCost, long capacity) {
+    public Facility(long id, Location location, long setupCost, long capacity) {
+        this.id = id;
         this.location = location;
         this.setupCost = setupCost;
         this.capacity = capacity;
@@ -30,7 +32,7 @@ public class Facility {
 
     @Override
     public String toString() {
-        return "Facility at " + location +
+        return "Facility " + id +
                 " capacity: " + capacity +
                 " cost: $" + setupCost;
     }

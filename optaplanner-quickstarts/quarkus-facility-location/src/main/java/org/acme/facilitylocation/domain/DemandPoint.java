@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 @PlanningEntity
 public class DemandPoint {
 
+    private long id;
     private Location location;
     private long demand;
 
@@ -31,9 +32,18 @@ public class DemandPoint {
     public DemandPoint() {
     }
 
-    public DemandPoint(Location location, long demand) {
+    public DemandPoint(long id, Location location, long demand) {
+        this.id = id;
         this.location = location;
         this.demand = demand;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Location getLocation() {
@@ -62,6 +72,6 @@ public class DemandPoint {
 
     @Override
     public String toString() {
-        return "Demand at " + location + ": " + demand;
+        return "Demand " + id + ": " + demand;
     }
 }

@@ -34,8 +34,8 @@ class FacilityLocationConstraintProviderTest {
     @Test
     void penalizes_capacity_exceeded_by_a_single_demand_point() {
         Location location = new Location(1, 1);
-        Facility facility = new Facility(location, 0, 20);
-        DemandPoint demandPoint = new DemandPoint(location, 100);
+        Facility facility = new Facility(0, location, 0, 20);
+        DemandPoint demandPoint = new DemandPoint(0, location, 100);
         demandPoint.setFacility(facility);
 
         constraintVerifier.verifyThat(FacilityLocationConstraintProvider::facilityCapacity)
@@ -46,10 +46,10 @@ class FacilityLocationConstraintProviderTest {
     @Test
     void no_penalty_when_demand_less_than_capacity() {
         Location location = new Location(1, 1);
-        Facility facility = new Facility(location, 0, 100);
-        DemandPoint dp1 = new DemandPoint(location, 1);
-        DemandPoint dp2 = new DemandPoint(location, 2);
-        DemandPoint dp3 = new DemandPoint(location, 3);
+        Facility facility = new Facility(0, location, 0, 100);
+        DemandPoint dp1 = new DemandPoint(0, location, 1);
+        DemandPoint dp2 = new DemandPoint(0, location, 2);
+        DemandPoint dp3 = new DemandPoint(0, location, 3);
         dp1.setFacility(facility);
         dp2.setFacility(facility);
         dp3.setFacility(facility);
@@ -62,8 +62,8 @@ class FacilityLocationConstraintProviderTest {
     @Test
     void no_penalty_when_demand_point_not_assigned() {
         Location location = new Location(1, 1);
-        Facility facility = new Facility(location, 0, 1);
-        DemandPoint demandPoint = new DemandPoint(location, 100);
+        Facility facility = new Facility(0, location, 0, 1);
+        DemandPoint demandPoint = new DemandPoint(0, location, 100);
 
         constraintVerifier.verifyThat(FacilityLocationConstraintProvider::facilityCapacity)
                 .given(demandPoint, facility)
@@ -74,8 +74,8 @@ class FacilityLocationConstraintProviderTest {
     void should_penalize_setup_cost() {
         long setupCost = 123;
         Location location = new Location(1, 1);
-        Facility facility = new Facility(location, setupCost, 100);
-        DemandPoint demandPoint = new DemandPoint(location, 1);
+        Facility facility = new Facility(0, location, setupCost, 100);
+        DemandPoint demandPoint = new DemandPoint(0, location, 1);
         demandPoint.setFacility(facility);
 
         constraintVerifier.verifyThat(FacilityLocationConstraintProvider::setupCost)

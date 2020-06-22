@@ -19,6 +19,7 @@ package org.acme.facilitylocation.bootstrap;
 import java.util.List;
 import java.util.PrimitiveIterator;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,6 +30,8 @@ import org.acme.facilitylocation.domain.FacilityLocationProblem;
 import org.acme.facilitylocation.domain.Location;
 
 public class DemoDataBuilder {
+
+    private static final AtomicLong sequence = new AtomicLong();
 
     private long capacity;
     private long demand;
@@ -113,6 +116,7 @@ public class DemoDataBuilder {
         Supplier<Location> locationSupplier = () -> new Location(latitudes.nextDouble(), longitudes.nextDouble());
         List<Facility> facilities = Stream.generate(locationSupplier)
                 .map(location -> new Facility(
+                        sequence.incrementAndGet(),
                         location,
                         averageSetupCost + (long) (setupCostStandardDeviation * random.nextGaussian()),
                         capacity / facilityCount))
@@ -120,6 +124,7 @@ public class DemoDataBuilder {
                 .collect(Collectors.toList());
         List<DemandPoint> demandPoints = Stream.generate(locationSupplier)
                 .map(location -> new DemandPoint(
+                        sequence.incrementAndGet(),
                         location,
                         demand / demandPointCount))
                 .limit(demandPointCount)
