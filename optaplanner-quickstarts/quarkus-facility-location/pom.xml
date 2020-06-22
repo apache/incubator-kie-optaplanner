@@ -9,12 +9,13 @@
 
   <properties>
     <version.org.optaplanner>7.39.0-SNAPSHOT</version.org.optaplanner>
-    <version.io.quarkus>1.4.2.Final</version.io.quarkus>
+    <version.io.quarkus>1.5.1.Final</version.io.quarkus>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <failsafe-plugin.version>2.22.1</failsafe-plugin.version>
     <surefire-plugin.version>2.22.2</surefire-plugin.version>
     <docker-plugin.version>0.28.0</docker-plugin.version>
   </properties>
@@ -46,10 +47,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
-      </plugin>
-      <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
         <version>${version.io.quarkus}</version>
@@ -62,12 +59,16 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler-plugin.version}</version>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
         <configuration>
-          <systemProperties>
+          <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-          </systemProperties>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
@@ -85,7 +86,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>${surefire-plugin.version}</version>
+            <version>${failsafe-plugin.version}</version>
             <executions>
               <execution>
                 <goals>
@@ -93,9 +94,9 @@
                   <goal>verify</goal>
                 </goals>
                 <configuration>
-                  <systemProperties>
+                  <systemPropertyVariables>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                  </systemProperties>
+                  </systemPropertyVariables>
                 </configuration>
               </execution>
             </executions>
