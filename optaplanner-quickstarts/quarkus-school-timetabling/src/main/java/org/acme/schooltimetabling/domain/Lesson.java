@@ -63,6 +63,12 @@ public class Lesson extends PanacheEntityBase {
         this.studentGroup = studentGroup.trim();
     }
 
+    public Lesson(String subject, String teacher, String studentGroup, Timeslot timeslot, Room room) {
+        this(subject, teacher, studentGroup);
+        this.timeslot = timeslot;
+        this.room = room;
+    }
+
     public Long getId() {
         return id;
     }

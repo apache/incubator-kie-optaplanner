@@ -26,6 +26,9 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 
@@ -47,6 +50,30 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
         requireNonNull(constraintProvider);
         SolutionDescriptor<Solution_> solutionDescriptor = SolutionDescriptor
                 .buildSolutionDescriptor(requireNonNull(planningSolutionClass), entityClasses);
+        return new DefaultConstraintVerifier<>(constraintProvider, solutionDescriptor);
+    }
+
+    /**
+     * Alternative to {@link #build(ConstraintProvider, Class, Class[])}.
+     *
+     * @param solverConfig never null, must have a {@link PlanningSolution} class, {@link PlanningEntity} classes
+     *        and a {@link ConstraintProvider} configured.
+     * @param <ConstraintProvider_> type of the {@link ConstraintProvider}
+     * @param <Solution_> type of the {@link PlanningSolution}-annotated class
+     * @return never null
+     */
+    static <ConstraintProvider_ extends ConstraintProvider, Solution_> ConstraintVerifier<ConstraintProvider_, Solution_> build(
+            SolverConfig solverConfig) {
+        requireNonNull(solverConfig);
+        SolutionDescriptor<Solution_> solutionDescriptor = SolutionDescriptor
+                .buildSolutionDescriptor(requireNonNull((Class<Solution_>) solverConfig.getSolutionClass()),
+                        solverConfig.getEntityClassList().toArray(new Class<?>[] {}));
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+        ConstraintProvider_ constraintProvider = ConfigUtils.newInstance(null,
+                "constraintProviderClass",
+                (Class<ConstraintProvider_>) scoreDirectorFactoryConfig.getConstraintProviderClass());
+        ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
+                scoreDirectorFactoryConfig.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");
         return new DefaultConstraintVerifier<>(constraintProvider, solutionDescriptor);
     }
 

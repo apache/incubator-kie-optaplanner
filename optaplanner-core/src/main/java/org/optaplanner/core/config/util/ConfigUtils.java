@@ -58,8 +58,9 @@ public class ConfigUtils {
         try {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
-                    + clazz.getName() + ") does not have a public no-arg constructor"
+            throw new IllegalArgumentException("The " + (bean == null ? "?" : bean.getClass().getSimpleName())
+                    + "'s " + propertyName + " (" + clazz.getName()
+                    + ") does not have a public no-arg constructor"
                     // Inner classes include local, anonymous and non-static member classes
                     + ((clazz.isLocalClass() || clazz.isAnonymousClass() || clazz.isMemberClass())
                             && !Modifier.isStatic(clazz.getModifiers()) ? " because it is an inner class." : "."),

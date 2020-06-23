@@ -36,6 +36,7 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.persistence.jackson.api.OptaPlannerJacksonModule;
+import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -276,6 +277,20 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 terminationConfig.setBestScoreLimit(terminationProperties.getBestScoreLimit());
             }
         }
+    }
+
+    // @Bean wrapped by static class to avoid classloading issues if dependencies are absent
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass({ ConstraintVerifier.class })
+    static class OptaPlannerTestConfiguration {
+
+        @Bean
+        @ConditionalOnMissingBean
+        public <ConstraintProvider_ extends ConstraintProvider, Solution_>
+                ConstraintVerifier<ConstraintProvider_, Solution_> constraintVerifier(SolverConfig solverConfig) {
+            return ConstraintVerifier.build(solverConfig);
+        }
+
     }
 
     // @Bean wrapped by static class to avoid classloading issues if dependencies are absent
