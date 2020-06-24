@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.stream.common.JoinerType;
 
 public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
 
-    private final List<SingleBiJoiner<A, B>> joiners;
+    private final List<SingleBiJoiner<A, B>> joinerList;
     private final JoinerType[] joinerTypes;
     private final Function<A, ?>[] leftMappings;
     private final Function<B, ?>[] rightMappings;
@@ -33,7 +33,7 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
-        this.joiners = joinerList;
+        this.joinerList = joinerList;
         this.joinerTypes = joinerList.stream()
                 .map(SingleBiJoiner::getJoinerType)
                 .toArray(JoinerType[]::new);
@@ -46,7 +46,7 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     }
 
     public List<SingleBiJoiner<A, B>> getJoinerList() {
-        return joiners;
+        return joinerList;
     }
 
     // ************************************************************************
