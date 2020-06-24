@@ -54,6 +54,11 @@ public class Timeslot {
         this.endTime = endTime;
     }
 
+    public Timeslot(Long id, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        this(dayOfWeek, startTime, endTime);
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return dayOfWeek + " " + startTime;

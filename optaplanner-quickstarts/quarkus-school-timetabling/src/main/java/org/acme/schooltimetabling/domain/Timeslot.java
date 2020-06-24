@@ -54,6 +54,11 @@ public class Timeslot extends PanacheEntityBase {
         this.endTime = endTime;
     }
 
+    public Timeslot(Long id, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        this(dayOfWeek, startTime, endTime);
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

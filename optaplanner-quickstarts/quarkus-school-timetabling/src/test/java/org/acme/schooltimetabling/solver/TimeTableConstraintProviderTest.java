@@ -34,13 +34,15 @@ public class TimeTableConstraintProviderTest {
 
     @Test
     public void roomConflict() {
-        Room roomA = new Room("Room A");
-        Timeslot monday1 = new Timeslot(DayOfWeek.MONDAY, LocalTime.of(8, 30), LocalTime.of(9, 30));
+        Timeslot monday1 = new Timeslot(0L, DayOfWeek.MONDAY, LocalTime.of(8, 30), LocalTime.of(9, 30));
+        Room roomA = new Room(0L, "Room A");
 
         constraintVerifier.verifyThat(TimeTableConstraintProvider::roomConflict)
                 .given(
-                        new Lesson("Math", "A. Turing", "9th grade", monday1, roomA),
-                        new Lesson("Chemistry", "M. Curie", "10th grade", monday1, roomA)
+                        monday1,
+                        roomA,
+                        new Lesson(0L, "Math", "A. Turing", "9th grade", monday1, roomA),
+                        new Lesson(1L, "Chemistry", "M. Curie", "10th grade", monday1, roomA)
                 )
                 .penalizesBy(1);
     }

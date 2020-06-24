@@ -69,8 +69,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
                 .buildSolutionDescriptor(requireNonNull((Class<Solution_>) solverConfig.getSolutionClass()),
                         solverConfig.getEntityClassList().toArray(new Class<?>[] {}));
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
-        ConstraintProvider_ constraintProvider = ConfigUtils.newInstance(null,
-                "constraintProviderClass",
+        ConstraintProvider_ constraintProvider = ConfigUtils.newInstance(null, "constraintProviderClass",
                 (Class<ConstraintProvider_>) scoreDirectorFactoryConfig.getConstraintProviderClass());
         ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
                 scoreDirectorFactoryConfig.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");

@@ -46,6 +46,11 @@ public class Room extends PanacheEntityBase {
         this.name = name.trim();
     }
 
+    public Room(Long id, String name) {
+        this(name);
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

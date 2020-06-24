@@ -61,8 +61,9 @@ public class Lesson {
         this.studentGroup = studentGroup.trim();
     }
 
-    public Lesson(String subject, String teacher, String studentGroup, Timeslot timeslot, Room room) {
+    public Lesson(Long id, String subject, String teacher, String studentGroup, Timeslot timeslot, Room room) {
         this(subject, teacher, studentGroup);
+        this.id = id;
         this.timeslot = timeslot;
         this.room = room;
     }
