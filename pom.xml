@@ -118,12 +118,14 @@
       </modules>
     </profile>
     <profile>
-      <id>notProductizedProfile</id>
+      <id>quarkusIntegrationProfile</id>
+      <!-- Temporarily disabled until an issue with a parallel maven build is resolved. -->
+      <!--<id>notProductizedProfile</id>
       <activation>
         <property>
           <name>!productized</name>
         </property>
-      </activation>
+      </activation>-->
       <modules>
         <!-- Until Kogito is productized, neither can optaplanner-quarkus be productized. -->
         <module>optaplanner-quarkus-integration</module>
