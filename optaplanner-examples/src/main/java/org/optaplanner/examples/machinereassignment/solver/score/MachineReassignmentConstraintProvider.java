@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.optaplanner.examples.machinereassignment.solver.score;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -107,13 +106,12 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         return factory.from(MrServiceDependency.class)
                 .join(MrProcessAssignment.class,
                         equal(MrServiceDependency::getFromService, MrProcessAssignment::getService))
-                .ifExists(MrProcessAssignment.class,
+                .ifNotExists(MrProcessAssignment.class,
                         equal((serviceDependency, processFrom) -> serviceDependency.getToService(),
                                 MrProcessAssignment::getService),
-                        filtering((serviceDependency, processFrom,
-                                processTo) -> !processFrom.getNeighborhood().equals(processTo.getNeighborhood())))
-                .penalize(MrConstraints.SERVICE_DEPENDENCY,
-                        HardSoftLongScore.ONE_HARD);
+                        equal((serviceDependency, processFrom) -> processFrom.getNeighborhood(),
+                                MrProcessAssignment::getNeighborhood))
+                .penalize(MrConstraints.SERVICE_DEPENDENCY, HardSoftLongScore.ONE_HARD);
     }
 
     /**

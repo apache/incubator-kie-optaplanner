@@ -157,12 +157,12 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .join(Exam.class,
                         equal(TopicConflict::getLeftTopic, Exam::getTopic),
                         filtering((topicConflict, leftExam) -> leftExam.getPeriod() != null))
-                .ifExists(Exam.class,
+                .join(Exam.class,
                         equal((topicConflict, leftExam) -> topicConflict.getRightTopic(), Exam::getTopic),
                         equal((topicConflict, leftExam) -> leftExam.getDayIndex(), Exam::getDayIndex),
                         filtering((topicConflict, leftExam,
                                 rightExam) -> getPeriodIndexDifferenceBetweenExams(leftExam, rightExam) == 1))
-                .penalizeConfigurable("twoExamsInARow", (topicConflict, leftExam) -> topicConflict.getStudentSize());
+                .penalizeConfigurable("twoExamsInARow", (topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize());
     }
 
     protected Constraint twoExamsInADay(ConstraintFactory constraintFactory) {
@@ -170,13 +170,13 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .join(Exam.class,
                         equal(TopicConflict::getLeftTopic, Exam::getTopic),
                         filtering((topicConflict, leftExam) -> leftExam.getPeriod() != null))
-                .ifExists(Exam.class,
+                .join(Exam.class,
                         equal((topicConflict, leftExam) -> topicConflict.getRightTopic(), Exam::getTopic),
                         equal((topicConflict, leftExam) -> leftExam.getDayIndex(), Exam::getDayIndex),
                         // Find exams in a day, but not being held right after each other. That case is handled in the twoExamsInARow constraint.
                         filtering((topicConflict, leftExam,
                                 rightExam) -> getPeriodIndexDifferenceBetweenExams(leftExam, rightExam) > 1))
-                .penalizeConfigurable("twoExamsInADay", (topicConflict, leftExam) -> topicConflict.getStudentSize());
+                .penalizeConfigurable("twoExamsInADay", (topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize());
     }
 
     protected Constraint periodSpread(ConstraintFactory constraintFactory) {
@@ -185,14 +185,14 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .join(Exam.class,
                         equal((config, topicConflict) -> topicConflict.getLeftTopic(), Exam::getTopic),
                         filtering((config, topicConflict, leftExam) -> leftExam.getPeriod() != null))
-                .ifExists(Exam.class,
+                .join(Exam.class,
                         equal((config, topicConflict, leftExam) -> topicConflict.getRightTopic(), Exam::getTopic),
                         filtering((config, topicConflict, leftExam, rightExam) -> rightExam.getPeriod() != null),
                         filtering((config, topicConflict, leftExam,
                                 rightExam) -> getPeriodIndexDifferenceBetweenExams(leftExam,
                                         rightExam) < (config.getPeriodSpreadLength() + 1)))
                 .penalizeConfigurable("periodSpread",
-                        (config, topicConflict, leftExam) -> topicConflict.getStudentSize());
+                        (config, topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize());
     }
 
     protected Constraint mixedDurations(ConstraintFactory constraintFactory) {
