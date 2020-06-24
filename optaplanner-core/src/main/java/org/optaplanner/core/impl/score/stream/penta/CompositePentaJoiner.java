@@ -56,7 +56,6 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
 
     @Override
     public QuadFunction<A, B, C, D, Object> getLeftMapping(int index) {
-        assertMappingIndex(index);
         return (QuadFunction<A, B, C, D, Object>) leftMappings[index];
     }
 
@@ -74,7 +73,6 @@ public final class CompositePentaJoiner<A, B, C, D, E> extends AbstractPentaJoin
 
     @Override
     public Function<E, Object> getRightMapping(int index) {
-        assertMappingIndex(index);
         return (Function<E, Object>) rightMappings[index];
     }
 
