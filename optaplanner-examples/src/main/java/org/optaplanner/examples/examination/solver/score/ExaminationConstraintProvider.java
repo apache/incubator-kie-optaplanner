@@ -1,13 +1,31 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.optaplanner.examples.examination.solver.score;
 
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 import static org.optaplanner.core.api.score.stream.Joiners.greaterThan;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThanOrEqual;
 
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.examination.domain.Exam;
@@ -65,12 +83,10 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint roomCapacityTooSmall(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Room.class)
-                .join(Exam.class, equal(Function.identity(), Exam::getRoom))
-                .join(Period.class, equal((room, exam) -> exam.getPeriod(), Function.identity()))
-                .groupBy((room, exam, period) -> room,
-                        (room, exam, period) -> period,
-                        ConstraintCollectors.sum((period, exam, room) -> exam.getTopicStudentSize()))
+        return constraintFactory.from(Exam.class)
+                .filter(exam -> exam.getRoom() != null)
+                .filter(exam -> exam.getPeriod() != null)
+                .groupBy(Exam::getRoom, Exam::getPeriod, sum(Exam::getTopicStudentSize))
                 .filter((room, period, totalStudentSize) -> totalStudentSize > room.getCapacity())
                 .penalizeConfigurable("roomCapacityTooSmall",
                         (room, period, totalStudentSize) -> totalStudentSize - room.getCapacity());
@@ -99,8 +115,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         filtering((periodPenalty, leftExam) -> leftExam.getPeriod() != null))
                 .join(Exam.class,
                         equal((periodPenalty, leftExam) -> periodPenalty.getRightTopic(), Exam::getTopic),
-                        filtering((periodPenalty, leftExam, rightExam) -> rightExam.getPeriod() != null),
-                        filtering((periodPenalty, leftExam, rightExam) -> leftExam.getPeriod().equals(rightExam.getPeriod())))
+                        equal((periodPenalty, leftExam) -> leftExam.getPeriod(), Exam::getPeriod),
+                        filtering((periodPenalty, leftExam, rightExam) -> rightExam.getPeriod() != null))
                 .penalizeConfigurable("periodPenaltyExclusion",
                         (periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
                                 + rightExam.getTopic().getStudentSize());
@@ -114,9 +130,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         filtering((periodPenalty, leftExam) -> leftExam.getPeriod() != null))
                 .join(Exam.class,
                         equal((periodPenalty, leftExam) -> periodPenalty.getRightTopic(), Exam::getTopic),
-                        filtering((periodPenalty, leftExam, rightExam) -> rightExam.getPeriod() != null),
-                        filtering((periodPenalty, leftExam,
-                                rightExam) -> leftExam.getPeriod().getPeriodIndex() <= rightExam.getPeriod().getPeriodIndex()))
+                        lessThanOrEqual((periodPenalty, leftExam) -> leftExam.getPeriodIndex(), Exam::getPeriodIndex),
+                        filtering((periodPenalty, leftExam, rightExam) -> rightExam.getPeriod() != null))
                 .penalizeConfigurable("periodPenaltyAfter",
                         (periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
                                 + rightExam.getTopic().getStudentSize());
@@ -181,19 +196,20 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint mixedDurations(ConstraintFactory constraintFactory) {
-        // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalties (for 100&150 and 100&200).
-        return constraintFactory.fromUniquePair(Exam.class,
-                equal(Exam::getPeriod),
-                equal(Exam::getRoom))
-                // Keep only those that have different topic durations in the same room-period pair.
-                .filter((leftExam, rightExam) -> leftExam.getTopicDuration() != rightExam.getTopicDuration())
-                // Keep only those where the left exam's id is the lowest one in the room-period pair.
+        return constraintFactory.from(Exam.class)
+                .filter(leftExam -> leftExam.getPeriod() != null)
+                .filter(leftExam -> leftExam.getRoom() != null)
+                .ifNotExistsOther(Exam.class,
+                        equal(Exam::getPeriod),
+                        equal(Exam::getRoom),
+                        greaterThan(Exam::getId))
+                .join(Exam.class,
+                        equal(Exam::getPeriod),
+                        equal(Exam::getRoom),
+                        lessThan(Exam::getId),
+                        filtering((leftExam, rightExam) -> leftExam.getTopicDuration() != rightExam.getTopicDuration()))
                 .ifNotExists(Exam.class,
                         equal((leftExam, rightExam) -> leftExam.getPeriod(), Exam::getPeriod),
-                        equal((leftExam, rightExam) -> leftExam.getRoom(), Exam::getRoom),
-                        greaterThan((leftExam, rightExam) -> leftExam.getId(), Exam::getId))
-                // Keep only those where the left exam's id is the lowest one in the room-period pair.
-                .ifNotExists(Exam.class, equal((leftExam, rightExam) -> leftExam.getPeriod(), Exam::getPeriod),
                         equal((leftExam, rightExam) -> leftExam.getRoom(), Exam::getRoom),
                         equal((leftExam, rightExam) -> rightExam.getTopicDuration(), Exam::getTopicDuration),
                         greaterThan((leftExam, rightExam) -> rightExam.getId(), Exam::getId))
@@ -207,15 +223,19 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint periodPenalty(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Exam.class)
-                .filter(exam -> exam.getPeriod().getPenalty() != 0)
-                .penalizeConfigurable("periodPenalty", exam -> exam.getPeriod().getPenalty());
+        return constraintFactory.from(Period.class)
+                .filter(period -> period.getPenalty() != 0)
+                .join(Exam.class,
+                        equal(Function.identity(), Exam::getPeriod))
+                .penalizeConfigurable("periodPenalty", (period, exam) -> period.getPenalty());
     }
 
     protected Constraint roomPenalty(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(Exam.class)
-                .filter(exam -> exam.getRoom().getPenalty() != 0)
-                .penalizeConfigurable("roomPenalty", exam -> exam.getRoom().getPenalty());
+        return constraintFactory.from(Room.class)
+                .filter(room -> room.getPenalty() != 0)
+                .join(Exam.class,
+                        equal(Function.identity(), Exam::getRoom))
+                .penalizeConfigurable("roomPenalty", (room, exam) -> room.getPenalty());
     }
 
     private int getPeriodIndexDifferenceBetweenExams(Exam leftExam, Exam rightExam) {
