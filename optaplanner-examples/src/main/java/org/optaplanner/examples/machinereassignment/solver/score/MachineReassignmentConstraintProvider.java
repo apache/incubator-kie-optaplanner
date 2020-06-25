@@ -18,6 +18,7 @@ package org.optaplanner.examples.machinereassignment.solver.score;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -106,14 +107,14 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         return factory.from(MrServiceDependency.class)
                 .join(MrProcessAssignment.class,
                         equal(MrServiceDependency::getFromService, MrProcessAssignment::getService))
-                .ifNotExists(MrProcessAssignment.class,
+                .ifExists(MrProcessAssignment.class,
                         equal((serviceDependency, processFrom) -> serviceDependency.getToService(),
                                 MrProcessAssignment::getService),
-                        equal((serviceDependency, processFrom) -> processFrom.getNeighborhood(),
-                                MrProcessAssignment::getNeighborhood))
-                .penalize(MrConstraints.SERVICE_DEPENDENCY, HardSoftLongScore.ONE_HARD);
+                        filtering((serviceDependency, processFrom,
+                                processTo) -> !processFrom.getNeighborhood().equals(processTo.getNeighborhood())))
+                .penalize(MrConstraints.SERVICE_DEPENDENCY,
+                        HardSoftLongScore.ONE_HARD);
     }
-
     /**
      * Transient usage: Some resources are transient and count towards the maximum capacity of both the original
      * machine as the newly assigned machine.

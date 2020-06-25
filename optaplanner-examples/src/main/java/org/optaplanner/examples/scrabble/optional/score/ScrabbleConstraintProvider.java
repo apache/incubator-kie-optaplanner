@@ -48,7 +48,7 @@ public class ScrabbleConstraintProvider implements ConstraintProvider {
 
     private Constraint noParallelHorizontalNeighbours(ConstraintFactory cf) {
         return cf.from(ScrabbleCell.class).filter(sc -> sc.hasWordSet(ScrabbleWordDirection.HORIZONTAL))
-                .join(ScrabbleCell.class,
+                .ifExists(ScrabbleCell.class,
                         Joiners.equal(ScrabbleCell::getX), Joiners.equal(ScrabbleCell::getY, c -> c.getY() + 1),
                         Joiners.filtering((first, second) -> second.hasWordSet(ScrabbleWordDirection.HORIZONTAL)))
                 .penalize("No parallel horizontal neighbours", HardMediumSoftScore.ONE_HARD);
@@ -56,7 +56,7 @@ public class ScrabbleConstraintProvider implements ConstraintProvider {
 
     private Constraint noParallelVerticalNeighbours(ConstraintFactory cf) {
         return cf.from(ScrabbleCell.class).filter(sc -> sc.hasWordSet(ScrabbleWordDirection.VERTICAL))
-                .join(ScrabbleCell.class,
+                .ifExists(ScrabbleCell.class,
                         Joiners.equal(ScrabbleCell::getY), Joiners.equal(ScrabbleCell::getX, c -> c.getX() + 1),
                         Joiners.filtering((first, second) -> second.hasWordSet(ScrabbleWordDirection.VERTICAL)))
                 .penalize("No parallel vertical neighbours", HardMediumSoftScore.ONE_HARD);
