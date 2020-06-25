@@ -84,7 +84,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
 
     protected Constraint roomCapacityTooSmall(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Exam.class)
-                .filter(exam -> exam.getRoom() != null)
+                //  Period is genuine planning variable on LeadingExam, shadow var on FollowingExam, nothing on Exam.
                 .filter(exam -> exam.getPeriod() != null)
                 .groupBy(Exam::getRoom, Exam::getPeriod, sum(Exam::getTopicStudentSize))
                 .filter((room, period, totalStudentSize) -> totalStudentSize > room.getCapacity())
@@ -115,8 +115,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         filtering((periodPenalty, leftExam) -> leftExam.getPeriod() != null))
                 .join(Exam.class,
                         equal((periodPenalty, leftExam) -> periodPenalty.getRightTopic(), Exam::getTopic),
-                        equal((periodPenalty, leftExam) -> leftExam.getPeriod(), Exam::getPeriod),
-                        filtering((periodPenalty, leftExam, rightExam) -> rightExam.getPeriod() != null))
+                        equal((periodPenalty, leftExam) -> leftExam.getPeriod(), Exam::getPeriod))
                 .penalizeConfigurable("periodPenaltyExclusion",
                         (periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
                                 + rightExam.getTopic().getStudentSize());
@@ -130,8 +129,7 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         filtering((periodPenalty, leftExam) -> leftExam.getPeriod() != null))
                 .join(Exam.class,
                         equal((periodPenalty, leftExam) -> periodPenalty.getRightTopic(), Exam::getTopic),
-                        lessThanOrEqual((periodPenalty, leftExam) -> leftExam.getPeriodIndex(), Exam::getPeriodIndex),
-                        filtering((periodPenalty, leftExam, rightExam) -> rightExam.getPeriod() != null))
+                        lessThanOrEqual((periodPenalty, leftExam) -> leftExam.getPeriodIndex(), Exam::getPeriodIndex))
                 .penalizeConfigurable("periodPenaltyAfter",
                         (periodPenalty, leftExam, rightExam) -> leftExam.getTopic().getStudentSize()
                                 + rightExam.getTopic().getStudentSize());
@@ -196,9 +194,10 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint mixedDurations(ConstraintFactory constraintFactory) {
+        // 4 mixed durations of 100, 150, 200 and 200 should only result in 2 penalties (for 100&150 and 100&200).
         return constraintFactory.from(Exam.class)
+                //  Period is genuine planning variable on LeadingExam, shadow var on FollowingExam, nothing on Exam.
                 .filter(leftExam -> leftExam.getPeriod() != null)
-                .filter(leftExam -> leftExam.getRoom() != null)
                 .ifNotExistsOther(Exam.class,
                         equal(Exam::getPeriod),
                         equal(Exam::getRoom),
