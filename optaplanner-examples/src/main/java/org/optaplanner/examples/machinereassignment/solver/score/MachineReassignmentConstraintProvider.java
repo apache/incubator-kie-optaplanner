@@ -115,6 +115,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                 .penalize(MrConstraints.SERVICE_DEPENDENCY,
                         HardSoftLongScore.ONE_HARD);
     }
+
     /**
      * Transient usage: Some resources are transient and count towards the maximum capacity of both the original
      * machine as the newly assigned machine.
