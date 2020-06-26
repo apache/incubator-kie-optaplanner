@@ -11,6 +11,9 @@ const colors = [
   'tomato',
 ];
 
+const colorById = (i) => colors[i % colors.length];
+const colorByDemandPoint = (dp) => dp.facility === null ? {} : { color: colorById(dp.facility.id) };
+
 const get = () => {
   fetch('http://localhost:8080/flp/get')
     .then(response => response.json())
@@ -19,16 +22,14 @@ const get = () => {
 
 const showProblem = (problem) => {
   map.fitBounds(problem.bounds);
-  const groups = new Map();
-  problem.facilities.forEach((facility, index) => {
-    L.marker(facility.location).addTo(map);
-    groups.set(facility.id, colors[index % colors.length]);
+  problem.facilities.forEach((facility) => L.marker(facility.location).addTo(map));
+  problem.demandPoints.forEach((dp) => {
+    const color = colorByDemandPoint(dp);
+    L.circleMarker(dp.location, color).addTo(map);
+    if (dp.facility !== null) {
+      L.polyline([dp.location, dp.facility.location], color).addTo(map);
+    }
   });
-
-  problem.demandPoints.forEach(dp => L.circleMarker(dp.location).addTo(map));
-  problem.demandPoints
-    .filter(dp => dp.facility !== null)
-    .forEach(dp => L.polyline([dp.location, dp.facility.location], { color: groups.get(dp.facility.id) }).addTo(map));
 };
 
 const map = L.map('map').setView([51.505, -0.09], 13);
