@@ -42,7 +42,7 @@ const showProblem = (problem) => {
   });
 };
 
-const map = L.map('map').setView([51.505, -0.09], 13);
+const map = L.map('map', { doubleClickZoom: false }).setView([51.505, -0.09], 13);
 const markerGroup = L.layerGroup();
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
