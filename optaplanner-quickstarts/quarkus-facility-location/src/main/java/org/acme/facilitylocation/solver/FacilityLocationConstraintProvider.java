@@ -40,7 +40,7 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
                 .groupBy(DemandPoint::getFacility, ConstraintCollectors.sumLong(DemandPoint::getDemand))
                 .filter((facility, demand) -> demand > facility.getCapacity())
                 .penalizeLong(
-                        "facility capacity",
+                        FacilityLocationConstraintConfiguration.FACILITY_CAPACITY,
                         HardSoftLongScore.ONE_HARD,
                         (facility, demand) -> demand - facility.getCapacity());
     }
@@ -48,9 +48,8 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
     Constraint setupCost(ConstraintFactory constraintFactory) {
         return constraintFactory.from(DemandPoint.class)
                 .groupBy(DemandPoint::getFacility)
-                .penalizeLong(
-                        "facility setup cost",
-                        HardSoftLongScore.ONE_SOFT,
+                .penalizeConfigurableLong(
+                        FacilityLocationConstraintConfiguration.FACILITY_SETUP_COST,
                         Facility::getSetupCost);
     }
 
@@ -58,7 +57,7 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(DemandPoint.class)
                 .filter(DemandPoint::isAssigned)
                 .penalizeLong(
-                        "distance to facility",
+                        FacilityLocationConstraintConfiguration.DISTANCE_TO_FACILITY,
                         HardSoftLongScore.ONE_SOFT,
                         DemandPoint::distanceToFacility);
     }
