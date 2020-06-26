@@ -58,8 +58,8 @@ public class DemandPoint {
         if (facility == null) {
             throw new IllegalStateException("No facility is assigned.");
         }
-        double latDiff = facility.location.latitude - this.location.latitude;
-        double lngDiff = facility.location.longitude - this.location.longitude;
+        double latDiff = facility.getLocation().latitude - this.location.latitude;
+        double lngDiff = facility.getLocation().longitude - this.location.longitude;
         return (long) ceil(sqrt(latDiff * latDiff + lngDiff * lngDiff) * METERS_PER_DEGREE);
     }
 

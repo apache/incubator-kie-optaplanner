@@ -61,8 +61,8 @@ public class SolverTest {
                         summingLong(DemandPoint::getDemand)));
 
         solution.getFacilities().forEach(facility -> System.out.printf("$%4d (%3d/%3d)%n",
-                facility.setupCost,
+                facility.getSetupCost(),
                 demandPerFacility.computeIfAbsent(facility, facility1 -> 0L),
-                facility.capacity));
+                facility.getCapacity()));
     }
 }

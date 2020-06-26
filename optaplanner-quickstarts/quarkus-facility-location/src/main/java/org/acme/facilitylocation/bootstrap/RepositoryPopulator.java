@@ -20,7 +20,7 @@ public class RepositoryPopulator {
     @Transactional
     public void generateDemoData(@Observes StartupEvent startupEvent) {
         FacilityLocationProblem problem = DemoDataBuilder.builder()
-                .setCapacity(1000)
+                .setCapacity(1500)
                 .setDemand(900)
                 .setFacilityCount(10)
                 .setDemandPointCount(60)

@@ -21,7 +21,7 @@ const get = () => {
 };
 
 const facilityPopupContent = (f) => `<ul>
-<li>Capacity: ${f.capacity}</li>
+<li>Usage: ${f.usage}/${f.capacity}</li>
 <li>Setup cost: ${f.setupCost}</li>
 </ul>`;
 
