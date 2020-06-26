@@ -20,10 +20,19 @@ const get = () => {
     .then(data => showProblem(data));
 };
 
+const facilityPopupContent = (f) => `<ul>
+<li>Capacity: ${f.capacity}</li>
+<li>Setup cost: ${f.setupCost}</li>
+</ul>`;
+
 const showProblem = (problem) => {
   markerGroup.clearLayers();
   map.fitBounds(problem.bounds);
-  problem.facilities.forEach((facility) => L.marker(facility.location).addTo(markerGroup));
+  problem.facilities.forEach((facility) =>
+    L.marker(facility.location)
+      .addTo(markerGroup)
+      .bindPopup(facilityPopupContent(facility)),
+  );
   problem.demandPoints.forEach((dp) => {
     const color = colorByDemandPoint(dp);
     L.circleMarker(dp.location, color).addTo(markerGroup);
