@@ -27,7 +27,7 @@ You will build a REST application that optimizes a school timetable for students
 image::QuickStart/SpringBoot/timeTableAppScreenshot.png[]
 
 Your service will assign `Lesson` instances to `Timeslot` and `Room` instances automatically
-by using AI to adhere to the following hard and soft _scheduling _constraints_:
+by using AI to adhere to the following hard and soft _scheduling constraints_:
 //For product, we can't have 'such as:' as a lead-in. In this case, I think this list IS the list that we use in the example, so we can just say 'the following.'
 
 * A room can have at most one lesson at the same time.
@@ -52,7 +52,7 @@ that deliver a near-optimal solution in a reasonable amount of time.
 
 == Generate the {PLANNER} Spring Boot project
 
-Spring Initialz is a web-based application that creates a Spring Boot structure based on a few user inputs. You can use Spring Initializr to easily generate a Maven or Gradle Spring Boot project that you can customize for {PLANNER}.
+Spring Initialzr is a web-based application that creates a Spring Boot structure based on a few user inputs. You can use Spring Initializr to easily generate a Maven or Gradle Spring Boot project that you can customize for {PLANNER}.
 
 
 .Procedure
@@ -68,22 +68,22 @@ https://start.spring.io/
 . Extract the ZIP file and change directory to your Spring Boot project directory.
 . Add the {PLANNER} dependency (`optaplanner-spring-boot-starter`). Currently `optaplanner-spring-boot-starter` is not included in Spring Initializr so you must manually add it to your build file.
 +
-* If you generated a Maven project, add the `optaplanner-spring-boot-starter` to your your `pom.xml` file:
+* If you generated a Maven project, add the `optaplanner-spring-boot-starter` to your `pom.xml` file where `_VERSION_` is the verion of {PLANNER}:
 +
 [source,xml,subs=attributes+]
 ----
 <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.optaplanner</groupId>
-                <artifactId>optaplanner-spring-boot-starter</artifactId>
-                <version>7.38.0.Final</version>
-            </dependency>
-        </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.optaplanner</groupId>
+            <artifactId>optaplanner-spring-boot-starter</artifactId>
+            <version>7.38.0.Final</version>
+        </dependency>
+    </dependencies>
 </dependencyManagement>
 ----
 +
-The following example shows the `optaplanner-spring-boot-starter` dependency added to the Spring Boot `pom.xml` file:
+The following example shows the `optaplanner-spring-boot-starter` dependency added to your `pom.xml` file:
 +
 [source,xml,subs=attributes+]
 ----
@@ -159,7 +159,7 @@ The following example shows the `optaplanner-spring-boot-starter` dependency add
 implementation "org.optaplanner:optaplanner-spring-boot-starter:{project-version}"
 ----
 +
-The following example shows the `optaplanner-spring-boot-starter` dependency added to the Spring Boot `build.gradle` file in a Gradle Java project:
+The following example shows the `optaplanner-spring-boot-starter` dependency added to your `build.gradle` file in a Gradle Java project:
 +
 [source,groovy,subs=attributes+]
 ----
@@ -761,7 +761,7 @@ After you have completed your {PLANNER} Spring Boot project, package everything 
 
 .Prerequisites
 
-.Prodedure
+.Procedure
 
 . Create the `TimeTableSpringBootApp.java` class with the following content:
 +
@@ -926,7 +926,7 @@ However, it does not run a millisecond longer than it strictly must, even on fas
 
 === Logging
 
-After you have completed your {PLANNER} Spring Boot application, you can use logging information to help you fine-tune the constraints in the `ConstraintProvider`. Review the _score calculation speed_ in the `info` log file to assess the impact of changes to your contraints. Run the application in debug mode to show every step that your application takes or use trace logging to every step and every move per stop.
+After you have completed your {PLANNER} Spring Boot application, you can use logging information to help you fine-tune the constraints in the `ConstraintProvider`. Review the _score calculation speed_ in the `info` log file to assess the impact of changes to your constraints. Run the application in debug mode to show every step that your application takes or use trace logging to every step and every move per stop.
 
 .Procedure
 . Run the planning application for a fixed amount of time, for example, five minutes.
