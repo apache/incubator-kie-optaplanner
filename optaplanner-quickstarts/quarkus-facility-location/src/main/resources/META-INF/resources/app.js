@@ -21,22 +21,26 @@ const get = () => {
 };
 
 const showProblem = (problem) => {
+  markerGroup.clearLayers();
   map.fitBounds(problem.bounds);
-  problem.facilities.forEach((facility) => L.marker(facility.location).addTo(map));
+  problem.facilities.forEach((facility) => L.marker(facility.location).addTo(markerGroup));
   problem.demandPoints.forEach((dp) => {
     const color = colorByDemandPoint(dp);
-    L.circleMarker(dp.location, color).addTo(map);
+    L.circleMarker(dp.location, color).addTo(markerGroup);
     if (dp.facility !== null) {
-      L.polyline([dp.location, dp.facility.location], color).addTo(map);
+      L.polyline([dp.location, dp.facility.location], color).addTo(markerGroup);
     }
   });
 };
 
 const map = L.map('map').setView([51.505, -0.09], 13);
+const markerGroup = L.layerGroup();
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
 }).addTo(map);
+
+markerGroup.addTo(map);
 
 map.on('click', get);
