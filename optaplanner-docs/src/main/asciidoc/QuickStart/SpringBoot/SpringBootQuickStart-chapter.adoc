@@ -42,7 +42,6 @@ Simply iterating through all possible combinations with brute force would take m
 for a non-trivial dataset, even on a supercomputer.
 Fortunately, AI constraint solvers such as {PLANNER} have advanced algorithms
 that deliver a near-optimal solution in a reasonable amount of time. What is considered to be a reasonable amount of time is subjective and depends on the goals of your problem.
-// Can we qualify what a reasonable amount of time is at this stage? Perhaps a range, or ", usually under 10 minutes."?
 
 .Prerequisites
 
