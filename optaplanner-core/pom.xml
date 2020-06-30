@@ -27,6 +27,12 @@
   </properties>
 
   <dependencies>
+    <!-- DO NOT MERGE THIS -->
+    <!-- Test CI for Cross repository PR's over build-boostrap master and optaplanner 7.x -->
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.kie</groupId>
