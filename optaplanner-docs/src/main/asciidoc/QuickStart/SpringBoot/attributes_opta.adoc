@@ -1,3 +1,4 @@
 
 
 :PLANNER: OptaPlanner
+:PRODUCTVERSION:7.38.0.Final

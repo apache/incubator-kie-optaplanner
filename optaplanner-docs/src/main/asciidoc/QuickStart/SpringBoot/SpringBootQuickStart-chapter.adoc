@@ -41,7 +41,7 @@ That means it is difficult to scale.
 Simply iterating through all possible combinations with brute force would take millions of years
 for a non-trivial dataset, even on a supercomputer.
 Fortunately, AI constraint solvers such as {PLANNER} have advanced algorithms
-that deliver a near-optimal solution in a reasonable amount of time.
+that deliver a near-optimal solution in a reasonable amount of time. What is considered to be a reasonable amount of time is subjective and depends on the goals of your problem.
 // Can we qualify what a reasonable amount of time is at this stage? Perhaps a range, or ", usually under 10 minutes."?
 
 .Prerequisites
@@ -68,7 +68,7 @@ https://start.spring.io/
 . Extract the ZIP file and change directory to your Spring Boot project directory.
 . Add the {PLANNER} dependency (`optaplanner-spring-boot-starter`). Currently `optaplanner-spring-boot-starter` is not included in Spring Initializr so you must manually add it to your build file.
 +
-* If you generated a Maven project, add the `optaplanner-spring-boot-starter` to your `pom.xml` file where `_VERSION_` is the verion of {PLANNER}:
+* If you generated a Maven project, add the `optaplanner-spring-boot-starter` to your `pom.xml` file where `_VERSION_` is the version of {PLANNER}:
 +
 [source,xml,subs=attributes+]
 ----
@@ -77,7 +77,7 @@ https://start.spring.io/
         <dependency>
             <groupId>org.optaplanner</groupId>
             <artifactId>optaplanner-spring-boot-starter</artifactId>
-            <version>7.38.0.Final</version>
+            <version>{PRODUCTVERSION}</version>
         </dependency>
     </dependencies>
 </dependencyManagement>
@@ -437,7 +437,7 @@ endif::COMMUNITY[]
 When solving a problem, a _score_ represents the quality of a given solution.
 The higher the score the better.
 {PLANNER} looks for the best solution, which is the solution with the highest score found in the available time.
-The highest score might be the _optimal_ solution.
+It might be the _optimal_ solution.
 
 Because the timetable example use case has hard and soft constraints,
 use the `HardSoftScore` class to represent the score:
@@ -803,8 +803,7 @@ Enter the following command:
 $ curl -i -X POST http://localhost:8080/timeTable/solve -H "Content-Type:application/json" -d '{"timeslotList":[{"dayOfWeek":"MONDAY","startTime":"08:30:00","endTime":"09:30:00"},{"dayOfWeek":"MONDAY","startTime":"09:30:00","endTime":"10:30:00"}],"roomList":[{"name":"Room A"},{"name":"Room B"}],"lessonList":[{"id":1,"subject":"Math","teacher":"A. Turing","studentGroup":"9th grade"},{"id":2,"subject":"Chemistry","teacher":"M. Curie","studentGroup":"9th grade"},{"id":3,"subject":"French","teacher":"M. Curie","studentGroup":"10th grade"},{"id":4,"subject":"History","teacher":"I. Jones","studentGroup":"10th grade"}]}'
 ----
 
-After about five seconds, the termination spent time defined in  `application.properties`,
-the service returns an output similar to the following example:
+After about five seconds, the termination spent time defined in  `application.properties`, the service returns an output similar to the following example:
 
 [source]
 ----
