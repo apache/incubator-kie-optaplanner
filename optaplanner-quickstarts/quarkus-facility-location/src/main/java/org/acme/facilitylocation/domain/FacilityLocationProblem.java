@@ -108,11 +108,24 @@ public class FacilityLocationProblem {
     }
 
     public long getTotalCost() {
-        return facilities.stream().filter(Facility::isUsed).mapToLong(Facility::getSetupCost).sum();
+        return facilities.stream()
+                .filter(Facility::isUsed)
+                .mapToLong(Facility::getSetupCost)
+                .sum();
     }
 
     public long getPotentialCost() {
-        return facilities.stream().mapToLong(Facility::getSetupCost).sum();
+        return facilities.stream()
+                .mapToLong(Facility::getSetupCost)
+                .sum();
+    }
+
+    public String getTotalDistance() {
+        long distance = demandPoints.stream()
+                .filter(DemandPoint::isAssigned)
+                .mapToLong(DemandPoint::distanceToFacility)
+                .sum();
+        return distance / 1000 + " km";
     }
 
     @Override

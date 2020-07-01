@@ -101,6 +101,7 @@ const showProblem = ({ solution, isSolving }) => {
   $('#score').text(solution.score);
   $('#cost').text(solution.totalCost);
   $('#cost-percentage').text(Math.round(solution.totalCost * 1000 / solution.potentialCost) / 10);
+  $('#distance').text(solution.totalDistance);
   updateSolvingStatus(isSolving);
 };
 
