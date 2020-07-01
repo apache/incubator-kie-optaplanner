@@ -1,17 +1,33 @@
+<!doctype html>
 <html lang="en">
 <head>
-  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+        crossorigin="anonymous">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-        crossorigin="" />
+        crossorigin="anonymous">
 
   <title>Facility Location - OptaPlanner Quarkus quickstart</title>
 </head>
 <body>
 
-<div id="map" style="width: 100%; height: 100%;"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <div id="map" style="width: 100%; height: 100vh;"></div>
+    </div>
+    <div class="col-sm-3">
+      <div class="row">
+        <button id="solveButton" type="button" class="btn btn-success" onclick="solve()">Solve</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
         integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="

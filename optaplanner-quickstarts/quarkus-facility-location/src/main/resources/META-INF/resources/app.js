@@ -56,5 +56,4 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 markerGroup.addTo(map);
 
-map.on('click', solve);
 map.whenReady(update);
