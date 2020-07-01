@@ -247,4 +247,5 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     public abstract DroolsUniCondition<A, ?> getCondition();
+
 }
