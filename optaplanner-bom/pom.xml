@@ -9,6 +9,7 @@
     <groupId>org.kie</groupId>
     <artifactId>kie-user-bom-parent</artifactId>
     <version>7.40.0-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.optaplanner</groupId>
