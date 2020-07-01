@@ -6,9 +6,10 @@
   <parent>
     <!-- TODO In step 3, this must extend optaplanner-parent instead and stop duplicating this metadata -->
     <!-- But for that to work, optaplanner-parent must have an empty dependencyManagement (so no kie-parent parent) -->
-    <groupId>org.kie</groupId>
-    <artifactId>kie-user-bom-parent</artifactId>
-    <version>7.40.0-SNAPSHOT</version>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <!-- Keep in sync with the parent version in ../pom.xml (kie-parent)  -->
+    <version>31</version>
     <relativePath/>
   </parent>
 
@@ -27,6 +28,19 @@
   </description>
 
   <url>https://www.optaplanner.org</url>
+  <inceptionYear>2006</inceptionYear>
+  <organization>
+    <name>Red Hat</name>
+    <url>https://www.redhat.com</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <scm>
     <connection>scm:git:https://github.com/kiegroup/optaplanner.git</connection>
