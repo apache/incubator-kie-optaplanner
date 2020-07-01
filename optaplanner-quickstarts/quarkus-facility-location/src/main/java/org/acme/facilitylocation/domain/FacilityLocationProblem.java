@@ -107,6 +107,14 @@ public class FacilityLocationProblem {
         return Arrays.asList(southWestCorner, northEastCorner);
     }
 
+    public long getTotalCost() {
+        return facilities.stream().filter(Facility::isUsed).mapToLong(Facility::getSetupCost).sum();
+    }
+
+    public long getPotentialCost() {
+        return facilities.stream().mapToLong(Facility::getSetupCost).sum();
+    }
+
     @Override
     public String toString() {
         return "FacilityLocationProblem{" +

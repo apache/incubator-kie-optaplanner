@@ -98,7 +98,9 @@ const showProblem = ({ solution, isSolving }) => {
       L.polyline([dp.location, dp.facility.location], color).addTo(markerGroup);
     }
   });
-  $('#score').text(`Score: ${solution.score}`);
+  $('#score').text(solution.score);
+  $('#cost').text(solution.totalCost);
+  $('#cost-percentage').text(Math.round(solution.totalCost * 1000 / solution.potentialCost) / 10);
   updateSolvingStatus(isSolving);
 };
 
