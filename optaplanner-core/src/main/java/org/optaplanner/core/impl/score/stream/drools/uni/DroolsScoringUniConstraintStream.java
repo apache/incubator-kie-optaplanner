@@ -77,11 +77,6 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
         this.bigDecimalMatchWeigher = bigDecimalMatchWeigher;
     }
 
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
-    }
-
     // ************************************************************************
     // Pattern creation
     // ************************************************************************

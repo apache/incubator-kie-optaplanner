@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import java.util.List;
 import java.util.function.Function;
 
 import org.drools.model.Global;
@@ -29,24 +28,20 @@ import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, DroolsConstraintFactory<Solution_>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsConstraint.class);
-    private final List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList;
     private final DroolsAbstractConstraintStream<Solution_> scoringStream;
 
     public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
             String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
             ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
-            List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList,
             DroolsAbstractConstraintStream<Solution_> scoringStream) {
         super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,
                 isConstraintWeightConfigurable);
-        this.fromStreamList = fromStreamList;
         this.scoringStream = scoringStream;
     }
 
@@ -77,6 +72,6 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
 
     @Override
     public String toString() {
-        return "DroolsConstraint(" + getConstraintId() + ") in " + fromStreamList.size() + " from() stream(s)";
+        return "DroolsConstraint(" + getConstraintId() + ")";
     }
 }

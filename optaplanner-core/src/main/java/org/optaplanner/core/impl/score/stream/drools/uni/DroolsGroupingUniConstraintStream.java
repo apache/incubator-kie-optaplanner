@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -99,11 +98,6 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         super(constraintFactory);
         this.parent = parent;
         this.condition = parent.getCondition().andGroup(groupKeyMapping);
-    }
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
     }
 
     // ************************************************************************

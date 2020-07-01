@@ -17,9 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -38,7 +35,6 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.InnerQuadConstraintStream;
 
@@ -243,22 +239,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        if (parent == null) {
-            DroolsJoinQuadConstraintStream<Solution_, A, B, C, D> joinStream =
-                    (DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>) this;
-            List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList = joinStream.getLeftParentStream()
-                    .getFromStreamList();
-            List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList = joinStream.getRightParentStream()
-                    .getFromStreamList();
-            return Stream.concat(leftParentFromStreamList.stream(), rightParentFromStreamList.stream())
-                    .collect(Collectors.toList()); // TODO Should we distinct?
-        } else {
-            return parent.getFromStreamList();
-        }
-    }
 
     public abstract DroolsQuadCondition<A, B, C, D, ?> getCondition();
 

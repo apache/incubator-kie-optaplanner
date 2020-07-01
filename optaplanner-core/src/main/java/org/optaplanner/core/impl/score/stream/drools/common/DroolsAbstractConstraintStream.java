@@ -30,7 +30,6 @@ import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsScoringUniConstraintStream;
 
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
@@ -49,27 +48,23 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ScoreImpactType impactType,
             DroolsAbstractConstraintStream<Solution_> scoringStream) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
-                constraintPackage, constraintName, constraintWeight);
-        List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
+        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
+                constraintName, constraintWeight);
         return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, false, fromStreamList, scoringStream);
+                impactType, false, scoringStream);
     }
 
     protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType, DroolsAbstractConstraintStream<Solution_> scoringStream) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
-                constraintPackage, constraintName);
-        List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
+        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
+                constraintName);
         return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, true, fromStreamList, scoringStream);
+                impactType, true, scoringStream);
     }
 
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
-
-    public abstract List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList();
 
     public void addChildStream(DroolsAbstractConstraintStream<Solution_> childStream) {
         childStreamList.add(childStream);

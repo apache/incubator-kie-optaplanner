@@ -16,11 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.List;
-
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
 public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
@@ -35,11 +32,6 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
         this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
                 : parent.getCondition().andIfNotExists(otherClass, joiners);
-    }
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return parent.getFromStreamList();
     }
 
     // ************************************************************************

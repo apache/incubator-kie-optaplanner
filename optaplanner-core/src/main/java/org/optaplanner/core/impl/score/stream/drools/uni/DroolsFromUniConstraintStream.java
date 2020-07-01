@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
@@ -38,11 +35,6 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        return Collections.singletonList((DroolsFromUniConstraintStream<Solution_, Object>) this);
-    }
 
     @Override
     public DroolsUniCondition<A, ?> getCondition() {

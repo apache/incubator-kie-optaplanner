@@ -16,13 +16,10 @@
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -41,7 +38,6 @@ import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstr
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsJoinTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 
@@ -246,22 +242,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        DroolsAbstractConstraintStream<Solution_> parent = getParent();
-        if (parent == null) {
-            DroolsJoinBiConstraintStream<Solution_, A, B> joinStream = (DroolsJoinBiConstraintStream<Solution_, A, B>) this;
-            List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList = joinStream.getLeftParentStream()
-                    .getFromStreamList();
-            List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList = joinStream.getRightParentStream()
-                    .getFromStreamList();
-            return Stream.concat(leftParentFromStreamList.stream(), rightParentFromStreamList.stream())
-                    .collect(Collectors.toList()); // TODO Should we distinct?
-        } else {
-            return parent.getFromStreamList();
-        }
-    }
 
     protected abstract DroolsAbstractConstraintStream<Solution_> getParent();
 

@@ -17,9 +17,6 @@
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -41,7 +38,6 @@ import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadCons
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
@@ -257,22 +253,6 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
-
-    @Override
-    public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
-        if (parent == null) {
-            DroolsJoinTriConstraintStream<Solution_, A, B, C> joinStream =
-                    (DroolsJoinTriConstraintStream<Solution_, A, B, C>) this;
-            List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList = joinStream.getLeftParentStream()
-                    .getFromStreamList();
-            List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList = joinStream.getRightParentStream()
-                    .getFromStreamList();
-            return Stream.concat(leftParentFromStreamList.stream(), rightParentFromStreamList.stream())
-                    .collect(Collectors.toList()); // TODO Should we distinct?
-        } else {
-            return parent.getFromStreamList();
-        }
-    }
 
     public abstract DroolsTriCondition<A, B, C, ?> getCondition();
 
