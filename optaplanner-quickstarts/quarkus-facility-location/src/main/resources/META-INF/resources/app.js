@@ -19,15 +19,15 @@ const stopSolvingButton = $('#stopSolvingButton');
 const colorById = (i) => colors[i % colors.length];
 const colorByDemandPoint = (dp) => dp.facility === null ? {} : { color: colorById(dp.facility.id) };
 
-const refresh = () => {
-  fetch('/flp/solution')
+const getStatus = () => {
+  fetch('/flp/status')
     .then((response) => response.json())
     .then((data) => showProblem(data));
 };
 
 const solve = () => {
   fetch('/flp/solve', { method: 'POST' }).then(() => {
-    refreshSolvingButtons(true);
+    updateSolvingStatus(true);
     autoRefreshCount = 300;
     if (autoRefreshIntervalId == null) {
       autoRefreshIntervalId = setInterval(autoRefresh, 500);
@@ -37,9 +37,8 @@ const solve = () => {
 
 function stopSolving() {
   fetch('/flp/stopSolving', { method: 'POST' }).then(() => {
-    refreshSolvingButtons(false);
-    autoRefreshCount = 0;
-    refresh();
+    updateSolvingStatus(false);
+    getStatus();
   }).catch((error) => showError('Stop solving failed', error));
 }
 
@@ -47,18 +46,19 @@ function showError(title, reason) {
   console.error(`${title}:`, reason);
 }
 
-function refreshSolvingButtons(solving) {
+function updateSolvingStatus(solving) {
   if (solving) {
     solveButton.hide();
     stopSolvingButton.show();
   } else {
+    autoRefreshCount = 0;
     solveButton.show();
     stopSolvingButton.hide();
   }
 }
 
 function autoRefresh() {
-  refresh();
+  getStatus();
   autoRefreshCount--;
   if (autoRefreshCount <= 0) {
     clearInterval(autoRefreshIntervalId);
@@ -71,26 +71,27 @@ const facilityPopupContent = (f) => `<ul>
 <li>Setup cost: ${f.setupCost}</li>
 </ul>`;
 
-const showProblem = (problem) => {
+const showProblem = ({ solution, isSolving }) => {
   markerGroup.clearLayers();
-  map.fitBounds(problem.bounds);
-  problem.facilities.forEach((facility) =>
+  map.fitBounds(solution.bounds);
+  solution.facilities.forEach((facility) =>
     L.marker(facility.location)
       .addTo(markerGroup)
       .bindPopup(facilityPopupContent(facility)),
   );
-  problem.demandPoints.forEach((dp) => {
+  solution.demandPoints.forEach((dp) => {
     const color = colorByDemandPoint(dp);
     L.circleMarker(dp.location, color).addTo(markerGroup);
     if (dp.facility !== null) {
       L.polyline([dp.location, dp.facility.location], color).addTo(markerGroup);
     }
   });
-  $('#score').text(`Score: ${problem.score}`);
+  $('#score').text(`Score: ${solution.score}`);
+  updateSolvingStatus(isSolving);
 };
 
 const map = L.map('map', { doubleClickZoom: false }).setView([51.505, -0.09], 13);
-map.whenReady(refresh);
+map.whenReady(getStatus);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
@@ -103,4 +104,4 @@ markerGroup.addTo(map);
 solveButton.click(solve);
 stopSolvingButton.click(stopSolving);
 
-refreshSolvingButtons();
+updateSolvingStatus();

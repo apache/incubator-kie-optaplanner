@@ -27,9 +27,11 @@ public class SolverResource {
     SolverManager<FacilityLocationProblem, Long> solverManager;
 
     @GET
-    @Path("solution")
-    public FacilityLocationProblem solution() {
-        return repository.solution().orElse(FacilityLocationProblem.empty());
+    @Path("status")
+    public Status status() {
+        return new Status(
+                repository.solution().orElse(FacilityLocationProblem.empty()),
+                solverManager.getSolverStatus(PROBLEM_ID));
     }
 
     @POST
