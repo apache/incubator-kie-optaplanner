@@ -45,13 +45,22 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.model.consequences.BiConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.model.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.model.consequences.QuadConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.model.consequences.TriConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.model.consequences.UniConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.AbstractConstraintModelChildNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.AbstractConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.ChildNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.ConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.FromNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.TriConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelChildNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
@@ -59,156 +68,151 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 public final class ConstraintModel {
 
     private final Map<Class, FromNode> fromNodeMap = new LinkedHashMap<>(0);
+    private final Set<ConstraintModelNode> nodeSet = new LinkedHashSet<>(0);
     private final Set<ConstraintConsequence> consequenceSet = new LinkedHashSet<>(0);
 
     public <A> UniConstraintModelNode<A> from(Class<A> clz) {
-        return fromNodeMap.computeIfAbsent(clz, FromNode::new);
+        FromNode<A> node = fromNodeMap.computeIfAbsent(clz, FromNode::new);
+        nodeSet.add(node);
+        return node;
     }
 
-    public Set<FromNode> getFromNodes() {
-        return Collections.unmodifiableSet(new HashSet<>(fromNodeMap.values()));
-    }
-
-    public Set<ConstraintConsequence> getConsequences() {
-        return Collections.unmodifiableSet(consequenceSet);
-    }
-
-    public <A> UniConstraintModelNode<A> filter(UniConstraintModelNode<A> parent, Predicate<A> predicate) {
-        throw new UnsupportedOperationException();
+    public <A> UniConstraintModelChildNode<A> filter(UniConstraintModelNode<A> parent, Predicate<A> predicate) {
+        return addNode(() -> ConstraintModelNode.filter(predicate), parent);
     }
 
     public <A, B> BiConstraintModelNode<A, B> filter(BiConstraintModelNode<A, B> parent, BiPredicate<A, B> predicate) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.filter(predicate), parent);
     }
 
     public <A, B, C> TriConstraintModelNode<A, B, C> filter(TriConstraintModelNode<A, B, C> parent,
             TriPredicate<A, B, C> predicate) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.filter(predicate), parent);
     }
 
     public <A, B, C, D> QuadConstraintModelNode<A, B, C, D> filter(QuadConstraintModelNode<A, B, C, D> parent,
             QuadPredicate<A, B, C, D> predicate) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.filter(predicate), parent);
     }
 
     public <A, B> BiConstraintModelNode<A, B> join(UniConstraintModelNode<A> leftParent,
-            UniConstraintModelNode<A> rightParent, AbstractBiJoiner<A, B> joiner) {
-        throw new UnsupportedOperationException();
+            UniConstraintModelNode<B> rightParent, AbstractBiJoiner<A, B> joiner) {
+        return addNode(() -> ConstraintModelNode.join(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
     public <A, B, C> TriConstraintModelNode<A, B, C> join(BiConstraintModelNode<A, B> leftParent,
             UniConstraintModelNode<C> rightParent, AbstractTriJoiner<A, B, C> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.join(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
     public <A, B, C, D> QuadConstraintModelNode<A, B, C, D> join(TriConstraintModelNode<A, B, C> leftParent,
             UniConstraintModelNode<D> rightParent, AbstractQuadJoiner<A, B, C, D> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.join(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
-    public <A, B> UniConstraintModelNode<A> ifExists(UniConstraintModelNode<A> leftParent,
+    public <A, B> UniConstraintModelChildNode<A> ifExists(UniConstraintModelNode<A> leftParent,
             UniConstraintModelNode<A> rightParent, AbstractBiJoiner<A, B> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.ifExists(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
     public <A, B, C> BiConstraintModelNode<A, B> ifExists(BiConstraintModelNode<A, B> leftParent,
             UniConstraintModelNode<C> rightParent, AbstractTriJoiner<A, B, C> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.ifExists(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
     public <A, B, C, D> TriConstraintModelNode<A, B, C> ifExists(TriConstraintModelNode<A, B, C> leftParent,
             UniConstraintModelNode<D> rightParent, AbstractQuadJoiner<A, B, C, D> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.ifExists(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
     public <A, B, C, D, E> QuadConstraintModelNode<A, B, C, D> ifExists(QuadConstraintModelNode<A, B, C, D> leftParent,
             UniConstraintModelNode<E> rightParent, AbstractPentaJoiner<A, B, C, D, E> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.ifExists(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
-    public <A, B> UniConstraintModelNode<A> ifNotExists(UniConstraintModelNode<A> leftParent,
+    public <A, B> UniConstraintModelChildNode<A> ifNotExists(UniConstraintModelNode<A> leftParent,
             UniConstraintModelNode<A> rightParent, AbstractBiJoiner<A, B> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.ifNotExists(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
     public <A, B, C> BiConstraintModelNode<A, B> ifNotExists(BiConstraintModelNode<A, B> leftParent,
             UniConstraintModelNode<C> rightParent, AbstractTriJoiner<A, B, C> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.ifNotExists(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
     public <A, B, C, D> TriConstraintModelNode<A, B, C> ifNotExists(TriConstraintModelNode<A, B, C> leftParent,
             UniConstraintModelNode<D> rightParent, AbstractQuadJoiner<A, B, C, D> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.ifNotExists(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
     public <A, B, C, D, E> QuadConstraintModelNode<A, B, C, D> ifNotExists(QuadConstraintModelNode<A, B, C, D> leftParent,
             UniConstraintModelNode<E> rightParent, AbstractPentaJoiner<A, B, C, D, E> joiner) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.ifNotExists(rightParent.getFactType(), joiner), leftParent, rightParent);
     }
 
-    public <A, GroupKey_> UniConstraintModelNode<GroupKey_> groupBy(UniConstraintModelNode<A> parent,
+    public <A, GroupKey_> UniConstraintModelChildNode<GroupKey_> groupBy(UniConstraintModelNode<A> parent,
             Function<A, GroupKey_> mapping) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(mapping), parent);
     }
 
     public <A, GroupKeyA_, GroupKeyB_> BiConstraintModelNode<GroupKeyA_, GroupKeyB_> groupBy(
             UniConstraintModelNode<A> parent, Function<A, GroupKeyA_> aMapping, Function<A, GroupKeyB_> bMapping) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping), parent);
     }
 
-    public <A, ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(UniConstraintModelNode<A> parent,
+    public <A, ResultContainer_, Result_> UniConstraintModelChildNode<Result_> groupBy(UniConstraintModelNode<A> parent,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(collector), parent);
     }
 
     public <A, GroupKey_, ResultContainer_, Result_> BiConstraintModelNode<GroupKey_, Result_> groupBy(
             UniConstraintModelNode<A> parent, Function<A, GroupKey_> mapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(mapping, collector), parent);
     }
 
     public <A, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
             TriConstraintModelNode<GroupKeyA_, GroupKeyB_, Result_> groupBy(UniConstraintModelNode<A> parent,
-                    Function<A, GroupKeyA_> aMapping, Function<A, GroupKeyA_> bMapping,
+                    Function<A, GroupKeyA_> aMapping, Function<A, GroupKeyB_> bMapping,
                     UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping, collector), parent);
     }
 
     public <A, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintModelNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(UniConstraintModelNode<A> parent,
-                    Function<A, GroupKeyA_> aMapping, Function<A, GroupKeyB_> bMapping,
-                    UniConstraintCollector<A, ResultContainerC_, ResultC_> cCollector,
+            QuadConstraintModelNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    UniConstraintModelNode<A> parent, Function<A, GroupKeyA_> aMapping,
+                    Function<A, GroupKeyB_> bMapping, UniConstraintCollector<A, ResultContainerC_, ResultC_> cCollector,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> dCollector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, ResultContainer_, Result_> UniConstraintModelNode<Result_> groupBy(BiConstraintModelNode<A, B> parent,
-            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+    public <A, B, ResultContainer_, Result_> UniConstraintModelChildNode<Result_> groupBy(
+            BiConstraintModelNode<A, B> parent, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+        return addNode(() -> ConstraintModelNode.groupBy(collector), parent);
     }
 
-    public <A, B, GroupKey_> UniConstraintModelNode<GroupKey_> groupBy(BiConstraintModelNode<A, B> parent,
+    public <A, B, GroupKey_> UniConstraintModelChildNode<GroupKey_> groupBy(BiConstraintModelNode<A, B> parent,
             BiFunction<A, B, GroupKey_> mapping) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(mapping), parent);
     }
 
     public <A, B, GroupKey_, ResultContainer_, Result_> BiConstraintModelNode<GroupKey_, Result_> groupBy(
             BiConstraintModelNode<A, B> parent, BiFunction<A, B, GroupKey_> mapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(mapping, collector), parent);
     }
 
     public <A, B, GroupKeyA_, GroupKeyB_> BiConstraintModelNode<GroupKeyA_, GroupKeyB_> groupBy(
             BiConstraintModelNode<A, B> parent, BiFunction<A, B, GroupKeyA_> aMapping,
             BiFunction<A, B, GroupKeyB_> bMapping) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping), parent);
     }
 
     public <A, B, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
             TriConstraintModelNode<GroupKeyA_, GroupKeyB_, Result_> groupBy(BiConstraintModelNode<A, B> parent,
                     BiFunction<A, B, GroupKeyA_> aMapping, BiFunction<A, B, GroupKeyB_> bMapping,
                     BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping, collector), parent);
     }
 
     public <A, B, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
@@ -216,75 +220,76 @@ public final class ConstraintModel {
                     BiFunction<A, B, GroupKeyA_> aMapping, BiFunction<A, B, GroupKeyB_> bMapping,
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> cCollector,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> dCollector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, C, ResultContainer_, Result_> UniConstraintModelNode<Result_> groupBy(
+    public <A, B, C, ResultContainer_, Result_> UniConstraintModelChildNode<Result_> groupBy(
             TriConstraintModelNode<A, B, C> parent,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(collector), parent);
     }
 
-    public <A, B, C, GroupKey_> UniConstraintModelNode<GroupKey_> groupBy(TriConstraintModelNode<A, B, C> parent,
+    public <A, B, C, GroupKey_> UniConstraintModelChildNode<GroupKey_> groupBy(TriConstraintModelNode<A, B, C> parent,
             TriFunction<A, B, C, GroupKey_> mapping) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(mapping), parent);
     }
 
     public <A, B, C, GroupKey_, ResultContainer_, Result_> BiConstraintModelNode<GroupKey_, Result_> groupBy(
             TriConstraintModelNode<A, B, C> parent, TriFunction<A, B, C, GroupKey_> mapping,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(mapping, collector), parent);
     }
 
     public <A, B, C, GroupKeyA_, GroupKeyB_> BiConstraintModelNode<GroupKeyA_, GroupKeyB_> groupBy(
             TriConstraintModelNode<A, B, C> parent, TriFunction<A, B, C, GroupKeyA_> aMapping,
             TriFunction<A, B, C, GroupKeyB_> bMapping) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping), parent);
     }
 
     public <A, B, C, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
             TriConstraintModelNode<GroupKeyA_, GroupKeyB_, Result_> groupBy(TriConstraintModelNode<A, B, C> parent,
                     TriFunction<A, B, C, GroupKeyA_> aMapping, TriFunction<A, B, C, GroupKeyB_> bMapping,
                     TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping, collector), parent);
     }
 
     public <A, B, C, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintModelNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(TriConstraintModelNode<A, B, C> parent,
-                    TriFunction<A, B, C, GroupKeyA_> aMapping, TriFunction<A, B, C, GroupKeyB_> bMapping,
+            QuadConstraintModelNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    TriConstraintModelNode<A, B, C> parent, TriFunction<A, B, C, GroupKeyA_> aMapping,
+                    TriFunction<A, B, C, GroupKeyB_> bMapping,
                     TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> cCollector,
                     TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> dCollector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
     }
 
-    public <A, B, C, D, ResultContainer_, Result_> UniConstraintModelNode<Result_> groupBy(
+    public <A, B, C, D, ResultContainer_, Result_> UniConstraintModelChildNode<Result_> groupBy(
             QuadConstraintModelNode<A, B, C, D> parent,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(collector), parent);
     }
 
-    public <A, B, C, D, GroupKey_> UniConstraintModelNode<GroupKey_> groupBy(QuadConstraintModelNode<A, B, C, D> parent,
-            QuadFunction<A, B, C, D, GroupKey_> mapping) {
-        throw new UnsupportedOperationException();
+    public <A, B, C, D, GroupKey_> UniConstraintModelChildNode<GroupKey_> groupBy(
+            QuadConstraintModelNode<A, B, C, D> parent, QuadFunction<A, B, C, D, GroupKey_> mapping) {
+        return addNode(() -> ConstraintModelNode.groupBy(mapping), parent);
     }
 
     public <A, B, C, D, GroupKey_, ResultContainer_, Result_> BiConstraintModelNode<GroupKey_, Result_> groupBy(
             QuadConstraintModelNode<A, B, C, D> parent, QuadFunction<A, B, C, D, GroupKey_> mapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(mapping, collector), parent);
     }
 
     public <A, B, C, D, GroupKeyA_, GroupKeyB_> BiConstraintModelNode<GroupKeyA_, GroupKeyB_> groupBy(
             QuadConstraintModelNode<A, B, C, D> parent, QuadFunction<A, B, C, D, GroupKeyA_> aMapping,
             QuadFunction<A, B, C, D, GroupKeyB_> bMapping) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping), parent);
     }
 
     public <A, B, C, D, GroupKeyA_, GroupKeyB_, ResultContainer_, Result_>
             TriConstraintModelNode<GroupKeyA_, GroupKeyB_, Result_> groupBy(QuadConstraintModelNode<A, B, C, D> parent,
                     QuadFunction<A, B, C, D, GroupKeyA_> aMapping, QuadFunction<A, B, C, D, GroupKeyB_> bMapping,
                     QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping, collector), parent);
     }
 
     public <A, B, C, D, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
@@ -293,7 +298,19 @@ public final class ConstraintModel {
                     QuadFunction<A, B, C, D, GroupKeyB_> bMapping,
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> cCollector,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> dCollector) {
-        throw new UnsupportedOperationException();
+        return addNode(() -> ConstraintModelNode.groupBy(aMapping, bMapping, cCollector, dCollector), parent);
+    }
+
+    private <Node_ extends ConstraintModelNode & ChildNode> Node_ addNode(Supplier<Node_> nodeSupplier,
+            ConstraintModelNode... parentNodes) {
+        Node_ node = nodeSupplier.get();
+        AbstractConstraintModelChildNode castChildNode = (AbstractConstraintModelChildNode) node;
+        for (ConstraintModelNode parentNode : parentNodes) {
+            castChildNode.addParentNode(parentNode);
+            AbstractConstraintModelNode castNode = (AbstractConstraintModelChildNode) parentNode;
+            castNode.addChildNode(castChildNode);
+        }
+        return node;
     }
 
     public <A> UniConstraintConsequence<A> impact(UniConstraintModelNode<A> parent) {
@@ -375,6 +392,14 @@ public final class ConstraintModel {
         Consequence_ consequence = consequenceSupplier.get();
         consequenceSet.add(consequence);
         return consequence;
+    }
+
+    public Set<FromNode> getFromNodes() {
+        return Collections.unmodifiableSet(new HashSet<>(fromNodeMap.values()));
+    }
+
+    public Set<ConstraintConsequence> getConsequences() {
+        return Collections.unmodifiableSet(consequenceSet);
     }
 
 }

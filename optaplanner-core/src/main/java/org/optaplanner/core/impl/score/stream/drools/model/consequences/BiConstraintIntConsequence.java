@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.ToIntBiFunction;
 
-import org.optaplanner.core.impl.score.stream.drools.model.BiConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
 
 final class BiConstraintIntConsequence<A, B> implements BiConstraintConsequence<A, B>, ToIntBiFunction<A, B> {
 

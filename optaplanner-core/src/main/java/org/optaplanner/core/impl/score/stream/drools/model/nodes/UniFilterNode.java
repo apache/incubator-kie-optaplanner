@@ -14,8 +14,23 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.model;
+package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
-public interface ConstraintModelNode {
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+final class UniFilterNode<A> extends AbstractConstraintModelChildNode
+        implements UniConstraintModelChildNode<A>, Supplier<Predicate<A>> {
+
+    private final Predicate<A> predicate;
+
+    UniFilterNode(Predicate<A> predicate) {
+        super(ConstraintModelNodeType.FILTER);
+        this.predicate = predicate;
+    }
+
+    @Override
+    public Predicate<A> get() {
+        return predicate;
+    }
 }

@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.model;
+package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
-public interface BiConstraintModelNode<A, B> extends ConstraintModelNode {
+import java.util.Objects;
+
+public final class FromNode<A> extends AbstractConstraintModelNode implements UniConstraintModelNode<A> {
+
+    private final Class<A> factType;
+
+    public FromNode(Class<A> factType) {
+        super(ConstraintModelNodeType.FROM);
+        this.factType = Objects.requireNonNull(factType);
+    }
+
+    @Override
+    public Class<A> getFactType() {
+        return factType;
+    }
 
 }

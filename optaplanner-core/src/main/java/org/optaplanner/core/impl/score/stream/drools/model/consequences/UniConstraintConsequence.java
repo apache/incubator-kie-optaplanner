@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import org.optaplanner.core.impl.score.stream.drools.model.UniConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 
 public interface UniConstraintConsequence<A> extends ConstraintConsequence<UniConstraintModelNode<A>> {
 

@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import java.math.BigDecimal;
 
 import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.model.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.QuadConstraintModelNode;
 
 final class QuadConstraintBigDecimalConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
         QuadFunction<A, B, C, D, BigDecimal> {

@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.model.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.QuadConstraintModelNode;
 
 public interface QuadConstraintConsequence<A, B, C, D>
         extends ConstraintConsequence<QuadConstraintModelNode<A, B, C, D>> {

@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.model;
+package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
-public final class FromNode<A> implements UniConstraintModelNode<A> {
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 
-    public FromNode(Class<A> factType) {
+final class BiJoinNode<A, B> extends AbstractConstraintModelJoiningNode<B, AbstractBiJoiner<A, B>>
+        implements BiConstraintModelNode<A, B> {
 
+    BiJoinNode(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner) {
+        super(otherFactType, joiner, ConstraintModelNodeType.JOIN);
     }
 
 }

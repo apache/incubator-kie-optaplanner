@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
 
-import org.optaplanner.core.impl.score.stream.drools.model.BiConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
 
 final class BiConstraintBigDecimalConsequence<A, B> implements BiConstraintConsequence<A, B>,
         BiFunction<A, B, BigDecimal> {

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.api.function.ToLongQuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.model.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.QuadConstraintModelNode;
 
 final class QuadConstraintLongConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
         ToLongQuadFunction<A, B, C, D> {

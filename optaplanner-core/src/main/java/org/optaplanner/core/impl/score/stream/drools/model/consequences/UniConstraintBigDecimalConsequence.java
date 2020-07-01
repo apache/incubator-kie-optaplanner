@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import java.math.BigDecimal;
 import java.util.function.Function;
 
-import org.optaplanner.core.impl.score.stream.drools.model.UniConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 
 final class UniConstraintBigDecimalConsequence<A> implements UniConstraintConsequence<A>, Function<A, BigDecimal> {
 

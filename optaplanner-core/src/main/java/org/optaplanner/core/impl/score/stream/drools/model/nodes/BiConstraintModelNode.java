@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.model;
+package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
-public interface QuadConstraintModelNode<A, B, C, D> extends ConstraintModelNode {
+public interface BiConstraintModelNode<A, B>
+        extends ConstraintModelNode, ChildNode {
+
+    @Override
+    default int getCardinality() {
+        return 2;
+    }
 
 }

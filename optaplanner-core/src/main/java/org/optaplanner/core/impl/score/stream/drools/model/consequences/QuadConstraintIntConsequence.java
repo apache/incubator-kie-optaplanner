@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.api.function.ToIntQuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.model.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.QuadConstraintModelNode;
 
 final class QuadConstraintIntConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
         ToIntQuadFunction<A, B, C, D> {

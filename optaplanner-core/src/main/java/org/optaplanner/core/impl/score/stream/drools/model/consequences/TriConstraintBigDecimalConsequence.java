@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import java.math.BigDecimal;
 
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.impl.score.stream.drools.model.TriConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.TriConstraintModelNode;
 
 final class TriConstraintBigDecimalConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
         TriFunction<A, B, C, BigDecimal> {

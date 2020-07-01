@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
-import org.optaplanner.core.impl.score.stream.drools.model.BiConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
 
 public interface BiConstraintConsequence<A, B> extends ConstraintConsequence<BiConstraintModelNode<A, B>> {
 

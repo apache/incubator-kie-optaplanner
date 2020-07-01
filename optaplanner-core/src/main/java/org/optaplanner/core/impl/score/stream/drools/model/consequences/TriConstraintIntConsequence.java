@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 import static java.util.Objects.requireNonNull;
 
 import org.optaplanner.core.api.function.ToIntTriFunction;
-import org.optaplanner.core.impl.score.stream.drools.model.TriConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.TriConstraintModelNode;
 
 final class TriConstraintIntConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
         ToIntTriFunction<A, B, C> {

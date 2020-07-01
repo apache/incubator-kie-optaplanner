@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.ToLongFunction;
 
-import org.optaplanner.core.impl.score.stream.drools.model.UniConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 
 final class UniConstraintLongConsequence<A> implements UniConstraintConsequence<A>, ToLongFunction<A> {
 

@@ -30,11 +30,11 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.impl.score.stream.drools.model.BiConstraintModelNode;
-import org.optaplanner.core.impl.score.stream.drools.model.ConstraintModelNode;
-import org.optaplanner.core.impl.score.stream.drools.model.QuadConstraintModelNode;
-import org.optaplanner.core.impl.score.stream.drools.model.TriConstraintModelNode;
-import org.optaplanner.core.impl.score.stream.drools.model.UniConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.ConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.TriConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 
 public interface ConstraintConsequence<Node_ extends ConstraintModelNode> {
 

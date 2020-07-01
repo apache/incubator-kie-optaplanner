@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.model;
+package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
-public interface TriConstraintModelNode<A, B, C> extends ConstraintModelNode {
+public enum ConstraintModelNodeType {
+
+    FROM,
+    JOIN,
+    FILTER,
+    IF_EXISTS,
+    IF_NOT_EXISTS,
+    GROUPBY_MAPPING_ONLY,
+    GROUPBY_COLLECTING_ONLY,
+    GROUPBY_MAPPING_AND_COLLECTING,
 
 }

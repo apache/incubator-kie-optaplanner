@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.ToIntFunction;
 
-import org.optaplanner.core.impl.score.stream.drools.model.UniConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 
 final class UniConstraintIntConsequence<A> implements UniConstraintConsequence<A>, ToIntFunction<A> {
 

@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.ToLongBiFunction;
 
-import org.optaplanner.core.impl.score.stream.drools.model.BiConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
 
 final class BiConstraintLongConsequence<A, B> implements BiConstraintConsequence<A, B>, ToLongBiFunction<A, B> {
 
