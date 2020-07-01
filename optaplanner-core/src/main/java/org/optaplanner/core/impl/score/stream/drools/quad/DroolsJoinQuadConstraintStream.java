@@ -25,16 +25,12 @@ import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    private final DroolsAbstractTriConstraintStream<Solution_, A, B, C> leftParentStream;
-    private final DroolsAbstractUniConstraintStream<Solution_, D> rightParentStream;
     private final DroolsQuadCondition<A, B, C, D, ?> condition;
 
     public DroolsJoinQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
             DroolsAbstractUniConstraintStream<Solution_, D> otherStream, QuadJoiner<A, B, C, D> joiner) {
-        super(constraintFactory, null);
-        this.leftParentStream = parent;
-        this.rightParentStream = otherStream;
+        super(constraintFactory);
         this.condition = parent.getCondition().andJoin(otherStream.getCondition(),
                 (AbstractQuadJoiner<A, B, C, D>) joiner);
     }
@@ -51,14 +47,6 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    public DroolsAbstractTriConstraintStream<Solution_, A, B, C> getLeftParentStream() {
-        return leftParentStream;
-    }
-
-    public DroolsAbstractUniConstraintStream<Solution_, D> getRightParentStream() {
-        return rightParentStream;
-    }
 
     @Override
     public String toString() {

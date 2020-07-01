@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
+    private final DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent;
     private final boolean noMatchWeigher;
     private final ToIntTriFunction<A, B, C> intMatchWeigher;
     private final ToLongTriFunction<A, B, C> longMatchWeigher;
@@ -70,7 +71,8 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, boolean noMatchWeigher,
             ToIntTriFunction<A, B, C> intMatchWeigher, ToLongTriFunction<A, B, C> longMatchWeigher,
             TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
+        this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
         this.longMatchWeigher = longMatchWeigher;
@@ -84,9 +86,7 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     @Override
     public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsAbstractTriConstraintStream<Solution_, A, B, C> actualParent =
-                (DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent;
-        DroolsTriCondition<A, B, C, ?> condition = actualParent.getCondition();
+        DroolsTriCondition<A, B, C, ?> condition = parent.getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(constraint, scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {

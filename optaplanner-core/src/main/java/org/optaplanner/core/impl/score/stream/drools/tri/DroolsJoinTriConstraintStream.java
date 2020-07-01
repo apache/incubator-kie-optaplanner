@@ -25,16 +25,12 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
-    private final DroolsAbstractBiConstraintStream<Solution_, A, B> leftParentStream;
-    private final DroolsAbstractUniConstraintStream<Solution_, C> rightParentStream;
     private final DroolsTriCondition<A, B, C, ?> condition;
 
     public DroolsJoinTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             DroolsAbstractUniConstraintStream<Solution_, C> otherStream, TriJoiner<A, B, C> triJoiner) {
-        super(constraintFactory, null);
-        this.leftParentStream = parent;
-        this.rightParentStream = otherStream;
+        super(constraintFactory);
         this.condition = parent.getCondition().andJoin(otherStream.getCondition(),
                 (AbstractTriJoiner<A, B, C>) triJoiner);
     }
@@ -51,14 +47,6 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    public DroolsAbstractBiConstraintStream<Solution_, A, B> getLeftParentStream() {
-        return leftParentStream;
-    }
-
-    public DroolsAbstractUniConstraintStream<Solution_, C> getRightParentStream() {
-        return rightParentStream;
-    }
 
     @Override
     public String toString() {

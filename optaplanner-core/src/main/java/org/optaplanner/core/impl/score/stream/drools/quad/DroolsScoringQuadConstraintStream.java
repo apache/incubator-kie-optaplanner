@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
+    private final DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
     private final boolean noMatchWeigher;
     private final ToIntQuadFunction<A, B, C, D> intMatchWeigher;
     private final ToLongQuadFunction<A, B, C, D> longMatchWeigher;
@@ -72,7 +73,8 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, boolean noMatchWeigher,
             ToIntQuadFunction<A, B, C, D> intMatchWeigher, ToLongQuadFunction<A, B, C, D> longMatchWeigher,
             QuadFunction<A, B, C, D, BigDecimal> bigDecimalMatchWeigher) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
+        this.parent = parent;
         this.noMatchWeigher = noMatchWeigher;
         this.intMatchWeigher = intMatchWeigher;
         this.longMatchWeigher = longMatchWeigher;
@@ -86,8 +88,7 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsQuadCondition<A, B, C, D, ?> condition = ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent)
-                .getCondition();
+        DroolsQuadCondition<A, B, C, D, ?> condition = parent.getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(constraint, scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
@@ -108,7 +109,7 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public Class[] getExpectedJustificationTypes() {
-        return ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent).getCondition()
+        return parent.getCondition()
                 .getExpectedJustificationTypes();
     }
 

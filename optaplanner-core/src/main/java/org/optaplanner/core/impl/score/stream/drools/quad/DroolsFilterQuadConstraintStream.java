@@ -26,7 +26,7 @@ public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
 
     public DroolsFilterQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadPredicate<A, B, C, D> predicate) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
         this.condition = parent.getCondition().andFilter(predicate);
     }
 

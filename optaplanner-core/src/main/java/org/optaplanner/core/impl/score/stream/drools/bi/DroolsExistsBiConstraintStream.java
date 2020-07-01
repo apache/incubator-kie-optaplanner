@@ -18,12 +18,10 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 
 public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final DroolsAbstractConstraintStream<Solution_> parent;
     private final DroolsBiCondition<A, B, ?> condition;
     private final String streamName;
 
@@ -31,15 +29,9 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
         super(constraintFactory);
-        this.parent = parent;
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
         this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
                 : parent.getCondition().andIfNotExists(otherClass, joiners);
-    }
-
-    @Override
-    protected DroolsAbstractConstraintStream<Solution_> getParent() {
-        return parent;
     }
 
     // ************************************************************************

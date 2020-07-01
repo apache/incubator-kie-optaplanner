@@ -21,7 +21,6 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final DroolsUniCondition<A, ?> condition;
     private final String streamName;
 
@@ -29,7 +28,6 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
             DroolsAbstractUniConstraintStream<Solution_, A> parent, boolean shouldExist, Class<B> otherClass,
             BiJoiner<A, B>... joiners) {
         super(constraintFactory);
-        this.parent = parent;
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
         this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
                 : parent.getCondition().andIfNotExists(otherClass, joiners);

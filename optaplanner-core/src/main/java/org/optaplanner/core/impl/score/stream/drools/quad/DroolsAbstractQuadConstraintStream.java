@@ -41,16 +41,8 @@ import org.optaplanner.core.impl.score.stream.quad.InnerQuadConstraintStream;
 public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerQuadConstraintStream<A, B, C, D> {
 
-    protected final DroolsAbstractConstraintStream<Solution_> parent;
-
-    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractConstraintStream<Solution_> parent) {
+    public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         super(constraintFactory);
-        if (parent == null && !(this instanceof DroolsJoinQuadConstraintStream)) {
-            throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
-                    "unless it's a join stream.");
-        }
-        this.parent = parent;
     }
 
     @Override

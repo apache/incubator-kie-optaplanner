@@ -243,8 +243,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     // Pattern creation
     // ************************************************************************
 
-    protected abstract DroolsAbstractConstraintStream<Solution_> getParent();
-
     public abstract DroolsBiCondition<A, B, ?> getCondition();
 
 }

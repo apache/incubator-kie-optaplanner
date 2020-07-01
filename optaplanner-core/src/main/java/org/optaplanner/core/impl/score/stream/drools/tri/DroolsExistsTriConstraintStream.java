@@ -28,7 +28,7 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
     public <D> DroolsExistsTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, boolean shouldExist, Class<D> otherClass,
             QuadJoiner<A, B, C, D>... joiners) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
         this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
                 : parent.getCondition().andIfNotExists(otherClass, joiners);

@@ -22,13 +22,11 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
     private final DroolsUniCondition<A, ?> condition;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory);
-        this.parent = parent;
         this.condition = parent.getCondition().andFilter(predicate);
     }
 

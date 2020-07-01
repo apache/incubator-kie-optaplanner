@@ -27,11 +27,10 @@ import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 
 public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
+    protected final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
     private final boolean noMatchWeigher;
     private final ToIntBiFunction<A, B> intMatchWeigher;
     private final ToLongBiFunction<A, B> longMatchWeigher;
@@ -107,13 +106,8 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
 
     @Override
     public Class[] getExpectedJustificationTypes() {
-        return ((DroolsAbstractBiConstraintStream<Solution_, A, B>) getParent()).getCondition()
+        return parent.getCondition()
                 .getExpectedJustificationTypes();
-    }
-
-    @Override
-    protected DroolsAbstractConstraintStream<Solution_> getParent() {
-        return parent;
     }
 
     @Override

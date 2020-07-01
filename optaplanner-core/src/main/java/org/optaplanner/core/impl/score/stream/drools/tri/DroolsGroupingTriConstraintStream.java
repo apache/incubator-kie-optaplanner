@@ -38,7 +38,7 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
     public <A, ResultContainer_> DroolsGroupingTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ResultContainer_, NewC> collector) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
@@ -46,7 +46,7 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
             DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, NewC> collector) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
@@ -55,7 +55,7 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyAMapping,
             TriFunction<A, B, C, NewB> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, NewC> collector) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
@@ -64,7 +64,7 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, NewC> collector) {
-        super(constraintFactory, parent);
+        super(constraintFactory);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 

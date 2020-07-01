@@ -45,16 +45,8 @@ import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractConstraintStream<Solution_> implements InnerTriConstraintStream<A, B, C> {
 
-    protected final DroolsAbstractConstraintStream<Solution_> parent;
-
-    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
-            DroolsAbstractConstraintStream<Solution_> parent) {
+    public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
         super(constraintFactory);
-        if (parent == null && !(this instanceof DroolsJoinTriConstraintStream)) {
-            throw new IllegalArgumentException("The stream (" + this + ") must have a parent (null), " +
-                    "unless it's a join stream.");
-        }
-        this.parent = parent;
     }
 
     @Override
