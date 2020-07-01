@@ -38,6 +38,7 @@ const solve = () => {
 function stopSolving() {
   fetch('/flp/stopSolving', { method: 'POST' }).then(() => {
     refreshSolvingButtons(false);
+    autoRefreshCount = 0;
     refresh();
   }).catch((error) => showError('Stop solving failed', error));
 }

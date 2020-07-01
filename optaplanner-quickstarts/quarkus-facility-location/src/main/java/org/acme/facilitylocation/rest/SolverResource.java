@@ -19,6 +19,8 @@ import org.optaplanner.core.api.solver.SolverManager;
 @Consumes(MediaType.APPLICATION_JSON)
 public class SolverResource {
 
+    private static final long PROBLEM_ID = 0L;
+
     @Inject
     FacilityLocationProblemRepository repository;
     @Inject
@@ -35,7 +37,7 @@ public class SolverResource {
     public void solve() {
         Optional<FacilityLocationProblem> maybeSolution = repository.solution();
         maybeSolution.ifPresent(facilityLocationProblem -> solverManager.solveAndListen(
-                0L,
+                PROBLEM_ID,
                 id -> facilityLocationProblem,
                 solution -> repository.update(solution)));
     }
@@ -43,6 +45,6 @@ public class SolverResource {
     @POST
     @Path("stopSolving")
     public void stopSolving() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        solverManager.terminateEarly(PROBLEM_ID);
     }
 }
