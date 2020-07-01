@@ -47,6 +47,10 @@
       <artifactId>optaplanner-quarkus</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus-jackson</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>

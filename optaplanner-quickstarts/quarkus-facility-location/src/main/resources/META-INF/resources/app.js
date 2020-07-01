@@ -44,16 +44,18 @@ const showProblem = (problem) => {
       L.polyline([dp.location, dp.facility.location], color).addTo(markerGroup);
     }
   });
+  $('#score').text(`Score: ${problem.score}`);
 };
 
 const map = L.map('map', { doubleClickZoom: false }).setView([51.505, -0.09], 13);
-const markerGroup = L.layerGroup();
+map.whenReady(update);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
 }).addTo(map);
 
+const markerGroup = L.layerGroup();
 markerGroup.addTo(map);
 
-map.whenReady(update);
+$('#solveButton').click(solve);
