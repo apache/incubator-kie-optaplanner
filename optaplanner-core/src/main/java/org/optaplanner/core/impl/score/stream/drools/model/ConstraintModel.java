@@ -17,12 +17,17 @@
 package org.optaplanner.core.impl.score.stream.drools.model;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
@@ -42,16 +47,30 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.drools.model.consequences.BiConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.model.consequences.ConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.model.consequences.QuadConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.model.consequences.TriConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.model.consequences.UniConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 public final class ConstraintModel {
 
-    private final Map<Class, FromNode> sourceNodeMap = new LinkedHashMap<>(0);
+    private final Map<Class, FromNode> fromNodeMap = new LinkedHashMap<>(0);
+    private final Set<ConstraintConsequence> consequenceSet = new LinkedHashSet<>(0);
 
-    public <A> UniConstraintModelNode<A> getSourceNode(Class<A> clz) {
-        return sourceNodeMap.computeIfAbsent(clz, FromNode::new);
+    public <A> UniConstraintModelNode<A> from(Class<A> clz) {
+        return fromNodeMap.computeIfAbsent(clz, FromNode::new);
+    }
+
+    public Set<FromNode> getFromNodes() {
+        return Collections.unmodifiableSet(new HashSet<>(fromNodeMap.values()));
+    }
+
+    public Set<ConstraintConsequence> getConsequences() {
+        return Collections.unmodifiableSet(consequenceSet);
     }
 
     public <A> UniConstraintModelNode<A> filter(UniConstraintModelNode<A> parent, Predicate<A> predicate) {
@@ -277,78 +296,85 @@ public final class ConstraintModel {
         throw new UnsupportedOperationException();
     }
 
-    public <A> UniConstraintModelNode<A> impact(UniConstraintModelNode<A> parent) {
-        throw new UnsupportedOperationException();
+    public <A> UniConstraintConsequence<A> impact(UniConstraintModelNode<A> parent) {
+        return impact(() -> ConstraintConsequence.create(parent, (ToIntFunction<A>) a -> 1));
     }
 
-    public <A> UniConstraintModelNode<A> impact(UniConstraintModelNode<A> parent, ToIntFunction<A> matchWeighter) {
-        throw new UnsupportedOperationException();
+    public <A> UniConstraintConsequence<A> impact(UniConstraintModelNode<A> parent, ToIntFunction<A> matchWeighter) {
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A> UniConstraintModelNode<A> impact(UniConstraintModelNode<A> parent, ToLongFunction<A> matchWeighter) {
-        throw new UnsupportedOperationException();
+    public <A> UniConstraintConsequence<A> impact(UniConstraintModelNode<A> parent, ToLongFunction<A> matchWeighter) {
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A> UniConstraintModelNode<A> impact(UniConstraintModelNode<A> parent,
+    public <A> UniConstraintConsequence<A> impact(UniConstraintModelNode<A> parent,
             Function<A, BigDecimal> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B> BiConstraintModelNode<A, B> impact(BiConstraintModelNode<A, B> parent) {
-        throw new UnsupportedOperationException();
+    public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintModelNode<A, B> parent) {
+        return impact(() -> ConstraintConsequence.create(parent, (ToIntBiFunction<A, B>) (a, b) -> 1));
     }
 
-    public <A, B> BiConstraintModelNode<A, B> impact(BiConstraintModelNode<A, B> parent,
+    public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintModelNode<A, B> parent,
             ToIntBiFunction<A, B> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B> BiConstraintModelNode<A, B> impact(BiConstraintModelNode<A, B> parent,
+    public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintModelNode<A, B> parent,
             ToLongBiFunction<A, B> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B> BiConstraintModelNode<A, B> impact(BiConstraintModelNode<A, B> parent,
+    public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintModelNode<A, B> parent,
             BiFunction<A, B, BigDecimal> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C> TriConstraintModelNode<A, B, C> impact(TriConstraintModelNode<A, B, C> parent) {
-        throw new UnsupportedOperationException();
+    public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintModelNode<A, B, C> parent) {
+        return impact(() -> ConstraintConsequence.create(parent, (ToIntTriFunction<A, B, C>) (a, b, c) -> 1));
     }
 
-    public <A, B, C> TriConstraintModelNode<A, B, C> impact(TriConstraintModelNode<A, B, C> parent,
+    public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintModelNode<A, B, C> parent,
             ToIntTriFunction<A, B, C> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C> TriConstraintModelNode<A, B, C> impact(TriConstraintModelNode<A, B, C> parent,
+    public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintModelNode<A, B, C> parent,
             ToLongTriFunction<A, B, C> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C> TriConstraintModelNode<A, B, C> impact(TriConstraintModelNode<A, B, C> parent,
+    public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintModelNode<A, B, C> parent,
             TriFunction<A, B, C, BigDecimal> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C, D> QuadConstraintModelNode<A, B, C, D> impact(QuadConstraintModelNode<A, B, C, D> parent) {
-        throw new UnsupportedOperationException();
+    public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintModelNode<A, B, C, D> parent) {
+        return impact(() -> ConstraintConsequence.create(parent, (ToIntQuadFunction<A, B, C, D>) (a, b, c, d) -> 1));
     }
 
-    public <A, B, C, D> QuadConstraintModelNode<A, B, C, D> impact(QuadConstraintModelNode<A, B, C, D> parent,
+    public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintModelNode<A, B, C, D> parent,
             ToIntQuadFunction<A, B, C, D> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C, D> QuadConstraintModelNode<A, B, C, D> impact(QuadConstraintModelNode<A, B, C, D> parent,
+    public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintModelNode<A, B, C, D> parent,
             ToLongQuadFunction<A, B, C, D> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
     }
 
-    public <A, B, C, D> QuadConstraintModelNode<A, B, C, D> impact(QuadConstraintModelNode<A, B, C, D> parent,
+    public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintModelNode<A, B, C, D> parent,
             QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
-        throw new UnsupportedOperationException();
+        return impact(() -> ConstraintConsequence.create(parent, matchWeighter));
+    }
+
+    private <Node_ extends ConstraintModelNode, Consequence_ extends ConstraintConsequence<Node_>> Consequence_
+            impact(Supplier<Consequence_> consequenceSupplier) {
+        Consequence_ consequence = consequenceSupplier.get();
+        consequenceSet.add(consequence);
+        return consequence;
     }
 
 }
