@@ -66,7 +66,7 @@ function autoRefresh() {
   }
 }
 
-const facilityPopupContent = (f) => `<ul>
+const facilityPopupContent = (f) => `<ul class="list-unstyled">
 <li>Usage: ${f.usage}/${f.capacity}</li>
 <li>Setup cost: ${f.setupCost}</li>
 </ul>`;
