@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
@@ -26,7 +27,7 @@ final class BiFilterNode<A, B> extends AbstractConstraintModelChildNode
 
     BiFilterNode(BiPredicate<A, B> predicate) {
         super(ConstraintModelNodeType.FILTER);
-        this.predicate = predicate;
+        this.predicate = Objects.requireNonNull(predicate);
     }
 
     @Override

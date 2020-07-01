@@ -18,11 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
 
-final class BiConstraintIntConsequence<A, B> implements BiConstraintConsequence<A, B>, ToIntBiFunction<A, B> {
+final class BiConstraintIntConsequence<A, B> implements BiConstraintConsequence<A, B>,
+        Supplier<ToIntBiFunction<A, B>> {
 
     private final BiConstraintModelNode<A, B> terminalNode;
     private final ToIntBiFunction<A, B> matchWeighter;
@@ -43,8 +45,7 @@ final class BiConstraintIntConsequence<A, B> implements BiConstraintConsequence<
     }
 
     @Override
-    public int applyAsInt(A a, B b) {
-        return matchWeighter.applyAsInt(a, b);
+    public ToIntBiFunction<A, B> get() {
+        return matchWeighter;
     }
-
 }

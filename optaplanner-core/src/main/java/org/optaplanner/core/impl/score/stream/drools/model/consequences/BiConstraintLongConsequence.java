@@ -18,11 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
 import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
 
-final class BiConstraintLongConsequence<A, B> implements BiConstraintConsequence<A, B>, ToLongBiFunction<A, B> {
+final class BiConstraintLongConsequence<A, B> implements BiConstraintConsequence<A, B>,
+        Supplier<ToLongBiFunction<A, B>> {
 
     private final BiConstraintModelNode<A, B> terminalNode;
     private final ToLongBiFunction<A, B> matchWeighter;
@@ -43,8 +45,7 @@ final class BiConstraintLongConsequence<A, B> implements BiConstraintConsequence
     }
 
     @Override
-    public long applyAsLong(A a, B b) {
-        return matchWeighter.applyAsLong(a, b);
+    public ToLongBiFunction<A, B> get() {
+        return matchWeighter;
     }
-
 }

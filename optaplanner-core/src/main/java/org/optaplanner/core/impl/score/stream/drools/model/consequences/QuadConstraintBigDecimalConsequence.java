@@ -19,12 +19,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.QuadConstraintModelNode;
 
 final class QuadConstraintBigDecimalConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
-        QuadFunction<A, B, C, D, BigDecimal> {
+        Supplier<QuadFunction<A, B, C, D, BigDecimal>> {
 
     private final QuadConstraintModelNode<A, B, C, D> terminalNode;
     private final QuadFunction<A, B, C, D, BigDecimal> matchWeighter;
@@ -46,8 +47,7 @@ final class QuadConstraintBigDecimalConsequence<A, B, C, D> implements QuadConst
     }
 
     @Override
-    public BigDecimal apply(A a, B b, C c, D d) {
-        return matchWeighter.apply(a, b, c, d);
+    public QuadFunction<A, B, C, D, BigDecimal> get() {
+        return matchWeighter;
     }
-
 }

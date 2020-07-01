@@ -20,11 +20,12 @@ import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.BiConstraintModelNode;
 
 final class BiConstraintBigDecimalConsequence<A, B> implements BiConstraintConsequence<A, B>,
-        BiFunction<A, B, BigDecimal> {
+        Supplier<BiFunction<A, B, BigDecimal>> {
 
     private final BiConstraintModelNode<A, B> terminalNode;
     private final BiFunction<A, B, BigDecimal> matchWeighter;
@@ -46,8 +47,7 @@ final class BiConstraintBigDecimalConsequence<A, B> implements BiConstraintConse
     }
 
     @Override
-    public BigDecimal apply(A a, B b) {
-        return matchWeighter.apply(a, b);
+    public BiFunction<A, B, BigDecimal> get() {
+        return matchWeighter;
     }
-
 }

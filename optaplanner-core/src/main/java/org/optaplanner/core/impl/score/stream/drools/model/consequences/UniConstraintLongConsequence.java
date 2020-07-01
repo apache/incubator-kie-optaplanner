@@ -18,11 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 
-final class UniConstraintLongConsequence<A> implements UniConstraintConsequence<A>, ToLongFunction<A> {
+final class UniConstraintLongConsequence<A> implements UniConstraintConsequence<A>,
+        Supplier<ToLongFunction<A>> {
 
     private final UniConstraintModelNode<A> terminalNode;
     private final ToLongFunction<A> matchWeighter;
@@ -43,7 +45,7 @@ final class UniConstraintLongConsequence<A> implements UniConstraintConsequence<
     }
 
     @Override
-    public long applyAsLong(A a) {
-        return matchWeighter.applyAsLong(a);
+    public ToLongFunction<A> get() {
+        return matchWeighter;
     }
 }

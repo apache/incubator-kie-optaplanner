@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -26,7 +27,7 @@ final class UniFilterNode<A> extends AbstractConstraintModelChildNode
 
     UniFilterNode(Predicate<A> predicate) {
         super(ConstraintModelNodeType.FILTER);
-        this.predicate = predicate;
+        this.predicate = Objects.requireNonNull(predicate);
     }
 
     @Override

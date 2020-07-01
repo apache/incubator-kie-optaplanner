@@ -18,11 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.QuadConstraintModelNode;
 
 final class QuadConstraintIntConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
-        ToIntQuadFunction<A, B, C, D> {
+        Supplier<ToIntQuadFunction<A, B, C, D>> {
 
     private final QuadConstraintModelNode<A, B, C, D> terminalNode;
     private final ToIntQuadFunction<A, B, C, D> matchWeighter;
@@ -44,8 +46,7 @@ final class QuadConstraintIntConsequence<A, B, C, D> implements QuadConstraintCo
     }
 
     @Override
-    public int applyAsInt(A a, B b, C c, D d) {
-        return matchWeighter.applyAsInt(a, b, c, d);
+    public ToIntQuadFunction<A, B, C, D> get() {
+        return matchWeighter;
     }
-
 }

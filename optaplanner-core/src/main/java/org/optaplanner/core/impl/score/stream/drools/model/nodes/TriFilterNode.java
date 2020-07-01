@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.TriPredicate;
@@ -27,7 +28,7 @@ final class TriFilterNode<A, B, C> extends AbstractConstraintModelChildNode
 
     TriFilterNode(TriPredicate<A, B, C> predicate) {
         super(ConstraintModelNodeType.FILTER);
-        this.predicate = predicate;
+        this.predicate = Objects.requireNonNull(predicate);
     }
 
     @Override

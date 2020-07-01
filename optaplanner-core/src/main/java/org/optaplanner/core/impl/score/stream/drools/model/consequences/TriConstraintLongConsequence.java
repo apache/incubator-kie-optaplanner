@@ -18,11 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.TriConstraintModelNode;
 
 final class TriConstraintLongConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
-        ToLongTriFunction<A, B, C> {
+        Supplier<ToLongTriFunction<A, B, C>> {
 
     private final TriConstraintModelNode<A, B, C> terminalNode;
     private final ToLongTriFunction<A, B, C> matchWeighter;
@@ -44,8 +46,7 @@ final class TriConstraintLongConsequence<A, B, C> implements TriConstraintConseq
     }
 
     @Override
-    public long applyAsLong(A a, B b, C c) {
-        return matchWeighter.applyAsLong(a, b, c);
+    public ToLongTriFunction<A, B, C> get() {
+        return matchWeighter;
     }
-
 }

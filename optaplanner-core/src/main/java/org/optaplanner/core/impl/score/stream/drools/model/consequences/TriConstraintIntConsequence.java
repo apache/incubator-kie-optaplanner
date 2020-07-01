@@ -18,11 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
+
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.TriConstraintModelNode;
 
 final class TriConstraintIntConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
-        ToIntTriFunction<A, B, C> {
+        Supplier<ToIntTriFunction<A, B, C>> {
 
     private final TriConstraintModelNode<A, B, C> terminalNode;
     private final ToIntTriFunction<A, B, C> matchWeighter;
@@ -43,8 +45,7 @@ final class TriConstraintIntConsequence<A, B, C> implements TriConstraintConsequ
     }
 
     @Override
-    public int applyAsInt(A a, B b, C c) {
-        return matchWeighter.applyAsInt(a, b, c);
+    public ToIntTriFunction<A, B, C> get() {
+        return matchWeighter;
     }
-
 }

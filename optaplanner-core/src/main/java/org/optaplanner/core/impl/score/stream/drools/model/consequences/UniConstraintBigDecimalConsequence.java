@@ -20,10 +20,12 @@ import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 
-final class UniConstraintBigDecimalConsequence<A> implements UniConstraintConsequence<A>, Function<A, BigDecimal> {
+final class UniConstraintBigDecimalConsequence<A> implements UniConstraintConsequence<A>,
+        Supplier<Function<A, BigDecimal>> {
 
     private final UniConstraintModelNode<A> terminalNode;
     private final Function<A, BigDecimal> matchWeighter;
@@ -44,7 +46,7 @@ final class UniConstraintBigDecimalConsequence<A> implements UniConstraintConseq
     }
 
     @Override
-    public BigDecimal apply(A a) {
-        return matchWeighter.apply(a);
+    public Function<A, BigDecimal> get() {
+        return matchWeighter;
     }
 }

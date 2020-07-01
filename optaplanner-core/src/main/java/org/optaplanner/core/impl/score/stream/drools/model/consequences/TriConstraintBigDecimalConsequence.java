@@ -19,12 +19,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.TriConstraintModelNode;
 
 final class TriConstraintBigDecimalConsequence<A, B, C> implements TriConstraintConsequence<A, B, C>,
-        TriFunction<A, B, C, BigDecimal> {
+        Supplier<TriFunction<A, B, C, BigDecimal>> {
 
     private final TriConstraintModelNode<A, B, C> terminalNode;
     private final TriFunction<A, B, C, BigDecimal> matchWeighter;
@@ -46,8 +47,7 @@ final class TriConstraintBigDecimalConsequence<A, B, C> implements TriConstraint
     }
 
     @Override
-    public BigDecimal apply(A a, B b, C c) {
-        return matchWeighter.apply(a, b, c);
+    public TriFunction<A, B, C, BigDecimal> get() {
+        return matchWeighter;
     }
-
 }

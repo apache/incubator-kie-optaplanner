@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.model.nodes;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -27,7 +28,7 @@ final class QuadFilterNode<A, B, C, D> extends AbstractConstraintModelChildNode
 
     QuadFilterNode(QuadPredicate<A, B, C, D> predicate) {
         super(ConstraintModelNodeType.FILTER);
-        this.predicate = predicate;
+        this.predicate = Objects.requireNonNull(predicate);
     }
 
     @Override

@@ -18,11 +18,13 @@ package org.optaplanner.core.impl.score.stream.drools.model.consequences;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 import org.optaplanner.core.impl.score.stream.drools.model.nodes.UniConstraintModelNode;
 
-final class UniConstraintIntConsequence<A> implements UniConstraintConsequence<A>, ToIntFunction<A> {
+final class UniConstraintIntConsequence<A> implements UniConstraintConsequence<A>,
+        Supplier<ToIntFunction<A>> {
 
     private final UniConstraintModelNode<A> terminalNode;
     private final ToIntFunction<A> matchWeighter;
@@ -43,8 +45,7 @@ final class UniConstraintIntConsequence<A> implements UniConstraintConsequence<A
     }
 
     @Override
-    public int applyAsInt(A a) {
-        return matchWeighter.applyAsInt(a);
+    public ToIntFunction<A> get() {
+        return matchWeighter;
     }
-
 }
