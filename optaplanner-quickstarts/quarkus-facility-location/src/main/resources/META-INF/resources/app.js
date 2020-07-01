@@ -15,6 +15,7 @@ let autoRefreshIntervalId = null;
 
 const solveButton = $('#solveButton');
 const stopSolvingButton = $('#stopSolvingButton');
+const facilitiesTable = $('#facilities');
 
 const colorById = (i) => colors[i % colors.length];
 const colorByDemandPoint = (dp) => dp.facility === null ? {} : { color: colorById(dp.facility.id) };
@@ -66,7 +67,8 @@ function autoRefresh() {
   }
 }
 
-const facilityPopupContent = (f) => `<ul class="list-unstyled">
+const facilityPopupContent = (f) => `<h5>Facility ${f.id}</h5>
+<ul class="list-unstyled">
 <li>Usage: ${f.usage}/${f.capacity}</li>
 <li>Setup cost: ${f.setupCost}</li>
 </ul>`;
@@ -74,11 +76,21 @@ const facilityPopupContent = (f) => `<ul class="list-unstyled">
 const showProblem = ({ solution, isSolving }) => {
   markerGroup.clearLayers();
   map.fitBounds(solution.bounds);
-  solution.facilities.forEach((facility) =>
-    L.marker(facility.location)
+  facilitiesTable.children().remove();
+  solution.facilities.forEach((facility) => {
+    const { id, location, setupCost, capacity, usage } = facility;
+    const percentage = usage / capacity * 100;
+    L.marker(location)
       .addTo(markerGroup)
-      .bindPopup(facilityPopupContent(facility)),
-  );
+      .bindPopup(facilityPopupContent(facility));
+    facilitiesTable.append(`<tr>
+<td>Facility ${id}</td>
+<td><div class="progress">
+<div class="progress-bar" role="progressbar" style="width: ${percentage}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">${usage}/${capacity}</div>
+</div></td>
+<td>$${setupCost}</td>
+</tr>`);
+  });
   solution.demandPoints.forEach((dp) => {
     const color = colorByDemandPoint(dp);
     L.circleMarker(dp.location, color).addTo(markerGroup);
