@@ -67,10 +67,10 @@ function autoRefresh() {
   }
 }
 
-const facilityPopupContent = (f) => `<h5>Facility ${f.id}</h5>
+const facilityPopupContent = (facility) => `<h5>Facility ${facility.id}</h5>
 <ul class="list-unstyled">
-<li>Usage: ${f.usage}/${f.capacity}</li>
-<li>Setup cost: ${f.setupCost}</li>
+<li>Usage: ${facility.usedCapacity}/${facility.capacity}</li>
+<li>Setup cost: ${facility.setupCost}</li>
 </ul>`;
 
 const showProblem = ({ solution, isSolving }) => {
@@ -78,15 +78,15 @@ const showProblem = ({ solution, isSolving }) => {
   map.fitBounds(solution.bounds);
   facilitiesTable.children().remove();
   solution.facilities.forEach((facility) => {
-    const { id, location, setupCost, capacity, usage } = facility;
-    const percentage = usage / capacity * 100;
+    const { id, location, setupCost, capacity, usedCapacity, used } = facility;
+    const percentage = usedCapacity / capacity * 100;
     L.marker(location)
       .addTo(markerGroup)
       .bindPopup(facilityPopupContent(facility));
-    facilitiesTable.append(`<tr>
+    facilitiesTable.append(`<tr class="${used ? 'table-active' : 'text-muted'}">
 <td>Facility ${id}</td>
 <td><div class="progress">
-<div class="progress-bar" role="progressbar" style="width: ${percentage}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">${usage}/${capacity}</div>
+<div class="progress-bar" role="progressbar" style="width: ${percentage}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">${usedCapacity}/${capacity}</div>
 </div></td>
 <td>$${setupCost}</td>
 </tr>`);

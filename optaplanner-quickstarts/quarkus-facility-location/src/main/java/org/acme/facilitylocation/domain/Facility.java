@@ -16,9 +16,11 @@
 
 package org.acme.facilitylocation.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
 /**
  * This is a shadow planning entity, not a genuine planning entity, because it has a shadow variable (usage).
@@ -31,9 +33,8 @@ public class Facility {
     private long setupCost;
     private long capacity;
 
-    @CustomShadowVariable(variableListenerClass = UsageVariableListener.class,
-            sources = @PlanningVariableReference(entityClass = DemandPoint.class, variableName = "facility"))
-    private Long usage = 0L;
+    @InverseRelationShadowVariable(sourceVariableName = "facility")
+    private List<DemandPoint> demandPoints = new ArrayList<>();
 
     public Facility() {
     }
@@ -43,14 +44,6 @@ public class Facility {
         this.location = location;
         this.setupCost = setupCost;
         this.capacity = capacity;
-    }
-
-    void remove(DemandPoint demandPoint) {
-        usage -= demandPoint.getDemand();
-    }
-
-    void add(DemandPoint demandPoint) {
-        usage += demandPoint.getDemand();
     }
 
     public long getId() {
@@ -85,12 +78,12 @@ public class Facility {
         this.capacity = capacity;
     }
 
-    public long getUsage() {
-        return usage;
+    public long getUsedCapacity() {
+        return demandPoints.stream().mapToLong(DemandPoint::getDemand).sum();
     }
 
-    public void setUsage(long usage) {
-        this.usage = usage;
+    public boolean isUsed() {
+        return !demandPoints.isEmpty();
     }
 
     @Override
