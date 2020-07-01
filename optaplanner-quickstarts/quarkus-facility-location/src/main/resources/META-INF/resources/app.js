@@ -20,31 +20,88 @@ const facilitiesTable = $('#facilities');
 const colorById = (i) => colors[i % colors.length];
 const colorByDemandPoint = (dp) => dp.facility === null ? {} : { color: colorById(dp.facility.id) };
 
+const fetchHeaders = {
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  },
+};
+
 const getStatus = () => {
-  fetch('/flp/status')
-    .then((response) => response.json())
-    .then((data) => showProblem(data));
+  fetch('/flp/status', fetchHeaders)
+    .then((response) => {
+      if (!response.ok) {
+        handleErrorResponse('Get status failed', response);
+      } else {
+        // TODO avoid nesting
+        response.json().then((data) => showProblem(data));
+      }
+    })
+    .catch((error) => console.error('Failed to process response', error));
 };
 
 const solve = () => {
-  fetch('/flp/solve', { method: 'POST' }).then(() => {
-    updateSolvingStatus(true);
-    autoRefreshCount = 300;
-    if (autoRefreshIntervalId == null) {
-      autoRefreshIntervalId = setInterval(autoRefresh, 500);
-    }
-  }).catch((error) => showError('Start solving failed', error));
+  fetch('/flp/solve', { ...fetchHeaders, method: 'POST' })
+    .then((response) => {
+      if (!response.ok) {
+        handleErrorResponse('Start solving failed', response);
+      } else {
+        updateSolvingStatus(true);
+        autoRefreshCount = 300;
+        if (autoRefreshIntervalId == null) {
+          autoRefreshIntervalId = setInterval(autoRefresh, 500);
+        }
+      }
+    })
+    .catch((error) => console.error('Failed to process response', error));
 };
 
 function stopSolving() {
-  fetch('/flp/stopSolving', { method: 'POST' }).then(() => {
-    updateSolvingStatus(false);
-    getStatus();
-  }).catch((error) => showError('Stop solving failed', error));
+  fetch('/flp/stopSolving', { ...fetchHeaders, method: 'POST' })
+    .then((response) => {
+      if (!response.ok) {
+        handleErrorResponse('Stop solving failed', response);
+      } else {
+        updateSolvingStatus(false);
+        getStatus();
+      }
+    })
+    .catch((error) => console.error('Failed to process response', error));
 }
 
-function showError(title, reason) {
-  console.error(`${title}:`, reason);
+const formatErrorResponseBody = (body) => {
+  // JSON must not contain \t (Quarkus bug)
+  const json = JSON.parse(body.replace(/\t/g, '  '));
+  return `${json.details}\n${json.stack}`;
+};
+
+function handleErrorResponse(title, response) {
+  response.text()
+    .then((body) => {
+      const message = `${title} (${response.status}: ${response.statusText}).`;
+      const stackTrace = body ? formatErrorResponseBody(body) : '';
+      showError(message, stackTrace);
+    })
+    .catch((error) => console.error('Failed to process response body', error));
+}
+
+function showError(message, stackTrace) {
+  const notification = $(`<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 30rem"/>`)
+    .append($(`<div class="toast-header bg-danger">
+<strong class="mr-auto text-dark">Error</strong>
+<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>`))
+    .append($(`<div class="toast-body"/>`)
+      .append($(`<p/>`).text(message))
+      .append($(`<pre/>`)
+        .append($(`<code/>`).text(stackTrace)),
+      ),
+    );
+  $('#notificationPanel').append(notification);
+  notification.toast({ autohide: false });
+  notification.toast('show');
 }
 
 function updateSolvingStatus(solving) {
