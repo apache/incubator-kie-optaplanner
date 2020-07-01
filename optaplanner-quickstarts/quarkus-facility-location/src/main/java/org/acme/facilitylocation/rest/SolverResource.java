@@ -39,4 +39,10 @@ public class SolverResource {
                 id -> facilityLocationProblem,
                 solution -> repository.update(solution)));
     }
+
+    @POST
+    @Path("stopSolving")
+    public void stopSolving() {
+        throw new UnsupportedOperationException("Not yet implemented.");
+    }
 }
