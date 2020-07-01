@@ -14,10 +14,14 @@ const colors = [
 const colorById = (i) => colors[i % colors.length];
 const colorByDemandPoint = (dp) => dp.facility === null ? {} : { color: colorById(dp.facility.id) };
 
-const get = () => {
-  fetch('http://localhost:8080/flp/get')
+const update = () => {
+  fetch('/flp/solution')
     .then(response => response.json())
     .then(data => showProblem(data));
+};
+
+const solve = () => {
+  fetch('/flp/solve', { method: 'POST' });
 };
 
 const facilityPopupContent = (f) => `<ul>
@@ -52,4 +56,5 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 markerGroup.addTo(map);
 
-map.on('click', get);
+map.on('click', solve);
+map.whenReady(update);
