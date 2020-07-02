@@ -34,7 +34,7 @@ public class Facility {
     private long capacity;
 
     @InverseRelationShadowVariable(sourceVariableName = "facility")
-    private List<DemandPoint> demandPoints = new ArrayList<>();
+    private List<Consumer> consumers = new ArrayList<>();
 
     public Facility() {
     }
@@ -79,11 +79,11 @@ public class Facility {
     }
 
     public long getUsedCapacity() {
-        return demandPoints.stream().mapToLong(DemandPoint::getDemand).sum();
+        return consumers.stream().mapToLong(Consumer::getDemand).sum();
     }
 
     public boolean isUsed() {
-        return !demandPoints.isEmpty();
+        return !consumers.isEmpty();
     }
 
     @Override

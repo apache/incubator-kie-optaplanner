@@ -37,7 +37,7 @@ public class FacilityLocationProblem {
     @ValueRangeProvider(id = "facilityRange")
     private List<Facility> facilities;
     @PlanningEntityCollectionProperty
-    private List<DemandPoint> demandPoints;
+    private List<Consumer> consumers;
 
     @PlanningScore
     private HardSoftLongScore score;
@@ -52,11 +52,11 @@ public class FacilityLocationProblem {
 
     public FacilityLocationProblem(
             List<Facility> facilities,
-            List<DemandPoint> demandPoints,
+            List<Consumer> consumers,
             Location southWestCorner,
             Location northEastCorner) {
         this.facilities = facilities;
-        this.demandPoints = demandPoints;
+        this.consumers = consumers;
         this.southWestCorner = southWestCorner;
         this.northEastCorner = northEastCorner;
     }
@@ -79,12 +79,12 @@ public class FacilityLocationProblem {
         this.facilities = facilities;
     }
 
-    public List<DemandPoint> getDemandPoints() {
-        return demandPoints;
+    public List<Consumer> getConsumers() {
+        return consumers;
     }
 
-    public void setDemandPoints(List<DemandPoint> demandPoints) {
-        this.demandPoints = demandPoints;
+    public void setConsumers(List<Consumer> consumers) {
+        this.consumers = consumers;
     }
 
     public HardSoftLongScore getScore() {
@@ -121,9 +121,9 @@ public class FacilityLocationProblem {
     }
 
     public String getTotalDistance() {
-        long distance = demandPoints.stream()
-                .filter(DemandPoint::isAssigned)
-                .mapToLong(DemandPoint::distanceToFacility)
+        long distance = consumers.stream()
+                .filter(Consumer::isAssigned)
+                .mapToLong(Consumer::distanceToFacility)
                 .sum();
         return distance / 1000 + " km";
     }
@@ -132,7 +132,7 @@ public class FacilityLocationProblem {
     public String toString() {
         return "FacilityLocationProblem{" +
                 "facilities: " + facilities.size() +
-                ", demandPoints: " + demandPoints.size() +
+                ", consumers: " + consumers.size() +
                 ", score: " + score +
                 '}';
     }

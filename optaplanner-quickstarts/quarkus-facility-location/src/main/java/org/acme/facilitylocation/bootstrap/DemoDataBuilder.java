@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.acme.facilitylocation.domain.DemandPoint;
+import org.acme.facilitylocation.domain.Consumer;
 import org.acme.facilitylocation.domain.Facility;
 import org.acme.facilitylocation.domain.FacilityLocationProblem;
 import org.acme.facilitylocation.domain.Location;
@@ -36,7 +36,7 @@ public class DemoDataBuilder {
     private long capacity;
     private long demand;
     private int facilityCount;
-    private int demandPointCount;
+    private int consumerCount;
     private long averageSetupCost;
     private long setupCostStandardDeviation;
     private Location southWestCorner;
@@ -64,8 +64,8 @@ public class DemoDataBuilder {
         return this;
     }
 
-    public DemoDataBuilder setDemandPointCount(int demandPointCount) {
-        this.demandPointCount = demandPointCount;
+    public DemoDataBuilder setConsumerCount(int consumerCount) {
+        this.consumerCount = consumerCount;
         return this;
     }
 
@@ -99,8 +99,8 @@ public class DemoDataBuilder {
         if (facilityCount < 1) {
             throw new IllegalStateException("Number of facilities (" + facilityCount + ") must be greater than zero.");
         }
-        if (demandPointCount < 1) {
-            throw new IllegalStateException("Number of demand points (" + demandPointCount + ") must be greater than zero.");
+        if (consumerCount < 1) {
+            throw new IllegalStateException("Number of consumers (" + consumerCount + ") must be greater than zero.");
         }
         if (demand > capacity) {
             throw new IllegalStateException("Overconstrained problem not supported. The total capacity ("
@@ -122,14 +122,14 @@ public class DemoDataBuilder {
                         capacity / facilityCount))
                 .limit(facilityCount)
                 .collect(Collectors.toList());
-        List<DemandPoint> demandPoints = Stream.generate(locationSupplier)
-                .map(location -> new DemandPoint(
+        List<Consumer> consumers = Stream.generate(locationSupplier)
+                .map(location -> new Consumer(
                         sequence.incrementAndGet(),
                         location,
-                        demand / demandPointCount))
-                .limit(demandPointCount)
+                        demand / consumerCount))
+                .limit(consumerCount)
                 .collect(Collectors.toList());
 
-        return new FacilityLocationProblem(facilities, demandPoints, southWestCorner, northEastCorner);
+        return new FacilityLocationProblem(facilities, consumers, southWestCorner, northEastCorner);
     }
 }

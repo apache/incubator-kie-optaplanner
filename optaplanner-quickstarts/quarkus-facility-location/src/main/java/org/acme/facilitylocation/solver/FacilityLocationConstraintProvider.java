@@ -16,7 +16,7 @@
 
 package org.acme.facilitylocation.solver;
 
-import org.acme.facilitylocation.domain.DemandPoint;
+import org.acme.facilitylocation.domain.Consumer;
 import org.acme.facilitylocation.domain.Facility;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -36,8 +36,8 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
     }
 
     Constraint facilityCapacity(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(DemandPoint.class)
-                .groupBy(DemandPoint::getFacility, ConstraintCollectors.sumLong(DemandPoint::getDemand))
+        return constraintFactory.from(Consumer.class)
+                .groupBy(Consumer::getFacility, ConstraintCollectors.sumLong(Consumer::getDemand))
                 .filter((facility, demand) -> demand > facility.getCapacity())
                 .penalizeLong(
                         FacilityLocationConstraintConfiguration.FACILITY_CAPACITY,
@@ -46,19 +46,19 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
     }
 
     Constraint setupCost(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(DemandPoint.class)
-                .groupBy(DemandPoint::getFacility)
+        return constraintFactory.from(Consumer.class)
+                .groupBy(Consumer::getFacility)
                 .penalizeConfigurableLong(
                         FacilityLocationConstraintConfiguration.FACILITY_SETUP_COST,
                         Facility::getSetupCost);
     }
 
     Constraint distanceToFacility(ConstraintFactory constraintFactory) {
-        return constraintFactory.from(DemandPoint.class)
-                .filter(DemandPoint::isAssigned)
+        return constraintFactory.from(Consumer.class)
+                .filter(Consumer::isAssigned)
                 .penalizeLong(
                         FacilityLocationConstraintConfiguration.DISTANCE_TO_FACILITY,
                         HardSoftLongScore.ONE_SOFT,
-                        DemandPoint::distanceToFacility);
+                        Consumer::distanceToFacility);
     }
 }

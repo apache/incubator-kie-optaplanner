@@ -23,7 +23,7 @@ public class RepositoryPopulator {
                 .setCapacity(1500)
                 .setDemand(900)
                 .setFacilityCount(10)
-                .setDemandPointCount(60)
+                .setConsumerCount(60)
                 .setSouthWestCorner(new Location(51.44, -0.16))
                 .setNorthEastCorner(new Location(51.56, -0.01))
                 .setAverageSetupCost(100)

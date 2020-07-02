@@ -18,7 +18,7 @@ const stopSolvingButton = $('#stopSolvingButton');
 const facilitiesTable = $('#facilities');
 
 const colorById = (i) => colors[i % colors.length];
-const colorByDemandPoint = (dp) => dp.facility === null ? {} : { color: colorById(dp.facility.id) };
+const colorByConsumer = (consumer) => consumer.facility === null ? {} : { color: colorById(consumer.facility.id) };
 
 const fetchHeaders = {
   headers: {
@@ -148,11 +148,11 @@ const showProblem = ({ solution, scoreExplanation, isSolving }) => {
 <td>$${setupCost}</td>
 </tr>`);
   });
-  solution.demandPoints.forEach((dp) => {
-    const color = colorByDemandPoint(dp);
-    L.circleMarker(dp.location, color).addTo(markerGroup);
-    if (dp.facility !== null) {
-      L.polyline([dp.location, dp.facility.location], color).addTo(markerGroup);
+  solution.consumers.forEach((consumer) => {
+    const color = colorByConsumer(consumer);
+    L.circleMarker(consumer.location, color).addTo(markerGroup);
+    if (consumer.facility !== null) {
+      L.polyline([consumer.location, consumer.facility.location], color).addTo(markerGroup);
     }
   });
   $('#score').text(solution.score);

@@ -16,7 +16,7 @@
 
 package org.acme.facilitylocation.solver;
 
-import org.acme.facilitylocation.domain.DemandPoint;
+import org.acme.facilitylocation.domain.Consumer;
 import org.acme.facilitylocation.domain.Facility;
 import org.acme.facilitylocation.domain.FacilityLocationProblem;
 import org.acme.facilitylocation.domain.Location;
@@ -29,17 +29,17 @@ class FacilityLocationConstraintProviderTest {
             ConstraintVerifier.build(
                     new FacilityLocationConstraintProvider(),
                     FacilityLocationProblem.class,
-                    DemandPoint.class);
+                    Consumer.class);
 
     @Test
-    void penalizes_capacity_exceeded_by_a_single_demand_point() {
+    void penalizes_capacity_exceeded_by_a_single_consumer() {
         Location location = new Location(1, 1);
         Facility facility = new Facility(0, location, 0, 20);
-        DemandPoint demandPoint = new DemandPoint(0, location, 100);
-        demandPoint.setFacility(facility);
+        Consumer consumer = new Consumer(0, location, 100);
+        consumer.setFacility(facility);
 
         constraintVerifier.verifyThat(FacilityLocationConstraintProvider::facilityCapacity)
-                .given(demandPoint, facility)
+                .given(consumer, facility)
                 .penalizesBy(80);
     }
 
@@ -47,26 +47,26 @@ class FacilityLocationConstraintProviderTest {
     void no_penalty_when_demand_less_than_capacity() {
         Location location = new Location(1, 1);
         Facility facility = new Facility(0, location, 0, 100);
-        DemandPoint dp1 = new DemandPoint(0, location, 1);
-        DemandPoint dp2 = new DemandPoint(0, location, 2);
-        DemandPoint dp3 = new DemandPoint(0, location, 3);
-        dp1.setFacility(facility);
-        dp2.setFacility(facility);
-        dp3.setFacility(facility);
+        Consumer consumer1 = new Consumer(0, location, 1);
+        Consumer consumer2 = new Consumer(0, location, 2);
+        Consumer consumer3 = new Consumer(0, location, 3);
+        consumer1.setFacility(facility);
+        consumer2.setFacility(facility);
+        consumer3.setFacility(facility);
 
         constraintVerifier.verifyThat(FacilityLocationConstraintProvider::facilityCapacity)
-                .given(dp1, dp2, dp3, facility)
+                .given(consumer1, consumer2, consumer3, facility)
                 .penalizesBy(0);
     }
 
     @Test
-    void no_penalty_when_demand_point_not_assigned() {
+    void no_penalty_when_consumer_not_assigned() {
         Location location = new Location(1, 1);
         Facility facility = new Facility(0, location, 0, 1);
-        DemandPoint demandPoint = new DemandPoint(0, location, 100);
+        Consumer consumer = new Consumer(0, location, 100);
 
         constraintVerifier.verifyThat(FacilityLocationConstraintProvider::facilityCapacity)
-                .given(demandPoint, facility)
+                .given(consumer, facility)
                 .penalizesBy(0);
     }
 
@@ -75,29 +75,29 @@ class FacilityLocationConstraintProviderTest {
         long setupCost = 123;
         Location location = new Location(1, 1);
         Facility facility = new Facility(0, location, setupCost, 100);
-        DemandPoint demandPoint = new DemandPoint(0, location, 1);
-        demandPoint.setFacility(facility);
+        Consumer consumer = new Consumer(0, location, 1);
+        consumer.setFacility(facility);
 
         constraintVerifier.verifyThat(FacilityLocationConstraintProvider::setupCost)
-                .given(facility, demandPoint)
+                .given(facility, consumer)
                 .penalizesBy(setupCost);
     }
 
     @Test
     void should_penalize_distance_to_facility() {
         Location facilityLocation = new Location(0, 0);
-        Location dp1Location = new Location(10, 0);
-        Location dp2Location = new Location(0, 20);
+        Location consumer1Location = new Location(10, 0);
+        Location consumer2Location = new Location(0, 20);
 
         Facility facility = new Facility(0, facilityLocation, 0, 100);
-        DemandPoint dp1 = new DemandPoint(0, dp1Location, 1);
-        DemandPoint dp2 = new DemandPoint(0, dp2Location, 1);
+        Consumer consumer1 = new Consumer(0, consumer1Location, 1);
+        Consumer consumer2 = new Consumer(0, consumer2Location, 1);
 
-        dp1.setFacility(facility);
-        dp2.setFacility(facility);
+        consumer1.setFacility(facility);
+        consumer2.setFacility(facility);
 
         constraintVerifier.verifyThat(FacilityLocationConstraintProvider::distanceToFacility)
-                .given(facility, dp1, dp2)
+                .given(facility, consumer1, consumer2)
                 .penalizesBy(30 * 111_000);
     }
 }

@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 
 import org.acme.facilitylocation.bootstrap.DemoDataBuilder;
-import org.acme.facilitylocation.domain.DemandPoint;
+import org.acme.facilitylocation.domain.Consumer;
 import org.acme.facilitylocation.domain.Facility;
 import org.acme.facilitylocation.domain.FacilityLocationProblem;
 import org.acme.facilitylocation.domain.Location;
@@ -47,7 +47,7 @@ public class SolverTest {
                 .setDemand(900)
                 .setAverageSetupCost(1000).setSetupCostStandardDeviation(200)
                 .setFacilityCount(10)
-                .setDemandPointCount(150)
+                .setConsumerCount(150)
                 .setSouthWestCorner(new Location(-10, -10))
                 .setNorthEastCorner(new Location(10, 10))
                 .build();
@@ -55,10 +55,10 @@ public class SolverTest {
     }
 
     static void printSolution(FacilityLocationProblem solution) {
-        Map<Facility, Long> demandPerFacility = solution.getDemandPoints().stream().collect(
+        Map<Facility, Long> demandPerFacility = solution.getConsumers().stream().collect(
                 groupingBy(
-                        DemandPoint::getFacility,
-                        summingLong(DemandPoint::getDemand)));
+                        Consumer::getFacility,
+                        summingLong(Consumer::getDemand)));
 
         solution.getFacilities().forEach(facility -> System.out.printf("$%4d (%3d/%3d)%n",
                 facility.getSetupCost(),

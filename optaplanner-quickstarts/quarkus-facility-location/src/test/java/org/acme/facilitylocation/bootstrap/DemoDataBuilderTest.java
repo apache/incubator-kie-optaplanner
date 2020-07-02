@@ -33,7 +33,7 @@ class DemoDataBuilderTest {
                 .setDemand(900)
                 .setAverageSetupCost(1000).setSetupCostStandardDeviation(200)
                 .setFacilityCount(10)
-                .setDemandPointCount(150)
+                .setConsumerCount(150)
                 .setSouthWestCorner(new Location(-10, -10))
                 .setNorthEastCorner(new Location(20, 20))
                 .build();
@@ -43,10 +43,10 @@ class DemoDataBuilderTest {
         problem.getFacilities().forEach(System.out::println);
         problem.getFacilities().forEach(facility -> assertEquals(100, facility.getCapacity()));
 
-        assertEquals(150, problem.getDemandPoints().size());
+        assertEquals(150, problem.getConsumers().size());
         // Show toString().
-        problem.getDemandPoints().stream().limit(10).forEach(System.out::println);
-        problem.getDemandPoints().forEach(demandPoint -> assertEquals(6, demandPoint.getDemand()));
+        problem.getConsumers().stream().limit(10).forEach(System.out::println);
+        problem.getConsumers().forEach(consumer -> assertEquals(6, consumer.getDemand()));
     }
 
     @Test
@@ -85,10 +85,10 @@ class DemoDataBuilderTest {
     }
 
     @Test
-    void demand_point_count_greater_than_zero() {
-        DemoDataBuilder builder = correctBuilder().setDemandPointCount(0);
+    void consumer_count_greater_than_zero() {
+        DemoDataBuilder builder = correctBuilder().setConsumerCount(0);
         assertThrows(IllegalStateException.class, builder::build);
-        builder.setDemandPointCount(-1);
+        builder.setConsumerCount(-1);
         assertThrows(IllegalStateException.class, builder::build);
     }
 
@@ -98,7 +98,7 @@ class DemoDataBuilderTest {
                 .setNorthEastCorner(new Location(1, 1))
                 .setCapacity(20)
                 .setDemand(10)
-                .setDemandPointCount(1)
+                .setConsumerCount(1)
                 .setFacilityCount(1)
                 .setAverageSetupCost(100)
                 .setSetupCostStandardDeviation(1);

@@ -23,7 +23,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @PlanningEntity
-public class DemandPoint {
+public class Consumer {
 
     // Approximate Metric Equivalents for Degrees. At the equator for longitude and for latitude anywhere,
     // the following approximations are valid: 1° = 111 km (or 60 nautical miles) 0.1° = 11.1 km.
@@ -36,10 +36,10 @@ public class DemandPoint {
     @PlanningVariable(valueRangeProviderRefs = "facilityRange")
     private Facility facility;
 
-    public DemandPoint() {
+    public Consumer() {
     }
 
-    public DemandPoint(long id, Location location, long demand) {
+    public Consumer(long id, Location location, long demand) {
         this.id = id;
         this.location = location;
         this.demand = demand;
