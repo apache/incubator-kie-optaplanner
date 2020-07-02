@@ -2,7 +2,6 @@ package org.acme.facilitylocation.bootstrap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.transaction.Transactional;
 
 import org.acme.facilitylocation.domain.FacilityLocationProblem;
 import org.acme.facilitylocation.domain.Location;
@@ -19,7 +18,6 @@ public class RepositoryPopulator {
         this.repository = repository;
     }
 
-    @Transactional
     public void generateDemoData(@Observes StartupEvent startupEvent) {
         FacilityLocationProblem problem = DemoDataBuilder.builder()
                 .setCapacity(4500)
