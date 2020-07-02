@@ -31,20 +31,19 @@ const getStatus = () => {
   fetch('/flp/status', fetchHeaders)
     .then((response) => {
       if (!response.ok) {
-        handleErrorResponse('Get status failed', response);
+        return handleErrorResponse('Get status failed', response);
       } else {
-        // TODO avoid nesting
-        response.json().then((data) => showProblem(data));
+        return response.json().then((data) => showProblem(data));
       }
     })
-    .catch((error) => console.error('Failed to process response', error));
+    .catch((error) => handleClientError('Failed to process response', error));
 };
 
 const solve = () => {
   fetch('/flp/solve', { ...fetchHeaders, method: 'POST' })
     .then((response) => {
       if (!response.ok) {
-        handleErrorResponse('Start solving failed', response);
+        return handleErrorResponse('Start solving failed', response);
       } else {
         updateSolvingStatus(true);
         autoRefreshCount = 300;
@@ -53,20 +52,20 @@ const solve = () => {
         }
       }
     })
-    .catch((error) => console.error('Failed to process response', error));
+    .catch((error) => handleClientError('Failed to process response', error));
 };
 
 const stopSolving = () => {
   fetch('/flp/stopSolving', { ...fetchHeaders, method: 'POST' })
     .then((response) => {
       if (!response.ok) {
-        handleErrorResponse('Stop solving failed', response);
+        return handleErrorResponse('Stop solving failed', response);
       } else {
         updateSolvingStatus(false);
         getStatus();
       }
     })
-    .catch((error) => console.error('Failed to process response', error));
+    .catch((error) => handleClientError('Failed to process response', error));
 };
 
 const formatErrorResponseBody = (body) => {
@@ -76,13 +75,16 @@ const formatErrorResponseBody = (body) => {
 };
 
 const handleErrorResponse = (title, response) => {
-  response.text()
+  return response.text()
     .then((body) => {
       const message = `${title} (${response.status}: ${response.statusText}).`;
       const stackTrace = body ? formatErrorResponseBody(body) : '';
       showError(message, stackTrace);
-    })
-    .catch((error) => console.error('Failed to process response body', error));
+    });
+};
+
+const handleClientError = (title, error) => {
+  showError(`${title}.`, error.stack);
 };
 
 const showError = (message, stackTrace) => {
