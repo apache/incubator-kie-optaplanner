@@ -96,7 +96,7 @@ class FacilityLocationConstraintProviderTest {
         consumer1.setFacility(facility);
         consumer2.setFacility(facility);
 
-        constraintVerifier.verifyThat(FacilityLocationConstraintProvider::distanceToFacility)
+        constraintVerifier.verifyThat(FacilityLocationConstraintProvider::distanceFromFacility)
                 .given(facility, consumer1, consumer2)
                 .penalizesBy((int) (30 * Consumer.METERS_PER_DEGREE));
     }

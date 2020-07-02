@@ -19,9 +19,20 @@ package org.acme.facilitylocation.domain;
 import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
 
+import org.acme.facilitylocation.solver.FacilityLocationConstraintProvider;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
+/**
+ * Consumer has a demand that can be satisfied by <em>any</em> {@link Facility} with a sufficient capacity.
+ * <p/>
+ * Closer facilities are preferred as the distance affects travel time, signal quality, etc.
+ * This requirement is expressed by the
+ * {@link FacilityLocationConstraintProvider#distanceFromFacility distance from facility} constraint.
+ * <p/>
+ * One of the FLP's goals is to minimize total set-up cost by selecting cheaper facilities. This requirement
+ * is expressed by the {@link FacilityLocationConstraintProvider#setupCost setup cost} constraint.
+ */
 @PlanningEntity
 public class Consumer {
 
@@ -50,11 +61,11 @@ public class Consumer {
     }
 
     /**
-     * Get distance to the facility.
+     * Get distance from the facility.
      *
      * @return distance in meters
      */
-    public long distanceToFacility() {
+    public long distanceFromFacility() {
         if (facility == null) {
             throw new IllegalStateException("No facility is assigned.");
         }

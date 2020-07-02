@@ -32,11 +32,11 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
         return new Constraint[] {
                 facilityCapacity(constraintFactory),
                 setupCost(constraintFactory),
-                distanceToFacility(constraintFactory)
+                distanceFromFacility(constraintFactory)
         };
     }
 
-    Constraint facilityCapacity(ConstraintFactory constraintFactory) {
+    public Constraint facilityCapacity(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Consumer.class)
                 .groupBy(Consumer::getFacility, sumLong(Consumer::getDemand))
                 .filter((facility, demand) -> demand > facility.getCapacity())
@@ -46,7 +46,7 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
                         (facility, demand) -> demand - facility.getCapacity());
     }
 
-    Constraint setupCost(ConstraintFactory constraintFactory) {
+    public Constraint setupCost(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Consumer.class)
                 .groupBy(Consumer::getFacility)
                 .penalizeConfigurableLong(
@@ -54,12 +54,12 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
                         Facility::getSetupCost);
     }
 
-    Constraint distanceToFacility(ConstraintFactory constraintFactory) {
+    public Constraint distanceFromFacility(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Consumer.class)
                 .filter(Consumer::isAssigned)
                 .penalizeLong(
-                        FacilityLocationConstraintConfiguration.DISTANCE_TO_FACILITY,
+                        FacilityLocationConstraintConfiguration.DISTANCE_FROM_FACILITY,
                         HardSoftLongScore.ONE_SOFT,
-                        Consumer::distanceToFacility);
+                        Consumer::distanceFromFacility);
     }
 }

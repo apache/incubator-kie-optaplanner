@@ -19,12 +19,16 @@ package org.acme.facilitylocation.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.acme.facilitylocation.solver.FacilityLocationConstraintProvider;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
 /**
- * This is a shadow planning entity, not a genuine planning entity, because it has a shadow variable (usage).
+ * Facility satisfies consumers' demand. Cumulative demand of all consumers assigned to this facility must not exceed
+ * the facility's capacity. This requirement is expressed by the {@link FacilityLocationConstraintProvider#facilityCapacity
+ * facility capacity} constraint.
  */
+// This is a shadow planning entity, not a genuine planning entity, because it has a shadow variable (consumers).
 @PlanningEntity
 public class Facility {
 

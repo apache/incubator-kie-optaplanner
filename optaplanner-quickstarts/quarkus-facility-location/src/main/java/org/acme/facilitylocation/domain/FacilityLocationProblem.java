@@ -123,7 +123,7 @@ public class FacilityLocationProblem {
     public String getTotalDistance() {
         long distance = consumers.stream()
                 .filter(Consumer::isAssigned)
-                .mapToLong(Consumer::distanceToFacility)
+                .mapToLong(Consumer::distanceFromFacility)
                 .sum();
         return distance / 1000 + " km";
     }
