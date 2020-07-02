@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
-import static org.drools.model.DSL.globalOf;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,15 +33,17 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.drools.model.ConstraintModel;
+import org.optaplanner.core.impl.score.stream.drools.graph.ConstraintGraph;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
+
+import static org.drools.model.DSL.globalOf;
 
 public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
     private final AtomicLong createdVariableCounter = new AtomicLong();
-    private final ConstraintModel constraintModel = new ConstraintModel();
+    private final ConstraintGraph constraintGraph = new ConstraintGraph();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -108,8 +108,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
         return solutionDescriptor;
     }
 
-    public ConstraintModel getConstraintModel() {
-        return constraintModel;
+    public ConstraintGraph getConstraintGraph() {
+        return constraintGraph;
     }
 
     /**
