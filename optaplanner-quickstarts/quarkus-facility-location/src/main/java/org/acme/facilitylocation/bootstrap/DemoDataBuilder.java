@@ -108,7 +108,7 @@ public class DemoDataBuilder {
         }
         // TODO SW<NE
 
-        Random random = new Random();
+        Random random = new Random(0);
         PrimitiveIterator.OfDouble latitudes = random.doubles(southWestCorner.latitude, northEastCorner.latitude)
                 .iterator();
         PrimitiveIterator.OfDouble longitudes = random.doubles(southWestCorner.longitude, northEastCorner.longitude)
