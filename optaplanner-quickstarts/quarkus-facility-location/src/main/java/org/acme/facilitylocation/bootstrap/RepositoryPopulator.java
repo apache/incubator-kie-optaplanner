@@ -20,9 +20,9 @@ public class RepositoryPopulator {
     @Transactional
     public void generateDemoData(@Observes StartupEvent startupEvent) {
         FacilityLocationProblem problem = DemoDataBuilder.builder()
-                .setCapacity(1500)
+                .setCapacity(4500)
                 .setDemand(900)
-                .setFacilityCount(10)
+                .setFacilityCount(30)
                 .setConsumerCount(60)
                 .setSouthWestCorner(new Location(51.44, -0.16))
                 .setNorthEastCorner(new Location(51.56, -0.01))
