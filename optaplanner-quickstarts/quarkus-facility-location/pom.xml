@@ -23,18 +23,18 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-bom</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>io.quarkus</groupId>
         <!-- Alternatively, use <artifactId>quarkus-universe-bom</artifactId>
          which includes both quarkus-bom and optaplanner-bom. -->
         <artifactId>quarkus-bom</artifactId>
         <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-bom</artifactId>
-        <version>${version.org.optaplanner}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
