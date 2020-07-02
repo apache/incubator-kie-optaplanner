@@ -56,7 +56,7 @@ const solve = () => {
     .catch((error) => console.error('Failed to process response', error));
 };
 
-function stopSolving() {
+const stopSolving = () => {
   fetch('/flp/stopSolving', { ...fetchHeaders, method: 'POST' })
     .then((response) => {
       if (!response.ok) {
@@ -67,7 +67,7 @@ function stopSolving() {
       }
     })
     .catch((error) => console.error('Failed to process response', error));
-}
+};
 
 const formatErrorResponseBody = (body) => {
   // JSON must not contain \t (Quarkus bug)
@@ -75,7 +75,7 @@ const formatErrorResponseBody = (body) => {
   return `${json.details}\n${json.stack}`;
 };
 
-function handleErrorResponse(title, response) {
+const handleErrorResponse = (title, response) => {
   response.text()
     .then((body) => {
       const message = `${title} (${response.status}: ${response.statusText}).`;
@@ -83,9 +83,9 @@ function handleErrorResponse(title, response) {
       showError(message, stackTrace);
     })
     .catch((error) => console.error('Failed to process response body', error));
-}
+};
 
-function showError(message, stackTrace) {
+const showError = (message, stackTrace) => {
   const notification = $(`<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 30rem"/>`)
     .append($(`<div class="toast-header bg-danger">
 <strong class="mr-auto text-dark">Error</strong>
@@ -102,9 +102,9 @@ function showError(message, stackTrace) {
   $('#notificationPanel').append(notification);
   notification.toast({ autohide: false });
   notification.toast('show');
-}
+};
 
-function updateSolvingStatus(solving) {
+const updateSolvingStatus = (solving) => {
   if (solving) {
     solveButton.hide();
     stopSolvingButton.show();
@@ -113,16 +113,16 @@ function updateSolvingStatus(solving) {
     solveButton.show();
     stopSolvingButton.hide();
   }
-}
+};
 
-function autoRefresh() {
+const autoRefresh = () => {
   getStatus();
   autoRefreshCount--;
   if (autoRefreshCount <= 0) {
     clearInterval(autoRefreshIntervalId);
     autoRefreshIntervalId = null;
   }
-}
+};
 
 const facilityPopupContent = (facility) => `<h5>Facility ${facility.id}</h5>
 <ul class="list-unstyled">
