@@ -35,7 +35,6 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
         extends DroolsAbstractTriConstraintStream<Solution_, NewA, NewB, NewC> {
 
     private final TriConstraintGraphNode<NewA, NewB, NewC> node;
-    private final DroolsTriCondition<NewA, NewB, NewC, ?> condition;
 
     public <A, ResultContainer_> DroolsGroupingTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
@@ -43,7 +42,6 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping, collector);
-        this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     public <A, B, ResultContainer_> DroolsGroupingTriConstraintStream(
@@ -53,7 +51,6 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping, collector);
-        this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     public <A, B, C, ResultContainer_> DroolsGroupingTriConstraintStream(
@@ -64,7 +61,6 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping, collector);
-        this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     public <A, B, C, D, ResultContainer_> DroolsGroupingTriConstraintStream(
@@ -75,7 +71,6 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping, collector);
-        this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
     // ************************************************************************
@@ -85,11 +80,6 @@ public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC
     @Override
     public TriConstraintGraphNode<NewA, NewB, NewC> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsTriCondition<NewA, NewB, NewC, ?> getCondition() {
-        return condition;
     }
 
     @Override

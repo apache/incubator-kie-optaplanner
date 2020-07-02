@@ -24,12 +24,10 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGr
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final UniConstraintGraphNode<A> node;
-    private final DroolsUniCondition<A, ?> condition;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().from(requireNonNull(fromClass));
-        this.condition = new DroolsUniCondition<>(fromClass, constraintFactory.getVariableIdSupplier());
     }
 
     // ************************************************************************
@@ -39,11 +37,6 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     @Override
     public UniConstraintGraphNode<A> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsUniCondition<A, ?> getCondition() {
-        return condition;
     }
 
     // ************************************************************************

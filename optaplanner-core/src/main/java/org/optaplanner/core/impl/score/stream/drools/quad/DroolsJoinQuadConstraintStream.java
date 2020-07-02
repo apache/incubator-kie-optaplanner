@@ -21,13 +21,11 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
 public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
     private final QuadConstraintGraphNode<A, B, C, D> node;
-    private final DroolsQuadCondition<A, B, C, D, ?> condition;
 
     public DroolsJoinQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
@@ -35,8 +33,6 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().join(parent.getConstraintGraphNode(),
                 otherStream.getConstraintGraphNode(), joiner);
-        this.condition = parent.getCondition().andJoin(otherStream.getCondition(),
-                (AbstractQuadJoiner<A, B, C, D>) joiner);
     }
 
     // ************************************************************************
@@ -46,11 +42,6 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public QuadConstraintGraphNode<A, B, C, D> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsQuadCondition<A, B, C, D, ?> getCondition() {
-        return condition;
     }
 
     // ************************************************************************

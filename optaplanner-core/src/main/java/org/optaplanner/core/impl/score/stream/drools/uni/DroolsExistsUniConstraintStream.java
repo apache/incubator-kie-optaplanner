@@ -24,7 +24,6 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGr
 public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final UniConstraintGraphChildNode<A> node;
-    private final DroolsUniCondition<A, ?> condition;
     private final String streamName;
 
     public <B> DroolsExistsUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -35,8 +34,6 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
                 ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
                 : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
-        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
-                : parent.getCondition().andIfNotExists(otherClass, joiners);
     }
 
     // ************************************************************************
@@ -46,11 +43,6 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
     @Override
     public UniConstraintGraphNode<A> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsUniCondition<A, ?> getCondition() {
-        return condition;
     }
 
     @Override

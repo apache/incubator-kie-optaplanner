@@ -24,7 +24,6 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
     private final TriConstraintGraphNode<A, B, C> node;
-    private final DroolsTriCondition<A, B, C, ?> condition;
     private final String streamName;
 
     public <D> DroolsExistsTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -35,8 +34,6 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
                 ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
                 : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
-        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
-                : parent.getCondition().andIfNotExists(otherClass, joiners);
     }
 
     // ************************************************************************
@@ -46,11 +43,6 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
     @Override
     public TriConstraintGraphNode<A, B, C> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsTriCondition<A, B, C, ?> getCondition() {
-        return condition;
     }
 
     @Override

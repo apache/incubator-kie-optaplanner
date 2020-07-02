@@ -24,13 +24,11 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
     private final TriConstraintGraphNode<A, B, C> node;
-    private final DroolsTriCondition<A, B, C, ?> condition;
 
     public DroolsFilterTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), triPredicate);
-        this.condition = parent.getCondition().andFilter(triPredicate);
     }
 
     // ************************************************************************
@@ -40,11 +38,6 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
     @Override
     public TriConstraintGraphNode<A, B, C> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsTriCondition<A, B, C, ?> getCondition() {
-        return condition;
     }
 
     @Override

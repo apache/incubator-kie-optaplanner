@@ -18,39 +18,26 @@ package org.optaplanner.core.impl.score.stream.drools;
 
 import java.util.function.Function;
 
-import org.drools.model.Global;
-import org.drools.model.PatternDSL;
-import org.drools.model.Rule;
-import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, DroolsConstraintFactory<Solution_>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsConstraint.class);
-    private final DroolsAbstractConstraintStream<Solution_> scoringStream;
+    private final ConstraintConsequence consequence;
 
     public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
             String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
             ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
-            DroolsAbstractConstraintStream<Solution_> scoringStream) {
+            ConstraintConsequence constraintConsequence) {
         super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,
                 isConstraintWeightConfigurable);
-        this.scoringStream = scoringStream;
-    }
-
-    public Rule createRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        final Rule result = PatternDSL.rule(getConstraintPackage(), getConstraintName())
-                .build(scoringStream.createRuleItemBuilders(this, scoreHolderGlobal)
-                        .toArray(new RuleItemBuilder<?>[0]));
-        LOGGER.trace("Constraint stream {} resulted in a new Drools rule: {}.", scoringStream, result);
-        return result;
+        this.consequence = constraintConsequence;
     }
 
     // ************************************************************************
@@ -63,11 +50,11 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
      * @return never null, never empty
      */
     public Class[] getExpectedJustificationTypes() {
-        return scoringStream.getExpectedJustificationTypes();
+        return null;
     }
 
     public int getExpectedJustificationCount() {
-        return scoringStream.getCardinality();
+        return consequence.getTerminalNode().getCardinality();
     }
 
     @Override

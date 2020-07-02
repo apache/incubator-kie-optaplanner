@@ -34,6 +34,7 @@ import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.TriConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
@@ -174,73 +175,65 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream = new DroolsScoringTriConstraintStream<>(constraintFactory,
-                this);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode<A, B, C>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream = new DroolsScoringTriConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode<A, B, C>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream = new DroolsScoringTriConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode<A, B, C>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream = new DroolsScoringTriConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode<A, B, C>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream = new DroolsScoringTriConstraintStream<>(constraintFactory,
-                this);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode<A, B, C>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream = new DroolsScoringTriConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode<A, B, C>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream = new DroolsScoringTriConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode<A, B, C>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringTriConstraintStream<Solution_, A, B, C> stream = new DroolsScoringTriConstraintStream<>(constraintFactory,
-                this, matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<TriConstraintGraphNode<A, B, C>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     // ************************************************************************
@@ -248,7 +241,5 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     public abstract TriConstraintGraphNode<A, B, C> getConstraintGraphNode();
-
-    public abstract DroolsTriCondition<A, B, C, ?> getCondition();
 
 }

@@ -94,8 +94,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
                                 + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
             }
             DroolsConstraint<Solution_> droolsConstraint = (DroolsConstraint) constraint;
-            droolsConstraintList.add(droolsConstraint);
-            model.addRule(droolsConstraint.createRule(scoreHolderGlobal));
+            // TODO add rules
         }
         return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, droolsConstraintList);
     }

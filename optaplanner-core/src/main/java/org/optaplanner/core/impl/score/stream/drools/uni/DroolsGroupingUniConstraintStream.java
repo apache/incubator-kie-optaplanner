@@ -36,13 +36,11 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
 
     private final UniConstraintGraphChildNode<NewA> node;
-    private final DroolsUniCondition<NewA, ?> condition;
 
     public <A> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping);
-        this.condition = parent.getCondition().andGroup(groupKeyMapping);
     }
 
     public <A, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -50,14 +48,12 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
             UniConstraintCollector<A, ResultContainer_, NewA> collector) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), collector);
-        this.condition = parent.getCondition().andCollect(collector);
     }
 
     public <A, B> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping);
-        this.condition = parent.getCondition().andGroup(groupKeyMapping);
     }
 
     public <A, B, ResultContainer_> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -65,7 +61,6 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
             BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), collector);
-        this.condition = parent.getCondition().andCollect(collector);
     }
 
     public <A, B, C, ResultContainer_> DroolsGroupingUniConstraintStream(
@@ -74,14 +69,12 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
             TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), collector);
-        this.condition = parent.getCondition().andCollect(collector);
     }
 
     public <A, B, C> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyMapping) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping);
-        this.condition = parent.getCondition().andGroup(groupKeyMapping);
     }
 
     public <A, B, C, D, ResultContainer_> DroolsGroupingUniConstraintStream(
@@ -90,7 +83,6 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
             QuadConstraintCollector<A, B, C, D, ResultContainer_, NewA> collector) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), collector);
-        this.condition = parent.getCondition().andCollect(collector);
     }
 
     public <A, B, C, D> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -98,7 +90,6 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
             QuadFunction<A, B, C, D, NewA> groupKeyMapping) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping);
-        this.condition = parent.getCondition().andGroup(groupKeyMapping);
     }
 
     // ************************************************************************
@@ -111,12 +102,7 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
     }
 
     @Override
-    public DroolsUniCondition<NewA, ?> getCondition() {
-        return condition;
-    }
-
-    @Override
     public String toString() {
-        return "GroupBy()";
+        return "UniGroup() with " + getChildStreams().size() + " children.";
     }
 }

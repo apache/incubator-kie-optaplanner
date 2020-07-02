@@ -33,6 +33,7 @@ import org.optaplanner.core.impl.score.stream.bi.InnerBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.BiConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
@@ -171,73 +172,65 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory,
-                this);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<BiConstraintGraphNode<A, B>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<BiConstraintGraphNode<A, B>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<BiConstraintGraphNode<A, B>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<BiConstraintGraphNode<A, B>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory,
-                this);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<BiConstraintGraphNode<A, B>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<BiConstraintGraphNode<A, B>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<BiConstraintGraphNode<A, B>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<BiConstraintGraphNode<A, B>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     // ************************************************************************
@@ -245,7 +238,5 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     public abstract BiConstraintGraphNode<A, B> getConstraintGraphNode();
-
-    public abstract DroolsBiCondition<A, B, ?> getCondition();
 
 }

@@ -24,7 +24,6 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BiConstraintGraphNode<A, B> node;
-    private final DroolsBiCondition<A, B, ?> condition;
     private final String streamName;
 
     public <C> DroolsExistsBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -35,8 +34,6 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
                 ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
                 : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
-        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
-                : parent.getCondition().andIfNotExists(otherClass, joiners);
     }
 
     // ************************************************************************
@@ -46,11 +43,6 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
     @Override
     public BiConstraintGraphNode<A, B> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsBiCondition<A, B, ?> getCondition() {
-        return condition;
     }
 
     @Override

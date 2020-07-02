@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstrai
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsGroupingTriConstraintStream;
@@ -180,71 +181,65 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode<A>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode<A>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode<A>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode<A>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode<A>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode());
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode<A>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode<A>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringUniConstraintStream<Solution_, A> stream = new DroolsScoringUniConstraintStream<>(constraintFactory, this,
-                matchWeigher);
-        addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
+        ConstraintConsequence<UniConstraintGraphNode<A>> consequence =
+                constraintFactory.getConstraintGraph().impact(getConstraintGraphNode(), matchWeigher);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, consequence);
     }
 
     // ************************************************************************
@@ -252,7 +247,5 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     public abstract UniConstraintGraphNode<A> getConstraintGraphNode();
-
-    public abstract DroolsUniCondition<A, ?> getCondition();
 
 }

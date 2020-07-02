@@ -35,7 +35,6 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         extends DroolsAbstractBiConstraintStream<Solution_, NewA, NewB> {
 
     private final BiConstraintGraphNode<NewA, NewB> node;
-    private final DroolsBiCondition<NewA, NewB, ?> condition;
 
     public <A> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
@@ -43,7 +42,6 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping);
-        this.condition = parent.getCondition().andGroupBi(groupKeyAMapping, groupKeyBMapping);
     }
 
     public <A, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -51,7 +49,6 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             UniConstraintCollector<A, __, NewB> collector) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping, collector);
-        this.condition = parent.getCondition().andGroupWithCollect(groupKeyMapping, collector);
     }
 
     public <A, B, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -59,7 +56,6 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             BiConstraintCollector<A, B, __, NewB> collector) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping, collector);
-        this.condition = parent.getCondition().andGroupWithCollect(groupKeyMapping, collector);
     }
 
     public <A, B, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -68,7 +64,6 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping);
-        this.condition = parent.getCondition().andGroupBi(groupKeyAMapping, groupKeyBMapping);
     }
 
     public <A, B, C, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -76,7 +71,6 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             TriConstraintCollector<A, B, C, __, NewB> collector) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping, collector);
-        this.condition = parent.getCondition().andGroupWithCollect(groupKeyMapping, collector);
     }
 
     public <A, B, C, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -85,7 +79,6 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping);
-        this.condition = parent.getCondition().andGroupBi(groupKeyAMapping, groupKeyBMapping);
     }
 
     public <A, B, C, D, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -93,7 +86,6 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             QuadFunction<A, B, C, D, NewA> groupKeyMapping, QuadConstraintCollector<A, B, C, D, __, NewB> collector) {
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyMapping, collector);
-        this.condition = parent.getCondition().andGroupWithCollect(groupKeyMapping, collector);
     }
 
     public <A, B, C, D, __> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -102,17 +94,11 @@ public class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping);
-        this.condition = parent.getCondition().andGroupBi(groupKeyAMapping, groupKeyBMapping);
     }
 
     @Override
     public BiConstraintGraphNode<NewA, NewB> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsBiCondition<NewA, NewB, ?> getCondition() {
-        return condition;
     }
 
     @Override

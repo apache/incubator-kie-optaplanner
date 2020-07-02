@@ -35,7 +35,6 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
         extends DroolsAbstractQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD> {
 
     private final QuadConstraintGraphNode<NewA, NewB, NewC, NewD> node;
-    private final DroolsQuadCondition<NewA, NewB, NewC, NewD, ?> condition;
 
     public <A, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
             DroolsConstraintFactory<Solution_> constraintFactory,
@@ -45,8 +44,6 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping, collectorC, collectorD);
-        this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
-                collectorC, collectorD);
     }
 
     public <A, B, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
@@ -57,8 +54,6 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping, collectorC, collectorD);
-        this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
-                collectorC, collectorD);
     }
 
     public <A, B, C, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
@@ -70,8 +65,6 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping, collectorC, collectorD);
-        this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
-                collectorC, collectorD);
     }
 
     public <A, B, C, D, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
@@ -84,8 +77,6 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
         super(constraintFactory);
         this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
                 groupKeyBMapping, collectorC, collectorD);
-        this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
-                collectorC, collectorD);
     }
 
     // ************************************************************************
@@ -95,11 +86,6 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
     @Override
     public QuadConstraintGraphNode<NewA, NewB, NewC, NewD> getConstraintGraphNode() {
         return node;
-    }
-
-    @Override
-    public DroolsQuadCondition<NewA, NewB, NewC, NewD, ?> getCondition() {
-        return condition;
     }
 
     // ************************************************************************
