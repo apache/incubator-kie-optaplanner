@@ -16,17 +16,11 @@
 
 package org.acme.facilitylocation.solver;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.summingLong;
-
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import org.acme.facilitylocation.bootstrap.DemoDataBuilder;
-import org.acme.facilitylocation.domain.Consumer;
-import org.acme.facilitylocation.domain.Facility;
 import org.acme.facilitylocation.domain.FacilityLocationProblem;
 import org.acme.facilitylocation.domain.Location;
 import org.junit.jupiter.api.Test;
@@ -55,14 +49,9 @@ public class SolverManagerTest {
     }
 
     static void printSolution(FacilityLocationProblem solution) {
-        Map<Facility, Long> demandPerFacility = solution.getConsumers().stream().collect(
-                groupingBy(
-                        Consumer::getFacility,
-                        summingLong(Consumer::getDemand)));
-
         solution.getFacilities().forEach(facility -> System.out.printf("$%4d (%3d/%3d)%n",
                 facility.getSetupCost(),
-                demandPerFacility.computeIfAbsent(facility, facility1 -> 0L),
+                facility.getUsedCapacity(),
                 facility.getCapacity()));
     }
 }
