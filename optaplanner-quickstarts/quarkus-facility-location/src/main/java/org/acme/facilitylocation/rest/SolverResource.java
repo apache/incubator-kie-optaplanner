@@ -30,7 +30,10 @@ public class SolverResource {
     ScoreManager<FacilityLocationProblem> scoreManager;
 
     private Status statusFromSolution(FacilityLocationProblem solution) {
-        return new Status(solution, scoreManager.explainScore(solution), solverManager.getSolverStatus(PROBLEM_ID));
+        return new Status(
+                solution,
+                scoreManager.explainScore(solution).getSummary(),
+                solverManager.getSolverStatus(PROBLEM_ID));
     }
 
     @GET
