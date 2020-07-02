@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <title>Facility Location - OptaPlanner Quarkus quickstart</title>
 </head>
@@ -28,8 +29,12 @@
     <div class="col-5 col-lg-4 col-xl-3" style="height: 100vh; overflow-y: scroll;">
       <div class="row pt-2 row-cols-1">
         <div class="col mb-3">
-          <button id="solveButton" type="button" class="btn btn-success">Solve</button>
-          <button id="stopSolvingButton" type="button" class="btn btn-danger">Stop solving</button>
+          <button id="solveButton" type="button" class="btn btn-success">
+            <i class="fa fa-play"></i> Solve
+          </button>
+          <button id="stopSolvingButton" type="button" class="btn btn-danger">
+            <i class="fa fa-stop"></i> Stop solving
+          </button>
         </div>
         <div class="col">
           <h5>Solution summary</h5>
