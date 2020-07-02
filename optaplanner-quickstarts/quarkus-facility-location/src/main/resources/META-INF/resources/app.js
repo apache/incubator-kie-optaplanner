@@ -88,11 +88,11 @@ const handleClientError = (title, error) => {
 };
 
 const showError = (message, stackTrace) => {
-  const notification = $(`<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 30rem"/>`)
+  const notification = $(`<div class="toast" role="alert" style="min-width: 30rem"/>`)
     .append($(`<div class="toast-header bg-danger">
 <strong class="mr-auto text-dark">Error</strong>
-<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-<span aria-hidden="true">&times;</span>
+<button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+<span>&times;</span>
 </button>
 </div>`))
     .append($(`<div class="toast-body"/>`)
@@ -145,7 +145,7 @@ const showProblem = ({ solution, scoreExplanation, isSolving }) => {
     facilitiesTable.append(`<tr class="${used ? 'table-active' : 'text-muted'}">
 <td>Facility ${id}</td>
 <td><div class="progress">
-<div class="progress-bar" role="progressbar" style="width: ${percentage}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">${usedCapacity}/${capacity}</div>
+<div class="progress-bar" role="progressbar" style="width: ${percentage}%">${usedCapacity}/${capacity}</div>
 </div></td>
 <td>$${setupCost}</td>
 </tr>`);
