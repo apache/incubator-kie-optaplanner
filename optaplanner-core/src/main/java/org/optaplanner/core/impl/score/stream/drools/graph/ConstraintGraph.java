@@ -394,6 +394,14 @@ public final class ConstraintGraph {
         return consequence;
     }
 
+    public <Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>>
+            ConstraintTree<Node_, Consequence_> getSubtree(Consequence_ consequence) {
+        if (!consequenceSet.contains(consequence)) {
+            throw new IllegalStateException("Requested subtree for a non-existent consequence (" + consequence + ").");
+        }
+        return new ConstraintTree<>(this, consequence);
+    }
+
     public Set<FromNode> getFromNodes() {
         return Collections.unmodifiableSet(new HashSet<>(fromNodeMap.values()));
     }

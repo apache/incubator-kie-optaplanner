@@ -242,6 +242,8 @@ public interface ConstraintGraphNode {
 
     int getCardinality();
 
+    ConstraintGraphNodeType getType();
+
     /**
      * Return {@link FromNode#getFactType()} of the ultimate parent node.
      *

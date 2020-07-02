@@ -61,6 +61,7 @@ public abstract class AbstractConstraintModelNode implements ConstraintGraphNode
         return Collections.unmodifiableList(consequenceList);
     }
 
+    @Override
     public final ConstraintGraphNodeType getType() {
         return type;
     }
