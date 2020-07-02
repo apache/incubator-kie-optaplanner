@@ -29,14 +29,14 @@ public class SolverResource {
     @Inject
     ScoreManager<FacilityLocationProblem> scoreManager;
 
-    private Status status(FacilityLocationProblem solution) {
+    private Status statusFromSolution(FacilityLocationProblem solution) {
         return new Status(solution, scoreManager.explainScore(solution), solverManager.getSolverStatus(PROBLEM_ID));
     }
 
     @GET
     @Path("status")
     public Status status() {
-        return status(repository.solution().orElse(FacilityLocationProblem.empty()));
+        return statusFromSolution(repository.solution().orElse(FacilityLocationProblem.empty()));
     }
 
     @POST
