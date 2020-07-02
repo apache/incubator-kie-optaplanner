@@ -2,7 +2,6 @@ package org.acme.facilitylocation.bootstrap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.acme.facilitylocation.domain.FacilityLocationProblem;
@@ -14,8 +13,11 @@ import io.quarkus.runtime.StartupEvent;
 @ApplicationScoped
 public class RepositoryPopulator {
 
-    @Inject
-    FacilityLocationProblemRepository repository;
+    private final FacilityLocationProblemRepository repository;
+
+    public RepositoryPopulator(FacilityLocationProblemRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional
     public void generateDemoData(@Observes StartupEvent startupEvent) {

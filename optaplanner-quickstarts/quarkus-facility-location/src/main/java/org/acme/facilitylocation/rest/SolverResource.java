@@ -2,7 +2,6 @@ package org.acme.facilitylocation.rest;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,12 +21,18 @@ public class SolverResource {
 
     private static final long PROBLEM_ID = 0L;
 
-    @Inject
-    FacilityLocationProblemRepository repository;
-    @Inject
-    SolverManager<FacilityLocationProblem, Long> solverManager;
-    @Inject
-    ScoreManager<FacilityLocationProblem> scoreManager;
+    private final FacilityLocationProblemRepository repository;
+    private final SolverManager<FacilityLocationProblem, Long> solverManager;
+    private final ScoreManager<FacilityLocationProblem> scoreManager;
+
+    public SolverResource(
+            FacilityLocationProblemRepository repository,
+            SolverManager<FacilityLocationProblem, Long> solverManager,
+            ScoreManager<FacilityLocationProblem> scoreManager) {
+        this.repository = repository;
+        this.solverManager = solverManager;
+        this.scoreManager = scoreManager;
+    }
 
     private Status statusFromSolution(FacilityLocationProblem solution) {
         return new Status(
@@ -49,7 +54,7 @@ public class SolverResource {
         maybeSolution.ifPresent(facilityLocationProblem -> solverManager.solveAndListen(
                 PROBLEM_ID,
                 id -> facilityLocationProblem,
-                solution -> repository.update(solution)));
+                repository::update));
     }
 
     @POST
