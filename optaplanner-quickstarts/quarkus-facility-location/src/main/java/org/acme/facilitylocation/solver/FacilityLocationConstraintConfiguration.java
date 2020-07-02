@@ -30,7 +30,7 @@ public class FacilityLocationConstraintConfiguration {
     @ConstraintWeight(FACILITY_CAPACITY)
     HardSoftLongScore facilityCapacity = HardSoftLongScore.ofHard(1);
     @ConstraintWeight(FACILITY_SETUP_COST)
-    HardSoftLongScore facilitySetupCost = HardSoftLongScore.ofSoft(100);
+    HardSoftLongScore facilitySetupCost = HardSoftLongScore.ofSoft(200);
     @ConstraintWeight(DISTANCE_TO_FACILITY)
     HardSoftLongScore distanceToFacility = HardSoftLongScore.ofSoft(1);
 }
