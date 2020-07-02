@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.graph;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -29,7 +30,10 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
+import java.util.stream.Collectors;
 
+import org.drools.model.Global;
+import org.drools.model.impl.ModelImpl;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
@@ -46,6 +50,8 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.BiConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.QuadConstraintConsequence;
@@ -400,6 +406,18 @@ public final class ConstraintGraph {
 
     public Set<ConstraintConsequence> getConsequences() {
         return Collections.unmodifiableSet(consequenceSet);
+    }
+
+    public void generateRules(ModelImpl executableModel, Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            DroolsConstraint... constraints) {
+        List<ConstraintGraphNode> unusedNodeList = nodeSet.stream()
+                .filter(node -> node.getChildNodes().isEmpty())
+                .filter(node -> node.getConsequences().isEmpty())
+                .collect(Collectors.toList());
+        if (!unusedNodeList.isEmpty()) {
+            throw new IllegalStateException("Some nodes are not used in any constraints: " + unusedNodeList + ".\n" +
+                    "Ensure all constraint streams are terminated with either penalize() or reward() building block.");
+        }
     }
 
 }

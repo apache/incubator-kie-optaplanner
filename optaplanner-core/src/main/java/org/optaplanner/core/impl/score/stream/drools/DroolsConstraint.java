@@ -21,14 +21,10 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, DroolsConstraintFactory<Solution_>> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DroolsConstraint.class);
     private final ConstraintConsequence consequence;
 
     public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
@@ -44,17 +40,8 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
     // Getters/setters
     // ************************************************************************
 
-    /**
-     * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.
-     *
-     * @return never null, never empty
-     */
-    public Class[] getExpectedJustificationTypes() {
-        return null;
-    }
-
-    public int getExpectedJustificationCount() {
-        return consequence.getTerminalNode().getCardinality();
+    public ConstraintConsequence getConsequence() {
+        return consequence;
     }
 
     @Override

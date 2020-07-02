@@ -77,11 +77,10 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
         // Make sure the constraint justifications match what comes out of Bavet.
         AbstractScoreHolder scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
         scoreHolder.setJustificationListConverter(
-                (justificationList, rule) -> {
+                (justificationList, rule) -> { // FIXME add justification types from somewhere.
                     DroolsConstraint<Solution_> constraint = compiledRuleToConstraintMap.get(rule);
                     return matchJustificationsToOutput((List<Object>) justificationList,
-                            constraint.getExpectedJustificationCount(),
-                            constraint.getExpectedJustificationTypes());
+                            constraint.getConsequence().getTerminalNode().getCardinality());
                 });
         // Determine which rules to enable based on the fact that their constraints carry weight.
         Score<?> zeroScore = getScoreDefinition().getZeroScore();
