@@ -18,10 +18,12 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.TriConstraintGraphNode;
 
 public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
+    private final TriConstraintGraphNode<A, B, C> node;
     private final DroolsTriCondition<A, B, C, ?> condition;
     private final String streamName;
 
@@ -29,6 +31,9 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, boolean shouldExist, Class<D> otherClass,
             QuadJoiner<A, B, C, D>... joiners) {
         super(constraintFactory);
+        this.node = shouldExist
+                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
+                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
         this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
                 : parent.getCondition().andIfNotExists(otherClass, joiners);
@@ -37,6 +42,11 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
+
+    @Override
+    public TriConstraintGraphNode<A, B, C> getConstraintGraphNode() {
+        return node;
+    }
 
     @Override
     public DroolsTriCondition<A, B, C, ?> getCondition() {

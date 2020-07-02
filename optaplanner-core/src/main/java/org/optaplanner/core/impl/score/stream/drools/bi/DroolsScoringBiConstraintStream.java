@@ -27,10 +27,13 @@ import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.consequences.BiConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.BiConstraintGraphNode;
 
 public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
     protected final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
+    private BiConstraintConsequence<A, B> consequence;
     private final boolean noMatchWeigher;
     private final ToIntBiFunction<A, B> intMatchWeigher;
     private final ToLongBiFunction<A, B> longMatchWeigher;
@@ -39,31 +42,27 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent) {
         this(constraintFactory, parent, true, null, null, null);
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode());
     }
 
     public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, ToIntBiFunction<A, B> intMatchWeigher) {
         this(constraintFactory, parent, false, intMatchWeigher, null, null);
-        if (intMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), intMatchWeigher);
     }
 
     public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, ToLongBiFunction<A, B> longMatchWeigher) {
         this(constraintFactory, parent, false, null, longMatchWeigher, null);
-        if (longMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), longMatchWeigher);
     }
 
     public DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent,
             BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
-        if (bigDecimalMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence =
+                constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), bigDecimalMatchWeigher);
     }
 
     private DroolsScoringBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -97,6 +96,15 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
+    }
+
+    @Override
+    public BiConstraintGraphNode<A, B> getConstraintGraphNode() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own node.");
+    }
+
+    public BiConstraintConsequence<A, B> getConsequence() {
+        return consequence;
     }
 
     @Override

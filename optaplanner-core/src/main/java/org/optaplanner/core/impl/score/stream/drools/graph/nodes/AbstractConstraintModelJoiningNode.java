@@ -18,25 +18,26 @@ package org.optaplanner.core.impl.score.stream.drools.graph.nodes;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
-import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
-
-public abstract class AbstractConstraintModelJoiningNode<OtherFactType_, JoinerType_ extends AbstractJoiner>
-        extends AbstractConstraintModelChildNode implements Supplier<JoinerType_> {
+public abstract class AbstractConstraintModelJoiningNode<OtherFactType_, JoinerType_>
+        extends AbstractConstraintModelChildNode implements Supplier<List<JoinerType_>> {
 
     private final Class<OtherFactType_> otherFactType;
-    private final JoinerType_ joiner;
+    private final List<JoinerType_> joiner;
 
-    AbstractConstraintModelJoiningNode(Class<OtherFactType_> otherFactType, JoinerType_ joiner,
-            ConstraintGraphNodeType type) {
+    AbstractConstraintModelJoiningNode(Class<OtherFactType_> otherFactType, ConstraintGraphNodeType type,
+            JoinerType_... joiner) {
         super(type);
         if (type != ConstraintGraphNodeType.IF_EXISTS && type != ConstraintGraphNodeType.IF_NOT_EXISTS &&
                 type != ConstraintGraphNodeType.JOIN) {
             throw new IllegalStateException("Given node type (" + type + ") is not one of the join types.");
         }
         this.otherFactType = requireNonNull(otherFactType);
-        this.joiner = requireNonNull(joiner);
+        this.joiner = Collections.unmodifiableList(Arrays.asList(joiner));
     }
 
     public final Class<OtherFactType_> getOtherFactType() {
@@ -44,7 +45,7 @@ public abstract class AbstractConstraintModelJoiningNode<OtherFactType_, JoinerT
     }
 
     @Override
-    public final JoinerType_ get() {
+    public final List<JoinerType_> get() {
         return joiner;
     }
 }

@@ -27,18 +27,22 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.TriConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
-public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
+public final class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
         extends DroolsAbstractTriConstraintStream<Solution_, NewA, NewB, NewC> {
 
+    private final TriConstraintGraphNode<NewA, NewB, NewC> node;
     private final DroolsTriCondition<NewA, NewB, NewC, ?> condition;
 
     public <A, ResultContainer_> DroolsGroupingTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ResultContainer_, NewC> collector) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
+                groupKeyBMapping, collector);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
@@ -47,6 +51,8 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, NewC> collector) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
+                groupKeyBMapping, collector);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
@@ -56,6 +62,8 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
             TriFunction<A, B, C, NewB> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, NewC> collector) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
+                groupKeyBMapping, collector);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
@@ -65,7 +73,18 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
             QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, NewC> collector) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
+                groupKeyBMapping, collector);
         this.condition = parent.getCondition().andGroupBiWithCollect(groupKeyAMapping, groupKeyBMapping, collector);
+    }
+
+    // ************************************************************************
+    // Pattern creation
+    // ************************************************************************
+
+    @Override
+    public TriConstraintGraphNode<NewA, NewB, NewC> getConstraintGraphNode() {
+        return node;
     }
 
     @Override

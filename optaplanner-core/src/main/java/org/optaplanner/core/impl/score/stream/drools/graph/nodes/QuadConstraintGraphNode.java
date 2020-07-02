@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.nodes;
 
-public interface QuadConstraintModelNode<A, B, C, D>
+public interface QuadConstraintGraphNode<A, B, C, D>
         extends ConstraintGraphNode, ChildNode {
 
     @Override

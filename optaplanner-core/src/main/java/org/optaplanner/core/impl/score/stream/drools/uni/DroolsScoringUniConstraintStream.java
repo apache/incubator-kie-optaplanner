@@ -27,10 +27,13 @@ import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.consequences.UniConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
 
 public final class DroolsScoringUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
+    private UniConstraintConsequence<A> consequence;
     private final boolean noMatchWeigher;
     private final ToIntFunction<A> intMatchWeigher;
     private final ToLongFunction<A> longMatchWeigher;
@@ -39,30 +42,26 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
     public DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent) {
         this(constraintFactory, parent, true, null, null, null);
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode());
     }
 
     public DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, ToIntFunction<A> intMatchWeigher) {
         this(constraintFactory, parent, false, intMatchWeigher, null, null);
-        if (intMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), intMatchWeigher);
     }
 
     public DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, ToLongFunction<A> longMatchWeigher) {
         this(constraintFactory, parent, false, null, longMatchWeigher, null);
-        if (longMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), longMatchWeigher);
     }
 
     public DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
-        if (bigDecimalMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence =
+                constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), bigDecimalMatchWeigher);
     }
 
     private DroolsScoringUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -96,6 +95,15 @@ public final class DroolsScoringUniConstraintStream<Solution_, A> extends Drools
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
+    }
+
+    @Override
+    public UniConstraintGraphNode<A> getConstraintGraphNode() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own node.");
+    }
+
+    public UniConstraintConsequence<A> getConsequence() {
+        return consequence;
     }
 
     @Override

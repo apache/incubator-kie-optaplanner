@@ -18,17 +18,26 @@ package org.optaplanner.core.impl.score.stream.drools.bi;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.BiConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
 public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
+    private final BiConstraintGraphNode<A, B> node;
     private final DroolsBiCondition<A, B, ?> condition;
 
     public DroolsJoinBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent,
             DroolsAbstractUniConstraintStream<Solution_, B> otherStream, BiJoiner<A, B> biJoiner) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().join(parent.getConstraintGraphNode(),
+                otherStream.getConstraintGraphNode(), biJoiner);
         this.condition = parent.getCondition().andJoin(otherStream.getCondition(), (AbstractBiJoiner<A, B>) biJoiner);
+    }
+
+    @Override
+    public BiConstraintGraphNode<A, B> getConstraintGraphNode() {
+        return node;
     }
 
     @Override

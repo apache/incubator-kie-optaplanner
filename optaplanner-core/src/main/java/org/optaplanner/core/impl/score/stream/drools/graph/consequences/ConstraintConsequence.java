@@ -32,7 +32,7 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.BiConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.TriConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
 
@@ -83,17 +83,17 @@ public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
         return new TriConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintModelNode<A, B, C, D> terminalNode,
+    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode<A, B, C, D> terminalNode,
             ToIntQuadFunction<A, B, C, D> matchWeighter) {
         return new QuadConstraintIntConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintModelNode<A, B, C, D> terminalNode,
+    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode<A, B, C, D> terminalNode,
             ToLongQuadFunction<A, B, C, D> matchWeighter) {
         return new QuadConstraintLongConsequence<>(terminalNode, matchWeighter);
     }
 
-    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintModelNode<A, B, C, D> terminalNode,
+    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode<A, B, C, D> terminalNode,
             QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
         return new QuadConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }

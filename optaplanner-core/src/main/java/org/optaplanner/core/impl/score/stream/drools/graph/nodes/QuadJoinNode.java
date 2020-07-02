@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.nodes;
 
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 
-final class QuadJoinNode<A, B, C, D> extends AbstractConstraintModelJoiningNode<D, AbstractQuadJoiner<A, B, C, D>>
-        implements QuadConstraintModelNode<A, B, C, D> {
+final class QuadJoinNode<A, B, C, D> extends AbstractConstraintModelJoiningNode<D, QuadJoiner<A, B, C, D>>
+        implements QuadConstraintGraphNode<A, B, C, D> {
 
-    QuadJoinNode(Class<D> otherFactType, AbstractQuadJoiner<A, B, C, D> joiner) {
-        super(otherFactType, joiner, ConstraintGraphNodeType.JOIN);
+    QuadJoinNode(Class<D> otherFactType, QuadJoiner<A, B, C, D> joiner) {
+        super(otherFactType, ConstraintGraphNodeType.JOIN, joiner);
     }
 
 }

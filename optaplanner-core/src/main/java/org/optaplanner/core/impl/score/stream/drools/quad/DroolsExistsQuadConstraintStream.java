@@ -18,17 +18,22 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
 
 public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
     private final DroolsQuadCondition<A, B, C, D, ?> condition;
+    private final QuadConstraintGraphNode<A, B, C, D> node;
     private final String streamName;
 
     public <E> DroolsExistsQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, boolean shouldExist, Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
         super(constraintFactory);
+        this.node = shouldExist
+                ? constraintFactory.getConstraintGraph().ifExists(parent.getConstraintGraphNode(), otherClass, joiners)
+                : constraintFactory.getConstraintGraph().ifNotExists(parent.getConstraintGraphNode(), otherClass, joiners);
         this.streamName = shouldExist ? "QuadIfExists()" : "QuadIfNotExists()";
         this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
                 : parent.getCondition().andIfNotExists(otherClass, joiners);
@@ -37,6 +42,11 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
+
+    @Override
+    public QuadConstraintGraphNode<A, B, C, D> getConstraintGraphNode() {
+        return node;
+    }
 
     @Override
     public DroolsQuadCondition<A, B, C, D, ?> getCondition() {

@@ -27,12 +27,14 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsAbstractBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsAbstractTriConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsAbstractUniConstraintStream;
 
 public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD>
         extends DroolsAbstractQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD> {
 
+    private final QuadConstraintGraphNode<NewA, NewB, NewC, NewD> node;
     private final DroolsQuadCondition<NewA, NewB, NewC, NewD, ?> condition;
 
     public <A, ResultContainerC, ResultContainerD> DroolsGroupingQuadConstraintStream(
@@ -41,6 +43,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC, NewC> collectorC,
             UniConstraintCollector<A, ResultContainerD, NewD> collectorD) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
+                groupKeyBMapping, collectorC, collectorD);
         this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD);
     }
@@ -51,6 +55,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainerC, NewC> collectorC,
             BiConstraintCollector<A, B, ResultContainerD, NewD> collectorD) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
+                groupKeyBMapping, collectorC, collectorD);
         this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD);
     }
@@ -62,6 +68,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriConstraintCollector<A, B, C, ResultContainerC, NewC> collectorC,
             TriConstraintCollector<A, B, C, ResultContainerD, NewD> collectorD) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
+                groupKeyBMapping, collectorC, collectorD);
         this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD);
     }
@@ -74,6 +82,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadConstraintCollector<A, B, C, D, ResultContainerC, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ResultContainerD, NewD> collectorD) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().groupBy(parent.getConstraintGraphNode(), groupKeyAMapping,
+                groupKeyBMapping, collectorC, collectorD);
         this.condition = parent.getCondition().andGroupBiWithCollectBi(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD);
     }
@@ -81,6 +91,11 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
+
+    @Override
+    public QuadConstraintGraphNode<NewA, NewB, NewC, NewD> getConstraintGraphNode() {
+        return node;
+    }
 
     @Override
     public DroolsQuadCondition<NewA, NewB, NewC, NewD, ?> getCondition() {

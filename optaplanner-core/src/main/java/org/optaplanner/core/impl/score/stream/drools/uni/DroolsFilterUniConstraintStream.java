@@ -19,20 +19,29 @@ package org.optaplanner.core.impl.score.stream.drools.uni;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphChildNode;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
 
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
+    private final UniConstraintGraphChildNode<A> node;
     private final DroolsUniCondition<A, ?> condition;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory);
+        this.node = constraintFactory.getConstraintGraph().filter(parent.getConstraintGraphNode(), predicate);
         this.condition = parent.getCondition().andFilter(predicate);
     }
 
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
+
+    @Override
+    public UniConstraintGraphNode<A> getConstraintGraphNode() {
+        return node;
+    }
 
     @Override
     public DroolsUniCondition<A, ?> getCondition() {

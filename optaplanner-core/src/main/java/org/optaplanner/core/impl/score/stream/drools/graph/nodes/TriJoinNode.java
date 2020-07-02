@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.nodes;
 
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
-final class TriJoinNode<A, B, C> extends AbstractConstraintModelJoiningNode<C, AbstractTriJoiner<A, B, C>>
+final class TriJoinNode<A, B, C> extends AbstractConstraintModelJoiningNode<C, TriJoiner<A, B, C>>
         implements TriConstraintGraphNode<A, B, C> {
 
-    TriJoinNode(Class<C> otherFactType, AbstractTriJoiner<A, B, C> joiner) {
-        super(otherFactType, joiner, ConstraintGraphNodeType.JOIN);
+    TriJoinNode(Class<C> otherFactType, TriJoiner<A, B, C> joiner) {
+        super(otherFactType, ConstraintGraphNodeType.JOIN, joiner);
     }
 
 }

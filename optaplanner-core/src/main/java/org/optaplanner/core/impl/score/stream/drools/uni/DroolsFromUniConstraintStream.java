@@ -16,25 +16,30 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import static java.util.Objects.requireNonNull;
+
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGraphNode;
 
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
-    private final Class<A> fromClass;
+    private final UniConstraintGraphNode<A> node;
     private final DroolsUniCondition<A, ?> condition;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass) {
         super(constraintFactory);
-        if (fromClass == null) {
-            throw new IllegalArgumentException("The fromClass (null) cannot be null.");
-        }
-        this.fromClass = fromClass;
+        this.node = constraintFactory.getConstraintGraph().from(requireNonNull(fromClass));
         this.condition = new DroolsUniCondition<>(fromClass, constraintFactory.getVariableIdSupplier());
     }
 
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
+
+    @Override
+    public UniConstraintGraphNode<A> getConstraintGraphNode() {
+        return node;
+    }
 
     @Override
     public DroolsUniCondition<A, ?> getCondition() {
@@ -45,13 +50,9 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     // Getters/setters
     // ************************************************************************
 
-    public Class<A> getFromClass() {
-        return fromClass;
-    }
-
     @Override
     public String toString() {
-        return "From(" + fromClass.getSimpleName() + ") with " + getChildStreams().size() + " children";
+        return "From(" + node.getFactType().getSimpleName() + ") with " + getChildStreams().size() + " children";
     }
 
 }

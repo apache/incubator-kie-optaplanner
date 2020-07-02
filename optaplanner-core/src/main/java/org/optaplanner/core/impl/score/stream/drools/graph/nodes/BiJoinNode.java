@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.nodes;
 
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 
-final class BiJoinNode<A, B> extends AbstractConstraintModelJoiningNode<B, AbstractBiJoiner<A, B>>
+final class BiJoinNode<A, B> extends AbstractConstraintModelJoiningNode<B, BiJoiner<A, B>>
         implements BiConstraintGraphNode<A, B> {
 
-    BiJoinNode(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner) {
-        super(otherFactType, joiner, ConstraintGraphNodeType.JOIN);
+    BiJoinNode(Class<B> otherFactType, BiJoiner<A, B> joiner) {
+        super(otherFactType, ConstraintGraphNodeType.JOIN, joiner);
     }
 
 }

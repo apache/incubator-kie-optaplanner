@@ -27,11 +27,14 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.consequences.TriConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.TriConstraintGraphNode;
 
 public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
     private final DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent;
+    private TriConstraintConsequence<A, B, C> consequence;
     private final boolean noMatchWeigher;
     private final ToIntTriFunction<A, B, C> intMatchWeigher;
     private final ToLongTriFunction<A, B, C> longMatchWeigher;
@@ -40,31 +43,27 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     public DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent) {
         this(constraintFactory, parent, true, null, null, null);
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode());
     }
 
     public DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, ToIntTriFunction<A, B, C> intMatchWeigher) {
         this(constraintFactory, parent, false, intMatchWeigher, null, null);
-        if (intMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), intMatchWeigher);
     }
 
     public DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, ToLongTriFunction<A, B, C> longMatchWeigher) {
         this(constraintFactory, parent, false, null, longMatchWeigher, null);
-        if (longMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), longMatchWeigher);
     }
 
     public DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent,
             TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
-        if (bigDecimalMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence =
+                constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), bigDecimalMatchWeigher);
     }
 
     private DroolsScoringTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -98,6 +97,15 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
+    }
+
+    @Override
+    public TriConstraintGraphNode<A, B, C> getConstraintGraphNode() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own node.");
+    }
+
+    public TriConstraintConsequence<A, B, C> getConsequence() {
+        return consequence;
     }
 
     @Override

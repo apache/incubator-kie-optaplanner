@@ -27,11 +27,14 @@ import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
+import org.optaplanner.core.impl.score.stream.drools.graph.consequences.QuadConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
 
 public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
     private final DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
+    private QuadConstraintConsequence<A, B, C, D> consequence;
     private final boolean noMatchWeigher;
     private final ToIntQuadFunction<A, B, C, D> intMatchWeigher;
     private final ToLongQuadFunction<A, B, C, D> longMatchWeigher;
@@ -40,33 +43,29 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     public DroolsScoringQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent) {
         this(constraintFactory, parent, true, null, null, null);
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode());
     }
 
     public DroolsScoringQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             ToIntQuadFunction<A, B, C, D> intMatchWeigher) {
         this(constraintFactory, parent, false, intMatchWeigher, null, null);
-        if (intMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), intMatchWeigher);
     }
 
     public DroolsScoringQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             ToLongQuadFunction<A, B, C, D> longMatchWeigher) {
         this(constraintFactory, parent, false, null, longMatchWeigher, null);
-        if (longMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence = constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), longMatchWeigher);
     }
 
     public DroolsScoringQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             QuadFunction<A, B, C, D, BigDecimal> bigDecimalMatchWeigher) {
         this(constraintFactory, parent, false, null, null, bigDecimalMatchWeigher);
-        if (bigDecimalMatchWeigher == null) {
-            throw new IllegalArgumentException("The matchWeigher (null) cannot be null.");
-        }
+        this.consequence =
+                constraintFactory.getConstraintGraph().impact(parent.getConstraintGraphNode(), bigDecimalMatchWeigher);
     }
 
     private DroolsScoringQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -100,6 +99,15 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
         } else {
             throw new IllegalStateException("Impossible state: noMatchWeigher (" + noMatchWeigher + ").");
         }
+    }
+
+    @Override
+    public QuadConstraintGraphNode<A, B, C, D> getConstraintGraphNode() {
+        throw new UnsupportedOperationException("Scoring stream does not have its own node.");
+    }
+
+    public QuadConstraintConsequence<A, B, C, D> getConsequence() {
+        return consequence;
     }
 
     @Override

@@ -19,13 +19,13 @@ package org.optaplanner.core.impl.score.stream.drools.graph.nodes;
 import static org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNodeType.IF_EXISTS;
 import static org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNodeType.IF_NOT_EXISTS;
 
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 
-final class TriExistenceNode<A, B, C, D> extends AbstractConstraintModelJoiningNode<D, AbstractQuadJoiner<A, B, C, D>>
+final class TriExistenceNode<A, B, C, D> extends AbstractConstraintModelJoiningNode<D, QuadJoiner<A, B, C, D>>
         implements TriConstraintGraphNode<A, B, C> {
 
-    TriExistenceNode(Class<D> otherFactType, AbstractQuadJoiner<A, B, C, D> joiner, boolean expectExistence) {
-        super(otherFactType, joiner, expectExistence ? IF_EXISTS : IF_NOT_EXISTS);
+    TriExistenceNode(boolean expectExistence, Class<D> otherFactType, QuadJoiner<A, B, C, D>... joiners) {
+        super(otherFactType, expectExistence ? IF_EXISTS : IF_NOT_EXISTS, joiners);
     }
 
 }

@@ -21,22 +21,22 @@ import static java.util.Objects.requireNonNull;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.ToIntQuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
 
 final class QuadConstraintIntConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
         Supplier<ToIntQuadFunction<A, B, C, D>> {
 
-    private final QuadConstraintModelNode<A, B, C, D> terminalNode;
+    private final QuadConstraintGraphNode<A, B, C, D> terminalNode;
     private final ToIntQuadFunction<A, B, C, D> matchWeighter;
 
-    QuadConstraintIntConsequence(QuadConstraintModelNode<A, B, C, D> terminalNode,
+    QuadConstraintIntConsequence(QuadConstraintGraphNode<A, B, C, D> terminalNode,
             ToIntQuadFunction<A, B, C, D> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public QuadConstraintModelNode<A, B, C, D> getTerminalNode() {
+    public QuadConstraintGraphNode<A, B, C, D> getTerminalNode() {
         return terminalNode;
     }
 

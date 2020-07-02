@@ -34,6 +34,7 @@ import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.TriConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsAbstractQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsJoinQuadConstraintStream;
@@ -245,6 +246,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
+
+    public abstract TriConstraintGraphNode<A, B, C> getConstraintGraphNode();
 
     public abstract DroolsTriCondition<A, B, C, ?> getCondition();
 

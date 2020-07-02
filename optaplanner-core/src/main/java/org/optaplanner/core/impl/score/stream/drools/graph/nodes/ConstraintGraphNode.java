@@ -27,14 +27,14 @@ import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
-import org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 public interface ConstraintGraphNode {
 
@@ -50,58 +50,57 @@ public interface ConstraintGraphNode {
         return new TriFilterNode<>(predicate);
     }
 
-    static <A, B, C, D> QuadConstraintModelNode<A, B, C, D> filter(QuadPredicate<A, B, C, D> predicate) {
+    static <A, B, C, D> QuadConstraintGraphNode<A, B, C, D> filter(QuadPredicate<A, B, C, D> predicate) {
         return new QuadFilterNode<>(predicate);
     }
 
-    static <A, B> BiConstraintGraphNode<A, B> join(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner) {
+    static <A, B> BiConstraintGraphNode<A, B> join(Class<B> otherFactType, BiJoiner<A, B> joiner) {
         return new BiJoinNode<>(otherFactType, joiner);
     }
 
-    static <A, B, C> TriConstraintGraphNode<A, B, C> join(Class<C> otherFactType, AbstractTriJoiner<A, B, C> joiner) {
+    static <A, B, C> TriConstraintGraphNode<A, B, C> join(Class<C> otherFactType, TriJoiner<A, B, C> joiner) {
         return new TriJoinNode<>(otherFactType, joiner);
     }
 
-    static <A, B, C, D> QuadConstraintModelNode<A, B, C, D> join(Class<D> otherFactType,
-            AbstractQuadJoiner<A, B, C, D> joiner) {
+    static <A, B, C, D> QuadConstraintGraphNode<A, B, C, D> join(Class<D> otherFactType,
+            QuadJoiner<A, B, C, D> joiner) {
         return new QuadJoinNode<>(otherFactType, joiner);
     }
 
-    static <A, B> UniConstraintGraphChildNode<A> ifExists(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner) {
-        return new UniExistenceNode<>(otherFactType, joiner, true);
+    static <A, B> UniConstraintGraphChildNode<A> ifExists(Class<B> otherFactType, BiJoiner<A, B>... joiners) {
+        return new UniExistenceNode<>(true, otherFactType);
     }
 
-    static <A, B, C> BiConstraintGraphNode<A, B> ifExists(Class<C> otherFactType, AbstractTriJoiner<A, B, C> joiner) {
-        return new BiExistenceNode<>(otherFactType, joiner, true);
+    static <A, B, C> BiConstraintGraphNode<A, B> ifExists(Class<C> otherFactType, TriJoiner<A, B, C>... joiners) {
+        return new BiExistenceNode<>(true, otherFactType, joiners);
     }
 
     static <A, B, C, D> TriConstraintGraphNode<A, B, C> ifExists(Class<D> otherFactType,
-            AbstractQuadJoiner<A, B, C, D> joiner) {
-        return new TriExistenceNode<>(otherFactType, joiner, true);
+            QuadJoiner<A, B, C, D>... joiners) {
+        return new TriExistenceNode<>(true, otherFactType, joiners);
     }
 
-    static <A, B, C, D, E> QuadConstraintModelNode<A, B, C, D> ifExists(Class<E> otherFactType,
-            AbstractPentaJoiner<A, B, C, D, E> joiner) {
-        return new QuadExistenceNode<>(otherFactType, joiner, true);
+    static <A, B, C, D, E> QuadConstraintGraphNode<A, B, C, D> ifExists(Class<E> otherFactType,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return new QuadExistenceNode<>(true, otherFactType, joiners);
     }
 
-    static <A, B> UniConstraintGraphChildNode<A> ifNotExists(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner) {
-        return new UniExistenceNode<>(otherFactType, joiner, false);
+    static <A, B> UniConstraintGraphChildNode<A> ifNotExists(Class<B> otherFactType, BiJoiner<A, B>... joiners) {
+        return new UniExistenceNode<>(false, otherFactType);
     }
 
-    static <A, B, C> BiConstraintGraphNode<A, B> ifNotExists(Class<C> otherFactType,
-            AbstractTriJoiner<A, B, C> joiner) {
-        return new BiExistenceNode<>(otherFactType, joiner, false);
+    static <A, B, C> BiConstraintGraphNode<A, B> ifNotExists(Class<C> otherFactType, TriJoiner<A, B, C>... joiners) {
+        return new BiExistenceNode<>(false, otherFactType, joiners);
     }
 
     static <A, B, C, D> TriConstraintGraphNode<A, B, C> ifNotExists(Class<D> otherFactType,
-            AbstractQuadJoiner<A, B, C, D> joiner) {
-        return new TriExistenceNode<>(otherFactType, joiner, false);
+            QuadJoiner<A, B, C, D>... joiners) {
+        return new TriExistenceNode<>(false, otherFactType, joiners);
     }
 
-    static <A, B, C, D, E> QuadConstraintModelNode<A, B, C, D> ifNotExists(Class<E> otherFactType,
-            AbstractPentaJoiner<A, B, C, D, E> joiner) {
-        return new QuadExistenceNode<>(otherFactType, joiner, false);
+    static <A, B, C, D, E> QuadConstraintGraphNode<A, B, C, D> ifNotExists(Class<E> otherFactType,
+            PentaJoiner<A, B, C, D, E>... joiners) {
+        return new QuadExistenceNode<>(false, otherFactType, joiners);
     }
 
     static <A, GroupKey_> UniConstraintGraphChildNode<GroupKey_> groupBy(Function<A, GroupKey_> mapping) {
@@ -130,7 +129,7 @@ public interface ConstraintGraphNode {
     }
 
     static <A, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintModelNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(Function<A, GroupKeyA_> aMapping,
+            QuadConstraintGraphNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(Function<A, GroupKeyA_> aMapping,
                     Function<A, GroupKeyB_> bMapping, UniConstraintCollector<A, ResultContainerC_, ResultC_> cCollector,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> dCollector) {
         return new UniToQuadGroupingNode<>(aMapping, bMapping, cCollector, dCollector);
@@ -162,7 +161,7 @@ public interface ConstraintGraphNode {
     }
 
     static <A, B, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintModelNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(BiFunction<A, B, GroupKeyA_> aMapping,
+            QuadConstraintGraphNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(BiFunction<A, B, GroupKeyA_> aMapping,
                     BiFunction<A, B, GroupKeyB_> bMapping, BiConstraintCollector<A, B, ResultContainerC_, ResultC_> cCollector,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> dCollector) {
         return new BiToQuadGroupingNode<>(aMapping, bMapping, cCollector, dCollector);
@@ -197,7 +196,7 @@ public interface ConstraintGraphNode {
     }
 
     static <A, B, C, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintModelNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            QuadConstraintGraphNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
                     TriFunction<A, B, C, GroupKeyA_> aMapping, TriFunction<A, B, C, GroupKeyB_> bMapping,
                     TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> cCollector,
                     TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> dCollector) {
@@ -233,7 +232,7 @@ public interface ConstraintGraphNode {
     }
 
     static <A, B, C, D, GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-            QuadConstraintModelNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            QuadConstraintGraphNode<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
                     QuadFunction<A, B, C, D, GroupKeyA_> aMapping, QuadFunction<A, B, C, D, GroupKeyB_> bMapping,
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> cCollector,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> dCollector) {

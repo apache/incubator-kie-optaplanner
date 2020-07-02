@@ -19,13 +19,13 @@ package org.optaplanner.core.impl.score.stream.drools.graph.nodes;
 import static org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNodeType.IF_EXISTS;
 import static org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNodeType.IF_NOT_EXISTS;
 
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 
-final class UniExistenceNode<A, B> extends AbstractConstraintModelJoiningNode<B, AbstractBiJoiner<A, B>>
+final class UniExistenceNode<A, B> extends AbstractConstraintModelJoiningNode<B, BiJoiner<A, B>>
         implements UniConstraintGraphChildNode<A> {
 
-    UniExistenceNode(Class<B> otherFactType, AbstractBiJoiner<A, B> joiner, boolean expectExistence) {
-        super(otherFactType, joiner, expectExistence ? IF_EXISTS : IF_NOT_EXISTS);
+    UniExistenceNode(boolean expectExistence, Class<B> otherFactType, BiJoiner<A, B>... joiners) {
+        super(otherFactType, expectExistence ? IF_EXISTS : IF_NOT_EXISTS, joiners);
     }
 
 }

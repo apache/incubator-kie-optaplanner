@@ -22,22 +22,22 @@ import java.math.BigDecimal;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintModelNode;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.QuadConstraintGraphNode;
 
 final class QuadConstraintBigDecimalConsequence<A, B, C, D> implements QuadConstraintConsequence<A, B, C, D>,
         Supplier<QuadFunction<A, B, C, D, BigDecimal>> {
 
-    private final QuadConstraintModelNode<A, B, C, D> terminalNode;
+    private final QuadConstraintGraphNode<A, B, C, D> terminalNode;
     private final QuadFunction<A, B, C, D, BigDecimal> matchWeighter;
 
-    QuadConstraintBigDecimalConsequence(QuadConstraintModelNode<A, B, C, D> terminalNode,
+    QuadConstraintBigDecimalConsequence(QuadConstraintGraphNode<A, B, C, D> terminalNode,
             QuadFunction<A, B, C, D, BigDecimal> matchWeighter) {
         this.terminalNode = requireNonNull(terminalNode);
         this.matchWeighter = requireNonNull(matchWeighter);
     }
 
     @Override
-    public QuadConstraintModelNode<A, B, C, D> getTerminalNode() {
+    public QuadConstraintGraphNode<A, B, C, D> getTerminalNode() {
         return terminalNode;
     }
 

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.drools.model.Global;
@@ -38,7 +39,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     private final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory) {
-        this.constraintFactory = constraintFactory;
+        this.constraintFactory = Objects.requireNonNull(constraintFactory);
     }
 
     // ************************************************************************
