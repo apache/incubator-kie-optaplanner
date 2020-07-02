@@ -130,7 +130,7 @@ const facilityPopupContent = (facility) => `<h5>Facility ${facility.id}</h5>
 <li>Setup cost: ${facility.setupCost}</li>
 </ul>`;
 
-const showProblem = ({ solution, isSolving }) => {
+const showProblem = ({ solution, scoreExplanation, isSolving }) => {
   markerGroup.clearLayers();
   map.fitBounds(solution.bounds);
   facilitiesTable.children().remove();
@@ -159,6 +159,7 @@ const showProblem = ({ solution, isSolving }) => {
   $('#cost').text(solution.totalCost);
   $('#cost-percentage').text(Math.round(solution.totalCost * 1000 / solution.potentialCost) / 10);
   $('#distance').text(solution.totalDistance);
+  $('#scoreInfo').text(scoreExplanation);
   updateSolvingStatus(isSolving);
 };
 

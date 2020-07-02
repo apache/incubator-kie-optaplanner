@@ -97,6 +97,6 @@ public class DemandPoint {
 
     @Override
     public String toString() {
-        return "Demand " + id + ": " + demand;
+        return "Demand " + id + " (" + demand + " dem)";
     }
 }

@@ -37,7 +37,12 @@
           </button>
         </div>
         <div class="col">
-          <h5>Solution summary</h5>
+          <h5>
+            Solution summary
+            <a href="#" class="float-right" data-toggle="modal" data-target="#scoreDialog">
+              <i class="fa fa-info-circle"></i>
+            </a>
+          </h5>
           <table class="table">
             <tr>
               <td>Score:</td>
@@ -66,6 +71,23 @@
             <tbody id="facilities"></tbody>
           </table>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="scoreDialog" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Score explanation</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre id="scoreInfo">
+        </pre>
       </div>
     </div>
   </div>

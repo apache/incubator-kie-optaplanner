@@ -89,7 +89,7 @@ public class Facility {
     @Override
     public String toString() {
         return "Facility " + id +
-                " capacity: " + capacity +
-                " cost: $" + setupCost;
+                " ($" + setupCost
+                + ", " + capacity + " cap)";
     }
 }

@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.acme.facilitylocation.domain.FacilityLocationProblem;
 import org.acme.facilitylocation.persistence.FacilityLocationProblemRepository;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.SolverManager;
 
 @Path("/flp")
@@ -25,13 +26,17 @@ public class SolverResource {
     FacilityLocationProblemRepository repository;
     @Inject
     SolverManager<FacilityLocationProblem, Long> solverManager;
+    @Inject
+    ScoreManager<FacilityLocationProblem> scoreManager;
+
+    private Status status(FacilityLocationProblem solution) {
+        return new Status(solution, scoreManager.explainScore(solution), solverManager.getSolverStatus(PROBLEM_ID));
+    }
 
     @GET
     @Path("status")
     public Status status() {
-        return new Status(
-                repository.solution().orElse(FacilityLocationProblem.empty()),
-                solverManager.getSolverStatus(PROBLEM_ID));
+        return status(repository.solution().orElse(FacilityLocationProblem.empty()));
     }
 
     @POST
