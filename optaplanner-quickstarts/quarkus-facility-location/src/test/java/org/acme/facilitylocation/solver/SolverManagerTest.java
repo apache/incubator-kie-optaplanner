@@ -35,10 +35,10 @@ import org.optaplanner.core.api.solver.SolverManager;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-public class SolverTest {
+public class SolverManagerTest {
 
     @Inject
-    SolverManager<FacilityLocationProblem, Long> solver;
+    SolverManager<FacilityLocationProblem, Long> solverManager;
 
     @Test
     void solve() throws ExecutionException, InterruptedException {
@@ -51,7 +51,7 @@ public class SolverTest {
                 .setSouthWestCorner(new Location(-10, -10))
                 .setNorthEastCorner(new Location(10, 10))
                 .build();
-        solver.solve(0L, id -> problem, SolverTest::printSolution).getFinalBestSolution();
+        solverManager.solve(0L, id -> problem, SolverManagerTest::printSolution).getFinalBestSolution();
     }
 
     static void printSolution(FacilityLocationProblem solution) {
