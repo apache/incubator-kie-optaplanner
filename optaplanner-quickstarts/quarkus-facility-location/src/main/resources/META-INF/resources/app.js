@@ -1,5 +1,7 @@
 const colors = [
+  'aqua',
   'aquamarine',
+  'blue',
   'blueviolet',
   'chocolate',
   'cornflowerblue',
@@ -7,7 +9,11 @@ const colors = [
   'forestgreen',
   'gold',
   'lawngreen',
+  'limegreen',
+  'maroon',
+  'mediumvioletred',
   'orange',
+  'slateblue',
   'tomato',
 ];
 let autoRefreshCount = 0;
