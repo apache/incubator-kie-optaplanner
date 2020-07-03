@@ -26,8 +26,8 @@ public class RepositoryPopulator {
                 .setConsumerCount(60)
                 .setSouthWestCorner(new Location(51.44, -0.16))
                 .setNorthEastCorner(new Location(51.56, -0.01))
-                .setAverageSetupCost(100)
-                .setSetupCostStandardDeviation(10)
+                .setAverageSetupCost(50_000)
+                .setSetupCostStandardDeviation(10_000)
                 .build();
         repository.update(problem);
     }

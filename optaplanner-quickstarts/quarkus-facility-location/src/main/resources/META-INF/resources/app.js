@@ -126,10 +126,18 @@ const autoRefresh = () => {
   }
 };
 
+const formatCost = (cost, notation) => new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 1,
+  minimumFractionDigits: 1,
+  notation,
+}).format(cost);
+
 const facilityPopupContent = (facility) => `<h5>Facility ${facility.id}</h5>
 <ul class="list-unstyled">
 <li>Usage: ${facility.usedCapacity}/${facility.capacity}</li>
-<li>Setup cost: ${facility.setupCost}</li>
+<li>Setup cost: ${formatCost(facility.setupCost, 'standard')}</li>
 </ul>`;
 
 const showProblem = ({ solution, scoreExplanation, isSolving }) => {
@@ -147,7 +155,7 @@ const showProblem = ({ solution, scoreExplanation, isSolving }) => {
 <td><div class="progress">
 <div class="progress-bar" role="progressbar" style="width: ${percentage}%">${usedCapacity}/${capacity}</div>
 </div></td>
-<td>$${setupCost}</td>
+<td class="text-right">${formatCost(setupCost, 'compact')}</td>
 </tr>`);
   });
   solution.consumers.forEach((consumer) => {
