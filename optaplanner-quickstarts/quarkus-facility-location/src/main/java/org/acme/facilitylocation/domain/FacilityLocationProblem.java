@@ -21,7 +21,6 @@ import static java.util.Collections.emptyList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.acme.facilitylocation.solver.FacilityLocationConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationProvider;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;

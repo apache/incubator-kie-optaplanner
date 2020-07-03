@@ -19,7 +19,6 @@ package org.acme.facilitylocation.domain;
 import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
 
-import org.acme.facilitylocation.solver.FacilityLocationConstraintProvider;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.acme.facilitylocation.solver;
+package org.acme.facilitylocation.domain;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
 
-import org.acme.facilitylocation.domain.Consumer;
-import org.acme.facilitylocation.domain.Facility;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -36,7 +34,7 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
         };
     }
 
-    public Constraint facilityCapacity(ConstraintFactory constraintFactory) {
+    Constraint facilityCapacity(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Consumer.class)
                 .groupBy(Consumer::getFacility, sumLong(Consumer::getDemand))
                 .filter((facility, demand) -> demand > facility.getCapacity())
@@ -46,7 +44,7 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
                         (facility, demand) -> demand - facility.getCapacity());
     }
 
-    public Constraint setupCost(ConstraintFactory constraintFactory) {
+    Constraint setupCost(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Consumer.class)
                 .groupBy(Consumer::getFacility)
                 .penalizeConfigurableLong(
@@ -54,7 +52,7 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
                         Facility::getSetupCost);
     }
 
-    public Constraint distanceFromFacility(ConstraintFactory constraintFactory) {
+    Constraint distanceFromFacility(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Consumer.class)
                 .filter(Consumer::isAssigned)
                 .penalizeLong(

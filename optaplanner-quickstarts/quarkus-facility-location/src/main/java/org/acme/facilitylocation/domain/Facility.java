@@ -19,7 +19,6 @@ package org.acme.facilitylocation.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.acme.facilitylocation.solver.FacilityLocationConstraintProvider;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
