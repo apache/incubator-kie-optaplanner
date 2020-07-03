@@ -1,6 +1,7 @@
 package org.acme.facilitylocation.rest;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -20,6 +21,8 @@ import org.optaplanner.core.api.solver.SolverManager;
 public class SolverResource {
 
     private static final long PROBLEM_ID = 0L;
+
+    private final AtomicReference<Throwable> solverError = new AtomicReference<>();
 
     private final FacilityLocationProblemRepository repository;
     private final SolverManager<FacilityLocationProblem, Long> solverManager;
@@ -44,6 +47,9 @@ public class SolverResource {
     @GET
     @Path("status")
     public Status status() {
+        Optional.ofNullable(solverError.getAndSet(null)).ifPresent(throwable -> {
+            throw new RuntimeException("Solver failed", throwable);
+        });
         return statusFromSolution(repository.solution().orElse(FacilityLocationProblem.empty()));
     }
 
@@ -54,7 +60,8 @@ public class SolverResource {
         maybeSolution.ifPresent(facilityLocationProblem -> solverManager.solveAndListen(
                 PROBLEM_ID,
                 id -> facilityLocationProblem,
-                repository::update));
+                repository::update,
+                (problemId, throwable) -> solverError.set(throwable)));
     }
 
     @POST
