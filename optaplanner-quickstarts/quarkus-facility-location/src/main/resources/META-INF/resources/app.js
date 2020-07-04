@@ -94,7 +94,7 @@ const handleClientError = (title, error) => {
 };
 
 const showError = (message, stackTrace) => {
-  const notification = $(`<div class="toast" role="alert" style="min-width: 30rem"/>`)
+  const notification = $(`<div class="toast shadow rounded-lg" role="alert" style="min-width: 30rem"/>`)
     .append($(`<div class="toast-header bg-danger">
 <strong class="mr-auto text-dark">Error</strong>
 <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
