@@ -55,9 +55,8 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
     Constraint distanceFromFacility(ConstraintFactory constraintFactory) {
         return constraintFactory.from(Consumer.class)
                 .filter(Consumer::isAssigned)
-                .penalizeLong(
+                .penalizeConfigurableLong(
                         FacilityLocationConstraintConfiguration.DISTANCE_FROM_FACILITY,
-                        HardSoftLongScore.ONE_SOFT,
                         Consumer::distanceFromFacility);
     }
 }
