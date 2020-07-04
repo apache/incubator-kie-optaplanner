@@ -24,7 +24,7 @@ const stopSolvingButton = $('#stopSolvingButton');
 const facilitiesTable = $('#facilities');
 
 const colorById = (i) => colors[i % colors.length];
-const colorByConsumer = (consumer) => consumer.facility === null ? {} : { color: colorById(consumer.facility.id) };
+const colorByFacility = (facility) => facility === null ? {} : { color: colorById(facility.id) };
 
 const fetchHeaders = {
   headers: {
@@ -153,11 +153,13 @@ const showProblem = ({ solution, scoreExplanation, isSolving }) => {
   solution.facilities.forEach((facility) => {
     const { id, location, setupCost, capacity, usedCapacity, used } = facility;
     const percentage = usedCapacity / capacity * 100;
+    const color = facility.used ? colorByFacility(facility) : { color: 'white' };
     L.marker(location)
       .addTo(markerGroup)
       .bindPopup(facilityPopupContent(facility));
     facilitiesTable.append(`<tr class="${used ? 'table-active' : 'text-muted'}">
-<td>Facility ${id}</td>
+<td><span style="background-color: ${color.color}; display: inline-block; width: 1rem; height: 1rem;"> </span>
+Facility ${id}</td>
 <td><div class="progress">
 <div class="progress-bar" role="progressbar" style="width: ${percentage}%">${usedCapacity}/${capacity}</div>
 </div></td>
@@ -165,7 +167,7 @@ const showProblem = ({ solution, scoreExplanation, isSolving }) => {
 </tr>`);
   });
   solution.consumers.forEach((consumer) => {
-    const color = colorByConsumer(consumer);
+    const color = colorByFacility(consumer.facility);
     L.circleMarker(consumer.location, color).addTo(markerGroup);
     if (consumer.facility !== null) {
       L.polyline([consumer.location, consumer.facility.location], color).addTo(markerGroup);
