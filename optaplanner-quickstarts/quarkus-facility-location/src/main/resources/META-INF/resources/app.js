@@ -100,7 +100,11 @@ const handleErrorResponse = (title, response) => {
 };
 
 const handleClientError = (title, error) => {
-  showError(`${title}.`, error.stack);
+  showError(`${title}.`,
+    // Stack looks differently in Chrome and Firefox.
+    error.stack.startsWith(error.name)
+      ? error.stack
+      : `${error.name}: ${error.message}\n    ${error.stack.replace(/\n/g, '\n    ')}`);
 };
 
 const showError = (message, stackTrace) => {
