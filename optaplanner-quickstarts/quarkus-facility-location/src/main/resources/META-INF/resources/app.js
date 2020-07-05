@@ -26,6 +26,15 @@ const facilitiesTable = $('#facilities');
 const colorById = (i) => colors[i % colors.length];
 const colorByFacility = (facility) => facility === null ? {} : { color: colorById(facility.id) };
 
+const greyIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
 const fetchHeaders = {
   headers: {
     'Content-Type': 'application/json',
@@ -160,7 +169,8 @@ const showProblem = ({ solution, scoreExplanation, isSolving }) => {
     const { id, location, setupCost, capacity, usedCapacity, used } = facility;
     const percentage = usedCapacity / capacity * 100;
     const color = facility.used ? colorByFacility(facility) : { color: 'white' };
-    L.marker(location)
+    const icon = facility.used ? {} : { icon: greyIcon };
+    L.marker(location, icon)
       .addTo(markerGroup)
       .bindPopup(facilityPopupContent(facility, longCostFormat.format(facility.setupCost)));
     facilitiesTable.append(`<tr class="${used ? 'table-active' : 'text-muted'}">
