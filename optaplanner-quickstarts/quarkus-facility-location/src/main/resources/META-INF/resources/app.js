@@ -113,6 +113,7 @@ const handleErrorResponse = (title, response) => {
 };
 
 const handleClientError = (title, error) => {
+  console.error(error);
   showError(`${title}.`,
     // Stack looks differently in Chrome and Firefox.
     error.stack.startsWith(error.name)
