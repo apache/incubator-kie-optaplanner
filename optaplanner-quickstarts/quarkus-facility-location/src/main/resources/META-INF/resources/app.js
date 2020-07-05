@@ -160,7 +160,7 @@ const showProblem = ({ solution, scoreExplanation, isSolving }) => {
     facilitiesTable.append(`<tr class="${used ? 'table-active' : 'text-muted'}">
 <td><span data-toggle="tooltip" title="${color.color}"
 style="background-color: ${color.color}; display: inline-block; width: 1rem; height: 1rem;">
-</span>Facility ${id}</td>
+</span></td><td>Facility ${id}</td>
 <td><div class="progress">
 <div class="progress-bar" role="progressbar" style="width: ${percentage}%">${usedCapacity}/${capacity}</div>
 </div></td>
