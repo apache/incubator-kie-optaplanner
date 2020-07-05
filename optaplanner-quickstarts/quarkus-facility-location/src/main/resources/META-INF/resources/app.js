@@ -19,6 +19,9 @@ const colors = [
 let autoRefreshCount = 0;
 let autoRefreshIntervalId = null;
 
+let initialized = false;
+const facilityByIdMap = new Map();
+
 const solveButton = $('#solveButton');
 const stopSolvingButton = $('#stopSolvingButton');
 const facilitiesTable = $('#facilities');
@@ -26,6 +29,7 @@ const facilitiesTable = $('#facilities');
 const colorById = (i) => colors[i % colors.length];
 const colorByFacility = (facility) => facility === null ? {} : { color: colorById(facility.id) };
 
+const defaultIcon = new L.Icon.Default();
 const greyIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/images/marker-shadow.png',
@@ -161,18 +165,32 @@ const facilityPopupContent = (facility, cost) => `<h5>Facility ${facility.id}</h
 <li>Setup cost: ${cost}</li>
 </ul>`;
 
+const getFacilityMarker = ({ id, location }) => {
+  let marker = facilityByIdMap.get(id);
+  if (marker) {
+    return marker;
+  }
+  marker = L.marker(location);
+  marker.addTo(facilityGroup).bindPopup();
+  facilityByIdMap.set(id, marker);
+  return marker;
+};
+
 const showProblem = ({ solution, scoreExplanation, isSolving }) => {
-  markerGroup.clearLayers();
-  map.fitBounds(solution.bounds);
+  if (!initialized) {
+    initialized = true;
+    map.fitBounds(solution.bounds);
+  }
+  // Facilities
   facilitiesTable.children().remove();
   solution.facilities.forEach((facility) => {
-    const { id, location, setupCost, capacity, usedCapacity, used } = facility;
+    const { id, setupCost, capacity, usedCapacity, used } = facility;
     const percentage = usedCapacity / capacity * 100;
     const color = facility.used ? colorByFacility(facility) : { color: 'white' };
-    const icon = facility.used ? {} : { icon: greyIcon };
-    L.marker(location, icon)
-      .addTo(markerGroup)
-      .bindPopup(facilityPopupContent(facility, longCostFormat.format(facility.setupCost)));
+    const icon = facility.used ? defaultIcon : greyIcon;
+    const marker = getFacilityMarker(facility);
+    marker.setIcon(icon);
+    marker.setPopupContent(facilityPopupContent(facility, longCostFormat.format(facility.setupCost)));
     facilitiesTable.append(`<tr class="${used ? 'table-active' : 'text-muted'}">
 <td><span data-toggle="tooltip" title="${color.color}"
 style="background-color: ${color.color}; display: inline-block; width: 1rem; height: 1rem;">
@@ -183,13 +201,16 @@ style="background-color: ${color.color}; display: inline-block; width: 1rem; hei
 <td class="text-right">${shortCostFormat.format(setupCost)}</td>
 </tr>`);
   });
+  // Consumers
+  consumerGroup.clearLayers();
   solution.consumers.forEach((consumer) => {
     const color = colorByFacility(consumer.facility);
-    L.circleMarker(consumer.location, color).addTo(markerGroup);
+    L.circleMarker(consumer.location, color).addTo(consumerGroup);
     if (consumer.facility !== null) {
-      L.polyline([consumer.location, consumer.facility.location], color).addTo(markerGroup);
+      L.polyline([consumer.location, consumer.facility.location], color).addTo(consumerGroup);
     }
   });
+  // Summary
   $('#score').text(solution.score);
   $('#cost').text(longCostFormat.format(solution.totalCost));
   $('#cost-percentage').text(Math.round(solution.totalCost * 1000 / solution.potentialCost) / 10);
@@ -210,8 +231,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
 }).addTo(map);
 
-const markerGroup = L.layerGroup();
-markerGroup.addTo(map);
+const consumerGroup = L.layerGroup();
+const facilityGroup = L.layerGroup();
+consumerGroup.addTo(map);
+facilityGroup.addTo(map);
 
 solveButton.click(solve);
 stopSolvingButton.click(stopSolving);
