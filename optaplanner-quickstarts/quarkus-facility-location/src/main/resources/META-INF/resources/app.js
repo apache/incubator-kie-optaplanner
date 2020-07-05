@@ -33,6 +33,16 @@ const fetchHeaders = {
   },
 };
 
+const createCostFormat = (notation) => new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 1,
+  minimumFractionDigits: 1,
+  notation,
+});
+const shortCostFormat = createCostFormat('compact');
+const longCostFormat = createCostFormat('standard');
+
 const getStatus = () => {
   fetch('/flp/status', fetchHeaders)
     .then((response) => {
@@ -132,18 +142,10 @@ const autoRefresh = () => {
   }
 };
 
-const formatCost = (cost, notation = 'standard') => new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 1,
-  minimumFractionDigits: 1,
-  notation,
-}).format(cost);
-
-const facilityPopupContent = (facility) => `<h5>Facility ${facility.id}</h5>
+const facilityPopupContent = (facility, cost) => `<h5>Facility ${facility.id}</h5>
 <ul class="list-unstyled">
 <li>Usage: ${facility.usedCapacity}/${facility.capacity}</li>
-<li>Setup cost: ${formatCost(facility.setupCost)}</li>
+<li>Setup cost: ${cost}</li>
 </ul>`;
 
 const showProblem = ({ solution, scoreExplanation, isSolving }) => {
@@ -156,7 +158,7 @@ const showProblem = ({ solution, scoreExplanation, isSolving }) => {
     const color = facility.used ? colorByFacility(facility) : { color: 'white' };
     L.marker(location)
       .addTo(markerGroup)
-      .bindPopup(facilityPopupContent(facility));
+      .bindPopup(facilityPopupContent(facility, longCostFormat.format(facility.setupCost)));
     facilitiesTable.append(`<tr class="${used ? 'table-active' : 'text-muted'}">
 <td><span data-toggle="tooltip" title="${color.color}"
 style="background-color: ${color.color}; display: inline-block; width: 1rem; height: 1rem;">
@@ -164,7 +166,7 @@ style="background-color: ${color.color}; display: inline-block; width: 1rem; hei
 <td><div class="progress">
 <div class="progress-bar" role="progressbar" style="width: ${percentage}%">${usedCapacity}/${capacity}</div>
 </div></td>
-<td class="text-right">${formatCost(setupCost, 'compact')}</td>
+<td class="text-right">${shortCostFormat.format(setupCost)}</td>
 </tr>`);
   });
   solution.consumers.forEach((consumer) => {
@@ -175,7 +177,7 @@ style="background-color: ${color.color}; display: inline-block; width: 1rem; hei
     }
   });
   $('#score').text(solution.score);
-  $('#cost').text(formatCost(solution.totalCost));
+  $('#cost').text(longCostFormat.format(solution.totalCost));
   $('#cost-percentage').text(Math.round(solution.totalCost * 1000 / solution.potentialCost) / 10);
   $('#distance').text(solution.totalDistance);
   $('#scoreInfo').text(scoreExplanation);
