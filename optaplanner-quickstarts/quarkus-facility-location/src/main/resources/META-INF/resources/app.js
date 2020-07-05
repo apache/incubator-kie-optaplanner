@@ -132,7 +132,7 @@ const autoRefresh = () => {
   }
 };
 
-const formatCost = (cost, notation) => new Intl.NumberFormat('en-US', {
+const formatCost = (cost, notation = 'standard') => new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
   maximumFractionDigits: 1,
@@ -143,7 +143,7 @@ const formatCost = (cost, notation) => new Intl.NumberFormat('en-US', {
 const facilityPopupContent = (facility) => `<h5>Facility ${facility.id}</h5>
 <ul class="list-unstyled">
 <li>Usage: ${facility.usedCapacity}/${facility.capacity}</li>
-<li>Setup cost: ${formatCost(facility.setupCost, 'standard')}</li>
+<li>Setup cost: ${formatCost(facility.setupCost)}</li>
 </ul>`;
 
 const showProblem = ({ solution, scoreExplanation, isSolving }) => {
@@ -175,7 +175,7 @@ style="background-color: ${color.color}; display: inline-block; width: 1rem; hei
     }
   });
   $('#score').text(solution.score);
-  $('#cost').text(solution.totalCost);
+  $('#cost').text(formatCost(solution.totalCost));
   $('#cost-percentage').text(Math.round(solution.totalCost * 1000 / solution.potentialCost) / 10);
   $('#distance').text(solution.totalDistance);
   $('#scoreInfo').text(scoreExplanation);
