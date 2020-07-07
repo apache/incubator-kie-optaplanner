@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.AbstractConfig;
@@ -40,6 +41,7 @@ import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
+import org.optaplanner.core.impl.util.JaxbDurationAdapter;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -51,6 +53,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     private TerminationCompositionStyle terminationCompositionStyle = null;
 
+    @XmlJavaTypeAdapter(JaxbDurationAdapter.class)
     private Duration spentLimit = null;
     private Long millisecondsSpentLimit = null;
     private Long secondsSpentLimit = null;
@@ -58,6 +61,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     private Long hoursSpentLimit = null;
     private Long daysSpentLimit = null;
 
+    @XmlJavaTypeAdapter(JaxbDurationAdapter.class)
     private Duration unimprovedSpentLimit = null;
     private Long unimprovedMillisecondsSpentLimit = null;
     private Long unimprovedSecondsSpentLimit = null;
