@@ -73,7 +73,7 @@ public class PolymorphicScoreJacksonDeserializer extends JsonDeserializer<Score>
         } else if (scoreClassSimpleName.equals(HardMediumSoftLongScore.class.getSimpleName())) {
             return HardMediumSoftLongScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(BendableScore.class.getSimpleName())) {
-            return BendableScore.parseScore(scoreString);
+            return BendableScore.fooparseScore(scoreString);
         } else if (scoreClassSimpleName.equals(BendableLongScore.class.getSimpleName())) {
             return BendableLongScore.parseScore(scoreString);
         } else if (scoreClassSimpleName.equals(BendableBigDecimalScore.class.getSimpleName())) {

@@ -47,6 +47,10 @@ jobs:
         with:
           java-version: 11
 
+      # Builds optaplanner-core which optaplanner-persistence-jpa depends on, in case of changes
+      - name: Build optaplanner-core
+        run: cd optaplanner-core && mvn -B clean install -DskipTests
+
       # Builds the JPA module and runs tests in a PostgreSQL container
       - name: Build with Maven
         run: cd optaplanner-persistence/optaplanner-persistence-jpa && mvn -B clean install -Ppostgresql ${{ env.MVN_CONNECTION_PROPS }}

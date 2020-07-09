@@ -57,7 +57,7 @@ public class ScoreUtils {
         } else if (HardMediumSoftLongScore.class.equals(scoreClass)) {
             return HardMediumSoftLongScore.parseScore(scoreString);
         } else if (BendableScore.class.equals(scoreClass)) {
-            return BendableScore.parseScore(scoreString);
+            return BendableScore.fooparseScore(scoreString);
         } else if (BendableLongScore.class.equals(scoreClass)) {
             return BendableLongScore.parseScore(scoreString);
         } else if (BendableBigDecimalScore.class.equals(scoreClass)) {

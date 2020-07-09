@@ -39,6 +39,6 @@ public class BendableScoreConverter implements AttributeConverter<BendableScore,
             return null;
         }
 
-        return BendableScore.parseScore(scoreString);
+        return BendableScore.fooparseScore(scoreString);
     }
 }

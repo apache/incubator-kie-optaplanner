@@ -27,7 +27,7 @@ public class BendableScoreJaxbAdapter extends AbstractScoreJaxbAdapter<BendableS
 
     @Override
     public BendableScore unmarshal(String scoreString) {
-        return BendableScore.parseScore(scoreString);
+        return BendableScore.fooparseScore(scoreString);
     }
 
 }

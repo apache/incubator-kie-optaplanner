@@ -51,7 +51,7 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
 
     @Override
     public BendableScore parseScore(String scoreString) {
-        BendableScore score = BendableScore.parseScore(scoreString);
+        BendableScore score = BendableScore.fooparseScore(scoreString);
         if (score.getHardLevelsSize() != hardLevelsSize) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") for the scoreClass (" + BendableScore.class.getSimpleName()

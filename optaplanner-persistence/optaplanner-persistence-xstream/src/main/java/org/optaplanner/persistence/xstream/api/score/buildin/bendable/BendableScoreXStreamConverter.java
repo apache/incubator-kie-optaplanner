@@ -40,7 +40,7 @@ public class BendableScoreXStreamConverter extends AbstractScoreXStreamConverter
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         String scoreString = reader.getValue();
-        return BendableScore.parseScore(scoreString);
+        return BendableScore.fooparseScore(scoreString);
     }
 
 }

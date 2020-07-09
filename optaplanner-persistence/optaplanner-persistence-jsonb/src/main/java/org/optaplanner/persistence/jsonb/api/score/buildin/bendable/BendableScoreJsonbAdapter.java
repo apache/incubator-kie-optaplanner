@@ -27,6 +27,6 @@ public class BendableScoreJsonbAdapter extends AbstractScoreJsonbAdapter<Bendabl
 
     @Override
     public BendableScore adaptFromJson(String scoreString) {
-        return BendableScore.parseScore(scoreString);
+        return BendableScore.fooparseScore(scoreString);
     }
 }

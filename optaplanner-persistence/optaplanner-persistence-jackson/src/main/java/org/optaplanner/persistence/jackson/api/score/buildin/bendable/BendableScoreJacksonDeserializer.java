@@ -32,7 +32,7 @@ public class BendableScoreJacksonDeserializer extends AbstractScoreJacksonDeseri
 
     @Override
     public BendableScore deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-        return BendableScore.parseScore(parser.getValueAsString());
+        return BendableScore.fooparseScore(parser.getValueAsString());
     }
 
 }

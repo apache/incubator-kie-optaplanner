@@ -40,7 +40,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore> {
      * @param scoreString never null
      * @return never null
      */
-    public static BendableScore parseScore(String scoreString) {
+    public static BendableScore fooparseScore(String scoreString) {
         String[][] scoreTokens = parseBendableScoreTokens(BendableScore.class, scoreString);
         int initScore = parseInitScore(BendableScore.class, scoreString, scoreTokens[0][0]);
         int[] hardScores = new int[scoreTokens[1].length];
