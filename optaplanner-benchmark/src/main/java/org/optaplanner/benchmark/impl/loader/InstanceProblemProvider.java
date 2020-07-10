@@ -16,17 +16,22 @@
 
 package org.optaplanner.benchmark.impl.loader;
 
+import java.util.Objects;
+
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("instanceProblemProvider")
 public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solution_> {
 
     private final String problemName;
+    @XStreamOmitField
     private final Solution_ problem;
+    @XStreamOmitField
     private final SolutionCloner<Solution_> solutionCloner;
 
     public InstanceProblemProvider(String problemName, SolutionDescriptor<Solution_> solutionDescriptor, Solution_ problem) {
@@ -57,22 +62,24 @@ public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solut
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof InstanceProblemProvider) {
-            InstanceProblemProvider other = (InstanceProblemProvider) o;
-            return problem.equals(other.problem);
-        } else {
+        }
+        if (!(o instanceof InstanceProblemProvider)) {
             return false;
         }
+        InstanceProblemProvider<?> that = (InstanceProblemProvider<?>) o;
+        return problemName.equals(that.problemName) &&
+                Objects.equals(problem, that.problem) &&
+                Objects.equals(solutionCloner, that.solutionCloner);
     }
 
     @Override
     public int hashCode() {
-        return problem.hashCode();
+        return Objects.hash(problemName, problem, solutionCloner);
     }
 
     @Override
     public String toString() {
-        return problem.toString();
+        return problemName;
     }
 
 }
