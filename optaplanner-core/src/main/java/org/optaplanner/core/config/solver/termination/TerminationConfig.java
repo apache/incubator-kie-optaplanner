@@ -28,6 +28,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.io.jaxb.JaxbDurationAdapter;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.termination.AbstractCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.AndCompositeTermination;
@@ -41,7 +42,6 @@ import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination;
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
-import org.optaplanner.core.impl.util.JaxbDurationAdapter;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;

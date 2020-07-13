@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.util;
+package org.optaplanner.core.impl.io.jaxb;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
