@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.score.stream.drools.graph;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,6 +35,7 @@ import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
 import org.drools.model.Global;
+import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -396,7 +399,7 @@ public final class ConstraintGraph {
         return consequence;
     }
 
-    public <Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>>
+    private <Node_ extends ConstraintGraphNode, Consequence_ extends ConstraintConsequence<Node_>>
             ConstraintTree<Node_, Consequence_> getSubtree(Consequence_ consequence) {
         if (!consequenceSet.contains(consequence)) {
             throw new IllegalStateException("Requested subtree for a non-existent consequence (" + consequence + ").");
@@ -418,6 +421,26 @@ public final class ConstraintGraph {
             throw new IllegalStateException("Some nodes are not used in any constraints: " + unusedNodeList + ".\n" +
                     "Ensure all constraint streams are terminated with either penalize() or reward() building block.");
         }
+        /*
+         * This treats every constraint individually, and therefore can not support CS-level node sharing.
+         * TODO Support CS-level node sharing.
+         */
+        Arrays.stream(constraints)
+                .map(constraint -> generateRules(scoreHolderGlobal, constraint))
+                .flatMap(Collection::stream)
+                .distinct()
+                .forEach(executableModel::addRule);
+    }
+
+    public List<Rule> generateRules(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+            DroolsConstraint constraint) {
+        ConstraintTree constraintTree = getSubtree(constraint.getConsequence());
+        if (constraintTree.getNestedNodes().getGroupByCount() > 1) {
+            throw new UnsupportedOperationException("REGROUPING");
+        }
+        return constraintTree.getNestedNodes()
+                .getBuilder()
+                .build(scoreHolderGlobal, constraint);
     }
 
 }

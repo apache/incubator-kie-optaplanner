@@ -31,11 +31,23 @@ public final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence
     private final ConstraintGraph graph;
     private final Consequence_ consequence;
     private final List<ConstraintGraphNode> orderedNodeList;
+    private final ConstraintSubTree nestedNodes;
 
     ConstraintTree(ConstraintGraph graph, Consequence_ consequence) {
         this.graph = graph;
         this.consequence = consequence;
         this.orderedNodeList = orderNodes(consequence);
+        this.nestedNodes = assembleSubTree(orderedNodeList);
+        ConstraintGraphNode firstNode = orderedNodeList.get(0);
+        if (firstNode.getType() != ConstraintGraphNodeType.FROM) {
+            throw new IllegalStateException("First node (" + firstNode + ") is not a " + ConstraintGraphNodeType.FROM +
+                    " (" + firstNode.getType() + ").");
+        }
+        ConstraintGraphNode lastNode = orderedNodeList.get(orderedNodeList.size() - 1);
+        if (lastNode != consequence.getTerminalNode()) {
+            throw new IllegalStateException("Last node (" + lastNode + ") is not the terminal node (" +
+                    consequence.getTerminalNode() + ").");
+        }
     }
 
     private List<ConstraintGraphNode> orderNodes(Consequence_ consequence) {
@@ -69,17 +81,61 @@ public final class ConstraintTree<Node_ extends ConstraintGraphNode, Consequence
         }
         // Reverse order. (Start with left-most From node.)
         Collections.reverse(nodeList);
-        ConstraintGraphNode firstNode = nodeList.get(0);
-        if (firstNode.getType() != ConstraintGraphNodeType.FROM) {
-            throw new IllegalStateException("First node (" + firstNode + ") is not a " + ConstraintGraphNodeType.FROM +
-                    " (" + firstNode.getType() + ").");
-        }
-        ConstraintGraphNode lastNode = nodeList.get(nodeList.size() - 1);
-        if (lastNode != consequence.getTerminalNode()) {
-            throw new IllegalStateException("Last node (" + lastNode + ") is not the terminal node (" +
-                    consequence.getTerminalNode() + ").");
-        }
         return Collections.unmodifiableList(nodeList);
+    }
+
+    public List<ConstraintGraphNode> getOrderedNodeList() {
+        return orderedNodeList;
+    }
+
+    public ConstraintSubTree getNestedNodes() {
+        return nestedNodes;
+    }
+
+    private ConstraintSubTree assembleSubTree(List<ConstraintGraphNode> orderedNodeList) {
+        List<List<ConstraintGraphNode>> sequentialChunks = new ArrayList<>(0);
+        List<ConstraintGraphNode> unincludedNodes = new ArrayList<>(0);
+        // Separate the ordered list into chunks to be later converted into proper subtrees.
+        for (ConstraintGraphNode node : orderedNodeList) {
+            if (node.getType() == ConstraintGraphNodeType.FROM || node.getType() == ConstraintGraphNodeType.JOIN) {
+                if (!unincludedNodes.isEmpty()) { // Finish previous chunk.
+                    sequentialChunks.add(unincludedNodes);
+                    unincludedNodes = new ArrayList<>(0);
+                }
+            }
+            unincludedNodes.add(node);
+        }
+        if (!unincludedNodes.isEmpty()) {
+            sequentialChunks.add(unincludedNodes);
+        }
+        // Assemble the chunks into subtrees.
+        ConstraintSubTree joinSubTree = null;
+        while (!sequentialChunks.isEmpty()) {
+            int chunkCount = sequentialChunks.size();
+            if (joinSubTree == null) {
+                switch (chunkCount) {
+                    case 2:
+                        throw new IllegalStateException("Must have at least three chunks (FROM, FROM, JOIN).");
+                    case 1: // This is the only subtree.
+                        return new ConstraintSubTree(sequentialChunks.get(0));
+                    default:
+                        List<ConstraintGraphNode> currentChunk = sequentialChunks.get(2);
+                        ConstraintSubTree leftSubTree = new ConstraintSubTree(sequentialChunks.get(0));
+                        ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunks.get(1));
+                        joinSubTree = new ConstraintSubTree(leftSubTree, rightSubTree, currentChunk);
+                        sequentialChunks = sequentialChunks.subList(3, sequentialChunks.size());
+                }
+            } else {
+                if (chunkCount == 1) {
+                    throw new IllegalStateException("JOIN must have at least two follow-up chunks (FROM, JOIN).");
+                } else {
+                    ConstraintSubTree rightSubTree = new ConstraintSubTree(sequentialChunks.get(0));
+                    joinSubTree = new ConstraintSubTree(joinSubTree, rightSubTree, sequentialChunks.get(1));
+                    sequentialChunks = sequentialChunks.subList(2, sequentialChunks.size());
+                }
+            }
+        }
+        return joinSubTree;
     }
 
 }
