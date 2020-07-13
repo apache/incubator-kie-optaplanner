@@ -68,7 +68,7 @@ public interface ConstraintGraphNode {
     }
 
     static <A, B> UniConstraintGraphChildNode<A> ifExists(Class<B> otherFactType, BiJoiner<A, B>... joiners) {
-        return new UniExistenceNode<>(true, otherFactType);
+        return new UniExistenceNode<>(true, otherFactType, joiners);
     }
 
     static <A, B, C> BiConstraintGraphNode<A, B> ifExists(Class<C> otherFactType, TriJoiner<A, B, C>... joiners) {
@@ -86,7 +86,7 @@ public interface ConstraintGraphNode {
     }
 
     static <A, B> UniConstraintGraphChildNode<A> ifNotExists(Class<B> otherFactType, BiJoiner<A, B>... joiners) {
-        return new UniExistenceNode<>(false, otherFactType);
+        return new UniExistenceNode<>(false, otherFactType, joiners);
     }
 
     static <A, B, C> BiConstraintGraphNode<A, B> ifNotExists(Class<C> otherFactType, TriJoiner<A, B, C>... joiners) {
