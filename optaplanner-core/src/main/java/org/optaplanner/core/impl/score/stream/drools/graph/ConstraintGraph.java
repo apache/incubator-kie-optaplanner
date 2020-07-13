@@ -319,7 +319,7 @@ public final class ConstraintGraph {
     }
 
     public <A> UniConstraintConsequence<A> impact(UniConstraintGraphNode<A> parent) {
-        return impact(() -> ConstraintConsequence.create(parent, (ToIntFunction<A>) a -> 1));
+        return impact(() -> ConstraintConsequence.create(parent));
     }
 
     public <A> UniConstraintConsequence<A> impact(UniConstraintGraphNode<A> parent, ToIntFunction<A> matchWeighter) {

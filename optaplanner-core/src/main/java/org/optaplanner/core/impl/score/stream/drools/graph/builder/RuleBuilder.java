@@ -118,6 +118,11 @@ public final class RuleBuilder {
         this.filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern;
     }
 
+    private static void impactScore(DroolsConstraint constraint, Drools drools, AbstractScoreHolder scoreHolder) {
+        RuleContext kcontext = (RuleContext) drools;
+        scoreHolder.impactScore(kcontext);
+    }
+
     private static void impactScore(DroolsConstraint constraint, Drools drools, AbstractScoreHolder scoreHolder,
             int impact) {
         RuleContext kcontext = (RuleContext) drools;
@@ -183,26 +188,22 @@ public final class RuleBuilder {
                     ToIntFunction matchWeighter = ((Supplier<ToIntFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0])
                             .execute((drools, scoreHolder, a) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    matchWeighter.applyAsInt(a)));
+                                    (AbstractScoreHolder) scoreHolder, matchWeighter.applyAsInt(a)));
                 } else if (consequence instanceof BiConstraintConsequence) {
                     ToIntBiFunction matchWeighter = ((Supplier<ToIntBiFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1])
                             .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    matchWeighter.applyAsInt(a, b)));
+                                    (AbstractScoreHolder) scoreHolder, matchWeighter.applyAsInt(a, b)));
                 } else if (consequence instanceof TriConstraintConsequence) {
                     ToIntTriFunction matchWeighter = ((Supplier<ToIntTriFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
                             .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    matchWeighter.applyAsInt(a, b, c)));
+                                    (AbstractScoreHolder) scoreHolder, matchWeighter.applyAsInt(a, b, c)));
                 } else if (consequence instanceof QuadConstraintConsequence) {
                     ToIntQuadFunction matchWeighter = ((Supplier<ToIntQuadFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
                             .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    matchWeighter.applyAsInt(a, b, c, d)));
+                                    (AbstractScoreHolder) scoreHolder, matchWeighter.applyAsInt(a, b, c, d)));
                 } else {
                     throw new UnsupportedOperationException();
                 }
@@ -211,26 +212,22 @@ public final class RuleBuilder {
                     ToLongFunction matchWeighter = ((Supplier<ToLongFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0])
                             .execute((drools, scoreHolder, a) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    matchWeighter.applyAsLong(a)));
+                                    (AbstractScoreHolder) scoreHolder, matchWeighter.applyAsLong(a)));
                 } else if (consequence instanceof BiConstraintConsequence) {
                     ToLongBiFunction matchWeighter = ((Supplier<ToLongBiFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1])
                             .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    matchWeighter.applyAsLong(a, b)));
+                                    (AbstractScoreHolder) scoreHolder, matchWeighter.applyAsLong(a, b)));
                 } else if (consequence instanceof TriConstraintConsequence) {
                     ToLongTriFunction matchWeighter = ((Supplier<ToLongTriFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
                             .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    matchWeighter.applyAsLong(a, b, c)));
+                                    (AbstractScoreHolder) scoreHolder, matchWeighter.applyAsLong(a, b, c)));
                 } else if (consequence instanceof QuadConstraintConsequence) {
                     ToLongQuadFunction matchWeighter = ((Supplier<ToLongQuadFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
                             .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    matchWeighter.applyAsLong(a, b, c, d)));
+                                    (AbstractScoreHolder) scoreHolder, matchWeighter.applyAsLong(a, b, c, d)));
                 } else {
                     throw new UnsupportedOperationException();
                 }
@@ -239,26 +236,42 @@ public final class RuleBuilder {
                     Function matchWeighter = ((Supplier<Function>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0])
                             .execute((drools, scoreHolder, a) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    (BigDecimal) matchWeighter.apply(a)));
+                                    (AbstractScoreHolder) scoreHolder, (BigDecimal) matchWeighter.apply(a)));
                 } else if (consequence instanceof BiConstraintConsequence) {
                     BiFunction matchWeighter = ((Supplier<BiFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1])
                             .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    (BigDecimal) matchWeighter.apply(a, b)));
+                                    (AbstractScoreHolder) scoreHolder, (BigDecimal) matchWeighter.apply(a, b)));
                 } else if (consequence instanceof TriConstraintConsequence) {
                     TriFunction matchWeighter = ((Supplier<TriFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
                             .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    (BigDecimal) matchWeighter.apply(a, b, c)));
+                                    (AbstractScoreHolder) scoreHolder, (BigDecimal) matchWeighter.apply(a, b, c)));
                 } else if (consequence instanceof QuadConstraintConsequence) {
                     QuadFunction matchWeighter = ((Supplier<QuadFunction>) consequence).get();
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
                             .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
-                                    (AbstractScoreHolder) scoreHolder,
-                                    (BigDecimal) matchWeighter.apply(a, b, c, d)));
+                                    (AbstractScoreHolder) scoreHolder, (BigDecimal) matchWeighter.apply(a, b, c, d)));
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            case DEFAULT:
+                if (consequence instanceof UniConstraintConsequence) {
+                    return DSL.on(scoreHolderGlobal, variables[0])
+                            .execute((drools, scoreHolder, a) -> impactScore(constraint, (Drools) drools,
+                                    (AbstractScoreHolder) scoreHolder));
+                } else if (consequence instanceof BiConstraintConsequence) {
+                    return DSL.on(scoreHolderGlobal, variables[0], variables[1])
+                            .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
+                                    (AbstractScoreHolder) scoreHolder));
+                } else if (consequence instanceof TriConstraintConsequence) {
+                    return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
+                            .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
+                                    (AbstractScoreHolder) scoreHolder));
+                } else if (consequence instanceof QuadConstraintConsequence) {
+                    return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
+                            .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
+                                    (AbstractScoreHolder) scoreHolder));
                 } else {
                     throw new UnsupportedOperationException();
                 }

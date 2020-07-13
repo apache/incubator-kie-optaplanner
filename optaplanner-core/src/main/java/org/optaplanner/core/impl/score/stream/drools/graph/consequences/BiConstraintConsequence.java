@@ -28,7 +28,7 @@ public interface BiConstraintConsequence<A, B> extends ConstraintConsequence<BiC
     /**
      * {@inheritDoc}
      *
-     * @return Never null.
+     * @return Null.
      *         When this method returns {@link ConsequenceMatchWeightType#INTEGER}, implementations of this interface
      *         are guaranteed to implement {@link ToIntBiFunction}.
      *         When this method returns {@link ConsequenceMatchWeightType#LONG}, implementations of this interface are

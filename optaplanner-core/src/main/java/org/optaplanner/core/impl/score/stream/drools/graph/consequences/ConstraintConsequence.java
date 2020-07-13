@@ -38,6 +38,10 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGr
 
 public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
 
+    static <A> UniConstraintConsequence<A> create(UniConstraintGraphNode<A> terminalNode) {
+        return new UniConstraintDefaultConsequence<>(terminalNode);
+    }
+
     static <A> UniConstraintConsequence<A> create(UniConstraintGraphNode<A> terminalNode,
             ToIntFunction<A> matchWeighter) {
         return new UniConstraintIntConsequence<>(terminalNode, matchWeighter);
@@ -51,6 +55,10 @@ public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
     static <A> UniConstraintConsequence<A> create(UniConstraintGraphNode<A> terminalNode,
             Function<A, BigDecimal> matchWeighter) {
         return new UniConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
+    }
+
+    static <A, B> BiConstraintConsequence<A, B> create(BiConstraintGraphNode<A, B> terminalNode) {
+        return new BiConstraintDefaultConsequence<>(terminalNode);
     }
 
     static <A, B> BiConstraintConsequence<A, B> create(BiConstraintGraphNode<A, B> terminalNode,
@@ -68,6 +76,10 @@ public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
         return new BiConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
     }
 
+    static <A, B, C> TriConstraintConsequence<A, B, C> create(TriConstraintGraphNode<A, B, C> terminalNode) {
+        return new TriConstraintDefaultConsequence<>(terminalNode);
+    }
+
     static <A, B, C> TriConstraintConsequence<A, B, C> create(TriConstraintGraphNode<A, B, C> terminalNode,
             ToIntTriFunction<A, B, C> matchWeighter) {
         return new TriConstraintIntConsequence<>(terminalNode, matchWeighter);
@@ -81,6 +93,10 @@ public interface ConstraintConsequence<Node_ extends ConstraintGraphNode> {
     static <A, B, C> TriConstraintConsequence<A, B, C> create(TriConstraintGraphNode<A, B, C> terminalNode,
             TriFunction<A, B, C, BigDecimal> matchWeighter) {
         return new TriConstraintBigDecimalConsequence<>(terminalNode, matchWeighter);
+    }
+
+    static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode<A, B, C, D> terminalNode) {
+        return new QuadConstraintDefaultConsequence<>(terminalNode);
     }
 
     static <A, B, C, D> QuadConstraintConsequence<A, B, C, D> create(QuadConstraintGraphNode<A, B, C, D> terminalNode,

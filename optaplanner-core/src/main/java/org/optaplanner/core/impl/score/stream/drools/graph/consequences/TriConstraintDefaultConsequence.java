@@ -16,11 +16,26 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.consequences;
 
-public enum ConsequenceMatchWeightType {
+import static java.util.Objects.requireNonNull;
 
-    INTEGER,
-    LONG,
-    BIG_DECIMAL,
-    DEFAULT
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.TriConstraintGraphNode;
+
+final class TriConstraintDefaultConsequence<A, B, C> implements TriConstraintConsequence<A, B, C> {
+
+    private final TriConstraintGraphNode<A, B, C> terminalNode;
+
+    TriConstraintDefaultConsequence(TriConstraintGraphNode<A, B, C> terminalNode) {
+        this.terminalNode = requireNonNull(terminalNode);
+    }
+
+    @Override
+    public TriConstraintGraphNode<A, B, C> getTerminalNode() {
+        return terminalNode;
+    }
+
+    @Override
+    public ConsequenceMatchWeightType getMatchWeightType() {
+        return ConsequenceMatchWeightType.DEFAULT;
+    }
 
 }

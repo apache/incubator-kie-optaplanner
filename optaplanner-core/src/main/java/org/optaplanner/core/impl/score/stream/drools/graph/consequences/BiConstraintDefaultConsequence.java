@@ -16,11 +16,26 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.consequences;
 
-public enum ConsequenceMatchWeightType {
+import static java.util.Objects.requireNonNull;
 
-    INTEGER,
-    LONG,
-    BIG_DECIMAL,
-    DEFAULT
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.BiConstraintGraphNode;
+
+final class BiConstraintDefaultConsequence<A, B> implements BiConstraintConsequence<A, B> {
+
+    private final BiConstraintGraphNode<A, B> terminalNode;
+
+    BiConstraintDefaultConsequence(BiConstraintGraphNode<A, B> terminalNode) {
+        this.terminalNode = requireNonNull(terminalNode);
+    }
+
+    @Override
+    public BiConstraintGraphNode<A, B> getTerminalNode() {
+        return terminalNode;
+    }
+
+    @Override
+    public ConsequenceMatchWeightType getMatchWeightType() {
+        return ConsequenceMatchWeightType.DEFAULT;
+    }
 
 }
