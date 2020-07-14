@@ -72,7 +72,7 @@ public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solut
             return false;
         }
         InstanceProblemProvider<?> that = (InstanceProblemProvider<?>) o;
-        return problemName.equals(that.problemName) &&
+        return Objects.equals(problemName, that.problemName) &&
                 Objects.equals(problem, that.problem) &&
                 Objects.equals(solutionCloner, that.solutionCloner);
     }
