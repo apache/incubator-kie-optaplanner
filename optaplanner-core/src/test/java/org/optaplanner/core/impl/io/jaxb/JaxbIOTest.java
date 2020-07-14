@@ -29,15 +29,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.XmlUnmarshallingException;
 
 public class JaxbIOTest {
 
+    private final JaxbIO<DummyJaxbClass> xmlIO = new JaxbIO<>(DummyJaxbClass.class);
+
     @Test
     public void readWriteSimpleObject() {
-        XmlIO<DummyJaxbClass> xmlIO = new JaxbIO<>(DummyJaxbClass.class);
-
         DummyJaxbClass original = new DummyJaxbClass(1);
 
         StringWriter stringWriter = new StringWriter();
@@ -49,7 +48,6 @@ public class JaxbIOTest {
 
     @Test
     public void writeThrowsExceptionOnNullParameters() {
-        XmlIO<DummyJaxbClass> xmlIO = new JaxbIO<>(DummyJaxbClass.class);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(assertThatNullPointerException().isThrownBy(() -> xmlIO.write(null, new StringWriter())));
             softly.assertThat(assertThatNullPointerException().isThrownBy(() -> xmlIO.write(new DummyJaxbClass(1), null)));
@@ -63,7 +61,6 @@ public class JaxbIOTest {
 
     @Test
     public void readThrowsExceptionOnInvalidXml() {
-        XmlIO<DummyJaxbClass> xmlIO = new JaxbIO<>(DummyJaxbClass.class);
         String invalidXml = "<unknownRootElement/>";
         assertThatExceptionOfType(XmlUnmarshallingException.class).isThrownBy(() -> xmlIO.read(new StringReader(invalidXml)));
     }

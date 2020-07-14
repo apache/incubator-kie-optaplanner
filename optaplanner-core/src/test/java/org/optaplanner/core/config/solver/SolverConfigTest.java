@@ -36,7 +36,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
@@ -48,7 +47,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class SolverConfigTest {
     private static final String TEST_SOLVER_CONFIG = "testSolverConfig.xml";
 
-    private final XmlIO<SolverConfig> xmlIO = new JaxbIO<>(SolverConfig.class);
+    private final JaxbIO<SolverConfig> xmlIO = new JaxbIO<>(SolverConfig.class);
 
     @Test
     public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {

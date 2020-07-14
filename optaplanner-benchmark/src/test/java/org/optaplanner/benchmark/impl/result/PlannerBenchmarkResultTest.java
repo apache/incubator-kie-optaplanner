@@ -42,7 +42,6 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
@@ -52,7 +51,7 @@ public class PlannerBenchmarkResultTest {
 
     private static final String TEST_PLANNER_BENCHMARK_RESULT = "testPlannerBenchmarkResult.xml";
 
-    private final XmlIO<PlannerBenchmarkResult> xmlIO = new JaxbIO(PlannerBenchmarkResult.class);
+    private final JaxbIO<PlannerBenchmarkResult> xmlIO = new JaxbIO(PlannerBenchmarkResult.class);
 
     @Test
     public void createMergedResult() {

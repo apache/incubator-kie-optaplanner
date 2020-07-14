@@ -33,7 +33,6 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.XmlUnmarshallingException;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.slf4j.Logger;
@@ -45,7 +44,7 @@ public class BenchmarkResultIO {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final XmlIO<PlannerBenchmarkResult> xmlIO = new JaxbIO(PlannerBenchmarkResult.class);
+    private final JaxbIO<PlannerBenchmarkResult> xmlIO = new JaxbIO(PlannerBenchmarkResult.class);
 
     public void writePlannerBenchmarkResult(File benchmarkReportDirectory,
             PlannerBenchmarkResult plannerBenchmarkResult) {

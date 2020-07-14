@@ -33,10 +33,9 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.XmlUnmarshallingException;
 
-public final class JaxbIO<T> implements XmlIO<T> {
+public final class JaxbIO<T> {
     private static final int DEFAULT_INDENTATION = 2;
 
     private final Unmarshaller unmarshaller;

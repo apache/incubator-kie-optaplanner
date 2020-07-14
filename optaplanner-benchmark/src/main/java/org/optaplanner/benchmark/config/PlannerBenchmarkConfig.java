@@ -56,7 +56,6 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
@@ -231,7 +230,7 @@ public class PlannerBenchmarkConfig {
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        XmlIO<?> xmlIO = new JaxbIO<>(PlannerBenchmarkConfig.class);
+        JaxbIO<?> xmlIO = new JaxbIO<>(PlannerBenchmarkConfig.class);
         Object benchmarkConfigObject = xmlIO.read(reader);
         if (!(benchmarkConfigObject instanceof PlannerBenchmarkConfig)) {
             throw new IllegalArgumentException("The " + PlannerBenchmarkConfig.class.getSimpleName()

@@ -56,7 +56,6 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -205,7 +204,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @return never null
      */
     public static SolverConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        XmlIO<?> xmlIO = new JaxbIO<>(SolverConfig.class);
+        JaxbIO<?> xmlIO = new JaxbIO<>(SolverConfig.class);
         Object solverConfigObject = xmlIO.read(reader);
 
         if (!(solverConfigObject instanceof SolverConfig)) {

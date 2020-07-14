@@ -34,7 +34,6 @@ import java.util.TreeSet;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 
 public class PlannerBenchmarkConfigTest {
@@ -168,7 +167,7 @@ public class PlannerBenchmarkConfigTest {
 
     @Test
     public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
-        XmlIO<PlannerBenchmarkConfig> xmlIO = new JaxbIO<>(PlannerBenchmarkConfig.class);
+        JaxbIO<PlannerBenchmarkConfig> xmlIO = new JaxbIO<>(PlannerBenchmarkConfig.class);
         PlannerBenchmarkConfig jaxbBenchmarkConfig;
 
         try (Reader reader =

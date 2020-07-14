@@ -35,7 +35,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
@@ -267,7 +266,7 @@ public class SolverBenchmarkResult {
     }
 
     public String getSolverConfigAsHtmlEscapedXml() {
-        XmlIO<SolverConfig> xmlIO = new JaxbIO<>(SolverConfig.class);
+        JaxbIO<SolverConfig> xmlIO = new JaxbIO<>(SolverConfig.class);
         StringWriter stringWriter = new StringWriter();
         xmlIO.write(solverConfig, stringWriter);
         String xml = stringWriter.toString();
