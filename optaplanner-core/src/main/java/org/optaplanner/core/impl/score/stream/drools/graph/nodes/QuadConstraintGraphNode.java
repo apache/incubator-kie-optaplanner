@@ -21,7 +21,7 @@ public interface QuadConstraintGraphNode<A, B, C, D>
 
     @Override
     default int getCardinality() {
-        return 1;
+        return 4;
     }
 
 }

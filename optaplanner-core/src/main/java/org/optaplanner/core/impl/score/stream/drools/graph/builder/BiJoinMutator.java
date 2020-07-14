@@ -30,12 +30,12 @@ import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 
-public class UniJoinMutator<A, B> implements JoinMutator {
+public class BiJoinMutator<A, B> implements JoinMutator {
 
     private final Class<B> otherFactType;
     private final AbstractBiJoiner<A, B> biJoiner;
 
-    public UniJoinMutator(AbstractConstraintModelJoiningNode<B, AbstractBiJoiner<A, B>> node) {
+    public BiJoinMutator(AbstractConstraintModelJoiningNode<B, AbstractBiJoiner<A, B>> node) {
         this.otherFactType = node.getOtherFactType();
         this.biJoiner = node.get().get(0);
     }

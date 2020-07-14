@@ -114,7 +114,7 @@ public final class RuleBuilder {
         this.filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern;
     }
 
-    private static void impactScore(DroolsConstraint constraint, Drools drools, AbstractScoreHolder scoreHolder) {
+    private static void impactScore(Drools drools, AbstractScoreHolder scoreHolder) {
         RuleContext kcontext = (RuleContext) drools;
         scoreHolder.impactScore(kcontext);
     }
@@ -142,11 +142,19 @@ public final class RuleBuilder {
 
     public RuleBuilder join(RuleBuilder rightSubTreeBuilder, ConstraintGraphNode joinNode) {
         int newCardinality = joinNode.getCardinality();
-        if (newCardinality > 2) {
-            throw new UnsupportedOperationException("JOIN" + newCardinality);
+        switch (newCardinality) {
+            case 2:
+                return new BiJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
+                        .apply(this, rightSubTreeBuilder);
+            case 3:
+                return new TriJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
+                        .apply(this, rightSubTreeBuilder);
+            case 4:
+                return new QuadJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
+                        .apply(this, rightSubTreeBuilder);
+            default:
+                throw new UnsupportedOperationException("Unsupported stream cardinality: " + newCardinality);
         }
-        return new UniJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
-                .apply(this, rightSubTreeBuilder);
     }
 
     public RuleBuilder andThen(ConstraintGraphNode node) {
@@ -163,7 +171,9 @@ public final class RuleBuilder {
                     case 2:
                         return new BiExistenceMutator(joiningNode, shouldExist).apply(this);
                     case 3:
+                        return new TriExistenceMutator(joiningNode, shouldExist).apply(this);
                     case 4:
+                        return new QuadExistenceMutator(joiningNode, shouldExist).apply(this);
                     default:
                         throw new UnsupportedOperationException();
                 }
@@ -260,19 +270,19 @@ public final class RuleBuilder {
             case DEFAULT:
                 if (consequence instanceof UniConstraintConsequence) {
                     return DSL.on(scoreHolderGlobal, variables[0])
-                            .execute((drools, scoreHolder, a) -> impactScore(constraint, (Drools) drools,
+                            .execute((drools, scoreHolder, a) -> impactScore((Drools) drools,
                                     (AbstractScoreHolder) scoreHolder));
                 } else if (consequence instanceof BiConstraintConsequence) {
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                            .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
+                            .execute((drools, scoreHolder, a, b) -> impactScore((Drools) drools,
                                     (AbstractScoreHolder) scoreHolder));
                 } else if (consequence instanceof TriConstraintConsequence) {
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2])
-                            .execute((drools, scoreHolder, a, b, c) -> impactScore(constraint, (Drools) drools,
+                            .execute((drools, scoreHolder, a, b, c) -> impactScore((Drools) drools,
                                     (AbstractScoreHolder) scoreHolder));
                 } else if (consequence instanceof QuadConstraintConsequence) {
                     return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
-                            .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
+                            .execute((drools, scoreHolder, a, b, c, d) -> impactScore((Drools) drools,
                                     (AbstractScoreHolder) scoreHolder));
                 } else {
                     throw new UnsupportedOperationException();
