@@ -18,7 +18,6 @@ package org.acme.facilitylocation.domain;
 
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
 
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -38,9 +37,8 @@ public class FacilityLocationConstraintProvider implements ConstraintProvider {
         return constraintFactory.from(Consumer.class)
                 .groupBy(Consumer::getFacility, sumLong(Consumer::getDemand))
                 .filter((facility, demand) -> demand > facility.getCapacity())
-                .penalizeLong(
+                .penalizeConfigurableLong(
                         FacilityLocationConstraintConfiguration.FACILITY_CAPACITY,
-                        HardSoftLongScore.ONE_HARD,
                         (facility, demand) -> demand - facility.getCapacity());
     }
 
