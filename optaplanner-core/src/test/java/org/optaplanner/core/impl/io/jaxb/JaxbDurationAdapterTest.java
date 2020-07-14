@@ -21,8 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 public class JaxbDurationAdapterTest {
 
@@ -34,10 +32,9 @@ public class JaxbDurationAdapterTest {
         assertThat(duration).isEqualTo(Duration.ofMinutes(7L));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void nullOrEmpty_shouldUnmarshallAsNull(String durationString) {
-        assertThat(jaxbDurationAdapter.unmarshal(durationString)).isNull();
+    @Test
+    public void nullOrEmpty_shouldUnmarshallAsNull() {
+        assertThat(jaxbDurationAdapter.unmarshal(null)).isNull();
     }
 
     @Test

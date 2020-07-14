@@ -24,7 +24,7 @@ public class JaxbDurationAdapter extends XmlAdapter<String, Duration> {
 
     @Override
     public Duration unmarshal(String durationString) {
-        if (durationString == null || durationString.isEmpty()) {
+        if (durationString == null) {
             return null;
         }
         return Duration.parse(durationString);

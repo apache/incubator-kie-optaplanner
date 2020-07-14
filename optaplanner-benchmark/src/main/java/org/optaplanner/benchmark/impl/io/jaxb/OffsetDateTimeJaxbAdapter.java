@@ -37,7 +37,7 @@ public class OffsetDateTimeJaxbAdapter extends XmlAdapter<String, OffsetDateTime
 
     @Override
     public OffsetDateTime unmarshal(String offsetDateTimeString) {
-        if (offsetDateTimeString == null || offsetDateTimeString.isEmpty()) {
+        if (offsetDateTimeString == null) {
             return null;
         }
         try {

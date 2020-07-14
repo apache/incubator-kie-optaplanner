@@ -22,8 +22,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 class OffsetDateTimeJaxbAdapterTest {
 
@@ -35,10 +33,9 @@ class OffsetDateTimeJaxbAdapterTest {
         assertThat(offsetDateTime).isEqualTo(OffsetDateTime.of(2020, 1, 1, 12, 0, 05, 100000000, ZoneOffset.ofHours(2)));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    public void nullOrEmpty_shouldUnmarshallAsNull(String durationString) {
-        assertThat(offsetDateTimeJaxbAdapter.unmarshal(durationString)).isNull();
+    @Test
+    public void nullOrEmpty_shouldUnmarshallAsNull() {
+        assertThat(offsetDateTimeJaxbAdapter.unmarshal(null)).isNull();
     }
 
     @Test
