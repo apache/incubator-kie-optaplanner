@@ -43,7 +43,7 @@ public class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
                 .toArray(AbstractPentaJoiner[]::new);
     }
 
-    private RuleBuilder applyJoiners(RuleBuilder ruleBuilder, AbstractPentaJoiner<A, B, C, D, E> joiner,
+    private AbstractRuleBuilder applyJoiners(AbstractRuleBuilder ruleBuilder, AbstractPentaJoiner<A, B, C, D, E> joiner,
             PentaPredicate<A, B, C, D, E> predicate) {
         PatternDSL.PatternDef aPattern = ruleBuilder.getPrimaryPatterns().get(0);
         PatternDSL.PatternDef bPattern = ruleBuilder.getPrimaryPatterns().get(1);
@@ -59,7 +59,7 @@ public class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
         return applyFilters(ruleBuilder, aPattern, bPattern, cPattern, dPattern, result);
     }
 
-    private RuleBuilder applyFilters(RuleBuilder ruleBuilder, PatternDSL.PatternDef<A> primaryPatternA,
+    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, PatternDSL.PatternDef<A> primaryPatternA,
             PatternDSL.PatternDef<B> primaryPatternB, PatternDSL.PatternDef<C> primaryPatternC,
             PatternDSL.PatternDef<D> primaryPatternD, PentaPredicate<A, B, C, D, E> predicate) {
         Variable<E> toExist = PatternDSL.declarationOf(otherFactType, ruleBuilder.generateNextId("quadToExist"));
@@ -80,7 +80,7 @@ public class QuadExistenceMutator<A, B, C, D, E> implements Mutator {
     }
 
     @Override
-    public RuleBuilder apply(RuleBuilder ruleBuilder) {
+    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractPentaJoiner<A, B, C, D, E> finalJoiner = null;

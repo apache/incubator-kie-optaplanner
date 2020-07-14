@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.optaplanner.core.impl.score.stream.drools.graph.builder.RuleBuilder;
+import org.optaplanner.core.impl.score.stream.drools.graph.builder.AbstractRuleBuilder;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 
 public final class ConstraintSubTree {
@@ -91,9 +91,9 @@ public final class ConstraintSubTree {
         return (int) groupByCount;
     }
 
-    public RuleBuilder getBuilder() {
-        RuleBuilder builder = isJoin ? leftSubTree.getBuilder()
-                .join(rightSubTree.getBuilder(), nodes.get(0)) : new RuleBuilder(nodes.get(0), getGroupByCount());
+    public AbstractRuleBuilder getBuilder() {
+        AbstractRuleBuilder builder = isJoin ? leftSubTree.getBuilder()
+                .join(rightSubTree.getBuilder(), nodes.get(0)) : AbstractRuleBuilder.from(nodes.get(0), getGroupByCount());
         for (int i = 1; i < nodes.size(); i++) {
             builder.andThen(nodes.get(i));
         }

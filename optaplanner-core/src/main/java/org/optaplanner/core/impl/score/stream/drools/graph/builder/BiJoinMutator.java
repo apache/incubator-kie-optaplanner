@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.builder;
 
+import static org.drools.model.PatternDSL.PatternDef;
 import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.declarationOf;
 
-import java.util.ArrayList;
 import java.util.function.Function;
 
 import org.drools.model.BetaIndex;
-import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate2;
@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 
-public class BiJoinMutator<A, B> implements JoinMutator {
+final class BiJoinMutator<A, B> implements JoinMutator {
 
     private final Class<B> otherFactType;
     private final AbstractBiJoiner<A, B> biJoiner;
@@ -41,22 +41,22 @@ public class BiJoinMutator<A, B> implements JoinMutator {
     }
 
     @Override
-    public RuleBuilder apply(RuleBuilder leftRuleBuilder, RuleBuilder rightRuleBuilder) {
+    public AbstractRuleBuilder apply(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
         JoinerType[] joinerTypes = biJoiner.getJoinerTypes();
         // We rebuild the A pattern, binding variables for left parts of the joins.
-        PatternDSL.PatternDef aJoiner =
-                leftRuleBuilder.getPrimaryPatterns().get(leftRuleBuilder.getPrimaryPatterns().size() - 1);
+        PatternDef aJoiner = leftRuleBuilder.getPrimaryPatterns()
+                .get(leftRuleBuilder.getPrimaryPatterns().size() - 1);
         Variable[] joinVars = new Variable[joinerTypes.length];
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
             int currentMappingIndex = mappingIndex;
-            Variable<Object> joinVar = PatternDSL.declarationOf(Object.class, "joinVar" + currentMappingIndex);
+            Variable<Object> joinVar = declarationOf(Object.class, "joinVar" + currentMappingIndex);
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
-            aJoiner = aJoiner.bind(joinVar, a -> leftMapping.apply((A) a));
+            aJoiner.bind(joinVar, a -> leftMapping.apply((A) a));
             joinVars[currentMappingIndex] = joinVar;
         }
-        PatternDSL.PatternDef bJoiner =
-                rightRuleBuilder.getPrimaryPatterns().get(rightRuleBuilder.getPrimaryPatterns().size() - 1);
+        PatternDef bJoiner = rightRuleBuilder.getPrimaryPatterns()
+                .get(rightRuleBuilder.getPrimaryPatterns().size() - 1);
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind a join variable from A to B and index the binding.
             int currentMappingIndex = mappingIndex;
@@ -69,21 +69,15 @@ public class BiJoinMutator<A, B> implements JoinMutator {
             };
             BetaIndex<B, A, Object> index = betaIndexedBy(Object.class, Mutator.getConstraintType(joinerType),
                     currentMappingIndex, rightExtractor, leftMapping::apply);
-            bJoiner = bJoiner.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
+            bJoiner.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
                     joinVars[currentMappingIndex], predicate, index);
         }
-        // And finally we merge the left and right side into one.
-        leftRuleBuilder.applyFilterToLastPrimaryPattern();
-        int startingPatternId = leftRuleBuilder.getPrimaryPatterns().size();
-        for (int i = 0; i < rightRuleBuilder.getPrimaryPatterns().size(); i++) {
-            leftRuleBuilder.getPrimaryPatterns().add(rightRuleBuilder.getPrimaryPatterns().get(i));
-            int newPatternId = startingPatternId + i;
-            leftRuleBuilder.getDependentExpressionMap()
-                    .put(newPatternId, rightRuleBuilder.getDependentExpressionMap().getOrDefault(i, new ArrayList<>(0)));
-            leftRuleBuilder.setFilterToApplyToLastPrimaryPattern(rightRuleBuilder.getFilterToApplyToLastPrimaryPattern());
-        }
-        leftRuleBuilder.getVariables().addAll(rightRuleBuilder.getVariables());
-        return leftRuleBuilder;
+        return merge(leftRuleBuilder, rightRuleBuilder);
     }
 
+    @Override
+    public AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
+        return new BiRuleBuilder(leftRuleBuilder::generateNextId,
+                Math.max(leftRuleBuilder.getExpectedGroupByCount(), rightRuleBuilder.getExpectedGroupByCount()));
+    }
 }

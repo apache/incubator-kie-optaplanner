@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.builder;
 
-import java.util.ArrayList;
-
 import org.drools.model.PatternDSL;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
@@ -31,26 +29,21 @@ public class QuadJoinMutator<A, B, C, D> implements JoinMutator {
     }
 
     @Override
-    public RuleBuilder apply(RuleBuilder leftRuleBuilder, RuleBuilder rightRuleBuilder) {
+    public AbstractRuleBuilder apply(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
         PatternDSL.PatternDef<A> aPattern = leftRuleBuilder.getPrimaryPatterns().get(0);
         PatternDSL.PatternDef<B> bPattern = leftRuleBuilder.getPrimaryPatterns().get(1);
         PatternDSL.PatternDef<C> cPattern = leftRuleBuilder.getPrimaryPatterns().get(2);
         PatternDSL.PatternDef<D> dPattern =
                 rightRuleBuilder.getPrimaryPatterns().get(rightRuleBuilder.getPrimaryPatterns().size() - 1);
-        dPattern = dPattern.expr("Filter using " + joiner, aPattern.getFirstVariable(),
+        dPattern.expr("Filter using " + joiner, aPattern.getFirstVariable(),
                 bPattern.getFirstVariable(), cPattern.getFirstVariable(), (d, a, b, c) -> joiner.matches(a, b, c, d));
-        // And finally we merge the left and right side into one.
-        leftRuleBuilder.applyFilterToLastPrimaryPattern();
-        int startingPatternId = leftRuleBuilder.getPrimaryPatterns().size();
-        for (int i = 0; i < rightRuleBuilder.getPrimaryPatterns().size(); i++) {
-            leftRuleBuilder.getPrimaryPatterns().add(rightRuleBuilder.getPrimaryPatterns().get(i));
-            int newPatternId = startingPatternId + i;
-            leftRuleBuilder.getDependentExpressionMap()
-                    .put(newPatternId, rightRuleBuilder.getDependentExpressionMap().getOrDefault(i, new ArrayList<>(0)));
-            leftRuleBuilder.setFilterToApplyToLastPrimaryPattern(rightRuleBuilder.getFilterToApplyToLastPrimaryPattern());
-        }
-        leftRuleBuilder.getVariables().addAll(rightRuleBuilder.getVariables());
-        return leftRuleBuilder;
+        return merge(leftRuleBuilder, rightRuleBuilder);
+    }
+
+    @Override
+    public AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
+        return new QuadRuleBuilder(leftRuleBuilder::generateNextId,
+                Math.max(leftRuleBuilder.getExpectedGroupByCount(), rightRuleBuilder.getExpectedGroupByCount()));
     }
 
 }

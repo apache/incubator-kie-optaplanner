@@ -42,7 +42,7 @@ public class BiExistenceMutator<A, B, C> implements Mutator {
                 .toArray(AbstractTriJoiner[]::new);
     }
 
-    private RuleBuilder applyJoiners(RuleBuilder ruleBuilder, AbstractTriJoiner<A, B, C> joiner,
+    private AbstractRuleBuilder applyJoiners(AbstractRuleBuilder ruleBuilder, AbstractTriJoiner<A, B, C> joiner,
             TriPredicate<A, B, C> predicate) {
         PatternDSL.PatternDef aPattern = ruleBuilder.getPrimaryPatterns().get(0);
         PatternDSL.PatternDef bPattern = ruleBuilder.getPrimaryPatterns().get(1);
@@ -56,7 +56,7 @@ public class BiExistenceMutator<A, B, C> implements Mutator {
         return applyFilters(ruleBuilder, aPattern, bPattern, result);
     }
 
-    private RuleBuilder applyFilters(RuleBuilder ruleBuilder, PatternDSL.PatternDef<A> primaryPatternA,
+    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, PatternDSL.PatternDef<A> primaryPatternA,
             PatternDSL.PatternDef<B> primaryPatternB, TriPredicate<A, B, C> predicate) {
         Variable<C> toExist = PatternDSL.declarationOf(otherFactType, ruleBuilder.generateNextId("biToExist"));
         PatternDSL.PatternDef<C> existencePattern = PatternDSL.pattern(toExist);
@@ -75,7 +75,7 @@ public class BiExistenceMutator<A, B, C> implements Mutator {
     }
 
     @Override
-    public RuleBuilder apply(RuleBuilder ruleBuilder) {
+    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         AbstractTriJoiner<A, B, C> finalJoiner = null;

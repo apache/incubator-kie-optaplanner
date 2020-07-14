@@ -45,7 +45,7 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
-import org.optaplanner.core.impl.score.stream.drools.graph.builder.RuleBuilder;
+import org.optaplanner.core.impl.score.stream.drools.graph.builder.AbstractRuleBuilder;
 
 public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
 
@@ -76,7 +76,7 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
         this.compiledRuleToExpectedTypesMap = compiledRuleToConstraintMap.keySet().stream()
                 .collect(Collectors.toMap(Function.identity(), rule -> {
                     String commaSeparatedFqnList = (String) rule.getMetaData().getOrDefault(
-                            RuleBuilder.VARIABLE_TYPE_RULE_METADATA_KEY, "");
+                            AbstractRuleBuilder.VARIABLE_TYPE_RULE_METADATA_KEY, "");
                     return Arrays.stream(commaSeparatedFqnList.split("\\Q,\\E"))
                             .map(className -> {
                                 try {
