@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.impl.result;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -25,6 +26,7 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
@@ -33,6 +35,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.io.XmlIO;
+import org.optaplanner.core.impl.io.jaxb.JaxbIO;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -260,6 +264,15 @@ public class SolverBenchmarkResult {
             }
         }
         return null;
+    }
+
+    public String getSolverConfigAsHtmlEscapedXml() {
+        XmlIO<SolverConfig> xmlIO = new JaxbIO<>(SolverConfig.class);
+        StringWriter stringWriter = new StringWriter();
+        xmlIO.write(solverConfig, stringWriter);
+        String xml = stringWriter.toString();
+        // TODO: replace the deprecated class
+        return StringEscapeUtils.escapeHtml4(xml);
     }
 
     public EnvironmentMode getEnvironmentMode() {
