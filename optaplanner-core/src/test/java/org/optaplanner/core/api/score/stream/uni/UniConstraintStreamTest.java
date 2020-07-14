@@ -1388,7 +1388,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .filter(entity -> entity.getEntityGroup() == entityGroup)
                     .filter(entity -> entity.getStringProperty().equals("MyString1"))
                     .join(TestdataLavishEntity.class, equal(TestdataLavishEntity::getIntegerProperty))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (a, b) -> 1);
         });
 
         // From scratch

@@ -58,6 +58,7 @@ import org.optaplanner.core.impl.score.stream.drools.graph.consequences.UniConst
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNodeType;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.FromNode;
 
 public final class RuleBuilder {
 
@@ -73,17 +74,12 @@ public final class RuleBuilder {
     public RuleBuilder(ConstraintGraphNode previousNode, int expectedGroupByCount) {
         this.fromNode = previousNode;
         this.expectedGroupByCount = expectedGroupByCount;
-        variables.add(PatternDSL.declarationOf(fromNode.getFactType(), "aVar"));
+        variables.add(PatternDSL.declarationOf(fromNode.getFactType(), generateNextId("var")));
         primaryPatterns.add(PatternDSL.pattern(variables.get(0)));
     }
 
-    RuleBuilder(RuleBuilder original) {
-        this.fromNode = original.fromNode;
-        this.expectedGroupByCount = original.expectedGroupByCount;
-    }
-
-    public ConstraintGraphNode getFromNode() {
-        return fromNode;
+    protected String generateNextId(String prefix) {
+        return prefix + ((FromNode) fromNode).getGraph().getNextId();
     }
 
     public List<Variable> getVariables() {
@@ -145,7 +141,12 @@ public final class RuleBuilder {
     }
 
     public RuleBuilder join(RuleBuilder rightSubTreeBuilder, ConstraintGraphNode joinNode) {
-        throw new UnsupportedOperationException("JOIN");
+        int newCardinality = joinNode.getCardinality();
+        if (newCardinality > 2) {
+            throw new UnsupportedOperationException("JOIN" + newCardinality);
+        }
+        return new UniJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
+                .apply(this, rightSubTreeBuilder);
     }
 
     public RuleBuilder andThen(ConstraintGraphNode node) {
@@ -280,15 +281,20 @@ public final class RuleBuilder {
         }
     }
 
-    public <A> List<Rule> build(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
-            DroolsConstraint constraint) {
+    protected void applyFilterToLastPrimaryPattern() {
+        if (filterToApplyToLastPrimaryPattern == null) {
+            return;
+        }
+        primaryPatterns.get(primaryPatterns.size() - 1)
+                .expr(generateNextId("filter"), filterToApplyToLastPrimaryPattern::test);
+        filterToApplyToLastPrimaryPattern = null;
+    }
+
+    public List<Rule> build(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint) {
+        applyFilterToLastPrimaryPattern();
         List<RuleItemBuilder> ruleItemBuilderList = new ArrayList<>(0);
         for (int i = 0; i < primaryPatterns.size(); i++) {
-            PatternDSL.PatternDef pattern = primaryPatterns.get(i);
-            if (i == primaryPatterns.size() - 1 && filterToApplyToLastPrimaryPattern != null) {
-                pattern = pattern.expr("aFilter", filterToApplyToLastPrimaryPattern::test);
-            }
-            ruleItemBuilderList.add(pattern);
+            ruleItemBuilderList.add(primaryPatterns.get(i));
             ruleItemBuilderList.addAll(dependentExpressionMap.getOrDefault(i, Collections.emptyList()));
         }
         ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal,

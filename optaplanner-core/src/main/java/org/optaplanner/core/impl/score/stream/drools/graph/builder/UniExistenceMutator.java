@@ -24,7 +24,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.drools.model.BetaIndex;
-import org.drools.model.Index;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Predicate2;
@@ -49,28 +48,11 @@ public class UniExistenceMutator<A, B> implements Mutator {
                 .toArray(AbstractBiJoiner[]::new);
     }
 
-    public static Index.ConstraintType getConstraintType(JoinerType type) {
-        switch (type) {
-            case EQUAL:
-                return Index.ConstraintType.EQUAL;
-            case LESS_THAN:
-                return Index.ConstraintType.LESS_THAN;
-            case LESS_THAN_OR_EQUAL:
-                return Index.ConstraintType.LESS_OR_EQUAL;
-            case GREATER_THAN:
-                return Index.ConstraintType.GREATER_THAN;
-            case GREATER_THAN_OR_EQUAL:
-                return Index.ConstraintType.GREATER_OR_EQUAL;
-            default:
-                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
-        }
-    }
-
     private RuleBuilder applyJoiners(RuleBuilder ruleBuilder, AbstractBiJoiner<A, B> biJoiner,
             BiPredicate<A, B> biPredicate) {
         PatternDSL.PatternDef<A> primaryPattern =
                 ruleBuilder.getPrimaryPatterns().get(ruleBuilder.getPrimaryPatterns().size() - 1);
-        Variable<B> toExist = PatternDSL.declarationOf(otherFactType, "toExist");
+        Variable<B> toExist = PatternDSL.declarationOf(otherFactType, ruleBuilder.generateNextId("toExist"));
         PatternDSL.PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
         if (biJoiner == null) {
             return applyFilters(ruleBuilder, primaryPattern, existencePattern, biPredicate);
@@ -81,7 +63,7 @@ public class UniExistenceMutator<A, B> implements Mutator {
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind one join variable.
             int currentMappingIndex = mappingIndex;
-            Variable<Object> joinVar = PatternDSL.declarationOf(Object.class, "joinVar" + currentMappingIndex);
+            Variable<Object> joinVar = PatternDSL.declarationOf(Object.class, "joinVar");
             Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
             primaryPattern = primaryPattern.bind(joinVar, leftMapping::apply);
             joinVars[currentMappingIndex] = joinVar;
@@ -96,7 +78,7 @@ public class UniExistenceMutator<A, B> implements Mutator {
             Predicate2<B, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
                 return joinerType.matches(a, rightMapping.apply(b));
             };
-            BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
+            BetaIndex<B, A, ?> index = betaIndexedBy(Object.class, Mutator.getConstraintType(joinerType),
                     currentMappingIndex, rightMapping::apply, leftMapping::apply);
             existencePattern = existencePattern.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
                     joinVars[currentMappingIndex], predicate, index);

@@ -18,6 +18,26 @@ package org.optaplanner.core.impl.score.stream.drools.graph.builder;
 
 import java.util.function.UnaryOperator;
 
+import org.drools.model.Index;
+import org.optaplanner.core.impl.score.stream.common.JoinerType;
+
 public interface Mutator extends UnaryOperator<RuleBuilder> {
+
+    static Index.ConstraintType getConstraintType(JoinerType type) {
+        switch (type) {
+            case EQUAL:
+                return Index.ConstraintType.EQUAL;
+            case LESS_THAN:
+                return Index.ConstraintType.LESS_THAN;
+            case LESS_THAN_OR_EQUAL:
+                return Index.ConstraintType.LESS_OR_EQUAL;
+            case GREATER_THAN:
+                return Index.ConstraintType.GREATER_THAN;
+            case GREATER_THAN_OR_EQUAL:
+                return Index.ConstraintType.GREATER_OR_EQUAL;
+            default:
+                throw new IllegalStateException("Unsupported joiner type (" + type + ").");
+        }
+    }
 
 }

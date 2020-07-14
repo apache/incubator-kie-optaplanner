@@ -18,13 +18,17 @@ package org.optaplanner.core.impl.score.stream.drools.graph.nodes;
 
 import java.util.Objects;
 
+import org.optaplanner.core.impl.score.stream.drools.graph.ConstraintGraph;
+
 public final class FromNode<A> extends AbstractConstraintModelNode implements UniConstraintGraphNode<A> {
 
     private final Class<A> factType;
+    private final ConstraintGraph graph;
 
-    public FromNode(Class<A> factType) {
+    public FromNode(Class<A> factType, ConstraintGraph graph) {
         super(ConstraintGraphNodeType.FROM);
         this.factType = Objects.requireNonNull(factType);
+        this.graph = Objects.requireNonNull(graph);
     }
 
     @Override
@@ -32,4 +36,7 @@ public final class FromNode<A> extends AbstractConstraintModelNode implements Un
         return factType;
     }
 
+    public ConstraintGraph getGraph() {
+        return graph;
+    }
 }

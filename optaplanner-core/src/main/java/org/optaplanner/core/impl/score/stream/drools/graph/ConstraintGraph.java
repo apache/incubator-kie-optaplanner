@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -73,11 +74,12 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.UniConstraintGr
 
 public final class ConstraintGraph {
 
+    private final AtomicLong nextId = new AtomicLong(0);
     private final Set<ConstraintGraphNode> nodeSet = new LinkedHashSet<>(0);
     private final Set<ConstraintConsequence> consequenceSet = new LinkedHashSet<>(0);
 
     public <A> UniConstraintGraphNode<A> from(Class<A> clz) {
-        FromNode<A> node = new FromNode<>(clz);
+        FromNode<A> node = new FromNode<>(clz, this);
         nodeSet.add(node);
         return node;
     }
@@ -336,7 +338,7 @@ public final class ConstraintGraph {
     }
 
     public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintGraphNode<A, B> parent) {
-        return impact(() -> ConstraintConsequence.create(parent, (ToIntBiFunction<A, B>) (a, b) -> 1));
+        return impact(() -> ConstraintConsequence.create(parent));
     }
 
     public <A, B> BiConstraintConsequence<A, B> impact(BiConstraintGraphNode<A, B> parent,
@@ -355,7 +357,7 @@ public final class ConstraintGraph {
     }
 
     public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintGraphNode<A, B, C> parent) {
-        return impact(() -> ConstraintConsequence.create(parent, (ToIntTriFunction<A, B, C>) (a, b, c) -> 1));
+        return impact(() -> ConstraintConsequence.create(parent));
     }
 
     public <A, B, C> TriConstraintConsequence<A, B, C> impact(TriConstraintGraphNode<A, B, C> parent,
@@ -374,7 +376,7 @@ public final class ConstraintGraph {
     }
 
     public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintGraphNode<A, B, C, D> parent) {
-        return impact(() -> ConstraintConsequence.create(parent, (ToIntQuadFunction<A, B, C, D>) (a, b, c, d) -> 1));
+        return impact(() -> ConstraintConsequence.create(parent));
     }
 
     public <A, B, C, D> QuadConstraintConsequence<A, B, C, D> impact(QuadConstraintGraphNode<A, B, C, D> parent,
@@ -409,6 +411,10 @@ public final class ConstraintGraph {
 
     public Set<ConstraintConsequence> getConsequences() {
         return Collections.unmodifiableSet(consequenceSet);
+    }
+
+    public long getNextId() {
+        return nextId.getAndIncrement();
     }
 
     public void generateRules(ModelImpl executableModel, Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
