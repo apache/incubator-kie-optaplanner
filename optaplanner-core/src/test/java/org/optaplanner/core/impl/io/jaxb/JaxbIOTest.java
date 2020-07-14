@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.io.jaxb;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -51,14 +51,14 @@ public class JaxbIOTest {
     public void writeThrowsExceptionOnNullParameters() {
         XmlIO<DummyJaxbClass> xmlIO = new JaxbIO<>(DummyJaxbClass.class);
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(assertThatIllegalArgumentException().isThrownBy(() -> xmlIO.write(null, new StringWriter())));
-            softly.assertThat(assertThatIllegalArgumentException().isThrownBy(() -> xmlIO.write(new DummyJaxbClass(1), null)));
+            softly.assertThat(assertThatNullPointerException().isThrownBy(() -> xmlIO.write(null, new StringWriter())));
+            softly.assertThat(assertThatNullPointerException().isThrownBy(() -> xmlIO.write(new DummyJaxbClass(1), null)));
         });
     }
 
     @Test
     public void readThrowsExceptionOnNullParameter() {
-        assertThatIllegalArgumentException().isThrownBy(() -> new JaxbIO<>(DummyJaxbClass.class).read(null));
+        assertThatNullPointerException().isThrownBy(() -> new JaxbIO<>(DummyJaxbClass.class).read(null));
     }
 
     @Test

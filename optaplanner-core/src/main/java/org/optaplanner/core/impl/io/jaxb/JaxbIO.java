@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.io.jaxb;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -48,9 +49,7 @@ public final class JaxbIO<T> implements XmlIO<T> {
     }
 
     public JaxbIO(Class<T> rootClass, int indentation) {
-        if (rootClass == null) {
-            throw new IllegalArgumentException("Root element class cannot be null.");
-        }
+        Objects.requireNonNull(rootClass);
         this.rootClass = rootClass;
         this.indentation = indentation;
         try {
@@ -67,9 +66,7 @@ public final class JaxbIO<T> implements XmlIO<T> {
     }
 
     public T read(Reader reader) {
-        if (reader == null) {
-            throw new IllegalArgumentException("Reader cannot be null.");
-        }
+        Objects.requireNonNull(reader);
         try {
             return (T) unmarshaller.unmarshal(reader);
         } catch (JAXBException jaxbException) {
@@ -79,9 +76,8 @@ public final class JaxbIO<T> implements XmlIO<T> {
     }
 
     public void write(T root, Writer writer) {
-        if (writer == null) {
-            throw new IllegalArgumentException("Writer cannot be null.");
-        }
+        Objects.requireNonNull(root);
+        Objects.requireNonNull(writer);
         DOMResult domResult = new DOMResult();
         try {
             marshaller.marshal(root, domResult);
