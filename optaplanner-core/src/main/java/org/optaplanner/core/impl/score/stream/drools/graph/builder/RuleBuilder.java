@@ -161,6 +161,7 @@ public final class RuleBuilder {
                     case 1:
                         return new UniExistenceMutator(joiningNode, shouldExist).apply(this);
                     case 2:
+                        return new BiExistenceMutator(joiningNode, shouldExist).apply(this);
                     case 3:
                     case 4:
                     default:
