@@ -10,11 +10,11 @@ import org.acme.facilitylocation.persistence.FacilityLocationProblemRepository;
 import io.quarkus.runtime.StartupEvent;
 
 @ApplicationScoped
-public class RepositoryPopulator {
+public class DemoDataGenerator {
 
     private final FacilityLocationProblemRepository repository;
 
-    public RepositoryPopulator(FacilityLocationProblemRepository repository) {
+    public DemoDataGenerator(FacilityLocationProblemRepository repository) {
         this.repository = repository;
     }
 
