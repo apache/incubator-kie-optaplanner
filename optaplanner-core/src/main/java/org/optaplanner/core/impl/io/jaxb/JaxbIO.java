@@ -36,16 +36,23 @@ import org.optaplanner.core.impl.io.XmlIO;
 import org.optaplanner.core.impl.io.XmlUnmarshallingException;
 
 public final class JaxbIO<T> implements XmlIO<T> {
+    private static final int DEFAULT_INDENTATION = 2;
+
     private final Unmarshaller unmarshaller;
     private final Marshaller marshaller;
     private final Class<T> rootClass;
+    private final int indentation;
 
     public JaxbIO(Class<T> rootClass) {
+        this(rootClass, DEFAULT_INDENTATION);
+    }
+
+    public JaxbIO(Class<T> rootClass, int indentation) {
         if (rootClass == null) {
             throw new IllegalArgumentException("Root element class cannot be null.");
         }
         this.rootClass = rootClass;
-
+        this.indentation = indentation;
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(rootClass);
             unmarshaller = jaxbContext.createUnmarshaller();
@@ -88,7 +95,7 @@ public final class JaxbIO<T> implements XmlIO<T> {
         try {
             transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indentation));
             transformer.transform(new DOMSource(domResult.getNode()), new StreamResult(writer));
         } catch (TransformerException transformerException) {
             String errMessage = String.format("Unable to format %s XML.", rootClass.getName());
