@@ -84,7 +84,7 @@ public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solut
 
     @Override
     public String toString() {
-        return problem != null ? problem.toString() : problemName;
+        return problemName;
     }
 
 }
