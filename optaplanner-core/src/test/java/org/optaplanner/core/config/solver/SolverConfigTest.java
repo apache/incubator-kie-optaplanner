@@ -51,7 +51,7 @@ public class SolverConfigTest {
     private final XmlIO<SolverConfig> xmlIO = new JaxbIO<>(SolverConfig.class);
 
     @Test
-    public void jaxbXmlConfigFileRemainsSameAfterReadWrite() throws IOException {
+    public void xmlConfigFileRemainsSameAfterReadWrite() throws IOException {
         SolverConfig jaxbSolverConfig = unmarshallSolverConfigFromResource(TEST_SOLVER_CONFIG);
 
         Writer stringWriter = new StringWriter();
