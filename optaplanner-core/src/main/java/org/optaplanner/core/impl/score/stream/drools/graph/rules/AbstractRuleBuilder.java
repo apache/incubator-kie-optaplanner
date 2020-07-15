@@ -36,6 +36,7 @@ import org.drools.model.view.ExprViewItem;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelGroupingNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNodeType;
@@ -139,6 +140,11 @@ public abstract class AbstractRuleBuilder {
                 AbstractConstraintModelJoiningNode joiningNode = (AbstractConstraintModelJoiningNode) node;
                 boolean shouldExist = joiningNode.getType() == ConstraintGraphNodeType.IF_EXISTS;
                 return andThenExists(joiningNode, shouldExist);
+            case GROUPBY_MAPPING_ONLY:
+            case GROUPBY_COLLECTING_ONLY:
+            case GROUPBY_MAPPING_AND_COLLECTING:
+                AbstractConstraintModelGroupingNode groupingNode = (AbstractConstraintModelGroupingNode) node;
+                return andThenGroupBy(groupingNode);
             default:
                 throw new UnsupportedOperationException(node.getType().toString());
         }
@@ -146,10 +152,12 @@ public abstract class AbstractRuleBuilder {
 
     public abstract AbstractRuleBuilder join(AbstractRuleBuilder rightSubTreeBuilder, ConstraintGraphNode joinNode);
 
+    protected abstract AbstractRuleBuilder andThenFilter(ConstraintGraphNode filterNode);
+
     protected abstract AbstractRuleBuilder andThenExists(AbstractConstraintModelJoiningNode joiningNode,
             boolean shouldExist);
 
-    protected abstract AbstractRuleBuilder andThenFilter(ConstraintGraphNode filterNode);
+    protected abstract AbstractRuleBuilder andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode);
 
     protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables);

@@ -31,6 +31,7 @@ import org.drools.model.consequences.ConsequenceBuilder;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
+import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelGroupingNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 
@@ -49,11 +50,6 @@ public final class UniRuleBuilder extends AbstractRuleBuilder {
     }
 
     @Override
-    protected AbstractRuleBuilder andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        return new UniExistenceMutator(joiningNode, shouldExist).apply(this);
-    }
-
-    @Override
     protected AbstractRuleBuilder andThenFilter(ConstraintGraphNode filterNode) {
         Supplier<Predicate> predicateSupplier = (Supplier<Predicate>) filterNode;
         if (filterToApplyToLastPrimaryPattern == null) {
@@ -62,6 +58,16 @@ public final class UniRuleBuilder extends AbstractRuleBuilder {
             filterToApplyToLastPrimaryPattern = filterToApplyToLastPrimaryPattern.and(predicateSupplier.get());
         }
         return this;
+    }
+
+    @Override
+    protected AbstractRuleBuilder andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
+        return new UniExistenceMutator(joiningNode, shouldExist).apply(this);
+    }
+
+    @Override
+    protected AbstractRuleBuilder andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
