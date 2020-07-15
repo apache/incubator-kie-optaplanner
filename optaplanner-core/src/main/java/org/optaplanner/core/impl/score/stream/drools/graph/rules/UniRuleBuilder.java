@@ -52,6 +52,7 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstra
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
+import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniToBiGroupByAccumulator;
 
 public final class UniRuleBuilder extends AbstractRuleBuilder {
 
@@ -163,7 +164,8 @@ public final class UniRuleBuilder extends AbstractRuleBuilder {
 
     private <A, GroupKeyA, ResultB> AbstractRuleBuilder mapAndCollect(Function<A, GroupKeyA> groupKeyMappingA,
             UniConstraintCollector<A, ?, ResultB> collectorB) {
-        return null;
+        return groupWithCollect(() -> new DroolsUniToBiGroupByAccumulator<>(groupKeyMappingA, collectorB,
+                getVariables().get(0)));
     }
 
     private <A, GroupKeyA, GroupKeyB, ResultC> AbstractRuleBuilder mapAndCollect(

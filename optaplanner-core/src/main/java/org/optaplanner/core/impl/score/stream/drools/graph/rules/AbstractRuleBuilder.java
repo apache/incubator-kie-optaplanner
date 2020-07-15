@@ -22,20 +22,26 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.accFunction;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.model.Argument;
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
+import org.drools.model.Index;
 import org.drools.model.PatternDSL;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Rule;
@@ -47,7 +53,9 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelGroupingNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
@@ -182,11 +190,23 @@ public abstract class AbstractRuleBuilder {
         ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal, variableArray);
         ruleItemBuilderList.add(consequence);
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
-                .metadata(VARIABLE_TYPE_RULE_METADATA_KEY, variables.stream()
-                        .map(v -> v.getType().getCanonicalName())
+                .metadata(VARIABLE_TYPE_RULE_METADATA_KEY, getExpectedJustificationTypes()
+                        .map(Class::getCanonicalName)
                         .collect(Collectors.joining(",")))
                 .build(ruleItemBuilderList.toArray(new RuleItemBuilder[0]));
         return singletonList(rule);
+    }
+
+    private Stream<Class> getExpectedJustificationTypes() {
+        PatternDef pattern = primaryPatterns.get(primaryPatterns.size() - 1);
+        Class type = pattern.getFirstVariable().getType();
+        if (FactTuple.class.isAssignableFrom(type)) {
+            // There is one expected constraint justification, and that is of the tuple type.
+            return Stream.of(type);
+        }
+        // There are plenty expected constraint justifications, one for each variable.
+        return variables.stream()
+                .map(Argument::getType);
     }
 
     abstract protected int getExpectedVariableCount();
@@ -222,6 +242,28 @@ public abstract class AbstractRuleBuilder {
         return recollect(outputVariable, outerAccumulatePattern);
     }
 
+    protected <InTuple> AbstractRuleBuilder groupWithCollect(
+            Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier) {
+        return universalGroupWithCollect(invokerSupplier,
+                (var, pattern, accumulate) -> regroupBi((Variable) var, (PatternDef) pattern, accumulate));
+    }
+
+    private <InTuple> AbstractRuleBuilder universalGroupWithCollect(
+            Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier, Mutator<InTuple> mutator) {
+        applyFilterToLastPrimaryPattern(getVariables().toArray(new Variable[0]));
+        int patternId = primaryPatterns.size() - 1;
+        PatternDef mainAccumulatePattern = primaryPatterns.get(patternId);
+        List<ViewItem> dependentsExpressions = dependentExpressionMap.getOrDefault(patternId, emptyList());
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern, dependentsExpressions);
+        Variable<Collection<InTuple>> tupleCollection =
+                (Variable<Collection<InTuple>>) Util.createVariable(Collection.class, "tupleCollection");
+        PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleCollection)
+                .expr("Non-empty", collection -> !collection.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));
+        ViewItem<?> accumulate = DSL.accumulate(innerAccumulatePattern, accFunction(invokerSupplier).as(tupleCollection));
+        return mutator.apply(tupleCollection, pattern, accumulate);
+    }
+
     protected <NewA> AbstractRuleBuilder recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
         List<ViewItem> newFinishedExpressions = new ArrayList<>(getFinishedExpressions());
         for (int i = 0; i < primaryPatterns.size() - 1; i++) { // The last pattern was already converted to accumulate.
@@ -242,10 +284,32 @@ public abstract class AbstractRuleBuilder {
             newFinishedExpressions.addAll(dependentExpressionMap.getOrDefault(i, emptyList()));
         }
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
-        newFinishedExpressions.add(collectPattern); // The last pattern is added here.
+        newFinishedExpressions.add(collectPattern);
         Variable<NewA> newA = (Variable<NewA>) Util.createVariable("groupKey", DSL.from(newASource));
         PatternDef<NewA> newPrimaryPattern = PatternDSL.pattern(newA);
         return new UniRuleBuilder(this::generateNextId, expectedGroupByCount, newFinishedExpressions, asList(newA),
+                asList(newPrimaryPattern), emptyMap());
+    }
+
+    public <NewA, NewB> AbstractRuleBuilder regroupBi(Variable<Collection<BiTuple<NewA, NewB>>> newSource,
+            PatternDef<Collection<BiTuple<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
+        Variable<BiTuple<NewA, NewB>> newTuple =
+                (Variable<BiTuple<NewA, NewB>>) Util.createVariable(BiTuple.class, "groupKey",
+                        PatternDSL.from(newSource));
+        List<ViewItem> newFinishedExpressions = new ArrayList<>(getFinishedExpressions());
+        for (int i = 0; i < primaryPatterns.size() - 1; i++) { // The last pattern was already converted to accumulate.
+            newFinishedExpressions.add(primaryPatterns.get(i));
+            newFinishedExpressions.addAll(dependentExpressionMap.getOrDefault(i, emptyList()));
+        }
+        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(collectPattern);
+        Variable<NewA> newA = Util.createVariable("newA");
+        Variable<NewB> newB = Util.createVariable("newB");
+        List<Variable> newVariables = Arrays.asList(newA, newB);
+        PatternDef<BiTuple<NewA, NewB>> newPrimaryPattern = PatternDSL.pattern(newTuple)
+                .bind(newA, tuple -> tuple.a)
+                .bind(newB, tuple -> tuple.b);
+        return new BiRuleBuilder(this::generateNextId, expectedGroupByCount, newFinishedExpressions, newVariables,
                 asList(newPrimaryPattern), emptyMap());
     }
 
