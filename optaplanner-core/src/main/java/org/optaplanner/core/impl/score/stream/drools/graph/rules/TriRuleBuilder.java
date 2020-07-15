@@ -112,18 +112,10 @@ final class TriRuleBuilder extends AbstractRuleBuilder {
             return;
         }
         TriPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(2).expr("Filter using " + predicate, variables[0], variables[1], variables[2],
-                (fact, a, b, c) -> predicate.test(a, b, c));
+        getPrimaryPatterns().get(getPrimaryPatterns().size() - 1)
+                .expr("Filter using " + predicate, variables[0], variables[1], variables[2],
+                        (fact, a, b, c) -> predicate.test(a, b, c));
         filterToApplyToLastPrimaryPattern = null;
     }
 
-    @Override
-    protected int getExpectedVariableCount() {
-        return 3;
-    }
-
-    @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(PatternDef pattern, Variable<InTuple> inTupleVariable) {
-        throw new UnsupportedOperationException();
-    }
 }

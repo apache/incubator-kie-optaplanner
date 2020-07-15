@@ -111,18 +111,10 @@ final class QuadRuleBuilder extends AbstractRuleBuilder {
             return;
         }
         QuadPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(3).expr("Filter using " + predicate, variables[0], variables[1], variables[2],
-                variables[3], (fact, a, b, c, d) -> predicate.test(a, b, c, d));
+        getPrimaryPatterns().get(getPrimaryPatterns().size() - 1)
+                .expr("Filter using " + predicate, variables[0], variables[1], variables[2], variables[3],
+                        (fact, a, b, c, d) -> predicate.test(a, b, c, d));
         filterToApplyToLastPrimaryPattern = null;
     }
 
-    @Override
-    protected int getExpectedVariableCount() {
-        return 4;
-    }
-
-    @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(PatternDef pattern, Variable<InTuple> inTupleVariable) {
-        throw new UnsupportedOperationException();
-    }
 }

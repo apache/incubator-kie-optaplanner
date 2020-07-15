@@ -112,18 +112,10 @@ final class BiRuleBuilder extends AbstractRuleBuilder {
             return;
         }
         BiPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(1).expr("Filter using " + predicate, variables[0], variables[1],
-                (fact, a, b) -> predicate.test(a, b));
+        getPrimaryPatterns().get(getPrimaryPatterns().size() - 1)
+                .expr("Filter using " + predicate, variables[0], variables[1],
+                        (fact, a, b) -> predicate.test(a, b));
         filterToApplyToLastPrimaryPattern = null;
     }
 
-    @Override
-    protected int getExpectedVariableCount() {
-        return 2;
-    }
-
-    @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(PatternDef pattern, Variable<InTuple> inTupleVariable) {
-        throw new UnsupportedOperationException();
-    }
 }
