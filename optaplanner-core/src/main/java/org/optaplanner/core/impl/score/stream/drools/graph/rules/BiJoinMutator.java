@@ -20,12 +20,15 @@ import static org.drools.model.PatternDSL.PatternDef;
 import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.declarationOf;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.drools.model.BetaIndex;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
@@ -75,8 +78,12 @@ final class BiJoinMutator<A, B> implements JoinMutator {
     }
 
     @Override
-    public AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
+    public AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder,
+            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
+            Map<Integer, List<ViewItem>> dependentExpressionMap) {
         return new BiRuleBuilder(leftRuleBuilder::generateNextId,
-                Math.max(leftRuleBuilder.getExpectedGroupByCount(), rightRuleBuilder.getExpectedGroupByCount()));
+                Math.max(leftRuleBuilder.getExpectedGroupByCount(), rightRuleBuilder.getExpectedGroupByCount()),
+                finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
+
 }

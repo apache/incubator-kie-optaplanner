@@ -16,7 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
-import org.drools.model.PatternDSL;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.model.PatternDSL.PatternDef;
+import org.drools.model.Variable;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 
@@ -30,20 +35,21 @@ public class QuadJoinMutator<A, B, C, D> implements JoinMutator {
 
     @Override
     public AbstractRuleBuilder apply(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
-        PatternDSL.PatternDef<A> aPattern = leftRuleBuilder.getPrimaryPatterns().get(0);
-        PatternDSL.PatternDef<B> bPattern = leftRuleBuilder.getPrimaryPatterns().get(1);
-        PatternDSL.PatternDef<C> cPattern = leftRuleBuilder.getPrimaryPatterns().get(2);
-        PatternDSL.PatternDef<D> dPattern =
-                rightRuleBuilder.getPrimaryPatterns().get(rightRuleBuilder.getPrimaryPatterns().size() - 1);
-        dPattern.expr("Filter using " + joiner, aPattern.getFirstVariable(),
-                bPattern.getFirstVariable(), cPattern.getFirstVariable(), (d, a, b, c) -> joiner.matches(a, b, c, d));
+        rightRuleBuilder.getPrimaryPatterns().get(rightRuleBuilder.getPrimaryPatterns().size() - 1)
+                .expr("Filter using " + joiner, leftRuleBuilder.getVariables().get(0),
+                        leftRuleBuilder.getVariables().get(1), leftRuleBuilder.getVariables().get(2),
+                        rightRuleBuilder.getVariables().get(0),
+                        (fact, a, b, c, d) -> joiner.matches((A) a, (B) b, (C) c, (D) d));
         return merge(leftRuleBuilder, rightRuleBuilder);
     }
 
     @Override
-    public AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
+    public AbstractRuleBuilder newRuleBuilder(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder,
+            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
+            Map<Integer, List<ViewItem>> dependentExpressionMap) {
         return new QuadRuleBuilder(leftRuleBuilder::generateNextId,
-                Math.max(leftRuleBuilder.getExpectedGroupByCount(), rightRuleBuilder.getExpectedGroupByCount()));
+                Math.max(leftRuleBuilder.getExpectedGroupByCount(), rightRuleBuilder.getExpectedGroupByCount()),
+                finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
 }

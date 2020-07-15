@@ -17,14 +17,18 @@
 package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
+import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -40,8 +44,10 @@ final class TriRuleBuilder extends AbstractRuleBuilder {
 
     private TriPredicate filterToApplyToLastPrimaryPattern = null;
 
-    public TriRuleBuilder(UnaryOperator<String> idSupplier, int expectedGroupByCount) {
-        super(idSupplier, expectedGroupByCount);
+    public TriRuleBuilder(UnaryOperator<String> idSupplier, int expectedGroupByCount,
+            List<ViewItem> finishedExpressions, List<Variable> variables, List<PatternDef> primaryPatterns,
+            Map<Integer, List<ViewItem>> dependentExpressionMap) {
+        super(idSupplier, expectedGroupByCount, finishedExpressions, variables, primaryPatterns, dependentExpressionMap);
     }
 
     @Override
@@ -116,4 +122,8 @@ final class TriRuleBuilder extends AbstractRuleBuilder {
         return 3;
     }
 
+    @Override
+    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(PatternDef pattern, Variable<InTuple> inTupleVariable) {
+        throw new UnsupportedOperationException();
+    }
 }

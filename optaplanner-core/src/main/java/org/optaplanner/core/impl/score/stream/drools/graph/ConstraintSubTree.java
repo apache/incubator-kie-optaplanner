@@ -95,7 +95,7 @@ public final class ConstraintSubTree {
         AbstractRuleBuilder builder = isJoin ? leftSubTree.getBuilder()
                 .join(rightSubTree.getBuilder(), nodes.get(0)) : AbstractRuleBuilder.from(nodes.get(0), getGroupByCount());
         for (int i = 1; i < nodes.size(); i++) {
-            builder.andThen(nodes.get(i));
+            builder = builder.andThen(nodes.get(i));
         }
         return builder;
     }

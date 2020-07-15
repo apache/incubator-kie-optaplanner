@@ -441,9 +441,6 @@ public final class ConstraintGraph {
     public List<Rule> generateRules(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             DroolsConstraint constraint) {
         ConstraintTree constraintTree = getSubtree(constraint.getConsequence());
-        if (constraintTree.getNestedNodes().getGroupByCount() > 1) {
-            throw new UnsupportedOperationException("REGROUPING");
-        }
         return constraintTree.getNestedNodes()
                 .getBuilder()
                 .build(scoreHolderGlobal, constraint);
