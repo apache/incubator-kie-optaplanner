@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.io.jaxb;
+package org.optaplanner.core.impl.io.jaxb;
 
 import java.time.DateTimeException;
 import java.time.OffsetDateTime;

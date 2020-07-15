@@ -71,7 +71,7 @@ public class JaxbIOTest {
         private int id;
 
         private DummyJaxbClass() {
-            // required by JAXB
+            // Required by JAXB
         }
 
         private DummyJaxbClass(int id) {

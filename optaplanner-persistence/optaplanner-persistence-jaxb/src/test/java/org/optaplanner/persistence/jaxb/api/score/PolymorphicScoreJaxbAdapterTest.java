@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jaxb.api.score.buildin;
+package org.optaplanner.persistence.jaxb.api.score;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -62,7 +62,7 @@ public class PolymorphicScoreJaxbAdapterTest {
         private Score<?> score;
 
         private DummyRootElement() {
-            // required by JAXB
+            // Required by JAXB
         }
 
         private DummyRootElement(Score<?> score) {

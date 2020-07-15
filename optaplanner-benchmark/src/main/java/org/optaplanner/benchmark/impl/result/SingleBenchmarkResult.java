@@ -50,7 +50,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("singleBenchmarkResult")
 public class SingleBenchmarkResult implements BenchmarkResult {
 
-    // required by JAXB to refer to existing instances of this class
+    // Required by JAXB to refer to existing instances of this class
     private static final AtomicLong ID_GENERATOR = new AtomicLong(1L);
 
     @XmlID
@@ -102,7 +102,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // ************************************************************************
 
     public SingleBenchmarkResult() {
-        //required by JAXB
+        // Required by JAXB
     }
 
     public SingleBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {

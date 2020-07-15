@@ -92,7 +92,7 @@ public class SolverBenchmarkResult {
     // ************************************************************************
 
     private SolverBenchmarkResult() {
-        // required by JAXB
+        // Required by JAXB
     }
 
     public SolverBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {

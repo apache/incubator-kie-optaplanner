@@ -36,7 +36,7 @@ public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solut
     private SolutionCloner<Solution_> solutionCloner;
 
     public InstanceProblemProvider() {
-        // required by JAXB
+        // Required by JAXB
     }
 
     public InstanceProblemProvider(String problemName, SolutionDescriptor<Solution_> solutionDescriptor, Solution_ problem) {

@@ -37,7 +37,7 @@ public class FileProblemProvider<Solution_> implements ProblemProvider<Solution_
     private File problemFile;
 
     private FileProblemProvider() {
-        // required by JAXB
+        // Required by JAXB
     }
 
     public FileProblemProvider(SolutionFileIO<Solution_> solutionFileIO, File problemFile) {

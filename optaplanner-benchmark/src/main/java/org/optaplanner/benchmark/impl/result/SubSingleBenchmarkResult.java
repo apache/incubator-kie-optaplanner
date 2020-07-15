@@ -94,7 +94,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // ************************************************************************
 
     private SubSingleBenchmarkResult() {
-        //required by JAXB
+        // Required by JAXB
     }
 
     public SubSingleBenchmarkResult(SingleBenchmarkResult singleBenchmarkResult, int subSingleBenchmarkIndex) {

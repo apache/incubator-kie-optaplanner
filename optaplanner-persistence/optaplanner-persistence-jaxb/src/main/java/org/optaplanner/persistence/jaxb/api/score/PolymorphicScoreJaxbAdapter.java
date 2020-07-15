@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jaxb.api.score.buildin;
+package org.optaplanner.persistence.jaxb.api.score;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
@@ -86,7 +86,7 @@ public class PolymorphicScoreJaxbAdapter extends XmlAdapter<PolymorphicScoreJaxb
         private String scoreString;
 
         private JaxbAdaptedScore() {
-            // required by JAXB
+            // Required by JAXB
         }
 
         public JaxbAdaptedScore(Score score) {

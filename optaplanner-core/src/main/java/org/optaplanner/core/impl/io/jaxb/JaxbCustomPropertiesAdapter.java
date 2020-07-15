@@ -52,7 +52,7 @@ public class JaxbCustomPropertiesAdapter extends XmlAdapter<JaxbCustomProperties
         private List<JaxbAdaptedMapEntry> entries;
 
         private JaxbAdaptedMap() {
-            // required by JAXB
+            // Required by JAXB
         }
 
         public JaxbAdaptedMap(List<JaxbAdaptedMapEntry> entries) {

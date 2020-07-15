@@ -126,7 +126,7 @@ public class ProblemBenchmarkResult<Solution_> {
     // ************************************************************************
 
     private ProblemBenchmarkResult() {
-        // required by JAXB
+        // Required by JAXB
     }
 
     public ProblemBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {

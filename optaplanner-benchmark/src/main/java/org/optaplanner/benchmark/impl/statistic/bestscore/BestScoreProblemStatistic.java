@@ -50,7 +50,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
     protected List<File> graphFileList = null;
 
     private BestScoreProblemStatistic() {
-        // required by JAXB
+        // Required by JAXB
     }
 
     public BestScoreProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {

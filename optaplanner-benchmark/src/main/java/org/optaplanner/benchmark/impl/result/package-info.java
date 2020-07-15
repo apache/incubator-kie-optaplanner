@@ -27,6 +27,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 
-import org.optaplanner.benchmark.impl.io.jaxb.OffsetDateTimeJaxbAdapter;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.persistence.jaxb.api.score.buildin.PolymorphicScoreJaxbAdapter;
+import org.optaplanner.core.impl.io.jaxb.OffsetDateTimeJaxbAdapter;
+import org.optaplanner.persistence.jaxb.api.score.PolymorphicScoreJaxbAdapter;
