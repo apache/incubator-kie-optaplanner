@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.graph.builder;
+package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
 import java.math.BigDecimal;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Supplier;
-import java.util.function.ToIntBiFunction;
-import java.util.function.ToLongBiFunction;
 import java.util.function.UnaryOperator;
 
 import org.drools.model.DSL;
@@ -29,34 +25,37 @@ import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceBuilder;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
+import org.optaplanner.core.api.function.ToIntQuadFunction;
+import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.AbstractConstraintModelJoiningNode;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
 
-final class BiRuleBuilder extends AbstractRuleBuilder {
+final class QuadRuleBuilder extends AbstractRuleBuilder {
 
-    private BiPredicate filterToApplyToLastPrimaryPattern = null;
+    private QuadPredicate filterToApplyToLastPrimaryPattern = null;
 
-    public BiRuleBuilder(UnaryOperator<String> idSupplier, int expectedGroupByCount) {
+    public QuadRuleBuilder(UnaryOperator<String> idSupplier, int expectedGroupByCount) {
         super(idSupplier, expectedGroupByCount);
     }
 
     @Override
     public AbstractRuleBuilder join(AbstractRuleBuilder rightSubTreeBuilder, ConstraintGraphNode joinNode) {
-        return new TriJoinMutator<>((AbstractConstraintModelJoiningNode) joinNode)
-                .apply(this, rightSubTreeBuilder);
+        throw new UnsupportedOperationException("Penta streams are not supported.");
     }
 
     @Override
     protected AbstractRuleBuilder andThenExists(AbstractConstraintModelJoiningNode joiningNode, boolean shouldExist) {
-        return new BiExistenceMutator(joiningNode, shouldExist).apply(this);
+        return new QuadExistenceMutator(joiningNode, shouldExist).apply(this);
     }
 
     @Override
     protected AbstractRuleBuilder andThenFilter(ConstraintGraphNode filterNode) {
-        Supplier<BiPredicate> predicateSupplier = (Supplier<BiPredicate>) filterNode;
+        Supplier<QuadPredicate> predicateSupplier = (Supplier<QuadPredicate>) filterNode;
         if (filterToApplyToLastPrimaryPattern == null) {
             filterToApplyToLastPrimaryPattern = predicateSupplier.get();
         } else {
@@ -71,23 +70,23 @@ final class BiRuleBuilder extends AbstractRuleBuilder {
         ConstraintConsequence consequence = constraint.getConsequence();
         switch (consequence.getMatchWeightType()) {
             case INTEGER:
-                ToIntBiFunction intMatchWeighter = ((Supplier<ToIntBiFunction>) consequence).get();
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, intMatchWeighter.applyAsInt(a, b)));
+                ToIntQuadFunction intMatchWeighter = ((Supplier<ToIntQuadFunction>) consequence).get();
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
+                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
+                                (AbstractScoreHolder) scoreHolder, intMatchWeighter.applyAsInt(a, b, c, d)));
             case LONG:
-                ToLongBiFunction longMatchWeighter = ((Supplier<ToLongBiFunction>) consequence).get();
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, longMatchWeighter.applyAsLong(a, b)));
+                ToLongQuadFunction longMatchWeighter = ((Supplier<ToLongQuadFunction>) consequence).get();
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
+                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
+                                (AbstractScoreHolder) scoreHolder, longMatchWeighter.applyAsLong(a, b, c, d)));
             case BIG_DECIMAL:
-                BiFunction bigDecimalMatchWeighter = ((Supplier<BiFunction>) consequence).get();
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore(constraint, (Drools) drools,
-                                (AbstractScoreHolder) scoreHolder, (BigDecimal) bigDecimalMatchWeighter.apply(a, b)));
+                QuadFunction bigDecimalMatchWeighter = ((Supplier<QuadFunction>) consequence).get();
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
+                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore(constraint, (Drools) drools,
+                                (AbstractScoreHolder) scoreHolder, (BigDecimal) bigDecimalMatchWeighter.apply(a, b, c, d)));
             case DEFAULT:
-                return DSL.on(scoreHolderGlobal, variables[0], variables[1])
-                        .execute((drools, scoreHolder, a, b) -> impactScore((Drools) drools,
+                return DSL.on(scoreHolderGlobal, variables[0], variables[1], variables[2], variables[3])
+                        .execute((drools, scoreHolder, a, b, c, d) -> impactScore((Drools) drools,
                                 (AbstractScoreHolder) scoreHolder));
             default:
                 throw new UnsupportedOperationException();
@@ -99,9 +98,10 @@ final class BiRuleBuilder extends AbstractRuleBuilder {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
-        BiPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(1).expr(generateNextId("filter"), getPrimaryPatterns().get(0).getFirstVariable(),
-                (b, a) -> predicate.test(a, b));
+        QuadPredicate predicate = filterToApplyToLastPrimaryPattern;
+        getPrimaryPatterns().get(3).expr(generateNextId("filter"), getPrimaryPatterns().get(0).getFirstVariable(),
+                getPrimaryPatterns().get(1).getFirstVariable(), getPrimaryPatterns().get(2).getFirstVariable(),
+                (d, a, b, c) -> predicate.test(a, b, c, d));
         filterToApplyToLastPrimaryPattern = null;
     }
 

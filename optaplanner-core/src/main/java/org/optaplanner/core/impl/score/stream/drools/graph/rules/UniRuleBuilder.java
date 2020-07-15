@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.graph.builder;
+package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
 import java.math.BigDecimal;
 import java.util.function.Function;

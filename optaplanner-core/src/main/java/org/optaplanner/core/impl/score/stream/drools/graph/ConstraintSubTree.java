@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.optaplanner.core.impl.score.stream.drools.graph.builder.AbstractRuleBuilder;
 import org.optaplanner.core.impl.score.stream.drools.graph.nodes.ConstraintGraphNode;
+import org.optaplanner.core.impl.score.stream.drools.graph.rules.AbstractRuleBuilder;
 
 public final class ConstraintSubTree {
 

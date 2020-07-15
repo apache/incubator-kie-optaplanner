@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.graph.builder;
+package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
 import static org.drools.model.PatternDSL.betaIndexedBy;
 
