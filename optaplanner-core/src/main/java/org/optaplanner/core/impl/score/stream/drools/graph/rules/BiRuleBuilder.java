@@ -105,4 +105,9 @@ final class BiRuleBuilder extends AbstractRuleBuilder {
         filterToApplyToLastPrimaryPattern = null;
     }
 
+    @Override
+    protected int getExpectedVariableCount() {
+        return 2;
+    }
+
 }

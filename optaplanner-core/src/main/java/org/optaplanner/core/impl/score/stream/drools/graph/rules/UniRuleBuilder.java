@@ -104,4 +104,9 @@ public final class UniRuleBuilder extends AbstractRuleBuilder {
         filterToApplyToLastPrimaryPattern = null;
     }
 
+    @Override
+    protected int getExpectedVariableCount() {
+        return 1;
+    }
+
 }

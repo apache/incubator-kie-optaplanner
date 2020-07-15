@@ -104,4 +104,9 @@ final class QuadRuleBuilder extends AbstractRuleBuilder {
         filterToApplyToLastPrimaryPattern = null;
     }
 
+    @Override
+    protected int getExpectedVariableCount() {
+        return 4;
+    }
+
 }

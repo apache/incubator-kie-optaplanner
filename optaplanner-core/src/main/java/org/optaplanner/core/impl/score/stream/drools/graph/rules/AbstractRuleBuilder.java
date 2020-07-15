@@ -44,11 +44,6 @@ import org.optaplanner.core.impl.score.stream.drools.graph.nodes.FromNode;
 public abstract class AbstractRuleBuilder {
 
     public static final String VARIABLE_TYPE_RULE_METADATA_KEY = "constraintStreamVariableTypes";
-
-    public static AbstractRuleBuilder from(ConstraintGraphNode node, int expectedGroupByCount) {
-        return new UniRuleBuilder(node, expectedGroupByCount);
-    }
-
     private final UnaryOperator<String> idSupplier;
     private final int expectedGroupByCount;
     private List<Variable> variables = new ArrayList<>();
@@ -67,36 +62,8 @@ public abstract class AbstractRuleBuilder {
         this.expectedGroupByCount = expectedGroupByCount;
     }
 
-    protected String generateNextId(String prefix) {
-        return idSupplier.apply(prefix);
-    }
-
-    public int getExpectedGroupByCount() {
-        return expectedGroupByCount;
-    }
-
-    public List<Variable> getVariables() {
-        return variables;
-    }
-
-    public List<PatternDSL.PatternDef> getPrimaryPatterns() {
-        return primaryPatterns;
-    }
-
-    public Map<Integer, List<ExprViewItem>> getDependentExpressionMap() {
-        return dependentExpressionMap;
-    }
-
-    public void setVariables(List<Variable> variables) {
-        this.variables = variables;
-    }
-
-    public void setPrimaryPatterns(List<PatternDSL.PatternDef> primaryPatterns) {
-        this.primaryPatterns = primaryPatterns;
-    }
-
-    public void setDependentExpressionMap(Map<Integer, List<ExprViewItem>> dependentExpressionMap) {
-        this.dependentExpressionMap = dependentExpressionMap;
+    public static AbstractRuleBuilder from(ConstraintGraphNode node, int expectedGroupByCount) {
+        return new UniRuleBuilder(node, expectedGroupByCount);
     }
 
     protected static void impactScore(Drools drools, AbstractScoreHolder scoreHolder) {
@@ -123,6 +90,44 @@ public abstract class AbstractRuleBuilder {
         RuleContext kcontext = (RuleContext) drools;
         constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
+    }
+
+    protected String generateNextId(String prefix) {
+        return idSupplier.apply(prefix);
+    }
+
+    public int getExpectedGroupByCount() {
+        return expectedGroupByCount;
+    }
+
+    public List<Variable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(List<Variable> variables) {
+        int expectedVariableCont = getExpectedVariableCount();
+        int actualVariableCount = variables.size();
+        if (actualVariableCount != expectedVariableCont) {
+            throw new IllegalStateException(
+                    "Expecting (" + expectedVariableCont + ") variables, got (" + actualVariableCount + ").");
+        }
+        this.variables = variables;
+    }
+
+    public List<PatternDSL.PatternDef> getPrimaryPatterns() {
+        return primaryPatterns;
+    }
+
+    public void setPrimaryPatterns(List<PatternDSL.PatternDef> primaryPatterns) {
+        this.primaryPatterns = primaryPatterns;
+    }
+
+    public Map<Integer, List<ExprViewItem>> getDependentExpressionMap() {
+        return dependentExpressionMap;
+    }
+
+    public void setDependentExpressionMap(Map<Integer, List<ExprViewItem>> dependentExpressionMap) {
+        this.dependentExpressionMap = dependentExpressionMap;
     }
 
     public final AbstractRuleBuilder andThen(ConstraintGraphNode node) {
@@ -168,5 +173,7 @@ public abstract class AbstractRuleBuilder {
                 .build(ruleItemBuilderList.toArray(new RuleItemBuilder[0]));
         return Collections.singletonList(rule);
     }
+
+    abstract protected int getExpectedVariableCount();
 
 }

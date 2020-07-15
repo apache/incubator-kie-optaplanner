@@ -105,4 +105,9 @@ final class TriRuleBuilder extends AbstractRuleBuilder {
         filterToApplyToLastPrimaryPattern = null;
     }
 
+    @Override
+    protected int getExpectedVariableCount() {
+        return 3;
+    }
+
 }
