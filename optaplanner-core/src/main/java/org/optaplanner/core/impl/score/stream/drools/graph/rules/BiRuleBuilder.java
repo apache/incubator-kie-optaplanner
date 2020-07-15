@@ -95,13 +95,13 @@ final class BiRuleBuilder extends AbstractRuleBuilder {
     }
 
     @Override
-    protected void applyFilterToLastPrimaryPattern() {
+    protected void applyFilterToLastPrimaryPattern(Variable... variables) {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
         BiPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(1).expr(generateNextId("filter"), getPrimaryPatterns().get(0).getFirstVariable(),
-                (b, a) -> predicate.test(a, b));
+        getPrimaryPatterns().get(1).expr("Filter using " + predicate, variables[0], variables[1],
+                (fact, a, b) -> predicate.test(a, b));
         filterToApplyToLastPrimaryPattern = null;
     }
 

@@ -95,14 +95,13 @@ final class TriRuleBuilder extends AbstractRuleBuilder {
     }
 
     @Override
-    protected void applyFilterToLastPrimaryPattern() {
+    protected void applyFilterToLastPrimaryPattern(Variable... variables) {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
         TriPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(2).expr(generateNextId("filter"), getPrimaryPatterns().get(0).getFirstVariable(),
-                getPrimaryPatterns().get(1).getFirstVariable(),
-                (c, a, b) -> predicate.test(a, b, c));
+        getPrimaryPatterns().get(2).expr("Filter using " + predicate, variables[0], variables[1], variables[2],
+                (fact, a, b, c) -> predicate.test(a, b, c));
         filterToApplyToLastPrimaryPattern = null;
     }
 

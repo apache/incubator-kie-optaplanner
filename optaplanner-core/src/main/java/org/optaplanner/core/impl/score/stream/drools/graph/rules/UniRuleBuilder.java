@@ -94,13 +94,13 @@ public final class UniRuleBuilder extends AbstractRuleBuilder {
     }
 
     @Override
-    protected void applyFilterToLastPrimaryPattern() {
+    protected void applyFilterToLastPrimaryPattern(Variable... variables) {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
         Predicate predicate = filterToApplyToLastPrimaryPattern;
         getPrimaryPatterns().get(0)
-                .expr(generateNextId("filter"), predicate::test);
+                .expr("Filter using " + predicate, variables[0], (fact, a) -> predicate.test(a));
         filterToApplyToLastPrimaryPattern = null;
     }
 

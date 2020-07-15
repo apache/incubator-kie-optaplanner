@@ -149,17 +149,17 @@ public abstract class AbstractRuleBuilder {
     protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables);
 
-    protected abstract void applyFilterToLastPrimaryPattern();
+    protected abstract void applyFilterToLastPrimaryPattern(Variable... variables);
 
     public List<Rule> build(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint) {
-        applyFilterToLastPrimaryPattern();
+        Variable[] variableArray = variables.toArray(new Variable[0]);
+        applyFilterToLastPrimaryPattern(variableArray);
         List<RuleItemBuilder> ruleItemBuilderList = new ArrayList<>(0);
         for (int i = 0; i < primaryPatterns.size(); i++) {
             ruleItemBuilderList.add(primaryPatterns.get(i));
             ruleItemBuilderList.addAll(dependentExpressionMap.getOrDefault(i, Collections.emptyList()));
         }
-        ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal,
-                variables.toArray(new Variable[0]));
+        ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal, variableArray);
         ruleItemBuilderList.add(consequence);
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .metadata(VARIABLE_TYPE_RULE_METADATA_KEY, variables.stream()

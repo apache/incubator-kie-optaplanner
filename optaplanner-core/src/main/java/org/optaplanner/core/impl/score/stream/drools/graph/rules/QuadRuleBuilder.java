@@ -94,14 +94,13 @@ final class QuadRuleBuilder extends AbstractRuleBuilder {
     }
 
     @Override
-    protected void applyFilterToLastPrimaryPattern() {
+    protected void applyFilterToLastPrimaryPattern(Variable... variables) {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
         QuadPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(3).expr(generateNextId("filter"), getPrimaryPatterns().get(0).getFirstVariable(),
-                getPrimaryPatterns().get(1).getFirstVariable(), getPrimaryPatterns().get(2).getFirstVariable(),
-                (d, a, b, c) -> predicate.test(a, b, c, d));
+        getPrimaryPatterns().get(3).expr("Filter using " + predicate, variables[0], variables[1], variables[2],
+                variables[3], (fact, a, b, c, d) -> predicate.test(a, b, c, d));
         filterToApplyToLastPrimaryPattern = null;
     }
 

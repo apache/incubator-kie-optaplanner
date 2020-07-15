@@ -29,8 +29,8 @@ import org.drools.model.view.ExprViewItem;
 interface JoinMutator extends BinaryOperator<AbstractRuleBuilder> {
 
     default AbstractRuleBuilder merge(AbstractRuleBuilder leftRuleBuilder, AbstractRuleBuilder rightRuleBuilder) {
-        leftRuleBuilder.applyFilterToLastPrimaryPattern();
-        rightRuleBuilder.applyFilterToLastPrimaryPattern();
+        leftRuleBuilder.applyFilterToLastPrimaryPattern(leftRuleBuilder.getVariables().toArray(new Variable[0]));
+        rightRuleBuilder.applyFilterToLastPrimaryPattern(rightRuleBuilder.getVariables().toArray(new Variable[0]));
         List<Variable> newVariables = new ArrayList<>(leftRuleBuilder.getVariables());
         newVariables.addAll(rightRuleBuilder.getVariables());
         List<PatternDef> newPrimaryPatterns = new ArrayList<>(leftRuleBuilder.getPrimaryPatterns());
