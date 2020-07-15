@@ -45,28 +45,23 @@ public class TriExistenceMutator<A, B, C, D> implements Mutator {
 
     private AbstractRuleBuilder applyJoiners(AbstractRuleBuilder ruleBuilder, AbstractQuadJoiner<A, B, C, D> joiner,
             QuadPredicate<A, B, C, D> predicate) {
-        PatternDSL.PatternDef aPattern = ruleBuilder.getPrimaryPatterns().get(0);
-        PatternDSL.PatternDef bPattern = ruleBuilder.getPrimaryPatterns().get(1);
-        PatternDSL.PatternDef cPattern = ruleBuilder.getPrimaryPatterns().get(2);
         if (joiner == null) {
-            return applyFilters(ruleBuilder, aPattern, bPattern, cPattern, predicate);
+            return applyFilters(ruleBuilder, predicate);
         }
         // There is no delta index in Drools, therefore we replace joining with a filter.
         QuadPredicate<A, B, C, D> joinFilter = joiner::matches;
         QuadPredicate<A, B, C, D> result = predicate == null ? joinFilter : joinFilter.and(predicate);
-        // And finally we add the filter to the C pattern
-        return applyFilters(ruleBuilder, aPattern, bPattern, cPattern, result);
+        // And finally we add the filter to the D pattern,
+        return applyFilters(ruleBuilder, result);
     }
 
-    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, PatternDSL.PatternDef<A> primaryPatternA,
-            PatternDSL.PatternDef<B> primaryPatternB, PatternDSL.PatternDef<C> primaryPatternC,
-            QuadPredicate<A, B, C, D> predicate) {
+    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, QuadPredicate<A, B, C, D> predicate) {
         Variable<D> toExist = PatternDSL.declarationOf(otherFactType, ruleBuilder.generateNextId("triToExist"));
         PatternDSL.PatternDef<D> existencePattern = PatternDSL.pattern(toExist);
+        Variable[] variables = ruleBuilder.getVariables().toArray(new Variable[0]);
         PatternDSL.PatternDef<D> possiblyFilteredExistencePattern = predicate == null ? existencePattern
-                : existencePattern.expr("Filter using " + predicate, primaryPatternA.getFirstVariable(),
-                        primaryPatternB.getFirstVariable(), primaryPatternC.getFirstVariable(),
-                        (d, a, b, c) -> predicate.test(a, b, c, d));
+                : existencePattern.expr("Filter using " + predicate, variables[0], variables[1], variables[2],
+                        (d, a, b, c) -> predicate.test((A) a, (B) b, (C) c, d));
         ExprViewItem existenceExpression = PatternDSL.exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);

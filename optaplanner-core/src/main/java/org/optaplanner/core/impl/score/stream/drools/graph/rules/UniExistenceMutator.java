@@ -55,7 +55,7 @@ public class UniExistenceMutator<A, B> implements Mutator {
         Variable<B> toExist = PatternDSL.declarationOf(otherFactType, ruleBuilder.generateNextId("toExist"));
         PatternDSL.PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
         if (joiner == null) {
-            return applyFilters(ruleBuilder, primaryPattern, existencePattern, predicate);
+            return applyFilters(ruleBuilder, existencePattern, predicate);
         }
         JoinerType[] joinerTypes = joiner.getJoinerTypes();
         // We rebuild the A pattern, binding variables for left parts of the joins.
@@ -84,14 +84,15 @@ public class UniExistenceMutator<A, B> implements Mutator {
                     joinVars[currentMappingIndex], joinPredicate, index);
         }
         // And finally we add the filter to the B pattern
-        return applyFilters(ruleBuilder, primaryPattern, existencePattern, predicate);
+        return applyFilters(ruleBuilder, existencePattern, predicate);
     }
 
-    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, PatternDSL.PatternDef<A> primaryPattern,
-            PatternDSL.PatternDef<B> existencePattern, BiPredicate<A, B> biPredicate) {
+    private AbstractRuleBuilder applyFilters(AbstractRuleBuilder ruleBuilder, PatternDSL.PatternDef<B> existencePattern,
+            BiPredicate<A, B> biPredicate) {
+        Variable[] variables = ruleBuilder.getVariables().toArray(new Variable[0]);
         PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ? existencePattern
-                : existencePattern.expr("Filter using " + biPredicate, primaryPattern.getFirstVariable(),
-                        (b, a) -> biPredicate.test(a, b));
+                : existencePattern.expr("Filter using " + biPredicate, variables[0],
+                        (b, a) -> biPredicate.test((A) a, b));
         ExprViewItem existenceExpression = PatternDSL.exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);

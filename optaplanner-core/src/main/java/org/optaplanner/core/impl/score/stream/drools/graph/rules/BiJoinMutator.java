@@ -59,18 +59,17 @@ final class BiJoinMutator<A, B> implements JoinMutator {
                 .get(rightRuleBuilder.getPrimaryPatterns().size() - 1);
         for (int mappingIndex = 0; mappingIndex < joinerTypes.length; mappingIndex++) {
             // For each mapping, bind a join variable from A to B and index the binding.
-            int currentMappingIndex = mappingIndex;
-            JoinerType joinerType = joinerTypes[currentMappingIndex];
-            Function<A, Object> leftMapping = biJoiner.getLeftMapping(currentMappingIndex);
-            Function<B, Object> rightMapping = biJoiner.getRightMapping(currentMappingIndex);
+            JoinerType joinerType = joinerTypes[mappingIndex];
+            Function<A, Object> leftMapping = biJoiner.getLeftMapping(mappingIndex);
+            Function<B, Object> rightMapping = biJoiner.getRightMapping(mappingIndex);
             Function1<B, Object> rightExtractor = rightMapping::apply;
             Predicate2<B, A> predicate = (b, a) -> { // We only extract B; A is coming from a pre-bound join var.
                 return joinerType.matches(a, rightExtractor.apply(b));
             };
             BetaIndex<B, A, Object> index = betaIndexedBy(Object.class, Mutator.getConstraintType(joinerType),
-                    currentMappingIndex, rightExtractor, leftMapping::apply);
-            bJoiner.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
-                    joinVars[currentMappingIndex], predicate, index);
+                    mappingIndex, rightExtractor, leftMapping::apply);
+            bJoiner.expr("Join using joiner #" + mappingIndex + " in " + biJoiner,
+                    joinVars[mappingIndex], predicate, index);
         }
         return merge(leftRuleBuilder, rightRuleBuilder);
     }
