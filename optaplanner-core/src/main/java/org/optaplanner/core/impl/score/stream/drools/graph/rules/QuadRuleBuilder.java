@@ -33,6 +33,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.graph.consequences.ConstraintConsequence;
@@ -73,7 +74,41 @@ final class QuadRuleBuilder extends AbstractRuleBuilder {
 
     @Override
     protected AbstractRuleBuilder andThenGroupBy(AbstractConstraintModelGroupingNode groupingNode) {
-        throw new UnsupportedOperationException();
+        List<QuadFunction> mappings = groupingNode.getMappings();
+        int mappingCount = mappings.size();
+        List<QuadConstraintCollector> collectors = groupingNode.getCollectors();
+        int collectorCount = collectors.size();
+        switch (groupingNode.getType()) {
+            case GROUPBY_MAPPING_ONLY:
+                switch (mappingCount) {
+                    case 1:
+                        return new QuadGroupBy1Map0CollectMutator<>(mappings.get(0)).apply(this);
+                    case 2:
+                        return new QuadGroupBy2Map0CollectMutator<>(mappings.get(0), mappings.get(1)).apply(this);
+                    default:
+                        throw new IllegalStateException("Invalid number of mappings: " + mappingCount);
+                }
+            case GROUPBY_COLLECTING_ONLY:
+                if (collectorCount == 1) {
+                    return new QuadGroupBy0Map1CollectMutator<>(collectors.get(0)).apply(this);
+                }
+                throw new IllegalStateException("Invalid number of collectors: " + collectorCount);
+            case GROUPBY_MAPPING_AND_COLLECTING:
+                if (mappingCount == 1 && collectorCount == 1) {
+                    return new QuadGroupBy1Map1CollectMutator<>(mappings.get(0), collectors.get(0)).apply(this);
+                } else if (mappingCount == 2 && collectorCount == 1) {
+                    return new QuadGroupBy2Map1CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0))
+                            .apply(this);
+                } else if (mappingCount == 2 && collectorCount == 2) {
+                    return new QuadGroupBy2Map2CollectMutator<>(mappings.get(0), mappings.get(1), collectors.get(0),
+                            collectors.get(1)).apply(this);
+                } else {
+                    throw new IllegalStateException(
+                            "Invalid number of mappings (" + mappingCount + ") and collectors (" + collectorCount + ").");
+                }
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     @Override
