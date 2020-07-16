@@ -143,7 +143,8 @@ abstract class AbstractGroupByMutator implements Mutator {
         Variable<NewA> newA = Util.createVariable(ruleBuilder.generateNextId("newA"));
         Variable<NewB> newB = Util.createVariable(ruleBuilder.generateNextId("newB"));
         List<Variable> newVariables = Arrays.asList(newA, newB);
-        PatternDef<BiTuple<NewA, NewB>> newPrimaryPattern = PatternDSL.pattern(newTuple)
+        PatternDef<BiTuple<NewA, NewB>> newPrimaryPattern = pattern(newTuple)
+                .bind(newTuple, tuple -> tuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b);
         return new BiRuleBuilder(ruleBuilder::generateNextId, ruleBuilder.getExpectedGroupByCount(),
@@ -165,6 +166,7 @@ abstract class AbstractGroupByMutator implements Mutator {
                 (Variable<TriTuple<NewA, NewB, NewC>>) Util.createVariable(TriTuple.class,
                         ruleBuilder.generateNextId("triGrouped"), PatternDSL.from(newSource));
         PatternDef<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = PatternDSL.pattern(newTuple)
+                .bind(newTuple, tuple -> tuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b)
                 .bind(newC, tuple -> tuple.c);
@@ -188,6 +190,7 @@ abstract class AbstractGroupByMutator implements Mutator {
                 (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) Util.createVariable(QuadTuple.class,
                         ruleBuilder.generateNextId("quadGrouped"), PatternDSL.from(newSource));
         PatternDef<QuadTuple<NewA, NewB, NewC, NewD>> newPrimaryPattern = PatternDSL.pattern(newTuple)
+                .bind(newTuple, tuple -> tuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b)
                 .bind(newC, tuple -> tuple.c)
