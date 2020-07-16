@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-class TriExistenceMutator<A, B, C, D> implements Mutator {
+final class TriExistenceMutator<A, B, C, D> implements Mutator {
 
     private final boolean shouldExist;
     private final Class<D> otherFactType;
