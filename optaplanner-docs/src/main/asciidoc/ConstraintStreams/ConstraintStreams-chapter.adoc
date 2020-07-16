@@ -390,9 +390,8 @@ You can find a complete list by exploring the
 [collectorsCount]
 ===== Collecting `count()`
 
-The `ConstraintCollectors.count(...)` counts all elements in a group.For example, the following use of the collector
-gives a number of items for two separate groups - one where the talks have unavailable speakers, and one where they
-don't.
+The `ConstraintCollectors.count(...)` counts all elements in a group.
+For example, the following use of the collector gives a number of items for two separate groups - one where the talks have unavailable speakers, and one where they don't.
 
 [source,java,options="nowrap"]
 ----
@@ -405,13 +404,14 @@ don't.
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`).There is also a 64-bit variant, `countLong()`.
+The return value for this collector is a 32-bit signed integer (`int`).
+There is also a 64-bit variant, `countLong()`.
 
 [collectorsCountDistinct]
 ===== Collecting `countDistinct()`
 
-The `ConstraintCollectors.countDistinct(...)` counts any element in a group once, regardless of how many times it
-occurs. For example, the following use of the collector gives a number of talks in each unique room.
+The `ConstraintCollectors.countDistinct(...)` counts any element in a group once, regardless of how many times it occurs.
+For example, the following use of the collector gives a number of talks in each unique room.
 
 [source,java,options="nowrap"]
 ----
@@ -424,7 +424,7 @@ occurs. For example, the following use of the collector gives a number of talks 
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant, `countLong()`.
+The return value for this collector is a 32-bit signed integer (`int`).There is also a 64-bit variant, `countLong()`.
 
 [collectorsSum]
 ===== Collecting `sum()`
