@@ -43,7 +43,6 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
 import org.optaplanner.core.impl.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 import org.optaplanner.core.impl.score.stream.drools.graph.rules.AbstractRuleBuilder;
 
@@ -103,7 +102,7 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
      *
      * @param justificationList unordered list of justifications coming from the score director
      * @param expectedCount how many justifications are expected to be returned (1 for uni stream, 2 for bi stream, ...)
-     * @param expectedTypes as defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}
+     * @param expectedTypes as defined by {@link AbstractRuleBuilder#getExpectedJustificationTypes()}.
      * @return never null
      */
     private static List<Object> matchJustificationsToOutput(List<Object> justificationList, int expectedCount,
