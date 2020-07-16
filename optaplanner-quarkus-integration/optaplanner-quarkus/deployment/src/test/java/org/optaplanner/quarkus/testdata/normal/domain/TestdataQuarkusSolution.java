@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus.domain;
+package org.optaplanner.quarkus.testdata.normal.domain;
 
 import java.util.List;
 
@@ -26,10 +26,10 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 @PlanningSolution
-public class TestdataPlanningSolution {
+public class TestdataQuarkusSolution {
 
     private List<String> valueList;
-    private List<TestdataPlanningEntity> entityList;
+    private List<TestdataQuarkusEntity> entityList;
 
     private SimpleScore score;
 
@@ -44,11 +44,11 @@ public class TestdataPlanningSolution {
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataPlanningEntity> getEntityList() {
+    public List<TestdataQuarkusEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataPlanningEntity> entityList) {
+    public void setEntityList(List<TestdataQuarkusEntity> entityList) {
         this.entityList = entityList;
     }
 

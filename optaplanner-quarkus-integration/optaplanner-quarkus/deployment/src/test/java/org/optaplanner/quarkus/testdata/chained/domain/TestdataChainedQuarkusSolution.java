@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.spring.boot.autoconfigure.testdata;
+package org.optaplanner.quarkus.testdata.chained.domain;
 
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 @PlanningSolution
-public class TestdataSpringSolution {
+public class TestdataChainedQuarkusSolution {
 
-    @ValueRangeProvider(id = "valueRange")
-    private List<String> valueList;
+    @ProblemFactCollectionProperty
+    @ValueRangeProvider(id = "chainedAnchorRange")
+    private List<TestdataChainedQuarkusAnchor> chainedAnchorList;
     @PlanningEntityCollectionProperty
-    private List<TestdataSpringEntity> entityList;
+    @ValueRangeProvider(id = "chainedEntityRange")
+    private List<TestdataChainedQuarkusEntity> chainedEntityList;
 
     @PlanningScore
     private SimpleScore score;
@@ -39,20 +42,20 @@ public class TestdataSpringSolution {
     // Getters/setters
     // ************************************************************************
 
-    public List<String> getValueList() {
-        return valueList;
+    public List<TestdataChainedQuarkusAnchor> getChainedAnchorList() {
+        return chainedAnchorList;
     }
 
-    public void setValueList(List<String> valueList) {
-        this.valueList = valueList;
+    public void setChainedAnchorList(List<TestdataChainedQuarkusAnchor> chainedAnchorList) {
+        this.chainedAnchorList = chainedAnchorList;
     }
 
-    public List<TestdataSpringEntity> getEntityList() {
-        return entityList;
+    public List<TestdataChainedQuarkusEntity> getChainedEntityList() {
+        return chainedEntityList;
     }
 
-    public void setEntityList(List<TestdataSpringEntity> entityList) {
-        this.entityList = entityList;
+    public void setChainedEntityList(List<TestdataChainedQuarkusEntity> chainedEntityList) {
+        this.chainedEntityList = chainedEntityList;
     }
 
     public SimpleScore getScore() {
@@ -62,4 +65,5 @@ public class TestdataSpringSolution {
     public void setScore(SimpleScore score) {
         this.score = score;
     }
+
 }
