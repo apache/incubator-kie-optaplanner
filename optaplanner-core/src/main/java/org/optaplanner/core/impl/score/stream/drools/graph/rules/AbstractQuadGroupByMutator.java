@@ -26,8 +26,8 @@ abstract class AbstractQuadGroupByMutator<A, B, C, D> extends AbstractGroupByMut
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(1), ruleBuilder.getVariables().get(2),
-                ruleBuilder.getVariables().get(3), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
+        return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1),
+                ruleBuilder.getVariables().get(2), (d, a, b, c) -> new QuadTuple<>(a, b, c, d));
     }
 
 }

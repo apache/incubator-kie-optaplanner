@@ -26,7 +26,7 @@ abstract class AbstractBiGroupByMutator<A, B> extends AbstractGroupByMutator {
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(1), (b, a) -> new BiTuple<>((A) a, (B) b));
+        return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(0), (b, a) -> new BiTuple<>((A) a, (B) b));
     }
 
 }
