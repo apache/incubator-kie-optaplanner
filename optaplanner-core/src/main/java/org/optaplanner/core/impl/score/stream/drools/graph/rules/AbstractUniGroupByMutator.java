@@ -22,8 +22,6 @@ import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.BiFunction;
 
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
@@ -33,10 +31,10 @@ import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 
-abstract class AbstractUniGroupByMutator extends AbstractGroupByMutator {
+abstract class AbstractUniGroupByMutator<A> extends AbstractGroupByMutator {
 
     @Override
-    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(PatternDef pattern,
+    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
         return pattern.bind(inTupleVariable, fact -> fact);
     }
@@ -45,11 +43,9 @@ abstract class AbstractUniGroupByMutator extends AbstractGroupByMutator {
             BiFunction<PatternDef, Variable<InTuple>, PatternDef> bindFunction, Transformer<InTuple> mutator) {
         Variable<InTuple> mappedVariable = Util.createVariable(ruleBuilder.generateNextId("biMapped"));
         int patternId = ruleBuilder.getPrimaryPatterns().size() - 1;
-        PatternDef mainAccumulatePattern = bindFunction.apply(ruleBuilder.getPrimaryPatterns().get(patternId),
-                mappedVariable);
-        List<ViewItem> dependentsExpressions = ruleBuilder.getDependentExpressionMap()
-                .getOrDefault(patternId, Collections.emptyList());
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern, dependentsExpressions);
+        // TODO evaluate need for bindFunction
+        bindFunction.apply(ruleBuilder.getPrimaryPatterns().get(patternId), mappedVariable);
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleBuilder);
         Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) Util.createVariable(Collection.class,
                         ruleBuilder.generateNextId("tupleCollection"));

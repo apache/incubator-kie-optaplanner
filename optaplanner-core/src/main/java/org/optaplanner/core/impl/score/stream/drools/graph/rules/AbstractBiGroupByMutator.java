@@ -16,20 +16,17 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
+import static org.drools.model.PatternDSL.PatternDef;
 
-final class UniGroupBy0Map1CollectMutator<A, NewA> extends AbstractUniGroupByMutator<A> {
+import org.drools.model.Variable;
+import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
-    private final UniConstraintCollector<A, ?, NewA> collector;
-
-    public UniGroupBy0Map1CollectMutator(UniConstraintCollector<A, ?, NewA> collector) {
-        this.collector = collector;
-    }
+abstract class AbstractBiGroupByMutator<A, B> extends AbstractGroupByMutator {
 
     @Override
-    public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        DroolsUniAccumulateFunction<A, ?, NewA> bridge = new DroolsUniAccumulateFunction<>(collector);
-        return collect(ruleBuilder, bridge);
+    protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder, PatternDef pattern,
+            Variable<InTuple> inTupleVariable) {
+        return pattern.bind(inTupleVariable, ruleBuilder.getVariables().get(0), (b, a) -> new BiTuple<>((A) a, (B) b));
     }
+
 }

@@ -16,19 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniToTriGroupByAccumulator;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiToTriGroupByAccumulator;
 
-final class UniGroupBy2Map1CollectMutator<A, NewA, NewB, NewC> extends AbstractUniGroupByMutator<A> {
+class BiGroupBy2Map1CollectMutator<A, B, NewA, NewB, NewC> extends AbstractBiGroupByMutator<A, B> {
 
-    private final Function<A, NewA> groupKeyMappingA;
-    private final Function<A, NewB> groupKeyMappingB;
-    private final UniConstraintCollector<A, ?, NewC> collectorC;
+    private final BiFunction<A, B, NewA> groupKeyMappingA;
+    private final BiFunction<A, B, NewB> groupKeyMappingB;
+    private final BiConstraintCollector<A, B, ?, NewC> collectorC;
 
-    public UniGroupBy2Map1CollectMutator(Function<A, NewA> groupKeyMappingA, Function<A, NewB> groupKeyMappingB,
-            UniConstraintCollector<A, ?, NewC> collectorC) {
+    public BiGroupBy2Map1CollectMutator(BiFunction<A, B, NewA> groupKeyMappingA,
+            BiFunction<A, B, NewB> groupKeyMappingB, BiConstraintCollector<A, B, ?, NewC> collectorC) {
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.collectorC = collectorC;
@@ -36,7 +36,7 @@ final class UniGroupBy2Map1CollectMutator<A, NewA, NewB, NewC> extends AbstractU
 
     @Override
     public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        return groupBiWithCollect(ruleBuilder, () -> new DroolsUniToTriGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, ruleBuilder.getVariables().get(0)));
+        return groupBiWithCollect(ruleBuilder, () -> new DroolsBiToTriGroupByAccumulator<>(groupKeyMappingA,
+                groupKeyMappingB, collectorC, ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1)));
     }
 }

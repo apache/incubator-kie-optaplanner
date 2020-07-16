@@ -16,20 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniAccumulateFunction;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiAccumulateFunction;
 
-final class UniGroupBy0Map1CollectMutator<A, NewA> extends AbstractUniGroupByMutator<A> {
+class BiGroupBy0Map1CollectMutator<A, B, NewA> extends AbstractBiGroupByMutator<A, B> {
 
-    private final UniConstraintCollector<A, ?, NewA> collector;
+    private final BiConstraintCollector<A, B, ?, NewA> collector;
 
-    public UniGroupBy0Map1CollectMutator(UniConstraintCollector<A, ?, NewA> collector) {
+    public BiGroupBy0Map1CollectMutator(BiConstraintCollector<A, B, ?, NewA> collector) {
         this.collector = collector;
     }
 
     @Override
     public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        DroolsUniAccumulateFunction<A, ?, NewA> bridge = new DroolsUniAccumulateFunction<>(collector);
+        DroolsBiAccumulateFunction<A, B, ?, NewA> bridge = new DroolsBiAccumulateFunction<>(collector);
         return collect(ruleBuilder, bridge);
     }
 }

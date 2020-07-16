@@ -23,7 +23,7 @@ import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 
-final class UniGroupBy2Map0CollectMutator<A, NewA, NewB> extends AbstractUniGroupByMutator {
+final class UniGroupBy2Map0CollectMutator<A, NewA, NewB> extends AbstractUniGroupByMutator<A> {
 
     private final Function<A, NewA> groupKeyMappingA;
     private final Function<A, NewB> groupKeyMappingB;

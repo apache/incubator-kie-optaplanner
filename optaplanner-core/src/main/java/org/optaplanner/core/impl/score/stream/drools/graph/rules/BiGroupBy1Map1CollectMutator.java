@@ -17,24 +17,24 @@
 package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import org.drools.model.PatternDSL;
-import org.drools.model.Variable;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiGroupByAccumulator;
 
-final class UniGroupBy1Map0CollectMutator<A, NewA> extends AbstractUniGroupByMutator<A> {
+class BiGroupBy1Map1CollectMutator<A, B, NewA, NewB> extends AbstractBiGroupByMutator<A, B> {
 
-    private final Function<A, NewA> groupKeyMapping;
+    private final BiFunction<A, B, NewA> groupKeyMappingA;
+    private final BiConstraintCollector<A, B, ?, NewB> collectorB;
 
-    public UniGroupBy1Map0CollectMutator(Function<A, NewA> groupKeyMapping) {
-        this.groupKeyMapping = groupKeyMapping;
+    public BiGroupBy1Map1CollectMutator(BiFunction<A, B, NewA> groupKeyMappingA,
+            BiConstraintCollector<A, B, ?, NewB> collectorB) {
+        this.groupKeyMappingA = groupKeyMappingA;
+        this.collectorB = collectorB;
     }
 
     @Override
     public AbstractRuleBuilder apply(AbstractRuleBuilder ruleBuilder) {
-        BiFunction<PatternDSL.PatternDef, Variable<NewA>, PatternDSL.PatternDef> binder =
-                (pattern, tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a));
-        return universalGroup(ruleBuilder, binder,
-                (var, pattern, accumulate) -> regroup(ruleBuilder, var, pattern, accumulate));
+        return groupWithCollect(ruleBuilder, () -> new DroolsBiGroupByAccumulator<>(groupKeyMappingA, collectorB,
+                ruleBuilder.getVariables().get(0), ruleBuilder.getVariables().get(1)));
     }
 }

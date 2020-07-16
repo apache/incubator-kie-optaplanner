@@ -16,9 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.graph.rules;
 
-import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOfRange;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.accFunction;
@@ -28,10 +26,10 @@ import static org.drools.model.PatternDSL.pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import org.drools.model.DSL;
 import org.drools.model.Index;
@@ -49,34 +47,31 @@ import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 abstract class AbstractGroupByMutator implements Mutator {
 
-    protected abstract <InTuple> PatternDef bindTupleVariableOnFirstGrouping(PatternDef pattern,
-            Variable<InTuple> tupleVariable);
+    protected abstract <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleBuilder ruleBuilder,
+            PatternDef pattern, Variable<InTuple> tupleVariable);
 
-    protected ViewItem<?> getInnerAccumulatePattern(PatternDef mainAccumulatePattern, List<ViewItem> dependentExpressions) {
-        ViewItem[] items = Stream.concat(Stream.<ViewItem> of(mainAccumulatePattern), dependentExpressions.stream())
-                .toArray(ViewItem[]::new);
+    protected ViewItem<?> getInnerAccumulatePattern(AbstractRuleBuilder ruleBuilder) {
+        List<ViewItem> allPatterns = new ArrayList<>();
+        for (int i = 0; i < ruleBuilder.getPrimaryPatterns().size(); i++) {
+            allPatterns.add(ruleBuilder.getPrimaryPatterns().get(i));
+            allPatterns.addAll(ruleBuilder.getDependentExpressionMap().getOrDefault(i, Collections.emptyList()));
+        }
+        ViewItem[] items = allPatterns.toArray(new ViewItem[0]);
         return PatternDSL.and(items[0], copyOfRange(items, 1, items.length));
     }
 
     protected <NewA, InTuple, OutTuple> AbstractRuleBuilder collect(AbstractRuleBuilder ruleBuilder,
             DroolsAbstractAccumulateFunction<?, InTuple, OutTuple> accumulateFunctionBridge) {
         ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
-        int patternId = ruleBuilder.getPrimaryPatterns().size() - 1;
-        PatternDef mainAccumulatePattern = ruleBuilder.getPrimaryPatterns().get(patternId);
-        List<ViewItem> dependentsExpressions = ruleBuilder.getDependentExpressionMap()
-                .getOrDefault(patternId, emptyList());
-        Variable baseVariable = mainAccumulatePattern.getFirstVariable();
-        boolean isRegrouping = FactTuple.class.isAssignableFrom(baseVariable.getType());
-        Variable<InTuple> tupleVariable;
-        if (isRegrouping) {
-            tupleVariable = (Variable<InTuple>) mainAccumulatePattern.getFirstVariable();
-        } else {
-            tupleVariable = (Variable<InTuple>) PatternDSL.declarationOf(Object.class, ruleBuilder.generateNextId("tuple"));
-            mainAccumulatePattern = bindTupleVariableOnFirstGrouping(mainAccumulatePattern, tupleVariable);
+        PatternDef mainAccumulatePattern = ruleBuilder.getPrimaryPatterns().get(ruleBuilder.getPrimaryPatterns().size() - 1);
+        boolean isRegrouping = FactTuple.class.isAssignableFrom(mainAccumulatePattern.getFirstVariable().getType());
+        Variable<InTuple> tupleVariable = isRegrouping ? mainAccumulatePattern.getFirstVariable()
+                : Util.createVariable(ruleBuilder.generateNextId("tuple"));
+        if (!isRegrouping) {
+            bindTupleVariableOnFirstGrouping(ruleBuilder, mainAccumulatePattern, tupleVariable);
         }
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern, dependentsExpressions);
-        Variable<NewA> outputVariable =
-                (Variable<NewA>) PatternDSL.declarationOf(Object.class, ruleBuilder.generateNextId("collected"));
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleBuilder);
+        Variable<NewA> outputVariable = Util.createVariable(ruleBuilder.generateNextId("collected"));
         ViewItem<?> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,
                 accFunction(() -> accumulateFunctionBridge, tupleVariable).as(outputVariable));
         return recollect(ruleBuilder, outputVariable, outerAccumulatePattern);
@@ -91,11 +86,7 @@ abstract class AbstractGroupByMutator implements Mutator {
     private <InTuple> AbstractRuleBuilder universalGroupWithCollect(AbstractRuleBuilder ruleBuilder,
             Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier, Transformer<InTuple> mutator) {
         ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
-        int patternId = ruleBuilder.getPrimaryPatterns().size() - 1;
-        PatternDef mainAccumulatePattern = ruleBuilder.getPrimaryPatterns().get(patternId);
-        List<ViewItem> dependentsExpressions = ruleBuilder.getDependentExpressionMap()
-                .getOrDefault(patternId, emptyList());
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern, dependentsExpressions);
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleBuilder);
         Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) Util.createVariable(Collection.class,
                         ruleBuilder.generateNextId("tupleCollection"));
@@ -121,46 +112,33 @@ abstract class AbstractGroupByMutator implements Mutator {
     protected <NewA> AbstractRuleBuilder recollect(AbstractRuleBuilder ruleBuilder, Variable<NewA> newA,
             ViewItem accumulatePattern) {
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
-        for (int i = 0; i < ruleBuilder.getPrimaryPatterns().size() - 1; i++) {
-            // The last pattern was already converted to accumulate.
-            newFinishedExpressions.add(ruleBuilder.getPrimaryPatterns().get(i));
-            newFinishedExpressions.addAll(ruleBuilder.getDependentExpressionMap().getOrDefault(i, emptyList()));
-        }
         newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
         PatternDef<NewA> newPrimaryPattern = PatternDSL.pattern(newA);
         return new UniRuleBuilder(ruleBuilder::generateNextId, ruleBuilder.getExpectedGroupByCount(),
-                newFinishedExpressions, asList(newA), asList(newPrimaryPattern), emptyMap());
+                newFinishedExpressions, singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
     }
 
     public <NewA> AbstractRuleBuilder regroup(AbstractRuleBuilder ruleBuilder, Variable<Collection<NewA>> newASource,
             ViewItem collectPattern, ViewItem accumulatePattern) {
+        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
-        for (int i = 0; i < ruleBuilder.getPrimaryPatterns().size() - 1; i++) {
-            // The last pattern was already converted to accumulate.
-            newFinishedExpressions.add(ruleBuilder.getPrimaryPatterns().get(i));
-            newFinishedExpressions.addAll(ruleBuilder.getDependentExpressionMap().getOrDefault(i, emptyList()));
-        }
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
         Variable<NewA> newA =
-                (Variable<NewA>) Util.createVariable(ruleBuilder.generateNextId("groupKey"), DSL.from(newASource));
+                (Variable<NewA>) Util.createVariable(ruleBuilder.generateNextId("uniGrouped"), DSL.from(newASource));
         PatternDef<NewA> newPrimaryPattern = PatternDSL.pattern(newA);
         return new UniRuleBuilder(ruleBuilder::generateNextId, ruleBuilder.getExpectedGroupByCount(),
-                newFinishedExpressions, asList(newA), asList(newPrimaryPattern), emptyMap());
+                newFinishedExpressions, singletonList(newA), singletonList(newPrimaryPattern), emptyMap());
     }
 
     public <NewA, NewB> AbstractRuleBuilder regroupBi(AbstractRuleBuilder ruleBuilder,
             Variable<Collection<BiTuple<NewA, NewB>>> newSource, ViewItem collectPattern, ViewItem accumulatePattern) {
+        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
         Variable<BiTuple<NewA, NewB>> newTuple =
                 (Variable<BiTuple<NewA, NewB>>) Util.createVariable(BiTuple.class,
-                        ruleBuilder.generateNextId("groupKey"), PatternDSL.from(newSource));
+                        ruleBuilder.generateNextId("biGrouped"), PatternDSL.from(newSource));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
-        for (int i = 0; i < ruleBuilder.getPrimaryPatterns().size() - 1; i++) {
-            // The last pattern was already converted to accumulate.
-            newFinishedExpressions.add(ruleBuilder.getPrimaryPatterns().get(i));
-            newFinishedExpressions.addAll(ruleBuilder.getDependentExpressionMap().getOrDefault(i, emptyList()));
-        }
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
         Variable<NewA> newA = Util.createVariable(ruleBuilder.generateNextId("newA"));
         Variable<NewB> newB = Util.createVariable(ruleBuilder.generateNextId("newB"));
@@ -175,13 +153,9 @@ abstract class AbstractGroupByMutator implements Mutator {
     public <NewA, NewB, NewC> AbstractRuleBuilder regroupBiToTri(AbstractRuleBuilder ruleBuilder,
             Variable<Set<TriTuple<NewA, NewB, NewC>>> newSource, ViewItem collectPattern,
             ViewItem accumulatePattern) {
+        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
-        for (int i = 0; i < ruleBuilder.getPrimaryPatterns().size() - 1; i++) {
-            // The last pattern was already converted to accumulate.
-            newFinishedExpressions.add(ruleBuilder.getPrimaryPatterns().get(i));
-            newFinishedExpressions.addAll(ruleBuilder.getDependentExpressionMap().getOrDefault(i, emptyList()));
-        }
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
         Variable<NewA> newA = Util.createVariable(ruleBuilder.generateNextId("newA"));
         Variable<NewB> newB = Util.createVariable(ruleBuilder.generateNextId("newB"));
@@ -189,7 +163,7 @@ abstract class AbstractGroupByMutator implements Mutator {
         List<Variable> newVariables = Arrays.asList(newA, newB, newC);
         Variable<TriTuple<NewA, NewB, NewC>> newTuple =
                 (Variable<TriTuple<NewA, NewB, NewC>>) Util.createVariable(TriTuple.class,
-                        ruleBuilder.generateNextId("groupKey"), PatternDSL.from(newSource));
+                        ruleBuilder.generateNextId("triGrouped"), PatternDSL.from(newSource));
         PatternDef<TriTuple<NewA, NewB, NewC>> newPrimaryPattern = PatternDSL.pattern(newTuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b)
@@ -201,13 +175,9 @@ abstract class AbstractGroupByMutator implements Mutator {
     public <NewA, NewB, NewC, NewD> AbstractRuleBuilder regroupBiToQuad(AbstractRuleBuilder ruleBuilder,
             Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource, ViewItem collectPattern,
             ViewItem accumulatePattern) {
+        ruleBuilder.applyFilterToLastPrimaryPattern(ruleBuilder.getVariables().toArray(new Variable[0]));
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleBuilder.getFinishedExpressions());
-        for (int i = 0; i < ruleBuilder.getPrimaryPatterns().size() - 1; i++) {
-            // The last pattern was already converted to accumulate.
-            newFinishedExpressions.add(ruleBuilder.getPrimaryPatterns().get(i));
-            newFinishedExpressions.addAll(ruleBuilder.getDependentExpressionMap().getOrDefault(i, emptyList()));
-        }
-        newFinishedExpressions.add(accumulatePattern); // The last pattern is added here.
+        newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
         Variable<NewA> newA = Util.createVariable(ruleBuilder.generateNextId("newA"));
         Variable<NewB> newB = Util.createVariable(ruleBuilder.generateNextId("newB"));
@@ -216,7 +186,7 @@ abstract class AbstractGroupByMutator implements Mutator {
         List<Variable> newVariables = Arrays.asList(newA, newB, newC, newD);
         Variable<QuadTuple<NewA, NewB, NewC, NewD>> newTuple =
                 (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) Util.createVariable(QuadTuple.class,
-                        ruleBuilder.generateNextId("groupKey"), PatternDSL.from(newSource));
+                        ruleBuilder.generateNextId("quadGrouped"), PatternDSL.from(newSource));
         PatternDef<QuadTuple<NewA, NewB, NewC, NewD>> newPrimaryPattern = PatternDSL.pattern(newTuple)
                 .bind(newA, tuple -> tuple.a)
                 .bind(newB, tuple -> tuple.b)
