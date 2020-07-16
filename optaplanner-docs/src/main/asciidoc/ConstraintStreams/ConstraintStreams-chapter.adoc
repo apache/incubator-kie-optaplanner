@@ -280,8 +280,8 @@ image::ConstraintStreams/constraintStreamFilter.png[align="center"]
 
 [NOTE]
 ====
-For performance reasons, using the <<constraintStreamsJoin,join>> building block with the appropriate `JoinerMutator` is preferrable when possible.
-Using a `JoinerMutator` creates only the constraint matches that are necessary, while filtered join creates all possible constraint matches and only then filters some of them out.
+For performance reasons, using the <<constraintStreamsJoin,join>> building block with the appropriate `Joiner` is preferrable when possible.
+Using a `Joiner` creates only the constraint matches that are necessary, while filtered join creates all possible constraint matches and only then filters some of them out.
 ====
 
 The following functions are required for filtering constraint streams of different cardinality:
@@ -302,7 +302,7 @@ Joining is a way to increase <<constraintStreamsCardinality,stream cardinality>>
 image::ConstraintStreams/constraintStreamJoinWithoutJoiners.png[align="center"]
 
 Doing this is inefficient because the resulting stream might contain constraint matches that are of no interest to your constraint.
-Use `JoinerMutator` to restrict your joins only to the matches you are actually interested in, as shown in this example:
+Use `Joiner` to restrict your joins only to the matches you are actually interested in, as shown in this example:
 
 [source,java,options="nowrap"]
 ----
@@ -324,12 +324,12 @@ The following figure illustrates the behavior:
 
 image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
 
-The following `JoinerMutator` types are supported:
+The following `Joiner` types are supported:
 
 - `equal` for joining constraint matches where they `equals()` one another.
 - `greaterThan`, `greaterThanOrEqual`, `lessThan` and `lessThanOrEqual` for joining `Comparable` constraint matches per the prescribed ordering.
 
-For a full list of all supported `JoinerMutator` implementations and their various overloads, refer to the
+For a full list of all supported `Joiner` implementations and their various overloads, refer to the
 `org.optaplanner.core.api.score.stream.Joiners` class.
 
 [NOTE]
@@ -342,14 +342,13 @@ It does not create cartesian products and therefore generally performs better.
 === Grouping and collectors
 
 Grouping collects items in a stream according to user-provider criteria (also called "group key"), similar to what a
-`GROUP BY` SQL clause does.Additionally, some grouping operations also accept one or more `Collector` instances, which
-provide various aggregation functions.The following figure illustrates a simple `groupBy()` operation:
+`GROUP BY` SQL clause does.
+Additionally, some grouping operations also accept one or more `Collector` instances, which provide various aggregation functions.
+The following figure illustrates a simple `groupBy()` operation:
 
 image::ConstraintStreams/constraintStreamGroupBy.png[align="center"]
 
-For example, the following code snippet first groups all processes by the computer they run on, sums up all the power
-required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and finally penalizes
-every computer whose processes consume more power than is available.
+For example, the following code snippet first groups all processes by the computer they run on, sums up all the power required by the processes on that computer using the `ConstraintCollectors.sum(...)` collector, and finally penalizes every computer whose processes consume more power than is available.
 
 [source,java,options="nowrap"]
 ----
@@ -374,21 +373,24 @@ In the previous example, `filter()` and all subsequent operations no longer have
 `CloudProcess` instance.
 ====
 
-There are several collectors available out of the box.You can also provide your own collectors by implementing the
+There are several collectors available out of the box.
+You can also provide your own collectors by implementing the
 `org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
 
 [collectorsOutOfTheBox]
 ==== Out-of-the-box collectors
 
-The following section focuses on the collector implementations provided out of the box. This section only describes the
-`int`-based variants of the collectors in detail. Many of the collectors also provide variants for other applicable
-result data types, such as `long`, `BigDecimal` or `Duration`. You can find a complete list by exploring the
+The following section focuses on the collector implementations provided out of the box.
+This section only describes the
+`int`-based variants of the collectors in detail.
+Many of the collectors also provide variants for other applicable result data types, such as `long`, `BigDecimal` or `Duration`.
+You can find a complete list by exploring the
 `org.optaplanner.core.api.score.stream.ConstraintCollectors` class.
 
 [collectorsCount]
 ===== Collecting `count()`
 
-The `ConstraintCollectors.count(...)` counts all elements in a group. For example, the following use of the collector
+The `ConstraintCollectors.count(...)` counts all elements in a group.For example, the following use of the collector
 gives a number of items for two separate groups - one where the talks have unavailable speakers, and one where they
 don't.
 
@@ -403,7 +405,7 @@ don't.
     }
 ----
 
-The return value for this collector is a 32-bit signed integer (`int`). There is also a 64-bit variant, `countLong()`.
+The return value for this collector is a 32-bit signed integer (`int`).There is also a 64-bit variant, `countLong()`.
 
 [collectorsCountDistinct]
 ===== Collecting `countDistinct()`
@@ -550,7 +552,7 @@ Conversely, if the `ifNotExists()` building block is used (as well as the `ifNot
 
 Here, only the computers without processes running are penalized.
 
-Also note the use of the `JoinerMutator` class to limit the constraint matches.
+Also note the use of the `Joiner` class to limit the constraint matches.
 For a description of available joiners, see <<constraintStreamsJoin,joining>>.
 Conditional propagation operates much like joining, with the exception of not increasing the
 <<constraintStreamsCardinality, stream cardinality>>.
@@ -558,7 +560,7 @@ Matches from these building blocks are not available further down the stream.
 
 [NOTE]
 ====
-For performance reasons, using conditional propagation with the appropriate `JoinerMutator` instance is preferable to joining.
+For performance reasons, using conditional propagation with the appropriate `Joiner` instance is preferable to joining.
 While using `join()` creates a cartesian product of the facts being joined, with conditional propagation, the resulting stream only has at most the original number of constraint matches in it.
 Joining should only be used in cases where the other fact is actually required for another operation further down the stream.
 ====
