@@ -26,7 +26,7 @@ abstract class AbstractTriGroupByMutator<A, B, C> extends AbstractGroupByMutator
     @Override
     protected <InTuple> PatternDef bindTupleVariableOnFirstGrouping(AbstractRuleAssembler ruleAssembler, PatternDef pattern,
             Variable<InTuple> inTupleVariable) {
-        return pattern.bind(inTupleVariable, ruleAssembler.getVariables().get(0), ruleAssembler.getVariables().get(1),
+        return pattern.bind(inTupleVariable, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),
                 (c, a, b) -> new TriTuple<>((A) a, (B) b, (C) c));
     }
 

@@ -35,10 +35,9 @@ final class QuadJoinMutator<A, B, C, D> implements JoinMutator {
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
-        rightRuleAssembler.getPrimaryPatterns().get(rightRuleAssembler.getPrimaryPatterns().size() - 1)
-                .expr("Filter using " + joiner, leftRuleAssembler.getVariables().get(0),
-                        leftRuleAssembler.getVariables().get(1), leftRuleAssembler.getVariables().get(2),
-                        rightRuleAssembler.getVariables().get(0),
+        rightRuleAssembler.getLastPrimaryPattern()
+                .expr("Filter using " + joiner, leftRuleAssembler.getVariable(0), leftRuleAssembler.getVariable(1),
+                        leftRuleAssembler.getVariable(2), rightRuleAssembler.getVariable(0),
                         (fact, a, b, c, d) -> joiner.matches((A) a, (B) b, (C) c, (D) d));
         return merge(leftRuleAssembler, rightRuleAssembler);
     }

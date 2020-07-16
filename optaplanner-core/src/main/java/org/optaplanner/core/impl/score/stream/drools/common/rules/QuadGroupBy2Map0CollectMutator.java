@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyMap;
-
-import java.util.List;
-
-import org.drools.model.Variable;
 import org.optaplanner.core.api.function.QuadFunction;
 
 final class QuadGroupBy2Map0CollectMutator<A, B, C, D, NewA, NewB>
@@ -33,12 +28,7 @@ final class QuadGroupBy2Map0CollectMutator<A, B, C, D, NewA, NewB>
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        AbstractRuleAssembler newRuleAssembler = super.apply(ruleAssembler);
-        // Downgrade the tri-stream to a bi-stream by ignoring the dummy no-op collector variable.
-        List<Variable> allVariablesButLast = newRuleAssembler.getVariables()
-                .subList(0, newRuleAssembler.getVariables().size() - 1);
-        return new BiRuleAssembler(newRuleAssembler::generateNextId, newRuleAssembler.getExpectedGroupByCount(),
-                newRuleAssembler.getFinishedExpressions(), allVariablesButLast, newRuleAssembler.getPrimaryPatterns(),
-                emptyMap());
+        TriRuleAssembler newRuleAssembler = (TriRuleAssembler) super.apply(ruleAssembler);
+        return downgrade(newRuleAssembler);
     }
 }

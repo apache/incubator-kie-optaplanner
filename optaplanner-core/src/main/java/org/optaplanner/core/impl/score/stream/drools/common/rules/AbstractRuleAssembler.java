@@ -19,6 +19,8 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -111,19 +113,36 @@ abstract class AbstractRuleAssembler implements RuleAssembler {
     }
 
     List<Variable> getVariables() {
-        return variables;
+        return unmodifiableList(variables);
+    }
+
+    Variable getVariable(int index) {
+        return variables.get(index);
     }
 
     List<PatternDef> getPrimaryPatterns() {
-        return primaryPatterns;
+        return unmodifiableList(primaryPatterns);
     }
 
+    PatternDef getLastPrimaryPattern() {
+        return primaryPatterns.get(primaryPatterns.size() - 1);
+    }
+
+    protected abstract void applyFilterToLastPrimaryPattern();
+
     Map<Integer, List<ViewItem>> getDependentExpressionMap() {
-        return dependentExpressionMap;
+        return unmodifiableMap(dependentExpressionMap);
+    }
+
+    void addDependentExpressionToLastPattern(ViewItem expression) {
+        int lastPatternId = primaryPatterns.size() - 1;
+        dependentExpressionMap
+                .computeIfAbsent(lastPatternId, key -> new ArrayList<>(1))
+                .add(expression);
     }
 
     List<ViewItem> getFinishedExpressions() {
-        return finishedExpressions;
+        return unmodifiableList(finishedExpressions);
     }
 
     @Override
@@ -163,18 +182,16 @@ abstract class AbstractRuleAssembler implements RuleAssembler {
     protected abstract ConsequenceBuilder.ValidBuilder buildConsequence(DroolsConstraint constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, Variable... variables);
 
-    protected abstract void applyFilterToLastPrimaryPattern(Variable... variables);
-
     public List<Rule> assemble(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, DroolsConstraint constraint) {
-        Variable[] variableArray = variables.toArray(new Variable[0]);
-        applyFilterToLastPrimaryPattern(variableArray);
+        applyFilterToLastPrimaryPattern();
         List<RuleItemBuilder> ruleItemBuilderList = new ArrayList<>(0);
         ruleItemBuilderList.addAll(finishedExpressions);
         for (int i = 0; i < primaryPatterns.size(); i++) {
             ruleItemBuilderList.add(primaryPatterns.get(i));
             ruleItemBuilderList.addAll(dependentExpressionMap.getOrDefault(i, emptyList()));
         }
-        ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal, variableArray);
+        ConsequenceBuilder.ValidBuilder consequence = buildConsequence(constraint, scoreHolderGlobal,
+                variables.toArray(new Variable[0]));
         ruleItemBuilderList.add(consequence);
         Rule rule = PatternDSL.rule(constraint.getConstraintPackage(), constraint.getConstraintName())
                 .metadata(VARIABLE_TYPE_RULE_METADATA_KEY, getExpectedJustificationTypes()

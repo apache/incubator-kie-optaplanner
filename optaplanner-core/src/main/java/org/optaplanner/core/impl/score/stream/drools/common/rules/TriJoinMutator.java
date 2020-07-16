@@ -35,9 +35,9 @@ final class TriJoinMutator<A, B, C> implements JoinMutator {
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
-        rightRuleAssembler.getPrimaryPatterns().get(rightRuleAssembler.getPrimaryPatterns().size() - 1)
-                .expr("Filter using " + joiner, leftRuleAssembler.getVariables().get(0),
-                        leftRuleAssembler.getVariables().get(1), rightRuleAssembler.getVariables().get(0),
+        rightRuleAssembler.getLastPrimaryPattern()
+                .expr("Filter using " + joiner, leftRuleAssembler.getVariable(0),
+                        leftRuleAssembler.getVariable(1), rightRuleAssembler.getVariable(0),
                         (fact, a, b, c) -> joiner.matches((A) a, (B) b, (C) c));
         return merge(leftRuleAssembler, rightRuleAssembler);
     }

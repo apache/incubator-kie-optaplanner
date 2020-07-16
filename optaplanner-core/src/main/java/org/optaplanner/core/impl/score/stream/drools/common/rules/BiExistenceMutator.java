@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.drools.model.PatternDSL;
@@ -57,18 +56,14 @@ final class BiExistenceMutator<A, B, C> implements Mutator {
     private AbstractRuleAssembler applyFilters(AbstractRuleAssembler ruleAssembler, TriPredicate<A, B, C> predicate) {
         Variable<C> toExist = PatternDSL.declarationOf(otherFactType, ruleAssembler.generateNextId("biToExist"));
         PatternDSL.PatternDef<C> existencePattern = PatternDSL.pattern(toExist);
-        Variable[] variables = ruleAssembler.getVariables().toArray(new Variable[0]);
         PatternDSL.PatternDef<C> possiblyFilteredExistencePattern = predicate == null ? existencePattern
-                : existencePattern.expr("Filter using " + predicate, variables[0], variables[1],
+                : existencePattern.expr("Filter using " + predicate, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1),
                         (c, a, b) -> predicate.test((A) a, (B) b, c));
         ExprViewItem existenceExpression = PatternDSL.exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);
         }
-        int lastPatternId = ruleAssembler.getPrimaryPatterns().size() - 1;
-        ruleAssembler.getDependentExpressionMap()
-                .computeIfAbsent(lastPatternId, key -> new ArrayList<>(1))
-                .add(existenceExpression);
+        ruleAssembler.addDependentExpressionToLastPattern(existenceExpression);
         return ruleAssembler;
     }
 

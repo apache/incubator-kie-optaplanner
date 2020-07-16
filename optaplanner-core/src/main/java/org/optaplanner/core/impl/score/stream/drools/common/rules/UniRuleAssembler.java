@@ -146,13 +146,13 @@ final class UniRuleAssembler extends AbstractRuleAssembler {
     }
 
     @Override
-    protected void applyFilterToLastPrimaryPattern(Variable... variables) {
+    protected void applyFilterToLastPrimaryPattern() {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
         Predicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(getPrimaryPatterns().size() - 1)
-                .expr("Filter using " + predicate, variables[0], (fact, a) -> predicate.test(a));
+        getLastPrimaryPattern()
+                .expr("Filter using " + predicate, getVariable(0), (fact, a) -> predicate.test(a));
         filterToApplyToLastPrimaryPattern = null;
     }
 

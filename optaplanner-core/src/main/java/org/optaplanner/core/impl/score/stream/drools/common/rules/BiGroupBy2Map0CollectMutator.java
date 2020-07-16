@@ -16,12 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
-import static java.util.Collections.emptyMap;
-
-import java.util.List;
 import java.util.function.BiFunction;
-
-import org.drools.model.Variable;
 
 final class BiGroupBy2Map0CollectMutator<A, B, NewA, NewB>
         extends BiGroupBy2Map1CollectMutator<A, B, NewA, NewB, Void> {
@@ -33,12 +28,7 @@ final class BiGroupBy2Map0CollectMutator<A, B, NewA, NewB>
 
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
-        AbstractRuleAssembler newRuleAssembler = super.apply(ruleAssembler);
-        // Downgrade the tri-stream to a bi-stream by ignoring the dummy no-op collector variable.
-        List<Variable> allVariablesButLast = newRuleAssembler.getVariables()
-                .subList(0, newRuleAssembler.getVariables().size() - 1);
-        return new BiRuleAssembler(newRuleAssembler::generateNextId, newRuleAssembler.getExpectedGroupByCount(),
-                newRuleAssembler.getFinishedExpressions(), allVariablesButLast, newRuleAssembler.getPrimaryPatterns(),
-                emptyMap());
+        TriRuleAssembler newRuleAssembler = (TriRuleAssembler) super.apply(ruleAssembler);
+        return downgrade(newRuleAssembler);
     }
 }

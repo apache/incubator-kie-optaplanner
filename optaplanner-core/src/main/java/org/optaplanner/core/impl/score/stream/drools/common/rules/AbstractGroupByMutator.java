@@ -62,9 +62,8 @@ abstract class AbstractGroupByMutator implements Mutator {
 
     protected <NewA, InTuple, OutTuple> AbstractRuleAssembler collect(AbstractRuleAssembler ruleAssembler,
             DroolsAbstractAccumulateFunction<?, InTuple, OutTuple> accumulateFunctionBridge) {
-        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
-        PatternDef mainAccumulatePattern =
-                ruleAssembler.getPrimaryPatterns().get(ruleAssembler.getPrimaryPatterns().size() - 1);
+        ruleAssembler.applyFilterToLastPrimaryPattern();
+        PatternDef mainAccumulatePattern = ruleAssembler.getLastPrimaryPattern();
         boolean isRegrouping = FactTuple.class.isAssignableFrom(mainAccumulatePattern.getFirstVariable().getType());
         Variable<InTuple> tupleVariable = isRegrouping ? mainAccumulatePattern.getFirstVariable()
                 : Util.createVariable(ruleAssembler.generateNextId("tuple"));
@@ -86,7 +85,7 @@ abstract class AbstractGroupByMutator implements Mutator {
 
     private <InTuple> AbstractRuleAssembler universalGroupWithCollect(AbstractRuleAssembler ruleAssembler,
             Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier, Transformer<InTuple> mutator) {
-        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        ruleAssembler.applyFilterToLastPrimaryPattern();
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleAssembler);
         Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) Util.createVariable(Collection.class,
@@ -121,7 +120,7 @@ abstract class AbstractGroupByMutator implements Mutator {
 
     public <NewA> AbstractRuleAssembler regroup(AbstractRuleAssembler ruleAssembler, Variable<Collection<NewA>> newASource,
             ViewItem collectPattern, ViewItem accumulatePattern) {
-        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        ruleAssembler.applyFilterToLastPrimaryPattern();
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
@@ -134,7 +133,7 @@ abstract class AbstractGroupByMutator implements Mutator {
 
     public <NewA, NewB> AbstractRuleAssembler regroupBi(AbstractRuleAssembler ruleAssembler,
             Variable<Collection<BiTuple<NewA, NewB>>> newSource, ViewItem collectPattern, ViewItem accumulatePattern) {
-        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        ruleAssembler.applyFilterToLastPrimaryPattern();
         Variable<BiTuple<NewA, NewB>> newTuple =
                 (Variable<BiTuple<NewA, NewB>>) Util.createVariable(BiTuple.class,
                         ruleAssembler.generateNextId("biGrouped"), PatternDSL.from(newSource));
@@ -155,7 +154,7 @@ abstract class AbstractGroupByMutator implements Mutator {
     public <NewA, NewB, NewC> AbstractRuleAssembler regroupBiToTri(AbstractRuleAssembler ruleAssembler,
             Variable<Set<TriTuple<NewA, NewB, NewC>>> newSource, ViewItem collectPattern,
             ViewItem accumulatePattern) {
-        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        ruleAssembler.applyFilterToLastPrimaryPattern();
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
@@ -178,7 +177,7 @@ abstract class AbstractGroupByMutator implements Mutator {
     public <NewA, NewB, NewC, NewD> AbstractRuleAssembler regroupBiToQuad(AbstractRuleAssembler ruleAssembler,
             Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource, ViewItem collectPattern,
             ViewItem accumulatePattern) {
-        ruleAssembler.applyFilterToLastPrimaryPattern(ruleAssembler.getVariables().toArray(new Variable[0]));
+        ruleAssembler.applyFilterToLastPrimaryPattern();
         List<ViewItem> newFinishedExpressions = new ArrayList<>(ruleAssembler.getFinishedExpressions());
         newFinishedExpressions.add(accumulatePattern);
         newFinishedExpressions.add(collectPattern);
@@ -198,6 +197,24 @@ abstract class AbstractGroupByMutator implements Mutator {
                 .bind(newD, tuple -> tuple.d);
         return new QuadRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
                 newFinishedExpressions, newVariables, singletonList(newPrimaryPattern), emptyMap());
+    }
+
+    protected UniRuleAssembler downgrade(BiRuleAssembler ruleAssembler) {
+        // Downgrade the bi-stream to a uni-stream by ignoring the dummy no-op collector variable.
+        List<Variable> allVariablesButLast = ruleAssembler.getVariables()
+                .subList(0, ruleAssembler.getVariables().size() - 1);
+        return new UniRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
+                ruleAssembler.getFinishedExpressions(), allVariablesButLast, ruleAssembler.getPrimaryPatterns(),
+                emptyMap());
+    }
+
+    protected BiRuleAssembler downgrade(TriRuleAssembler ruleAssembler) {
+        // Downgrade the tri-stream to a bi-stream by ignoring the dummy no-op collector variable.
+        List<Variable> allVariablesButLast = ruleAssembler.getVariables()
+                .subList(0, ruleAssembler.getVariables().size() - 1);
+        return new BiRuleAssembler(ruleAssembler::generateNextId, ruleAssembler.getExpectedGroupByCount(),
+                ruleAssembler.getFinishedExpressions(), allVariablesButLast, ruleAssembler.getPrimaryPatterns(),
+                emptyMap());
     }
 
     @FunctionalInterface

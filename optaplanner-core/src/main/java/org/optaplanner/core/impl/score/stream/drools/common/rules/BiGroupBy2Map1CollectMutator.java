@@ -37,6 +37,6 @@ class BiGroupBy2Map1CollectMutator<A, B, NewA, NewB, NewC> extends AbstractBiGro
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         return groupBiWithCollect(ruleAssembler, () -> new DroolsBiToTriGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, ruleAssembler.getVariables().get(0), ruleAssembler.getVariables().get(1)));
+                groupKeyMappingB, collectorC, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1)));
     }
 }

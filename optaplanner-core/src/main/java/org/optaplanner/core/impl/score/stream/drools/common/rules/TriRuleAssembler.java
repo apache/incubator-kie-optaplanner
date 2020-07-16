@@ -142,13 +142,13 @@ final class TriRuleAssembler extends AbstractRuleAssembler {
     }
 
     @Override
-    protected void applyFilterToLastPrimaryPattern(Variable... variables) {
+    protected void applyFilterToLastPrimaryPattern() {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
         TriPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(getPrimaryPatterns().size() - 1)
-                .expr("Filter using " + predicate, variables[0], variables[1], variables[2],
+        getLastPrimaryPattern()
+                .expr("Filter using " + predicate, getVariable(0), getVariable(1), getVariable(2),
                         (fact, a, b, c) -> predicate.test(a, b, c));
         filterToApplyToLastPrimaryPattern = null;
     }

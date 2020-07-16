@@ -40,7 +40,6 @@ final class BiGroupBy2Map2CollectMutator<A, B, NewA, NewB, NewC, NewD> extends A
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         return groupBiWithCollectBi(ruleAssembler, () -> new DroolsBiToQuadGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, collectorD, ruleAssembler.getVariables().get(0),
-                ruleAssembler.getVariables().get(1)));
+                groupKeyMappingB, collectorC, collectorD, ruleAssembler.getVariable(0), ruleAssembler.getVariable(1)));
     }
 }

@@ -37,6 +37,6 @@ final class UniGroupBy2Map1CollectMutator<A, NewA, NewB, NewC> extends AbstractU
     @Override
     public AbstractRuleAssembler apply(AbstractRuleAssembler ruleAssembler) {
         return groupBiWithCollect(ruleAssembler, () -> new DroolsUniToTriGroupByAccumulator<>(groupKeyMappingA,
-                groupKeyMappingB, collectorC, ruleAssembler.getVariables().get(0)));
+                groupKeyMappingB, collectorC, ruleAssembler.getVariable(0)));
     }
 }

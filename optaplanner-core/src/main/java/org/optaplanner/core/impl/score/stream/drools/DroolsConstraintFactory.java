@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.LongSupplier;
 
 import org.drools.model.Global;
 import org.drools.model.impl.ModelImpl;
@@ -42,7 +40,6 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final AtomicLong createdVariableCounter = new AtomicLong();
     private final ConstraintGraph constraintGraph = new ConstraintGraph();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
@@ -110,16 +107,6 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     public ConstraintGraph getConstraintGraph() {
         return constraintGraph;
-    }
-
-    /**
-     * In order to guarantee that all variables have unique names within the context of a rule, we need to be able to
-     * uniquely identify them. This ID supplier is used by all variable-creating code.
-     *
-     * @return supplier that returns a unique number each time it is invoked
-     */
-    public LongSupplier getVariableIdSupplier() {
-        return createdVariableCounter::incrementAndGet;
     }
 
     @Override

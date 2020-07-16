@@ -29,8 +29,8 @@ import org.drools.model.view.ViewItem;
 interface JoinMutator extends BinaryOperator<AbstractRuleAssembler> {
 
     default AbstractRuleAssembler merge(AbstractRuleAssembler leftRuleAssembler, AbstractRuleAssembler rightRuleAssembler) {
-        leftRuleAssembler.applyFilterToLastPrimaryPattern(leftRuleAssembler.getVariables().toArray(new Variable[0]));
-        rightRuleAssembler.applyFilterToLastPrimaryPattern(rightRuleAssembler.getVariables().toArray(new Variable[0]));
+        leftRuleAssembler.applyFilterToLastPrimaryPattern();
+        rightRuleAssembler.applyFilterToLastPrimaryPattern();
         List<ViewItem> newFinishedExpressions = new ArrayList<>(leftRuleAssembler.getFinishedExpressions());
         newFinishedExpressions.addAll(rightRuleAssembler.getFinishedExpressions());
         List<Variable> newVariables = new ArrayList<>(leftRuleAssembler.getVariables());

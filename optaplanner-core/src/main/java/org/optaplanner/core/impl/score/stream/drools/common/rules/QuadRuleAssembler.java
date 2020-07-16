@@ -141,13 +141,13 @@ final class QuadRuleAssembler extends AbstractRuleAssembler {
     }
 
     @Override
-    protected void applyFilterToLastPrimaryPattern(Variable... variables) {
+    protected void applyFilterToLastPrimaryPattern() {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
         QuadPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(getPrimaryPatterns().size() - 1)
-                .expr("Filter using " + predicate, variables[0], variables[1], variables[2], variables[3],
+        getLastPrimaryPattern()
+                .expr("Filter using " + predicate, getVariable(0), getVariable(1), getVariable(2), getVariable(3),
                         (fact, a, b, c, d) -> predicate.test(a, b, c, d));
         filterToApplyToLastPrimaryPattern = null;
     }

@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.drools.common.rules;
 
 import static org.drools.model.PatternDSL.betaIndexedBy;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -50,8 +49,7 @@ final class UniExistenceMutator<A, B> implements Mutator {
 
     private AbstractRuleAssembler applyJoiners(AbstractRuleAssembler ruleAssembler, AbstractBiJoiner<A, B> joiner,
             BiPredicate<A, B> predicate) {
-        PatternDSL.PatternDef<A> primaryPattern =
-                ruleAssembler.getPrimaryPatterns().get(ruleAssembler.getPrimaryPatterns().size() - 1);
+        PatternDSL.PatternDef<A> primaryPattern = ruleAssembler.getLastPrimaryPattern();
         Variable<B> toExist = PatternDSL.declarationOf(otherFactType, ruleAssembler.generateNextId("toExist"));
         PatternDSL.PatternDef<B> existencePattern = PatternDSL.pattern(toExist);
         if (joiner == null) {
@@ -89,18 +87,14 @@ final class UniExistenceMutator<A, B> implements Mutator {
 
     private AbstractRuleAssembler applyFilters(AbstractRuleAssembler ruleAssembler, PatternDSL.PatternDef<B> existencePattern,
             BiPredicate<A, B> biPredicate) {
-        Variable[] variables = ruleAssembler.getVariables().toArray(new Variable[0]);
         PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ? existencePattern
-                : existencePattern.expr("Filter using " + biPredicate, variables[0],
+                : existencePattern.expr("Filter using " + biPredicate, ruleAssembler.getVariable(0),
                         (b, a) -> biPredicate.test((A) a, b));
         ExprViewItem existenceExpression = PatternDSL.exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = PatternDSL.not(possiblyFilteredExistencePattern);
         }
-        int lastPatternId = ruleAssembler.getPrimaryPatterns().size() - 1;
-        ruleAssembler.getDependentExpressionMap()
-                .computeIfAbsent(lastPatternId, key -> new ArrayList<>(1))
-                .add(existenceExpression);
+        ruleAssembler.addDependentExpressionToLastPattern(existenceExpression);
         return ruleAssembler;
     }
 

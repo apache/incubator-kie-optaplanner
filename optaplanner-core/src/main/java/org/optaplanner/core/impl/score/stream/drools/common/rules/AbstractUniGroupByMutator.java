@@ -42,9 +42,8 @@ abstract class AbstractUniGroupByMutator<A> extends AbstractGroupByMutator {
     protected <InTuple> AbstractRuleAssembler universalGroup(AbstractRuleAssembler ruleAssembler,
             BiFunction<PatternDef, Variable<InTuple>, PatternDef> bindFunction, Transformer<InTuple> mutator) {
         Variable<InTuple> mappedVariable = Util.createVariable(ruleAssembler.generateNextId("biMapped"));
-        int patternId = ruleAssembler.getPrimaryPatterns().size() - 1;
         // TODO evaluate need for bindFunction
-        bindFunction.apply(ruleAssembler.getPrimaryPatterns().get(patternId), mappedVariable);
+        bindFunction.apply(ruleAssembler.getLastPrimaryPattern(), mappedVariable);
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(ruleAssembler);
         Variable<Collection<InTuple>> tupleCollection =
                 (Variable<Collection<InTuple>>) Util.createVariable(Collection.class,

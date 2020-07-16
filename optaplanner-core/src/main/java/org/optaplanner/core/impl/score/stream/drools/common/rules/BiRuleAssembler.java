@@ -142,13 +142,13 @@ final class BiRuleAssembler extends AbstractRuleAssembler {
     }
 
     @Override
-    protected void applyFilterToLastPrimaryPattern(Variable... variables) {
+    protected void applyFilterToLastPrimaryPattern() {
         if (filterToApplyToLastPrimaryPattern == null) {
             return;
         }
         BiPredicate predicate = filterToApplyToLastPrimaryPattern;
-        getPrimaryPatterns().get(getPrimaryPatterns().size() - 1)
-                .expr("Filter using " + predicate, variables[0], variables[1],
+        getLastPrimaryPattern()
+                .expr("Filter using " + predicate, getVariable(0), getVariable(1),
                         (fact, a, b) -> predicate.test(a, b));
         filterToApplyToLastPrimaryPattern = null;
     }
